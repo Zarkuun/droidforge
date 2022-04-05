@@ -1,5 +1,6 @@
 #include "rackview.h"
 #include <QGraphicsItem>
+#include <QResizeEvent>
 
 RackView::RackView(QWidget *parent)
 : QGraphicsView(parent)
@@ -17,8 +18,20 @@ RackView::RackView(QWidget *parent)
     pm2->setPos(720, 0);
     pm3->setPos(1100, 0);
 
-    scale(0.1, 0.1);
+    // scale(0.15, 0.15);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
 
     setScene(scene);
+}
+
+
+
+void RackView::resizeEvent(QResizeEvent *event)
+{
+    // unsigned height = event->size().height();
+    // qreal s = height / 700.0;
+    // qDebug() << "Höhe: " << height << " -> scale " << s;
+    // setScale(0.16, 0.16);
+    fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
 }

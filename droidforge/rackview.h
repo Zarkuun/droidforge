@@ -15,6 +15,7 @@ private:
 
 public:
     explicit RackView(QWidget *parent = nullptr);
+    void resizeEvent(QResizeEvent *event);
 
 signals:
 
