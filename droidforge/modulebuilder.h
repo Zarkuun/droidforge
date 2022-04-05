@@ -1,13 +1,13 @@
 #ifndef MODULEBUILDER_H
 #define MODULEBUILDER_H
 
-#include "moduletype.h"
+#include "module.h"
 
 class ModuleBuilder
 {
 public:
     ModuleBuilder();
-    static ModuleType *buildModule(QString name);
+    static Module *buildModule(QString name);
 };
 
 #endif // MODULEBUILDER_H

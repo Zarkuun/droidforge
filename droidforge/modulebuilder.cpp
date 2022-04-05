@@ -1,24 +1,27 @@
 #include "modulebuilder.h"
 
-#include "moduletypemaster.h"
-#include "moduletypeg8.h"
-#include "moduletypeb32.h"
-#include "moduletypeinvalid.h"
+#include "modulemaster.h"
+#include "moduleg8.h"
+#include "modulep2b8.h"
+#include "moduleb32.h"
+#include "moduleinvalid.h"
 
 ModuleBuilder::ModuleBuilder()
 {
 
 }
 
-ModuleType *ModuleBuilder::buildModule(QString name)
+Module *ModuleBuilder::buildModule(QString name)
 {
     if (name == "master")
-        return new ModuleTypeMaster();
+        return new ModuleMaster();
     else if (name == "g8")
-        return new ModuleTypeG8();
+        return new ModuleG8();
+    else if (name == "p2b8")
+        return new ModuleP2B8();
     else if (name == "b32")
-        return new ModuleTypeB32();
+        return new ModuleB32();
     else
-        return new ModuleTypeInvalid();
+        return new ModuleInvalid();
 
 }

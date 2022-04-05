@@ -1,10 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "rackview.h"
+#include "rack.h"
+#include "modulebuilder.h"
 
 #include <QFileDialog>
 #include <QSplitter>
 #include <QTextEdit>
+
+
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -16,7 +20,16 @@ MainWindow::MainWindow(QWidget *parent)
     splitter->setOrientation(Qt::Vertical);
     this->setCentralWidget(splitter);
     QTextEdit *textedit1 = new QTextEdit();
-    RackView *rackview = new RackView();
+
+    Rack rack;
+    rack.addModule(ModuleBuilder::buildModule("master"));
+    rack.addModule(ModuleBuilder::buildModule("g8"));
+    rack.addModule(ModuleBuilder::buildModule("g8"));
+    // rack.addModule(ModuleBuilder::buildModule("b32"));
+    rack.addModule(ModuleBuilder::buildModule("p2b8"));
+    rack.addModule(ModuleBuilder::buildModule("p2b8"));
+
+    RackView *rackview = new RackView(&rack);
     splitter->addWidget(rackview);
     splitter->addWidget(textedit1);
     createActions();
