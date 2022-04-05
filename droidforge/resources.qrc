@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/faceplates/faceplate-b32-blue.jpg</file>
+        <file>images/faceplates/faceplate-b32-green.jpg</file>
+        <file>images/faceplates/faceplate-b32-off.jpg</file>
+        <file>images/faceplates/faceplate-b32-red.jpg</file>
+        <file>images/faceplates/faceplate-b32-white.jpg</file>
+        <file>images/faceplates/faceplate-b32-yellow.jpg</file>
+        <file>images/faceplates/faceplate-g8-off.jpg</file>
+        <file>images/faceplates/faceplate-g8-on.jpg</file>
+        <file>images/faceplates/faceplate-m4.jpg</file>
+        <file>images/faceplates/faceplate-master-off.jpg</file>
+        <file>images/faceplates/faceplate-master-on.jpg</file>
+        <file>images/faceplates/faceplate-p2b4-on.jpg</file>
+        <file>images/faceplates/faceplate-p2b8-blue.jpg</file>
+        <file>images/faceplates/faceplate-p2b8-green.jpg</file>
+        <file>images/faceplates/faceplate-p2b8-off.jpg</file>
+        <file>images/faceplates/faceplate-p2b8-on.jpg</file>
+        <file>images/faceplates/faceplate-p2b8-red.jpg</file>
+        <file>images/faceplates/faceplate-p2b8-yellow.jpg</file>
+        <file>images/faceplates/faceplate-p4b2-off.jpg</file>
+        <file>images/faceplates/faceplate-p10-2.jpg</file>
+        <file>images/faceplates/faceplate-p10.jpg</file>
+        <file>images/faceplates/faceplate-s10.jpg</file>
+        <file>images/faceplates/faceplate-x7-off.jpg</file>
+        <file>images/faceplates/faceplate-x7-on.jpg</file>
+    </qresource>
+</RCC>
