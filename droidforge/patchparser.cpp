@@ -1,3 +1,4 @@
+#include "droidforge.h"
 #include "patchparser.h"
 #include "QtCore/qdebug.h"
 #include "modulebuilder.h"
@@ -118,7 +119,6 @@ bool PatchParser::parseCircuit(QString name)
     section->circuits.append(Circuit());
     circuit = &section->circuits.last();
     circuit->name = name;
-    qDebug() << "Neuer Circuit: " << circuit->name;
 
     return true;
 }
@@ -128,7 +128,6 @@ bool PatchParser::parseJackLine(QString line)
 {
     JackAssignment ja;
 
-    qDebug() << line;
     QStringList parts = line.split("#");
     if (parts.size() > 1)
         ja.comment = parts.mid(1).join('#');
@@ -139,10 +138,17 @@ bool PatchParser::parseJackLine(QString line)
     }
 
     parts = parts[0].split("=");
-    ja.jack = parts[0];
-    ja.value = parts[1];
+    ja.jack = parts[0].trimmed().toLower();
+    ja.value = parts[1].trimmed();
+    if (the_firmware->jackIsInput(circuit->name, ja.jack))
+        ja.jackType = JACKTYPE_INPUT;
+    else if (the_firmware->jackIsOutput(circuit->name, ja.jack))
+        ja.jackType = JACKTYPE_OUTPUT;
+   else {
+        qDebug() << "Invalid jack type " << circuit->name << ", " << ja.jack;
+        ja.jackType = JACKTYPE_INVALID;
+    }
 
     circuit->jackAssignments.append(ja);
-    qDebug() << "Kommt zu " << circuit->name;
     return true;
 }

@@ -24,5 +24,6 @@
         <file>images/faceplates/faceplate-s10.jpg</file>
         <file>images/faceplates/faceplate-x7-off.jpg</file>
         <file>images/faceplates/faceplate-x7-on.jpg</file>
+        <file>droidfirmware.json</file>
     </qresource>
 </RCC>

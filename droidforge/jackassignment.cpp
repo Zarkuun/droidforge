@@ -8,5 +8,13 @@ QString JackAssignment::toString()
     s = "    " + jack + " = " + value;
     if (!comment.isEmpty())
         s += " # " + comment;
+
+    if (jackType == JACKTYPE_INPUT)
+        s += "<INPUT>";
+    else if (jackType == JACKTYPE_OUTPUT)
+        s += "<OUTPUT>";
+    else
+        s += "???";
+
     return s;
 }
