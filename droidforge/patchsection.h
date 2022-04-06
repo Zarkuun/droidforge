@@ -10,6 +10,7 @@ class PatchSection
 public:
     QString title;
     QList<Circuit> circuits;
+    QString toString();
 };
 
 #endif // PATCHSECTION_H

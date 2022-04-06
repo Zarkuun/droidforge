@@ -5,14 +5,17 @@
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 class Circuit
 {
 public:
     QString name;
-    QString comment;
+    QStringList comment;
     bool disabled;
     QList<JackAssignment> jackAssignments;
+
+    QString toString();
 };
 
 #endif // CIRCUIT_H

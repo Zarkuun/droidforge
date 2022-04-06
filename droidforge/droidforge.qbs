@@ -33,6 +33,8 @@ QtApplication {
         "modulemaster.h",
         "modulep2b8.cpp",
         "modulep2b8.h",
+        "modulep4b2.cpp",
+        "modulep4b2.h",
         "moduleview.cpp",
         "moduleview.h",
         "patch.cpp",

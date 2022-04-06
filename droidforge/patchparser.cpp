@@ -1,7 +1,10 @@
 #include "patchparser.h"
 #include "QtCore/qdebug.h"
+#include "modulebuilder.h"
 
 #include <QTextStream>
+#include <QRegularExpression>
+
 
 PatchParser::PatchParser()
     : patch(0)
@@ -13,6 +16,7 @@ bool PatchParser::parse(QString fileName, Patch *patch)
 {
     errorMessage = "";
     errorLine = 0;
+    section = 0;
 
     this->patch = patch;
 
@@ -25,14 +29,120 @@ bool PatchParser::parse(QString fileName, Patch *patch)
     QTextStream in(&inputFile);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        parseLine(line);
+        errorLine ++;
+        if (!parseLine(line))
+            return false;
     }
     inputFile.close();
     return true;
 }
 
 
-void PatchParser::parseLine(QString line)
+bool PatchParser::parseLine(QString line)
 {
-    qDebug() << "Parse zeile: " << line;
+    line = line.trimmed();
+    if (line.isEmpty())
+        return parseEmptyLine();
+    else if (line[0] == '#')
+        return parseCommentLine(line);
+    else if (line[0] == '[')
+        return parseCircuitLine(line);
+    else if (line[0].isLetter() && line.contains('='))
+        return parseJackLine(line);
+    else {
+        errorMessage = "Garbled line";
+        return false;
+    }
+}
+
+
+bool PatchParser::parseEmptyLine()
+{
+    return true;
+}
+
+
+bool PatchParser::parseCommentLine(QString)
+{
+    return true; // TODO: Comments
+}
+
+
+bool PatchParser::parseCircuitLine(QString line)
+{
+    if (!line.endsWith(']')) {
+        errorMessage = "Missing ] at the end of the line";
+        return false;
+    }
+
+    QString circuitName = line.sliced(1).chopped(1);
+
+    if (parseController(circuitName))
+        return true;
+    else if (parseCircuit(circuitName))
+        return true;
+
+    errorMessage = "Invalid controller or circuit name '" + circuitName + "'";
+    return false;
+}
+
+
+bool PatchParser::parseController(QString name)
+{
+    if (ModuleBuilder::controllerExists(name.toLower())) {
+        patch->controllers.push_back(name.toLower());
+        return true;
+    }
+    else
+        return false;
+}
+
+
+bool PatchParser::parseCircuit(QString name)
+{
+    // TODO: Hier die JSON-Datei verwenden?
+    QString namel = name.toLower();
+
+    static QRegularExpression e("^[a-z][a-z0-9]+$");
+    if (!e.match(namel).hasMatch()) {
+        errorMessage = "Invalid circuit name.";
+        return false;
+    }
+
+    if (!section) {
+        PatchSection newSection;
+        patch->sections.append(newSection);
+        section = &patch->sections.first();
+    }
+
+    section->circuits.append(Circuit());
+    circuit = &section->circuits.last();
+    circuit->name = name;
+    qDebug() << "Neuer Circuit: " << circuit->name;
+
+    return true;
+}
+
+
+bool PatchParser::parseJackLine(QString line)
+{
+    JackAssignment ja;
+
+    qDebug() << line;
+    QStringList parts = line.split("#");
+    if (parts.size() > 1)
+        ja.comment = parts.mid(1).join('#');
+
+    if (parts[0].count('=') != 1) {
+        errorMessage = "Duplicate =";
+        return false;
+    }
+
+    parts = parts[0].split("=");
+    ja.jack = parts[0];
+    ja.value = parts[1];
+
+    circuit->jackAssignments.append(ja);
+    qDebug() << "Kommt zu " << circuit->name;
+    return true;
 }

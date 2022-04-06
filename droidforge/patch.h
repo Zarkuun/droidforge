@@ -3,15 +3,22 @@
 
 #include "patchsection.h"
 
+#include <QStringList>
+
 class Patch
 {
+
 public:
+    Patch();
+
     QString title;
-    QString description;
+    QStringList description;
     QString libraryId;
     unsigned version;
-    QList<QString> controllers;
+    QStringList controllers;
     QList<PatchSection> sections;
+
+    QString toString();
 };
 
 #endif // PATCH_H

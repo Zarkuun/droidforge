@@ -24,22 +24,19 @@ MainWindow::MainWindow(QWidget *parent)
     QTextEdit *textedit1 = new QTextEdit();
 
     Patch patch;
-    patch.controllers.push_back("p2b8");
-    patch.controllers.push_back("p2b8");
-
     PatchParser parser;
     QMessageBox box;
+
     if (!parser.parse("/Users/mk/git/droidforge/testpatch.ini", &patch))
     {
         box.setText("Fehler!");
+        box.exec();
+        QApplication::quit();
     }
-    else
-    {
-        box.setText("Super geparst!");
-    }
-    box.exec();
 
     Rack rack(patch);
+
+    textedit1->setText(patch.toString());
 
     RackView *rackview = new RackView(&rack);
     splitter->addWidget(rackview);

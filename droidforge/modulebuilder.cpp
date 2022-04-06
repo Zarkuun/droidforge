@@ -3,13 +3,17 @@
 #include "modulemaster.h"
 #include "moduleg8.h"
 #include "modulep2b8.h"
+#include "modulep4b2.h"
 #include "moduleb32.h"
 #include "moduleinvalid.h"
+
+#include <QStringList>
 
 ModuleBuilder::ModuleBuilder()
 {
 
 }
+
 
 Module *ModuleBuilder::buildModule(QString name)
 {
@@ -17,6 +21,8 @@ Module *ModuleBuilder::buildModule(QString name)
         return new ModuleMaster();
     else if (name == "g8")
         return new ModuleG8();
+    else if (name == "p4b2")
+        return new ModuleP4B2();
     else if (name == "p2b8")
         return new ModuleP2B8();
     else if (name == "b32")
@@ -24,4 +30,14 @@ Module *ModuleBuilder::buildModule(QString name)
     else
         return new ModuleInvalid();
 
+}
+
+
+bool ModuleBuilder::controllerExists(QString name)
+{
+    static QStringList controllers {
+        "p2b8", "p4b2", "b32"
+    };
+
+    return controllers.contains(name);
 }

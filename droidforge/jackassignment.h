@@ -17,6 +17,8 @@ public:
     QString value; // TODO: split up?
     QString comment;
     bool disabled;
+
+    QString toString();
 };
 
 #endif // JACKASSIGNMENT_H
