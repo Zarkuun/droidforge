@@ -37,6 +37,8 @@ QtApplication {
         "moduleview.h",
         "patch.cpp",
         "patch.h",
+        "patchparser.cpp",
+        "patchparser.h",
         "patchsection.cpp",
         "patchsection.h",
         "rack.cpp",

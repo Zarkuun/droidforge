@@ -8,8 +8,9 @@
 #include <QFileDialog>
 #include <QSplitter>
 #include <QTextEdit>
+#include <QMessageBox>
 
-
+#include "patchparser.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -25,6 +26,18 @@ MainWindow::MainWindow(QWidget *parent)
     Patch patch;
     patch.controllers.push_back("p2b8");
     patch.controllers.push_back("p2b8");
+
+    PatchParser parser;
+    QMessageBox box;
+    if (!parser.parse("/Users/mk/git/droidforge/testpatch.ini", &patch))
+    {
+        box.setText("Fehler!");
+    }
+    else
+    {
+        box.setText("Super geparst!");
+    }
+    box.exec();
 
     Rack rack(patch);
 
