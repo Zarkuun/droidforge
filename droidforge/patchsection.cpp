@@ -10,9 +10,8 @@ QString PatchSection::toString()
         s += "-------------------------------------------------\n\n";
     }
 
-    for (qsizetype i=0; i<circuits.length(); i++) {
+    for (qsizetype i=0; i<circuits.length(); i++)
         s += circuits[i].toString();
-    }
 
     return s;
 }
