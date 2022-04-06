@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "patch.h"
 #include "ui_mainwindow.h"
 #include "rackview.h"
 #include "rack.h"
@@ -21,13 +22,11 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(splitter);
     QTextEdit *textedit1 = new QTextEdit();
 
-    Rack rack;
-    rack.addModule(ModuleBuilder::buildModule("master"));
-    rack.addModule(ModuleBuilder::buildModule("g8"));
-    rack.addModule(ModuleBuilder::buildModule("g8"));
-    // rack.addModule(ModuleBuilder::buildModule("b32"));
-    rack.addModule(ModuleBuilder::buildModule("p2b8"));
-    rack.addModule(ModuleBuilder::buildModule("p2b8"));
+    Patch patch;
+    patch.controllers.push_back("p2b8");
+    patch.controllers.push_back("p2b8");
+
+    Rack rack(patch);
 
     RackView *rackview = new RackView(&rack);
     splitter->addWidget(rackview);

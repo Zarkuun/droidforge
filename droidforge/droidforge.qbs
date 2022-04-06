@@ -10,6 +10,12 @@ QtApplication {
     ]
 
     files: [
+        "circuit.cpp",
+        "circuit.h",
+        "circuittype.cpp",
+        "circuittype.h",
+        "jackassignment.cpp",
+        "jackassignment.h",
         "main.cpp",
         "mainwindow.cpp",
         "module.h",
@@ -29,6 +35,10 @@ QtApplication {
         "modulep2b8.h",
         "moduleview.cpp",
         "moduleview.h",
+        "patch.cpp",
+        "patch.h",
+        "patchsection.cpp",
+        "patchsection.h",
         "rack.cpp",
         "rack.h",
         "rackview.cpp",

@@ -2,7 +2,9 @@
 #define RACK_H
 
 #include <QList>
+
 #include "module.h"
+#include "patch.h"
 
 class Rack
 {
@@ -10,6 +12,7 @@ class Rack
 
 public:
     Rack();
+    Rack(const Patch &patch);
     ~Rack();
     QListIterator<Module *> iterator() { return QListIterator<Module *>(modules); };
 
