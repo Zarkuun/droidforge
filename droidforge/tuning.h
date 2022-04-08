@@ -1,0 +1,10 @@
+#ifndef TUNING_H
+#define TUNING_H
+
+#define MIN_RACK_HEIGHT 200
+#define MAX_RACK_HEIGHT 300
+#define RACK_BACKGROUND_COLOR QColor(20, 20, 20)
+
+#define PATCH_BACKGROUND_COLOR QColor(40, 40, 40)
+
+#endif // TUNING_H

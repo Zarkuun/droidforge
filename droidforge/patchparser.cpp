@@ -112,6 +112,7 @@ bool PatchParser::parseCircuit(QString name)
 
     if (!section) {
         PatchSection newSection;
+        newSection.title = "Circuits";
         patch->sections.append(newSection);
         section = &patch->sections.first();
     }

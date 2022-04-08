@@ -14,6 +14,8 @@ QtApplication {
         "circuit.h",
         "circuittype.cpp",
         "circuittype.h",
+        "circuitview.cpp",
+        "circuitview.h",
         "droidfirmware.cpp",
         "droidfirmware.h",
         "droidforge.cpp",
@@ -53,11 +55,16 @@ QtApplication {
         "patchparser.h",
         "patchsection.cpp",
         "patchsection.h",
+        "patchsectionview.cpp",
+        "patchsectionview.h",
+        "patchview.cpp",
+        "patchview.h",
         "rack.cpp",
         "rack.h",
         "rackview.cpp",
         "rackview.h",
         "resources.qrc",
+        "tuning.h",
     ]
 
     install: true

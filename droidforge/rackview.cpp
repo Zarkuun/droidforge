@@ -1,5 +1,6 @@
 #include "rackview.h"
 #include "modulebuilder.h"
+#include "tuning.h"
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
@@ -8,21 +9,25 @@ RackView::RackView(Rack *arack)
     : QGraphicsView()
     , rack(arack)
 {
-    scene = new QGraphicsScene();
-    scene->setBackgroundBrush(QColor(20, 20, 20));
+    setMinimumHeight(MIN_RACK_HEIGHT);
+    setMaximumHeight(MAX_RACK_HEIGHT);
+
+    QGraphicsScene *thescene = new QGraphicsScene();
+    thescene->setBackgroundBrush(RACK_BACKGROUND_COLOR);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    setScene(scene);
+    setScene(thescene);
 
     buildRack();
 
-    fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
+    fitInView(thescene->sceneRect(), Qt::KeepAspectRatio);
 }
 
 
 void RackView::resizeEvent(QResizeEvent *)
 {
-    fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
+    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
+
 
 void RackView::buildRack()
 {
@@ -31,7 +36,7 @@ void RackView::buildRack()
     while (i.hasNext()) {
         Module *module = i.next();
         QPixmap *image = new QPixmap(QString(":images/faceplates/" + module->faceplate()));
-        QGraphicsItem *gi = scene->addPixmap(*image);
+        QGraphicsItem *gi = scene()->addPixmap(*image);
         gi->setPos(x, 0);
         x += module->hp() * 88;
     }

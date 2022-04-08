@@ -13,9 +13,6 @@ class RackView : public QGraphicsView
     Q_OBJECT
     Rack *rack;
 
-private:
-    QGraphicsScene *scene;
-
 public:
     explicit RackView(Rack *arack);
     void resizeEvent(QResizeEvent *event);

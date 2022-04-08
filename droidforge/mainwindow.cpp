@@ -2,45 +2,27 @@
 #include "patch.h"
 #include "ui_mainwindow.h"
 #include "rackview.h"
-#include "rack.h"
 #include "modulebuilder.h"
+#include "patchparser.h"
+#include "patchview.h"
 
-#include <QFileDialog>
 #include <QSplitter>
 #include <QTextEdit>
-#include <QMessageBox>
-
-#include "patchparser.h"
 
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(Rack *rack, Patch *patch)
+    : QMainWindow()
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     QSplitter *splitter = new QSplitter();
     splitter->setOrientation(Qt::Vertical);
     this->setCentralWidget(splitter);
-    QTextEdit *textedit1 = new QTextEdit();
 
-    Patch patch;
-    PatchParser parser;
-    QMessageBox box;
-
-    if (!parser.parse("/Users/mk/git/droidforge/testpatch.ini", &patch))
-    {
-        box.setText("Fehler!");
-        box.exec();
-        QApplication::quit();
-    }
-
-    Rack rack(patch);
-
-    textedit1->setText(patch.toString());
-
-    RackView *rackview = new RackView(&rack);
+    RackView *rackview = new RackView(rack);
+    PatchView *patchview = new PatchView(patch);
     splitter->addWidget(rackview);
-    splitter->addWidget(textedit1);
+    splitter->addWidget(patchview);
     createActions();
 }
 
@@ -64,11 +46,11 @@ void MainWindow::createActions()
 
 void MainWindow::open()
 {
-    if (maybeSave()) {
-        QString fileName = QFileDialog::getOpenFileName(this);
-        if (!fileName.isEmpty())
-            loadFile(fileName);
-    }
+    // if (maybeSave()) {
+    //     QString fileName = QFileDialog::getOpenFileName(this);
+    //     if (!fileName.isEmpty())
+    //         loadFile(fileName);
+    // }
 }
 
 bool MainWindow::maybeSave()

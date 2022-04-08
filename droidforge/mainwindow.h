@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+class Rack;
+class Patch;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -13,9 +16,11 @@ class MainWindow : public QMainWindow
 
 private:
     Ui::MainWindow *ui;
+    Rack *rack;
+    Patch *patch;
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(Rack *, Patch *);
     ~MainWindow();
 
 private slots:
