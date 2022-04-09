@@ -8,6 +8,7 @@
 
 #include <QSplitter>
 #include <QTextEdit>
+#include <QKeyEvent>
 
 
 MainWindow::MainWindow(Rack *rack, Patch *patch)
@@ -19,10 +20,11 @@ MainWindow::MainWindow(Rack *rack, Patch *patch)
     splitter->setOrientation(Qt::Vertical);
     this->setCentralWidget(splitter);
 
-    RackView *rackview = new RackView(rack);
-    PatchView *patchview = new PatchView(patch);
+    rackview = new RackView(rack);
+    patchview = new PatchView(patch);
     splitter->addWidget(rackview);
     splitter->addWidget(patchview);
+    splitter->grabKeyboard(); // Macht, dass bei main die Tasten ankommen
     createActions();
 }
 
@@ -30,6 +32,26 @@ MainWindow::MainWindow(Rack *rack, Patch *patch)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+        case Qt::Key_Up:
+        case Qt::Key_Down:
+        case Qt::Key_Left:
+        case Qt::Key_Right:
+            patchview->handleKeyPress(event->key());
+        default:
+            qDebug() << "Main Key press: " << event;
+    }
+}
+
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    qDebug() << "Main Key release: " << event;
+
 }
 
 

@@ -10,6 +10,14 @@ QtApplication {
     ]
 
     files: [
+        "atom.cpp",
+        "atom.h",
+        "atomcable.cpp",
+        "atomcable.h",
+        "atomnumber.cpp",
+        "atomnumber.h",
+        "atomregister.cpp",
+        "atomregister.h",
         "circuit.cpp",
         "circuit.h",
         "circuittype.cpp",

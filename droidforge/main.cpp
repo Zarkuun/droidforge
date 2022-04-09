@@ -25,9 +25,8 @@ int main(int argc, char *argv[])
 
     Rack rack(patch);
 
-
     MainWindow w(&rack, &patch);
-    w.resize(1500,1000);
+    w.resize(800,1000);
     w.show();
     return a.exec();
 }

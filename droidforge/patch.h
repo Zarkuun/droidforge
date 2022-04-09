@@ -7,16 +7,20 @@
 
 class Patch
 {
+    // TODO: Raus wenn das geht
+    Patch(Patch &patch);
+    Patch(const Patch &patch);
 
 public:
     Patch();
+    ~Patch();
 
     QString title;
     QStringList description;
     QString libraryId;
     unsigned version;
     QStringList controllers;
-    QList<PatchSection> sections;
+    QList<PatchSection *> sections;
 
     QString toString();
 };

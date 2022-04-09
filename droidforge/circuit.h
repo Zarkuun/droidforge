@@ -9,11 +9,20 @@
 
 class Circuit
 {
+    Circuit(Circuit &circuit);
+    Circuit(const Circuit &circuit);
+    QList<JackAssignment *> jackAssignments;
+
 public:
+    Circuit(QString name) : name(name) {};
+    ~Circuit();
+    void addJackAssignment(JackAssignment *);
+    JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
+    qsizetype numJackAssignments() {  return jackAssignments.count(); };
+
     QString name;
     QStringList comment;
     bool disabled;
-    QList<JackAssignment> jackAssignments;
 
     QString toString();
 };

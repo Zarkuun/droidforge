@@ -9,6 +9,8 @@
 
 PatchParser::PatchParser()
     : patch(0)
+    , section(0)
+    , circuit(0)
 {
 }
 
@@ -48,8 +50,14 @@ bool PatchParser::parseLine(QString line)
         return parseCommentLine(line);
     else if (line[0] == '[')
         return parseCircuitLine(line);
-    else if (line[0].isLetter() && line.contains('='))
-        return parseJackLine(line);
+    else if (line[0].isLetter() && line.contains('=')) {
+        if (!circuit) {
+            errorMessage = "Jack assignment before any circuit was declared.";
+            return false;
+        }
+        else
+            return parseJackLine(line);
+    }
     else {
         errorMessage = "Garbled line";
         return false;
@@ -111,45 +119,45 @@ bool PatchParser::parseCircuit(QString name)
     }
 
     if (!section) {
-        PatchSection newSection;
-        newSection.title = "Circuits";
-        patch->sections.append(newSection);
-        section = &patch->sections.first();
+        section = new PatchSection("Circuits");
+        patch->sections.append(section);
     }
 
-    section->circuits.append(Circuit());
-    circuit = &section->circuits.last();
-    circuit->name = name;
-
+    circuit = new Circuit(name);
+    section->circuits.append(circuit);
     return true;
 }
 
 
 bool PatchParser::parseJackLine(QString line)
 {
-    JackAssignment ja;
-
     QStringList parts = line.split("#");
-    if (parts.size() > 1)
-        ja.comment = parts.mid(1).join('#');
 
     if (parts[0].count('=') != 1) {
         errorMessage = "Duplicate =";
         return false;
     }
 
-    parts = parts[0].split("=");
-    ja.jack = parts[0].trimmed().toLower();
-    ja.value = parts[1].trimmed();
-    if (the_firmware->jackIsInput(circuit->name, ja.jack))
-        ja.jackType = JACKTYPE_INPUT;
-    else if (the_firmware->jackIsOutput(circuit->name, ja.jack))
-        ja.jackType = JACKTYPE_OUTPUT;
-   else {
-        qDebug() << "Invalid jack type " << circuit->name << ", " << ja.jack;
-        ja.jackType = JACKTYPE_INVALID;
+    JackAssignment *ja = new JackAssignment();
+    if (parts.size() > 1) {
+        ja->comment = parts.mid(1).join('#').trimmed();
     }
 
-    circuit->jackAssignments.append(ja);
+    parts = parts[0].split("=");
+
+    ja->jack = parts[0].trimmed().toLower();
+
+    if (the_firmware->jackIsInput(circuit->name, ja->jack))
+        ja->jackType = JACKTYPE_INPUT;
+
+    else if (the_firmware->jackIsOutput(circuit->name, ja->jack))
+        ja->jackType = JACKTYPE_OUTPUT;
+
+    else {
+        ja->jackType = JACKTYPE_UNKNOWN;
+    }
+
+    ja->parseSourceString(parts[1].trimmed());
+    circuit->addJackAssignment(ja);
     return true;
 }

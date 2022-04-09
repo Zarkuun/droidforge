@@ -1,5 +1,19 @@
 #include "circuit.h"
 
+Circuit::~Circuit()
+{
+    for (qsizetype i=0; i<jackAssignments.length(); i++)
+        delete jackAssignments[i];
+}
+
+
+void Circuit::addJackAssignment(JackAssignment *ja)
+{
+    jackAssignments.push_back(ja);
+
+}
+
+
 QString Circuit::toString()
 {
     QString s;
@@ -13,7 +27,7 @@ QString Circuit::toString()
 
     for (qsizetype i=0; i<jackAssignments.length(); i++)
     {
-        s += jackAssignments[i].toString() + "\n";
+        s += jackAssignments[i]->toString() + "\n";
     }
     s += "\n";
     return s;

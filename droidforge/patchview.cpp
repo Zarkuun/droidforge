@@ -8,11 +8,19 @@
 
 PatchView::PatchView(Patch *patch)
     : QTabWidget()
-    , patch(patch)
+    , currentPatchSectionView(0)
 {
     for (qsizetype i=0; i<patch->sections.count(); i++) {
-        PatchSection *section = &patch->sections[i];
+        PatchSection *section = patch->sections[i];
         PatchSectionView *psv = new PatchSectionView(section);
         addTab(psv, section->title);
+        if (currentPatchSectionView == 0)
+            currentPatchSectionView = psv;
     }
+}
+
+void PatchView::handleKeyPress(int key)
+{
+    currentPatchSectionView->handleKeyPress(key);
+
 }

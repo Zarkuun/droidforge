@@ -8,8 +8,11 @@
 class PatchSection
 {
 public:
+    PatchSection(QString t) : title(t) {};
+    ~PatchSection();
+
     QString title;
-    QList<Circuit> circuits;
+    QList<Circuit *> circuits;
     QString toString();
 };
 

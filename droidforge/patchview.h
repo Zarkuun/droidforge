@@ -2,15 +2,17 @@
 #define PATCHVIEW_H
 
 #include "patch.h"
+#include "patchsectionview.h"
 
 #include <QTabWidget>
 
 class PatchView : public QTabWidget
 {
-    Patch *patch;
+    PatchSectionView *currentPatchSectionView;
 
 public:
     PatchView(Patch *patch);
+    void handleKeyPress(int key);
 };
 
 #endif // PATCHVIEW_H

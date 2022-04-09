@@ -1,6 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "patchview.h"
+#include "rackview.h"
+
 #include <QMainWindow>
 
 class Rack;
@@ -18,10 +21,16 @@ private:
     Ui::MainWindow *ui;
     Rack *rack;
     Patch *patch;
+    RackView *rackview;
+    PatchView *patchview;
 
 public:
     MainWindow(Rack *, Patch *);
     ~MainWindow();
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 private slots:
     void open();

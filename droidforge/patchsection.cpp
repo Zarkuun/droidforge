@@ -1,5 +1,13 @@
 #include "patchsection.h"
 
+PatchSection::~PatchSection()
+{
+    for (qsizetype i=0; i<circuits.length(); i++)
+        delete circuits[i];
+
+}
+
+
 QString PatchSection::toString()
 {
     QString s;
@@ -11,7 +19,7 @@ QString PatchSection::toString()
     }
 
     for (qsizetype i=0; i<circuits.length(); i++)
-        s += circuits[i].toString();
+        s += circuits[i]->toString();
 
     return s;
 }
