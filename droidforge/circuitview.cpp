@@ -43,17 +43,18 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 
     unsigned x = SIDE_PADDING + LINE_WIDTH;
     unsigned y = LINE_WIDTH;
-    if (selected)
-        painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), QColor(0, 255, 0));
+    if (selected && currentJack == -1)
+        painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), QColor(80, 40, 180));
     else
         painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), linearGrad);
     painter->setPen(QColor(COLOR_CIRCUIT_NAME));
     painter->drawText(QRect(x, y, WIDTH-x, HEADER_HEIGHT), Qt::AlignVCenter, circuit->name.toUpper());
     y += LINE_WIDTH + HEADER_HEIGHT;
 
-    y = paintJacks(painter, jacktype_t::JACKTYPE_INPUT, COLOR_JACK_INPUT, y);
-    y = paintJacks(painter, jacktype_t::JACKTYPE_OUTPUT, COLOR_JACK_OUTPUT, y);
-    y = paintJacks(painter, jacktype_t::JACKTYPE_UNKNOWN, COLOR_JACK_UNKNOWN,  y);
+    unsigned line = 0;
+    y = paintJacks(painter, line, jacktype_t::JACKTYPE_INPUT, COLOR_JACK_INPUT, y);
+    y = paintJacks(painter, line, jacktype_t::JACKTYPE_OUTPUT, COLOR_JACK_OUTPUT, y);
+    y = paintJacks(painter, line, jacktype_t::JACKTYPE_UNKNOWN, COLOR_JACK_UNKNOWN,  y);
 
 
     unsigned t = 2 * LINE_WIDTH + HEADER_HEIGHT;
@@ -68,7 +69,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 }
 
 
-unsigned CircuitView::paintJacks(QPainter *painter, jacktype_t jacktype, const QColor &textcolor, unsigned y)
+unsigned CircuitView::paintJacks(QPainter *painter, unsigned &line, jacktype_t jacktype, const QColor &textcolor, unsigned y)
 {
     painter->save();
     unsigned x = SIDE_PADDING + LINE_WIDTH;
@@ -76,21 +77,28 @@ unsigned CircuitView::paintJacks(QPainter *painter, jacktype_t jacktype, const Q
         JackAssignment *ja = circuit->jackAssignment(i);
         if (ja->jackType == jacktype) {
             painter->setPen(textcolor);
+            if (selected && currentJack == line) {
+                painter->fillRect(0, y, WIDTH, JACK_HEIGHT, QColor(50, 70, 80));
+            }
             painter->drawText(QRect(x, y, WIDTH-x, JACK_HEIGHT), Qt::AlignVCenter, ja->jack);
             painter->setPen(COLOR_LINE);
             painter->drawLine(0, y, WIDTH, y);
             // painter->drawRoundedRect(QRect(x, y, WIDTH-x, JACK_HEIGHT), 5, 5);
             y += LINE_WIDTH + JACK_HEIGHT;
+            line++;
         }
     }
     painter->restore();
     return y;
 }
 
-void CircuitView::select()
+
+void CircuitView::select(unsigned cj)
 {
+    currentJack = cj;
     selected = true;
 }
+
 
 void CircuitView::deselect()
 {

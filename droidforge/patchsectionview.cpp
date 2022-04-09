@@ -32,7 +32,7 @@ void PatchSectionView::buildPatchSection()
         cv->setPos(0, y);
         y += cv->boundingRect().height() + CIRCUIT_MARGIN;
     }
-    currentCircuitView()->select();
+    currentCircuitView()->select(-1);
 }
 
 
@@ -47,12 +47,36 @@ void PatchSectionView::moveCursorUpDown(int whence)
     currentCircuitView()->deselect();
     currentCircuitView()->update();
 
-    currentCircuitNr += whence;
-    if (currentCircuitNr < 0)
-        currentCircuitNr = 0;
-    else if (currentCircuitNr >= circuitViews.size())
-        currentCircuitNr = circuitViews.size() - 1;
-    currentCircuitView()->select();
+    if (whence == 1) // down
+    {
+        unsigned n = currentCircuitView()->numJackAssignments();
+        currentJack ++;
+        if (currentJack >= n) {
+            currentCircuitNr ++;
+            if (currentCircuitNr >= circuitViews.size()) {
+                currentJack--;
+                currentCircuitNr--;
+            }
+            else
+                currentJack = -1;
+        }
+    }
+    else // up
+    {
+        currentJack --;
+        if (currentJack < -1) {
+            currentCircuitNr--;
+            if (currentCircuitNr < 0) {
+                currentCircuitNr = 0;
+                currentJack = -1;
+            }
+            else
+                currentJack = currentCircuitView()->numJackAssignments() - 1;
+        }
+
+    }
+
+    currentCircuitView()->select(currentJack);
     currentCircuitView()->update();
-    qDebug() << currentCircuitNr;
+    centerOn(currentCircuitView());
 }

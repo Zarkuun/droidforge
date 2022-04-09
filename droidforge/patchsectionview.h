@@ -21,7 +21,7 @@ public:
     PatchSectionView(PatchSection *section)
         : section(section)
         , currentCircuitNr(0)
-        , currentJack(0)
+        , currentJack(-1) // HEAD
         , currentColumn(0)
     {
         QGraphicsScene *scene = new QGraphicsScene();
