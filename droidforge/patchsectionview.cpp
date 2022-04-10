@@ -10,10 +10,12 @@ void PatchSectionView::handleKeyPress(int key)
 {
     qDebug() << "KEY" << key;
     switch (key) {
-        case Qt::Key_Up:    moveCursorUpDown(-1); break;
-        case Qt::Key_Down:  moveCursorUpDown(1);  break;
-        case Qt::Key_Left:  moveCursorLeftRight(-1); break;
-        case Qt::Key_Right: moveCursorLeftRight(1);  break;
+    case Qt::Key_Up:       moveCursorUpDown(-1); break;
+    case Qt::Key_Down:     moveCursorUpDown(1);  break;
+    case Qt::Key_Left:     moveCursorLeftRight(-1); break;
+    case Qt::Key_Right:    moveCursorLeftRight(1);  break;
+    case Qt::Key_PageUp:   moveCursorPageUpDown(-1); break;
+    case Qt::Key_PageDown: moveCursorPageUpDown(1); break;
     }
 }
 
@@ -50,6 +52,22 @@ void PatchSectionView::moveCursorLeftRight(int whence)
 
     currentColumn += whence;
     currentCircuitView()->select(currentJack, currentColumn);
+}
+
+void PatchSectionView::moveCursorPageUpDown(int whence)
+{
+    if (currentJack == -1) {
+        currentCircuitView()->deselect();
+        currentCircuitNr += whence;
+        if (currentCircuitNr < 0)
+            currentCircuitNr = 0;
+        else if (currentCircuitNr >= circuitViews.size())
+            currentCircuitNr = circuitViews.size() - 1;
+    }
+    else
+        currentJack = -1;
+    currentCircuitView()->select(currentJack, currentColumn);
+    centerOn(currentCircuitView());
 }
 
 

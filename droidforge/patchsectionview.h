@@ -37,6 +37,7 @@ private:
     CircuitView *currentCircuitView();
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
+    void moveCursorPageUpDown(int whence);
 };
 
 #endif // PATCHSECTIONVIEW_H

@@ -10,9 +10,13 @@
 
 #define COLOR_TEXT QColor(255, 255, 255)
 #define COLOR_CIRCUIT_BACKGROUND QColor(0, 0, 0)
-#define COLOR_LINE QColor(130, 130, 130)
+#define COLOR_LINE               QColor(96, 96, 96)
 #define COLOR_JACK_INPUT QColor(0, 200, 255)
 #define COLOR_JACK_OUTPUT QColor(245, 60, 50)
 #define COLOR_JACK_UNKNOWN QColor(160, 160, 160)
+
+#define COLOR_OPERATOR_TEXT QColor(255, 255, 255)
+#define COLOR_OPERATOR_MULT QColor(40, 40, 80)
+#define COLOR_OPERATOR_PLUS QColor(0, 190, 20)
 
 #endif // TUNING_H
