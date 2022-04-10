@@ -10,12 +10,10 @@ void PatchSectionView::handleKeyPress(int key)
 {
     qDebug() << "KEY" << key;
     switch (key) {
-        case Qt::Key_Up:
-                moveCursorUpDown(-1);
-                break;
-        case Qt::Key_Down:
-                moveCursorUpDown(1);
-                break;
+        case Qt::Key_Up:    moveCursorUpDown(-1); break;
+        case Qt::Key_Down:  moveCursorUpDown(1);  break;
+        case Qt::Key_Left:  moveCursorLeftRight(-1); break;
+        case Qt::Key_Right: moveCursorLeftRight(1);  break;
     }
 }
 
@@ -32,7 +30,7 @@ void PatchSectionView::buildPatchSection()
         cv->setPos(0, y);
         y += cv->boundingRect().height() + CIRCUIT_MARGIN;
     }
-    currentCircuitView()->select(-1);
+    currentCircuitView()->select(-1, currentColumn);
 }
 
 
@@ -42,10 +40,22 @@ CircuitView *PatchSectionView::currentCircuitView()
 }
 
 
+void PatchSectionView::moveCursorLeftRight(int whence)
+{
+    if (whence == -1 && currentColumn == 0)
+        return;
+
+    else if (whence == 1 && currentColumn >= 3)
+        return;
+
+    currentColumn += whence;
+    currentCircuitView()->select(currentJack, currentColumn);
+}
+
+
 void PatchSectionView::moveCursorUpDown(int whence)
 {
     currentCircuitView()->deselect();
-    currentCircuitView()->update();
 
     if (whence == 1) // down
     {
@@ -76,7 +86,6 @@ void PatchSectionView::moveCursorUpDown(int whence)
 
     }
 
-    currentCircuitView()->select(currentJack);
-    currentCircuitView()->update();
+    currentCircuitView()->select(currentJack, currentColumn);
     centerOn(currentCircuitView());
 }

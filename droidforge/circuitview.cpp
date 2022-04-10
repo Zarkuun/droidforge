@@ -7,8 +7,10 @@
 #define JACK_HEIGHT   18
 #define HEADER_HEIGHT 20
 #define LINE_WIDTH     1
-#define WIDTH        600
+#define WIDTH        700
 #define COLUMN_1     200
+#define COLUMN_2     350
+#define COLUMN_3     500
 
 CircuitView::CircuitView(Circuit *circuit)
     : circuit(circuit)
@@ -72,18 +74,10 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 unsigned CircuitView::paintJacks(QPainter *painter, unsigned &line, jacktype_t jacktype, const QColor &textcolor, unsigned y)
 {
     painter->save();
-    unsigned x = SIDE_PADDING + LINE_WIDTH;
     for (qsizetype i=0; i<circuit->numJackAssignments(); i++) {
         JackAssignment *ja = circuit->jackAssignment(i);
         if (ja->jackType == jacktype) {
-            painter->setPen(textcolor);
-            if (selected && currentJack == line) {
-                painter->fillRect(0, y, WIDTH, JACK_HEIGHT, QColor(50, 70, 80));
-            }
-            painter->drawText(QRect(x, y, WIDTH-x, JACK_HEIGHT), Qt::AlignVCenter, ja->jack);
-            painter->setPen(COLOR_LINE);
-            painter->drawLine(0, y, WIDTH, y);
-            // painter->drawRoundedRect(QRect(x, y, WIDTH-x, JACK_HEIGHT), 5, 5);
+            paintJack(painter, ja, textcolor, y, selected && (int)line == currentJack);
             y += LINE_WIDTH + JACK_HEIGHT;
             line++;
         }
@@ -93,14 +87,90 @@ unsigned CircuitView::paintJacks(QPainter *painter, unsigned &line, jacktype_t j
 }
 
 
-void CircuitView::select(unsigned cj)
+void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned y, bool sel)
+{
+    if (sel && currentColumn == 0)
+        painter->fillRect(0, y, COLUMN_1, JACK_HEIGHT, QColor(50, 70, 80));
+
+    // Column 0: Name of the jack.
+    unsigned text_x = SIDE_PADDING + LINE_WIDTH;
+    painter->setPen(textcolor);
+    painter->drawText(QRect(text_x, y, WIDTH - text_x, JACK_HEIGHT), Qt::AlignVCenter, ja->jack);
+    painter->setPen(COLOR_LINE);
+    painter->drawLine(0, y, WIDTH, y);
+
+    // Column 1: A (first mult). Only for inputs
+    if (ja->jackType == JACKTYPE_INPUT) {
+        if (sel) {
+            unsigned l = 0, w = 0;
+            if (currentColumn == 1) {
+                l = COLUMN_1;
+                w = COLUMN_2 - COLUMN_1;
+            }
+            else if (currentColumn == 2) {
+                l = COLUMN_2;
+                w = COLUMN_3 - COLUMN_2;
+            }
+            else if (currentColumn == 3) {
+                l = COLUMN_3;
+                w = WIDTH - COLUMN_2;
+            }
+            if (w)
+                painter->fillRect(l, y, w, JACK_HEIGHT, QColor(50, 70, 80));
+        }
+        Atom *atom = ja->atomA;
+        if (atom) {
+            text_x = SIDE_PADDING + COLUMN_1;
+            QString value = atom->toString();
+            painter->setPen(COLOR_TEXT);
+            painter->drawText(QRect(text_x, y, COLUMN_2 - COLUMN_1, JACK_HEIGHT), Qt::AlignVCenter, value);
+        }
+        atom = ja->atomB;
+        if (atom) {
+            text_x = SIDE_PADDING + COLUMN_2;
+            QString value = atom->toString();
+            painter->setPen(COLOR_TEXT);
+            painter->drawText(QRect(text_x, y, COLUMN_3 - COLUMN_2, JACK_HEIGHT), Qt::AlignVCenter, value);
+        }
+        atom = ja->atomC;
+        if (atom) {
+            text_x = SIDE_PADDING + COLUMN_3;
+            QString value = atom->toString();
+            painter->setPen(COLOR_TEXT);
+            painter->drawText(QRect(text_x, y, WIDTH - COLUMN_3, JACK_HEIGHT), Qt::AlignVCenter, value);
+        }
+        painter->setPen(COLOR_LINE);
+        painter->drawLine(COLUMN_2, y, COLUMN_2, y + JACK_HEIGHT);
+        painter->drawLine(COLUMN_3, y, COLUMN_3, y + JACK_HEIGHT);
+
+        // TODO: B and C
+    }
+
+    else {
+        if (sel && (currentColumn == 1 || currentColumn == 2 || currentColumn == 3))
+            painter->fillRect(COLUMN_1, y, WIDTH - COLUMN_1, JACK_HEIGHT, QColor(50, 70, 80));
+        Atom *atom = ja->atomA;
+        if (atom) {
+            text_x = SIDE_PADDING + COLUMN_1;
+            QString value = atom->toString();
+            painter->setPen(COLOR_TEXT);
+            painter->drawText(QRect(text_x, y, WIDTH - COLUMN_1 - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, value);
+        }
+    }
+}
+
+
+void CircuitView::select(unsigned cj, unsigned cc)
 {
     currentJack = cj;
+    currentColumn = cc;
     selected = true;
+    update();
 }
 
 
 void CircuitView::deselect()
 {
     selected = false;
+    update();
 }

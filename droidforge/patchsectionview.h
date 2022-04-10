@@ -36,6 +36,7 @@ private:
     void buildPatchSection();
     CircuitView *currentCircuitView();
     void moveCursorUpDown(int whence);
+    void moveCursorLeftRight(int whence);
 };
 
 #endif // PATCHSECTIONVIEW_H

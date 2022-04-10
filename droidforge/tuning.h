@@ -8,6 +8,7 @@
 #define COLOR_PATCH_BACKGROUND QColor(50, 50, 50)
 #define COLOR_CIRCUIT_NAME QColor(250, 250, 250)
 
+#define COLOR_TEXT QColor(255, 255, 255)
 #define COLOR_CIRCUIT_BACKGROUND QColor(0, 0, 0)
 #define COLOR_LINE QColor(130, 130, 130)
 #define COLOR_JACK_INPUT QColor(0, 200, 255)

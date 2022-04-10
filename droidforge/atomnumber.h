@@ -10,6 +10,9 @@ typedef enum {
     ATOM_NUMBER_ONOFF
 } atom_number_t;
 
+// TODO: Darstellung 1/120 soll hier nicht automatisch
+// in 0.0166 umgewandelt werden. Jetzt muss man das
+// aber auch noch kombinieren mit V. 1/12V
 
 class AtomNumber : public Atom
 {

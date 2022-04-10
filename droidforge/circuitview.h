@@ -12,17 +12,21 @@ class CircuitView : public QGraphicsItem
     Circuit *circuit;
     QGraphicsDropShadowEffect effect;
     bool selected;
-    unsigned currentJack;
+    int currentJack;
+    unsigned currentColumn;
 
 public:
     CircuitView(Circuit *circuit);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                    QWidget *widget) override;
-    unsigned paintJacks(QPainter *painter, unsigned &line, jacktype_t jacktype, const QColor &color, unsigned y);
     unsigned numJackAssignments() { return circuit->numJackAssignments(); };
-    void select(unsigned currentJack);
+    void select(unsigned currentJack, unsigned currentColumn);
     void deselect();
+
+private:
+    unsigned paintJacks(QPainter *painter, unsigned &line, jacktype_t jacktype, const QColor &color, unsigned y);
+    void paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned y, bool sel);
 };
 
 #endif // CIRCUITVIEW_H

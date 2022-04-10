@@ -38,8 +38,11 @@ public:
 private:
     void parseInputValue();
     void parseOutputValue();
+    Atom *parseInputAtom(QString s);
     Atom *parseCable(QString s);
     Atom *parseRegister(QString s);
+    Atom *parseOnOff(QString s);
+    Atom *parseNumber(QString s);
 };
 
 #endif // JACKASSIGNMENT_H
