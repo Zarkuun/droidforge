@@ -30,7 +30,7 @@ public:
         setScene(scene);
         buildPatchSection();
     }
-    void handleKeyPress(int key);
+    bool handleKeyPress(int key);
 
 private:
     void buildPatchSection();

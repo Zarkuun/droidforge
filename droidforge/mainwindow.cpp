@@ -37,16 +37,8 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     qDebug() << event;
-    switch (event->key()) {
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_PageDown:
-        case Qt::Key_PageUp:
-            patchview->handleKeyPress(event->key());
-        default:
-            qDebug() << "Main Key press: " << event;
+    if (!patchview->handleKeyPress(event->key())) {
+        qDebug() << "Unhandled Main Key press: " << event;
     }
 }
 

@@ -143,7 +143,7 @@ Atom *JackAssignment::parseCable(QString s)
     static QRegularExpression exp("^_[a-z][a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);
 
     if (exp.match(s).hasMatch())
-        return new AtomCable(s.toUpper());
+        return new AtomCable(s.mid(1).toUpper());
     else
         return 0;
 

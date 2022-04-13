@@ -4,18 +4,16 @@
 
 #define CIRCUIT_MARGIN 10
 
-
-
-void PatchSectionView::handleKeyPress(int key)
+bool PatchSectionView::handleKeyPress(int key)
 {
-    qDebug() << "KEY" << key;
     switch (key) {
-    case Qt::Key_Up:       moveCursorUpDown(-1); break;
-    case Qt::Key_Down:     moveCursorUpDown(1);  break;
-    case Qt::Key_Left:     moveCursorLeftRight(-1); break;
-    case Qt::Key_Right:    moveCursorLeftRight(1);  break;
-    case Qt::Key_PageUp:   moveCursorPageUpDown(-1); break;
-    case Qt::Key_PageDown: moveCursorPageUpDown(1); break;
+    case Qt::Key_Up:       moveCursorUpDown(-1);     return true;
+    case Qt::Key_Down:     moveCursorUpDown(1);      return true;
+    case Qt::Key_Left:     moveCursorLeftRight(-1);  return true;
+    case Qt::Key_Right:    moveCursorLeftRight(1);   return true;
+    case Qt::Key_PageUp:   moveCursorPageUpDown(-1); return true;
+    case Qt::Key_PageDown: moveCursorPageUpDown(1);  return true;
+    default: return false;
     }
 }
 
@@ -50,7 +48,18 @@ void PatchSectionView::moveCursorLeftRight(int whence)
     else if (whence == 1 && currentColumn >= 3)
         return;
 
-    currentColumn += whence;
+    qDebug() << "nr" << currentCircuitNr
+             << "jack" << currentJack
+             << "name" << section->circuits[currentCircuitNr]->jackAssignment(currentJack)->jack
+             << "type" << section->circuits[currentCircuitNr]->jackAssignment(currentJack)->jackType;
+    if (whence == -1
+        && section->circuits[currentCircuitNr]->jackAssignment(currentJack)->jackType != JACKTYPE_INPUT
+        && currentColumn <= 3)
+    {
+        currentColumn = 0;
+    }
+    else
+        currentColumn += whence;
     currentCircuitView()->select(currentJack, currentColumn);
 }
 
@@ -77,7 +86,7 @@ void PatchSectionView::moveCursorUpDown(int whence)
 
     if (whence == 1) // down
     {
-        unsigned n = currentCircuitView()->numJackAssignments();
+        int n = currentCircuitView()->numJackAssignments();
         currentJack ++;
         if (currentJack >= n) {
             currentCircuitNr ++;

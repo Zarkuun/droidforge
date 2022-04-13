@@ -19,8 +19,8 @@ PatchView::PatchView(Patch *patch)
     }
 }
 
-void PatchView::handleKeyPress(int key)
+bool PatchView::handleKeyPress(int key)
 {
-    currentPatchSectionView->handleKeyPress(key);
+    return currentPatchSectionView->handleKeyPress(key);
 
 }

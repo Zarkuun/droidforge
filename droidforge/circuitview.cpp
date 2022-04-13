@@ -54,25 +54,21 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     linearGrad.setColorAt(0.5, QColor(25, 60, 90));
     linearGrad.setColorAt(1, QColor(20, 50, 80));
 
-    unsigned height = (LINE_WIDTH + JACK_HEIGHT) * circuit->numJackAssignments()
-                    + HEADER_HEIGHT
-                    + 2 * LINE_WIDTH;
+    unsigned height = boundingRect().height();
     painter->fillRect(0, 0, WIDTH, height, COLOR_CIRCUIT_BACKGROUND);
 
     unsigned x = SIDE_PADDING + LINE_WIDTH;
     unsigned y = LINE_WIDTH;
+    painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), linearGrad);
     if (selected && currentJack == -1)
-        painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), QColor(80, 40, 180));
-    else
-        painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), linearGrad);
+        painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), COLOR_CURSOR);
+
     painter->setPen(COLOR_CIRCUIT_NAME);
     painter->drawText(QRect(x, y, WIDTH-x, HEADER_HEIGHT), Qt::AlignVCenter, circuit->name.toUpper());
     y += LINE_WIDTH + HEADER_HEIGHT;
 
     unsigned line = 0;
-    y = paintJacks(painter, line, jacktype_t::JACKTYPE_INPUT, COLOR_JACK_INPUT, y);
-    y = paintJacks(painter, line, jacktype_t::JACKTYPE_OUTPUT, COLOR_JACK_OUTPUT, y);
-    paintJacks(painter, line, jacktype_t::JACKTYPE_UNKNOWN, COLOR_JACK_UNKNOWN,  y);
+    paintJacks(painter, line, COLOR_JACK_INPUT, y);
 
     unsigned t = 2 * LINE_WIDTH + HEADER_HEIGHT;
     painter->save();
@@ -86,27 +82,27 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 }
 
 
-unsigned CircuitView::paintJacks(QPainter *painter, unsigned &line, jacktype_t jacktype, const QColor &textcolor, unsigned y)
+void CircuitView::paintJacks(QPainter *painter, unsigned &line, const QColor &textcolor, unsigned y)
 {
     painter->save();
     for (qsizetype i=0; i<circuit->numJackAssignments(); i++) {
         JackAssignment *ja = circuit->jackAssignment(i);
-        if (ja->jackType == jacktype) {
-            paintJack(painter, ja, textcolor, y, selected && (int)line == currentJack);
-            y += LINE_WIDTH + JACK_HEIGHT;
-            line++;
+        QColor textcolor;
+        switch (ja->jackType) {
+        case JACKTYPE_INPUT: textcolor = COLOR_JACK_INPUT; break;
+        case JACKTYPE_OUTPUT: textcolor = COLOR_JACK_OUTPUT; break;
+        default: textcolor = COLOR_JACK_UNKNOWN; break;
         }
+        paintJack(painter, ja, textcolor, y, selected && (int)line == currentJack);
+        y += LINE_WIDTH + JACK_HEIGHT;
+        line++;
     }
     painter->restore();
-    return y;
 }
 
 
 void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned y, bool sel)
 {
-    if (sel && currentColumn == 0)
-        painter->fillRect(0, y, COLUMN_1_X, JACK_HEIGHT, QColor(50, 70, 80));
-
     // Column 0: Name of the jack.
     painter->setPen(textcolor);
     painter->drawText(QRect(COLUMN_0_X + SIDE_PADDING, y, COLUMN_0_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, ja->jack);
@@ -131,7 +127,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
                 w = COLUMN_3_WIDTH;
             }
             if (w)
-                painter->fillRect(l, y, w, JACK_HEIGHT, QColor(50, 70, 80));
+                painter->fillRect(l, y, w, JACK_HEIGHT, COLOR_CURSOR);
         }
         Atom *atom = ja->atomA;
         if (atom) {
@@ -164,15 +160,18 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
     }
 
     else { // OUTPUT
-        if (sel && (currentColumn == 1 || currentColumn == 2 || currentColumn == 3))
-            painter->fillRect(COLUMN_1_X, y, COLUMN_123_WIDTH, JACK_HEIGHT, QColor(50, 70, 80));
         Atom *atom = ja->atomA;
         if (atom) {
             QString value = atom->toString();
             painter->setPen(COLOR_TEXT);
             painter->drawText(QRect(COLUMN_1_X + SIDE_PADDING, y, COLUMN_123_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, value);
         }
+        if (sel && (currentColumn == 1 || currentColumn == 2 || currentColumn == 3))
+            painter->fillRect(COLUMN_1_X, y, COLUMN_123_WIDTH, JACK_HEIGHT, COLOR_CURSOR);
     }
+
+    if (sel && currentColumn == 0)
+        painter->fillRect(0, y, COLUMN_1_X, JACK_HEIGHT, COLOR_CURSOR);
 }
 
 void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QString o, const QColor &color)

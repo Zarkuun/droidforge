@@ -25,7 +25,7 @@ public:
     void deselect();
 
 private:
-    unsigned paintJacks(QPainter *painter, unsigned &line, jacktype_t jacktype, const QColor &color, unsigned y);
+    void paintJacks(QPainter *painter, unsigned &line, const QColor &color, unsigned y);
     void paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned y, bool sel);
     void paintOperator(QPainter *painter, unsigned x, unsigned y, QString o, const QColor &color);
 };

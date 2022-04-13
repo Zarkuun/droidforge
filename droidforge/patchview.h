@@ -12,7 +12,7 @@ class PatchView : public QTabWidget
 
 public:
     PatchView(Patch *patch);
-    void handleKeyPress(int key);
+    bool handleKeyPress(int key);
 };
 
 #endif // PATCHVIEW_H

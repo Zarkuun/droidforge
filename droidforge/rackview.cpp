@@ -13,7 +13,7 @@ RackView::RackView(Rack *arack)
     setMaximumHeight(MAX_RACK_HEIGHT);
 
     QGraphicsScene *thescene = new QGraphicsScene();
-    thescene->setBackgroundBrush(RACK_BACKGROUND_COLOR);
+    thescene->setBackgroundBrush(COLOR_RACK_BACKGROUND);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(thescene);
 
