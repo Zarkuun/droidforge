@@ -19,6 +19,7 @@ public:
     void addJackAssignment(JackAssignment *);
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
     qsizetype numJackAssignments() {  return jackAssignments.count(); };
+    void deleteJackAssignment(unsigned i);
 
     QString name;
     QStringList comment;

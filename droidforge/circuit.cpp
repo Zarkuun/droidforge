@@ -14,6 +14,13 @@ void Circuit::addJackAssignment(JackAssignment *ja)
 }
 
 
+void Circuit::deleteJackAssignment(unsigned i)
+{
+    delete jackAssignments[i];
+    jackAssignments.remove(i);
+}
+
+
 QString Circuit::toString()
 {
     QString s;

@@ -19,12 +19,15 @@ class PatchSectionView : public QGraphicsView
 
 public:
     PatchSectionView(PatchSection *section);
+    ~PatchSectionView() { deletePatchSection(); };
     bool handleKeyPress(int key);
 
 private:
     void buildPatchSection();
     void deletePatchSection();
+    void rebuildPatchSection();
     CircuitView *currentCircuitView();
+    Circuit *currentCircuit();
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
     void moveCursorPageUpDown(int whence);

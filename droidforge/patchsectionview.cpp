@@ -40,6 +40,13 @@ void PatchSectionView::deletePatchSection()
 }
 
 
+void PatchSectionView::rebuildPatchSection()
+{
+    deletePatchSection();
+    buildPatchSection();
+}
+
+
 bool PatchSectionView::handleKeyPress(int key)
 {
     switch (key) {
@@ -58,6 +65,13 @@ bool PatchSectionView::handleKeyPress(int key)
 CircuitView *PatchSectionView::currentCircuitView()
 {
     return circuitViews[currentCircuitNr];
+}
+
+
+Circuit *PatchSectionView::currentCircuit()
+{
+    return section->circuits[currentCircuitNr];
+
 }
 
 
@@ -114,15 +128,18 @@ void PatchSectionView::deleteCurrentCircuit()
         currentCircuitNr--;
     currentColumn = 0;
     currentJack = -1;
-    deletePatchSection();
-    buildPatchSection();
-    currentCircuitView()->select(currentJack, currentColumn);
+    rebuildPatchSection();
 }
 
 
 void PatchSectionView::deleteCurrentJack()
 {
-
+    Circuit *circuit = currentCircuit();
+    circuit->deleteJackAssignment(currentJack);
+    if (currentJack >= circuit->numJackAssignments())
+        currentJack --;
+    rebuildPatchSection();
+    currentCircuitView()->select(currentJack, currentColumn);
 }
 
 

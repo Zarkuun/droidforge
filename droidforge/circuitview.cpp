@@ -70,7 +70,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     y += LINE_WIDTH + HEADER_HEIGHT;
 
     unsigned line = 0;
-    paintJacks(painter, line, COLOR_JACK_INPUT, y);
+    paintJacks(painter, line, y);
 
     unsigned t = 2 * LINE_WIDTH + HEADER_HEIGHT;
     painter->save();
@@ -84,7 +84,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 }
 
 
-void CircuitView::paintJacks(QPainter *painter, unsigned &line, const QColor &textcolor, unsigned y)
+void CircuitView::paintJacks(QPainter *painter, unsigned &line, unsigned y)
 {
     painter->save();
     for (qsizetype i=0; i<circuit->numJackAssignments(); i++) {
