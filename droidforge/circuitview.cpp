@@ -39,27 +39,29 @@ CircuitView::CircuitView(Circuit *circuit)
 }
 
 
-QRectF CircuitView::boundingRect() const
+unsigned CircuitView::contentHeight() const
 {
     unsigned num_jacks = circuit->numJackAssignments();
-    unsigned height = HEADER_HEIGHT + JACK_HEIGHT * num_jacks + LINE_WIDTH * (num_jacks + 2);
-    return QRectF(0, 0, WIDTH, height);
+    return HEADER_HEIGHT + JACK_HEIGHT * num_jacks + LINE_WIDTH * (num_jacks + 2);
+}
+
+
+QRectF CircuitView::boundingRect() const
+{
+    unsigned height = contentHeight() + CIRCUIT_VERTICAL_MARGIN;
+    return QRectF(0, -CIRCUIT_VERTICAL_MARGIN / 2, WIDTH, height);
 }
 
 
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    QLinearGradient linearGrad(QPointF(100, 100), QPointF(200, 200));
-    linearGrad.setColorAt(0, QColor(20, 50, 80));
-    linearGrad.setColorAt(0.5, QColor(25, 60, 90));
-    linearGrad.setColorAt(1, QColor(20, 50, 80));
 
-    unsigned height = boundingRect().height();
+    unsigned height = contentHeight();
     painter->fillRect(0, 0, WIDTH, height, COLOR_CIRCUIT_BACKGROUND);
 
     unsigned x = SIDE_PADDING + LINE_WIDTH;
     unsigned y = LINE_WIDTH;
-    painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), linearGrad);
+    painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), COLOR_CIRCUIT_NAME_BACKGROUND);
     if (selected && currentJack == -1)
         painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), COLOR_CURSOR);
 

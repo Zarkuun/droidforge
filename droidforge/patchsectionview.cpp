@@ -2,7 +2,43 @@
 #include "circuitview.h"
 #include "tuning.h"
 
-#define CIRCUIT_MARGIN 10
+PatchSectionView::PatchSectionView(PatchSection *section)
+    : section(section)
+    , currentCircuitNr(0)
+    , currentJack(-1) // HEAD
+    , currentColumn(0)
+{
+    setAlignment(Qt::AlignCenter | Qt::AlignTop);
+    buildPatchSection();
+}
+
+
+void PatchSectionView::buildPatchSection()
+{
+    QGraphicsScene *scene = new QGraphicsScene();
+    scene->setBackgroundBrush(COLOR_PATCH_BACKGROUND);
+    setScene(scene);
+
+    unsigned y = CIRCUIT_VERTICAL_MARGIN;
+    for (qsizetype i=0; i<section->circuits.size(); i++)
+    {
+        Circuit *circuit = section->circuits[i];
+        CircuitView *cv = new CircuitView(circuit);
+        circuitViews.append(cv);
+        scene->addItem(cv);
+        cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
+        y += cv->boundingRect().height();
+    }
+    currentCircuitView()->select(-1, currentColumn);
+}
+
+void PatchSectionView::deletePatchSection()
+{
+    for (unsigned i=0; i<circuitViews.size(); i++)
+        delete circuitViews[i];
+    circuitViews.clear();
+}
+
 
 bool PatchSectionView::handleKeyPress(int key)
 {
@@ -13,24 +49,9 @@ bool PatchSectionView::handleKeyPress(int key)
     case Qt::Key_Right:    moveCursorLeftRight(1);   return true;
     case Qt::Key_PageUp:   moveCursorPageUpDown(-1); return true;
     case Qt::Key_PageDown: moveCursorPageUpDown(1);  return true;
+    case Qt::Key_Backspace: deleteCurrentRow();      return true;
     default: return false;
     }
-}
-
-
-void PatchSectionView::buildPatchSection()
-{
-    unsigned y = 0;
-    for (qsizetype i=0; i<section->circuits.size(); i++)
-    {
-        Circuit *circuit = section->circuits[i];
-        CircuitView *cv = new CircuitView(circuit);
-        circuitViews.append(cv);
-        scene()->addItem(cv);
-        cv->setPos(0, y);
-        y += cv->boundingRect().height() + CIRCUIT_MARGIN;
-    }
-    currentCircuitView()->select(-1, currentColumn);
 }
 
 
@@ -48,11 +69,8 @@ void PatchSectionView::moveCursorLeftRight(int whence)
     else if (whence == 1 && currentColumn >= 3)
         return;
 
-    qDebug() << "nr" << currentCircuitNr
-             << "jack" << currentJack
-             << "name" << section->circuits[currentCircuitNr]->jackAssignment(currentJack)->jack
-             << "type" << section->circuits[currentCircuitNr]->jackAssignment(currentJack)->jackType;
     if (whence == -1
+        && currentJack >= 0
         && section->circuits[currentCircuitNr]->jackAssignment(currentJack)->jackType != JACKTYPE_INPUT
         && currentColumn <= 3)
     {
@@ -80,11 +98,39 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
 }
 
 
+void PatchSectionView::deleteCurrentRow()
+{
+    if (currentJack == -1)
+        deleteCurrentCircuit();
+    else
+        deleteCurrentJack();
+}
+
+
+void PatchSectionView::deleteCurrentCircuit()
+{
+    section->deleteCircuitNr(currentCircuitNr);
+    if (currentCircuitNr >= section->circuits.count())
+        currentCircuitNr--;
+    currentColumn = 0;
+    currentJack = -1;
+    deletePatchSection();
+    buildPatchSection();
+    currentCircuitView()->select(currentJack, currentColumn);
+}
+
+
+void PatchSectionView::deleteCurrentJack()
+{
+
+}
+
+
 void PatchSectionView::moveCursorUpDown(int whence)
 {
     currentCircuitView()->deselect();
 
-    if (whence == 1) // down
+    if (whence == 1) // dowldiln
     {
         int n = currentCircuitView()->numJackAssignments();
         currentJack ++;

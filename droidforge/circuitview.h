@@ -17,6 +17,7 @@ class CircuitView : public QGraphicsItem
 
 public:
     CircuitView(Circuit *circuit);
+    unsigned contentHeight() const;
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                    QWidget *widget) override;

@@ -23,3 +23,11 @@ QString PatchSection::toString()
 
     return s;
 }
+
+
+void PatchSection::deleteCircuitNr(unsigned nr)
+{
+    Circuit *c = circuits[nr];
+    circuits.remove(nr);
+    delete c;
+}

@@ -14,6 +14,8 @@ public:
     QString title;
     QList<Circuit *> circuits;
     QString toString();
+
+    void deleteCircuitNr(unsigned nr);
 };
 
 #endif // PATCHSECTION_H

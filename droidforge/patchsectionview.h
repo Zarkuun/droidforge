@@ -18,26 +18,19 @@ class PatchSectionView : public QGraphicsView
     int currentColumn;
 
 public:
-    PatchSectionView(PatchSection *section)
-        : section(section)
-        , currentCircuitNr(0)
-        , currentJack(-1) // HEAD
-        , currentColumn(0)
-    {
-        QGraphicsScene *scene = new QGraphicsScene();
-        scene->setBackgroundBrush(COLOR_PATCH_BACKGROUND);
-        setAlignment(Qt::AlignLeft | Qt::AlignTop);
-        setScene(scene);
-        buildPatchSection();
-    }
+    PatchSectionView(PatchSection *section);
     bool handleKeyPress(int key);
 
 private:
     void buildPatchSection();
+    void deletePatchSection();
     CircuitView *currentCircuitView();
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
     void moveCursorPageUpDown(int whence);
+    void deleteCurrentRow();
+    void deleteCurrentCircuit();
+    void deleteCurrentJack();
 };
 
 #endif // PATCHSECTIONVIEW_H
