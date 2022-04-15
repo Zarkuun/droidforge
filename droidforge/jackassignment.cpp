@@ -23,6 +23,23 @@ JackAssignment::~JackAssignment()
 }
 
 
+JackAssignment *JackAssignment::clone() const
+{
+    JackAssignment *newas = new JackAssignment();
+    newas->jack = jack;
+    newas->jackType = jackType;
+    newas->garbled = garbled;
+    newas->disabled = disabled;
+    if (atomA)
+        newas->atomA = atomA->clone();
+    if (atomB)
+        newas->atomB = atomB->clone();
+    if (atomC)
+        newas->atomC = atomC->clone();
+    return newas;
+}
+
+
 QString JackAssignment::toString()
 {
     QString s;

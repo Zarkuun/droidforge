@@ -13,10 +13,6 @@ typedef enum {
 
 class JackAssignment
 {
-private:
-    // TODO: Das hier wieder weg, wenn alles geht
-    JackAssignment(JackAssignment &ja);
-    JackAssignment(const JackAssignment &ja);
 
 public:
     QString jack;
@@ -32,6 +28,7 @@ public:
 public:
     JackAssignment();
     ~JackAssignment();
+    JackAssignment *clone() const;
     QString toString();
     void parseSourceString(QString s);
 

@@ -5,9 +5,8 @@
 #include <QGraphicsItem>
 #include <QResizeEvent>
 
-RackView::RackView(Rack *arack)
+RackView::RackView(const Patch *patch)
     : QGraphicsView()
-    , rack(arack)
 {
     setMinimumHeight(MIN_RACK_HEIGHT);
     setMaximumHeight(MAX_RACK_HEIGHT);
@@ -17,7 +16,7 @@ RackView::RackView(Rack *arack)
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(thescene);
 
-    buildRack();
+    buildRack(patch);
 
     fitInView(thescene->sceneRect(), Qt::KeepAspectRatio);
 }
@@ -29,15 +28,16 @@ void RackView::resizeEvent(QResizeEvent *)
 }
 
 
-void RackView::buildRack()
+void RackView::buildRack(const Patch *patch)
 {
-    QListIterator<Module *> i = rack->iterator();
     unsigned x = 0;
-    while (i.hasNext()) {
-        Module *module = i.next();
+    for (qsizetype i=0; i<patch->numControllers(); i++)
+    {
+        QString name = patch->controller(i);
+        Module *module = ModuleBuilder::buildModule(name);
         QPixmap *image = new QPixmap(QString(":images/faceplates/" + module->faceplate()));
         QGraphicsItem *gi = scene()->addPixmap(*image);
         gi->setPos(x, 0);
-        x += module->hp() * 88;
+        x += module->hp() * PIXEL_PER_HP;
     }
 }

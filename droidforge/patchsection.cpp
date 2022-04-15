@@ -7,6 +7,14 @@ PatchSection::~PatchSection()
 
 }
 
+PatchSection *PatchSection::clone() const
+{
+    PatchSection *newsection = new PatchSection(title);
+    for (unsigned i=0; i<circuits.size(); i++)
+        newsection->circuits.append(circuits[i]->clone());
+    return newsection;
+}
+
 
 QString PatchSection::toString()
 {

@@ -1,7 +1,8 @@
 #ifndef RACKVIEW_H
 #define RACKVIEW_H
 
-#include "rack.h"
+#include "module.h"
+#include "patch.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -11,17 +12,15 @@
 class RackView : public QGraphicsView
 {
     Q_OBJECT
-    Rack *rack;
+
+    QList<Module *> modules;
 
 public:
-    explicit RackView(Rack *arack);
+    explicit RackView(const Patch *patch);
     void resizeEvent(QResizeEvent *event);
 
 private:
-    void buildRack();
-
-signals:
-
+    void buildRack(const Patch *);
 };
 
 #endif // RACKVIEW_H

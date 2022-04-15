@@ -1,5 +1,11 @@
 #include "atomnumber.h"
 
+AtomNumber *AtomNumber::clone() const
+{
+    return new AtomNumber(number, numberType);
+}
+
+
 QString AtomNumber::toString()
 {
     // TODO: Formatierung gemäß Typ, Optimierung

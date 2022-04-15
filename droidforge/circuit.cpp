@@ -7,6 +7,15 @@ Circuit::~Circuit()
 }
 
 
+Circuit *Circuit::clone() const
+{
+    Circuit *newcircuit = new Circuit(name);
+    for (unsigned i=0; i<jackAssignments.size(); i++)
+        newcircuit->jackAssignments.append(jackAssignments[i]->clone());
+    return newcircuit;
+}
+
+
 void Circuit::addJackAssignment(JackAssignment *ja)
 {
     jackAssignments.push_back(ja);

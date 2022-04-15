@@ -11,7 +11,7 @@
 #include <QKeyEvent>
 
 
-MainWindow::MainWindow(Rack *rack, Patch *patch)
+MainWindow::MainWindow(Patch *patch)
     : QMainWindow()
     , ui(new Ui::MainWindow)
 {
@@ -20,7 +20,7 @@ MainWindow::MainWindow(Rack *rack, Patch *patch)
     splitter->setOrientation(Qt::Vertical);
     this->setCentralWidget(splitter);
 
-    rackview = new RackView(rack);
+    rackview = new RackView(patch);
     patchview = new PatchView(patch);
     splitter->addWidget(rackview);
     splitter->addWidget(patchview);

@@ -67,12 +67,14 @@ QtApplication {
         "patchsectionview.h",
         "patchview.cpp",
         "patchview.h",
-        "rack.cpp",
-        "rack.h",
         "rackview.cpp",
         "rackview.h",
         "resources.qrc",
         "tuning.h",
+        "undohistory.cpp",
+        "undohistory.h",
+        "undostep.cpp",
+        "undostep.h",
     ]
 
     install: true

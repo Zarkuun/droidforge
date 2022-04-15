@@ -9,13 +9,13 @@
 
 class Circuit
 {
-    Circuit(Circuit &circuit);
-    Circuit(const Circuit &circuit);
     QList<JackAssignment *> jackAssignments;
 
 public:
     Circuit(QString name) : name(name) {};
     ~Circuit();
+    Circuit *clone() const;
+    QString toString();
     void addJackAssignment(JackAssignment *);
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
     qsizetype numJackAssignments() {  return jackAssignments.count(); };
@@ -25,7 +25,6 @@ public:
     QStringList comment;
     bool disabled;
 
-    QString toString();
 };
 
 #endif // CIRCUIT_H

@@ -1,32 +1,27 @@
 #include "mainwindow.h"
 #include "droidforge.h"
-#include "patchparser.h"
 #include "patch.h"
-#include "rack.h"
 
 #include <QApplication>
 #include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
-    DroidForge forge;
     QApplication a(argc, argv);
+    DroidForge forge;
 
-    Patch patch;
-    PatchParser parser;
     QMessageBox box;
 
-    if (!parser.parse("/Users/mk/git/droidforge/testpatch.ini", &patch))
+    if (!forge.loadPatch("/Users/mk/git/droidforge/testpatch.ini"))
     {
         box.setText("Fehler!");
         box.exec();
         QApplication::quit();
     }
 
-    Rack rack(patch);
-
-    MainWindow w(&rack, &patch);
+    MainWindow w(forge.getPatch());
     w.resize(800,1000);
+    w.move(1000, 0);
     w.show();
     return a.exec();
 }

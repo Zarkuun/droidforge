@@ -23,6 +23,7 @@ public:
     unsigned number;
     AtomRegister(QChar t, unsigned c, unsigned n)
         : registerType(t), controller(c), number(n) {};
+    AtomRegister *clone() const;
     QString toString();
 };
 

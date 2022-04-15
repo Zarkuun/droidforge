@@ -10,12 +10,13 @@ class PatchSection
 public:
     PatchSection(QString t) : title(t) {};
     ~PatchSection();
+    PatchSection *clone() const;
+    QString toString();
+    void deleteCircuitNr(unsigned nr);
 
     QString title;
     QList<Circuit *> circuits;
-    QString toString();
 
-    void deleteCircuitNr(unsigned nr);
 };
 
 #endif // PATCHSECTION_H

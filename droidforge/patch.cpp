@@ -13,6 +13,22 @@ Patch::~Patch()
 }
 
 
+Patch *Patch::clone() const
+{
+    Patch *newpatch = new Patch();
+    newpatch->title = title;
+    newpatch->description = description;
+    newpatch->libraryId = libraryId;
+    newpatch->version = version;
+    newpatch->controllers = controllers;
+
+    for (unsigned i=0; i<sections.size(); i++) {
+        newpatch->sections.append(sections[i]->clone());
+    }
+    return newpatch;
+}
+
+
 QString Patch::toString()
 {
     QString s;

@@ -99,7 +99,7 @@ bool PatchParser::parseCircuitLine(QString line)
 bool PatchParser::parseController(QString name)
 {
     if (ModuleBuilder::controllerExists(name.toLower())) {
-        patch->controllers.push_back(name.toLower());
+        patch->addController(name.toLower());
         return true;
     }
     else

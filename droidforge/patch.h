@@ -7,19 +7,20 @@
 
 class Patch
 {
-    // TODO: Raus wenn das geht
-    Patch(Patch &patch);
-    Patch(const Patch &patch);
+    QStringList controllers;
 
 public:
     Patch();
     ~Patch();
+    Patch *clone() const;
+    qsizetype numControllers() const { return controllers.size(); };
+    QString controller(qsizetype i) const { return controllers[i]; };
+    void addController(QString name) { controllers.append(name); };
 
     QString title;
     QStringList description;
     QString libraryId;
     unsigned version;
-    QStringList controllers;
     QList<PatchSection *> sections;
 
     QString toString();

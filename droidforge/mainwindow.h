@@ -6,7 +6,6 @@
 
 #include <QMainWindow>
 
-class Rack;
 class Patch;
 
 QT_BEGIN_NAMESPACE
@@ -19,13 +18,12 @@ class MainWindow : public QMainWindow
 
 private:
     Ui::MainWindow *ui;
-    Rack *rack;
     Patch *patch;
     RackView *rackview;
     PatchView *patchview;
 
 public:
-    MainWindow(Rack *, Patch *);
+    MainWindow(Patch *);
     ~MainWindow();
 
 protected:

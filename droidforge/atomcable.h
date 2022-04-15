@@ -10,6 +10,7 @@ class AtomCable : public Atom
 public:
     QString name;
     AtomCable(QString n) : name(n) {};
+    AtomCable *clone() const;
     QString toString();
 };
 
