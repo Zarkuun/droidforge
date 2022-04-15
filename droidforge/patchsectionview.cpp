@@ -86,13 +86,9 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
     // view such as the scroll bar and the alignment.
     QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
 
-    if (!item) {
-        qDebug("Daneben");
+    if (!item)
         return false;
-    }
 
-
-    currentCircuitView()->deselect();
 
     CircuitView *cv = (CircuitView *)item;
     for (unsigned i=0; i<circuitViews.size(); i++)
@@ -103,11 +99,12 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
         QPointF posInCircuit = posInScene - item->pos();
 
         if (circuitViews[i] == cv) {
-            qDebug() << "FOUND At " << i;
+            currentCircuitView()->deselect();
             currentCircuitNr = i;
             currentJack = cv->jackAt(posInCircuit.y());
             currentColumn = cv->columnAt(posInCircuit.x());
             currentCircuitView()->select(currentJack, currentColumn);
+            ensureVisible(currentCircuitView());
         }
     }
     return true;
@@ -160,7 +157,7 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
     else
         currentJack = -1;
     currentCircuitView()->select(currentJack, currentColumn);
-    centerOn(currentCircuitView());
+    ensureVisible(currentCircuitView());
 }
 
 
@@ -229,5 +226,5 @@ void PatchSectionView::moveCursorUpDown(int whence)
     }
 
     currentCircuitView()->select(currentJack, currentColumn);
-    centerOn(currentCircuitView());
+    ensureVisible(currentCircuitView());
 }
