@@ -22,7 +22,7 @@ public:
     ~PatchSectionView() { deletePatchSection(); };
     bool handleKeyPress(int key);
     void mousePressEvent(QMouseEvent *event);
-    bool handleMousePress(int x, int y);
+    bool handleMousePress(const QPointF &pos);
 
 private:
     void buildPatchSection();

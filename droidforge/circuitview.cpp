@@ -204,3 +204,29 @@ void CircuitView::deselect()
     selected = false;
     update();
 }
+
+int CircuitView::columnAt(unsigned x)
+{
+    if (x <= COLUMN_1_X)
+        return 0;
+    else if (x <= OPERATOR_1_X)
+        return 1;
+    else if (x <= OPERATOR_2_X)
+        return 2;
+    else
+        return 3;
+}
+
+
+int CircuitView::jackAt(unsigned y)
+{
+    if (y < LINE_WIDTH + HEADER_HEIGHT)
+        return -1;
+
+    y -= LINE_WIDTH + HEADER_HEIGHT;
+    int jack = y / (LINE_WIDTH + JACK_HEIGHT);
+    if (jack >= circuit->numJackAssignments())
+        return circuit->numJackAssignments() - 1;
+    else
+        return jack;
+}

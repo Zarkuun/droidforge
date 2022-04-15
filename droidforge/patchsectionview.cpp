@@ -51,6 +51,7 @@ void PatchSectionView::rebuildPatchSection()
 
 bool PatchSectionView::handleKeyPress(int key)
 {
+    qDebug() << "KEY" << key;
     switch (key) {
     case Qt::Key_Up:       moveCursorUpDown(-1);     return true;
     case Qt::Key_Down:     moveCursorUpDown(1);      return true;
@@ -66,30 +67,47 @@ bool PatchSectionView::handleKeyPress(int key)
 
 void PatchSectionView::mousePressEvent(QMouseEvent *event)
 {
+    qDebug() << "MAUS" << event;
     if (event->type() == QMouseEvent::MouseButtonPress) {
-        if (!handleMousePress(event->pos().x(), event->pos().y())) {
+        if (!handleMousePress(event->pos())) {
             qDebug() << "Unhandled mouse press" << event;
         }
     }
 }
 
 
-bool PatchSectionView::handleMousePress(int x, int y)
+bool PatchSectionView::handleMousePress(const QPointF &pos)
 {
-    qDebug() << "Mause bei " << x << y;
-    QGraphicsItem *item = this->itemAt(x, y);
-    // const QTransform &t = this->viewportTransform();
-    /// QGraphicsItem *item = scene()->itemAt(x, y, t);
-    qDebug() << "Item" << item;
-    if (item) {
-        currentCircuitView()->deselect();
-        CircuitView *cv = (CircuitView *)item;
-        for (unsigned i=0; i<circuitViews.size(); i++) {
-            if (circuitViews[i] == cv) {
-                qDebug() << "FOUND At " << i;
-                currentCircuitNr = i;
-                currentCircuitView()->select(currentJack, currentColumn);
-            }
+    // pos are the coordinates relative to the window where
+    // the patch is being displayed.
+    qDebug() << "Mause bei " << pos.x() << pos.y();
+
+    // itemAt() applies the transformation of the graphics
+    // view such as the scroll bar and the alignment.
+    QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
+
+    if (!item) {
+        qDebug("Daneben");
+        return false;
+    }
+
+
+    currentCircuitView()->deselect();
+
+    CircuitView *cv = (CircuitView *)item;
+    for (unsigned i=0; i<circuitViews.size(); i++)
+    {
+        // Now we need the coordinates relative to the circuitview
+        // itself.
+        QPointF posInScene(mapToScene(pos.toPoint()));
+        QPointF posInCircuit = posInScene - item->pos();
+
+        if (circuitViews[i] == cv) {
+            qDebug() << "FOUND At " << i;
+            currentCircuitNr = i;
+            currentJack = cv->jackAt(posInCircuit.y());
+            currentColumn = cv->columnAt(posInCircuit.x());
+            currentCircuitView()->select(currentJack, currentColumn);
         }
     }
     return true;

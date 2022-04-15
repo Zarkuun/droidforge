@@ -24,6 +24,8 @@ public:
     unsigned numJackAssignments() { return circuit->numJackAssignments(); };
     void select(unsigned currentJack, unsigned currentColumn);
     void deselect();
+    int columnAt(unsigned x);
+    int jackAt(unsigned y);
 
 private:
     void paintJacks(QPainter *painter, unsigned &line, unsigned y);
