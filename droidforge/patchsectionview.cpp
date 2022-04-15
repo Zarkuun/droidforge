@@ -1,5 +1,6 @@
 #include "patchsectionview.h"
 #include "circuitview.h"
+#include "droidforge.h"
 #include "tuning.h"
 
 #include <QMouseEvent>
@@ -172,6 +173,7 @@ void PatchSectionView::deleteCurrentRow()
 
 void PatchSectionView::deleteCurrentCircuit()
 {
+    the_forge->registerEdit("Delete circuit");
     section->deleteCircuitNr(currentCircuitNr);
     if (currentCircuitNr >= section->circuits.count())
         currentCircuitNr--;
@@ -183,6 +185,7 @@ void PatchSectionView::deleteCurrentCircuit()
 
 void PatchSectionView::deleteCurrentJack()
 {
+    the_forge->registerEdit("Delete jack assignment");
     Circuit *circuit = currentCircuit();
     circuit->deleteJackAssignment(currentJack);
     if (currentJack >= circuit->numJackAssignments())

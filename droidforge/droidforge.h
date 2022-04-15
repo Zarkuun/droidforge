@@ -18,6 +18,9 @@ public:
     ~DroidForge();
     bool loadPatch(QString filename);
     Patch *getPatch() { return patch; };
+    void registerEdit(QString name);
+    bool undoPossible();
+    void undo();
 };
 
 extern DroidForge *the_forge;

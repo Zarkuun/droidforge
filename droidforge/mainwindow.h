@@ -18,19 +18,22 @@ class MainWindow : public QMainWindow
 
 private:
     Ui::MainWindow *ui;
-    Patch *patch;
-    RackView *rackview;
-    PatchView *patchview;
+    RackView rackview;
+    PatchView patchview;
 
 public:
     MainWindow(Patch *);
     ~MainWindow();
+
+    void createFileMenu();
+    void createEditMenu();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void open();
+    void undo();
 
 private:
     void createActions();

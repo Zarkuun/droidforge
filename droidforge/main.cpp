@@ -10,10 +10,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     DroidForge forge;
 
-    QMessageBox box;
-
     if (!forge.loadPatch("/Users/mk/git/droidforge/testpatch.ini"))
     {
+        QMessageBox box;
         box.setText("Fehler!");
         box.exec();
         QApplication::quit();

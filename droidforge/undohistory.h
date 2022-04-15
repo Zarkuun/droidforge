@@ -15,6 +15,8 @@ public:
     ~UndoHistory();
     void clear();
     void snapshot(QString name, const Patch *patch);
+    qsizetype size() const { return steps.size(); };
+    Patch *undo();
 };
 
 #endif // UNDOHISTORY_H

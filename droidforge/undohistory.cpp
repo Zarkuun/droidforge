@@ -24,3 +24,10 @@ void UndoHistory::snapshot(QString name, const Patch *patch)
     steps.append(new UndoStep(name, patch));
     qDebug() << "Snapshot" << name;
 }
+
+Patch *UndoHistory::undo()
+{
+    Patch *last = steps.last()->getPatch(); // clones patch
+    steps.removeLast(); // deletes contained patch
+    return last;
+}

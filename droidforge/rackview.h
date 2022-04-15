@@ -16,11 +16,9 @@ class RackView : public QGraphicsView
     QList<Module *> modules;
 
 public:
-    explicit RackView(const Patch *patch);
+    explicit RackView();
     void resizeEvent(QResizeEvent *event);
-
-private:
-    void buildRack(const Patch *);
+    void setPatch(const Patch *patch);
 };
 
 #endif // RACKVIEW_H

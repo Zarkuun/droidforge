@@ -5,7 +5,7 @@
 #include <QGraphicsItem>
 #include <QResizeEvent>
 
-RackView::RackView(const Patch *patch)
+RackView::RackView()
     : QGraphicsView()
 {
     setMinimumHeight(MIN_RACK_HEIGHT);
@@ -15,10 +15,6 @@ RackView::RackView(const Patch *patch)
     thescene->setBackgroundBrush(COLOR_RACK_BACKGROUND);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(thescene);
-
-    buildRack(patch);
-
-    fitInView(thescene->sceneRect(), Qt::KeepAspectRatio);
 }
 
 
@@ -28,8 +24,9 @@ void RackView::resizeEvent(QResizeEvent *)
 }
 
 
-void RackView::buildRack(const Patch *patch)
+void RackView::setPatch(const Patch *patch)
 {
+    scene()->clear();
     unsigned x = 0;
     for (qsizetype i=0; i<patch->numControllers(); i++)
     {
@@ -40,4 +37,5 @@ void RackView::buildRack(const Patch *patch)
         gi->setPos(x, 0);
         x += module->hp() * PIXEL_PER_HP;
     }
+    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }

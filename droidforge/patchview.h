@@ -11,7 +11,8 @@ class PatchView : public QTabWidget
     PatchSectionView *currentPatchSectionView;
 
 public:
-    PatchView(Patch *patch);
+    PatchView();
+    void setPatch(Patch *patch);
     bool handleKeyPress(int key);
 };
 

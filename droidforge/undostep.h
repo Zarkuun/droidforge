@@ -14,8 +14,9 @@ private:
     UndoStep(const UndoStep &);
 
 public:
-    UndoStep(QString name, const Patch *patch);;
+    UndoStep(QString name, const Patch *patch);
     ~UndoStep();
+    Patch *getPatch() const { return patch->clone(); };
 };
 
 #endif // UNDOSTEP_H
