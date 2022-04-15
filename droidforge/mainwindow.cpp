@@ -34,6 +34,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     qDebug() << event;
@@ -42,12 +43,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-
-void MainWindow::keyReleaseEvent(QKeyEvent *event)
-{
-    qDebug() << "Main Key release: " << event;
-
-}
 
 
 void MainWindow::createActions()

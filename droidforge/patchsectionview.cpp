@@ -2,6 +2,8 @@
 #include "circuitview.h"
 #include "tuning.h"
 
+#include <QMouseEvent>
+
 PatchSectionView::PatchSectionView(PatchSection *section)
     : section(section)
     , currentCircuitNr(0)
@@ -59,6 +61,38 @@ bool PatchSectionView::handleKeyPress(int key)
     case Qt::Key_Backspace: deleteCurrentRow();      return true;
     default: return false;
     }
+}
+
+
+void PatchSectionView::mousePressEvent(QMouseEvent *event)
+{
+    if (event->type() == QMouseEvent::MouseButtonPress) {
+        if (!handleMousePress(event->pos().x(), event->pos().y())) {
+            qDebug() << "Unhandled mouse press" << event;
+        }
+    }
+}
+
+
+bool PatchSectionView::handleMousePress(int x, int y)
+{
+    qDebug() << "Mause bei " << x << y;
+    QGraphicsItem *item = this->itemAt(x, y);
+    // const QTransform &t = this->viewportTransform();
+    /// QGraphicsItem *item = scene()->itemAt(x, y, t);
+    qDebug() << "Item" << item;
+    if (item) {
+        currentCircuitView()->deselect();
+        CircuitView *cv = (CircuitView *)item;
+        for (unsigned i=0; i<circuitViews.size(); i++) {
+            if (circuitViews[i] == cv) {
+                qDebug() << "FOUND At " << i;
+                currentCircuitNr = i;
+                currentCircuitView()->select(currentJack, currentColumn);
+            }
+        }
+    }
+    return true;
 }
 
 

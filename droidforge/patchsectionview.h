@@ -21,6 +21,8 @@ public:
     PatchSectionView(PatchSection *section);
     ~PatchSectionView() { deletePatchSection(); };
     bool handleKeyPress(int key);
+    void mousePressEvent(QMouseEvent *event);
+    bool handleMousePress(int x, int y);
 
 private:
     void buildPatchSection();
