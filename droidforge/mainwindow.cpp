@@ -56,10 +56,10 @@ bool MainWindow::loadPatch(QString afilename)
 }
 
 
-
 void MainWindow::registerEdit(QString name)
 {
     undoHistory.snapshot(name, patch);
+    updateActions();
 }
 
 
