@@ -11,18 +11,22 @@
 #include <QTextEdit>
 #include <QKeyEvent>
 
+MainWindow *the_forge;
+DroidFirmware *the_firmware;
 
-MainWindow::MainWindow(Patch *patch)
+MainWindow::MainWindow()
     : QMainWindow()
     , ui(new Ui::MainWindow)
+    , patch(0)
 {
+    the_forge = this;
+    the_firmware = &firmware;
+
     ui->setupUi(this);
     QSplitter *splitter = new QSplitter();
     splitter->setOrientation(Qt::Vertical);
     this->setCentralWidget(splitter);
 
-    rackview.setPatch(patch);
-    patchview.setPatch(patch);
     splitter->addWidget(&rackview);
     splitter->addWidget(&patchview);
     splitter->grabKeyboard(); // Macht, dass bei main die Tasten ankommen
@@ -32,7 +36,53 @@ MainWindow::MainWindow(Patch *patch)
 
 MainWindow::~MainWindow()
 {
+    if (patch)
+        delete patch;
     delete ui;
+}
+
+
+bool MainWindow::loadPatch(QString afilename)
+{
+    Patch newpatch;
+    if (!parser.parse(afilename, &newpatch))
+        return false;
+
+    setPatch(newpatch.clone());
+
+    filename = afilename;
+    undoHistory.clear();
+    undoHistory.snapshot("Load from file", patch);
+    return true;
+}
+
+
+
+void MainWindow::registerEdit(QString name)
+{
+    undoHistory.snapshot(name, patch);
+}
+
+
+bool MainWindow::undoPossible()
+{
+    return undoHistory.size() > 1;
+}
+
+
+QString MainWindow::nextUndoTitle() const
+{
+    return undoHistory.nextTitle();
+}
+
+
+void MainWindow::setPatch(Patch *newpatch)
+{
+    if (patch)
+        delete patch;
+    patch = newpatch;
+    rackview.setPatch(patch);
+    patchview.setPatch(patch);
 }
 
 
@@ -49,7 +99,22 @@ void MainWindow::createActions()
 {
     createFileMenu();
     createEditMenu();
+    updateActions();
 }
+
+
+void MainWindow::updateActions()
+{
+    if (the_forge->undoPossible()) {
+        undoAction->setText(tr("&Undo ") + the_forge->nextUndoTitle());
+        undoAction->setEnabled(true);
+    }
+    else {
+        undoAction->setText(tr("&Undo"));
+        undoAction->setEnabled(false);
+    }
+}
+
 
 void MainWindow::createFileMenu()
 {
@@ -67,16 +132,17 @@ void MainWindow::createEditMenu()
 {
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
     const QIcon undoIcon = QIcon::fromTheme("undo", QIcon(":/images/undo.png"));
-    QAction *undoAct = new QAction(undoIcon, tr("&Undo"), this);
-    undoAct->setShortcuts(QKeySequence::Undo);
-    undoAct->setStatusTip(tr("Undo last edit action"));
-    connect(undoAct, &QAction::triggered, this, &MainWindow::undo);
-    editMenu->addAction(undoAct);
+    undoAction = new QAction(undoIcon, tr("&Undo"), this);
+    undoAction->setShortcuts(QKeySequence::Undo);
+    undoAction->setStatusTip(tr("Undo last edit action"));
+    connect(undoAction, &QAction::triggered, this, &MainWindow::undo);
+    editMenu->addAction(undoAction);
 }
 
 
 void MainWindow::open()
 {
+    qDebug("OPEN SOLL PASSIEREN");
     // if (maybeSave()) {
     //     QString fileName = QFileDialog::getOpenFileName(this);
     //     if (!fileName.isEmpty())
@@ -86,18 +152,22 @@ void MainWindow::open()
 
 void MainWindow::undo()
 {
-    if (the_forge->undoPossible()) {
-        the_forge->undo();
-        Patch *patch = the_forge->getPatch();
+    if (undoPossible()) {
+        if (patch)
+            delete patch;
+        patch = undoHistory.undo();
         rackview.setPatch(patch);
         patchview.setPatch(patch);
+        updateActions();
     }
 }
+
 
 bool MainWindow::maybeSave()
 {
     return true;
 }
+
 
 void MainWindow::loadFile(const QString &)
 {

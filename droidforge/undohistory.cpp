@@ -31,3 +31,8 @@ Patch *UndoHistory::undo()
     steps.removeLast(); // deletes contained patch
     return last;
 }
+
+QString UndoHistory::nextTitle() const
+{
+    return steps.last()->getName();
+}

@@ -17,6 +17,7 @@ public:
     EditorState(QString name, const Patch *patch);
     ~EditorState();
     Patch *getPatch() const { return patch->clone(); };
+    QString getName() const { return name; };
 };
 
 #endif // EDITORSTATE_H

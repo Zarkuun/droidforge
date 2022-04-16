@@ -1,4 +1,4 @@
-#include "droidforge.h"
+#include "mainwindow.h"
 #include "patchparser.h"
 #include "QtCore/qdebug.h"
 #include "modulebuilder.h"

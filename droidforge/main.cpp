@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "droidforge.h"
 #include "patch.h"
 
 #include <QApplication>
@@ -8,9 +7,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    DroidForge forge;
+    MainWindow mainWindow;
 
-    if (!forge.loadPatch("/Users/mk/git/droidforge/testpatch.ini"))
+    if (!mainWindow.loadPatch("/Users/mk/git/droidforge/testpatch.ini"))
     {
         QMessageBox box;
         box.setText("Fehler!");
@@ -18,9 +17,8 @@ int main(int argc, char *argv[])
         QApplication::quit();
     }
 
-    MainWindow w(forge.getPatch());
-    w.resize(800,1000);
-    w.move(1000, 0);
-    w.show();
+    mainWindow.resize(800,1000);
+    mainWindow.move(1200, 0);
+    mainWindow.show();
     return a.exec();
 }

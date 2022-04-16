@@ -17,6 +17,7 @@ public:
     void snapshot(QString name, const Patch *patch);
     qsizetype size() const { return steps.size(); };
     Patch *undo();
+    QString nextTitle() const;
 };
 
 #endif // UNDOHISTORY_H

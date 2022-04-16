@@ -1,6 +1,6 @@
 #include "patchsectionview.h"
 #include "circuitview.h"
-#include "droidforge.h"
+#include "mainwindow.h"
 #include "tuning.h"
 
 #include <QMouseEvent>
@@ -148,7 +148,7 @@ void PatchSectionView::deleteCurrentRow()
 
 void PatchSectionView::deleteCurrentCircuit()
 {
-    QString actionTitle = QString("Delete circuit ") + currentCircuit()->name.toUpper();
+    QString actionTitle = QString("Deleting circuit ") + currentCircuit()->name.toUpper();
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentCircuit();
     rebuildPatchSection();
@@ -157,7 +157,7 @@ void PatchSectionView::deleteCurrentCircuit()
 
 void PatchSectionView::deleteCurrentJack()
 {
-    QString actionTitle = QString("Delete jack ")
+    QString actionTitle = QString("Deleting jack ")
             + currentJackAssignment()->jack + " assignment";
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentJackAssignment();
