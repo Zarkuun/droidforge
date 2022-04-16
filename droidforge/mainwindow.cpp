@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "droidforge.h"
 #include "patch.h"
 #include "ui_mainwindow.h"
 #include "rackview.h"
