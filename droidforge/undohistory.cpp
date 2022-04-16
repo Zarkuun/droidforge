@@ -21,7 +21,7 @@ void UndoHistory::clear()
 
 void UndoHistory::snapshot(QString name, const Patch *patch)
 {
-    steps.append(new UndoStep(name, patch));
+    steps.append(new EditorState(name, patch));
     qDebug() << "Snapshot" << name;
 }
 

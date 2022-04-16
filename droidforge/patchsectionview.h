@@ -12,11 +12,6 @@ class PatchSectionView : public QGraphicsView
     PatchSection *section;
     QList<CircuitView *>circuitViews;
 
-    // Cursor position
-    int currentCircuitNr;
-    int currentJack;
-    int currentColumn;
-
 public:
     PatchSectionView(PatchSection *section);
     ~PatchSectionView() { deletePatchSection(); };
@@ -30,6 +25,7 @@ private:
     void rebuildPatchSection();
     CircuitView *currentCircuitView();
     Circuit *currentCircuit();
+    JackAssignment *currentJackAssignment();
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
     void moveCursorPageUpDown(int whence);

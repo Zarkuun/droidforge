@@ -190,10 +190,10 @@ void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QStri
 }
 
 
-void CircuitView::select(unsigned cj, unsigned cc)
+void CircuitView::select(const CursorPosition &cursor)
 {
-    currentJack = cj;
-    currentColumn = cc;
+    currentJack = cursor.row;
+    currentColumn = cursor.column;
     selected = true;
     update();
 }

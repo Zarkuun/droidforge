@@ -24,10 +24,14 @@ QtApplication {
         "circuittype.h",
         "circuitview.cpp",
         "circuitview.h",
+        "cursorposition.cpp",
+        "cursorposition.h",
         "droidfirmware.cpp",
         "droidfirmware.h",
         "droidforge.cpp",
         "droidforge.h",
+        "editorstate.cpp",
+        "editorstate.h",
         "jackassignment.cpp",
         "jackassignment.h",
         "main.cpp",
@@ -73,8 +77,6 @@ QtApplication {
         "tuning.h",
         "undohistory.cpp",
         "undohistory.h",
-        "undostep.cpp",
-        "undostep.h",
     ]
 
     install: true

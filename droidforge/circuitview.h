@@ -2,6 +2,7 @@
 #define CIRCUITVIEW_H
 
 #include "circuit.h"
+#include "cursorposition.h"
 
 #include <QGraphicsItem>
 #include <QStyleOptionGraphicsItem>
@@ -22,7 +23,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                    QWidget *widget) override;
     unsigned numJackAssignments() { return circuit->numJackAssignments(); };
-    void select(unsigned currentJack, unsigned currentColumn);
+    void select(const CursorPosition &);
     void deselect();
     int columnAt(unsigned x);
     int jackAt(unsigned y);

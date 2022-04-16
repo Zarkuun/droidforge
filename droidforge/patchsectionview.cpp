@@ -7,9 +7,6 @@
 
 PatchSectionView::PatchSectionView(PatchSection *section)
     : section(section)
-    , currentCircuitNr(0)
-    , currentJack(-1) // HEAD
-    , currentColumn(0)
 {
     setAlignment(Qt::AlignCenter | Qt::AlignTop);
     buildPatchSection();
@@ -32,7 +29,7 @@ void PatchSectionView::buildPatchSection()
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
         y += cv->boundingRect().height();
     }
-    currentCircuitView()->select(-1, currentColumn);
+    currentCircuitView()->select(section->cursorPosition());
 }
 
 void PatchSectionView::deletePatchSection()
@@ -79,17 +76,12 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
 
 bool PatchSectionView::handleMousePress(const QPointF &pos)
 {
-    // pos are the coordinates relative to the window where
-    // the patch is being displayed.
-    qDebug() << "Mause bei " << pos.x() << pos.y();
-
     // itemAt() applies the transformation of the graphics
     // view such as the scroll bar and the alignment.
     QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
 
     if (!item)
         return false;
-
 
     CircuitView *cv = (CircuitView *)item;
     for (unsigned i=0; i<circuitViews.size(); i++)
@@ -101,10 +93,12 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
 
         if (circuitViews[i] == cv) {
             currentCircuitView()->deselect();
-            currentCircuitNr = i;
-            currentJack = cv->jackAt(posInCircuit.y());
-            currentColumn = cv->columnAt(posInCircuit.x());
-            currentCircuitView()->select(currentJack, currentColumn);
+            CursorPosition pos;
+            pos.circuitNr = i;
+            pos.row = cv->jackAt(posInCircuit.y());
+            pos.column = cv->columnAt(posInCircuit.x());
+            currentCircuitView()->select(pos);
+            section->setCursor(pos);
             ensureVisible(currentCircuitView());
         }
     }
@@ -114,57 +108,38 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
 
 CircuitView *PatchSectionView::currentCircuitView()
 {
-    return circuitViews[currentCircuitNr];
+    return circuitViews[section->cursorPosition().circuitNr];
 }
 
 
 Circuit *PatchSectionView::currentCircuit()
 {
-    return section->circuits[currentCircuitNr];
+    return section->currentCircuit();
 
 }
 
 
-void PatchSectionView::moveCursorLeftRight(int whence)
+JackAssignment *PatchSectionView::currentJackAssignment()
 {
-    if (whence == -1 && currentColumn == 0)
-        return;
-
-    else if (whence == 1 && currentColumn >= 3)
-        return;
-
-    if (whence == -1
-        && currentJack >= 0
-        && section->circuits[currentCircuitNr]->jackAssignment(currentJack)->jackType != JACKTYPE_INPUT
-        && currentColumn <= 3)
-    {
-        currentColumn = 0;
-    }
-    else
-        currentColumn += whence;
-    currentCircuitView()->select(currentJack, currentColumn);
+    return section->currentJackAssignment();
 }
+
 
 void PatchSectionView::moveCursorPageUpDown(int whence)
 {
-    if (currentJack == -1) {
-        currentCircuitView()->deselect();
-        currentCircuitNr += whence;
-        if (currentCircuitNr < 0)
-            currentCircuitNr = 0;
-        else if (currentCircuitNr >= circuitViews.size())
-            currentCircuitNr = circuitViews.size() - 1;
-    }
+    currentCircuitView()->deselect();
+    if (whence == -1)
+        section->moveCursorUp();
     else
-        currentJack = -1;
-    currentCircuitView()->select(currentJack, currentColumn);
+        section->moveCursorDown();
+    currentCircuitView()->select(section->cursorPosition());
     ensureVisible(currentCircuitView());
 }
 
 
 void PatchSectionView::deleteCurrentRow()
 {
-    if (currentJack == -1)
+    if (section->cursorPosition().row == -1)
         deleteCurrentCircuit();
     else
         deleteCurrentJack();
@@ -173,25 +148,31 @@ void PatchSectionView::deleteCurrentRow()
 
 void PatchSectionView::deleteCurrentCircuit()
 {
-    the_forge->registerEdit("Delete circuit");
-    section->deleteCircuitNr(currentCircuitNr);
-    if (currentCircuitNr >= section->circuits.count())
-        currentCircuitNr--;
-    currentColumn = 0;
-    currentJack = -1;
+    QString actionTitle = QString("Delete circuit ") + currentCircuit()->name.toUpper();
+    the_forge->registerEdit(actionTitle);
+    section->deleteCurrentCircuit();
     rebuildPatchSection();
 }
 
 
 void PatchSectionView::deleteCurrentJack()
 {
-    the_forge->registerEdit("Delete jack assignment");
-    Circuit *circuit = currentCircuit();
-    circuit->deleteJackAssignment(currentJack);
-    if (currentJack >= circuit->numJackAssignments())
-        currentJack --;
+    QString actionTitle = QString("Delete jack ")
+            + currentJackAssignment()->jack + " assignment";
+    the_forge->registerEdit(actionTitle);
+    section->deleteCurrentJackAssignment();
     rebuildPatchSection();
-    currentCircuitView()->select(currentJack, currentColumn);
+    currentCircuitView()->select(section->cursorPosition());
+}
+
+
+void PatchSectionView::moveCursorLeftRight(int whence)
+{
+    if (whence == -1)
+        section->moveCursorLeft();
+    else
+        section->moveCursorRight();
+    currentCircuitView()->select(section->cursorPosition());
 }
 
 
@@ -200,34 +181,10 @@ void PatchSectionView::moveCursorUpDown(int whence)
     currentCircuitView()->deselect();
 
     if (whence == 1) // dowldiln
-    {
-        int n = currentCircuitView()->numJackAssignments();
-        currentJack ++;
-        if (currentJack >= n) {
-            currentCircuitNr ++;
-            if (currentCircuitNr >= circuitViews.size()) {
-                currentJack--;
-                currentCircuitNr--;
-            }
-            else
-                currentJack = -1;
-        }
-    }
+        section->moveCursorDown();
     else // up
-    {
-        currentJack --;
-        if (currentJack < -1) {
-            currentCircuitNr--;
-            if (currentCircuitNr < 0) {
-                currentCircuitNr = 0;
-                currentJack = -1;
-            }
-            else
-                currentJack = currentCircuitView()->numJackAssignments() - 1;
-        }
+        section->moveCursorUp();
 
-    }
-
-    currentCircuitView()->select(currentJack, currentColumn);
+    currentCircuitView()->select(section->cursorPosition());
     ensureVisible(currentCircuitView());
 }

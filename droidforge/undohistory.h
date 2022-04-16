@@ -2,13 +2,13 @@
 #define UNDOHISTORY_H
 
 #include "patch.h"
-#include "undostep.h"
+#include "editorstate.h"
 
 #include <QList>
 
 class UndoHistory
 {
-    QList<UndoStep *> steps;
+    QList<EditorState *> steps;
 
 public:
     UndoHistory();
