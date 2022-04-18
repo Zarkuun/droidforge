@@ -28,8 +28,6 @@ QtApplication {
         "cursorposition.h",
         "droidfirmware.cpp",
         "droidfirmware.h",
-        "droidforge.cpp",
-        "droidforge.h",
         "editorstate.cpp",
         "editorstate.h",
         "jackassignment.cpp",

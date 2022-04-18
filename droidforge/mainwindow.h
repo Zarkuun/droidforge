@@ -36,6 +36,7 @@ private:
 
     PatchView patchview;
     QAction *undoAction;
+    QAction *redoAction;
 
 public:
     MainWindow();
@@ -47,8 +48,6 @@ public:
     bool loadPatch(QString filename);
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
-    bool undoPossible();
-    QString nextUndoTitle() const;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -56,6 +55,7 @@ protected:
 private slots:
     void open();
     void undo();
+    void redo();
 
 private:
     void createActions();

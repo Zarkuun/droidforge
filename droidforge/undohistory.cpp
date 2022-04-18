@@ -2,6 +2,7 @@
 #include "QtCore/qdebug.h"
 
 UndoHistory::UndoHistory()
+    : redoPointer(0)
 {
 }
 
@@ -12,27 +13,63 @@ UndoHistory::~UndoHistory()
 
 void UndoHistory::clear()
 {
-
     for (qsizetype i=0; i<steps.size(); i++)
         delete steps[i];
     steps.clear();
+    redoPointer = 0;
 }
 
 
 void UndoHistory::snapshot(QString name, const Patch *patch)
 {
+    // One new edit step erases all possible redos
+    while (redoPointer < steps.size()) {
+        delete steps[steps.size()-1];
+        steps.removeLast();
+    }
+
     steps.append(new EditorState(name, patch));
-    qDebug() << "Snapshot" << name;
+    redoPointer++;
 }
+
 
 Patch *UndoHistory::undo()
 {
-    Patch *last = steps.last()->getPatch(); // clones patch
-    steps.removeLast(); // deletes contained patch
-    return last;
+    // assume undoPossible()
+    return steps[--redoPointer]->getPatch()->clone();
 }
+
+
+Patch *UndoHistory::redo()
+{
+    // assume redoPossible()
+    return steps[redoPointer++]->getPatch()->clone();
+}
+
 
 QString UndoHistory::nextTitle() const
 {
     return steps.last()->getName();
+}
+
+
+bool UndoHistory::undoPossible() const
+{
+    return redoPointer > 0;
+}
+
+
+bool UndoHistory::redoPossible() const
+{
+    return redoPointer < steps.size();
+}
+
+QString UndoHistory::nextUndoTitle() const
+{
+    return steps[redoPointer-1]->getName();
+}
+
+QString UndoHistory::nextRedoTitle() const
+{
+    return steps[redoPointer]->getName();
 }

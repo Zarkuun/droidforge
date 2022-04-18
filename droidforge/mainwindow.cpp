@@ -63,18 +63,6 @@ void MainWindow::registerEdit(QString name)
 }
 
 
-bool MainWindow::undoPossible()
-{
-    return undoHistory.size() > 1;
-}
-
-
-QString MainWindow::nextUndoTitle() const
-{
-    return undoHistory.nextTitle();
-}
-
-
 void MainWindow::setPatch(Patch *newpatch)
 {
     if (patch)
@@ -104,14 +92,24 @@ void MainWindow::createActions()
 
 void MainWindow::updateActions()
 {
-    if (the_forge->undoPossible()) {
-        undoAction->setText(tr("&Undo ") + the_forge->nextUndoTitle());
+    if (undoHistory.undoPossible()) {
+        undoAction->setText(tr("&Undo ") + undoHistory.nextUndoTitle());
         undoAction->setEnabled(true);
     }
     else {
         undoAction->setText(tr("&Undo"));
         undoAction->setEnabled(false);
     }
+
+    if (undoHistory.redoPossible()) {
+        redoAction->setText(tr("&Redo ") + undoHistory.nextRedoTitle());
+        redoAction->setEnabled(true);
+    }
+    else {
+        redoAction->setText(tr("&Redo"));
+        redoAction->setEnabled(false);
+    }
+    return;
 }
 
 
@@ -130,12 +128,22 @@ void MainWindow::createFileMenu()
 void MainWindow::createEditMenu()
 {
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
+
+    // Undo
     const QIcon undoIcon = QIcon::fromTheme("undo", QIcon(":/images/undo.png"));
     undoAction = new QAction(undoIcon, tr("&Undo"), this);
     undoAction->setShortcuts(QKeySequence::Undo);
     undoAction->setStatusTip(tr("Undo last edit action"));
     connect(undoAction, &QAction::triggered, this, &MainWindow::undo);
     editMenu->addAction(undoAction);
+
+    // Redo
+    const QIcon redoIcon = QIcon::fromTheme("redo", QIcon(":/images/redo.png"));
+    redoAction = new QAction(redoIcon, tr("&Redo"), this);
+    redoAction->setShortcuts(QKeySequence::Redo);
+    redoAction->setStatusTip(tr("Redo last edit action"));
+    connect(redoAction, &QAction::triggered, this, &MainWindow::redo);
+    editMenu->addAction(redoAction);
 }
 
 
@@ -151,10 +159,23 @@ void MainWindow::open()
 
 void MainWindow::undo()
 {
-    if (undoPossible()) {
+    if (undoHistory.undoPossible()) {
         if (patch)
             delete patch;
         patch = undoHistory.undo();
+        rackview.setPatch(patch);
+        patchview.setPatch(patch);
+        updateActions();
+    }
+}
+
+
+void MainWindow::redo()
+{
+    if (undoHistory.redoPossible()) {
+        if (patch)
+            delete patch;
+        patch = undoHistory.redo();
         rackview.setPatch(patch);
         patchview.setPatch(patch);
         updateActions();
