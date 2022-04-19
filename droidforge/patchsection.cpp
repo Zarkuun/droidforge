@@ -108,9 +108,21 @@ void PatchSection::moveCursorRight()
         cursor.column = 3;
 }
 
+void PatchSection::moveCursorToNextCircuit()
+{
+    if (cursor.circuitNr < circuits.size()-1) {
+        cursor.circuitNr ++;
+        cursor.row = -1;
+    }
+}
+
 
 void PatchSection::moveCursorToPreviousCircuit()
 {
+    if (cursor.row > -1)
+        cursor.row = -1;
+    else if (cursor.circuitNr > 0)
+        cursor.circuitNr --;
 }
 
 

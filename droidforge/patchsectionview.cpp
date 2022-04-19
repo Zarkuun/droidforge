@@ -129,9 +129,9 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
 {
     currentCircuitView()->deselect();
     if (whence == -1)
-        section->moveCursorUp();
+        section->moveCursorToPreviousCircuit();
     else
-        section->moveCursorDown();
+        section->moveCursorToNextCircuit();
     currentCircuitView()->select(section->cursorPosition());
     ensureVisible(currentCircuitView());
 }
