@@ -14,32 +14,23 @@ typedef enum {
 class JackAssignment
 {
 
-public:
+protected:
     QString jack;
-    jacktype_t jackType;
     QString comment;
-    bool garbled;
     bool disabled;
-    Atom *atomA; // mult 1
-    Atom *atomB; // mult 2
-    Atom *atomC; // add
-    QString sourceString; // in case of garbled
 
 public:
-    JackAssignment();
-    ~JackAssignment();
-    JackAssignment *clone() const;
-    QString toString();
-    void parseSourceString(QString s);
+    JackAssignment(QString jack);
+    virtual ~JackAssignment();
+    virtual JackAssignment *clone() const = 0;
+    virtual jacktype_t jackType() const = 0;
+    QString toString() const;
+    QString jackName() const { return jack; };
 
-private:
-    void parseInputValue();
-    void parseOutputValue();
-    Atom *parseInputAtom(QString s);
+protected:
+    virtual QString valueToString() const = 0;
     Atom *parseCable(QString s);
     Atom *parseRegister(QString s);
-    Atom *parseOnOff(QString s);
-    Atom *parseNumber(QString s);
 };
 
 #endif // JACKASSIGNMENT_H

@@ -1,4 +1,7 @@
 #include "circuitview.h"
+#include "jackassignmentinput.h"
+#include "jackassignmentoutput.h"
+#include "jackassignmentunknown.h"
 #include "tuning.h"
 
 #include <QPainter>
@@ -90,7 +93,7 @@ void CircuitView::paintJacks(QPainter *painter, unsigned &line, unsigned y)
     for (qsizetype i=0; i<circuit->numJackAssignments(); i++) {
         JackAssignment *ja = circuit->jackAssignment(i);
         QColor textcolor;
-        switch (ja->jackType) {
+        switch (ja->jackType()) {
         case JACKTYPE_INPUT: textcolor = COLOR_JACK_INPUT; break;
         case JACKTYPE_OUTPUT: textcolor = COLOR_JACK_OUTPUT; break;
         default: textcolor = COLOR_JACK_UNKNOWN; break;
@@ -107,13 +110,14 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
 {
     // Column 0: Name of the jack.
     painter->setPen(textcolor);
-    painter->drawText(QRect(COLUMN_0_X + SIDE_PADDING, y, COLUMN_0_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, ja->jack);
+    painter->drawText(QRect(COLUMN_0_X + SIDE_PADDING, y, COLUMN_0_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, ja->jackName());
     painter->setPen(COLOR_LINE);
     painter->drawLine(0, y, WIDTH, y);
 
     // Column 1: A (first mult). Only for inputs
-    if (ja->jackType == JACKTYPE_INPUT)
+    if (ja->jackType() == JACKTYPE_INPUT)
     {
+        JackAssignmentInput *jai = (JackAssignmentInput *)ja;
         if (sel) {
             unsigned l = 0, w = 0;
             if (currentColumn == 1) {
@@ -131,19 +135,19 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
             if (w)
                 painter->fillRect(l, y, w, JACK_HEIGHT, COLOR_CURSOR);
         }
-        Atom *atom = ja->atomA;
+        Atom *atom = jai->getAtom(0);
         if (atom) {
             QString value = atom->toString();
             painter->setPen(COLOR_TEXT);
             painter->drawText(QRect(COLUMN_1_X + SIDE_PADDING, y, COLUMN_1_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, value);
         }
-        atom = ja->atomB;
+        atom = jai->getAtom(1);
         if (atom) {
             QString value = atom->toString();
             painter->setPen(COLOR_TEXT);
             painter->drawText(QRect(COLUMN_2_X + SIDE_PADDING, y, COLUMN_2_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, value);
         }
-        atom = ja->atomC;
+        atom = jai->getAtom(2);
         if (atom) {
             QString value = atom->toString();
             painter->setPen(COLOR_TEXT);
@@ -161,13 +165,25 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         // TODO: B and C
     }
 
-    else { // OUTPUT
-        Atom *atom = ja->atomA;
-        if (atom) {
-            QString value = atom->toString();
-            painter->setPen(COLOR_TEXT);
-            painter->drawText(QRect(COLUMN_1_X + SIDE_PADDING, y, COLUMN_123_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, value);
+    else {
+        QString text;
+        if (ja->jackType() == JACKTYPE_OUTPUT)
+        {
+            JackAssignmentOutput *jao = (JackAssignmentOutput *)ja;
+            Atom *atom = jao->getAtom();
+
+            if (atom) {
+                text = atom->toString();
+                painter->setPen(COLOR_TEXT);
+            }
         }
+        else  // UNKNOWN
+        {
+            JackAssignmentUnknown *jau = (JackAssignmentUnknown *)ja;
+            text = jau->valueToString();
+            painter->setPen(COLOR_TEXT_UNKNOWN);
+        }
+        painter->drawText(QRect(COLUMN_1_X + SIDE_PADDING, y, COLUMN_123_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, text);
         if (sel && (currentColumn == 1 || currentColumn == 2 || currentColumn == 3))
             painter->fillRect(COLUMN_1_X, y, COLUMN_123_WIDTH, JACK_HEIGHT, COLOR_CURSOR);
     }

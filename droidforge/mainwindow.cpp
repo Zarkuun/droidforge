@@ -116,12 +116,22 @@ void MainWindow::updateActions()
 void MainWindow::createFileMenu()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+
+    // Open
     const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/images/open.png"));
     QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
     fileMenu->addAction(openAct);
+
+    // Save
+    const QIcon saveIcon = QIcon::fromTheme("document-open", QIcon(":/images/save.png"));
+    QAction *saveAct = new QAction(saveIcon, tr("&Save..."), this);
+    saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setStatusTip(tr("Save patch to file"));
+    connect(saveAct, &QAction::triggered, this, &MainWindow::save);
+    fileMenu->addAction(saveAct);
 }
 
 
@@ -155,6 +165,13 @@ void MainWindow::open()
     //     if (!fileName.isEmpty())
     //         loadFile(fileName);
     // }
+}
+
+void MainWindow::save()
+{
+    qDebug() << "saving" << filename;
+    patch->saveToFile(filename);
+
 }
 
 void MainWindow::undo()

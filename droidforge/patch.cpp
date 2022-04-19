@@ -1,5 +1,8 @@
 #include "patch.h"
 
+#include <QFile>
+#include <QTextStream>
+
 Patch::Patch()
     : version(0)
 {
@@ -26,6 +29,19 @@ Patch *Patch::clone() const
         newpatch->sections.append(sections[i]->clone());
     }
     return newpatch;
+}
+
+
+bool Patch::saveToFile(QString filename)
+{
+    QFile file(filename);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+          return false;
+    QTextStream stream(&file);
+    stream << toString();
+    stream.flush();
+    file.close();
+    return stream.status() == QTextStream::Ok;
 }
 
 

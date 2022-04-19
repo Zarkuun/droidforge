@@ -54,6 +54,7 @@ protected:
 
 private slots:
     void open();
+    void save();
     void undo();
     void redo();
 

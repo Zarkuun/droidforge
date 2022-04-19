@@ -1,8 +1,11 @@
 #include "mainwindow.h"
 #include "patchparser.h"
-#include "QtCore/qdebug.h"
 #include "modulebuilder.h"
+#include "jackassignmentinput.h"
+#include "jackassignmentoutput.h"
+#include "jackassignmentunknown.h"
 
+#include "QtCore/qdebug.h"
 #include <QTextStream>
 #include <QRegularExpression>
 
@@ -132,32 +135,27 @@ bool PatchParser::parseCircuit(QString name)
 bool PatchParser::parseJackLine(QString line)
 {
     QStringList parts = line.split("#");
-
     if (parts[0].count('=') != 1) {
         errorMessage = "Duplicate =";
         return false;
     }
 
-    JackAssignment *ja = new JackAssignment();
-    if (parts.size() > 1) {
-        ja->comment = parts.mid(1).join('#').trimmed();
-    }
+    QString comment;
+    if (parts.size() > 1)
+        comment = parts.mid(1).join('#').trimmed();
 
     parts = parts[0].split("=");
+    QString jack = parts[0].trimmed().toLower();
+    QString valueString = parts[1].trimmed();
 
-    ja->jack = parts[0].trimmed().toLower();
+    JackAssignment *ja;
 
-    if (the_firmware->jackIsInput(circuit->name, ja->jack))
-        ja->jackType = JACKTYPE_INPUT;
-
-    else if (the_firmware->jackIsOutput(circuit->name, ja->jack))
-        ja->jackType = JACKTYPE_OUTPUT;
-
-    else {
-        ja->jackType = JACKTYPE_UNKNOWN;
-    }
-
-    ja->parseSourceString(parts[1].trimmed());
+    if (the_firmware->jackIsInput(circuit->name, jack))
+        ja = new JackAssignmentInput(jack, valueString);
+    else if (the_firmware->jackIsOutput(circuit->name, jack))
+        ja = new JackAssignmentOutput(jack, valueString);
+    else
+        ja = new JackAssignmentUnknown(jack, valueString);
     circuit->addJackAssignment(ja);
     return true;
 }

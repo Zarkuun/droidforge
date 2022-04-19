@@ -16,6 +16,7 @@ public:
     qsizetype numControllers() const { return controllers.size(); };
     QString controller(qsizetype i) const { return controllers[i]; };
     void addController(QString name) { controllers.append(name); };
+    bool saveToFile(QString filename);
 
     QString title;
     QStringList description;

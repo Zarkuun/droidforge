@@ -91,7 +91,7 @@ void PatchSection::moveCursorLeft()
     // In rows with output jacks, always move the cursor
     // to column 0.
     JackAssignment *ja = currentCircuit()->jackAssignment(cursor.row);
-    if (ja->jackType != JACKTYPE_INPUT)
+    if (ja->jackType() != JACKTYPE_INPUT)
         cursor.column = 0;
     else {
         cursor.column --;

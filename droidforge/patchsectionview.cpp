@@ -158,7 +158,7 @@ void PatchSectionView::deleteCurrentCircuit()
 void PatchSectionView::deleteCurrentJack()
 {
     QString actionTitle = QString("Deleting jack ")
-            + currentJackAssignment()->jack + " assignment";
+            + currentJackAssignment()->jackName() + " assignment";
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentJackAssignment();
     rebuildPatchSection();
