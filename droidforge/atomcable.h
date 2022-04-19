@@ -11,7 +11,7 @@ public:
     QString name;
     AtomCable(QString n) : name(n) {};
     AtomCable *clone() const;
-    QString toString();
+    QString toString() const;
 };
 
 #endif // ATOMCABLE_H

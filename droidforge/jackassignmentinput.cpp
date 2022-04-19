@@ -69,12 +69,23 @@ QString JackAssignmentInput::valueToString() const
         return atomC->toString();
     else if (atomA && atomB && !atomC) // just A and B
         return atomA->toString() + " * " + atomB->toString();
-    else if (atomA && !atomB && atomC) // just A and C
-        return atomA->toString() + " + " + atomC->toString();
-    else if (!atomA && atomB && atomC) // just B and C
-        return atomB->toString() + " + " + atomB->toString();
-    else
-        return atomA->toString() + " * " + atomB->toString() + " + " + atomC->toString();
+    else { // C is defined, but not just C
+        QString sc, op;
+        if (atomC->isNegatable()) {
+            sc = atomC->toNegatedString();
+            op = " - ";
+        }
+        else {
+            sc = atomC->toString();
+            op = " + ";
+        }
+        if (atomA && !atomB && atomC) // just A and C
+            return atomA->toString() + op + sc;
+        else if (!atomA && atomB && atomC) // just B and C
+            return atomB->toString() + op + sc;
+        else
+            return atomA->toString() + " * " + atomB->toString() + op + sc;
+    }
 }
 
 

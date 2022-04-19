@@ -5,7 +5,7 @@ AtomCable *AtomCable::clone() const
     return new AtomCable(name);
 }
 
-QString AtomCable::toString()
+QString AtomCable::toString() const
 {
     return QString("_") + name;
 }

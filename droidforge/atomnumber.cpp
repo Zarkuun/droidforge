@@ -6,7 +6,7 @@ AtomNumber *AtomNumber::clone() const
 }
 
 
-QString AtomNumber::toString()
+QString AtomNumber::toString() const
 {
     // TODO: Formatierung gemäß Typ, Optimierung
     // bezüglich der Genauigkeit etc.
@@ -27,4 +27,17 @@ QString AtomNumber::toString()
     }
 
     return QString::number(number * factor) + suffix;
+}
+
+
+bool AtomNumber::isNegatable() const
+{
+    return number < 0 && numberType != ATOM_NUMBER_ONOFF;
+}
+
+
+QString AtomNumber::toNegatedString() const
+{
+    AtomNumber n(-number, numberType);
+    return n.toString();
 }

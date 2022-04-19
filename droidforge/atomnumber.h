@@ -23,7 +23,9 @@ public:
     AtomNumber(float n, atom_number_t t)
         : number(n), numberType(t) {};
     AtomNumber *clone() const;
-    QString toString();
+    QString toString() const;
+    bool isNegatable() const;
+    QString toNegatedString() const;
 };
 
 #endif // ATOMNUMBER_H

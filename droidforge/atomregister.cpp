@@ -6,7 +6,7 @@ AtomRegister *AtomRegister::clone() const
 }
 
 
-QString AtomRegister::toString()
+QString AtomRegister::toString() const
 {
     if (controller)
         return registerType + QString::number(controller) + "." + QString::number(number);
