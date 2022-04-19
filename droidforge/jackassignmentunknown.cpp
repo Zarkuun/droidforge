@@ -1,8 +1,8 @@
 #include "jackassignmentunknown.h"
 
 
-JackAssignmentUnknown::JackAssignmentUnknown(QString jack, QString valueString)
-    : JackAssignment(jack)
+JackAssignmentUnknown::JackAssignmentUnknown(QString jack, QString comment, QString valueString)
+    : JackAssignment(jack, comment)
     , valueString(valueString)
 {
 }
@@ -10,5 +10,5 @@ JackAssignmentUnknown::JackAssignmentUnknown(QString jack, QString valueString)
 
 JackAssignment *JackAssignmentUnknown::clone() const
 {
-    return new JackAssignmentUnknown(jack, valueString);
+    return new JackAssignmentUnknown(jack, comment, valueString);
 }

@@ -4,8 +4,9 @@
 
 #include <QRegularExpression>
 
-JackAssignment::JackAssignment(QString jack)
+JackAssignment::JackAssignment(QString jack, QString comment)
     : jack(jack)
+    , comment(comment)
     , disabled(false)
 {
 }
@@ -26,7 +27,6 @@ QString JackAssignment::toString() const
         s += " # " + comment;
     return s;
 }
-
 
 
 Atom *JackAssignment::parseCable(QString s)
@@ -65,4 +65,3 @@ Atom *JackAssignment::parseRegister(QString s)
 
     return 0;
 }
-

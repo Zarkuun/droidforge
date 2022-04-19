@@ -1,19 +1,18 @@
 #include "jackassignmentoutput.h"
 #include "QtCore/qdebug.h"
 
-JackAssignmentOutput::JackAssignmentOutput(QString jack, QString valueString)
-    : JackAssignment(jack)
+JackAssignmentOutput::JackAssignmentOutput(QString jack, QString comment, QString valueString)
+    : JackAssignment(jack, comment)
     , atom(0)
 {
     parseOutputValue(valueString);
 }
 
 
-JackAssignmentOutput::JackAssignmentOutput(QString jack)
-    : JackAssignment(jack)
+JackAssignmentOutput::JackAssignmentOutput(QString jack, QString comment)
+    : JackAssignment(jack, comment)
     , atom(0)
 {
-
 }
 
 
@@ -31,7 +30,7 @@ Atom *JackAssignmentOutput::getAtom() const
 
 JackAssignment *JackAssignmentOutput::clone() const
 {
-    JackAssignmentOutput *newas = new JackAssignmentOutput(jack);
+    JackAssignmentOutput *newas = new JackAssignmentOutput(jack, comment);
     newas->disabled = disabled;
     if (atom)
         newas->atom = atom->clone();

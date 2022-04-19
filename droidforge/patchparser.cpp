@@ -151,11 +151,11 @@ bool PatchParser::parseJackLine(QString line)
     JackAssignment *ja;
 
     if (the_firmware->jackIsInput(circuit->name, jack))
-        ja = new JackAssignmentInput(jack, valueString);
+        ja = new JackAssignmentInput(jack, comment, valueString);
     else if (the_firmware->jackIsOutput(circuit->name, jack))
-        ja = new JackAssignmentOutput(jack, valueString);
+        ja = new JackAssignmentOutput(jack, comment, valueString);
     else
-        ja = new JackAssignmentUnknown(jack, valueString);
+        ja = new JackAssignmentUnknown(jack, comment, valueString);
     circuit->addJackAssignment(ja);
     return true;
 }

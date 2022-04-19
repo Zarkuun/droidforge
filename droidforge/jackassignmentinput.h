@@ -10,7 +10,7 @@ class JackAssignmentInput : public JackAssignment
     Atom *atomC; // add
 
 public:
-    JackAssignmentInput(QString jack, QString valueString);
+    JackAssignmentInput(QString jack, QString comment, QString valueString);
     ~JackAssignmentInput();
     Atom *getAtom(unsigned n) const;
     QString valueToString() const;
@@ -20,8 +20,8 @@ protected:
     JackAssignment *clone() const;
 
 private:
+    JackAssignmentInput(QString jack, QString comment);
     void parseInputValue(QString valueString);
-    JackAssignmentInput(QString jack);
     Atom *parseInputAtom(QString s);
     Atom *parseOnOff(QString s);
     Atom *parseNumber(QString s);

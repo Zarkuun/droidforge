@@ -3,8 +3,8 @@
 
 #include <QRegularExpression>
 
-JackAssignmentInput::JackAssignmentInput(QString jack, QString valueString)
-    : JackAssignment(jack)
+JackAssignmentInput::JackAssignmentInput(QString jack, QString comment, QString valueString)
+    : JackAssignment(jack, comment)
     , atomA(0)
     , atomB(0)
     , atomC(0)
@@ -13,8 +13,8 @@ JackAssignmentInput::JackAssignmentInput(QString jack, QString valueString)
 }
 
 
-JackAssignmentInput::JackAssignmentInput(QString jack)
-    : JackAssignment(jack)
+JackAssignmentInput::JackAssignmentInput(QString jack, QString comment)
+    : JackAssignment(jack, comment)
     , atomA(0)
     , atomB(0)
     , atomC(0)
@@ -43,7 +43,7 @@ Atom *JackAssignmentInput::getAtom(unsigned n) const
 
 JackAssignment *JackAssignmentInput::clone() const
 {
-    JackAssignmentInput *newas = new JackAssignmentInput(jack);
+    JackAssignmentInput *newas = new JackAssignmentInput(jack, comment);
     newas->disabled = disabled;
     if (atomA)
         newas->atomA = atomA->clone();
