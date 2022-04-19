@@ -49,7 +49,6 @@ void PatchSectionView::rebuildPatchSection()
 
 bool PatchSectionView::handleKeyPress(int key)
 {
-    qDebug() << "KEY" << key;
     switch (key) {
     case Qt::Key_Up:       moveCursorUpDown(-1);     return true;
     case Qt::Key_Down:     moveCursorUpDown(1);      return true;
@@ -65,7 +64,6 @@ bool PatchSectionView::handleKeyPress(int key)
 
 void PatchSectionView::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << "MAUS" << event;
     if (event->type() == QMouseEvent::MouseButtonPress) {
         if (!handleMousePress(event->pos())) {
             qDebug() << "Unhandled mouse press" << event;
@@ -148,7 +146,7 @@ void PatchSectionView::deleteCurrentRow()
 
 void PatchSectionView::deleteCurrentCircuit()
 {
-    QString actionTitle = QString("Deleting circuit ") + currentCircuit()->name.toUpper();
+    QString actionTitle = QString("Deleting circuit ") + currentCircuit()->getName().toUpper();
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentCircuit();
     rebuildPatchSection();

@@ -13,6 +13,7 @@ class PatchParser
 
     QString errorMessage;
     unsigned errorLine;
+    QStringList currentComment;
 
 public:
     PatchParser();
@@ -26,6 +27,7 @@ private:
     bool parseJackLine(QString line);
     bool parseController(QString name);
     bool parseCircuit(QString name);
+    void stripEmptyCommentLines();
 };
 
 #endif // PATCHPARSER_H

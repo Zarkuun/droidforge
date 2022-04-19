@@ -69,7 +69,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
         painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), COLOR_CURSOR);
 
     painter->setPen(COLOR_CIRCUIT_NAME);
-    painter->drawText(QRect(x, y, WIDTH-x, HEADER_HEIGHT), Qt::AlignVCenter, circuit->name.toUpper());
+    painter->drawText(QRect(x, y, WIDTH-x, HEADER_HEIGHT), Qt::AlignVCenter, circuit->getName().toUpper());
     y += LINE_WIDTH + HEADER_HEIGHT;
 
     unsigned line = 0;

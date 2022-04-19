@@ -75,7 +75,6 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << event;
     if (!patchview.handleKeyPress(event->key())) {
         qDebug() << "Unhandled Main Key press: " << event;
     }
@@ -159,7 +158,6 @@ void MainWindow::createEditMenu()
 
 void MainWindow::open()
 {
-    qDebug("OPEN SOLL PASSIEREN");
     // if (maybeSave()) {
     //     QString fileName = QFileDialog::getOpenFileName(this);
     //     if (!fileName.isEmpty())

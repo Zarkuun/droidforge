@@ -23,7 +23,6 @@ JackAssignmentOutput::~JackAssignmentOutput()
 
 Atom *JackAssignmentOutput::getAtom() const
 {
-    qDebug() << "ATOM";
     return atom;
 }
 

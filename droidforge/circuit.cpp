@@ -1,5 +1,12 @@
 #include "circuit.h"
 
+Circuit::Circuit(QString name, const QStringList &comment)
+    : name(name)
+    , comment(comment)
+{
+}
+
+
 Circuit::~Circuit()
 {
     for (qsizetype i=0; i<jackAssignments.length(); i++)
@@ -9,7 +16,7 @@ Circuit::~Circuit()
 
 Circuit *Circuit::clone() const
 {
-    Circuit *newcircuit = new Circuit(name);
+    Circuit *newcircuit = new Circuit(name, comment);
     for (unsigned i=0; i<jackAssignments.size(); i++)
         newcircuit->jackAssignments.append(jackAssignments[i]->clone());
     return newcircuit;
@@ -33,10 +40,11 @@ void Circuit::deleteJackAssignment(unsigned i)
 QString Circuit::toString()
 {
     QString s;
-    if (!comment.isEmpty()) {
-        for (qsizetype i=0; i<comment.size(); i++)
+    for (qsizetype i=0; i<comment.size(); i++)
+        if (comment[i].isEmpty())
+             s += "\n";
+         else
              s += "# " + comment[i] + "\n"; // TODO Multiline
-    }
 
     // TODO: disabled
     s += "[" + name + "]\n";

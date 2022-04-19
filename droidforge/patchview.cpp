@@ -16,7 +16,6 @@ PatchView::PatchView()
 void PatchView::setPatch(Patch *patch)
 {
     while (this->tabBar()->count()) {
-        qDebug("Tab removed\n");
         removeTab(0);
     }
 
@@ -25,7 +24,10 @@ void PatchView::setPatch(Patch *patch)
     for (qsizetype i=0; i<patch->sections.count(); i++) {
         PatchSection *section = patch->sections[i];
         PatchSectionView *psv = new PatchSectionView(section);
-        addTab(psv, section->title);
+        QString title = section->title;
+        if (title.isEmpty())
+            title = "Circuits";
+        addTab(psv, title);
         if (currentPatchSectionView == 0)
             currentPatchSectionView = psv;
     }
@@ -34,6 +36,5 @@ void PatchView::setPatch(Patch *patch)
 
 bool PatchView::handleKeyPress(int key)
 {
-    qDebug() << "Key nach" << currentPatchSectionView;
     return currentPatchSectionView->handleKeyPress(key);
 }

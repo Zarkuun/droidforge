@@ -14,6 +14,7 @@ public:
     QString title;
     QList<Circuit *> circuits;
 
+    PatchSection() {}; // no title
     PatchSection(QString t) : title(t) {};
     ~PatchSection();
     PatchSection *clone() const;

@@ -70,12 +70,16 @@ bool PatchParser::parseLine(QString line)
 
 bool PatchParser::parseEmptyLine()
 {
+    if (currentComment.size() > 0)
+        currentComment.append("");
     return true;
 }
 
 
-bool PatchParser::parseCommentLine(QString)
+bool PatchParser::parseCommentLine(QString line)
 {
+    QString comment = line.mid(1).trimmed();
+    currentComment.append(comment);
     return true; // TODO: Comments
 }
 
@@ -89,8 +93,10 @@ bool PatchParser::parseCircuitLine(QString line)
 
     QString circuitName = line.sliced(1).chopped(1);
 
-    if (parseController(circuitName))
+    if (parseController(circuitName)) {
+        currentComment.clear();
         return true;
+    }
     else if (parseCircuit(circuitName))
         return true;
 
@@ -122,13 +128,25 @@ bool PatchParser::parseCircuit(QString name)
     }
 
     if (!section) {
-        section = new PatchSection("Circuits");
+        section = new PatchSection();
         patch->sections.append(section);
     }
 
-    circuit = new Circuit(name);
+    stripEmptyCommentLines();
+    circuit = new Circuit(name, currentComment);
     section->circuits.append(circuit);
+    currentComment.clear();
     return true;
+}
+
+
+void PatchParser::stripEmptyCommentLines()
+{
+    while (currentComment.size() > 0 &&
+           currentComment.last().isEmpty())
+    {
+        currentComment.removeLast();
+    }
 }
 
 
@@ -150,9 +168,9 @@ bool PatchParser::parseJackLine(QString line)
 
     JackAssignment *ja;
 
-    if (the_firmware->jackIsInput(circuit->name, jack))
+    if (the_firmware->jackIsInput(circuit->getName(), jack))
         ja = new JackAssignmentInput(jack, comment, valueString);
-    else if (the_firmware->jackIsOutput(circuit->name, jack))
+    else if (the_firmware->jackIsOutput(circuit->getName(), jack))
         ja = new JackAssignmentOutput(jack, comment, valueString);
     else
         ja = new JackAssignmentUnknown(jack, comment, valueString);

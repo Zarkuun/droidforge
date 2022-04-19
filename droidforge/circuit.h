@@ -9,21 +9,21 @@
 
 class Circuit
 {
+    QString name;
+    QStringList comment;
     QList<JackAssignment *> jackAssignments;
+    bool disabled;
 
 public:
-    Circuit(QString name) : name(name) {};
+    Circuit(QString name, const QStringList &comment);
     ~Circuit();
     Circuit *clone() const;
     QString toString();
+    QString getName() const { return name; };
     void addJackAssignment(JackAssignment *);
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
-    qsizetype numJackAssignments() {  return jackAssignments.count(); };
+    qsizetype numJackAssignments() const { return jackAssignments.count(); };
     void deleteJackAssignment(unsigned i);
-
-    QString name;
-    QStringList comment;
-    bool disabled;
 
 };
 
