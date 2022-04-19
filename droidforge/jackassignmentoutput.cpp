@@ -41,8 +41,10 @@ JackAssignment *JackAssignmentOutput::clone() const
 
 QString JackAssignmentOutput::valueToString() const
 {
-    return "<OUTPUTVALUE>";
-
+    if (atom)
+        return atom->toString();
+    else
+        return "";
 }
 
 

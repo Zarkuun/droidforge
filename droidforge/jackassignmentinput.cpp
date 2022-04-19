@@ -57,7 +57,24 @@ JackAssignment *JackAssignmentInput::clone() const
 
 QString JackAssignmentInput::valueToString() const
 {
-    return "<INPUTVALUE>";
+    // Do more intelligent work for a nice transformation
+    // into A * B + C
+    if (!atomA && !atomB && !atomC) // none defined
+        return "";
+    else if (atomA && !atomB && !atomC) // just A
+        return atomA->toString();
+    else if (!atomA && atomB && !atomC) // just B
+        return atomB->toString();
+    else if (!atomA && !atomB && atomC) // just C
+        return atomC->toString();
+    else if (atomA && atomB && !atomC) // just A and B
+        return atomA->toString() + " * " + atomB->toString();
+    else if (atomA && !atomB && atomC) // just A and C
+        return atomA->toString() + " + " + atomC->toString();
+    else if (!atomA && atomB && atomC) // just B and C
+        return atomB->toString() + " + " + atomB->toString();
+    else
+        return atomA->toString() + " * " + atomB->toString() + " + " + atomC->toString();
 }
 
 
