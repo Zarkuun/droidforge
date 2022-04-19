@@ -1,10 +1,12 @@
 #ifndef TUNING_H
 #define TUNING_H
 
-#define MIN_RACK_HEIGHT 200
-#define MAX_RACK_HEIGHT 300
+#define UNDO_HISTORY_SIZE             1000
+
 
 // Dimensions
+#define MIN_RACK_HEIGHT 200
+#define MAX_RACK_HEIGHT 300
 #define CIRCUIT_VERTICAL_MARGIN 20
 #define PIXEL_PER_HP 88
 

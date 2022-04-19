@@ -1,15 +1,18 @@
 #include "undohistory.h"
 #include "QtCore/qdebug.h"
+#include "tuning.h"
 
 UndoHistory::UndoHistory()
     : redoPointer(0)
 {
 }
 
+
 UndoHistory::~UndoHistory()
 {
     clear();
 }
+
 
 void UndoHistory::clear()
 {
@@ -29,7 +32,13 @@ void UndoHistory::snapshot(QString name, const Patch *patch)
     }
 
     steps.append(new EditorState(name, patch));
-    redoPointer++;
+    redoPointer++; // is always at the end now
+
+    while (steps.size() > UNDO_HISTORY_SIZE) {
+        delete steps[0];
+        steps.removeFirst();
+        redoPointer--;
+    }
 }
 
 
