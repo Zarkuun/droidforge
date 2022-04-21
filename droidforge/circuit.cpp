@@ -56,3 +56,9 @@ QString Circuit::toString()
     s += "\n";
     return s;
 }
+
+QString Circuit::getComment() const
+{
+    return comment.join('\n') + "\n";
+
+}

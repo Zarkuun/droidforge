@@ -6,10 +6,11 @@
 
 #include <QPainter>
 
-#define SIDE_PADDING   10
+#define SIDE_PADDING    5
 #define JACK_HEIGHT    18
 #define HEADER_HEIGHT  20
 #define LINE_WIDTH      1
+#define COMMENT_FONT_SIZE 10
 
 #define COLUMN_JACK_WIDTH    180
 #define COLUMN_ATOM_WIDTH    170
@@ -33,6 +34,9 @@
 
 CircuitView::CircuitView(Circuit *circuit)
     : circuit(circuit)
+    , selected(false)
+    , currentJack(-2)
+    , currentColumn(0)
 {
     effect.setBlurRadius(15);
     effect.setColor(QColor(0,0,0));
@@ -41,11 +45,19 @@ CircuitView::CircuitView(Circuit *circuit)
     setGraphicsEffect(&effect);
 }
 
+unsigned CircuitView::commentHeight() const
+{
+    return qMax(1, circuit->numCommentLines()) * COMMENT_FONT_SIZE * 1.25;
+}
+
 
 unsigned CircuitView::contentHeight() const
 {
     unsigned num_jacks = circuit->numJackAssignments();
-    return HEADER_HEIGHT + JACK_HEIGHT * num_jacks + LINE_WIDTH * (num_jacks + 2);
+    return HEADER_HEIGHT + LINE_WIDTH
+         + commentHeight() + LINE_WIDTH
+         + num_jacks * (JACK_HEIGHT + LINE_WIDTH)
+         + LINE_WIDTH;
 }
 
 
@@ -64,18 +76,36 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 
     unsigned x = SIDE_PADDING + LINE_WIDTH;
     unsigned y = LINE_WIDTH;
-    painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), COLOR_CIRCUIT_NAME_BACKGROUND);
-    if (selected && currentJack == -1)
-        painter->fillRect(QRect(0, y, WIDTH, HEADER_HEIGHT), COLOR_CURSOR);
 
+    // Circuit name
+    QRect r(0, y, WIDTH, HEADER_HEIGHT);
+    painter->fillRect(r, COLOR_CIRCUIT_NAME_BACKGROUND);
+    if (selected && currentJack == -2)
+        painter->fillRect(r, COLOR_CURSOR);
     painter->setPen(COLOR_CIRCUIT_NAME);
-    painter->drawText(QRect(x, y, WIDTH-x, HEADER_HEIGHT), Qt::AlignVCenter, circuit->getName().toUpper());
+    painter->drawText(QRect(x, y, WIDTH-x, HEADER_HEIGHT),
+                      Qt::AlignVCenter, circuit->getName().toUpper());
     y += LINE_WIDTH + HEADER_HEIGHT;
+
+    // Comment
+    r = QRect(0, y, WIDTH, commentHeight());
+    painter->fillRect(r, COLOR_COMMENT_BACKGROUND);
+    if (selected && currentJack == -1)
+        painter->fillRect(r, COLOR_CURSOR);
+    painter->setPen(COLOR_COMMENT);
+    painter->save();
+    const QFont &font = painter->font();
+    painter->setFont(QFont(font.family(), COMMENT_FONT_SIZE));
+    painter->drawText(QRect(SIDE_PADDING, y, WIDTH - 2*SIDE_PADDING, commentHeight()),
+                      Qt::AlignLeft | Qt::AlignJustify, circuit->getComment());
+    painter->restore();
+    y += LINE_WIDTH + commentHeight();
+
 
     unsigned line = 0;
     paintJacks(painter, line, y);
 
-    unsigned t = 2 * LINE_WIDTH + HEADER_HEIGHT;
+    unsigned t = 3 * LINE_WIDTH + HEADER_HEIGHT + commentHeight();
     painter->save();
     painter->setPen(COLOR_LINE);
     painter->drawLine(0, 0, 0, height);
