@@ -14,6 +14,7 @@ PatchParser::PatchParser()
     : patch(0)
     , section(0)
     , circuit(0)
+    , commentState(TITLE)
 {
 }
 
@@ -79,8 +80,28 @@ bool PatchParser::parseEmptyLine()
 bool PatchParser::parseCommentLine(QString line)
 {
     QString comment = line.mid(1).trimmed();
-    currentComment.append(comment);
-    return true; // TODO: Comments
+    if (comment.startsWith("---")) {
+        if (commentState == SECTION_HEADER_ACTIVE) {
+            commentState = CIRCUIT_HEADER;
+            if (!sectionHeader.isEmpty())
+                startNewSection(sectionHeader);
+            sectionHeader = "";
+        }
+        else {
+            commentState = SECTION_HEADER_ACTIVE;
+            sectionHeader = "";
+        }
+    }
+    else {
+        if (commentState == SECTION_HEADER_ACTIVE) {
+            if (!sectionHeader.isEmpty())
+                sectionHeader += " ";
+            sectionHeader += comment;
+        }
+        else
+            currentComment.append(comment);
+    }
+    return true;
 }
 
 
@@ -128,8 +149,7 @@ bool PatchParser::parseCircuit(QString name)
     }
 
     if (!section) {
-        section = new PatchSection();
-        patch->sections.append(section);
+        startNewSection("");
     }
 
     stripEmptyCommentLines();
@@ -147,6 +167,13 @@ void PatchParser::stripEmptyCommentLines()
     {
         currentComment.removeLast();
     }
+}
+
+
+void PatchParser::startNewSection(QString name)
+{
+    section = new PatchSection(name);
+    patch->sections.append(section);
 }
 
 

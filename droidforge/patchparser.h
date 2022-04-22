@@ -5,6 +5,8 @@
 
 #include <QFile>
 
+
+
 class PatchParser
 {
     Patch *patch; // used while parsing
@@ -14,6 +16,15 @@ class PatchParser
     QString errorMessage;
     unsigned errorLine;
     QStringList currentComment;
+    QString sectionHeader;
+    enum {
+        TITLE,
+        DESCRIPTION,
+        HEAD,
+        SECTION_HEADER_ACTIVE,
+        CIRCUIT_HEADER,
+    } commentState;
+    bool nextCommentIsSectionTitle;
 
 public:
     PatchParser();
@@ -28,6 +39,7 @@ private:
     bool parseController(QString name);
     bool parseCircuit(QString name);
     void stripEmptyCommentLines();
+    void startNewSection(QString name);
 };
 
 #endif // PATCHPARSER_H
