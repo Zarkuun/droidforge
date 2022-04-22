@@ -38,6 +38,8 @@ private:
     QAction *undoAction;
     QAction *redoAction;
 
+    QMenu *fileMenu;
+
 public:
     MainWindow();
     ~MainWindow();

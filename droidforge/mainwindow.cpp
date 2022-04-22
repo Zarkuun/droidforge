@@ -75,8 +75,10 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() <<"Key " << event;
     if (!patchview.handleKeyPress(event->key())) {
-        qDebug() << "Unhandled Main Key press: " << event;
+        qDebug("Unhandeld");
+        QMainWindow::keyPressEvent(event);
     }
 }
 
@@ -86,6 +88,18 @@ void MainWindow::createActions()
     createFileMenu();
     createEditMenu();
     updateActions();
+
+    QAction *nextSectionAct = new QAction(tr("Next section"));
+    nextSectionAct->setShortcut(QKeySequence(tr("Ctrl+Right")));
+    nextSectionAct->setStatusTip(tr("Switch to the next patch section"));
+    addAction(nextSectionAct);
+    connect(nextSectionAct, &QAction::triggered, &patchview, &PatchView::nextSection);
+
+    QAction *prevSectionAct = new QAction(tr("Previous section"));
+    prevSectionAct->setShortcut(QKeySequence(tr("Ctrl+Left")));
+    prevSectionAct->setStatusTip(tr("Switch to the previous patch section"));
+    addAction(prevSectionAct);
+    connect(prevSectionAct, &QAction::triggered, &patchview, &PatchView::previousSection);
 }
 
 
@@ -114,7 +128,7 @@ void MainWindow::updateActions()
 
 void MainWindow::createFileMenu()
 {
-    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu = menuBar()->addMenu(tr("&File"));
 
     // Open
     const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/images/open.png"));

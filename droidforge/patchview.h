@@ -14,6 +14,10 @@ public:
     PatchView();
     void setPatch(Patch *patch);
     bool handleKeyPress(int key);
+
+public slots:
+    void nextSection();
+    void previousSection();
 };
 
 #endif // PATCHVIEW_H
