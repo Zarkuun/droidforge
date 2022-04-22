@@ -268,9 +268,13 @@ int CircuitView::columnAt(unsigned x)
 int CircuitView::jackAt(unsigned y)
 {
     if (y < HEADER_HEIGHT)
-        return -1;
-
+        return -2;
     y -= HEADER_HEIGHT;
+
+    if (y < commentHeight())
+        return -1;
+    y -= commentHeight();
+
     int jack = y / JACK_HEIGHT;
     if (jack >= circuit->numJackAssignments())
         return circuit->numJackAssignments() - 1;

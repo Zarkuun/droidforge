@@ -82,21 +82,21 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
         return false;
 
     CircuitView *cv = (CircuitView *)item;
+    QPointF posInScene(mapToScene(pos.toPoint()));
+    QPointF posInCircuit = posInScene - item->pos();
+
+    // Loop over all circuits because we need the index number
+    // of the clicked circuit, not just the pointer.
     for (unsigned i=0; i<circuitViews.size(); i++)
     {
-        // Now we need the coordinates relative to the circuitview
-        // itself.
-        QPointF posInScene(mapToScene(pos.toPoint()));
-        QPointF posInCircuit = posInScene - item->pos();
-
         if (circuitViews[i] == cv) {
             currentCircuitView()->deselect();
             CursorPosition pos;
             pos.circuitNr = i;
             pos.row = cv->jackAt(posInCircuit.y());
             pos.column = cv->columnAt(posInCircuit.x());
-            currentCircuitView()->select(pos);
             section->setCursor(pos);
+            currentCircuitView()->select(pos);
             ensureVisible(currentCircuitView());
         }
     }
