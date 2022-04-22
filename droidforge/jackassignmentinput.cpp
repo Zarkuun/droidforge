@@ -2,6 +2,7 @@
 #include "atomnumber.h"
 
 #include <QRegularExpression>
+#include <QException>
 
 JackAssignmentInput::JackAssignmentInput(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
@@ -138,6 +139,8 @@ void JackAssignmentInput::parseInputValue(QString valueString)
     }
     else {
         qDebug() << value << " -> NO MATCH";
+        QException mist;
+        throw mist;
     }
     atomA = parseInputAtom(a);
     atomB = parseInputAtom(b);

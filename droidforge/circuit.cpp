@@ -1,5 +1,4 @@
 #include "circuit.h"
-#include "QtCore/qdebug.h"
 
 Circuit::Circuit(QString name, const QStringList &comment)
     : name(name)

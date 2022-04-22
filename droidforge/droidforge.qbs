@@ -30,6 +30,8 @@ QtApplication {
         "droidfirmware.h",
         "editorstate.cpp",
         "editorstate.h",
+        "generalparseexception.cpp",
+        "generalparseexception.h",
         "jackassignment.cpp",
         "jackassignment.h",
         "jackassignmentinput.cpp",

@@ -4,10 +4,12 @@
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
+#include "generalparseexception.h"
 
 #include "QtCore/qdebug.h"
 #include <QTextStream>
 #include <QRegularExpression>
+#include <QException>
 
 
 PatchParser::PatchParser()
@@ -19,7 +21,7 @@ PatchParser::PatchParser()
 }
 
 
-bool PatchParser::parse(QString fileName, Patch *patch)
+void PatchParser::parse(QString fileName, Patch *patch)
 {
     errorMessage = "";
     errorLine = 0;
@@ -29,19 +31,22 @@ bool PatchParser::parse(QString fileName, Patch *patch)
 
     QFile inputFile(fileName);
     if (!inputFile.open(QIODevice::ReadOnly)) {
-        errorMessage = "Cannot open file.";
-        return false;
+        throw GeneralParseException("Cannot open file: ...");
     }
 
     QTextStream in(&inputFile);
     while (!in.atEnd()) {
         QString line = in.readLine();
         errorLine ++;
-        if (!parseLine(line))
-            return false;
+        try {
+            parseLine(line);
+        }
+        catch(QException &e) {
+            qDebug() << "Mist isses in " << errorLine;
+            throw GeneralParseException("Fehler in Zeiol;e|");
+        }
     }
     inputFile.close();
-    return true;
 }
 
 

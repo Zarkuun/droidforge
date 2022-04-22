@@ -47,18 +47,23 @@ public:
 
     void createFileMenu();
     void createEditMenu();
-    bool loadPatch(QString filename);
+    void loadPatch(QString filename);
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    void HIRNkeyPressEvent(QKeyEvent *event);
 
 private slots:
+    void started();
     void open();
     void save();
     void undo();
     void redo();
+
+signals:
+    void sigStarted();
+
 
 private:
     void createActions();

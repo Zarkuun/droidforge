@@ -24,11 +24,11 @@ class PatchParser
         SECTION_HEADER_ACTIVE,
         CIRCUIT_HEADER,
     } commentState;
-    bool nextCommentIsSectionTitle;
+    // bool nextCommentIsSectionTitle;
 
 public:
     PatchParser();
-    bool parse(QString fileName, Patch *patch);
+    void parse(QString fileName, Patch *patch);
 
 private:
     bool parseLine(QString line);

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "generalparseexception.h"
 #include "patch.h"
 #include "ui_mainwindow.h"
 #include "rackview.h"
@@ -9,6 +10,8 @@
 #include <QSplitter>
 #include <QTextEdit>
 #include <QKeyEvent>
+#include <QMessageBox>
+#include <QTimer>
 
 MainWindow *the_forge;
 DroidFirmware *the_firmware;
@@ -18,6 +21,9 @@ MainWindow::MainWindow()
     , ui(new Ui::MainWindow)
     , patch(0)
 {
+    resize(800,1000);
+    move(1200, 0);
+
     the_forge = this;
     the_firmware = &firmware;
 
@@ -30,6 +36,8 @@ MainWindow::MainWindow()
     splitter->addWidget(&patchview);
     splitter->grabKeyboard(); // Macht, dass bei main die Tasten ankommen
     createActions();
+    // connect(this, &MainWindow::sigStarted, this, &MainWindow::started);
+    QTimer::singleShot(0, this, SLOT(started()));
 }
 
 
@@ -41,18 +49,15 @@ MainWindow::~MainWindow()
 }
 
 
-bool MainWindow::loadPatch(QString afilename)
+void MainWindow::loadPatch(QString afilename)
 {
     Patch newpatch;
-    if (!parser.parse(afilename, &newpatch))
-        return false;
-
+    parser.parse(afilename, &newpatch);
     setPatch(newpatch.clone());
 
     filename = afilename;
     undoHistory.clear();
     undoHistory.snapshot("Load from file", patch);
-    return true;
 }
 
 
@@ -73,13 +78,39 @@ void MainWindow::setPatch(Patch *newpatch)
 }
 
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
+void MainWindow::HIRNkeyPressEvent(QKeyEvent *event)
 {
     qDebug() << "Key" << event;
     if (!patchview.handleKeyPress(event->key())) {
         qDebug("Unhandeld");
         QMainWindow::keyPressEvent(event);
     }
+}
+
+void MainWindow::started()
+{
+    qDebug("4");
+    try {
+        loadPatch("/Users/mk/git/droidforge/testpatch.ini");
+    }
+    catch (GeneralParseException &e) {
+        QMessageBox box;
+        box.setText(MainWindow::tr("Cannot open testpatch.ini"));
+        box.setInformativeText(e.toString());
+        box.setStandardButtons(QMessageBox::Cancel);
+        box.setDefaultButton(QMessageBox::Cancel);
+        box.setIcon(QMessageBox::Critical);
+        box.exec();
+
+
+        qDebug("Das wars");
+        QApplication::quit();
+    }
+    catch (std::exception &x) {
+        qDebug() << "Argl";
+    }
+    qDebug("5");
+
 }
 
 
