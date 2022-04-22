@@ -40,6 +40,8 @@ QtApplication {
         "jackassignmentoutput.h",
         "jackassignmentunknown.cpp",
         "jackassignmentunknown.h",
+        "lineparseexception.cpp",
+        "lineparseexception.h",
         "main.cpp",
         "mainwindow.cpp",
         "module.h",

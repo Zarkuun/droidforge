@@ -1,3 +1,4 @@
+#include "lineparseexception.h"
 #include "mainwindow.h"
 #include "patchparser.h"
 #include "modulebuilder.h"
@@ -29,6 +30,8 @@ void PatchParser::parse(QString fileName, Patch *patch)
 
     this->patch = patch;
 
+    QString lineerrors;
+
     QFile inputFile(fileName);
     if (!inputFile.open(QIODevice::ReadOnly)) {
         throw GeneralParseException("Cannot open file: ...");
@@ -41,12 +44,15 @@ void PatchParser::parse(QString fileName, Patch *patch)
         try {
             parseLine(line);
         }
-        catch(QException &e) {
-            qDebug() << "Mist isses in " << errorLine;
-            throw GeneralParseException("Fehler in Zeiol;e|");
+        catch (GeneralParseException &e) {
+            qDebug("sevius");
+            QString error = QString("Line ") + QString::number(errorLine) + ": " + e.toString() + "\n";
+            lineerrors += error;
         }
     }
     inputFile.close();
+    if (!lineerrors.isEmpty())
+        throw GeneralParseException("Syntax errors in your patch:\n\n" + lineerrors);
 }
 
 

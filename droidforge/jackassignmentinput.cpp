@@ -1,5 +1,6 @@
 #include "jackassignmentinput.h"
 #include "atomnumber.h"
+#include "generalparseexception.h"
 
 #include <QRegularExpression>
 #include <QException>
@@ -10,7 +11,7 @@ JackAssignmentInput::JackAssignmentInput(QString jack, QString comment, QString 
     , atomB(0)
     , atomC(0)
 {
-    parseInputValue(valueString);
+    parseInputValue(jack, valueString);
 }
 
 
@@ -94,7 +95,7 @@ QString JackAssignmentInput::valueToString() const
 #define RATOMB "-[0-9][^*/+-]+"
 #define RATOM "(" RATOMA "|" RATOMB ")"
 
-void JackAssignmentInput::parseInputValue(QString valueString)
+void JackAssignmentInput::parseInputValue(QString jack, QString valueString)
 {
     static QRegularExpression spaces("\\s");
     QString value = valueString.toLower();
@@ -138,9 +139,7 @@ void JackAssignmentInput::parseInputValue(QString valueString)
         c = "-" + m.captured(2);
     }
     else {
-        qDebug() << value << " -> NO MATCH";
-        QException mist;
-        throw mist;
+        throw GeneralParseException("Invalid value for input " + jack + ": '" + value + "'");
     }
     atomA = parseInputAtom(a);
     atomB = parseInputAtom(b);

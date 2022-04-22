@@ -89,28 +89,20 @@ void MainWindow::HIRNkeyPressEvent(QKeyEvent *event)
 
 void MainWindow::started()
 {
-    qDebug("4");
     try {
         loadPatch("/Users/mk/git/droidforge/testpatch.ini");
     }
     catch (GeneralParseException &e) {
         QMessageBox box;
-        box.setText(MainWindow::tr("Cannot open testpatch.ini"));
+        box.setText(MainWindow::tr("Cannot load testpatch.ini"));
         box.setInformativeText(e.toString());
         box.setStandardButtons(QMessageBox::Cancel);
         box.setDefaultButton(QMessageBox::Cancel);
         box.setIcon(QMessageBox::Critical);
+        box.setBaseSize(QSize(600, 220));
         box.exec();
-
-
-        qDebug("Das wars");
         QApplication::quit();
     }
-    catch (std::exception &x) {
-        qDebug() << "Argl";
-    }
-    qDebug("5");
-
 }
 
 

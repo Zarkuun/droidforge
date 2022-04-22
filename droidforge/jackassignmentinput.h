@@ -21,7 +21,7 @@ protected:
 
 private:
     JackAssignmentInput(QString jack, QString comment);
-    void parseInputValue(QString valueString);
+    void parseInputValue(QString jack, QString valueString);
     Atom *parseInputAtom(QString s);
     Atom *parseOnOff(QString s);
     Atom *parseNumber(QString s);
