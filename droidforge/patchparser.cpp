@@ -14,7 +14,7 @@ PatchParser::PatchParser()
     : patch(0)
     , section(0)
     , circuit(0)
-    , commentState(TITLE)
+    , commentState(AWAITING_TITLE_COMMENT)
 {
 }
 
@@ -93,6 +93,10 @@ bool PatchParser::parseCommentLine(QString line)
         }
     }
     else {
+        if (commentState == AWAITING_TITLE_COMMENT) {
+            patch->setTitle(comment);
+            commentState = DESCRIPTION;
+        }
         if (commentState == SECTION_HEADER_ACTIVE) {
             if (!sectionHeader.isEmpty())
                 sectionHeader += " ";
@@ -107,6 +111,8 @@ bool PatchParser::parseCommentLine(QString line)
 
 bool PatchParser::parseCircuitLine(QString line)
 {
+    commentState = CIRCUIT_HEADER;
+
     if (!line.endsWith(']')) {
         errorMessage = "Missing ] at the end of the line";
         return false;

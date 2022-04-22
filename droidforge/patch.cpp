@@ -44,6 +44,16 @@ bool Patch::saveToFile(QString filename)
     return stream.status() == QTextStream::Ok;
 }
 
+const QString &Patch::getTitle() const
+{
+    return title;
+}
+
+void Patch::setTitle(const QString &newTitle)
+{
+    title = newTitle;
+}
+
 
 QString Patch::toString()
 {

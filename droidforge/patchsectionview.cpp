@@ -8,7 +8,7 @@
 PatchSectionView::PatchSectionView(PatchSection *section)
     : section(section)
 {
-    setAlignment(Qt::AlignCenter | Qt::AlignTop);
+    setAlignment(Qt::AlignLeft | Qt::AlignTop);
     buildPatchSection();
 }
 

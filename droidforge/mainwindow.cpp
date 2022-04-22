@@ -75,7 +75,7 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() <<"Key " << event;
+    qDebug() << "Key" << event;
     if (!patchview.handleKeyPress(event->key())) {
         qDebug("Unhandeld");
         QMainWindow::keyPressEvent(event);

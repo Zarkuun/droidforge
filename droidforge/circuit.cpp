@@ -1,4 +1,5 @@
 #include "circuit.h"
+#include "QtCore/qdebug.h"
 
 Circuit::Circuit(QString name, const QStringList &comment)
     : name(name)
@@ -59,6 +60,8 @@ QString Circuit::toString()
 
 QString Circuit::getComment() const
 {
-    return comment.join('\n') + "\n";
-
+    if (comment.empty())
+        return "";
+    else
+        return comment.join('\n') + "\n";
 }

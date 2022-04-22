@@ -18,7 +18,7 @@ class PatchParser
     QStringList currentComment;
     QString sectionHeader;
     enum {
-        TITLE,
+        AWAITING_TITLE_COMMENT,
         DESCRIPTION,
         HEAD,
         SECTION_HEADER_ACTIVE,

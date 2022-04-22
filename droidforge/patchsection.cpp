@@ -1,5 +1,7 @@
 #include "patchsection.h"
 
+#include <QDebug>
+
 PatchSection::~PatchSection()
 {
     for (qsizetype i=0; i<circuits.length(); i++)
@@ -58,11 +60,13 @@ void PatchSection::deleteCurrentJackAssignment()
 void PatchSection::moveCursorUp()
 {
     cursor.row --;
-    if (cursor.row < -1) {
+    if (cursor.row == -1 && !currentCircuit()->hasComment())
+        cursor.row --;
+    if (cursor.row < -2) {
         cursor.circuitNr--;
         if (cursor.circuitNr < 0) {
             cursor.circuitNr = 0;
-            cursor.row = -1;
+            cursor.row = -2;
         }
         else
             cursor.row = currentCircuit()->numJackAssignments() - 1;
@@ -74,6 +78,8 @@ void PatchSection::moveCursorDown()
 {
     int n = currentCircuit()->numJackAssignments();
     cursor.row ++;
+    if (cursor.row == -1 && !currentCircuit()->hasComment())
+        cursor.row ++;
     if (cursor.row >= n) {
         cursor.circuitNr ++;
         if (cursor.circuitNr >= circuits.size()) {

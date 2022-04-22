@@ -7,6 +7,7 @@
 
 class Patch
 {
+    QString title;
     QStringList controllers;
 
 public:
@@ -18,13 +19,14 @@ public:
     void addController(QString name) { controllers.append(name); };
     bool saveToFile(QString filename);
 
-    QString title;
     QStringList description;
     QString libraryId;
     unsigned version;
     QList<PatchSection *> sections;
 
     QString toString();
+    const QString &getTitle() const;
+    void setTitle(const QString &newTitle);
 };
 
 #endif // PATCH_H
