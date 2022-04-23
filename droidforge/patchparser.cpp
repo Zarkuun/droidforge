@@ -1,11 +1,10 @@
-#include "lineparseexception.h"
 #include "mainwindow.h"
 #include "patchparser.h"
 #include "modulebuilder.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
-#include "generalparseexception.h"
+#include "parseexception.h"
 
 #include "QtCore/qdebug.h"
 #include <QTextStream>
@@ -34,7 +33,7 @@ void PatchParser::parse(QString fileName, Patch *patch)
 
     QFile inputFile(fileName);
     if (!inputFile.open(QIODevice::ReadOnly)) {
-        throw GeneralParseException("Cannot open file: ...");
+        throw ParseException("Cannot open file: " + inputFile.errorString());
     }
 
     QTextStream in(&inputFile);
@@ -44,15 +43,14 @@ void PatchParser::parse(QString fileName, Patch *patch)
         try {
             parseLine(line);
         }
-        catch (GeneralParseException &e) {
-            qDebug("sevius");
+        catch (ParseException &e) {
             QString error = QString("Line ") + QString::number(errorLine) + ": " + e.toString() + "\n";
             lineerrors += error;
         }
     }
     inputFile.close();
     if (!lineerrors.isEmpty())
-        throw GeneralParseException("Syntax errors in your patch:\n\n" + lineerrors);
+        throw ParseException("Syntax errors in your patch:\n\n" + lineerrors);
 }
 
 

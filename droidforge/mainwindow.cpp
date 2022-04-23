@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "generalparseexception.h"
+#include "parseexception.h"
 #include "patch.h"
 #include "ui_mainwindow.h"
 #include "rackview.h"
@@ -16,10 +16,11 @@
 MainWindow *the_forge;
 DroidFirmware *the_firmware;
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(const QString &initialFilename)
     : QMainWindow()
     , ui(new Ui::MainWindow)
     , patch(0)
+    , initialFilename(initialFilename)
 {
     resize(800,1000);
     move(1200, 0);
@@ -37,7 +38,8 @@ MainWindow::MainWindow()
     splitter->grabKeyboard(); // Macht, dass bei main die Tasten ankommen
     createActions();
     // connect(this, &MainWindow::sigStarted, this, &MainWindow::started);
-    QTimer::singleShot(0, this, SLOT(started()));
+    if (!initialFilename.isEmpty())
+        QTimer::singleShot(0, this, [&] () {slotLoadPatch(initialFilename);});
 }
 
 
@@ -78,7 +80,7 @@ void MainWindow::setPatch(Patch *newpatch)
 }
 
 
-void MainWindow::HIRNkeyPressEvent(QKeyEvent *event)
+void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     qDebug() << "Key" << event;
     if (!patchview.handleKeyPress(event->key())) {
@@ -87,14 +89,14 @@ void MainWindow::HIRNkeyPressEvent(QKeyEvent *event)
     }
 }
 
-void MainWindow::started()
+void MainWindow::slotLoadPatch(const QString &filename)
 {
     try {
-        loadPatch("/Users/mk/git/droidforge/testpatch.ini");
+        loadPatch(filename);
     }
-    catch (GeneralParseException &e) {
+    catch (ParseException &e) {
         QMessageBox box;
-        box.setText(MainWindow::tr("Cannot load testpatch.ini"));
+        box.setText(MainWindow::tr("Cannot load ") + filename);
         box.setInformativeText(e.toString());
         box.setStandardButtons(QMessageBox::Cancel);
         box.setDefaultButton(QMessageBox::Cancel);

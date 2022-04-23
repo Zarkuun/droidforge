@@ -1,15 +1,24 @@
-#include "generalparseexception.h"
+#include "parseexception.h"
 #include "mainwindow.h"
 #include "patch.h"
 
 #include "unistd.h"
 
 #include <QApplication>
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow mainWindow;
+    QString initialFilename;
+    if (argc > 1)
+        initialFilename = argv[1];
+    else
+        initialFilename = "/Users/mk/git/droidforge/testpatch.ini";
+
+    qDebug() << "Ich bin in " << QDir::currentPath();
+
+    MainWindow mainWindow(initialFilename);
     mainWindow.show();
     return a.exec();
 }

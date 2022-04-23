@@ -30,6 +30,7 @@ private:
     DroidFirmware firmware;
     UndoHistory undoHistory;
     PatchParser parser;
+    QString initialFilename;
     Patch *patch;
     QString filename; // of loaded patch
     RackView rackview;
@@ -41,7 +42,7 @@ private:
     QMenu *fileMenu;
 
 public:
-    MainWindow();
+    MainWindow(const QString &initialFilename);
     ~MainWindow();
     void setPatch(Patch *);
 
@@ -52,10 +53,10 @@ public:
     void registerEdit(QString name);
 
 protected:
-    void HIRNkeyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void started();
+    void slotLoadPatch(const QString &filename);
     void open();
     void save();
     void undo();

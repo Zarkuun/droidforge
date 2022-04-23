@@ -25,7 +25,6 @@ void PatchView::setPatch(Patch *patch)
     for (qsizetype i=0; i<patch->sections.count(); i++) {
         PatchSection *section = patch->sections[i];
         PatchSectionView *psv = new PatchSectionView(section);
-        qDebug() << "View" << i << "ist" << psv;
         QString title = section->title;
         if (title.isEmpty())
             title = "Circuits";
@@ -38,7 +37,6 @@ void PatchView::setPatch(Patch *patch)
 
 bool PatchView::handleKeyPress(int key)
 {
-    qDebug() << key << "FOCUS" << this->focusWidget();
     return currentPatchSectionView->handleKeyPress(key);
 }
 

@@ -1,6 +1,6 @@
 #include "jackassignmentinput.h"
 #include "atomnumber.h"
-#include "generalparseexception.h"
+#include "parseexception.h"
 
 #include <QRegularExpression>
 #include <QException>
@@ -139,7 +139,7 @@ void JackAssignmentInput::parseInputValue(QString jack, QString valueString)
         c = "-" + m.captured(2);
     }
     else {
-        throw GeneralParseException("Invalid value for input " + jack + ": '" + value + "'");
+        throw ParseException("Invalid value for input " + jack + ": '" + value + "'");
     }
     atomA = parseInputAtom(a);
     atomB = parseInputAtom(b);
