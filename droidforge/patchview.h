@@ -9,6 +9,7 @@
 class PatchView : public QTabWidget
 {
     PatchSectionView *currentPatchSectionView;
+    Patch *patch;
 
 public:
     PatchView();
@@ -18,6 +19,7 @@ public:
 public slots:
     void nextSection();
     void previousSection();
+    void editProperties();
 };
 
 #endif // PATCHVIEW_H

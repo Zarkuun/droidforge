@@ -1,7 +1,9 @@
 #include "patchview.h"
+#include "mainwindow.h"
 #include "tuning.h"
 #include "patch.h"
 #include "patchsectionview.h"
+#include "patchpropertiesdialog.h"
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
@@ -10,12 +12,16 @@
 PatchView::PatchView()
     : QTabWidget()
     , currentPatchSectionView(0)
+    , patch(0)
 {
+    grabKeyboard();
 }
 
 
-void PatchView::setPatch(Patch *patch)
+void PatchView::setPatch(Patch *newPatch)
 {
+    patch = newPatch;
+
     while (this->tabBar()->count()) {
         removeTab(0);
     }
@@ -52,4 +58,19 @@ void PatchView::previousSection()
 {
     this->setCurrentIndex((currentIndex() - 1 + count()) % count());
     currentPatchSectionView = (PatchSectionView *)currentWidget();
+}
+
+void PatchView::editProperties()
+{
+    PatchPropertiesDialog dialog(
+                patch->getTitle(),
+                patch->getDescription());
+    releaseKeyboard();
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        the_forge->registerEdit("Editing patch properties");
+        patch->setTitle(dialog.getTitle());
+        patch->setDescription(dialog.getDescription());
+    }
+    grabKeyboard();
 }

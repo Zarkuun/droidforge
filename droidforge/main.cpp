@@ -16,8 +16,6 @@ int main(int argc, char *argv[])
     else
         initialFilename = "/Users/mk/git/droidforge/testpatch.ini";
 
-    qDebug() << "Ich bin in " << QDir::currentPath();
-
     MainWindow mainWindow(initialFilename);
     mainWindow.show();
     return a.exec();

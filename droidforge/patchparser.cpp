@@ -106,7 +106,10 @@ bool PatchParser::parseCommentLine(QString line)
             patch->setTitle(comment);
             commentState = DESCRIPTION;
         }
-        if (commentState == SECTION_HEADER_ACTIVE) {
+        else if (commentState == DESCRIPTION) {
+            patch->addDescriptionLine(comment);
+        }
+        else if (commentState == SECTION_HEADER_ACTIVE) {
             if (!sectionHeader.isEmpty())
                 sectionHeader += " ";
             sectionHeader += comment;

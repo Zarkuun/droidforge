@@ -19,8 +19,8 @@ DroidFirmware *the_firmware;
 MainWindow::MainWindow(const QString &initialFilename)
     : QMainWindow()
     , ui(new Ui::MainWindow)
-    , patch(0)
     , initialFilename(initialFilename)
+    , patch(0)
 {
     resize(800,1000);
     move(1200, 0);
@@ -35,9 +35,9 @@ MainWindow::MainWindow(const QString &initialFilename)
 
     splitter->addWidget(&rackview);
     splitter->addWidget(&patchview);
-    splitter->grabKeyboard(); // Macht, dass bei main die Tasten ankommen
+
     createActions();
-    // connect(this, &MainWindow::sigStarted, this, &MainWindow::started);
+
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {slotLoadPatch(initialFilename);});
 }
@@ -82,10 +82,11 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << "Key" << event;
+    qDebug() << Q_FUNC_INFO << "Key" << event;
     if (!patchview.handleKeyPress(event->key())) {
+        event->ignore();
         qDebug("Unhandeld");
-        QMainWindow::keyPressEvent(event);
+        // QWidget::keyPressEvent(event);
     }
 }
 
@@ -170,6 +171,13 @@ void MainWindow::createFileMenu()
     saveAct->setStatusTip(tr("Save patch to file"));
     connect(saveAct, &QAction::triggered, this, &MainWindow::save);
     fileMenu->addAction(saveAct);
+
+    // Patch properties
+    QAction *patchPropertiesAct = new QAction(saveIcon, tr("&Patch properties..."), this);
+    patchPropertiesAct->setShortcut(QKeySequence(tr("Ctrl+.")));
+    connect(patchPropertiesAct, &QAction::triggered, &patchview, &PatchView::editProperties);
+    fileMenu->addAction(patchPropertiesAct);
+
 }
 
 

@@ -44,9 +44,29 @@ bool Patch::saveToFile(QString filename)
     return stream.status() == QTextStream::Ok;
 }
 
+void Patch::addDescriptionLine(const QString &line)
+{
+    description.append(line);
+}
+
+void Patch::setDescription(const QString &d)
+{
+    description = d.split('\n');
+    if (d.endsWith("\n"))
+        description.removeLast();
+}
+
 const QString &Patch::getTitle() const
 {
     return title;
+}
+
+QString Patch::getDescription() const
+{
+    if (description.empty())
+        return "";
+    else
+        return description.join("\n") + "\n";
 }
 
 void Patch::setTitle(const QString &newTitle)
