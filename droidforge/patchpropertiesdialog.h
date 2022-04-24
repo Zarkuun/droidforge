@@ -1,6 +1,7 @@
 #ifndef PATCHPROPERTIESDIALOG_H
 #define PATCHPROPERTIESDIALOG_H
 
+#include "patch.h"
 #include <QDialog>
 
 namespace Ui {
@@ -10,19 +11,21 @@ class PatchPropertiesDialog;
 class PatchPropertiesDialog : public QDialog
 {
     Q_OBJECT
+    Patch *patch;
 
 public:
-    explicit PatchPropertiesDialog(
-            const QString &title,
-            const QString &description,
+    explicit PatchPropertiesDialog(Patch *patch,
             QWidget *parent = nullptr);
     ~PatchPropertiesDialog();
 
-    QString getTitle();
-    QString getDescription();
-
 private:
     Ui::PatchPropertiesDialog *ui;
+    void done(int r);
+    bool validateInput();
+
+private slots:
+    void apply();
+
 };
 
 #endif // PATCHPROPERTIESDIALOG_H

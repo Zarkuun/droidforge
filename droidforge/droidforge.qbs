@@ -31,6 +31,8 @@ QtApplication {
         "editorstate.cpp",
         "editorstate.h",
         "generalparseexception.cpp",
+        "inputvalidationexception.cpp",
+        "inputvalidationexception.h",
         "jackassignment.cpp",
         "jackassignment.h",
         "jackassignmentinput.cpp",

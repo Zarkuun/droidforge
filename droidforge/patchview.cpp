@@ -62,15 +62,8 @@ void PatchView::previousSection()
 
 void PatchView::editProperties()
 {
-    PatchPropertiesDialog dialog(
-                patch->getTitle(),
-                patch->getDescription());
     releaseKeyboard();
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        the_forge->registerEdit("Editing patch properties");
-        patch->setTitle(dialog.getTitle());
-        patch->setDescription(dialog.getDescription());
-    }
+    PatchPropertiesDialog dialog(patch);
+    dialog.exec();
     grabKeyboard();
 }
