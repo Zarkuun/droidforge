@@ -3,9 +3,12 @@
 #include <QFile>
 #include <QTextStream>
 
+
+
+
+
 Patch::Patch()
-    : version(0)
-    , registerComments(new RegisterComments())
+    : registerComments(new RegisterComments())
 {
 }
 
@@ -23,8 +26,7 @@ Patch *Patch::clone() const
     Patch *newpatch = new Patch();
     newpatch->title = title;
     newpatch->description = description;
-    newpatch->libraryId = libraryId;
-    newpatch->version = version;
+    newpatch->libraryMetaData = libraryMetaData;
     delete newpatch->registerComments;
     newpatch->registerComments = registerComments->clone();
     newpatch->controllers = controllers;
@@ -89,13 +91,15 @@ void Patch::setTitle(const QString &newTitle)
 QString Patch::toString()
 {
     QString s;
-    if (!title.isEmpty())
+    if (title.isEmpty())
+        s += "# Untitled patch\n";
+    else
         s += "# " + title + "\n";
 
-    if (version > 0 || !libraryId.isEmpty())
-        s += "# LIBRARY: id=" + libraryId + ", version=" + QString::number(version) + "\n";
+    if (!libraryMetaData.isEmpty())
+        s += "# LIBRARY: " + libraryMetaData;
 
-    s += registerComments->toString();
+    s += "\n";
 
     if (!description.isEmpty()) {
         if (!s.isEmpty())
@@ -105,6 +109,8 @@ QString Patch::toString()
         }
         s += "\n";
     }
+
+    s += registerComments->toString();
 
     for (qsizetype i=0; i<controllers.length(); i++)
         s += "[" + controllers[i] + "]\n";

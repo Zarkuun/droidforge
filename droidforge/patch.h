@@ -10,8 +10,7 @@ class Patch
 {
     QString title;
     QStringList description;
-    QString libraryId;
-    unsigned version;
+    QString libraryMetaData; // break into structure later
     RegisterComments *registerComments;
     QStringList controllers;
 
@@ -39,6 +38,8 @@ public:
     const QString &getTitle() const;
     QString getDescription() const;
     void setTitle(const QString &newTitle);
+    const QString &getLibraryMetaData() const { return libraryMetaData; }
+    void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
 };
 
 #endif // PATCH_H

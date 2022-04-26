@@ -107,8 +107,9 @@ bool PatchParser::parseCommentLine(QString line)
             commentState = DESCRIPTION;
         }
         else if (commentState == DESCRIPTION) {
-            if (!parseRegisterComment(comment))
-                patch->addDescriptionLine(comment);
+            if (!parseRegisterComment(comment)
+                && !parseMetaComment(comment))
+            patch->addDescriptionLine(comment);
         }
         else if (commentState == SECTION_HEADER_ACTIVE) {
             if (!sectionHeader.isEmpty())
@@ -159,6 +160,34 @@ bool PatchParser::parseRegisterComment(QString comment)
     }
     else
         return false;
+}
+
+bool PatchParser::parseMetaComment(QString comment)
+{
+    static QRegularExpression regex("^[[:space:]]*([A-Z][A-Z 0-9]*):[[:space:]]*(.*)$");
+    QRegularExpressionMatch m;
+    m = regex.match(comment);
+    if (m.hasMatch()) {
+        if (m.captured(1) == "LIBRARY")
+            parseLibraryMetaData(m.captured(2));
+        else
+            qDebug() << "ignoring" << comment;
+        // Ignore the other headers. They are most probably from
+        // the output of the registers like "INPUTS:"
+        return true;
+    }
+    else
+        return false;
+}
+
+
+void PatchParser::parseLibraryMetaData(QString data)
+{
+    // Example:
+    // LIBRARY: name=arpeggio; version=1.0; firmware=blue-1
+    patch->setLibraryMetaData(data);
+    qDebug() << "SET" << data;
+
 }
 
 
