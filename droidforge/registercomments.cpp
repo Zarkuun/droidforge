@@ -56,9 +56,9 @@ QString RegisterComments::toString() const
 
     // And now the registers on the controllers
     static regtitle_t controllerRegtypes[] =  {
+        { 'P', "Pots" },
         { 'B', "Buttons" },
         { 'L', "LEDs" },
-        { 'P', "Pots" },
         { 'S', "Switches" },
     };
 

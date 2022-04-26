@@ -155,8 +155,10 @@ bool PatchParser::parseRegisterComment(QString comment)
         }
 
         patch->addRegisterComment(registerName, controller, number, shorthand, atomcomment);
+        return true;
     }
-    return true;
+    else
+        return false;
 }
 
 
