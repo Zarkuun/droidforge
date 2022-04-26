@@ -25,7 +25,6 @@ private:
 
 private slots:
     void apply();
-
 };
 
 #endif // PATCHPROPERTIESDIALOG_H

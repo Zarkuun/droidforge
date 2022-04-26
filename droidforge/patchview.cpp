@@ -1,4 +1,5 @@
 #include "patchview.h"
+#include "circuitchoosedialog.h"
 #include "mainwindow.h"
 #include "tuning.h"
 #include "patch.h"
@@ -63,6 +64,14 @@ void PatchView::editProperties()
 {
     releaseKeyboard();
     PatchPropertiesDialog dialog(patch);
+    dialog.exec();
+    grabKeyboard();
+}
+
+void PatchView::newCircuit()
+{
+    releaseKeyboard();
+    CircuitChooseDialog dialog;
     dialog.exec();
     grabKeyboard();
 }

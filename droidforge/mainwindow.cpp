@@ -12,6 +12,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QTimer>
+#include <QFileDialog>
 
 MainWindow *the_forge;
 DroidFirmware *the_firmware;
@@ -198,16 +199,22 @@ void MainWindow::createEditMenu()
     redoAction->setStatusTip(tr("Redo last edit action"));
     connect(redoAction, &QAction::triggered, this, &MainWindow::redo);
     editMenu->addAction(redoAction);
+
+    // New circuit...
+    const QIcon newIcon = QIcon::fromTheme("new", QIcon(":/images/new.png"));
+    QAction *newCircuitAction = new QAction(newIcon, tr("&New circuit..."), this);
+    newCircuitAction->setShortcut(QKeySequence(tr("Ctrl+N")));
+    connect(newCircuitAction, &QAction::triggered, &patchview, &PatchView::newCircuit);
+    editMenu->addAction(newCircuitAction);
+
 }
 
 
 void MainWindow::open()
 {
-    // if (maybeSave()) {
-    //     QString fileName = QFileDialog::getOpenFileName(this);
-    //     if (!fileName.isEmpty())
-    //         loadFile(fileName);
-    // }
+    QString fileName = QFileDialog::getOpenFileName(this);
+    if (!fileName.isEmpty())
+        loadFile(fileName);
 }
 
 void MainWindow::save()
