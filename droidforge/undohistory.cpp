@@ -1,5 +1,4 @@
 #include "undohistory.h"
-#include "QtCore/qdebug.h"
 #include "tuning.h"
 
 UndoHistory::UndoHistory()

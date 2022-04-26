@@ -19,7 +19,12 @@ class RegisterComments
 public:
     RegisterComments() {};
     ~RegisterComments();
+    RegisterComments *clone() const;
     void addComment(AtomRegister *atom, QString shorthand, QString comment);
+    QString toString() const;
+
+private:
+    QString toString(char reg, unsigned controller, const char *title=0) const;
 };
 
 #endif // REGISTERCOMMENTS_H

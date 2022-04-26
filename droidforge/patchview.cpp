@@ -7,7 +7,6 @@
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
-#include <QDebug>
 
 PatchView::PatchView()
     : QTabWidget()

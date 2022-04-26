@@ -82,10 +82,8 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << Q_FUNC_INFO << "Key" << event;
     if (!patchview.handleKeyPress(event->key())) {
         event->ignore();
-        qDebug("Unhandeld");
         // QWidget::keyPressEvent(event);
     }
 }
@@ -214,8 +212,7 @@ void MainWindow::open()
 
 void MainWindow::save()
 {
-    qDebug() << "saving" << filename;
-    patch->saveToFile(filename);
+    patch->saveToFile(filename + ".new");
 
 }
 

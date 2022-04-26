@@ -66,7 +66,7 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
         if (!handleMousePress(event->pos())) {
-            qDebug() << "Unhandled mouse press" << event;
+            // NIX
         }
     }
 }

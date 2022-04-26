@@ -1,5 +1,4 @@
 #include "jackassignmentoutput.h"
-#include "QtCore/qdebug.h"
 
 JackAssignmentOutput::JackAssignmentOutput(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)

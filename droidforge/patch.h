@@ -10,7 +10,9 @@ class Patch
 {
     QString title;
     QStringList description;
-    RegisterComments registerComments;
+    QString libraryId;
+    unsigned version;
+    RegisterComments *registerComments;
     QStringList controllers;
 
 
@@ -31,8 +33,6 @@ public:
             const QString &shorthand,
             const QString &atomcomment);
 
-    QString libraryId;
-    unsigned version;
     QList<PatchSection *> sections;
 
     QString toString();

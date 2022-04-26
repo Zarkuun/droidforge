@@ -135,12 +135,16 @@ bool PatchParser::parseRegisterComment(QString comment)
     m = regex.match(comment);
     if (m.hasMatch()) {
         QChar registerName = m.captured(1).toUpper()[0];
-        unsigned controller = m.captured(2).toUInt();
+        unsigned controller;
         unsigned number;
-        if (m.captured(3).isEmpty())
-            number = 0;
-        else
+        if (m.captured(3).isEmpty()) {
+            controller = 0;
+            number = m.captured(2).toUInt();
+        }
+        else {
+            controller = m.captured(2).toUInt();
             number = m.captured(3).toUInt();
+        }
         QString atomcomment = m.captured(4);
         QRegularExpressionMatch m2;
         m2 = shorthand.match(atomcomment);

@@ -3,6 +3,8 @@
 
 #define UNDO_HISTORY_SIZE             1000
 
+#define MAX_NUM_CONTROLLERS           32 // When parsing a patch
+
 
 // Dimensions
 #define MIN_RACK_HEIGHT               200

@@ -5,12 +5,14 @@
 
 Patch::Patch()
     : version(0)
+    , registerComments(new RegisterComments())
 {
 }
 
 
 Patch::~Patch()
 {
+    delete registerComments;
     for (qsizetype i=0; i<sections.length(); i++)
         delete sections[i];
 }
@@ -23,6 +25,8 @@ Patch *Patch::clone() const
     newpatch->description = description;
     newpatch->libraryId = libraryId;
     newpatch->version = version;
+    delete newpatch->registerComments;
+    newpatch->registerComments = registerComments->clone();
     newpatch->controllers = controllers;
 
     for (unsigned i=0; i<sections.size(); i++) {
@@ -58,7 +62,7 @@ void Patch::setDescription(const QString &d)
 
 void Patch::addRegisterComment(QChar registerName, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
 {
-    registerComments.addComment(
+    registerComments->addComment(
                 new AtomRegister(registerName, controller, number),
                 shorthand, comment);
 }
@@ -90,6 +94,8 @@ QString Patch::toString()
 
     if (version > 0 || !libraryId.isEmpty())
         s += "# LIBRARY: id=" + libraryId + ", version=" + QString::number(version) + "\n";
+
+    s += registerComments->toString();
 
     if (!description.isEmpty()) {
         if (!s.isEmpty())
