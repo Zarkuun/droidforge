@@ -34,6 +34,7 @@ private:
     bool parseLine(QString line);
     bool parseEmptyLine();
     bool parseCommentLine(QString line);
+    bool parseRegisterComment(QString comment);
     bool parseCircuitLine(QString line);
     bool parseJackLine(QString line);
     bool parseController(QString name);

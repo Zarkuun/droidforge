@@ -2,6 +2,7 @@
 #define PATCH_H
 
 #include "patchsection.h"
+#include "registercomments.h"
 
 #include <QStringList>
 
@@ -9,7 +10,9 @@ class Patch
 {
     QString title;
     QStringList description;
+    RegisterComments registerComments;
     QStringList controllers;
+
 
 public:
     Patch();
@@ -21,6 +24,12 @@ public:
     bool saveToFile(QString filename);
     void addDescriptionLine(const QString &line);
     void setDescription(const QString &d);
+    void addRegisterComment(
+            QChar registerName,
+            unsigned controller,
+            unsigned number,
+            const QString &shorthand,
+            const QString &atomcomment);
 
     QString libraryId;
     unsigned version;

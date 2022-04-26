@@ -56,6 +56,13 @@ void Patch::setDescription(const QString &d)
         description.removeLast();
 }
 
+void Patch::addRegisterComment(QChar registerName, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
+{
+    registerComments.addComment(
+                new AtomRegister(registerName, controller, number),
+                shorthand, comment);
+}
+
 const QString &Patch::getTitle() const
 {
     return title;

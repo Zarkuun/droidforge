@@ -84,6 +84,8 @@ QtApplication {
         "patchview.h",
         "rackview.cpp",
         "rackview.h",
+        "registercomments.cpp",
+        "registercomments.h",
         "resources.qrc",
         "tuning.h",
         "undohistory.cpp",

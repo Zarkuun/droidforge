@@ -5,8 +5,8 @@
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
 #include "parseexception.h"
+#include "registercomments.h"
 
-#include "QtCore/qdebug.h"
 #include <QTextStream>
 #include <QRegularExpression>
 #include <QException>
@@ -107,7 +107,8 @@ bool PatchParser::parseCommentLine(QString line)
             commentState = DESCRIPTION;
         }
         else if (commentState == DESCRIPTION) {
-            patch->addDescriptionLine(comment);
+            if (!parseRegisterComment(comment))
+                patch->addDescriptionLine(comment);
         }
         else if (commentState == SECTION_HEADER_ACTIVE) {
             if (!sectionHeader.isEmpty())
@@ -116,6 +117,40 @@ bool PatchParser::parseCommentLine(QString line)
         }
         else
             currentComment.append(comment);
+    }
+    return true;
+}
+
+
+bool PatchParser::parseRegisterComment(QString comment)
+{
+    // Examples:
+    // I1: [CLK] optional external clock
+    // P2.4: This is a comment without short
+
+    static QRegularExpression regex("^([a-zA-Z])([1-9][0-9]*)[.]?([1-9][0-9]*)?:[[:space:]]*(.*)$");
+    static QRegularExpression shorthand("^\\[([^]]+)\\][[:space:]]*(.*)$");
+
+    QRegularExpressionMatch m;
+    m = regex.match(comment);
+    if (m.hasMatch()) {
+        QChar registerName = m.captured(1).toUpper()[0];
+        unsigned controller = m.captured(2).toUInt();
+        unsigned number;
+        if (m.captured(3).isEmpty())
+            number = 0;
+        else
+            number = m.captured(3).toUInt();
+        QString atomcomment = m.captured(4);
+        QRegularExpressionMatch m2;
+        m2 = shorthand.match(atomcomment);
+        QString shorthand;
+        if (m2.hasMatch()) { // Format with short hand like [CLK]
+            shorthand = m2.captured(1);
+            atomcomment = m2.captured(2);
+        }
+
+        patch->addRegisterComment(registerName, controller, number, shorthand, atomcomment);
     }
     return true;
 }
