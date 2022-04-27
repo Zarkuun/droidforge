@@ -50,15 +50,10 @@ CircuitChooseDialog::~CircuitChooseDialog()
 
 }
 
-void CircuitChooseDialog::addCategoryTab(QString /* category */, QString title)
+void CircuitChooseDialog::addCategoryTab(QString category, QString title)
 {
-    CircuitCollection *cc = new CircuitCollection(this);
+    CircuitCollection *cc = new CircuitCollection(category, this);
     tabWidget->addTab(cc, title);
-
-    // QStringList circuits = the_firmware->circuitsOfCategory("modulation");
-    // for (qsizetype i=0; i<circuits.size(); i++) {
-    //     qDebug() << "HAB" << circuits[i];
-    // }
 }
 
 void CircuitChooseDialog::nextCategory()

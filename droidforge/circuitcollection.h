@@ -6,10 +6,12 @@
 
 class CircuitCollection : public QGraphicsView
 {
-
 public:
-    CircuitCollection(QWidget *parent);
+    CircuitCollection(QString category, QWidget *parent);
     ~CircuitCollection();
+
+private:
+    void loadCircuitCategory(QString category);
 };
 
 #endif // CIRCUITCOLLECTION_H

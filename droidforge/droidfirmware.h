@@ -16,6 +16,7 @@ public:
     bool jackIsInput(QString circuit, QString jack);
     bool jackIsOutput(QString circuit, QString jack);
     QStringList circuitsOfCategory(QString category);
+    QString circuitDescription(QString circuit);
 
 private:
     QJsonValue findJack(QString circuit, QString whence, QString jack);

@@ -52,6 +52,12 @@ QStringList DroidFirmware::circuitsOfCategory(QString category)
     return result;
 }
 
+QString DroidFirmware::circuitDescription(QString circuit)
+{
+    QString fullDescription = circuits[circuit].toObject()["description"].toString();
+    return fullDescription.split('.')[0];
+}
+
 
 QJsonValue DroidFirmware::findJack(QString circuit, QString whence, QString jack)
 {
@@ -60,7 +66,7 @@ QJsonValue DroidFirmware::findJack(QString circuit, QString whence, QString jack
         QJsonObject jackinfo = jacklist[i].toObject();
         // Account for jack arrays
         if (jackinfo.contains("count")) {
-            for (unsigned i=1; i<=jackinfo["count"].toInt(); i++) {
+            for (qsizetype i=1; i<=jackinfo["count"].toInt(); i++) {
                 QString n = jackinfo["prefix"].toString() + QString::number(i);
                 if (n == jack)
                     return jackinfo;

@@ -24,6 +24,8 @@ QtApplication {
         "circuitchoosedialog.h",
         "circuitcollection.cpp",
         "circuitcollection.h",
+        "circuitinfoview.cpp",
+        "circuitinfoview.h",
         "circuittype.cpp",
         "circuittype.h",
         "circuitview.cpp",
