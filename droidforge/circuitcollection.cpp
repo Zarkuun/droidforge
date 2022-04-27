@@ -1,8 +1,7 @@
 #include "circuitcollection.h"
 
-CircuitCollection::CircuitCollection(const QString &title, QWidget *parent)
+CircuitCollection::CircuitCollection(QWidget *parent)
     : QGraphicsView(parent)
-    , title(title)
 {
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }

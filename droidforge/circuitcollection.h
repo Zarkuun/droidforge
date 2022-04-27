@@ -6,12 +6,10 @@
 
 class CircuitCollection : public QGraphicsView
 {
-    QString title;
 
 public:
-    CircuitCollection(const QString &title, QWidget *parent);
+    CircuitCollection(QWidget *parent);
     ~CircuitCollection();
-    const QString &getTitle() const { return title; };
 };
 
 #endif // CIRCUITCOLLECTION_H

@@ -4,6 +4,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+
 class DroidFirmware
 {
     QJsonDocument json;
@@ -14,9 +15,12 @@ public:
     bool circuitExists(QString circuit);
     bool jackIsInput(QString circuit, QString jack);
     bool jackIsOutput(QString circuit, QString jack);
+    QStringList circuitsOfCategory(QString category);
 
 private:
     QJsonValue findJack(QString circuit, QString whence, QString jack);
 };
+
+extern DroidFirmware *the_firmware;
 
 #endif // DROIDFIRMWARE_H

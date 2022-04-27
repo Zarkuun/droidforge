@@ -39,6 +39,20 @@ bool DroidFirmware::jackIsOutput(QString circuit, QString jack)
 }
 
 
+QStringList DroidFirmware::circuitsOfCategory(QString category)
+{
+    QStringList result;
+    for (auto i=circuits.constBegin(); i != circuits.constEnd(); ++i)
+    {
+        QString name = i.key();
+        QString cat = i.value().toObject()["category"].toString();
+        if (cat == category)
+            result.append(name);
+    }
+    return result;
+}
+
+
 QJsonValue DroidFirmware::findJack(QString circuit, QString whence, QString jack)
 {
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();

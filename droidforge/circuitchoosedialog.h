@@ -18,6 +18,13 @@ class CircuitChooseDialog : public QDialog
 public:
     CircuitChooseDialog(QWidget *parent = nullptr);
     ~CircuitChooseDialog();
+
+private:
+    void addCategoryTab(QString category, QString title);
+
+private slots:
+    void nextCategory();
+    void previousCategory();
 };
 
 #endif // CIRCUITCHOOSEDIALOG_H
