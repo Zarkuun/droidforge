@@ -3,7 +3,7 @@
 #include "droidfirmware.h"
 #include "tuning.h"
 
-
+#include <QMouseEvent>
 #include <QGraphicsRectItem>
 
 CircuitCollection::CircuitCollection(QString category, QWidget *parent)
@@ -22,21 +22,44 @@ CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     // Create an invisible rectangle that works as a global
     // bounding box. That will make sure that the visible area
     // has the correct margins.
-    QGraphicsRectItem *rect = new QGraphicsRectItem(
+    backgroundRect = new QGraphicsRectItem(
         0,  // x
         0,  // y
         CICH_GLOBAL_MARGIN * 2 + CICH_CIRCUIT_WIDTH, // width
         2 * CICH_GLOBAL_MARGIN
         + (numCircuits - 1 ) * CICH_CIRCUIT_DISTANCE
         + numCircuits * CICH_CIRCUIT_HEIGHT);
-    rect->setBrush(Qt::NoBrush);
-    rect->setPen(Qt::NoPen);
-    scene->addItem(rect);
+    backgroundRect->setBrush(Qt::NoBrush);
+    backgroundRect->setPen(Qt::NoPen);
+    backgroundRect->setZValue(-1);
+    scene->addItem(backgroundRect);
 }
 
 
 CircuitCollection::~CircuitCollection()
 {
+}
+
+void CircuitCollection::mousePressEvent(QMouseEvent *event)
+{
+    if (event->type() == QMouseEvent::MouseButtonPress) {
+        if (!handleMousePress(event->pos())) {
+            // NIX
+        }
+    }
+}
+
+bool CircuitCollection::handleMousePress(const QPointF &pos)
+{
+    qDebug() << "PRESS" << pos;
+    QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
+
+    if (!item || item == backgroundRect)
+        return false;
+
+    CircuitInfoView *civ = (CircuitInfoView *)item;
+
+    qDebug() << item << "NAME" << civ->getCircuit();
 }
 
 

@@ -43,9 +43,10 @@
 #define CICH_GLOBAL_MARGIN            (1 * STANDARD_SPACING)
 #define CICH_ICON_MARGIN              STANDARD_SPACING
 #define CICH_ICON_WIDTH               50
-#define CICH_CIRCUIT_HEIGHT           50
+#define CICH_CIRCUIT_HEIGHT           (CICH_ICON_WIDTH + 2 * (CICH_PADDING))
 #define CICH_CIRCUIT_DISTANCE         STANDARD_SPACING
 #define CICH_TITLE_HEIGHT             20
+#define CICH_PADDING                  (STANDARD_SPACING / 2)
 
 #define CICH_BACKGROUND_COLOR         QColor(20, 20, 20)
 #define CICH_CIRCUIT_BACKGROUND_COLOR QColor(40, 40, 40)
