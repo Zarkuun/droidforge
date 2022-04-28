@@ -25,5 +25,8 @@
         <file>images/faceplates/faceplate-x7-off.jpg</file>
         <file>images/faceplates/faceplate-x7-on.jpg</file>
         <file>droidfirmware.json</file>
+        <file>images/circuits/lfo.png</file>
+        <file>images/circuits/contour.png</file>
+        <file>images/circuits/noicon.png</file>
     </qresource>
 </RCC>

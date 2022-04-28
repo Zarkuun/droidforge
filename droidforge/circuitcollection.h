@@ -11,7 +11,7 @@ public:
     ~CircuitCollection();
 
 private:
-    void loadCircuitCategory(QString category);
+    unsigned loadCircuitCategory(QString category);
 };
 
 #endif // CIRCUITCOLLECTION_H

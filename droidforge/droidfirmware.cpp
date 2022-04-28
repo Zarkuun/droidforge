@@ -55,7 +55,7 @@ QStringList DroidFirmware::circuitsOfCategory(QString category)
 QString DroidFirmware::circuitDescription(QString circuit)
 {
     QString fullDescription = circuits[circuit].toObject()["description"].toString();
-    return fullDescription.split('.')[0];
+    return fullDescription.split('.')[0].replace("\n", " ");
 }
 
 
