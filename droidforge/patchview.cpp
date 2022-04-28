@@ -72,6 +72,7 @@ void PatchView::newCircuit()
 {
     releaseKeyboard();
     CircuitChooseDialog dialog;
-    dialog.exec();
+    if (dialog.exec() == QDialog::Accepted)
+        currentPatchSectionView->addNewCircuit(dialog.getSelectedCircuit());
     grabKeyboard();
 }

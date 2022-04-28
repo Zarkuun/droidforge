@@ -60,6 +60,8 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
     CircuitInfoView *civ = (CircuitInfoView *)item;
 
     qDebug() << item << "NAME" << civ->getCircuit();
+    emit selectCircuit(civ->getCircuit());
+    return true;
 }
 
 

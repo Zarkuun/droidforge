@@ -27,6 +27,8 @@ public:
     void moveCursorRight();
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
+    void addNewCircuit(QString name);
+
     const CursorPosition &cursorPosition() { return cursor; };
     void setCursor(const CursorPosition &pos) { cursor = pos; };
     Circuit *currentCircuit();

@@ -6,6 +6,8 @@
 
 class CircuitCollection : public QGraphicsView
 {
+    Q_OBJECT
+
     QGraphicsRectItem *backgroundRect;
 
 public:
@@ -17,6 +19,8 @@ private:
     bool handleMousePress(const QPointF &pos);
     unsigned loadCircuitCategory(QString category);
 
+signals:
+    void selectCircuit(QString name);
 };
 
 #endif // CIRCUITCOLLECTION_H

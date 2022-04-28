@@ -71,6 +71,14 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
     }
 }
 
+void PatchSectionView::addNewCircuit(QString name)
+{
+    QString actionTitle = QString("Adding new '") + name + "' circuit";
+    the_forge->registerEdit(actionTitle);
+    section->addNewCircuit(name);
+    rebuildPatchSection();
+}
+
 
 bool PatchSectionView::handleMousePress(const QPointF &pos)
 {

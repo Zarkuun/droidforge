@@ -1,4 +1,5 @@
 #include "patchsection.h"
+#include <QDebug>
 
 PatchSection::~PatchSection()
 {
@@ -132,6 +133,14 @@ void PatchSection::moveCursorToPreviousCircuit()
         cursor.row = -1;
     else if (cursor.circuitNr > 0)
         cursor.circuitNr --;
+}
+
+void PatchSection::addNewCircuit(QString name)
+{
+    QStringList emptyComment;
+    Circuit *circuit = new Circuit(name, emptyComment);
+    circuits.append(circuit);
+    qDebug() << "CIRCUIT" << name << "ist da";
 }
 
 

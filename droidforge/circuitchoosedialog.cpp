@@ -61,6 +61,7 @@ void CircuitChooseDialog::addCategoryTab(QString category, QString title)
 {
     CircuitCollection *cc = new CircuitCollection(category, this);
     tabWidget->addTab(cc, title);
+    connect(cc, &CircuitCollection::selectCircuit, this, &CircuitChooseDialog::selectCircuit);
 }
 
 void CircuitChooseDialog::nextCategory()
@@ -72,4 +73,10 @@ void CircuitChooseDialog::nextCategory()
 void CircuitChooseDialog::previousCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() - 1 + tabWidget->count()) % tabWidget->count());
+}
+
+void CircuitChooseDialog::selectCircuit(QString name)
+{
+    selectedCircuit = name;
+    accept();
 }
