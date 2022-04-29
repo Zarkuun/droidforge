@@ -61,7 +61,6 @@ void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
 
 void CircuitCollection::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << Q_FUNC_INFO << event;
     if (event->key() == Qt::Key_Down)
         moveCursorUpDown(1);
     else if (event->key() == Qt::Key_Up)
@@ -78,7 +77,6 @@ QString CircuitCollection::selectedCircuitName()
 
 bool CircuitCollection::handleMousePress(const QPointF &pos)
 {
-    qDebug() << "PRESS" << pos;
     QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
 
     if (!item || item == backgroundRect)
@@ -94,9 +92,6 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
             currentCircuit()->select();
         }
     }
-
-    // qDebug() << item << "NAME" << civ->getCircuit();
-    // emit selectCircuit(civ->getCircuit());
     return true;
 }
 
@@ -138,6 +133,5 @@ CircuitInfoView *CircuitCollection::currentCircuit()
 void CircuitCollection::chooseCurrentCircuit()
 {
     QString name = currentCircuit()->getCircuit();
-    qDebug() << Q_FUNC_INFO << currentCircuit() << name;
     emit selectCircuit();
 }
