@@ -8,6 +8,7 @@
 CircuitInfoView::CircuitInfoView(QString circuit, QString description)
     : circuit(circuit)
     , description(description)
+    , selected(false)
 {
 }
 
@@ -15,6 +16,12 @@ CircuitInfoView::CircuitInfoView(QString circuit, QString description)
 QRectF CircuitInfoView::boundingRect() const
 {
     return QRectF(0, 0, CICH_CIRCUIT_WIDTH, CICH_CIRCUIT_HEIGHT);
+}
+
+void CircuitInfoView::select(bool sel)
+{
+    selected = sel;
+    update();
 }
 
 
@@ -44,6 +51,14 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         image = QPixmap(QString(":images/circuits/noicon.png"));
     painter->drawPixmap(QRect(CICH_PADDING, CICH_PADDING,
                               CICH_ICON_WIDTH, CICH_ICON_WIDTH), image);
+
+    // Cursor
+    if (selected)
+    {
+        painter->setPen(COLOR_FRAME_CURSOR);
+        painter->setBrush(Qt::NoBrush);
+        painter->drawRect(boundingRect());
+    }
 }
 
 

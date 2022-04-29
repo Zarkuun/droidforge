@@ -9,7 +9,8 @@
 // Standard for all dialogs
 #define STANDARD_SPACING              10
 #define COLOR_LINE                    QColor(255, 255, 255, 40)
-#define COLOR_CURSOR                  QColor(128, 192, 255, 70)
+#define COLOR_FILL_CURSOR             QColor(128, 192, 255, 70)
+#define COLOR_FRAME_CURSOR            QColor(255, 200, 50)
 #define COLOR_TEXT                    QColor(255, 255, 255)
 
 
@@ -52,6 +53,7 @@
 #define CICH_CIRCUIT_BACKGROUND_COLOR QColor(40, 40, 40)
 #define CICH_COLOR_TITLE              QColor(255, 255, 255)
 #define CICH_COLOR_DESCRIPTION        QColor(190, 190, 190)
+
 
 
 

@@ -82,7 +82,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     QRect r(0, y, WIDTH, HEADER_HEIGHT);
     painter->fillRect(r, COLOR_CIRCUIT_NAME_BACKGROUND);
     if (selected && currentJack == -2)
-        painter->fillRect(r, COLOR_CURSOR);
+        painter->fillRect(r, COLOR_FILL_CURSOR);
     painter->setPen(COLOR_CIRCUIT_NAME);
     painter->drawText(QRect(x, y, WIDTH-x, HEADER_HEIGHT),
                       Qt::AlignVCenter, circuit->getName().toUpper());
@@ -92,7 +92,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     r = QRect(0, y, WIDTH, commentHeight());
     painter->fillRect(r, COLOR_COMMENT_BACKGROUND);
     if (selected && currentJack == -1)
-        painter->fillRect(r, COLOR_CURSOR);
+        painter->fillRect(r, COLOR_FILL_CURSOR);
     painter->setPen(COLOR_COMMENT);
     painter->save();
     const QFont &font = painter->font();
@@ -164,7 +164,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
                 w = COLUMN_3_WIDTH;
             }
             if (w)
-                painter->fillRect(l, y, w, JACK_HEIGHT, COLOR_CURSOR);
+                painter->fillRect(l, y, w, JACK_HEIGHT, COLOR_FILL_CURSOR);
         }
         Atom *atom = jai->getAtom(0);
         if (atom) {
@@ -216,11 +216,11 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         }
         painter->drawText(QRect(COLUMN_1_X + SIDE_PADDING, y, COLUMN_123_WIDTH - SIDE_PADDING, JACK_HEIGHT), Qt::AlignVCenter, text);
         if (sel && (currentColumn == 1 || currentColumn == 2 || currentColumn == 3))
-            painter->fillRect(COLUMN_1_X, y, COLUMN_123_WIDTH, JACK_HEIGHT, COLOR_CURSOR);
+            painter->fillRect(COLUMN_1_X, y, COLUMN_123_WIDTH, JACK_HEIGHT, COLOR_FILL_CURSOR);
     }
 
     if (sel && currentColumn == 0)
-        painter->fillRect(0, y, COLUMN_1_X, JACK_HEIGHT, COLOR_CURSOR);
+        painter->fillRect(0, y, COLUMN_1_X, JACK_HEIGHT, COLOR_FILL_CURSOR);
 }
 
 void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QString o, const QColor &color)

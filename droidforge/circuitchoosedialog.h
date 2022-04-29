@@ -14,12 +14,12 @@ class CircuitChooseDialog : public QDialog
 
     QDialogButtonBox *buttonBox;
     QTabWidget *tabWidget;
-    QString selectedCircuit;
 
 public:
     CircuitChooseDialog(QWidget *parent = nullptr);
     ~CircuitChooseDialog();
-    QString getSelectedCircuit() const { return selectedCircuit; };
+    QString getSelectedCircuit() const;
+    void accept();
 
 private:
     void addCategoryTab(QString category, QString title);
@@ -27,7 +27,6 @@ private:
 private slots:
     void nextCategory();
     void previousCategory();
-    void selectCircuit(QString name);
 };
 
 #endif // CIRCUITCHOOSEDIALOG_H

@@ -3,20 +3,22 @@
 #include "droidfirmware.h"
 #include "tuning.h"
 
+#include <QDebug>
 #include <QMouseEvent>
 #include <QGraphicsRectItem>
+#include <QtGlobal>
 
 CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     : QGraphicsView(parent)
+    , selectedCircuit(0)
 {
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
     QGraphicsScene *scene = new QGraphicsScene();
     scene->setBackgroundBrush(CICH_BACKGROUND_COLOR);
 
-
     setScene(scene);
-    unsigned numCircuits = loadCircuitCategory(category);
+    numCircuits = loadCircuitCategory(category);
 
 
     // Create an invisible rectangle that works as a global
@@ -40,6 +42,7 @@ CircuitCollection::~CircuitCollection()
 {
 }
 
+
 void CircuitCollection::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
@@ -48,6 +51,24 @@ void CircuitCollection::mousePressEvent(QMouseEvent *event)
         }
     }
 }
+
+
+void CircuitCollection::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() << Q_FUNC_INFO << event;
+    if (event->key() == Qt::Key_Down)
+        moveCursorUpDown(1);
+    else if (event->key() == Qt::Key_Up)
+        moveCursorUpDown(-1);
+    else
+        QWidget::keyPressEvent(event);
+}
+
+QString CircuitCollection::selectedCircuitName()
+{
+    return currentCircuit()->getCircuit();
+}
+
 
 bool CircuitCollection::handleMousePress(const QPointF &pos)
 {
@@ -59,8 +80,17 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
 
     CircuitInfoView *civ = (CircuitInfoView *)item;
 
-    qDebug() << item << "NAME" << civ->getCircuit();
-    emit selectCircuit(civ->getCircuit());
+    // Find index of clicked circuit and select it
+    currentCircuit()->deselect();
+    for (qsizetype i=0; i<numCircuits; i++) {
+        if (civ == circuits[i]) {
+            selectedCircuit = i;
+            currentCircuit()->select();
+        }
+    }
+
+    // qDebug() << item << "NAME" << civ->getCircuit();
+    // emit selectCircuit(civ->getCircuit());
     return true;
 }
 
@@ -68,14 +98,40 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
 unsigned CircuitCollection::loadCircuitCategory(QString category)
 {
     unsigned y = CICH_GLOBAL_MARGIN;
-    QStringList circuits = the_firmware->circuitsOfCategory(category);
-    for (qsizetype i=0; i<circuits.size(); i++) {
-        QString circuit = circuits[i];
+    QStringList circuitNames = the_firmware->circuitsOfCategory(category);
+    for (qsizetype i=0; i<circuitNames.size(); i++) {
+        QString circuit = circuitNames[i];
         QString description = the_firmware->circuitDescription(circuit);
         CircuitInfoView *civ = new CircuitInfoView(circuit, description);
+        circuits.append(civ);
+        if (i == selectedCircuit)
+            civ->select();
         scene()->addItem(civ);
         civ->setPos(CICH_GLOBAL_MARGIN, y);
         y += civ->boundingRect().height() + CICH_CIRCUIT_DISTANCE;
     }
-    return circuits.size();
+    return circuitNames.size();
+}
+
+
+void CircuitCollection::moveCursorUpDown(int whence)
+{
+    currentCircuit()->deselect();
+    selectedCircuit = qMax(0, qMin(numCircuits-1, selectedCircuit + whence));
+    currentCircuit()->select();
+    ensureVisible(currentCircuit());
+}
+
+
+CircuitInfoView *CircuitCollection::currentCircuit()
+{
+    return circuits[selectedCircuit];
+}
+
+
+void CircuitCollection::chooseCurrentCircuit()
+{
+    QString name = currentCircuit()->getCircuit();
+    qDebug() << Q_FUNC_INFO << currentCircuit() << name;
+    emit selectCircuit();
 }

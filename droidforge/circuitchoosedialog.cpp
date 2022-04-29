@@ -56,12 +56,24 @@ CircuitChooseDialog::~CircuitChooseDialog()
 
 }
 
+QString CircuitChooseDialog::getSelectedCircuit() const
+{
+    CircuitCollection *collection = (CircuitCollection *)tabWidget->currentWidget();
+    return collection->selectedCircuitName();
+}
+
+void CircuitChooseDialog::accept()
+{
+    qDebug() << Q_FUNC_INFO;
+    QDialog::accept();
+}
+
 
 void CircuitChooseDialog::addCategoryTab(QString category, QString title)
 {
     CircuitCollection *cc = new CircuitCollection(category, this);
     tabWidget->addTab(cc, title);
-    connect(cc, &CircuitCollection::selectCircuit, this, &CircuitChooseDialog::selectCircuit);
+    connect(cc, &CircuitCollection::selectCircuit, this, &CircuitChooseDialog::accept);
 }
 
 void CircuitChooseDialog::nextCategory()
@@ -73,10 +85,4 @@ void CircuitChooseDialog::nextCategory()
 void CircuitChooseDialog::previousCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() - 1 + tabWidget->count()) % tabWidget->count());
-}
-
-void CircuitChooseDialog::selectCircuit(QString name)
-{
-    selectedCircuit = name;
-    accept();
 }

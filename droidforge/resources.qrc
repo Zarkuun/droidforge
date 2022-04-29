@@ -28,5 +28,8 @@
         <file>images/circuits/lfo.png</file>
         <file>images/circuits/contour.png</file>
         <file>images/circuits/noicon.png</file>
+        <file>images/circuits/random.png</file>
+        <file>images/circuits/spring.png</file>
+        <file>images/circuits/transient.png</file>
     </qresource>
 </RCC>
