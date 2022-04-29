@@ -71,11 +71,11 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void PatchSectionView::addNewCircuit(QString name)
+void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection)
 {
     QString actionTitle = QString("Adding new '") + name + "' circuit";
     the_forge->registerEdit(actionTitle);
-    section->addNewCircuit(name);
+    section->addNewCircuit(name, jackSelection);
     rebuildPatchSection();
 }
 

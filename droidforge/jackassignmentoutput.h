@@ -9,6 +9,7 @@ class JackAssignmentOutput : public JackAssignment
 
 public:
     JackAssignmentOutput(QString jack, QString comment, QString valueString);
+    JackAssignmentOutput(QString jack, QString comment="");
     ~JackAssignmentOutput();
     Atom *getAtom() const;;
     QString valueToString() const;
@@ -18,7 +19,6 @@ protected:
     JackAssignment *clone() const;
 
 private:
-    JackAssignmentOutput(QString jack, QString comment);
     void parseOutputValue(QString valueString);
 };
 

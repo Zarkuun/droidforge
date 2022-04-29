@@ -1,4 +1,5 @@
 #include "droidfirmware.h"
+#include "circuitchoosedialog.h"
 
 #include <QFile>
 #include <QJsonArray>
@@ -56,6 +57,38 @@ QString DroidFirmware::circuitDescription(QString circuit)
 {
     QString fullDescription = circuits[circuit].toObject()["description"].toString();
     return fullDescription.split('.')[0].replace("\n", " ");
+}
+
+QStringList DroidFirmware::essentialInputs(QString circuit, jackselection_t jackSelection)
+{
+    return essentialJacks(circuit, "inputs", jackSelection);
+}
+
+QStringList DroidFirmware::essentialOutputs(QString circuit, jackselection_t jackSelection)
+{
+    return essentialJacks(circuit, "outputs", jackSelection);
+}
+
+
+QStringList DroidFirmware::essentialJacks(QString circuit, QString whence, jackselection_t jackSelection)
+{
+    QStringList result;
+    QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
+    if (jackSelection == JACKSELECTION_NONE)
+        return result;
+
+    for (qsizetype i=0; i<jacklist.size(); i++) {
+        QJsonObject jackinfo = jacklist[i].toObject();
+        bool essential = jackinfo["essential"].toBool(false);
+        if (essential) {
+            qDebug() << "ESSENTIAL " << whence << "is" <<  jackinfo["name"].toString();
+            if (jackinfo.contains("count"))
+                result.append(jackinfo["prefix"].toString());
+            else
+                result.append(jackinfo["name"].toString());
+        }
+    }
+    return result;
 }
 
 

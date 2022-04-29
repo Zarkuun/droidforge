@@ -20,7 +20,7 @@ protected:
     bool disabled;
 
 public:
-    JackAssignment(QString jack, QString comment);
+    JackAssignment(QString jack, QString comment = "");
     virtual ~JackAssignment();
     virtual JackAssignment *clone() const = 0;
     virtual jacktype_t jackType() const = 0;

@@ -1,5 +1,10 @@
 #include "patchsection.h"
+#include "droidfirmware.h"
+#include "jackassignmentinput.h"
+#include "jackassignmentoutput.h"
+
 #include <QDebug>
+
 
 PatchSection::~PatchSection()
 {
@@ -135,12 +140,22 @@ void PatchSection::moveCursorToPreviousCircuit()
         cursor.circuitNr --;
 }
 
-void PatchSection::addNewCircuit(QString name)
+
+void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
 {
+    qDebug() << "CIRCUIT" << name << "ist da";
     QStringList emptyComment;
     Circuit *circuit = new Circuit(name, emptyComment);
+
+    QStringList ei = the_firmware->essentialInputs(name, jackSelection);
+    for (qsizetype i=0; i<ei.count(); i++) {
+        circuit->addJackAssignment(new JackAssignmentInput(ei[i])); // TODO: Default value
+    }
+    QStringList eo = the_firmware->essentialOutputs(name, jackSelection);
+    for (qsizetype i=0; i<ei.count(); i++) {;
+        circuit->addJackAssignment(new JackAssignmentOutput(eo[i]));
+    }
     circuits.append(circuit);
-    qDebug() << "CIRCUIT" << name << "ist da";
 }
 
 

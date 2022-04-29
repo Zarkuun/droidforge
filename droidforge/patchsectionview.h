@@ -4,6 +4,7 @@
 #include "circuitview.h"
 #include "patchsection.h"
 #include "tuning.h"
+#include "circuitchoosedialog.h"
 
 #include <QGraphicsView>
 
@@ -17,7 +18,7 @@ public:
     ~PatchSectionView() { deletePatchSection(); };
     bool handleKeyPress(int key);
     void mousePressEvent(QMouseEvent *event);
-    void addNewCircuit(QString name);
+    void addNewCircuit(QString name, jackselection_t jackSelection);
 
 private:
     bool handleMousePress(const QPointF &pos);

@@ -26,9 +26,17 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     addCategoryTab("midi", tr("MIDI"));
     addCategoryTab("other", tr("Other"));
 
+    startJacksBox = new QComboBox(this);
+    startJacksBox->addItem(tr("Don't start with any jacks"));
+    startJacksBox->addItem(tr("Start with essential jacks"));
+    startJacksBox->addItem(tr("Start with typical example"));
+    startJacksBox->addItem(tr("Start with all available jacks"));
+    startJacksBox->setCurrentIndex(1);
+
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(tabWidget);
-    mainLayout->addWidget(buttonBox);
+    mainLayout->addWidget(tabWidget, 0, 0, 1, -1);
+    mainLayout->addWidget(startJacksBox, 1, 0);
+    mainLayout->addWidget(buttonBox, 1, 1);
     setLayout(mainLayout);
 
     setWindowTitle(tr("Add new circuit"));
@@ -60,6 +68,11 @@ QString CircuitChooseDialog::getSelectedCircuit() const
 {
     CircuitCollection *collection = (CircuitCollection *)tabWidget->currentWidget();
     return collection->selectedCircuitName();
+}
+
+jackselection_t CircuitChooseDialog::getJackSelection() const
+{
+    return (jackselection_t)startJacksBox->currentIndex();
 }
 
 void CircuitChooseDialog::accept()

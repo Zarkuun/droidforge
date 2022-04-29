@@ -12,7 +12,6 @@ class Circuit
     QString name;
     QStringList comment;
     QList<JackAssignment *> jackAssignments;
-    bool disabled;
 
 public:
     Circuit(QString name, const QStringList &comment);

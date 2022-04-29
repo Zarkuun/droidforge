@@ -2,6 +2,7 @@
 #define PATCHSECTION_H
 
 #include "circuit.h"
+#include "circuitchoosedialog.h"
 #include "cursorposition.h"
 
 #include <QList>
@@ -27,7 +28,7 @@ public:
     void moveCursorRight();
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
-    void addNewCircuit(QString name);
+    void addNewCircuit(QString name, jackselection_t jackSelection);
 
     const CursorPosition &cursorPosition() { return cursor; };
     void setCursor(const CursorPosition &pos) { cursor = pos; };

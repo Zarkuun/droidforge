@@ -25,7 +25,7 @@ Circuit *Circuit::clone() const
 
 void Circuit::addJackAssignment(JackAssignment *ja)
 {
-    jackAssignments.push_back(ja);
+    jackAssignments.append(ja);
 
 }
 
