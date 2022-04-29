@@ -19,6 +19,7 @@ public:
     CircuitCollection(QString category, QWidget *parent);
     ~CircuitCollection();
     void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     QString selectedCircuitName();
 

@@ -52,6 +52,12 @@ void CircuitCollection::mousePressEvent(QMouseEvent *event)
     }
 }
 
+void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (handleMousePress(event->pos()))
+            chooseCurrentCircuit();
+}
+
 
 void CircuitCollection::keyPressEvent(QKeyEvent *event)
 {
