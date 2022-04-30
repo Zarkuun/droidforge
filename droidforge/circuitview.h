@@ -11,13 +11,14 @@
 class CircuitView : public QGraphicsItem
 {
     Circuit *circuit;
+    unsigned lineHeight;
     QGraphicsDropShadowEffect effect;
     bool selected;
     int currentJack;
     unsigned currentColumn;
 
 public:
-    CircuitView(Circuit *circuit);
+    CircuitView(Circuit *circuit, unsigned lineHeight);
     unsigned commentHeight() const;
     unsigned contentHeight() const;
     QRectF boundingRect() const override;

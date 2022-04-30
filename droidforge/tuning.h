@@ -13,7 +13,6 @@
 #define COLOR_FRAME_CURSOR            QColor(255, 200, 50)
 #define COLOR_TEXT                    QColor(255, 255, 255)
 
-
 // Rack view
 #define MIN_RACK_HEIGHT               200
 #define MAX_RACK_HEIGHT               300
@@ -22,6 +21,7 @@
 
 // Patch view
 #define CIRCUIT_VERTICAL_MARGIN       (2 * STANDARD_SPACING)
+#define CIRCUIT_COMMENT_PADDING       (0.5 * STANDARD_SPACING)
 #define COLOR_PATCH_BACKGROUND        QColor(20, 20, 20)
 #define COLOR_JACK_INPUT              QColor(0, 200, 255)
 #define COLOR_JACK_OUTPUT             QColor(245, 60, 50)
@@ -37,7 +37,6 @@
 #define COLOR_COMMENT_BACKGROUND      QColor(40, 40, 40)
 
 // Circuit chooser (CICH)
-
 #define CICH_DIALOG_WIDTH             890
 #define CICH_CIRCUIT_WIDTH            710
 #define CICH_DIALOG_HEIGHT            500

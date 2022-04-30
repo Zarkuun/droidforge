@@ -23,7 +23,7 @@ void PatchSectionView::buildPatchSection()
     for (qsizetype i=0; i<section->circuits.size(); i++)
     {
         Circuit *circuit = section->circuits[i];
-        CircuitView *cv = new CircuitView(circuit);
+        CircuitView *cv = new CircuitView(circuit, fontMetrics().lineSpacing());
         circuitViews.append(cv);
         scene->addItem(cv);
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht

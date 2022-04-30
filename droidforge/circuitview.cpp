@@ -7,9 +7,9 @@
 #include <QPainter>
 
 #define SIDE_PADDING    5
+#define COMMENT_LINE_HEIGHT 18
 #define JACK_HEIGHT    18
 #define HEADER_HEIGHT  20
-#define COMMENT_FONT_SIZE 10
 
 #define COLUMN_JACK_WIDTH    180
 #define COLUMN_ATOM_WIDTH    170
@@ -31,8 +31,9 @@
 #define COLUMN_123_WIDTH (COLUMN_1_WIDTH + COLUMN_2_WIDTH + COLUMN_3_WIDTH + 2 * COLUMN_OPERATOR_WIDTH)
 
 
-CircuitView::CircuitView(Circuit *circuit)
+CircuitView::CircuitView(Circuit *circuit, unsigned lineHeight)
     : circuit(circuit)
+    , lineHeight(lineHeight)
     , selected(false)
     , currentJack(-2)
     , currentColumn(0)
@@ -47,7 +48,8 @@ CircuitView::CircuitView(Circuit *circuit)
 unsigned CircuitView::commentHeight() const
 {
     if (circuit->hasComment())
-        return circuit->numCommentLines() * COMMENT_FONT_SIZE * 1.25;
+        return circuit->numCommentLines() * lineHeight
+                + CIRCUIT_COMMENT_PADDING * 2;
     else
         return 0;
 }
@@ -95,10 +97,8 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
         painter->fillRect(r, COLOR_FILL_CURSOR);
     painter->setPen(COLOR_COMMENT);
     painter->save();
-    const QFont &font = painter->font();
-    painter->setFont(QFont(font.family(), COMMENT_FONT_SIZE));
-    painter->drawText(QRect(SIDE_PADDING, y, WIDTH - 2*SIDE_PADDING, commentHeight()),
-                      Qt::AlignLeft | Qt::AlignJustify, circuit->getComment());
+    painter->drawText(QRect(SIDE_PADDING, y + CIRCUIT_COMMENT_PADDING, WIDTH - 2*SIDE_PADDING, commentHeight()),
+                      Qt::AlignLeft | Qt::AlignJustify | Qt::AlignTop, circuit->getComment());
     painter->restore();
     y += commentHeight();
 
