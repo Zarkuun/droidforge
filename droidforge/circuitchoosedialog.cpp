@@ -77,7 +77,6 @@ jackselection_t CircuitChooseDialog::getJackSelection() const
 
 void CircuitChooseDialog::accept()
 {
-    qDebug() << Q_FUNC_INFO;
     QDialog::accept();
 }
 

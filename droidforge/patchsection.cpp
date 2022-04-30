@@ -141,9 +141,8 @@ void PatchSection::moveCursorToPreviousCircuit()
 }
 
 
-void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
+void PatchSection::addNewCircuit(int pos, QString name, jackselection_t jackSelection)
 {
-    qDebug() << "CIRCUIT" << name << "ist da";
     QStringList emptyComment;
     Circuit *circuit = new Circuit(name, emptyComment);
 
@@ -152,10 +151,12 @@ void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
         circuit->addJackAssignment(new JackAssignmentInput(ei[i])); // TODO: Default value
     }
     QStringList eo = the_firmware->essentialOutputs(name, jackSelection);
-    for (qsizetype i=0; i<ei.count(); i++) {;
-        circuit->addJackAssignment(new JackAssignmentOutput(eo[i]));
+    for (qsizetype o=0; o<eo.count(); o++) {;
+        circuit->addJackAssignment(new JackAssignmentOutput(eo[o]));
     }
-    circuits.append(circuit);
+    circuits.insert(pos, circuit);
+    cursor.row = -2;
+    cursor.circuitNr = pos;
 }
 
 

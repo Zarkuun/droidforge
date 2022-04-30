@@ -81,7 +81,6 @@ QStringList DroidFirmware::essentialJacks(QString circuit, QString whence, jacks
         QJsonObject jackinfo = jacklist[i].toObject();
         bool essential = jackinfo["essential"].toBool(false);
         if (essential) {
-            qDebug() << "ESSENTIAL " << whence << "is" <<  jackinfo["name"].toString();
             if (jackinfo.contains("count"))
                 result.append(jackinfo["prefix"].toString());
             else

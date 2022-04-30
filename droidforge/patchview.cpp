@@ -72,12 +72,8 @@ void PatchView::newCircuit()
 {
     releaseKeyboard();
     CircuitChooseDialog dialog;
-    qDebug() << Q_FUNC_INFO << currentPatchSectionView;
 
     if (dialog.exec() == QDialog::Accepted) {
-        qDebug() << "HIRN";
-        qDebug() << dialog.getSelectedCircuit();
-        qDebug() << "******" << dialog.getJackSelection();
         currentPatchSectionView->addNewCircuit(
                     dialog.getSelectedCircuit(),
                     dialog.getJackSelection());

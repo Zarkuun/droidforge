@@ -28,7 +28,7 @@ public:
     void moveCursorRight();
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
-    void addNewCircuit(QString name, jackselection_t jackSelection);
+    void addNewCircuit(int pos, QString name, jackselection_t jackSelection);
 
     const CursorPosition &cursorPosition() { return cursor; };
     void setCursor(const CursorPosition &pos) { cursor = pos; };

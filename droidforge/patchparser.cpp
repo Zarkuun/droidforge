@@ -170,8 +170,6 @@ bool PatchParser::parseMetaComment(QString comment)
     if (m.hasMatch()) {
         if (m.captured(1) == "LIBRARY")
             parseLibraryMetaData(m.captured(2));
-        else
-            qDebug() << "ignoring" << comment;
         // Ignore the other headers. They are most probably from
         // the output of the registers like "INPUTS:"
         return true;
@@ -186,8 +184,6 @@ void PatchParser::parseLibraryMetaData(QString data)
     // Example:
     // LIBRARY: name=arpeggio; version=1.0; firmware=blue-1
     patch->setLibraryMetaData(data);
-    qDebug() << "SET" << data;
-
 }
 
 
