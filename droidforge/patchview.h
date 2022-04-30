@@ -3,6 +3,8 @@
 
 #include "patch.h"
 #include "patchsectionview.h"
+#include "circuitchoosedialog.h"
+#include "patchpropertiesdialog.h"
 
 #include <QTabWidget>
 
@@ -10,9 +12,12 @@ class PatchView : public QTabWidget
 {
     PatchSectionView *currentPatchSectionView;
     Patch *patch;
+    PatchPropertiesDialog *patchPropertiesDialog;
+    CircuitChooseDialog *circuitChooseDialog;
 
 public:
     PatchView();
+    ~PatchView();
     void setPatch(Patch *patch);
     bool handleKeyPress(int key);
 

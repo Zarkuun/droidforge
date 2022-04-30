@@ -27,10 +27,12 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     addCategoryTab("other", tr("Other"));
 
     startJacksBox = new QComboBox(this);
-    startJacksBox->addItem(tr("Don't start with any jacks"));
-    startJacksBox->addItem(tr("Start with essential jacks"));
-    startJacksBox->addItem(tr("Start with typical example"));
+    // The order is imporant here. It must match the numbers
+    // of jackselection_t
     startJacksBox->addItem(tr("Start with all available jacks"));
+    startJacksBox->addItem(tr("Start with typical example"));
+    startJacksBox->addItem(tr("Start with essential jacks"));
+    startJacksBox->addItem(tr("Don't start with any jacks"));
     startJacksBox->setCurrentIndex(1);
 
     QGridLayout *mainLayout = new QGridLayout;

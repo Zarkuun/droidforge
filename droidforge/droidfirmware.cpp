@@ -74,15 +74,20 @@ QStringList DroidFirmware::essentialJacks(QString circuit, QString whence, jacks
 {
     QStringList result;
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
-    if (jackSelection == JACKSELECTION_NONE)
-        return result;
 
     for (qsizetype i=0; i<jacklist.size(); i++) {
         QJsonObject jackinfo = jacklist[i].toObject();
-        bool essential = jackinfo["essential"].toBool(false);
-        if (essential) {
-            if (jackinfo.contains("count"))
-                result.append(jackinfo["prefix"].toString());
+        int essential = jackinfo["essential"].toInt(0);
+        // essential is 0, 1 or 2 (0 = none, 1 = typical, 2 = essential)
+        // jackSelection is 0 -> all, ... 3 -> none
+        if (essential >= jackSelection) {
+            if (jackinfo.contains("count")) {
+                int count = jackinfo["count"].toInt(1);
+                for (int i=1; i<=count; i++) {
+                    QString name = jackinfo["prefix"].toString() + QString::number(i);
+                    result.append(name);
+                }
+            }
             else
                 result.append(jackinfo["name"].toString());
         }

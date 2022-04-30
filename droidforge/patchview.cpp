@@ -1,10 +1,8 @@
 #include "patchview.h"
-#include "circuitchoosedialog.h"
 #include "mainwindow.h"
 #include "tuning.h"
 #include "patch.h"
 #include "patchsectionview.h"
-#include "patchpropertiesdialog.h"
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
@@ -13,8 +11,19 @@ PatchView::PatchView()
     : QTabWidget()
     , currentPatchSectionView(0)
     , patch(0)
+    , patchPropertiesDialog(0)
+    , circuitChooseDialog(0)
 {
     grabKeyboard();
+}
+
+
+PatchView::~PatchView()
+{
+    if (circuitChooseDialog)
+        delete circuitChooseDialog;
+    if (patchPropertiesDialog)
+        delete patchPropertiesDialog;
 }
 
 
@@ -38,6 +47,10 @@ void PatchView::setPatch(Patch *newPatch)
         if (currentPatchSectionView == 0)
             currentPatchSectionView = psv;
     }
+
+    if (patchPropertiesDialog)
+        delete patchPropertiesDialog;
+    patchPropertiesDialog = new PatchPropertiesDialog(patch, this);
 }
 
 
@@ -63,20 +76,22 @@ void PatchView::previousSection()
 void PatchView::editProperties()
 {
     releaseKeyboard();
-    PatchPropertiesDialog dialog(patch);
-    dialog.exec();
+    patchPropertiesDialog->exec();
     grabKeyboard();
 }
 
 void PatchView::newCircuit()
 {
     releaseKeyboard();
-    CircuitChooseDialog dialog;
+    // We reuse the circuit choose dialog because we want it to
+    // retain the current selection of cursor, category and stuff.
+    if (!circuitChooseDialog)
+        circuitChooseDialog = new CircuitChooseDialog(this);
 
-    if (dialog.exec() == QDialog::Accepted) {
+    if (circuitChooseDialog->exec() == QDialog::Accepted) {
         currentPatchSectionView->addNewCircuit(
-                    dialog.getSelectedCircuit(),
-                    dialog.getJackSelection());
+            circuitChooseDialog->getSelectedCircuit(),
+            circuitChooseDialog->getJackSelection());
     }
     grabKeyboard();
 }
