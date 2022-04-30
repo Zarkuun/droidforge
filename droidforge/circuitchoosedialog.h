@@ -1,12 +1,14 @@
 #ifndef CIRCUITCHOOSEDIALOG_H
 #define CIRCUITCHOOSEDIALOG_H
 
+#include "circuitcollection.h"
 
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QDialog>
 #include <QTabWidget>
+#include <QLineEdit>
 
 
 typedef enum {
@@ -24,12 +26,15 @@ class CircuitChooseDialog : public QDialog
     QDialogButtonBox *buttonBox;
     QTabWidget *tabWidget;
     QComboBox *startJacksBox;
+    QLineEdit *lineEditSearch;
+    CircuitCollection *searchResults;
 
 public:
     CircuitChooseDialog(QWidget *parent = nullptr);
     ~CircuitChooseDialog();
     QString getSelectedCircuit() const;
     jackselection_t getJackSelection() const;
+    void keyPressEvent(QKeyEvent *event);
     void accept();
 
 private:
@@ -38,6 +43,7 @@ private:
 private slots:
     void nextCategory();
     void previousCategory();
+    void searchChanged(QString text);
 };
 
 #endif // CIRCUITCHOOSEDIALOG_H

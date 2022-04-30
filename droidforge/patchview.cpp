@@ -89,9 +89,9 @@ void PatchView::newCircuit()
         circuitChooseDialog = new CircuitChooseDialog(this);
 
     if (circuitChooseDialog->exec() == QDialog::Accepted) {
-        currentPatchSectionView->addNewCircuit(
-            circuitChooseDialog->getSelectedCircuit(),
-            circuitChooseDialog->getJackSelection());
+        QString name = circuitChooseDialog->getSelectedCircuit();
+        if (!name.isEmpty())
+            currentPatchSectionView->addNewCircuit(name, circuitChooseDialog->getJackSelection());
     }
     grabKeyboard();
 }

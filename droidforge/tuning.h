@@ -38,7 +38,7 @@
 
 // Circuit chooser (CICH)
 
-#define CICH_DIALOG_WIDTH             800
+#define CICH_DIALOG_WIDTH             890
 #define CICH_CIRCUIT_WIDTH            710
 #define CICH_DIALOG_HEIGHT            500
 #define CICH_GLOBAL_MARGIN            (1 * STANDARD_SPACING)
@@ -53,9 +53,6 @@
 #define CICH_CIRCUIT_BACKGROUND_COLOR QColor(40, 40, 40)
 #define CICH_COLOR_TITLE              QColor(255, 255, 255)
 #define CICH_COLOR_DESCRIPTION        QColor(190, 190, 190)
-
-
-
 
 
 #endif // TUNING_H

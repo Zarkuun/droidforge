@@ -5,17 +5,23 @@
 
 #include <QGridLayout>
 #include <QAction>
+#include <QLabel>
+#include <QKeyEvent>
+
+#define TAB_INDEX_SEARCH 0
+#define TAB_INDEX_FIRST_CATEGORY 1
 
 CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     : QDialog(parent)
 {
     resize(CICH_DIALOG_WIDTH, CICH_DIALOG_HEIGHT);
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-                                     this);
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
+
+    // The tab widget contains one tab for every category of circuits
     tabWidget = new QTabWidget(this);
+    searchResults = new CircuitCollection(this);
+    tabWidget->addTab(searchResults, tr("SEARCH"));
+    connect(searchResults, &CircuitCollection::selectCircuit, this, &CircuitChooseDialog::accept);
     addCategoryTab("modulation", tr("Modulation"));
     addCategoryTab("sequencing", tr("Sequencing"));
     addCategoryTab("cv", tr("&CV Processing"));
@@ -25,7 +31,13 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     addCategoryTab("pitch", tr("Pitch"));
     addCategoryTab("midi", tr("MIDI"));
     addCategoryTab("other", tr("Other"));
+    tabWidget->setTabVisible(TAB_INDEX_SEARCH, false);
+    tabWidget->setCurrentIndex(TAB_INDEX_FIRST_CATEGORY);
 
+
+
+    // The "Start jacks" choice determines with which jack assignments
+    // should the new circuit start its life.
     startJacksBox = new QComboBox(this);
     // The order is imporant here. It must match the numbers
     // of jackselection_t
@@ -35,10 +47,23 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     startJacksBox->addItem(tr("Don't start with any jacks"));
     startJacksBox->setCurrentIndex(1);
 
+    // Search
+    QLabel *label = new QLabel(tr("Search:"), this);
+    lineEditSearch = new QLineEdit(this);
+    connect(lineEditSearch, &QLineEdit::textChanged, this, &CircuitChooseDialog::searchChanged);
+
+    // Buttons with OK/Cancel
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    // Construct layout
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(tabWidget, 0, 0, 1, -1);
     mainLayout->addWidget(startJacksBox, 1, 0);
-    mainLayout->addWidget(buttonBox, 1, 1);
+    mainLayout->addWidget(label, 1, 1);
+    mainLayout->addWidget(lineEditSearch, 1, 2);
+    mainLayout->addWidget(buttonBox, 1, 3);
     setLayout(mainLayout);
 
     setWindowTitle(tr("Add new circuit"));
@@ -77,6 +102,18 @@ jackselection_t CircuitChooseDialog::getJackSelection() const
     return (jackselection_t)startJacksBox->currentIndex();
 }
 
+void CircuitChooseDialog::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() << Q_FUNC_INFO << event << "KEY" << event->key();
+    if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z)
+        lineEditSearch->insert(event->text());
+    else if (event->key() == Qt::Key_Backspace)
+        lineEditSearch->backspace();
+    else
+        QDialog::keyPressEvent(event);
+
+}
+
 void CircuitChooseDialog::accept()
 {
     QDialog::accept();
@@ -99,4 +136,17 @@ void CircuitChooseDialog::nextCategory()
 void CircuitChooseDialog::previousCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() - 1 + tabWidget->count()) % tabWidget->count());
+}
+
+void CircuitChooseDialog::searchChanged(QString text)
+{
+    if (text.isEmpty()) {
+        tabWidget->setTabVisible(TAB_INDEX_SEARCH, false);
+        tabWidget->setCurrentIndex(TAB_INDEX_FIRST_CATEGORY); // not search
+    }
+    else {
+        tabWidget->setCurrentIndex(TAB_INDEX_SEARCH);
+        searchResults->updateSearch(text);
+        tabWidget->setTabVisible(TAB_INDEX_SEARCH, true);
+    }
 }

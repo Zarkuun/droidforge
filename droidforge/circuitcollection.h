@@ -17,15 +17,19 @@ class CircuitCollection : public QGraphicsView
 
 public:
     CircuitCollection(QString category, QWidget *parent);
+    CircuitCollection(QWidget *parent);
     ~CircuitCollection();
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     QString selectedCircuitName();
+    void updateSearch(QString text);
 
 private:
+    void initScene();
+    void initBoundingRect(int numCircuits);
     bool handleMousePress(const QPointF &pos);
-    unsigned loadCircuitCategory(QString category);
+    unsigned loadCircuitCategory(QString category, QString search="");
     void moveCursorUpDown(int whence);
     CircuitInfoView *currentCircuit();
     void chooseCurrentCircuit();

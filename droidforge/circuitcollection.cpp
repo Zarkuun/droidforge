@@ -10,20 +10,43 @@
 
 CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     : QGraphicsView(parent)
+    , backgroundRect(0)
     , selectedCircuit(0)
 {
-    setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    initScene();
+    numCircuits = loadCircuitCategory(category);
+    initBoundingRect(numCircuits);
+}
 
+
+CircuitCollection::CircuitCollection(QWidget *parent)
+    : QGraphicsView(parent)
+    , backgroundRect(0)
+    , selectedCircuit(0)
+{
+    initScene();
+}
+
+
+void CircuitCollection::initScene()
+{
+    setAlignment(Qt::AlignLeft | Qt::AlignTop);
     QGraphicsScene *scene = new QGraphicsScene();
     scene->setBackgroundBrush(CICH_BACKGROUND_COLOR);
-
     setScene(scene);
-    numCircuits = loadCircuitCategory(category);
+}
 
 
+void CircuitCollection::initBoundingRect(int numCircuits)
+{
     // Create an invisible rectangle that works as a global
     // bounding box. That will make sure that the visible area
     // has the correct margins.
+    if (backgroundRect) {
+        scene()->removeItem(backgroundRect);
+        delete backgroundRect;
+    }
+
     backgroundRect = new QGraphicsRectItem(
         0,  // x
         0,  // y
@@ -34,7 +57,7 @@ CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     backgroundRect->setBrush(Qt::NoBrush);
     backgroundRect->setPen(Qt::NoPen);
     backgroundRect->setZValue(-1);
-    scene->addItem(backgroundRect);
+    scene()->addItem(backgroundRect);
 }
 
 
@@ -71,9 +94,22 @@ void CircuitCollection::keyPressEvent(QKeyEvent *event)
 
 QString CircuitCollection::selectedCircuitName()
 {
-    return currentCircuit()->getCircuit();
+    CircuitInfoView *civ = currentCircuit();
+    if (civ)
+        return civ->getCircuit();
+    else
+        return ""; // empty search
 }
 
+void CircuitCollection::updateSearch(QString text)
+{
+    scene()->clear();
+    circuits.clear();
+    backgroundRect = 0;
+    unsigned numCircuits = loadCircuitCategory("", text);
+    initBoundingRect(numCircuits);
+    update();
+}
 
 bool CircuitCollection::handleMousePress(const QPointF &pos)
 {
@@ -85,7 +121,8 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
     CircuitInfoView *civ = (CircuitInfoView *)item;
 
     // Find index of clicked circuit and select it
-    currentCircuit()->deselect();
+    if (currentCircuit())
+        currentCircuit()->deselect();
     for (qsizetype i=0; i<numCircuits; i++) {
         if (civ == circuits[i]) {
             selectedCircuit = i;
@@ -96,13 +133,21 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
 }
 
 
-unsigned CircuitCollection::loadCircuitCategory(QString category)
+unsigned CircuitCollection::loadCircuitCategory(QString category, QString search)
 {
+    search = search.toLower();
+
     unsigned y = CICH_GLOBAL_MARGIN;
     QStringList circuitNames = the_firmware->circuitsOfCategory(category);
     for (qsizetype i=0; i<circuitNames.size(); i++) {
         QString circuit = circuitNames[i];
         QString description = the_firmware->circuitDescription(circuit);
+        if (!search.isEmpty()
+            && !circuit.contains(search, Qt::CaseInsensitive))
+            // && !description.contains(search, Qt::CaseInsensitive))
+        {
+            continue;
+        }
         CircuitInfoView *civ = new CircuitInfoView(circuit, description);
         circuits.append(civ);
         if (i == selectedCircuit)
@@ -111,12 +156,15 @@ unsigned CircuitCollection::loadCircuitCategory(QString category)
         civ->setPos(CICH_GLOBAL_MARGIN, y);
         y += civ->boundingRect().height() + CICH_CIRCUIT_DISTANCE;
     }
+    moveCursorUpDown(0); // sanitize cursor position
     return circuitNames.size();
 }
 
 
 void CircuitCollection::moveCursorUpDown(int whence)
 {
+    if (circuits.empty())
+        return;
     currentCircuit()->deselect();
     selectedCircuit = qMax(0, qMin(numCircuits-1, selectedCircuit + whence));
     currentCircuit()->select();
@@ -126,12 +174,14 @@ void CircuitCollection::moveCursorUpDown(int whence)
 
 CircuitInfoView *CircuitCollection::currentCircuit()
 {
-    return circuits[selectedCircuit];
+    if (circuits.empty())
+        return 0;
+    else
+        return circuits[selectedCircuit];
 }
 
 
 void CircuitCollection::chooseCurrentCircuit()
 {
-    QString name = currentCircuit()->getCircuit();
     emit selectCircuit();
 }

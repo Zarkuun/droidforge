@@ -47,7 +47,7 @@ QStringList DroidFirmware::circuitsOfCategory(QString category)
     {
         QString name = i.key();
         QString cat = i.value().toObject()["category"].toString();
-        if (cat == category)
+        if (category.isEmpty() || cat == category)
             result.append(name);
     }
     return result;
