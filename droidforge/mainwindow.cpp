@@ -88,7 +88,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 }
 
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *)
 {
     QSettings settings;
     settings.setValue("mainwindow/position", pos());

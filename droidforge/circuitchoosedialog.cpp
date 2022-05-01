@@ -7,6 +7,7 @@
 #include <QAction>
 #include <QLabel>
 #include <QKeyEvent>
+#include <QSettings>
 
 #define TAB_INDEX_SEARCH 0
 #define TAB_INDEX_FIRST_CATEGORY 1
@@ -14,6 +15,8 @@
 CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     : QDialog(parent)
 {
+    QSettings settings;
+
     resize(CICH_DIALOG_WIDTH, CICH_DIALOG_HEIGHT);
 
 
@@ -43,7 +46,8 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     startJacksBox->addItem(tr("Start with typical example"));
     startJacksBox->addItem(tr("Start with essential jacks"));
     startJacksBox->addItem(tr("Don't start with any jacks"));
-    startJacksBox->setCurrentIndex(1);
+    startJacksBox->setCurrentIndex(settings.value("circuitchooser/startjacks", 1).toInt());
+    connect(startJacksBox, &QComboBox::currentIndexChanged, this, &CircuitChooseDialog::saveSettings);
 
     // Search
     QLabel *label = new QLabel(tr("Search:"), this);
@@ -81,6 +85,7 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     previousCategoryAct->setShortcuts(s2);
     addAction(previousCategoryAct);
     connect(previousCategoryAct, &QAction::triggered, this, &CircuitChooseDialog::previousCategory);
+
 }
 
 
@@ -102,7 +107,6 @@ jackselection_t CircuitChooseDialog::getJackSelection() const
 
 void CircuitChooseDialog::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << Q_FUNC_INFO << event << "KEY" << event->key();
     if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z)
         lineEditSearch->insert(event->text());
     else if (event->key() == Qt::Key_Backspace)
@@ -116,6 +120,7 @@ void CircuitChooseDialog::accept()
 {
     QDialog::accept();
 }
+
 
 
 void CircuitChooseDialog::addCategoryTab(QString category, QString title)
@@ -151,4 +156,10 @@ void CircuitChooseDialog::searchChanged(QString text)
         searchResults->updateSearch(text);
         tabWidget->setTabVisible(TAB_INDEX_SEARCH, true);
     }
+}
+
+void CircuitChooseDialog::saveSettings()
+{
+    QSettings settings;
+    settings.setValue("circuitchooser/startjacks", startJacksBox->currentIndex());
 }

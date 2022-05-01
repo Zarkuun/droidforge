@@ -87,7 +87,6 @@ void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
 
 void CircuitCollection::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << Q_FUNC_INFO<<event;
     if (event->key() == Qt::Key_Down)
         moveCursorUpDown(1);
     else if (event->key() == Qt::Key_Up)
@@ -117,10 +116,8 @@ void CircuitCollection::updateSearch(QString text)
 
 void CircuitCollection::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << Q_FUNC_INFO<<event;
     circuitViewWidth =
             event->size().width()
-//            -  verticalScrollBar()->width()
             -  CICH_WIDTH_MARGIN;
 }
 
@@ -177,11 +174,9 @@ void CircuitCollection::loadCircuitCategory(QString category, QString search)
 
 void CircuitCollection::moveCursorUpDown(int whence)
 {
-    if (circuits.empty()) {
-        qDebug() << Q_FUNC_INFO << "EMPTY";
+    if (circuits.empty())
         return;
-    }
-    qDebug() << "We have " << numCircuits << "sircuits";
+
     currentCircuit()->deselect();
     selectedCircuit = qMax(0, qMin(numCircuits-1, selectedCircuit + whence));
     currentCircuit()->select();
