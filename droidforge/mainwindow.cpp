@@ -27,6 +27,8 @@ MainWindow::MainWindow(const QString &initialFilename)
     the_forge = this;
     the_firmware = &firmware;
 
+
+
     ui->setupUi(this);
     QSplitter *splitter = new QSplitter();
     splitter->setOrientation(Qt::Vertical);
@@ -34,6 +36,10 @@ MainWindow::MainWindow(const QString &initialFilename)
 
     splitter->addWidget(&rackview);
     splitter->addWidget(&patchview);
+
+    toolbar = new QToolBar(this);
+    toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    addToolBar(Qt::LeftToolBarArea, toolbar);
 
     createActions();
 
@@ -163,32 +169,35 @@ void MainWindow::createFileMenu()
     fileMenu = menuBar()->addMenu(tr("&File"));
 
     // Open
-    const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/images/open.png"));
+    const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/images/icons/actions/document-open.png"));
+    qDebug() << "ICON" << openIcon;
     QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
     fileMenu->addAction(openAct);
+    toolbar->addAction(openAct);
 
     // Save
-    const QIcon saveIcon = QIcon::fromTheme("document-open", QIcon(":/images/save.png"));
+    const QIcon saveIcon = QIcon::fromTheme("document-save", QIcon(":/images/icons/actions/document-save.png"));
     QAction *saveAct = new QAction(saveIcon, tr("&Save..."), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save patch to file"));
     connect(saveAct, &QAction::triggered, this, &MainWindow::save);
     fileMenu->addAction(saveAct);
+    toolbar->addAction(saveAct);
 
     // Patch properties
     QAction *patchPropertiesAct = new QAction(saveIcon, tr("&Patch properties..."), this);
     patchPropertiesAct->setShortcut(QKeySequence(tr("Ctrl+.")));
     connect(patchPropertiesAct, &QAction::triggered, &patchview, &PatchView::editProperties);
     fileMenu->addAction(patchPropertiesAct);
-
 }
 
 
 void MainWindow::createEditMenu()
 {
+    toolbar->addSeparator();
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
     // Undo
@@ -208,11 +217,12 @@ void MainWindow::createEditMenu()
     editMenu->addAction(redoAction);
 
     // New circuit...
-    const QIcon newIcon = QIcon::fromTheme("new", QIcon(":/images/new.png"));
+    const QIcon newIcon = QIcon(":/images/icons/status/audio-volume-high.png");
     QAction *newCircuitAction = new QAction(newIcon, tr("&New circuit..."), this);
     newCircuitAction->setShortcut(QKeySequence(tr("Ctrl+N")));
     connect(newCircuitAction, &QAction::triggered, &patchview, &PatchView::newCircuit);
     editMenu->addAction(newCircuitAction);
+    toolbar->addAction(newCircuitAction);
 
 }
 

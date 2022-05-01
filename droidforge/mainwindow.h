@@ -8,6 +8,7 @@
 #include "patchparser.h"
 
 #include <QMainWindow>
+#include <QToolBar>
 
 class Patch;
 
@@ -36,6 +37,7 @@ private:
     RackView rackview;
 
     PatchView patchview;
+    QToolBar *toolbar;
     QAction *undoAction;
     QAction *redoAction;
 
