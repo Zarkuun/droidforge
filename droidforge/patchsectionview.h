@@ -33,6 +33,7 @@ private:
     void moveCursorPageUpDown(int whence);
     void deleteCurrentRow();
     void deleteCurrentCircuit();
+    void deleteCurrentComment();
     void deleteCurrentJack();
 };
 

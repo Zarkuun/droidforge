@@ -21,6 +21,7 @@ public:
     QString getName() const { return name; };
     QString getComment() const;
     bool hasComment() const { return !comment.empty(); };
+    void removeComment();
     qsizetype numCommentLines() const { return comment.size(); };
     void addJackAssignment(JackAssignment *);
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };

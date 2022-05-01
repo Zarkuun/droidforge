@@ -151,8 +151,10 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
 
 void PatchSectionView::deleteCurrentRow()
 {
-    if (section->cursorPosition().row == -1)
+    if (section->cursorPosition().row == -2)
         deleteCurrentCircuit();
+    else if (section->cursorPosition().row == -1)
+        deleteCurrentComment();
     else
         deleteCurrentJack();
 }
@@ -164,6 +166,15 @@ void PatchSectionView::deleteCurrentCircuit()
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentCircuit();
     rebuildPatchSection();
+}
+
+void PatchSectionView::deleteCurrentComment()
+{
+    QString actionTitle = QString("Deleting comment");
+    the_forge->registerEdit(actionTitle);
+    section->deleteCurrentComment();
+    rebuildPatchSection();
+    currentCircuitView()->select(section->cursorPosition());
 }
 
 

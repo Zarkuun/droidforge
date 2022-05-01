@@ -48,7 +48,7 @@ void PatchSection::deleteCurrentCircuit()
     if (cursor.circuitNr >= circuits.size())
         cursor.circuitNr--;
     cursor.column = 0;
-    cursor.row = -1;
+    cursor.row = -2;
 }
 
 
@@ -58,6 +58,13 @@ void PatchSection::deleteCurrentJackAssignment()
     circuit->deleteJackAssignment(cursor.row);
     if (cursor.row >= circuit->numJackAssignments())
         cursor.row = circuit->numJackAssignments() - 1;
+}
+
+void PatchSection::deleteCurrentComment()
+{
+    Circuit *circuit = currentCircuit();
+    circuit->removeComment();
+    cursor.row = -2;
 }
 
 

@@ -64,3 +64,8 @@ QString Circuit::getComment() const
     else
         return comment.join('\n') + "\n";
 }
+
+void Circuit::removeComment()
+{
+    comment.clear();
+}

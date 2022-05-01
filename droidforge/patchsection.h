@@ -22,6 +22,7 @@ public:
     QString toString();
     void deleteCurrentCircuit();
     void deleteCurrentJackAssignment();
+    void deleteCurrentComment();
     void moveCursorUp();
     void moveCursorDown();
     void moveCursorLeft();
