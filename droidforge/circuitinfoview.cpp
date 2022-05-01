@@ -5,17 +5,18 @@
 #include <QPainter>
 
 
-CircuitInfoView::CircuitInfoView(QString circuit, QString description)
+CircuitInfoView::CircuitInfoView(QString circuit, QString description, unsigned *width)
     : circuit(circuit)
     , description(description)
     , selected(false)
+    , circuitViewWidth(width)
 {
 }
 
 
 QRectF CircuitInfoView::boundingRect() const
 {
-    return QRectF(0, 0, CICH_CIRCUIT_WIDTH, CICH_CIRCUIT_HEIGHT);
+    return QRectF(0, 0, *circuitViewWidth, CICH_CIRCUIT_HEIGHT);
 }
 
 void CircuitInfoView::select(bool sel)
@@ -32,7 +33,8 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
     // Circuit name
     painter->setPen(CICH_COLOR_TITLE);
-    painter->drawText(QRect(text_x, CICH_PADDING, CICH_CIRCUIT_WIDTH - text_x, CICH_TITLE_HEIGHT),
+    painter->drawText(QRect(text_x, CICH_PADDING,
+                      *circuitViewWidth - text_x, CICH_TITLE_HEIGHT),
                       Qt::AlignTop,
                       circuit.toUpper());
 
@@ -40,7 +42,7 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     painter->setPen(CICH_COLOR_DESCRIPTION);
     painter->drawText(QRect(text_x,
                             CICH_PADDING + CICH_TITLE_HEIGHT,
-                            CICH_CIRCUIT_WIDTH - text_x,
+                            *circuitViewWidth - text_x,
                             CICH_CIRCUIT_HEIGHT - CICH_TITLE_HEIGHT),
                       Qt::AlignTop | Qt::AlignLeft | Qt::TextWordWrap,
                       the_firmware->circuitDescription(circuit));

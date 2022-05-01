@@ -7,6 +7,8 @@
 #include <QMouseEvent>
 #include <QGraphicsRectItem>
 #include <QtGlobal>
+#include <QResizeEvent>
+#include <QScrollBar>
 
 CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     : QGraphicsView(parent)
@@ -14,7 +16,7 @@ CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     , selectedCircuit(0)
 {
     initScene();
-    numCircuits = loadCircuitCategory(category);
+    loadCircuitCategory(category);
     initBoundingRect(numCircuits);
 }
 
@@ -30,6 +32,7 @@ CircuitCollection::CircuitCollection(QWidget *parent)
 
 void CircuitCollection::initScene()
 {
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     QGraphicsScene *scene = new QGraphicsScene();
     scene->setBackgroundBrush(CICH_BACKGROUND_COLOR);
@@ -45,12 +48,12 @@ void CircuitCollection::initBoundingRect(int numCircuits)
     if (backgroundRect) {
         scene()->removeItem(backgroundRect);
         delete backgroundRect;
-    }
+   }
 
     backgroundRect = new QGraphicsRectItem(
         0,  // x
         0,  // y
-        CICH_GLOBAL_MARGIN * 2 + CICH_CIRCUIT_WIDTH, // width
+        CICH_GLOBAL_MARGIN * 2 + circuitViewWidth, // width
         2 * CICH_GLOBAL_MARGIN
         + (numCircuits - 1 ) * CICH_CIRCUIT_DISTANCE
         + numCircuits * CICH_CIRCUIT_HEIGHT);
@@ -84,6 +87,7 @@ void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
 
 void CircuitCollection::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << Q_FUNC_INFO<<event;
     if (event->key() == Qt::Key_Down)
         moveCursorUpDown(1);
     else if (event->key() == Qt::Key_Up)
@@ -106,9 +110,18 @@ void CircuitCollection::updateSearch(QString text)
     scene()->clear();
     circuits.clear();
     backgroundRect = 0;
-    unsigned numCircuits = loadCircuitCategory("", text);
+    loadCircuitCategory("", text);
     initBoundingRect(numCircuits);
     update();
+}
+
+void CircuitCollection::resizeEvent(QResizeEvent *event)
+{
+    qDebug() << Q_FUNC_INFO<<event;
+    circuitViewWidth =
+            event->size().width()
+//            -  verticalScrollBar()->width()
+            -  CICH_WIDTH_MARGIN;
 }
 
 bool CircuitCollection::handleMousePress(const QPointF &pos)
@@ -133,9 +146,10 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
 }
 
 
-unsigned CircuitCollection::loadCircuitCategory(QString category, QString search)
+void CircuitCollection::loadCircuitCategory(QString category, QString search)
 {
     search = search.toLower();
+    numCircuits = 0;
 
     unsigned y = CICH_GLOBAL_MARGIN;
     QStringList circuitNames = the_firmware->circuitsOfCategory(category);
@@ -148,8 +162,9 @@ unsigned CircuitCollection::loadCircuitCategory(QString category, QString search
         {
             continue;
         }
-        CircuitInfoView *civ = new CircuitInfoView(circuit, description);
+        CircuitInfoView *civ = new CircuitInfoView(circuit, description, &circuitViewWidth);
         circuits.append(civ);
+        numCircuits ++;
         if (i == selectedCircuit)
             civ->select();
         scene()->addItem(civ);
@@ -157,18 +172,20 @@ unsigned CircuitCollection::loadCircuitCategory(QString category, QString search
         y += civ->boundingRect().height() + CICH_CIRCUIT_DISTANCE;
     }
     moveCursorUpDown(0); // sanitize cursor position
-    return circuitNames.size();
 }
 
 
 void CircuitCollection::moveCursorUpDown(int whence)
 {
-    if (circuits.empty())
+    if (circuits.empty()) {
+        qDebug() << Q_FUNC_INFO << "EMPTY";
         return;
+    }
+    qDebug() << "We have " << numCircuits << "sircuits";
     currentCircuit()->deselect();
     selectedCircuit = qMax(0, qMin(numCircuits-1, selectedCircuit + whence));
     currentCircuit()->select();
-    ensureVisible(currentCircuit());
+    ensureVisible(currentCircuit(), 0, 0);
 }
 
 

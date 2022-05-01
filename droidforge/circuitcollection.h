@@ -14,6 +14,7 @@ class CircuitCollection : public QGraphicsView
     QList<CircuitInfoView *>circuits;
     int numCircuits;
     int selectedCircuit;
+    unsigned circuitViewWidth;
 
 public:
     CircuitCollection(QString category, QWidget *parent);
@@ -24,12 +25,13 @@ public:
     void keyPressEvent(QKeyEvent *event);
     QString selectedCircuitName();
     void updateSearch(QString text);
+    void resizeEvent(QResizeEvent* event);
 
 private:
     void initScene();
     void initBoundingRect(int numCircuits);
     bool handleMousePress(const QPointF &pos);
-    unsigned loadCircuitCategory(QString category, QString search="");
+    void loadCircuitCategory(QString category, QString search="");
     void moveCursorUpDown(int whence);
     CircuitInfoView *currentCircuit();
     void chooseCurrentCircuit();

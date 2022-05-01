@@ -34,8 +34,6 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     tabWidget->setTabVisible(TAB_INDEX_SEARCH, false);
     tabWidget->setCurrentIndex(TAB_INDEX_FIRST_CATEGORY);
 
-
-
     // The "Start jacks" choice determines with which jack assignments
     // should the new circuit start its life.
     startJacksBox = new QComboBox(this);
@@ -130,12 +128,16 @@ void CircuitChooseDialog::addCategoryTab(QString category, QString title)
 void CircuitChooseDialog::nextCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() + 1) % tabWidget->count());
+    if (tabWidget->currentIndex() == TAB_INDEX_SEARCH && lineEditSearch->text().isEmpty())
+        nextCategory();
 }
 
 
 void CircuitChooseDialog::previousCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() - 1 + tabWidget->count()) % tabWidget->count());
+    if (tabWidget->currentIndex() == TAB_INDEX_SEARCH && lineEditSearch->text().isEmpty())
+        previousCategory();
 }
 
 void CircuitChooseDialog::searchChanged(QString text)
