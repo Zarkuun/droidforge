@@ -18,7 +18,7 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     QSettings settings;
 
     resize(CICH_DIALOG_WIDTH, CICH_DIALOG_HEIGHT);
-
+    setWindowTitle(tr("Add new circuit"));
 
     // The tab widget contains one tab for every category of circuits
     tabWidget = new QTabWidget(this);
@@ -68,7 +68,6 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     mainLayout->addWidget(buttonBox, 1, 3);
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Add new circuit"));
 
     QAction *nextCategoryAct = new QAction(tr("Next category"));
     QList<QKeySequence> s1;

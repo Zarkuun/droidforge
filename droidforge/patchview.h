@@ -4,6 +4,7 @@
 #include "patch.h"
 #include "patchsectionview.h"
 #include "circuitchoosedialog.h"
+#include "jackchoosedialog.h"
 #include "patchpropertiesdialog.h"
 
 #include <QTabWidget>
@@ -14,6 +15,7 @@ class PatchView : public QTabWidget
     Patch *patch;
     PatchPropertiesDialog *patchPropertiesDialog;
     CircuitChooseDialog *circuitChooseDialog;
+    JackChooseDialog *jackChooseDialog;
 
 public:
     PatchView();
@@ -26,6 +28,7 @@ public slots:
     void previousSection();
     void editProperties();
     void newCircuit();
+    void addJack();
 };
 
 #endif // PATCHVIEW_H

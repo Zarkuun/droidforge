@@ -169,9 +169,8 @@ void MainWindow::createFileMenu()
     fileMenu = menuBar()->addMenu(tr("&File"));
 
     // Open
-    const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/images/icons/actions/document-open.png"));
-    qDebug() << "ICON" << openIcon;
-    QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
+
+    QAction *openAct = new QAction(icon("open_in_browser"), tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
@@ -179,8 +178,7 @@ void MainWindow::createFileMenu()
     toolbar->addAction(openAct);
 
     // Save
-    const QIcon saveIcon = QIcon::fromTheme("document-save", QIcon(":/images/icons/actions/document-save.png"));
-    QAction *saveAct = new QAction(saveIcon, tr("&Save..."), this);
+    QAction *saveAct = new QAction(icon("save"), tr("&Save..."), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save patch to file"));
     connect(saveAct, &QAction::triggered, this, &MainWindow::save);
@@ -188,7 +186,7 @@ void MainWindow::createFileMenu()
     toolbar->addAction(saveAct);
 
     // Patch properties
-    QAction *patchPropertiesAct = new QAction(saveIcon, tr("&Patch properties..."), this);
+    QAction *patchPropertiesAct = new QAction(icon("dns"), tr("&Patch properties..."), this);
     patchPropertiesAct->setShortcut(QKeySequence(tr("Ctrl+.")));
     connect(patchPropertiesAct, &QAction::triggered, &patchview, &PatchView::editProperties);
     fileMenu->addAction(patchPropertiesAct);
@@ -201,29 +199,32 @@ void MainWindow::createEditMenu()
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
     // Undo
-    const QIcon undoIcon = QIcon::fromTheme("undo", QIcon(":/images/undo.png"));
-    undoAction = new QAction(undoIcon, tr("&Undo"), this);
+    undoAction = new QAction(icon("undo"), tr("&Undo"), this);
     undoAction->setShortcuts(QKeySequence::Undo);
     undoAction->setStatusTip(tr("Undo last edit action"));
     connect(undoAction, &QAction::triggered, this, &MainWindow::undo);
     editMenu->addAction(undoAction);
 
     // Redo
-    const QIcon redoIcon = QIcon::fromTheme("redo", QIcon(":/images/redo.png"));
-    redoAction = new QAction(redoIcon, tr("&Redo"), this);
+    redoAction = new QAction(icon("redo"), tr("&Redo"), this);
     redoAction->setShortcuts(QKeySequence::Redo);
     redoAction->setStatusTip(tr("Redo last edit action"));
     connect(redoAction, &QAction::triggered, this, &MainWindow::redo);
     editMenu->addAction(redoAction);
 
     // New circuit...
-    const QIcon newIcon = QIcon(":/images/icons/status/audio-volume-high.png");
-    QAction *newCircuitAction = new QAction(newIcon, tr("&New circuit..."), this);
-    newCircuitAction->setShortcut(QKeySequence(tr("Ctrl+N")));
+    QAction *newCircuitAction = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
+    newCircuitAction->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
     connect(newCircuitAction, &QAction::triggered, &patchview, &PatchView::newCircuit);
     editMenu->addAction(newCircuitAction);
     toolbar->addAction(newCircuitAction);
 
+    // New jacks assignment
+    QAction *addJackAction = new QAction(icon("settings_input_composite"), tr("&Add jack..."), this);
+    addJackAction->setShortcut(QKeySequence(tr("Ctrl+N")));
+    connect(addJackAction, &QAction::triggered, &patchview, &PatchView::addJack);
+    editMenu->addAction(addJackAction);
+    toolbar->addAction(addJackAction);
 }
 
 
@@ -274,4 +275,9 @@ bool MainWindow::maybeSave()
 
 void MainWindow::loadFile(const QString &)
 {
+}
+
+QIcon MainWindow::icon(QString what) const
+{
+    return QIcon(":/images/icons/white/" + what + ".png");
 }

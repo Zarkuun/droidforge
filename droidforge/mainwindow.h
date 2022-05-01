@@ -68,11 +68,11 @@ private slots:
 signals:
     void sigStarted();
 
-
 private:
     void createActions();
     void updateActions();
     bool maybeSave();
     void loadFile(const QString &filename);
+    QIcon icon(QString what) const;
 };
 #endif // MAINWINDOW_H

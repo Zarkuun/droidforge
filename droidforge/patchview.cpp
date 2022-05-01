@@ -13,6 +13,7 @@ PatchView::PatchView()
     , patch(0)
     , patchPropertiesDialog(0)
     , circuitChooseDialog(0)
+    , jackChooseDialog(0)
 {
     grabKeyboard();
 }
@@ -93,5 +94,17 @@ void PatchView::newCircuit()
         if (!name.isEmpty())
             currentPatchSectionView->addNewCircuit(name, circuitChooseDialog->getJackSelection());
     }
+    grabKeyboard();
+}
+
+void PatchView::addJack()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    releaseKeyboard();
+    if (!jackChooseDialog)
+        jackChooseDialog = new JackChooseDialog(this);
+
+    jackChooseDialog->exec();
     grabKeyboard();
 }
