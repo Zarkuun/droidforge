@@ -6,9 +6,14 @@
 
 #include <QApplication>
 #include <QDir>
+#include <QSettings>
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setOrganizationName("Der Mann mit der Maschine");
+    QCoreApplication::setOrganizationDomain("dmmdm.de");
+    QCoreApplication::setApplicationName("Droid Forge");
+
     QApplication a(argc, argv);
     QString initialFilename;
     if (argc > 1)
@@ -18,5 +23,13 @@ int main(int argc, char *argv[])
 
     MainWindow mainWindow(initialFilename);
     mainWindow.show();
+    QSettings settings;
+
+    if (settings.contains("mainwindow/size"))
+        mainWindow.resize(settings.value("mainwindow/size").toSize());
+
+    if (settings.contains("mainwindow/position"))
+        mainWindow.move(settings.value("mainwindow/position").toPoint());
+
     return a.exec();
 }

@@ -54,6 +54,7 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+    void closeEvent(QCloseEvent* event);
 
 private slots:
     void slotLoadPatch(const QString &filename);

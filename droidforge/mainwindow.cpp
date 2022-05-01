@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QFileDialog>
+#include <QSettings>
 
 MainWindow *the_forge;
 DroidFirmware *the_firmware;
@@ -23,9 +24,6 @@ MainWindow::MainWindow(const QString &initialFilename)
     , initialFilename(initialFilename)
     , patch(0)
 {
-    resize(800,1000);
-    move(1200, 0);
-
     the_forge = this;
     the_firmware = &firmware;
 
@@ -88,6 +86,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         // QWidget::keyPressEvent(event);
     }
 }
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QSettings settings;
+    settings.setValue("mainwindow/position", pos());
+    settings.setValue("mainwindow/size", size());
+}
+
 
 void MainWindow::slotLoadPatch(const QString &filename)
 {
