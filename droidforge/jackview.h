@@ -7,10 +7,11 @@ class JackView : public QGraphicsItem
 {
     QString jack;
     bool isInput;
+    unsigned arraySize;
     bool isSelected;
 
 public:
-    JackView(QString jack, bool isInput);
+    JackView(QString circuit, QString jack, bool isInput);
     QString getJack() const { return jack; };
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;

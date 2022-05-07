@@ -6,14 +6,14 @@
 JackCircuitView::JackCircuitView(QString circuit)
     : circuit(circuit)
 {
-    // TODO: Das Ding in der Mitte malen.
-
 }
+
 
 QRectF JackCircuitView::boundingRect() const
 {
     return QRectF(0, 0, JSEL_CIRCUIT_WIDTH, JSEL_CIRCUIT_HEIGHT);
 }
+
 
 void JackCircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
@@ -37,5 +37,4 @@ void JackCircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                 QRect(x, y,
                       JSEL_CIRCUIT_ICON_WIDTH,
                       JSEL_CIRCUIT_ICON_WIDTH), image);
-
 }

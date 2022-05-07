@@ -40,6 +40,24 @@ bool DroidFirmware::jackIsOutput(QString circuit, QString jack)
 }
 
 
+unsigned DroidFirmware::jackArraySize(QString circuit, QString jack)
+{
+    QJsonValue jackinfo = findJackArray(circuit, "inputs", jack);
+    if (jackinfo.isNull())
+        jackinfo = findJackArray(circuit, "outputs", jack);
+    if (jackinfo.isNull()) {
+        qDebug() << "MIST" << jack << "nicht gefunden";
+        return 0;
+    }
+
+    QJsonObject ji = jackinfo.toObject();
+    if (ji.contains("count"))
+        return jackinfo["count"].toInt(1);
+    else
+        return 0;
+}
+
+
 QStringList DroidFirmware::circuitsOfCategory(QString category)
 {
     QStringList result;
@@ -96,6 +114,23 @@ QStringList DroidFirmware::jacksOfCircuit(QString circuit, QString whence, jacks
 }
 
 
+QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence)
+{
+    QStringList result;
+    QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
+    qDebug() << "A" << circuit << jacklist.count();
+    for (qsizetype i=0; i<jacklist.size(); i++) {
+        qDebug()<<"x"<<i;
+        QJsonObject jackinfo = jacklist[i].toObject();
+        if (jackinfo.contains("count"))
+            result.append(jackinfo["prefix"].toString());
+        else
+            result.append(jackinfo["name"].toString());
+    }
+    return result;
+}
+
+
 QJsonValue DroidFirmware::findJack(QString circuit, QString whence, QString jack)
 {
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
@@ -114,4 +149,17 @@ QJsonValue DroidFirmware::findJack(QString circuit, QString whence, QString jack
             return jackinfo;
     }
     return QJsonValue(QJsonValue::Null);
+}
+
+QJsonValue DroidFirmware::findJackArray(QString circuit, QString whence, QString prefix)
+{
+    QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
+    for (qsizetype i=0; i<jacklist.size(); i++) {
+        QJsonObject jackinfo = jacklist[i].toObject();
+        if (jackinfo["prefix"].toString() == prefix) {
+            qDebug() << prefix << "xhat" << jackinfo["count"].toInt();
+            return jackinfo;
+        }
+    }
+    return 0;
 }

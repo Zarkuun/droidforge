@@ -24,7 +24,8 @@ public:
 private:
     void initScene();
     void loadJacks(QString circuit, QString search="");
-    void placeJacks(const QStringList &jacks, int height, int column);
+    unsigned createJacks(const QStringList &jacks, int column);
+    void placeJacks(int totalHeight, float space, int column);
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
     JackView *currentJack();
