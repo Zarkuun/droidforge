@@ -14,6 +14,7 @@ class JackSelector : public QGraphicsView
     QList<JackView *> jackViews[2];
     int currentRow;
     int currentColumn;
+    int currentSubjack;
 
 public:
     JackSelector(QWidget *parent);

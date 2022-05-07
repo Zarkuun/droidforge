@@ -8,7 +8,7 @@
 
 // Standard for all dialogs
 #define STANDARD_SPACING              10
-#define COLOR_LINE                    QColor(70, 70, 70)
+#define COLOR_LINE                    QColor(120, 120, 120)
 #define COLOR_FILL_CURSOR             QColor(128, 192, 255, 70)
 #define COLOR_FRAME_CURSOR            QColor(255, 200, 50)
 #define COLOR_TEXT                    QColor(255, 255, 255)
@@ -66,7 +66,8 @@
 #define JSEL_JACK_SPACING             STANDARD_SPACING
 #define JSEL_CIRCUIT_WIDTH            150
 #define JSEL_CIRCUIT_HEIGHT           200
-#define JSEL_CIRCUIT_ICON_WIDTH        80
+#define JSEL_CIRCUIT_ICON_WIDTH       80
+#define JSEL_SCROLL_MARGIN            50
 
 
 #endif // TUNING_H

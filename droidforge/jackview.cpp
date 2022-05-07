@@ -45,7 +45,7 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
                       jack);
 
     if (arraySize) {
-        for (unsigned i=0; i<arraySize; i++) {
+        for (int i=0; i<(int)arraySize; i++) {
             QRectF r((i%4) * JSEL_JACK_WIDTH /4, (1 + i/4) * JSEL_JACK_HEIGHT, JSEL_JACK_WIDTH/4, JSEL_JACK_HEIGHT);
             QString n = QString::number(i+1);
             painter->setPen(COLOR_LINE);
@@ -57,13 +57,18 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
 
     if (isSelected) {
         painter->setPen(COLOR_FRAME_CURSOR);
-        painter->drawRect(rect);
+        if (isArray()) {
+            QRectF r((subjack%4) * JSEL_JACK_WIDTH /4, (1 + subjack/4) * JSEL_JACK_HEIGHT, JSEL_JACK_WIDTH/4, JSEL_JACK_HEIGHT);
+            painter->drawRect(r);
+        }
+        else
+            painter->drawRect(rect);
     }
 }
 
-
-void JackView::select()
+void JackView::select(int s)
 {
+    subjack = s;
     isSelected = true;
     update();
 }

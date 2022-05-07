@@ -10,6 +10,7 @@ JackSelector::JackSelector(QWidget *parent)
     : QGraphicsView(parent)
     , currentRow(0)
     , currentColumn(0)
+    , currentSubjack(0)
 {
     initScene();
 }
@@ -86,7 +87,7 @@ void JackSelector::loadJacks(QString circuit, QString)
 
     if (jackViews[currentColumn].count() == 0)
         currentColumn = (currentColumn + 1) % 2;
-    jackViews[currentColumn][0]->select();
+    jackViews[currentColumn][0]->select(currentSubjack);
 }
 
 
@@ -153,24 +154,71 @@ void JackSelector::placeJacks(int totalHeight, float space, int column)
 void JackSelector::moveCursorUpDown(int whence)
 {
     int rows = jackViews[currentColumn].count();
+    bool canGoDown = currentRow < rows-1;
+    bool canGoUp = currentRow > 0;
+
+    JackView *jv = currentJack();
+    if (jv->isArray()) {
+        if (whence == -1 && currentSubjack < 4 && !canGoUp)
+            return;
+        if (whence == 1 && currentSubjack+4 >= jv->getArraySize() && !canGoDown)
+            return;
+        currentSubjack += 4 * whence;
+        if (currentSubjack >= 0 && currentSubjack < jv->getArraySize()) {
+            selectCurrentJack(true);
+            return;
+        }
+    }
+
+    if (whence == 1 && !canGoDown)
+        return;
+    if (whence == -1 && !canGoUp)
+        return;
+
     selectCurrentJack(false);
-    currentRow = qMin(rows-1, qMax(0, currentRow + whence));
+    currentRow += whence;
+    jv = currentJack();
+    if (jv->isArray() && whence == -1) {
+        currentSubjack = jv->getArraySize()-4;
+    }
+    else
+        currentSubjack = 0;
+
     selectCurrentJack(true);
+    ensureVisible(currentJack(), JSEL_SCROLL_MARGIN, JSEL_SCROLL_MARGIN);
 }
 
 
 void JackSelector::moveCursorLeftRight(int whence)
 {
+    JackView *jv = currentJack();
+    if (jv->isArray()) {
+        int c = currentSubjack % 4;
+        if ((whence == -1 && c > 0) || (whence == 1 && c < 3))
+        {
+            currentSubjack += whence;
+            selectCurrentJack(true);
+            return;
+         }
+    }
+
     if (whence == -1 && currentColumn == 0)
         return;
     else if (whence == 1 && currentColumn == 1)
         return;
 
     selectCurrentJack(false);
+    currentSubjack = 0;
+
+    int count = jackViews[currentColumn].count();
+    float relpos = float(currentRow) / (count - 1);
+    qDebug() << "rel" << relpos;
     if (whence == -1)
         currentColumn = 0;
     else
         currentColumn = 1;
+    count = jackViews[currentColumn].count();
+    currentRow = round(relpos * (count - 1));
     selectCurrentJack(true);
 }
 
@@ -188,7 +236,7 @@ void JackSelector::selectCurrentJack(bool sel)
 {
     JackView *jv = currentJack();
     if (sel)
-        jv->select();
+        jv->select(currentSubjack);
     else
         jv->deselect();
 }
