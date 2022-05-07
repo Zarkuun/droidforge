@@ -8,7 +8,7 @@
 
 // Standard for all dialogs
 #define STANDARD_SPACING              10
-#define COLOR_LINE                    QColor(255, 255, 255, 40)
+#define COLOR_LINE                    QColor(70, 70, 70)
 #define COLOR_FILL_CURSOR             QColor(128, 192, 255, 70)
 #define COLOR_FRAME_CURSOR            QColor(255, 200, 50)
 #define COLOR_TEXT                    QColor(255, 255, 255)
@@ -53,12 +53,19 @@
 #define CICH_COLOR_DESCRIPTION        QColor(190, 190, 190)
 
 // Jack selector (JSEL)
+#define JSEL_TOTAL_WIDTH              600
 #define JSEL_BACKGROUND_HEIGHT        400
-#define JSEL_JACK_HEIGHT              24
+#define JSEL_JACK_HEIGHT              22
+#define JSEL_CIRCUIT_TEXT_HEIGHT      22
+#define JSEL_JACK_WIDTH               120
 #define JSEL_JACK_HORIZONTAL_PADDING  STANDARD_SPACING
 #define JSEL_JACK_VERTICAL_PADDING    2
-#define JSEL_JACK_BACKGROUND_COLOR    QColor(0, 0, 0)
+#define JSEL_COLOR_JACK_BACKGROUND    QColor(0, 0, 0)
+#define JSEL_COLOR_CIRCUIT_BACKGROUND QColor(20, 20, 20)
 #define JSEL_JACK_SPACING             STANDARD_SPACING
+#define JSEL_CIRCUIT_WIDTH            150
+#define JSEL_CIRCUIT_HEIGHT           200
+#define JSEL_CIRCUIT_ICON_WIDTH        80
 
 
 #endif // TUNING_H

@@ -49,6 +49,8 @@ QtApplication {
         "jackassignmentunknown.h",
         "jackchoosedialog.cpp",
         "jackchoosedialog.h",
+        "jackcircuitview.cpp",
+        "jackcircuitview.h",
         "jackselector.cpp",
         "jackselector.h",
         "jackview.cpp",

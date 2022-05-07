@@ -135,6 +135,11 @@ void PatchSection::setCursorRow(int row)
     cursor.row = row;
 }
 
+void PatchSection::setCursorColumn(int column)
+{
+    cursor.column = column;
+}
+
 void PatchSection::moveCursorToNextCircuit()
 {
     if (cursor.circuitNr < circuits.size()-1) {

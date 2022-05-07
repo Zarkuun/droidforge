@@ -14,7 +14,7 @@ JackView::JackView(QString jack, bool isInput)
 QRectF JackView::boundingRect() const
 {
     unsigned height = JSEL_JACK_HEIGHT;
-    unsigned width = 200; // TODO: An Schrift anpassen
+    unsigned width =  JSEL_JACK_WIDTH;
     return QRectF(0, 0, width, height);
 }
 
@@ -26,13 +26,13 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
 
     QRectF rect = boundingRect();
     painter->setPen(COLOR_LINE);
-    painter->fillRect(rect, JSEL_JACK_BACKGROUND_COLOR);
+    painter->fillRect(rect, JSEL_COLOR_JACK_BACKGROUND);
     painter->drawRect(rect);
     painter->setPen(isInput ? COLOR_JACK_INPUT : COLOR_JACK_OUTPUT);
     painter->drawText(
                 QRect(JSEL_JACK_HORIZONTAL_PADDING,
                       JSEL_JACK_VERTICAL_PADDING,
-                      200,
+                      JSEL_JACK_WIDTH,
                       JSEL_JACK_HEIGHT - 2 * JSEL_JACK_VERTICAL_PADDING),
                       jack);
 

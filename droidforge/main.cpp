@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QSettings>
+#include <QFile>
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +16,16 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Droid Forge");
 
     QApplication a(argc, argv);
+    QFile cssFile(":droidforge.css");
+    if (!cssFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "Cannot load style sheet.";
+    }
+    else {
+        QString css(cssFile.readAll());
+        a.setStyleSheet(css);
+        cssFile.close();
+    }
+
     QString initialFilename;
     if (argc > 1)
         initialFilename = argv[1];

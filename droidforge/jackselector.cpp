@@ -1,4 +1,5 @@
 #include "jackselector.h"
+#include "jackcircuitview.h"
 #include "tuning.h"
 #include "jackview.h"
 
@@ -58,11 +59,22 @@ void JackSelector::loadJacks(QString circuit, QString)
     QStringList inputs = the_firmware->inputsOfCircuit(circuit);
     QStringList outputs = the_firmware->outputsOfCircuit(circuit);
     int maxNum = qMax(inputs.count(), outputs.count());
-    int height = maxNum * JSEL_JACK_HEIGHT +
+    int totalHeight = maxNum * JSEL_JACK_HEIGHT +
                  (maxNum-1) * JSEL_JACK_SPACING;
+    if (totalHeight < JSEL_CIRCUIT_HEIGHT)
+        totalHeight = JSEL_CIRCUIT_HEIGHT;
+    placeJacks(inputs, totalHeight, 0);
+    placeJacks(outputs, totalHeight, 1);
 
-    placeJacks(inputs, height, 0);
-    placeJacks(outputs, height, 1);
+    // Put Icon with Circuit in the center
+    int totalWidth = JSEL_TOTAL_WIDTH;
+    JackCircuitView *jcv = new JackCircuitView(circuit);
+    int x = (JSEL_TOTAL_WIDTH - JSEL_CIRCUIT_WIDTH) / 2;
+    int y = (totalHeight - JSEL_CIRCUIT_HEIGHT) / 2;
+    scene()->addItem(jcv);
+    jcv->setPos(x, y);
+
+    // scene()->addRect(QRectF(0, 0, totalWidth, totalHeight), QColor(255, 255, 255));
 
     if (jackViews[currentColumn].count() == 0)
         currentColumn = (currentColumn + 1) % 2;
@@ -79,8 +91,9 @@ void JackSelector::placeJacks(const QStringList &jacks, int height, int column)
         spacing = (height - (count * JSEL_JACK_HEIGHT)) / (count - 1);
     qDebug() << "spacing" << spacing;
 
+    int rightColumn = JSEL_TOTAL_WIDTH - JSEL_JACK_WIDTH;
     int y = 0;
-    int x = column * 400;
+    int x = column * rightColumn;
     for (qsizetype i=0; i<count; i++)
     {
         QString jack = jacks[i];

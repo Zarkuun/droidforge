@@ -112,6 +112,7 @@ void PatchSectionView::addNewJack(QString name)
 
     currentCircuit()->insertJackAssignment(ja, index);
     section->setCursorRow(index);
+    section->setCursorColumn(1);
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
 }
