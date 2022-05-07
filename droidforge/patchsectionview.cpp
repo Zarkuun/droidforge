@@ -1,5 +1,8 @@
 #include "patchsectionview.h"
 #include "circuitview.h"
+#include "jackassignmentinput.h"
+#include "jackassignmentoutput.h"
+#include "jackassignmentunknown.h"
 #include "mainwindow.h"
 #include "tuning.h"
 
@@ -73,16 +76,51 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
 
 void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection)
 {
+    QString actionTitle = QString("Adding new '") + name + "' circuit";
+    the_forge->registerEdit(actionTitle);
+
     currentCircuitView()->deselect();
     int newPosition = section->cursorPosition().circuitNr;
     if (section->cursorPosition().row != -2)
         newPosition ++;
-    QString actionTitle = QString("Adding new '") + name + "' circuit";
-    the_forge->registerEdit(actionTitle);
     section->addNewCircuit(newPosition, name, jackSelection);
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
     ensureVisible(currentCircuitView());
+}
+
+
+void PatchSectionView::addNewJack(QString name)
+{
+    QString actionTitle = QString("Adding new jack '") + name + "' to circuit";
+    the_forge->registerEdit(actionTitle);
+
+    Circuit *circuit = currentCircuit();
+    QString circuitName = circuit->getName();
+    JackAssignment *ja;
+    if (the_firmware->jackIsInput(circuitName, name))
+        ja = new JackAssignmentInput(name);
+    else if (the_firmware->jackIsOutput(circuitName, name))
+        ja = new JackAssignmentOutput(name);
+    else
+        ja = new JackAssignmentUnknown(name);
+
+    int row = section->cursorPosition().row;
+    int index = row + 1;
+    if (index < 0)
+        index = 0;
+
+    currentCircuit()->insertJackAssignment(ja, index);
+    section->setCursorRow(index);
+    rebuildPatchSection();
+    currentCircuitView()->select(section->cursorPosition());
+}
+
+
+QString PatchSectionView::currentCircuitName() const
+{
+    // TODO: Wenn es keinen current circuit gibt.
+    return currentCircuit()->getName();
 }
 
 
@@ -128,6 +166,11 @@ Circuit *PatchSectionView::currentCircuit()
 {
     return section->currentCircuit();
 
+}
+
+const Circuit *PatchSectionView::currentCircuit() const
+{
+    return section->currentCircuit();
 }
 
 

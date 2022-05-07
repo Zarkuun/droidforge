@@ -47,11 +47,18 @@
 #define CICH_TITLE_HEIGHT             20
 #define CICH_PADDING                  (STANDARD_SPACING / 2)
 #define CICH_WIDTH_MARGIN             (2 * CICH_GLOBAL_MARGIN)
-
 #define CICH_BACKGROUND_COLOR         QColor(20, 20, 20)
 #define CICH_CIRCUIT_BACKGROUND_COLOR QColor(40, 40, 40)
 #define CICH_COLOR_TITLE              QColor(255, 255, 255)
 #define CICH_COLOR_DESCRIPTION        QColor(190, 190, 190)
+
+// Jack selector (JSEL)
+#define JSEL_BACKGROUND_HEIGHT        400
+#define JSEL_JACK_HEIGHT              24
+#define JSEL_JACK_HORIZONTAL_PADDING  STANDARD_SPACING
+#define JSEL_JACK_VERTICAL_PADDING    2
+#define JSEL_JACK_BACKGROUND_COLOR    QColor(0, 0, 0)
+#define JSEL_JACK_SPACING             STANDARD_SPACING
 
 
 #endif // TUNING_H

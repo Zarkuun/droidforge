@@ -29,6 +29,11 @@ void Circuit::addJackAssignment(JackAssignment *ja)
 
 }
 
+void Circuit::insertJackAssignment(JackAssignment *ja, int index)
+{
+    jackAssignments.insert(index, ja);
+}
+
 
 void Circuit::deleteJackAssignment(unsigned i)
 {

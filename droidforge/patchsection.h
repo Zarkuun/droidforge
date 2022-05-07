@@ -27,6 +27,7 @@ public:
     void moveCursorDown();
     void moveCursorLeft();
     void moveCursorRight();
+    void setCursorRow(int row);
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
     void addNewCircuit(int pos, QString name, jackselection_t jackSelection);

@@ -1200,5 +1200,6 @@
         <file>images/icons/white/zoom_in.png</file>
         <file>images/icons/white/zoom_out.png</file>
         <file>images/icons/white/zoom_out_map.png</file>
+        <file>images/background.png</file>
     </qresource>
 </RCC>

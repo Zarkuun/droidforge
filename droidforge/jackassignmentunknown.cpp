@@ -8,6 +8,7 @@ JackAssignmentUnknown::JackAssignmentUnknown(QString jack, QString comment, QStr
 }
 
 
+
 JackAssignment *JackAssignmentUnknown::clone() const
 {
     return new JackAssignmentUnknown(jack, comment, valueString);

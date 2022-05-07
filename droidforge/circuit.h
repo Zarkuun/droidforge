@@ -24,6 +24,7 @@ public:
     void removeComment();
     qsizetype numCommentLines() const { return comment.size(); };
     void addJackAssignment(JackAssignment *);
+    void insertJackAssignment(JackAssignment *, int index);
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     void deleteJackAssignment(unsigned i);

@@ -29,7 +29,7 @@ public:
 
 private:
     void initScene();
-    void initBoundingRect(int numCircuits);
+    void initBackgroundRect(int numCircuits);
     bool handleMousePress(const QPointF &pos);
     void loadCircuitCategory(QString category, QString search="");
     void moveCursorUpDown(int whence);

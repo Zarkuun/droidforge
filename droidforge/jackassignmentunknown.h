@@ -8,7 +8,7 @@ class JackAssignmentUnknown : public JackAssignment
     QString valueString;
 
 public:
-    JackAssignmentUnknown(QString jack, QString comment, QString valueString);
+    JackAssignmentUnknown(QString jack, QString comment="", QString valueString="");
     QString valueToString() const { return valueString; };
     jacktype_t jackType() const { return JACKTYPE_UNKNOWN; };
 

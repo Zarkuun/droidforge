@@ -105,6 +105,14 @@ void PatchView::addJack()
     if (!jackChooseDialog)
         jackChooseDialog = new JackChooseDialog(this);
 
-    jackChooseDialog->exec();
+    // TODO: Ich glaub, der Dialog muss vom PatchSectionView aus aufgerufen
+    // werden. Wie der new circuit vielleicht auch.
+    QString circuit = currentPatchSectionView->currentCircuitName();
+    jackChooseDialog->setCircuit(circuit);
+    if (jackChooseDialog->exec() == QDialog::Accepted) {
+        QString name = jackChooseDialog->getSelectedJack();
+        if (!name.isEmpty())
+            currentPatchSectionView->addNewJack(name);
+    }
     grabKeyboard();
 }

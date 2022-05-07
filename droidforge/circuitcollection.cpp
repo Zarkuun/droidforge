@@ -17,7 +17,7 @@ CircuitCollection::CircuitCollection(QString category, QWidget *parent)
 {
     initScene();
     loadCircuitCategory(category);
-    initBoundingRect(numCircuits);
+    initBackgroundRect(numCircuits);
 }
 
 
@@ -40,7 +40,7 @@ void CircuitCollection::initScene()
 }
 
 
-void CircuitCollection::initBoundingRect(int numCircuits)
+void CircuitCollection::initBackgroundRect(int numCircuits)
 {
     // Create an invisible rectangle that works as a global
     // bounding box. That will make sure that the visible area
@@ -110,7 +110,7 @@ void CircuitCollection::updateSearch(QString text)
     circuits.clear();
     backgroundRect = 0;
     loadCircuitCategory("", text);
-    initBoundingRect(numCircuits);
+    initBackgroundRect(numCircuits);
     update();
 }
 

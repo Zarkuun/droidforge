@@ -19,6 +19,8 @@ public:
     bool handleKeyPress(int key);
     void mousePressEvent(QMouseEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
+    void addNewJack(QString name);
+    QString currentCircuitName() const;
 
 private:
     bool handleMousePress(const QPointF &pos);
@@ -27,6 +29,7 @@ private:
     void rebuildPatchSection();
     CircuitView *currentCircuitView();
     Circuit *currentCircuit();
+    const Circuit *currentCircuit() const;
     JackAssignment *currentJackAssignment();
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);

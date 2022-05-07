@@ -73,7 +73,6 @@ QRectF CircuitView::boundingRect() const
 
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-
     unsigned height = contentHeight();
     painter->fillRect(0, 0, WIDTH, height, COLOR_CIRCUIT_BACKGROUND);
 
