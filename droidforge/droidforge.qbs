@@ -51,6 +51,8 @@ QtApplication {
         "jackchoosedialog.h",
         "jackcircuitview.cpp",
         "jackcircuitview.h",
+        "jackline.cpp",
+        "jackline.h",
         "jackselector.cpp",
         "jackselector.h",
         "jackview.cpp",

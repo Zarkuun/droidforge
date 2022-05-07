@@ -10,7 +10,6 @@ JackView::JackView(QString circuit, QString jack, bool isInput)
     , isSelected(false)
 {
     arraySize = the_firmware->jackArraySize(circuit, jack);
-    qDebug() << jack << "von" << circuit << "hat" << arraySize;
 }
 
 
@@ -19,14 +18,11 @@ QRectF JackView::boundingRect() const
     unsigned height;
     unsigned width =  JSEL_JACK_WIDTH;
     if (arraySize) {
-        qDebug() << "JA!";
         height = (1 + ((arraySize + 3) / 4)) * JSEL_JACK_HEIGHT;
     }
     else
         height = JSEL_JACK_HEIGHT;
     QRectF r(0, 0, width, height);
-    if (jack == "value")
-        qDebug() << " rect von " << jack << r;
     return r;
 }
 

@@ -2,6 +2,7 @@
 #include "jackcircuitview.h"
 #include "tuning.h"
 #include "jackview.h"
+#include "jackline.h"
 
 #include <QKeyEvent>
 
@@ -77,7 +78,6 @@ void JackSelector::loadJacks(QString circuit, QString)
     placeJacks(totalHeight, totalHeight - nettoOutputHeight, 1);
 
     // Put Icon with Circuit in the center
-    int totalWidth = JSEL_TOTAL_WIDTH;
     JackCircuitView *jcv = new JackCircuitView(circuit);
     int x = (JSEL_TOTAL_WIDTH - JSEL_CIRCUIT_WIDTH) / 2;
     int y = (totalHeight - JSEL_CIRCUIT_HEIGHT) / 2;
@@ -95,7 +95,6 @@ unsigned JackSelector::createJacks(const QStringList &jacks, int column)
     unsigned height = 0;
     for (qsizetype i=0; i<jacks.count(); i++) {
         QString jack = jacks[i];
-        qDebug() << "JACK:" << jack;
         JackView *jv = new JackView(circuit, jack, column == 0);
         jackViews[column].append(jv);
         scene()->addItem(jv);
@@ -115,15 +114,38 @@ void JackSelector::placeJacks(int totalHeight, float space, int column)
               ? space / (jvs->count() - 1)
               : 0;
 
+    float linespacePerJack = JSEL_CIRCUIT_HEIGHT / jvs->count();
+
     int rightColumn = JSEL_TOTAL_WIDTH - JSEL_JACK_WIDTH;
     int x = column * rightColumn;
     int y = 0;
+
+    int yo = (totalHeight - JSEL_CIRCUIT_HEIGHT) / 2 + linespacePerJack / 2;
 
     for (qsizetype i=0; i<jvs->count(); i++)
     {
         JackView *jv = (*jvs)[i];
         jv->setPos(x, y);
-        y += spacePerJack + jv->boundingRect().height();
+        unsigned h = jv->boundingRect().height();
+        // Create line from jack to center
+        unsigned xa = column == 0 ? JSEL_JACK_WIDTH : rightColumn;
+        unsigned xo = JSEL_TOTAL_WIDTH / 2;
+        unsigned ya = y + h/2;
+        if (column == 0)
+            xo -= JSEL_CIRCUIT_WIDTH / 2;
+        else
+            xo += JSEL_CIRCUIT_WIDTH / 2;
+
+        float phase;
+        if (i < jvs->count() / 2)
+            phase = float(i + 0.5) / jvs->count();
+        else
+            phase = 1.0 - (float(i + 0.5) / jvs->count());
+
+        JackLine *jl = new JackLine(QPoint(xa, ya), QPoint(xo, yo), phase + 0.25);
+        scene()->addItem(jl);
+        yo += linespacePerJack;
+        y += spacePerJack + h;
     }
 }
 

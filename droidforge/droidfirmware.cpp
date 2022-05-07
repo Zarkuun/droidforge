@@ -45,10 +45,8 @@ unsigned DroidFirmware::jackArraySize(QString circuit, QString jack)
     QJsonValue jackinfo = findJackArray(circuit, "inputs", jack);
     if (jackinfo.isNull())
         jackinfo = findJackArray(circuit, "outputs", jack);
-    if (jackinfo.isNull()) {
-        qDebug() << "MIST" << jack << "nicht gefunden";
+    if (jackinfo.isNull())
         return 0;
-    }
 
     QJsonObject ji = jackinfo.toObject();
     if (ji.contains("count"))
@@ -118,9 +116,7 @@ QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence)
 {
     QStringList result;
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
-    qDebug() << "A" << circuit << jacklist.count();
     for (qsizetype i=0; i<jacklist.size(); i++) {
-        qDebug()<<"x"<<i;
         QJsonObject jackinfo = jacklist[i].toObject();
         if (jackinfo.contains("count"))
             result.append(jackinfo["prefix"].toString());
@@ -157,7 +153,6 @@ QJsonValue DroidFirmware::findJackArray(QString circuit, QString whence, QString
     for (qsizetype i=0; i<jacklist.size(); i++) {
         QJsonObject jackinfo = jacklist[i].toObject();
         if (jackinfo["prefix"].toString() == prefix) {
-            qDebug() << prefix << "xhat" << jackinfo["count"].toInt();
             return jackinfo;
         }
     }
