@@ -70,6 +70,7 @@ void JackView::select(int s)
 {
     subjack = s;
     isSelected = true;
+    jackLine->select(true);
     update();
 }
 
@@ -77,5 +78,6 @@ void JackView::select(int s)
 void JackView::deselect()
 {
     isSelected = false;
+    jackLine->select(false);
     update();
 }

@@ -62,7 +62,7 @@
 #define JSEL_JACK_VERTICAL_PADDING    2
 #define JSEL_COLOR_JACK_BACKGROUND    QColor(0, 0, 0)
 #define JSEL_COLOR_CIRCUIT_BACKGROUND QColor(20, 20, 20)
-#define JSEL_COLOR_JACK_LINE          QColor(80, 80, 80)
+#define JSEL_COLOR_JACK_LINE          QColor(120, 120, 120)
 #define JSEL_JACK_SPACING             STANDARD_SPACING
 #define JSEL_CIRCUIT_WIDTH            150
 #define JSEL_CIRCUIT_HEIGHT           200

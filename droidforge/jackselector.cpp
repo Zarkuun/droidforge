@@ -144,6 +144,7 @@ void JackSelector::placeJacks(int totalHeight, float space, int column)
             phase = 1.0 - (float(i + 0.5) / jvs->count());
 
         JackLine *jl = new JackLine(QPoint(xa, ya), QPoint(xo, yo), phase + 0.25);
+        jackViews[column][i]->setJackLine(jl);
         scene()->addItem(jl);
         yo += linespacePerJack;
         y += spacePerJack + h;
@@ -161,10 +162,10 @@ void JackSelector::moveCursorUpDown(int whence)
     if (jv->isArray()) {
         if (whence == -1 && currentSubjack < 4 && !canGoUp)
             return;
-        if (whence == 1 && currentSubjack+4 >= jv->getArraySize() && !canGoDown)
+        if (whence == 1 && currentSubjack + 4 >= (int)jv->getArraySize() && !canGoDown)
             return;
         currentSubjack += 4 * whence;
-        if (currentSubjack >= 0 && currentSubjack < jv->getArraySize()) {
+        if (currentSubjack >= 0 && currentSubjack < (int)jv->getArraySize()) {
             selectCurrentJack(true);
             return;
         }

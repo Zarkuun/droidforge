@@ -1,6 +1,8 @@
 #ifndef JACKVIEW_H
 #define JACKVIEW_H
 
+#include "jackline.h"
+
 #include <QGraphicsItem>
 
 class JackView : public QGraphicsItem
@@ -10,6 +12,7 @@ class JackView : public QGraphicsItem
     unsigned arraySize;
     bool isSelected;
     int subjack;
+    JackLine *jackLine;
 
 public:
     JackView(QString circuit, QString jack, bool isInput);
@@ -18,6 +21,7 @@ public:
     bool isArray() const { return arraySize > 0; };
     unsigned getArraySize() const { return arraySize; };
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
+    void setJackLine(JackLine *jl) { jackLine = jl; };
     void select(int subjack);
     void deselect();
 };

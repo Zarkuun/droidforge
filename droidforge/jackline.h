@@ -8,9 +8,11 @@ class JackLine : public QGraphicsItem
     QPoint start;
     QPoint end;
     float phase; // 0 ... 1
+    bool isSelected;
 
 public:
-    JackLine(const QPoint &s, const QPoint &e, float p) : start(s), end(e), phase(p) {};
+    JackLine(const QPoint &s, const QPoint &e, float p) : start(s), end(e), phase(p), isSelected(false) {};
+    void select(bool s);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 };
