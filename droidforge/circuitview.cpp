@@ -116,6 +116,16 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     painter->restore();
 }
 
+QStringList CircuitView::usedJacks() const
+{
+    QStringList used;
+    for (qsizetype i=0; i<circuit->numJackAssignments(); i++) {
+        JackAssignment *ja = circuit->jackAssignment(i);
+        used.append(ja->jackName());
+    }
+    return used;
+}
+
 
 void CircuitView::paintJacks(QPainter *painter, unsigned &line, unsigned y)
 {

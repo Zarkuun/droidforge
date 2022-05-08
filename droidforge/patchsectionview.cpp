@@ -124,6 +124,11 @@ QString PatchSectionView::currentCircuitName() const
     return currentCircuit()->getName();
 }
 
+QStringList PatchSectionView::usedJacks() const
+{
+    return currentCircuitView()->usedJacks();
+}
+
 
 bool PatchSectionView::handleMousePress(const QPointF &pos)
 {
@@ -158,6 +163,11 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
 
 
 CircuitView *PatchSectionView::currentCircuitView()
+{
+    return circuitViews[section->cursorPosition().circuitNr];
+}
+
+const CircuitView *PatchSectionView::currentCircuitView() const
 {
     return circuitViews[section->cursorPosition().circuitNr];
 }

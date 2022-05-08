@@ -21,6 +21,7 @@ public:
     void addNewCircuit(QString name, jackselection_t jackSelection);
     void addNewJack(QString name);
     QString currentCircuitName() const;
+    QStringList usedJacks() const;
 
 private:
     bool handleMousePress(const QPointF &pos);
@@ -28,6 +29,7 @@ private:
     void deletePatchSection();
     void rebuildPatchSection();
     CircuitView *currentCircuitView();
+    const CircuitView *currentCircuitView() const;
     Circuit *currentCircuit();
     const Circuit *currentCircuit() const;
     JackAssignment *currentJackAssignment();
