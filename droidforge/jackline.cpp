@@ -22,7 +22,14 @@ QRectF JackLine::boundingRect() const
 
 void JackLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    painter->setPen(isSelected ? COLOR_FRAME_CURSOR : JSEL_COLOR_JACK_LINE);
+    QColor color;
+    if (!isSelected)
+        color = JSEL_COLOR_JACK_LINE;
+    else if (!active)
+        color = JSEL_COLOR_CURSOR_INACTIVE;
+    else
+        color = COLOR_FRAME_CURSOR;
+    painter->setPen(color);
     float np = 1.0 - phase;
 
     QPoint mid(

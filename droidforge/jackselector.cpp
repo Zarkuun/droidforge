@@ -16,10 +16,10 @@ JackSelector::JackSelector(QWidget *parent)
 }
 
 
-void JackSelector::setCircuit(const QString &c)
+void JackSelector::setCircuit(const QString &c, const QStringList &usedJacks)
 {
     circuit = c;
-    loadJacks(circuit, "");
+    loadJacks(circuit, usedJacks, "");
 }
 
 void JackSelector::keyPressEvent(QKeyEvent *event)
@@ -55,7 +55,7 @@ void JackSelector::initScene()
     setScene(scene);
 }
 
-void JackSelector::loadJacks(QString circuit, QString)
+void JackSelector::loadJacks(QString circuit, const QStringList &usedJacks, QString)
 {
     scene()->clear();
     for (int i=0; i<2; i++)
@@ -65,8 +65,8 @@ void JackSelector::loadJacks(QString circuit, QString)
     QStringList inputs = the_firmware->jackGroupsOfCircuit(circuit, "inputs");
     QStringList outputs = the_firmware->jackGroupsOfCircuit(circuit, "outputs");
 
-    int nettoInputHeight = createJacks(inputs, 0);
-    int nettoOutputHeight = createJacks(outputs, 1);
+    int nettoInputHeight = createJacks(inputs, usedJacks, 0);
+    int nettoOutputHeight = createJacks(outputs, usedJacks, 1);
 
     int bruttoInputHeight = inputs.count() > 0
             ? nettoInputHeight + (inputs.count() - 1) * JSEL_JACK_SPACING
@@ -91,16 +91,16 @@ void JackSelector::loadJacks(QString circuit, QString)
         currentColumn = (currentColumn + 1) % 2;
 
     currentRow = qMin(currentRow, jackViews[currentColumn].count()-1);
-    jackViews[currentColumn][currentRow]->select(currentSubjack);
+    selectCurrentJack(true);
 }
 
 
-unsigned JackSelector::createJacks(const QStringList &jacks, int column)
+unsigned JackSelector::createJacks(const QStringList &jacks, const QStringList &usedJacks, int column)
 {
     unsigned height = 0;
     for (qsizetype i=0; i<jacks.count(); i++) {
         QString jack = jacks[i];
-        JackView *jv = new JackView(circuit, jack, column == 0);
+        JackView *jv = new JackView(circuit, jack, usedJacks, column == 0);
         jackViews[column].append(jv);
         scene()->addItem(jv);
         height += jv->boundingRect().height();
@@ -147,7 +147,7 @@ void JackSelector::placeJacks(int totalHeight, float space, int column)
         else
             phase = 1.0 - (float(i + 0.5) / jvs->count());
 
-        JackLine *jl = new JackLine(QPoint(xa, ya), QPoint(xo, yo), phase + 0.25);
+        JackLine *jl = new JackLine(QPoint(xa, ya), QPoint(xo, yo), phase + 0.25, jv->isActive(-1));
         jackViews[column][i]->setJackLine(jl);
         scene()->addItem(jl);
         yo += linespacePerJack;
@@ -244,4 +244,6 @@ void JackSelector::selectCurrentJack(bool sel)
         jv->select(currentSubjack);
     else
         jv->deselect();
+
+    emit cursorMoved(jv->isActive(currentSubjack));
 }

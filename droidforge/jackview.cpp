@@ -4,12 +4,24 @@
 
 #include <QPainter>
 
-JackView::JackView(QString circuit, QString jack, bool isInput)
+JackView::JackView(QString circuit, QString jack, const QStringList &usedJacks, bool isInput)
     : jack(jack)
     , isInput(isInput)
     , isSelected(false)
 {
     arraySize = the_firmware->jackArraySize(circuit, jack);
+    if (isArray()) {
+        active = false;
+        for (qsizetype i=0; i<arraySize; i++) {
+            QString name = jack + QString::number(i+1);
+            activeSubjacks[i] = !usedJacks.contains(name);
+            if (activeSubjacks[i])
+                active = true;
+        }
+    }
+    else {
+        active = !usedJacks.contains(jack);
+    }
 }
 
 
@@ -26,6 +38,14 @@ QRectF JackView::boundingRect() const
     return r;
 }
 
+bool JackView::isActive(int subJack) const
+{
+    if (subJack >= 0 && isArray())
+        return activeSubjacks[subJack];
+    else
+        return active;
+}
+
 
 void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
@@ -36,7 +56,8 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     painter->setPen(COLOR_LINE);
     painter->fillRect(rect, JSEL_COLOR_JACK_BACKGROUND);
     painter->drawRect(rect);
-    painter->setPen(isInput ? COLOR_JACK_INPUT : COLOR_JACK_OUTPUT);
+    QColor activeColor = isInput ? COLOR_JACK_INPUT : COLOR_JACK_OUTPUT;
+    painter->setPen(active ? activeColor : JSEL_COLOR_JACK_INACTIVE);
     painter->drawText(
                 QRect(JSEL_JACK_HORIZONTAL_PADDING,
                       JSEL_JACK_VERTICAL_PADDING,
@@ -50,13 +71,13 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
             QString n = QString::number(i+1);
             painter->setPen(COLOR_LINE);
             painter->drawRect(r);
-            painter->setPen(isInput ? COLOR_JACK_INPUT : COLOR_JACK_OUTPUT);
+            painter->setPen(isActive(i) ? activeColor : JSEL_COLOR_JACK_INACTIVE);
             painter->drawText(r, n, Qt::AlignCenter | Qt::AlignVCenter);
         }
     }
 
     if (isSelected) {
-        painter->setPen(COLOR_FRAME_CURSOR);
+        painter->setPen(isActive(subjack) ? COLOR_FRAME_CURSOR : JSEL_COLOR_CURSOR_INACTIVE);
         if (isArray()) {
             QRectF r((subjack%4) * JSEL_JACK_WIDTH /4, (1 + subjack/4) * JSEL_JACK_HEIGHT, JSEL_JACK_WIDTH/4, JSEL_JACK_HEIGHT);
             painter->drawRect(r);

@@ -22,6 +22,8 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     mainLayout->addWidget(buttonBox, 1, 0);
     mainLayout->addWidget(jackSelector, 0, 0);
     setLayout(mainLayout);
+
+    connect(jackSelector, &JackSelector::cursorMoved, this, &JackChooseDialog::cursorMoved);
 }
 
 JackChooseDialog::~JackChooseDialog()
@@ -29,12 +31,19 @@ JackChooseDialog::~JackChooseDialog()
 
 }
 
-void JackChooseDialog::setCircuit(const QString &circuit)
+void JackChooseDialog::setCircuit(const QString &circuit, const QStringList &usedJacks)
 {
-    jackSelector->setCircuit(circuit);
+    jackSelector->setCircuit(circuit, usedJacks);
 }
 
 QString JackChooseDialog::getSelectedJack() const
 {
     return jackSelector->getSelectedJack();
+}
+
+void JackChooseDialog::cursorMoved(bool onActive)
+{
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(onActive);
+    qDebug() << "MOVED" << onActive;
+
 }

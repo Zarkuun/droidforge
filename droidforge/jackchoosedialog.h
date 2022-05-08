@@ -16,8 +16,11 @@ class JackChooseDialog : public QDialog
 public:
     JackChooseDialog(QWidget *parent = nullptr);
     ~JackChooseDialog();
-    void setCircuit(const QString &circuit);
+    void setCircuit(const QString &circuit, const QStringList &usedJack);
     QString getSelectedJack() const;
+
+public slots:
+    void cursorMoved(bool onActive);
 };
 
 #endif // JACKCHOOSEDIALOG_H
