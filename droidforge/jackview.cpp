@@ -4,7 +4,7 @@
 
 #include <QPainter>
 
-JackView::JackView(QString circuit, QString jack, const QStringList &usedJacks, bool isInput)
+JackView::JackView(QString circuit, QString jack, const QStringList *usedJacks, bool isInput)
     : jack(jack)
     , isInput(isInput)
     , isSelected(false)
@@ -14,13 +14,13 @@ JackView::JackView(QString circuit, QString jack, const QStringList &usedJacks, 
         active = false;
         for (qsizetype i=0; i<arraySize; i++) {
             QString name = jack + QString::number(i+1);
-            activeSubjacks[i] = !usedJacks.contains(name);
+            activeSubjacks[i] = !usedJacks->contains(name);
             if (activeSubjacks[i])
                 active = true;
         }
     }
     else {
-        active = !usedJacks.contains(jack);
+        active = !usedJacks->contains(jack);
     }
 }
 

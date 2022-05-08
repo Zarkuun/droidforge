@@ -18,7 +18,7 @@ class JackView : public QGraphicsItem
     bool activeSubjacks[MAX_NUM_SUBJACKS];
 
 public:
-    JackView(QString circuit, QString jack, const QStringList &usedJacks, bool isInput);
+    JackView(QString circuit, QString jack, const QStringList *usedJacks, bool isInput);
     QString getJack() const { return jack; };
     QRectF boundingRect() const override;
     bool isActive(int subJack) const;

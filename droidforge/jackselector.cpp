@@ -11,15 +11,17 @@ JackSelector::JackSelector(QWidget *parent)
     , currentRow(0)
     , currentColumn(0)
     , currentSubjack(0)
+    , usedJacks(0)
 {
     initScene();
 }
 
 
-void JackSelector::setCircuit(const QString &c, const QStringList &usedJacks)
+void JackSelector::setCircuit(const QString &c, const QStringList &uj, QString search)
 {
     circuit = c;
-    loadJacks(circuit, usedJacks, "");
+    usedJacks = &uj;
+    loadJacks(circuit, search);
 }
 
 void JackSelector::keyPressEvent(QKeyEvent *event)
@@ -55,18 +57,18 @@ void JackSelector::initScene()
     setScene(scene);
 }
 
-void JackSelector::loadJacks(QString circuit, const QStringList &usedJacks, QString)
+void JackSelector::loadJacks(QString circuit, QString search)
 {
     scene()->clear();
     for (int i=0; i<2; i++)
         jackViews[i].clear();
 
     // Add jacks
-    QStringList inputs = the_firmware->jackGroupsOfCircuit(circuit, "inputs");
-    QStringList outputs = the_firmware->jackGroupsOfCircuit(circuit, "outputs");
+    QStringList inputs = the_firmware->jackGroupsOfCircuit(circuit, "inputs", search);
+    QStringList outputs = the_firmware->jackGroupsOfCircuit(circuit, "outputs", search);
 
-    int nettoInputHeight = createJacks(inputs, usedJacks, 0);
-    int nettoOutputHeight = createJacks(outputs, usedJacks, 1);
+    int nettoInputHeight = createJacks(inputs, 0);
+    int nettoOutputHeight = createJacks(outputs, 1);
 
     int bruttoInputHeight = inputs.count() > 0
             ? nettoInputHeight + (inputs.count() - 1) * JSEL_JACK_SPACING
@@ -95,7 +97,7 @@ void JackSelector::loadJacks(QString circuit, const QStringList &usedJacks, QStr
 }
 
 
-unsigned JackSelector::createJacks(const QStringList &jacks, const QStringList &usedJacks, int column)
+unsigned JackSelector::createJacks(const QStringList &jacks, int column)
 {
     unsigned height = 0;
     for (qsizetype i=0; i<jacks.count(); i++) {
@@ -246,4 +248,10 @@ void JackSelector::selectCurrentJack(bool sel)
         jv->deselect();
 
     emit cursorMoved(jv->isActive(currentSubjack));
+}
+
+void JackSelector::searchChanged(QString text)
+{
+    qDebug() << "NEW SEARCH" << text;
+    loadJacks(circuit, text);
 }

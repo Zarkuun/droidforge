@@ -112,16 +112,19 @@ QStringList DroidFirmware::jacksOfCircuit(QString circuit, QString whence, jacks
 }
 
 
-QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence)
+QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence, QString search)
 {
     QStringList result;
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
     for (qsizetype i=0; i<jacklist.size(); i++) {
         QJsonObject jackinfo = jacklist[i].toObject();
+        QString name;
         if (jackinfo.contains("count"))
-            result.append(jackinfo["prefix"].toString());
+            name = jackinfo["prefix"].toString();
         else
-            result.append(jackinfo["name"].toString());
+            name = jackinfo["name"].toString();
+        if (name.contains(search, Qt::CaseInsensitive))
+            result.append(name);
     }
     return result;
 }

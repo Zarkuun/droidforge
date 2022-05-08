@@ -23,7 +23,7 @@ public:
     QStringList inputsOfCircuit(QString circuit, jackselection_t sel = JACKSELECTION_FULL);
     QStringList outputsOfCircuit(QString circuit, jackselection_t sel = JACKSELECTION_FULL);
     QStringList jacksOfCircuit(QString circuit, QString whence, jackselection_t);
-    QStringList jackGroupsOfCircuit(QString circuit, QString whence);
+    QStringList jackGroupsOfCircuit(QString circuit, QString whence, QString search);
 
 private:
     QJsonValue findJack(QString circuit, QString whence, QString jack);

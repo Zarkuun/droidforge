@@ -68,7 +68,6 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     mainLayout->addWidget(buttonBox, 1, 3);
     setLayout(mainLayout);
 
-
     QAction *nextCategoryAct = new QAction(tr("Next category"));
     QList<QKeySequence> s1;
     s1.append(QKeySequence(tr("Right")));
@@ -84,7 +83,6 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     previousCategoryAct->setShortcuts(s2);
     addAction(previousCategoryAct);
     connect(previousCategoryAct, &QAction::triggered, this, &CircuitChooseDialog::previousCategory);
-
 }
 
 

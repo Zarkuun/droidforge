@@ -3,6 +3,8 @@
 #include "droidfirmware.h"
 
 #include <QGridLayout>
+#include <QLabel>
+#include <QKeyEvent>
 
 JackChooseDialog::JackChooseDialog(QWidget *parent)
     : QDialog(parent)
@@ -18,9 +20,16 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
+    // Search
+    QLabel *searchLabel = new QLabel(tr("Search:"), this);
+    lineEditSearch = new QLineEdit(this);
+    connect(lineEditSearch, &QLineEdit::textChanged, jackSelector, &JackSelector::searchChanged);
+
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(buttonBox, 1, 0);
-    mainLayout->addWidget(jackSelector, 0, 0);
+    mainLayout->addWidget(jackSelector, 0, 0, 1, -1);
+    mainLayout->addWidget(searchLabel, 1, 0);
+    mainLayout->addWidget(lineEditSearch, 1, 1);
+    mainLayout->addWidget(buttonBox, 1, 2);
     setLayout(mainLayout);
 
     connect(jackSelector, &JackSelector::cursorMoved, this, &JackChooseDialog::cursorMoved);
@@ -33,12 +42,22 @@ JackChooseDialog::~JackChooseDialog()
 
 void JackChooseDialog::setCircuit(const QString &circuit, const QStringList &usedJacks)
 {
-    jackSelector->setCircuit(circuit, usedJacks);
+    jackSelector->setCircuit(circuit, usedJacks, lineEditSearch->text());
 }
 
 QString JackChooseDialog::getSelectedJack() const
 {
     return jackSelector->getSelectedJack();
+}
+
+void JackChooseDialog::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z)
+        lineEditSearch->insert(event->text());
+    else if (event->key() == Qt::Key_Backspace)
+        lineEditSearch->backspace();
+    else
+        QDialog::keyPressEvent(event);
 }
 
 void JackChooseDialog::cursorMoved(bool onActive)
