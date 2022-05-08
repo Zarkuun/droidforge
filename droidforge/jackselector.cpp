@@ -38,8 +38,10 @@ void JackSelector::keyPressEvent(QKeyEvent *event)
 
 QString JackSelector::getSelectedJack() const
 {
-    return currentJack()->getJack();
-
+    QString jack = currentJack()->getJack();
+    if (currentJack()->isArray())
+        jack += QString::number(currentSubjack+1);
+    return jack;
 }
 
 
@@ -87,7 +89,9 @@ void JackSelector::loadJacks(QString circuit, QString)
 
     if (jackViews[currentColumn].count() == 0)
         currentColumn = (currentColumn + 1) % 2;
-    jackViews[currentColumn][0]->select(currentSubjack);
+
+    currentRow = qMin(currentRow, jackViews[currentColumn].count()-1);
+    jackViews[currentColumn][currentRow]->select(currentSubjack);
 }
 
 

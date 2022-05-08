@@ -37,5 +37,4 @@ void JackChooseDialog::setCircuit(const QString &circuit)
 QString JackChooseDialog::getSelectedJack() const
 {
     return jackSelector->getSelectedJack();
-
 }
