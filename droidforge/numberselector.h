@@ -12,6 +12,7 @@
 class NumberSelector : public QWidget
 {
     Q_OBJECT
+
     QLineEdit *lineEdit;
     QLabel *labelUnit;
     QPushButton *buttonNumber;

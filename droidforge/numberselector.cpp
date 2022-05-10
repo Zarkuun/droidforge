@@ -10,27 +10,26 @@ NumberSelector::NumberSelector(QWidget *parent)
     , number(0.0)
     , numberType(ATOM_NUMBER_NUMBER)
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-
     lineEdit = new QLineEdit(this);
-    QLabel *labelValue = new QLabel(tr("Value:"), this);
     labelUnit = new QLabel(this);
     QHBoxLayout *valueBox = new QHBoxLayout();
-    valueBox->addWidget(labelValue);
     valueBox->addWidget(lineEdit);
     valueBox->addWidget(labelUnit);
 
+    // Buttons for switching between different units
+    QGridLayout *buttonBox = new QGridLayout();
     buttonNumber = new QPushButton("➞ " + tr("#"), this);
     buttonVoltage = new QPushButton("➞ " + tr("V"), this);
     buttonPercentage = new QPushButton("➞ " + tr("%"), this);
     buttonOnOff = new QPushButton("➞ " + tr("□ / ▣"), this);
-    QHBoxLayout *buttonBox = new QHBoxLayout();
-    buttonBox->addWidget(buttonNumber);
-    buttonBox->addWidget(buttonVoltage);
-    buttonBox->addWidget(buttonPercentage);
-    buttonBox->addWidget(buttonOnOff);
+    buttonBox->addWidget(buttonNumber, 0, 0);
+    buttonBox->addWidget(buttonVoltage, 0, 1);
+    buttonBox->addWidget(buttonPercentage, 1, 0);
+    buttonBox->addWidget(buttonOnOff, 1, 1);
 
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(valueBox);
+    mainLayout->addStretch();
     mainLayout->addLayout(buttonBox);
 
     connect(lineEdit, &QLineEdit::textEdited, this, &NumberSelector::lineEdited);

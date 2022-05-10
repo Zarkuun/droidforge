@@ -43,6 +43,8 @@ private:
     void deleteCurrentCircuit();
     void deleteCurrentComment();
     void deleteCurrentJack();
+    void deleteCurrentAtom();
+
     void editAtom();
 };
 

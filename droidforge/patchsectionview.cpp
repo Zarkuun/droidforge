@@ -245,12 +245,15 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
 
 void PatchSectionView::deleteCurrentRow()
 {
-    if (section->cursorPosition().row == -2)
+    const CursorPosition &pos = section->cursorPosition();
+    if (pos.row == -2)
         deleteCurrentCircuit();
-    else if (section->cursorPosition().row == -1)
+    else if (pos.row == -1)
         deleteCurrentComment();
-    else
+    else if (pos.column == 0)
         deleteCurrentJack();
+    else
+        deleteCurrentAtom();
 }
 
 
@@ -280,6 +283,18 @@ void PatchSectionView::deleteCurrentJack()
     section->deleteCurrentJackAssignment();
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
+}
+
+void PatchSectionView::deleteCurrentAtom()
+{
+    JackAssignment *ja = section->currentJackAssignment();
+    int column = section->cursorPosition().column;
+    if (ja->atomAt(column)) {
+        QString actionTitle = QString("deleting value of '") + ja->jackName() + "'";
+        the_forge->registerEdit(actionTitle);
+        ja->replaceAtom(column, 0);
+    }
+    rebuildPatchSection();
 }
 
 
