@@ -7,9 +7,12 @@
 #include <QPushButton>
 #include <QList>
 #include <QVBoxLayout>
+#include <QGroupBox>
+
+class AtomRegister;
 
 
-class InputOutputSelector : public QWidget
+class InputOutputSelector : public QGroupBox
 {
     Q_OBJECT
 
@@ -17,15 +20,25 @@ class InputOutputSelector : public QWidget
     QLineEdit *lineEdit;
     QList<QPushButton *>buttons;
     QVBoxLayout *mainLayout;
-    char registerType;
+
+    QChar registerType;
+    unsigned number;
 
 public:
     explicit InputOutputSelector(QWidget *parent = nullptr);
+    void setAtom(const AtomRegister *areg);
+    AtomRegister *getAtom();
 
 private:
     void addButton(QString label);
+    void setRegisterType(QChar reg);
+    void switchRegister(QChar c);
+    void setNumber(unsigned number);
 
 signals:
+
+private slots:
+    void lineEdited(QString text);
 
 };
 

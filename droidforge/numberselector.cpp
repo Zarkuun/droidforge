@@ -6,7 +6,7 @@
 #include <QHBoxLayout>
 
 NumberSelector::NumberSelector(QWidget *parent)
-    : QWidget{parent}
+    : QGroupBox{parent}
     , number(0.0)
     , numberType(ATOM_NUMBER_NUMBER)
 {

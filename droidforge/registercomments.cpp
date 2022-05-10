@@ -83,7 +83,7 @@ QString RegisterComments::toString(char reg, unsigned controller, const char *ti
     bool first = true;
     for (qsizetype i=0; i < comments.count(); i++) {
         const RegisterComment &c = comments[i];
-        if (c.atom->registerType == reg && c.atom->controller == controller) {
+        if (c.atom->getRegisterType() == reg && c.atom->getController() == controller) {
             if (first) {
                 first = false;
                 if (title)

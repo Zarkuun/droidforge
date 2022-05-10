@@ -5,11 +5,12 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QPushButton>
+#include <QGroupBox>
 
 #include "atomnumber.h"
 
 
-class NumberSelector : public QWidget
+class NumberSelector : public QGroupBox
 {
     Q_OBJECT
 

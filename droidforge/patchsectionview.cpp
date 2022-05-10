@@ -163,9 +163,13 @@ void PatchSectionView::editAtom()
     const Atom *atom = ja->atomAt(section->cursorPosition().column);
     Atom *newAtom = atomSelectorDialog->editAtom(ja->jackType(), atom);
     if (newAtom != atom) {
+        qDebug() << "1";
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
+        qDebug() << "2";
         the_forge->registerEdit(actionTitle);
+        qDebug() << "3";
         ja->replaceAtom(section->cursorPosition().column, newAtom);
+        qDebug() << "4";
     }
 }
 

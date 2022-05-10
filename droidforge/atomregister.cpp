@@ -1,5 +1,7 @@
 #include "atomregister.h"
 
+
+
 AtomRegister *AtomRegister::clone() const
 {
     return new AtomRegister(registerType, controller, number);

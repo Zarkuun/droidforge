@@ -7,11 +7,23 @@
 
 #include <QWidget>
 
+typedef enum {
+    SELECT_NUMBER,
+    SELECT_INPUT_OUTPUT,
+    SELECT_CONTROL,
+    SELECT_CABLE,
+} select_t;
+
 class AtomSelector : public QWidget
 {
     Q_OBJECT
+    QPushButton *buttonNumber;
+    QPushButton *buttonInputOutput;
+    QPushButton *buttonControl;
+    QPushButton *buttonCable;
     NumberSelector *numberSelector;
     InputOutputSelector *inputOutputSelector;
+    select_t selectType;
 
 public:
     explicit AtomSelector(QWidget *parent = nullptr);
@@ -21,9 +33,7 @@ public:
 signals:
 
 private:
-    QWidget *vline() const;
-    QWidget *hline() const;
-
+    void setSelectType(select_t sel);
 };
 
 #endif // ATOMSELECTOR_H

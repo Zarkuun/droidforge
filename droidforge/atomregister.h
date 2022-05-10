@@ -17,15 +17,21 @@
 
 class AtomRegister : public Atom
 {
-public:
     QChar registerType;
     unsigned controller; // 0: none
     unsigned number;
+
+public:
     AtomRegister(QChar t, unsigned c, unsigned n)
         : registerType(t), controller(c), number(n) {};
     AtomRegister *clone() const;
     QString toString() const;
     bool isRegister() const { return true; };
+    bool isControl() { return controller > 0; };
+
+    QChar getRegisterType() const { return registerType; };
+    unsigned getController() const { return controller; };
+    unsigned getNumber() const { return number; };
 };
 
 #endif // ATOMREGISTER_H
