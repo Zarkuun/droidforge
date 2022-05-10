@@ -15,7 +15,7 @@ AtomSelector::AtomSelector(QWidget *parent)
     numberSelector->setFixedWidth(w);
     inputOutputSelector = new InputOutputSelector(this);
     inputOutputSelector->setFixedWidth(w);
-    QWidget *controlSelector = new QWidget(this);
+    controlSelector = new ControlSelector(this);
     controlSelector->setFixedWidth(w);
     QWidget *cableSelector = new QWidget(this);
     cableSelector->setFixedWidth(w);
@@ -42,13 +42,14 @@ AtomSelector::AtomSelector(QWidget *parent)
     connect(buttonInputOutput, &QPushButton::pressed, this, &AtomSelector::switchToInputOutput);
     connect(buttonControl, &QPushButton::pressed, this, &AtomSelector::switchToControl);
     connect(buttonCable, &QPushButton::pressed, this, &AtomSelector::switchToCable);
-
 }
+
 
 void AtomSelector::setAtom(const Atom *atom)
 {
     numberSelector->clearAtom();
     inputOutputSelector->clearAtom();
+    controlSelector->clearAtom();
 
     if (!atom)
         return;
@@ -61,6 +62,7 @@ void AtomSelector::setAtom(const Atom *atom)
         AtomRegister *areg = (AtomRegister *)atom;
         if (areg->isControl()) {
             setSelectType(SELECT_CONTROL);
+            controlSelector->setAtom(areg);
         }
         else {
             setSelectType(SELECT_INPUT_OUTPUT);
@@ -82,7 +84,7 @@ Atom *AtomSelector::getAtom()
     case SELECT_INPUT_OUTPUT:
         return inputOutputSelector->getAtom();
     case SELECT_CONTROL:
-        return 0; // TODO
+        return controlSelector->getAtom();
     case SELECT_CABLE:
         return 0; // TODO
     }
@@ -93,6 +95,7 @@ void AtomSelector::setSelectType(select_t sel)
     selectType = sel;
     numberSelector->setDisabled(sel != SELECT_NUMBER);
     inputOutputSelector->setDisabled(sel != SELECT_INPUT_OUTPUT);
+    controlSelector->setDisabled(sel != SELECT_CONTROL);
 
     switch (selectType) {
     case SELECT_NUMBER:
@@ -104,6 +107,9 @@ void AtomSelector::setSelectType(select_t sel)
         break;
 
     case SELECT_CONTROL:
+        controlSelector->getFocus();
+        break;
+
     case SELECT_CABLE:
         break;
     }

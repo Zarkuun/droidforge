@@ -2,6 +2,7 @@
 #define ATOMSELECTOR_H
 
 #include "atom.h"
+#include "controlselector.h"
 #include "numberselector.h"
 #include "inputoutputselector.h"
 
@@ -23,6 +24,7 @@ class AtomSelector : public QWidget
     QPushButton *buttonCable;
     NumberSelector *numberSelector;
     InputOutputSelector *inputOutputSelector;
+    ControlSelector *controlSelector;
     select_t selectType;
 
 public:
