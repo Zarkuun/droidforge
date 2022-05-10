@@ -11,9 +11,9 @@ PatchView::PatchView()
     : QTabWidget()
     , currentPatchSectionView(0)
     , patch(0)
-    , patchPropertiesDialog(0)
-    , circuitChooseDialog(0)
-    , jackChooseDialog(0)
+    , patchPropertiesDialog{}
+    , circuitChooseDialog{}
+    , jackChooseDialog{}
 {
     grabKeyboard();
 }
@@ -99,8 +99,6 @@ void PatchView::newCircuit()
 
 void PatchView::addJack()
 {
-    qDebug() << Q_FUNC_INFO;
-
     releaseKeyboard();
     if (!jackChooseDialog)
         jackChooseDialog = new JackChooseDialog(this);
@@ -116,5 +114,15 @@ void PatchView::addJack()
         if (!name.isEmpty())
             currentPatchSectionView->addNewJack(name);
     }
+    grabKeyboard();
+}
+
+
+void PatchView::editValue()
+{
+    qDebug() << Q_FUNC_INFO;
+
+    releaseKeyboard();
+    currentPatchSectionView->editValue();
     grabKeyboard();
 }

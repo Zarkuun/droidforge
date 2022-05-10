@@ -10,6 +10,7 @@
 
 PatchSectionView::PatchSectionView(PatchSection *section)
     : section(section)
+    , atomSelectorDialog{}
 {
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     buildPatchSection();
@@ -53,13 +54,13 @@ void PatchSectionView::rebuildPatchSection()
 bool PatchSectionView::handleKeyPress(int key)
 {
     switch (key) {
-    case Qt::Key_Up:       moveCursorUpDown(-1);     return true;
-    case Qt::Key_Down:     moveCursorUpDown(1);      return true;
-    case Qt::Key_Left:     moveCursorLeftRight(-1);  return true;
-    case Qt::Key_Right:    moveCursorLeftRight(1);   return true;
-    case Qt::Key_PageUp:   moveCursorPageUpDown(-1); return true;
-    case Qt::Key_PageDown: moveCursorPageUpDown(1);  return true;
-    case Qt::Key_Backspace: deleteCurrentRow();      return true;
+    case Qt::Key_Up:        moveCursorUpDown(-1);     return true;
+    case Qt::Key_Down:      moveCursorUpDown(1);      return true;
+    case Qt::Key_Left:      moveCursorLeftRight(-1);  return true;
+    case Qt::Key_Right:     moveCursorLeftRight(1);   return true;
+    case Qt::Key_PageUp:    moveCursorPageUpDown(-1); return true;
+    case Qt::Key_PageDown:  moveCursorPageUpDown(1);  return true;
+    case Qt::Key_Backspace: deleteCurrentRow();       return true;
     default: return false;
     }
 }
@@ -127,6 +128,45 @@ QString PatchSectionView::currentCircuitName() const
 QStringList PatchSectionView::usedJacks() const
 {
     return currentCircuitView()->usedJacks();
+}
+
+void PatchSectionView::editValue()
+{
+    int row = section->cursorPosition().row;
+    int column = section->cursorPosition().column;
+
+    if (row == -2) {
+        // TODO: Change Circuit
+    }
+    else if (row == -1) {
+        // TODO: Edit comment
+    }
+    else if (column == 0) {
+        // TODO: Exchange jack
+    }
+    else {
+        editAtom();
+    }
+}
+
+
+void PatchSectionView::editAtom()
+{
+    Circuit *circuit = currentCircuit();
+    JackAssignment *ja = circuit->jackAssignment(section->cursorPosition().row);
+    if (ja->jackType() == JACKTYPE_UNKNOWN)
+        return; // TODO: Edit unknown data anyway?
+
+    if (!atomSelectorDialog)
+        atomSelectorDialog = new AtomSelectorDialog(this);
+
+    const Atom *atom = ja->atomAt(section->cursorPosition().column);
+    Atom *newAtom = atomSelectorDialog->editAtom(ja->jackType(), atom);
+    if (newAtom != atom) {
+        QString actionTitle = QString("Editing value for jack '") + ja->jackName() + "'";
+        the_forge->registerEdit(actionTitle);
+        ja->replaceAtom(section->cursorPosition().column, newAtom);
+    }
 }
 
 

@@ -42,6 +42,31 @@ Atom *JackAssignmentInput::getAtom(unsigned n) const
         return atomC;
 }
 
+const Atom *JackAssignmentInput::atomAt(int column) const
+{
+    return getAtom(column - 1); // column is 1, 2 or 3
+}
+
+
+void JackAssignmentInput::replaceAtom(int column, Atom *newAtom)
+{
+    Atom *old;
+    if (column == 1) {
+        old = atomA;
+        atomA = newAtom;
+    }
+    else if (column == 2) {
+        old = atomB;
+        atomB = newAtom;
+    }
+    else {
+        old = atomC;
+        atomC = newAtom;
+    }
+    if (old)
+        delete old;
+}
+
 
 JackAssignment *JackAssignmentInput::clone() const
 {

@@ -41,6 +41,11 @@ void Circuit::deleteJackAssignment(unsigned i)
     jackAssignments.remove(i);
 }
 
+const Atom *Circuit::atomAt(int row, int column) const
+{
+    return jackAssignments[row]->atomAt(column);
+}
+
 
 QString Circuit::toString()
 {

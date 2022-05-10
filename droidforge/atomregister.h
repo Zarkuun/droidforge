@@ -25,6 +25,7 @@ public:
         : registerType(t), controller(c), number(n) {};
     AtomRegister *clone() const;
     QString toString() const;
+    bool isRegister() const { return true; };
 };
 
 #endif // ATOMREGISTER_H

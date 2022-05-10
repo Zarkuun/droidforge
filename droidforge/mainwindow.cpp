@@ -225,6 +225,14 @@ void MainWindow::createEditMenu()
     connect(addJackAction, &QAction::triggered, &patchview, &PatchView::addJack);
     editMenu->addAction(addJackAction);
     toolbar->addAction(addJackAction);
+
+    // Edit current line / field
+    QAction *editValueAction = new QAction(icon("edit"), tr("&Edit element under cursor..."), this);
+    editValueAction->setShortcuts({
+                                    QKeySequence(tr("Enter")),
+                                    QKeySequence(tr("Return"))});
+    editMenu->addAction(editValueAction);
+    connect(editValueAction, &QAction::triggered, &patchview, &PatchView::editValue);
 }
 
 

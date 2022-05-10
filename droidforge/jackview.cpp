@@ -87,6 +87,7 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     }
 }
 
+
 void JackView::select(int s)
 {
     subjack = s;

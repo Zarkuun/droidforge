@@ -7,9 +7,9 @@
 #include <QKeyEvent>
 
 JackChooseDialog::JackChooseDialog(QWidget *parent)
-    : QDialog(parent)
+    : QDialog{parent}
 {
-    resize(900, 600);
+    resize(900, 600); // TODO: Größe merken. Standardgröße nach tuning.h
     setWindowTitle(tr("Add new jack / parameter"));
 
     // Canvas with circuit diagram

@@ -5,6 +5,7 @@
 #include "patchsection.h"
 #include "tuning.h"
 #include "circuitchoosedialog.h"
+#include "atomselectordialog.h"
 
 #include <QGraphicsView>
 
@@ -12,6 +13,7 @@ class PatchSectionView : public QGraphicsView
 {
     PatchSection *section;
     QList<CircuitView *>circuitViews;
+    AtomSelectorDialog *atomSelectorDialog;
 
 public:
     PatchSectionView(PatchSection *section);
@@ -22,6 +24,7 @@ public:
     void addNewJack(QString name);
     QString currentCircuitName() const;
     QStringList usedJacks() const;
+    void editValue();
 
 private:
     bool handleMousePress(const QPointF &pos);
@@ -40,6 +43,7 @@ private:
     void deleteCurrentCircuit();
     void deleteCurrentComment();
     void deleteCurrentJack();
+    void editAtom();
 };
 
 #endif // PATCHSECTIONVIEW_H

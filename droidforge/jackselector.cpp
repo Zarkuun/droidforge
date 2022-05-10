@@ -38,6 +38,21 @@ void JackSelector::keyPressEvent(QKeyEvent *event)
         QWidget::keyPressEvent(event);
 }
 
+void JackSelector::mousePressEvent(QMouseEvent *event)
+{
+    if (event->type() == QMouseEvent::MouseButtonPress) {
+        if (!handleMousePress(event->pos())) {
+            // TODO
+        }
+    }
+
+}
+
+void JackSelector::mouseDoubleClickEvent(QMouseEvent *event)
+{
+
+}
+
 QString JackSelector::getSelectedJack() const
 {
     QString jack = currentJack()->getJack();
@@ -248,6 +263,29 @@ void JackSelector::selectCurrentJack(bool sel)
         jv->deselect();
 
     emit cursorMoved(jv->isActive(currentSubjack));
+}
+
+bool JackSelector::handleMousePress(const QPointF &pos)
+{
+    QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
+    if (!item)
+        return false;
+
+    // Find jack view. We have other (usedless) items as well
+    for (int column = 0; column < 2; column++) {
+        auto jvs = &jackViews[column];
+        for (int i=0; i<jvs->count(); i++) {
+            JackView *jv = (*jvs)[i];
+            if (jv == item) {
+                selectCurrentJack(false);
+                currentColumn = column;
+                currentRow = i;
+                selectCurrentJack(true);
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void JackSelector::searchChanged(QString text)

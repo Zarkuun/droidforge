@@ -14,6 +14,8 @@ public:
     JackAssignmentInput(QString jack, QString comment="");
     ~JackAssignmentInput();
     Atom *getAtom(unsigned n) const;
+    const Atom *atomAt(int column) const;
+    void replaceAtom(int column, Atom *newAtom);
     QString valueToString() const;
 
 protected:

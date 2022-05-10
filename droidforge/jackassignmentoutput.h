@@ -13,6 +13,8 @@ public:
     ~JackAssignmentOutput();
     Atom *getAtom() const;;
     QString valueToString() const;
+    const Atom *atomAt(int) const { return atom; };
+    void replaceAtom(int column, Atom *newAtom);
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_OUTPUT; };

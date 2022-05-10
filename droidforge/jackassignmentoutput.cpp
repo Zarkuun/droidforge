@@ -44,6 +44,13 @@ QString JackAssignmentOutput::valueToString() const
         return "";
 }
 
+void JackAssignmentOutput::replaceAtom(int, Atom *newAtom)
+{
+    if (atom)
+        delete atom;
+    atom = newAtom;
+}
+
 
 void JackAssignmentOutput::parseOutputValue(QString valueString)
 {

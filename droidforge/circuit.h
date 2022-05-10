@@ -28,6 +28,7 @@ public:
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     void deleteJackAssignment(unsigned i);
+    const Atom *atomAt(int row, int column) const;
 
 };
 

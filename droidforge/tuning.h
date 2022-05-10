@@ -4,6 +4,7 @@
 #define UNDO_HISTORY_SIZE             1000
 #define MAX_NUM_CONTROLLERS           32 // When parsing a patch
 #define MAX_NUM_SUBJACKS              64
+#define BOOLEAN_VALUE_THRESHOLD       0.1
 
 
 // Standard for all dialogs

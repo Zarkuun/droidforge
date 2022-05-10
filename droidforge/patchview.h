@@ -29,6 +29,7 @@ public slots:
     void editProperties();
     void newCircuit();
     void addJack();
+    void editValue();
 };
 
 #endif // PATCHVIEW_H

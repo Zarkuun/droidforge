@@ -7,6 +7,10 @@ JackAssignmentUnknown::JackAssignmentUnknown(QString jack, QString comment, QStr
 {
 }
 
+void JackAssignmentUnknown::replaceAtom(int, Atom *newAtom)
+{
+    valueString = newAtom->toString();
+}
 
 
 JackAssignment *JackAssignmentUnknown::clone() const

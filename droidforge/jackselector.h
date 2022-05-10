@@ -21,6 +21,8 @@ public:
     JackSelector(QWidget *parent);
     void setCircuit(const QString &ircuit, const QStringList &usedJacks, QString search);
     void keyPressEvent(QKeyEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
     QString getSelectedJack() const;
 
 private:
@@ -33,6 +35,7 @@ private:
     JackView *currentJack();
     const JackView *currentJack() const;
     void selectCurrentJack(bool sel);
+    bool handleMousePress(const QPointF &pos);
 
 signals:
     void cursorMoved(bool onActive);

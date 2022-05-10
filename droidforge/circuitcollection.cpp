@@ -73,7 +73,7 @@ void CircuitCollection::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
         if (!handleMousePress(event->pos())) {
-            // NIX
+            // TODO
         }
     }
 }

@@ -26,6 +26,8 @@ public:
     virtual jacktype_t jackType() const = 0;
     QString toString() const;
     QString jackName() const { return jack; };
+    virtual const Atom *atomAt(int column) const = 0;
+    virtual void replaceAtom(int column, Atom *newAtom) = 0;
 
 protected:
     virtual QString valueToString() const = 0;
