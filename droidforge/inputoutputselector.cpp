@@ -22,12 +22,12 @@ InputOutputSelector::InputOutputSelector(QWidget *parent)
     mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(valueBox);
 
-    addButton("I - " + tr("Input"));
-    addButton("O - " + tr("Output"));
-    addButton("G - " + tr("Gate"));
-    addButton("N - " + tr("Normalization"));
-    addButton("R - " + tr("RGB-LED"));
-    addButton("X - " + tr("Special"));
+    addRegisterButton('I', tr("Input"));
+    addRegisterButton('O', tr("Output"));
+    addRegisterButton('G', tr("Gate"));
+    addRegisterButton('N', tr("Normalization"));
+    addRegisterButton('R', tr("RGB-LED"));
+    addRegisterButton('X', tr("Special"));
 
     connect(lineEdit, &QLineEdit::textEdited, this, &InputOutputSelector::lineEdited);
 }
@@ -63,11 +63,14 @@ void InputOutputSelector::getFocus()
 }
 
 
-void InputOutputSelector::addButton(QString label)
+void InputOutputSelector::addRegisterButton(QChar reg, QString label)
 {
-    QPushButton *button = new QPushButton(label);
+    QPushButton *button = new QPushButton(QString(reg) + ": " + label);
     buttons.append(button);
     mainLayout->addWidget(button);
+    connect(button, &QPushButton::pressed, this, [this, reg] () {
+        this->setRegisterType(reg);
+    } );
 }
 
 

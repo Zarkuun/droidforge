@@ -32,7 +32,7 @@ public:
     void getFocus();
 
 private:
-    void addButton(QString label);
+    void addRegisterButton(QChar reg, QString label);
     void setRegisterType(QChar reg);
     void switchRegister(QChar c);
     void setNumber(unsigned number);
