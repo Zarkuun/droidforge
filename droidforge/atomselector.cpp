@@ -20,19 +20,11 @@ AtomSelector::AtomSelector(QWidget *parent)
     QWidget *cableSelector = new QWidget(this);
     cableSelector->setFixedWidth(w);
 
-    // QLabel *labelNumber = new QLabel(tr("Value"), this);
-    // QLabel *labelJack = new QLabel(tr("Input/Output"), this);
-    // QLabel *labelControl = new QLabel(tr("Control"), this);
-    // QLabel *labelCable = new QLabel(tr("Internal"), this);
-
-    // labelCable->setStyleSheet("border: 1px solid green;");
-
     buttonNumber = new QPushButton(tr("Fixed number"));
     buttonInputOutput = new QPushButton(tr("Input / output"));
     buttonControl = new QPushButton(tr("Control"));
     buttonCable = new QPushButton(tr("Internal cable"));
     numberSelector->setDisabled(true);
-
 
     QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(buttonNumber,        0, 0);
@@ -46,11 +38,18 @@ AtomSelector::AtomSelector(QWidget *parent)
 
     setLayout(layout);
 
+    connect(buttonNumber, &QPushButton::pressed, this, &AtomSelector::switchToNumber);
+    connect(buttonInputOutput, &QPushButton::pressed, this, &AtomSelector::switchToInputOutput);
+    connect(buttonControl, &QPushButton::pressed, this, &AtomSelector::switchToControl);
+    connect(buttonCable, &QPushButton::pressed, this, &AtomSelector::switchToCable);
+
 }
 
 void AtomSelector::setAtom(const Atom *atom)
 {
     numberSelector->clearAtom();
+    inputOutputSelector->clearAtom();
+
     if (!atom)
         return;
 
@@ -77,7 +76,6 @@ void AtomSelector::setAtom(const Atom *atom)
 
 Atom *AtomSelector::getAtom()
 {
-    qDebug() << "SEL" << selectType;
     switch (selectType) {
     case SELECT_NUMBER:
         return numberSelector->getAtom();
@@ -95,4 +93,39 @@ void AtomSelector::setSelectType(select_t sel)
     selectType = sel;
     numberSelector->setDisabled(sel != SELECT_NUMBER);
     inputOutputSelector->setDisabled(sel != SELECT_INPUT_OUTPUT);
+
+    switch (selectType) {
+    case SELECT_NUMBER:
+        numberSelector->getFocus();
+        break;
+
+    case SELECT_INPUT_OUTPUT:
+        inputOutputSelector->getFocus();
+        break;
+
+    case SELECT_CONTROL:
+    case SELECT_CABLE:
+        break;
+    }
+
+}
+
+void AtomSelector::switchToNumber()
+{
+    setSelectType(SELECT_NUMBER);
+}
+
+void AtomSelector::switchToInputOutput()
+{
+    setSelectType(SELECT_INPUT_OUTPUT);
+}
+
+void AtomSelector::switchToControl()
+{
+    setSelectType(SELECT_CONTROL);
+}
+
+void AtomSelector::switchToCable()
+{
+    setSelectType(SELECT_INPUT_OUTPUT);
 }

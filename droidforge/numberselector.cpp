@@ -106,6 +106,17 @@ void NumberSelector::setNumberType(atom_number_t t)
     labelUnit->setText(unitName);
 }
 
+void NumberSelector::getFocus()
+{
+    if (lineEdit->text().isEmpty()) {
+        setNumberType(ATOM_NUMBER_NUMBER);
+        lineEdit->setText("1");
+        number = 1;
+    }
+    lineEdit->setFocus();
+    lineEdit->selectAll();
+}
+
 
 AtomNumber *NumberSelector::getAtom()
 {

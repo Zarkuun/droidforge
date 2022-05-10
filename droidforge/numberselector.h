@@ -29,6 +29,7 @@ public:
     void clearAtom();
     AtomNumber *getAtom();
     void setNumberType(atom_number_t t);
+    void getFocus();
 
 private:
     QString niceNumber(float v);

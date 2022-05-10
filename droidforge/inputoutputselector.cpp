@@ -39,11 +39,27 @@ void InputOutputSelector::setAtom(const AtomRegister *areg)
     setNumber(areg->getNumber());
 }
 
+void InputOutputSelector::clearAtom()
+{
+    setRegisterType('I');
+    setNumber(1);
+}
+
 
 AtomRegister *InputOutputSelector::getAtom()
 {
     unsigned number = lineEdit->text().toUInt();
     return new AtomRegister(registerType, 0, number);
+}
+
+void InputOutputSelector::getFocus()
+{
+    if (lineEdit->text().isEmpty()) {
+        lineEdit->setText("1");
+        number = 1;
+    }
+    lineEdit->setFocus();
+    lineEdit->selectAll();
 }
 
 

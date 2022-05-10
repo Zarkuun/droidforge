@@ -27,7 +27,9 @@ class InputOutputSelector : public QGroupBox
 public:
     explicit InputOutputSelector(QWidget *parent = nullptr);
     void setAtom(const AtomRegister *areg);
+    void clearAtom();
     AtomRegister *getAtom();
+    void getFocus();
 
 private:
     void addButton(QString label);

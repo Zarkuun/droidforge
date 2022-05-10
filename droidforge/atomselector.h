@@ -30,10 +30,14 @@ public:
     void setAtom(const Atom *atom);
     Atom *getAtom();
 
-signals:
-
 private:
     void setSelectType(select_t sel);
+
+private slots:
+    void switchToNumber();
+    void switchToInputOutput();
+    void switchToControl();
+    void switchToCable();
 };
 
 #endif // ATOMSELECTOR_H
