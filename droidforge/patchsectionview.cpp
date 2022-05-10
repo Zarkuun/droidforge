@@ -77,7 +77,7 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
 
 void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection)
 {
-    QString actionTitle = QString("Adding new '") + name + "' circuit";
+    QString actionTitle = QString("adding new '") + name + "' circuit";
     the_forge->registerEdit(actionTitle);
 
     currentCircuitView()->deselect();
@@ -93,7 +93,7 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
 
 void PatchSectionView::addNewJack(QString name)
 {
-    QString actionTitle = QString("Adding new jack '") + name + "' to circuit";
+    QString actionTitle = QString("adding new jack '") + name + "' to circuit";
     the_forge->registerEdit(actionTitle);
 
     Circuit *circuit = currentCircuit();
@@ -163,7 +163,7 @@ void PatchSectionView::editAtom()
     const Atom *atom = ja->atomAt(section->cursorPosition().column);
     Atom *newAtom = atomSelectorDialog->editAtom(ja->jackType(), atom);
     if (newAtom != atom) {
-        QString actionTitle = QString("Editing value for jack '") + ja->jackName() + "'";
+        QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
     }
@@ -256,7 +256,7 @@ void PatchSectionView::deleteCurrentRow()
 
 void PatchSectionView::deleteCurrentCircuit()
 {
-    QString actionTitle = QString("Deleting circuit ") + currentCircuit()->getName().toUpper();
+    QString actionTitle = QString("deleting circuit ") + currentCircuit()->getName().toUpper();
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentCircuit();
     rebuildPatchSection();
@@ -264,7 +264,7 @@ void PatchSectionView::deleteCurrentCircuit()
 
 void PatchSectionView::deleteCurrentComment()
 {
-    QString actionTitle = QString("Deleting comment");
+    QString actionTitle = QString("deleting comment");
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentComment();
     rebuildPatchSection();
@@ -274,7 +274,7 @@ void PatchSectionView::deleteCurrentComment()
 
 void PatchSectionView::deleteCurrentJack()
 {
-    QString actionTitle = QString("Deleting jack ")
+    QString actionTitle = QString("deleting jack ")
             + currentJackAssignment()->jackName() + " assignment";
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentJackAssignment();

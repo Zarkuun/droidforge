@@ -24,6 +24,7 @@ class NumberSelector : public QWidget
 public:
     explicit NumberSelector(QWidget *parent = nullptr);
     void setAtom(AtomNumber *an);
+    void clearAtom();
     AtomNumber *getAtom();
     void setNumberType(atom_number_t t);
 

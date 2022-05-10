@@ -58,6 +58,15 @@ void NumberSelector::setAtom(AtomNumber *an)
     }
 }
 
+
+void NumberSelector::clearAtom()
+{
+    setNumberType(ATOM_NUMBER_NUMBER);
+    number = 0;
+    lineEdit->setText("");
+}
+
+
 void NumberSelector::setNumberType(atom_number_t t)
 {
     numberType = t;

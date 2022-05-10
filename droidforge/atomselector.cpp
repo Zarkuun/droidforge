@@ -38,6 +38,10 @@ AtomSelector::AtomSelector(QWidget *parent)
 
 void AtomSelector::setAtom(const Atom *atom)
 {
+    numberSelector->clearAtom();
+    if (!atom)
+        return;
+
     if (atom->isNumber())
         numberSelector->setAtom((AtomNumber *)atom);
 }
