@@ -30,6 +30,7 @@ public slots:
     void newCircuit();
     void addJack();
     void editValue();
+    void editCircuitComment();
 };
 
 #endif // PATCHVIEW_H

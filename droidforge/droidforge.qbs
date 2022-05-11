@@ -36,6 +36,8 @@ QtApplication {
         "circuittype.h",
         "circuitview.cpp",
         "circuitview.h",
+        "commentdialog.cpp",
+        "commentdialog.h",
         "controlselector.cpp",
         "controlselector.h",
         "cursorposition.cpp",

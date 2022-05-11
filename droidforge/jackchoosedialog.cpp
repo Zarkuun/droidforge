@@ -35,11 +35,6 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     connect(jackSelector, &JackSelector::cursorMoved, this, &JackChooseDialog::cursorMoved);
 }
 
-JackChooseDialog::~JackChooseDialog()
-{
-
-}
-
 void JackChooseDialog::setCircuit(const QString &circuit, const QStringList &usedJacks)
 {
     jackSelector->setCircuit(circuit, usedJacks, lineEditSearch->text());

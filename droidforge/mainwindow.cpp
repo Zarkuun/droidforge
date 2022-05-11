@@ -233,6 +233,12 @@ void MainWindow::createEditMenu()
                                     QKeySequence(tr("Return"))});
     editMenu->addAction(editValueAction);
     connect(editValueAction, &QAction::triggered, &patchview, &PatchView::editValue);
+
+    // Edit comment of current circuit
+    QAction *editCircuitCommentAction = new QAction(tr("Edit circuit comment..."), this);
+    editCircuitCommentAction->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
+    editMenu->addAction(editCircuitCommentAction);
+    connect(editCircuitCommentAction, &QAction::triggered, &patchview, &PatchView::editCircuitComment);
 }
 
 

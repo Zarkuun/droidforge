@@ -20,6 +20,7 @@ public:
     QString toString();
     QString getName() const { return name; };
     QString getComment() const;
+    void setComment(QString c);
     bool hasComment() const { return !comment.empty(); };
     void removeComment();
     qsizetype numCommentLines() const { return comment.size(); };

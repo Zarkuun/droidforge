@@ -81,6 +81,11 @@ QString Circuit::getComment() const
         return comment.join('\n') + "\n";
 }
 
+void Circuit::setComment(QString c)
+{
+    comment = c.trimmed().split("\n");
+}
+
 void Circuit::removeComment()
 {
     comment.clear();

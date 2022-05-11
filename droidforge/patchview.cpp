@@ -124,3 +124,10 @@ void PatchView::editValue()
     currentPatchSectionView->editValue(patch);
     grabKeyboard();
 }
+
+void PatchView::editCircuitComment()
+{
+    releaseKeyboard();
+    currentPatchSectionView->editCircuitComment();
+    grabKeyboard();
+}

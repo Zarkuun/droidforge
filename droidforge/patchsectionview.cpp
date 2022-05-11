@@ -5,6 +5,7 @@
 #include "jackassignmentunknown.h"
 #include "mainwindow.h"
 #include "tuning.h"
+#include "commentdialog.h"
 
 #include <QMouseEvent>
 
@@ -14,6 +15,13 @@ PatchSectionView::PatchSectionView(PatchSection *section)
 {
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     buildPatchSection();
+}
+
+PatchSectionView::~PatchSectionView()
+{
+    deletePatchSection();
+    if (atomSelectorDialog)
+        delete atomSelectorDialog;
 }
 
 
@@ -140,15 +148,13 @@ void PatchSectionView::editValue(const Patch *patch)
     if (row == -2) {
         // TODO: Change Circuit
     }
-    else if (row == -1) {
-        // TODO: Edit comment
-    }
+    else if (row == -1)
+        editCircuitComment();
     else if (column == 0) {
         // TODO: Exchange jack
     }
-    else {
+    else
         editAtom(patch);
-    }
 }
 
 
@@ -168,6 +174,19 @@ void PatchSectionView::editAtom(const Patch *patch)
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
+    }
+}
+
+void PatchSectionView::editCircuitComment()
+{
+    Circuit *circuit = currentCircuit();
+
+    QString oldComment = circuit->getComment();
+    QString newComment = CommentDialog::editComment(oldComment);
+    if (newComment != oldComment) {
+        QString actionTitle = QString("changing comment for circuit '") + circuit->getName() + "'";
+        the_forge->registerEdit(actionTitle);
+        circuit->setComment(newComment);
     }
 }
 
