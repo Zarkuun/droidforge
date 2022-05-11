@@ -86,11 +86,6 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
 }
 
 
-CircuitChooseDialog::~CircuitChooseDialog()
-{
-
-}
-
 QString CircuitChooseDialog::getSelectedCircuit() const
 {
     CircuitCollection *collection = (CircuitCollection *)tabWidget->currentWidget();
@@ -118,6 +113,19 @@ void CircuitChooseDialog::accept()
     QDialog::accept();
 }
 
+QString CircuitChooseDialog::chooseCircuit(QString oldCircuit)
+{
+    static CircuitChooseDialog *dialog = 0;
+    if (!dialog)
+        dialog = new CircuitChooseDialog();
+
+    if (!oldCircuit.isEmpty())
+        dialog->setCurrentCircuit(oldCircuit);
+    if (dialog->exec() == QDialog::Accepted)
+        return dialog->getSelectedCircuit();
+    else
+        return "";
+}
 
 
 void CircuitChooseDialog::addCategoryTab(QString category, QString title)
@@ -126,6 +134,19 @@ void CircuitChooseDialog::addCategoryTab(QString category, QString title)
     tabWidget->addTab(cc, title);
     connect(cc, &CircuitCollection::selectCircuit, this, &CircuitChooseDialog::accept);
 }
+
+
+void CircuitChooseDialog::setCurrentCircuit(QString name)
+{
+    for (qsizetype i=0; i<tabWidget->count(); i++) {
+        CircuitCollection *cc = (CircuitCollection *)tabWidget->widget(i);
+        if (cc->preselectCircuit(name)) {
+            tabWidget->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
 
 void CircuitChooseDialog::nextCategory()
 {

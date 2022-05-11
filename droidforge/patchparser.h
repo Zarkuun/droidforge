@@ -31,18 +31,17 @@ public:
     void parse(QString fileName, Patch *patch);
 
 private:
-    bool parseLine(QString line);
-    bool parseEmptyLine();
-    bool parseCommentLine(QString line);
-    bool parseRegisterComment(QString comment);
-    bool parseMetaComment(QString comment);
+    void parseLine(QString line);
+    void parseEmptyLine();
+    void parseCommentLine(QString line);
     void parseLibraryMetaData(QString data);
-    bool parseCircuitLine(QString line);
-    bool parseJackLine(QString line);
-    bool parseController(QString name);
-    bool parseCircuit(QString name);
+    void parseCircuitLine(QString line);
+    void parseJackLine(Circuit *circuit, QString line);
+    void parseCircuit(QString name);
     void stripEmptyCommentLines();
     void startNewSection(QString name);
+    bool maybeParseMetaComment(QString comment);
+    bool maybeParseRegisterComment(QString comment);
 };
 
 #endif // PATCHPARSER_H

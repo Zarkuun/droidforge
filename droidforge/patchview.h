@@ -15,7 +15,6 @@ class PatchView : public QTabWidget
     Patch *patch;
     PatchPropertiesDialog *patchPropertiesDialog;
     CircuitChooseDialog *circuitChooseDialog;
-    JackChooseDialog *jackChooseDialog;
 
 public:
     PatchView();

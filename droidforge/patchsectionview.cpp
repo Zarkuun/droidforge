@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "tuning.h"
 #include "commentdialog.h"
+#include "circuitchoosedialog.h"
 
 #include <QMouseEvent>
 
@@ -160,9 +161,8 @@ void PatchSectionView::editValue(const Patch *patch)
     int row = section->cursorPosition().row;
     int column = section->cursorPosition().column;
 
-    if (row == -2) {
-        // TODO: Change Circuit
-    }
+    if (row == -2)
+        editCircuit();
     else if (row == -1)
         editCircuitComment();
     else if (column == 0)
@@ -328,6 +328,19 @@ void PatchSectionView::deleteCurrentAtom()
         QString actionTitle = QString("deleting value of '") + ja->jackName() + "'";
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(column, 0);
+    }
+    rebuildPatchSection();
+}
+
+void PatchSectionView::editCircuit()
+{
+    QString oldCircuit = currentCircuitName();
+    QString newCircuit = CircuitChooseDialog::chooseCircuit(oldCircuit);
+    if (!newCircuit.isEmpty() && oldCircuit != newCircuit)
+    {
+        QString actionTitle = QString("changing circuit type to '") + newCircuit + "'";
+        the_forge->registerEdit(actionTitle);
+        currentCircuit()->changeCircuit(newCircuit);
     }
     rebuildPatchSection();
 }

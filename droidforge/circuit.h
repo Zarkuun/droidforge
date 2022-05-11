@@ -31,6 +31,7 @@ public:
     void deleteJackAssignment(unsigned i);
     const Atom *atomAt(int row, int column) const;
     void collectCables(QStringList &cables) const;
+    void changeCircuit(QString newCircuit);
 
 };
 

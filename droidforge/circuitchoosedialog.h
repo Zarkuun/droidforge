@@ -31,14 +31,15 @@ class CircuitChooseDialog : public QDialog
 
 public:
     CircuitChooseDialog(QWidget *parent = nullptr);
-    ~CircuitChooseDialog();
     QString getSelectedCircuit() const;
     jackselection_t getJackSelection() const;
     void keyPressEvent(QKeyEvent *event);
     void accept();
+    static QString chooseCircuit(QString oldCircuit);
 
 private:
     void addCategoryTab(QString category, QString title);
+    void setCurrentCircuit(QString name);
 
 private slots:
     void nextCategory();

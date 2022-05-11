@@ -121,6 +121,22 @@ void CircuitCollection::resizeEvent(QResizeEvent *event)
             -  CICH_WIDTH_MARGIN;
 }
 
+bool CircuitCollection::preselectCircuit(QString name)
+{
+    for (qsizetype i=0; i<numCircuits; i++) {
+        CircuitInfoView *civ = circuits[i];
+        if (civ->getCircuit() == name) {
+            if (currentCircuit()) {
+                currentCircuit()->deselect();
+                selectedCircuit = i;
+                currentCircuit()->select();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool CircuitCollection::handleMousePress(const QPointF &pos)
 {
     QGraphicsItem *item = this->itemAt(pos.x(), pos.y());

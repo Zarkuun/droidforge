@@ -54,39 +54,34 @@ void PatchParser::parse(QString fileName, Patch *patch)
 }
 
 
-bool PatchParser::parseLine(QString line)
+void PatchParser::parseLine(QString line)
 {
     line = line.trimmed();
     if (line.isEmpty())
-        return parseEmptyLine();
+        parseEmptyLine();
     else if (line[0] == '#')
-        return parseCommentLine(line);
+        parseCommentLine(line);
     else if (line[0] == '[')
-        return parseCircuitLine(line);
+        parseCircuitLine(line);
     else if (line[0].isLetter() && line.contains('=')) {
-        if (!circuit) {
-            errorMessage = "Jack assignment before any circuit was declared.";
-            return false;
-        }
+        if (!circuit)
+            throw ParseException("Jack assignment before any circuit was declared.");
         else
-            return parseJackLine(line);
+            parseJackLine(circuit, line);
     }
-    else {
-        errorMessage = "Garbled line";
-        return false;
-    }
+    else
+        throw ParseException("Garbled line");
 }
 
 
-bool PatchParser::parseEmptyLine()
+void PatchParser::parseEmptyLine()
 {
     if (currentComment.size() > 0)
         currentComment.append("");
-    return true;
 }
 
 
-bool PatchParser::parseCommentLine(QString line)
+void PatchParser::parseCommentLine(QString line)
 {
     QString comment = line.mid(1).trimmed();
     if (comment.startsWith("---")) {
@@ -107,8 +102,8 @@ bool PatchParser::parseCommentLine(QString line)
             commentState = DESCRIPTION;
         }
         else if (commentState == DESCRIPTION) {
-            if (!parseRegisterComment(comment)
-                && !parseMetaComment(comment))
+            if (!maybeParseRegisterComment(comment)
+                && !maybeParseMetaComment(comment))
             patch->addDescriptionLine(comment);
         }
         else if (commentState == SECTION_HEADER_ACTIVE) {
@@ -119,11 +114,10 @@ bool PatchParser::parseCommentLine(QString line)
         else
             currentComment.append(comment);
     }
-    return true;
 }
 
 
-bool PatchParser::parseRegisterComment(QString comment)
+bool PatchParser::maybeParseRegisterComment(QString comment)
 {
     // Examples:
     // I1: [CLK] optional external clock
@@ -154,7 +148,6 @@ bool PatchParser::parseRegisterComment(QString comment)
             shorthand = m2.captured(1);
             atomcomment = m2.captured(2);
         }
-
         patch->addRegisterComment(registerName, controller, number, shorthand, atomcomment);
         return true;
     }
@@ -162,7 +155,7 @@ bool PatchParser::parseRegisterComment(QString comment)
         return false;
 }
 
-bool PatchParser::parseMetaComment(QString comment)
+bool PatchParser::maybeParseMetaComment(QString comment)
 {
     static QRegularExpression regex("^[[:space:]]*([A-Z][A-Z 0-9]*):[[:space:]]*(.*)$");
     QRegularExpressionMatch m;
@@ -187,62 +180,40 @@ void PatchParser::parseLibraryMetaData(QString data)
 }
 
 
-bool PatchParser::parseCircuitLine(QString line)
+void PatchParser::parseCircuitLine(QString line)
 {
     commentState = CIRCUIT_HEADER;
 
-    if (!line.endsWith(']')) {
-        errorMessage = "Missing ] at the end of the line";
-        return false;
-    }
+    if (!line.endsWith(']'))
+        throw ParseException("Missing ] at the end of the line");
 
     QString circuitName = line.sliced(1).chopped(1);
 
-    if (parseController(circuitName)) {
+    if (ModuleBuilder::controllerExists(circuitName.toLower())) {
+        patch->addController(circuitName.toLower());
         currentComment.clear();
-        return true;
-    }
-    else if (parseCircuit(circuitName))
-        return true;
-
-    errorMessage = "Invalid controller or circuit name '" + circuitName + "'";
-    return false;
-}
-
-
-bool PatchParser::parseController(QString name)
-{
-    if (ModuleBuilder::controllerExists(name.toLower())) {
-        patch->addController(name.toLower());
-        return true;
     }
     else
-        return false;
+        parseCircuit(circuitName);
 }
 
-
-bool PatchParser::parseCircuit(QString name)
+void PatchParser::parseCircuit(QString name)
 {
     // TODO: Hier die JSON-Datei verwenden?
     QString namel = name.toLower();
 
     static QRegularExpression e("^[a-z][a-z0-9]+$");
-    if (!e.match(namel).hasMatch()) {
-        errorMessage = "Invalid circuit name.";
-        return false;
-    }
+    if (!e.match(namel).hasMatch())
+        throw ParseException("Invalid circuit name '" + name + "'");
 
-    if (!section) {
+    if (!section)
         startNewSection("");
-    }
 
     stripEmptyCommentLines();
     circuit = new Circuit(name, currentComment);
     section->circuits.append(circuit);
     currentComment.clear();
-    return true;
 }
-
 
 void PatchParser::stripEmptyCommentLines()
 {
@@ -261,30 +232,8 @@ void PatchParser::startNewSection(QString name)
 }
 
 
-bool PatchParser::parseJackLine(QString line)
+void PatchParser::parseJackLine(Circuit *circuit, QString line)
 {
-    QStringList parts = line.split("#");
-    if (parts[0].count('=') != 1) {
-        errorMessage = "Duplicate =";
-        return false;
-    }
-
-    QString comment;
-    if (parts.size() > 1)
-        comment = parts.mid(1).join('#').trimmed();
-
-    parts = parts[0].split("=");
-    QString jack = parts[0].trimmed().toLower();
-    QString valueString = parts[1].trimmed();
-
-    JackAssignment *ja;
-
-    if (the_firmware->jackIsInput(circuit->getName(), jack))
-        ja = new JackAssignmentInput(jack, comment, valueString);
-    else if (the_firmware->jackIsOutput(circuit->getName(), jack))
-        ja = new JackAssignmentOutput(jack, comment, valueString);
-    else
-        ja = new JackAssignmentUnknown(jack, comment, valueString);
+    JackAssignment *ja = JackAssignment::parseJackLine(circuit->getName(), line);
     circuit->addJackAssignment(ja);
-    return true;
 }

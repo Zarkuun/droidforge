@@ -13,7 +13,6 @@ PatchView::PatchView()
     , patch(0)
     , patchPropertiesDialog{}
     , circuitChooseDialog{}
-    , jackChooseDialog{}
 {
     grabKeyboard();
 }

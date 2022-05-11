@@ -52,6 +52,20 @@ void Circuit::collectCables(QStringList &cables) const
         jackAssignments[i]->collectCables(cables);
 }
 
+void Circuit::changeCircuit(QString newCircuit)
+{
+    name = newCircuit;
+    QList<JackAssignment *> newJacks;
+    for (qsizetype i=0; i<jackAssignments.length(); i++) {
+        QString asString = jackAssignments[i]->toString();
+        delete jackAssignments[i];
+        JackAssignment *ja = JackAssignment::parseJackLine(newCircuit, asString);
+        newJacks.append(ja);
+    }
+    jackAssignments.clear();
+    jackAssignments = newJacks;
+}
+
 
 QString Circuit::toString()
 {

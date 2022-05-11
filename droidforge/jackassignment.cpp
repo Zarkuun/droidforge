@@ -1,6 +1,11 @@
 #include "jackassignment.h"
 #include "atomcable.h"
 #include "atomregister.h"
+#include "droidfirmware.h"
+#include "jackassignmentinput.h"
+#include "jackassignmentoutput.h"
+#include "jackassignmentunknown.h"
+#include "parseexception.h"
 
 #include <QRegularExpression>
 
@@ -11,11 +16,9 @@ JackAssignment::JackAssignment(QString jack, QString comment)
 {
 }
 
-
 JackAssignment::~JackAssignment()
 {
 }
-
 
 QString JackAssignment::toString() const
 {
@@ -26,6 +29,31 @@ QString JackAssignment::toString() const
     if (!comment.isEmpty())
         s += " # " + comment;
     return s;
+}
+
+JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString line)
+{
+    QStringList parts = line.split("#");
+    if (parts[0].count('=') != 1)
+        throw ParseException("Duplicate =");
+
+    QString comment;
+    if (parts.size() > 1)
+        comment = parts.mid(1).join('#').trimmed();
+
+    parts = parts[0].split("=");
+    QString jack = parts[0].trimmed().toLower();
+    QString valueString = parts[1].trimmed();
+
+    JackAssignment *ja;
+    if (the_firmware->jackIsInput(circuit, jack))
+        ja = new JackAssignmentInput(jack, comment, valueString);
+    else if (the_firmware->jackIsOutput(circuit, jack))
+        ja = new JackAssignmentOutput(jack, comment, valueString);
+    else
+        ja = new JackAssignmentUnknown(jack, comment, valueString);
+    return ja;
+
 }
 
 

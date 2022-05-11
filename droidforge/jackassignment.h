@@ -33,6 +33,7 @@ public:
     virtual void replaceAtom(int column, Atom *newAtom) = 0;
     virtual void collectCables(QStringList &cables) const = 0;
     void changeJack(QString j) { jack = j; };
+    static JackAssignment *parseJackLine(const QString &circuit, QString line);
 
 protected:
     virtual QString valueToString() const = 0;

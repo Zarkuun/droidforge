@@ -26,6 +26,7 @@ public:
     QString selectedCircuitName();
     void updateSearch(QString text);
     void resizeEvent(QResizeEvent* event);
+    bool preselectCircuit(QString name);
 
 private:
     void initScene();
