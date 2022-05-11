@@ -1,12 +1,14 @@
 #include "cableselector.h"
+#include "tuning.h"
 
 #include <QVBoxLayout>
 
 CableSelector::CableSelector(QWidget *parent)
-    : QGroupBox{parent}
+    : AtomSubSelector{parent}
 {
-    static QRegularExpression re("[a-zA-Z][_0-9a-zA-Z]*");
+    setFixedWidth(2 * ASEL_SUBSELECTOR_WIDTH);
 
+    static QRegularExpression re("[a-zA-Z][_0-9a-zA-Z]*");
     comboBox = new QComboBox(this);
     comboBox->setEditable(true);
     comboBox->setValidator(new QRegularExpressionValidator(re, this));
@@ -16,13 +18,19 @@ CableSelector::CableSelector(QWidget *parent)
     connect(comboBox, &QComboBox::editTextChanged, this, &CableSelector::cableEdited);
 }
 
-void CableSelector::setAtom(const Patch *patch, AtomCable *ac)
+bool CableSelector::handlesAtom(const Atom *atom) const
 {
-    cable = ac->getCable();
+    return atom->isCable();
+}
+
+void CableSelector::setAtom(const Patch *patch, const Atom *atom)
+{
+    cable = ((const AtomCable *)atom)->getCable();
     comboBox->clear();
     QStringList cables = patch->allCables();
     comboBox->addItems(cables);
-    comboBox->setCurrentText(cable);
+    int index = cables.indexOf(cable);
+    comboBox->setCurrentIndex(index);
 }
 
 void CableSelector::clearAtom()
@@ -31,7 +39,7 @@ void CableSelector::clearAtom()
     cable = "";
 }
 
-AtomCable *CableSelector::getAtom()
+Atom *CableSelector::getAtom() const
 {
     return new AtomCable(comboBox->currentText());
 }

@@ -3,12 +3,13 @@
 
 #include "atomcable.h"
 #include "patch.h"
+#include "atomsubselector.h"
 
 #include <QGroupBox>
 #include <QObject>
 #include <QComboBox>
 
-class CableSelector : public QGroupBox
+class CableSelector : public AtomSubSelector
 {
     Q_OBJECT
     const Patch *patch;
@@ -17,9 +18,11 @@ class CableSelector : public QGroupBox
 
 public:
     CableSelector(QWidget *parent = nullptr);
-    void setAtom(const Patch *patch, AtomCable *ac);
+    QString title() const { return tr("Internal cable"); };
+    bool handlesAtom(const Atom *atom) const;
+    void setAtom(const Patch *patch, const Atom *atom);
     void clearAtom();
-    AtomCable *getAtom();
+    Atom *getAtom() const;
     void getFocus();
 
 private slots:

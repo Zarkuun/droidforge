@@ -10,3 +10,11 @@ ControlSelector::ControlSelector(QWidget *parent)
     addRegisterButton('S', tr("Swich"));
     addRegisterButton('R', tr("RGB-LED"));
 }
+
+
+bool ControlSelector::handlesAtom(const Atom *atom) const
+{
+    return atom->isRegister() &&
+            ((AtomRegister *)atom)->isControl();
+
+}

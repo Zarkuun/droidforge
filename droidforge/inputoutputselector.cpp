@@ -15,3 +15,19 @@ InputOutputSelector::InputOutputSelector(QWidget *parent)
     addRegisterButton('R', tr("RGB-LED"));
     addRegisterButton('X', tr("Special"));
 }
+
+
+bool InputOutputSelector::handlesAtom(const Atom *atom) const
+{
+    if (atom->isInvalid()) {
+        QString s = atom->toString();
+        if (s.isEmpty() || !s[0].isDigit())
+            return true;
+        else
+            return false;
+    }
+    else
+        return atom->isRegister() &&
+                !((AtomRegister *)atom)->isControl();
+
+}

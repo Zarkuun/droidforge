@@ -5,7 +5,7 @@
 #include <QRegularExpressionValidator>
 
 RegisterSelector::RegisterSelector(bool isControl, QChar reg, QString regs, QWidget *parent)
-    : QGroupBox{parent}
+    : AtomSubSelector{parent}
     , isControl(isControl)
     , defaultRegisterType(reg)
     , allowedRegisters(regs)
@@ -76,11 +76,19 @@ void RegisterSelector::setRegisterNumber(unsigned n)
     lineEditNumber->setText(QString::number(registerNumber));
 }
 
-void RegisterSelector::setAtom(const AtomRegister *areg)
+void RegisterSelector::setAtom(const Patch *, const Atom *atom)
 {
-    setRegisterType(areg->getRegisterType());
-    setRegisterNumber(areg->getNumber());
-    setControllerNumber(areg->getController());
+    if (atom->isInvalid()) {
+        setRegisterType('I');
+        setRegisterNumber(1);
+        setControllerNumber(0);
+    }
+    else {
+        const AtomRegister *areg = (const AtomRegister *)atom;
+        setRegisterType(areg->getRegisterType());
+        setRegisterNumber(areg->getNumber());
+        setControllerNumber(areg->getController());
+    }
 }
 
 
@@ -92,7 +100,7 @@ void RegisterSelector::clearAtom()
 }
 
 
-AtomRegister *RegisterSelector::getAtom()
+Atom *RegisterSelector::getAtom() const
 {
     unsigned number = lineEditNumber->text().toUInt();
     unsigned controller = isControl ? lineEditController->text().toUInt() : 0;

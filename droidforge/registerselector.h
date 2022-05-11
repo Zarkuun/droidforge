@@ -12,8 +12,9 @@
 #include <QGroupBox>
 
 #include "atomregister.h"
+#include "atomsubselector.h"
 
-class RegisterSelector : public QGroupBox
+class RegisterSelector : public AtomSubSelector
 {
     Q_OBJECT
 
@@ -34,9 +35,9 @@ class RegisterSelector : public QGroupBox
 public:
     RegisterSelector(bool isControl, QChar reg, QString regs, QWidget *parent = nullptr);
     void getFocus();
-    void setAtom(const AtomRegister *areg);
+    void setAtom(const Patch *, const Atom *atom);
     void clearAtom();
-    AtomRegister *getAtom();
+    Atom *getAtom() const;
 
 protected:
     void addRegisterButton(QChar reg, QString label);

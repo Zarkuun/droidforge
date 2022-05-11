@@ -6,7 +6,7 @@
 #include <QHBoxLayout>
 
 NumberSelector::NumberSelector(QWidget *parent)
-    : QGroupBox{parent}
+    : AtomSubSelector{parent}
     , number(0.0)
     , numberType(ATOM_NUMBER_NUMBER)
 {
@@ -39,21 +39,42 @@ NumberSelector::NumberSelector(QWidget *parent)
     connect(buttonOnOff, &QPushButton::pressed, this, &NumberSelector::switchToOnOff);
 }
 
-
-void NumberSelector::setAtom(AtomNumber *an)
+bool NumberSelector::handlesAtom(const Atom *atom) const
 {
-    setNumberType(an->getType());
-    number = an->getNumber();
-    if (numberType == ATOM_NUMBER_ONOFF) {
-        number = number > BOOLEAN_VALUE_THRESHOLD ? 1 : 0;
-        lineEdit->setText(number ? "on" : "off");
+    if (atom->isInvalid()) {
+        QString s = atom->toString();
+        if (!s.isEmpty() && s[0].isDigit())
+            return true;
+        else
+            return false;
     }
+    else
+        return atom->isNumber();
+}
+
+
+void NumberSelector::setAtom(const Patch *, const Atom *atom)
+{
+    if (atom->isInvalid()) {
+        setNumberType(ATOM_NUMBER_NUMBER);
+        lineEdit->setText("1");
+    }
+
     else {
-        if (numberType == ATOM_NUMBER_VOLTAGE)
-            number *= 10;
-        else if (numberType == ATOM_NUMBER_PERCENTAGE)
-            number *= 100;
-        lineEdit->setText(niceNumber(number));
+        AtomNumber *an = (AtomNumber *)atom;
+        setNumberType(an->getType());
+        number = an->getNumber();
+        if (numberType == ATOM_NUMBER_ONOFF) {
+            number = number > BOOLEAN_VALUE_THRESHOLD ? 1 : 0;
+            lineEdit->setText(number ? "on" : "off");
+        }
+        else {
+            if (numberType == ATOM_NUMBER_VOLTAGE)
+                number *= 10;
+            else if (numberType == ATOM_NUMBER_PERCENTAGE)
+                number *= 100;
+            lineEdit->setText(niceNumber(number));
+        }
     }
 }
 
@@ -118,7 +139,7 @@ void NumberSelector::getFocus()
 }
 
 
-AtomNumber *NumberSelector::getAtom()
+Atom *NumberSelector::getAtom() const
 {
     float value = number;
     if (numberType == ATOM_NUMBER_VOLTAGE)

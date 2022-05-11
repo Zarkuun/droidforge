@@ -8,9 +8,10 @@
 #include <QGroupBox>
 
 #include "atomnumber.h"
+#include "atomsubselector.h"
 
 
-class NumberSelector : public QGroupBox
+class NumberSelector : public AtomSubSelector
 {
     Q_OBJECT
 
@@ -25,9 +26,11 @@ class NumberSelector : public QGroupBox
 
 public:
     explicit NumberSelector(QWidget *parent = nullptr);
-    void setAtom(AtomNumber *an);
+    QString title() const { return tr("Fixed number"); };
+    bool handlesAtom(const Atom *atom) const;
+    void setAtom(const Patch *patch, const Atom *atom);
     void clearAtom();
-    AtomNumber *getAtom();
+    Atom *getAtom() const;
     void setNumberType(atom_number_t t);
     void getFocus();
 

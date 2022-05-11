@@ -1,7 +1,10 @@
 #include "atomselector.h"
 #include "atomnumber.h"
-#include "numberselector.h"
 #include "atomregister.h"
+#include "cableselector.h"
+#include "controlselector.h"
+#include "numberselector.h"
+#include "inputoutputselector.h"
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -9,142 +12,58 @@
 
 AtomSelector::AtomSelector(QWidget *parent)
     : QWidget{parent}
+    , currentSelector(0)
 {
-    int w = 150;
-    numberSelector = new NumberSelector(this);
-    numberSelector->setFixedWidth(w);
-    inputOutputSelector = new InputOutputSelector(this);
-    inputOutputSelector->setFixedWidth(w);
-    controlSelector = new ControlSelector(this);
-    controlSelector->setFixedWidth(w);
-    cableSelector = new CableSelector(this);
-    cableSelector->setFixedWidth(w * 2);
-
-    buttonNumber = new QPushButton(tr("Fixed number"));
-    buttonInputOutput = new QPushButton(tr("Input / output"));
-    buttonControl = new QPushButton(tr("Control"));
-    buttonCable = new QPushButton(tr("Internal cable"));
-    numberSelector->setDisabled(true);
+    subSelectors.append(new NumberSelector(this));
+    subSelectors.append(new InputOutputSelector(this));
+    subSelectors.append(new ControlSelector(this));
+    subSelectors.append(new CableSelector(this));
 
     QGridLayout *layout = new QGridLayout(this);
-    layout->addWidget(buttonNumber,        0, 0);
-    layout->addWidget(numberSelector,      1, 0);
-    layout->addWidget(buttonInputOutput,   0, 1);
-    layout->addWidget(inputOutputSelector, 1, 1);
-    layout->addWidget(buttonControl,       0, 2);
-    layout->addWidget(controlSelector,     1, 2);
-    layout->addWidget(buttonCable,         0, 3);
-    layout->addWidget(cableSelector,       1, 3);
-
     setLayout(layout);
 
-    connect(buttonNumber, &QPushButton::pressed, this, &AtomSelector::switchToNumber);
-    connect(buttonInputOutput, &QPushButton::pressed, this, &AtomSelector::switchToInputOutput);
-    connect(buttonControl, &QPushButton::pressed, this, &AtomSelector::switchToControl);
-    connect(buttonCable, &QPushButton::pressed, this, &AtomSelector::switchToCable);
+    for (qsizetype i=0; i<subSelectors.count(); i++) {
+        AtomSubSelector *ss = subSelectors[i];
+        QPushButton *button = new QPushButton(ss->title());
+        connect(button, &QPushButton::pressed, this, [this, i]() { this->switchToSelector(i); });
+        layout->addWidget(button, 0, i);
+        layout->addWidget(ss, 1, i);
+    }
 }
-
 
 void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
 {
-    numberSelector->clearAtom();
-    inputOutputSelector->clearAtom();
-    controlSelector->clearAtom();
-    cableSelector->clearAtom();
-
     if (!atom) {
-        setSelectType(SELECT_NUMBER);
+        switchToSelector(0);
         return;
     }
 
-    if (atom->isNumber()) {
-        numberSelector->setAtom((AtomNumber *)atom);
-        setSelectType(SELECT_NUMBER);
-    }
-    else if (atom->isRegister()) {
-        AtomRegister *areg = (AtomRegister *)atom;
-        if (areg->isControl()) {
-            setSelectType(SELECT_CONTROL);
-            controlSelector->setAtom(areg);
+    for (qsizetype i=0; i<subSelectors.count(); i++) {
+        AtomSubSelector *ss = subSelectors[i];
+        if (ss->handlesAtom(atom)) {
+            ss->setAtom(patch, atom);
+            switchToSelector(i);
+            ss->setEnabled(true);
         }
         else {
-            setSelectType(SELECT_INPUT_OUTPUT);
-            inputOutputSelector->setAtom(areg);
+            subSelectors[i]->clearAtom();
+            ss->setEnabled(false);
         }
     }
-    else if (atom->isCable()) {
-        cableSelector->setAtom(patch, (AtomCable *)atom);
-        setSelectType(SELECT_CABLE);
-    }
-    else if (atom->isInvalid()) {
-        QString s = atom->toString();
-        if (!s.isEmpty() && s[0].isDigit())
-            setSelectType(SELECT_NUMBER);
-        else
-            setSelectType(SELECT_INPUT_OUTPUT);
-    }
-    else // empty
-        setSelectType(SELECT_NUMBER);
 }
 
 Atom *AtomSelector::getAtom()
 {
-    switch (selectType) {
-    case SELECT_NUMBER:
-        return numberSelector->getAtom();
-    case SELECT_INPUT_OUTPUT:
-        return inputOutputSelector->getAtom();
-    case SELECT_CONTROL:
-        return controlSelector->getAtom();
-    case SELECT_CABLE:
-        return cableSelector->getAtom();
+    return subSelectors[currentSelector]->getAtom();
+}
+
+void AtomSelector::switchToSelector(int index)
+{
+    currentSelector = index;
+    for (qsizetype i=0; i<subSelectors.count(); i++) {
+        AtomSubSelector *ss = subSelectors[i];
+        ss->setEnabled(i == currentSelector);
+        if (i == currentSelector)
+            ss->getFocus();
     }
-}
-
-void AtomSelector::setSelectType(select_t sel)
-{
-    selectType = sel;
-    numberSelector->setDisabled(sel != SELECT_NUMBER);
-    inputOutputSelector->setDisabled(sel != SELECT_INPUT_OUTPUT);
-    controlSelector->setDisabled(sel != SELECT_CONTROL);
-    cableSelector->setDisabled(sel != SELECT_CABLE);
-
-    switch (selectType) {
-    case SELECT_NUMBER:
-        numberSelector->getFocus();
-        break;
-
-    case SELECT_INPUT_OUTPUT:
-        inputOutputSelector->getFocus();
-        break;
-
-    case SELECT_CONTROL:
-        controlSelector->getFocus();
-        break;
-
-    case SELECT_CABLE:
-        cableSelector->getFocus();
-        break;
-    }
-
-}
-
-void AtomSelector::switchToNumber()
-{
-    setSelectType(SELECT_NUMBER);
-}
-
-void AtomSelector::switchToInputOutput()
-{
-    setSelectType(SELECT_INPUT_OUTPUT);
-}
-
-void AtomSelector::switchToControl()
-{
-    setSelectType(SELECT_CONTROL);
-}
-
-void AtomSelector::switchToCable()
-{
-    setSelectType(SELECT_CABLE);
 }

@@ -83,5 +83,8 @@
 #define JSEL_COLOR_JACK_INACTIVE             QColor(80, 80, 80)
 #define JSEL_COLOR_CURSOR_INACTIVE           QColor(250, 250, 250)
 
+// Atom selector
+#define ASEL_SUBSELECTOR_WIDTH               150
+
 
 #endif // TUNING_H

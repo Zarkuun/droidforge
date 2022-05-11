@@ -24,6 +24,8 @@ QtApplication {
         "atomselector.h",
         "atomselectordialog.cpp",
         "atomselectordialog.h",
+        "atomsubselector.cpp",
+        "atomsubselector.h",
         "cableselector.cpp",
         "cableselector.h",
         "circuit.cpp",
