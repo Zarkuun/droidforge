@@ -21,6 +21,9 @@ public:
     void clearAtom();
     AtomCable *getAtom();
     void getFocus();
+
+private slots:
+    void cableEdited(QString text);
 };
 
 #endif // CABLESELECTOR_H
