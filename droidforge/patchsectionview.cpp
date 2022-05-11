@@ -131,12 +131,15 @@ void PatchSectionView::addNewJack(QString name)
 
 void PatchSectionView::editJack()
 {
-    Circuit *circuit = currentCircuit();
-    JackAssignment *ja = circuit->jackAssignment(section->cursorPosition().row);
-    qDebug() << "UMBAUEN" << ja;
-
-
-
+    QString name = JackChooseDialog::chooseJack(
+                currentCircuitName(),
+                usedJacks(),
+                currentJackAssignment()->jackType());
+    if (!name.isEmpty()) {
+        QString actionTitle = QString("replacing jack with '") + name + "'";
+        the_forge->registerEdit(actionTitle);
+        currentJackAssignment()->changeJack(name);
+    }
 }
 
 

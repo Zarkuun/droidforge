@@ -81,7 +81,7 @@
 #define JSEL_COLOR_CIRCUIT_BACKGROUND        QColor(20, 20, 20)
 #define JSEL_COLOR_JACK_LINE                 QColor(120, 120, 120)
 #define JSEL_COLOR_JACK_INACTIVE             QColor(80, 80, 80)
-#define JSEL_COLOR_CURSOR_INACTIVE           QColor(150, 150, 150)
+#define JSEL_COLOR_CURSOR_INACTIVE           QColor(250, 250, 250)
 
 
 #endif // TUNING_H

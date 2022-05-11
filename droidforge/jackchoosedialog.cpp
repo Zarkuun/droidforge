@@ -35,15 +35,18 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     connect(jackSelector, &JackSelector::cursorMoved, this, &JackChooseDialog::cursorMoved);
 }
 
-void JackChooseDialog::setCircuit(const QString &circuit, const QStringList &usedJacks)
+
+void JackChooseDialog::setCircuit(const QString &circuit, const QStringList &usedJacks, jacktype_t jackType)
 {
-    jackSelector->setCircuit(circuit, usedJacks, lineEditSearch->text());
+    jackSelector->setCircuit(circuit, usedJacks, jackType, lineEditSearch->text());
 }
+
 
 QString JackChooseDialog::getSelectedJack() const
 {
     return jackSelector->getSelectedJack();
 }
+
 
 void JackChooseDialog::keyPressEvent(QKeyEvent *event)
 {
@@ -56,13 +59,13 @@ void JackChooseDialog::keyPressEvent(QKeyEvent *event)
 }
 
 
-QString JackChooseDialog::chooseJack(const QString &circuit, const QStringList &used)
+QString JackChooseDialog::chooseJack(const QString &circuit, const QStringList &used, jacktype_t jackType)
 {
     static JackChooseDialog *dialog = 0;
     if (!dialog)
         dialog = new JackChooseDialog();
 
-    dialog->setCircuit(circuit, used);
+    dialog->setCircuit(circuit, used, jackType);
     if (dialog->exec() == QDialog::Accepted)
         return dialog->getSelectedJack();
     else

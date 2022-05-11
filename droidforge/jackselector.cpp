@@ -12,15 +12,17 @@ JackSelector::JackSelector(QWidget *parent)
     , currentColumn(0)
     , currentSubjack(0)
     , usedJacks(0)
+    , jackType(JACKTYPE_DONT_CARE)
 {
     initScene();
 }
 
 
-void JackSelector::setCircuit(const QString &c, const QStringList &uj, QString search)
+void JackSelector::setCircuit(const QString &c, const QStringList &uj, jacktype_t onlyType, QString search)
 {
     circuit = c;
     usedJacks = &uj;
+    jackType = onlyType;
     loadJacks(circuit, search);
 }
 
@@ -117,7 +119,7 @@ unsigned JackSelector::createJacks(const QStringList &jacks, int column)
     unsigned height = 0;
     for (qsizetype i=0; i<jacks.count(); i++) {
         QString jack = jacks[i];
-        JackView *jv = new JackView(circuit, jack, usedJacks, column == 0);
+        JackView *jv = new JackView(circuit, jack, usedJacks, jackType, column == 0);
         jackViews[column].append(jv);
         scene()->addItem(jv);
         height += jv->boundingRect().height();

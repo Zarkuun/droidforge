@@ -3,6 +3,7 @@
 
 #include "droidfirmware.h"
 #include "jackview.h"
+#include "jackassignment.h"
 
 #include <QGraphicsView>
 #include <QString>
@@ -16,10 +17,11 @@ class JackSelector : public QGraphicsView
     int currentColumn;
     int currentSubjack;
     const QStringList *usedJacks;
+    jacktype_t jackType;
 
 public:
     JackSelector(QWidget *parent);
-    void setCircuit(const QString &ircuit, const QStringList &usedJacks, QString search);
+    void setCircuit(const QString &ircuit, const QStringList &usedJacks, jacktype_t, QString search);
     void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);

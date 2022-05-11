@@ -9,7 +9,8 @@
 typedef enum {
     JACKTYPE_INPUT = 0,
     JACKTYPE_OUTPUT = 1,
-    JACKTYPE_UNKNOWN = 2
+    JACKTYPE_UNKNOWN = 2,
+    JACKTYPE_DONT_CARE = 3,
 } jacktype_t;
 
 
@@ -31,6 +32,7 @@ public:
     virtual const Atom *atomAt(int column) const = 0;
     virtual void replaceAtom(int column, Atom *newAtom) = 0;
     virtual void collectCables(QStringList &cables) const = 0;
+    void changeJack(QString j) { jack = j; };
 
 protected:
     virtual QString valueToString() const = 0;

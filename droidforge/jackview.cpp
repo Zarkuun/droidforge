@@ -4,24 +4,29 @@
 
 #include <QPainter>
 
-JackView::JackView(QString circuit, QString jack, const QStringList *usedJacks, bool isInput)
+JackView::JackView(QString circuit, QString jack, const QStringList *usedJacks, jacktype_t onlyType, bool isInput)
     : jack(jack)
     , isInput(isInput)
     , isSelected(false)
 {
+    bool allowedByOnlyType = true;
+    if (onlyType == JACKTYPE_INPUT && !isInput)
+        allowedByOnlyType = false;
+    else if (onlyType == JACKTYPE_OUTPUT && isInput)
+        allowedByOnlyType = false;
+
     arraySize = the_firmware->jackArraySize(circuit, jack);
     if (isArray()) {
         active = false;
         for (qsizetype i=0; i<arraySize; i++) {
             QString name = jack + QString::number(i+1);
-            activeSubjacks[i] = !usedJacks->contains(name);
+            activeSubjacks[i] = allowedByOnlyType && !usedJacks->contains(name);
             if (activeSubjacks[i])
                 active = true;
         }
     }
-    else {
-        active = !usedJacks->contains(jack);
-    }
+    else
+        active = allowedByOnlyType && !usedJacks->contains(jack);
 }
 
 
