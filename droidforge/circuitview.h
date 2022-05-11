@@ -34,7 +34,12 @@ public:
 private:
     void paintJacks(QPainter *painter, unsigned &line, unsigned y);
     void paintJack(QPainter *painter, JackAssignment *ja, const QColor color, unsigned y, bool sel);
-    void paintOperator(QPainter *painter, unsigned x, unsigned y, QString o, const QColor &color);
+    void paintOperator(QPainter *painter, unsigned x, unsigned y, QString o);
+    void paintCursor(QPainter *painter) const;
+    QRect headerRect() const;
+    QRect commentRect() const;
+    QRect jackRect(int row) const;
+    QRect atomRect(int row, int column) const;
 };
 
 #endif // CIRCUITVIEW_H

@@ -98,7 +98,7 @@ void PatchSection::moveCursorDown()
             cursor.circuitNr--;
         }
         else
-            cursor.row = -1;
+            cursor.row = -2;
     }
 }
 

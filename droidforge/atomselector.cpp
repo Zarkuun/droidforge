@@ -50,9 +50,12 @@ void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
     numberSelector->clearAtom();
     inputOutputSelector->clearAtom();
     controlSelector->clearAtom();
+    cableSelector->clearAtom();
 
-    if (!atom)
+    if (!atom) {
+        setSelectType(SELECT_NUMBER);
         return;
+    }
 
     if (atom->isNumber()) {
         numberSelector->setAtom((AtomNumber *)atom);

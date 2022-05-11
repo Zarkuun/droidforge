@@ -10,7 +10,6 @@
 // Standard for all dialogs
 #define STANDARD_SPACING              10
 #define COLOR_LINE                    QColor(120, 120, 120)
-#define COLOR_FILL_CURSOR             QColor(128, 192, 255, 70)
 #define COLOR_FRAME_CURSOR            QColor(255, 200, 50)
 #define COLOR_TEXT                    QColor(255, 255, 255)
 
@@ -27,15 +26,27 @@
 #define COLOR_JACK_INPUT              QColor(0, 200, 255)
 #define COLOR_JACK_OUTPUT             QColor(245, 60, 50)
 #define COLOR_JACK_UNKNOWN            COLOR_TEXT_UNKNOWN
-#define COLOR_OPERATOR_TEXT           QColor(255, 255, 255)
-#define COLOR_OPERATOR_MULT           QColor(60, 60, 60)
-#define COLOR_OPERATOR_PLUS           QColor(60, 60, 60)
 #define COLOR_TEXT_UNKNOWN            QColor(160, 160, 160)
-#define COLOR_CIRCUIT_BACKGROUND      QColor(30, 30, 30)
-#define COLOR_CIRCUIT_NAME            QColor(250, 250, 250)
-#define COLOR_CIRCUIT_NAME_BACKGROUND QColor(60, 60, 60)
-#define COLOR_COMMENT                 QColor(200, 200, 200)
-#define COLOR_COMMENT_BACKGROUND      QColor(40, 40, 40)
+
+// Circuit view (in patch view)
+#define CIRV_SIDE_PADDING                   STANDARD_SPACING
+#define CIRV_TEXT_SIDE_PADDING               7
+#define CIRV_COMMENT_LINE_HEIGHT            18
+#define CIRV_JACK_HEIGHT                    22
+#define CIRV_HEADER_HEIGHT                  22
+#define CIRV_COLUMN_JACK_WIDTH             180
+#define CIRV_COLUMN_ATOM_WIDTH             170
+#define CIRV_COLUMN_OPERATOR_WIDTH          20
+
+#define CIRV_COLOR_LINE                    QColor(0, 0, 0)
+#define CIRV_COLOR_OPERATOR                QColor(255, 255, 255)
+#define CIRV_COLOR_OPERATOR_BACKGROUND     QColor(60, 60, 60)
+#define CIRV_COLOR_CIRCUIT_BACKGROUND      QColor(30, 30, 30)
+#define CIRV_COLOR_CIRCUIT_NAME            QColor(250, 250, 250)
+#define CIRV_COLOR_CIRCUIT_NAME_BACKGROUND QColor(60, 60, 60)
+#define CIRV_COLOR_COMMENT                 QColor(200, 200, 200)
+#define CIRV_COLOR_COMMENT_BACKGROUND      QColor(40, 40, 40)
+
 
 // Circuit chooser (CICH)
 #define CICH_DIALOG_WIDTH             890
