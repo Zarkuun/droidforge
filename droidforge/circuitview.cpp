@@ -49,7 +49,7 @@ unsigned CircuitView::commentHeight() const
 {
     if (circuit->hasComment())
         return circuit->numCommentLines() * lineHeight
-                + CIRCUIT_COMMENT_PADDING * 2;
+                + PATV_CIRCUIT_COMMENT_PADDING * 2;
     else
         return 0;
 }
@@ -66,12 +66,12 @@ unsigned CircuitView::contentHeight() const
 
 QRectF CircuitView::boundingRect() const
 {
-    unsigned height = contentHeight() + CIRCUIT_VERTICAL_MARGIN;
+    unsigned height = contentHeight() + PATV_CIRCUIT_VERTICAL_MARGIN;
     return QRectF(
                 -CIRV_SIDE_PADDING,
-                -CIRCUIT_VERTICAL_MARGIN / 2,
+                -PATV_CIRCUIT_VERTICAL_MARGIN / 2,
                 CIRV_WIDTH + 2*CIRV_SIDE_PADDING,
-                height + CIRCUIT_VERTICAL_MARGIN);
+                height + PATV_CIRCUIT_VERTICAL_MARGIN);
 }
 
 
@@ -92,7 +92,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     painter->fillRect(commentRect(), CIRV_COLOR_COMMENT_BACKGROUND);
     painter->setPen(CIRV_COLOR_COMMENT);
     painter->save();
-    painter->drawText(QRect(CIRV_TEXT_SIDE_PADDING, CIRV_HEADER_HEIGHT + CIRCUIT_COMMENT_PADDING, CIRV_WIDTH - 2*CIRV_TEXT_SIDE_PADDING, commentHeight()),
+    painter->drawText(QRect(CIRV_TEXT_SIDE_PADDING, CIRV_HEADER_HEIGHT + PATV_CIRCUIT_COMMENT_PADDING, CIRV_WIDTH - 2*CIRV_TEXT_SIDE_PADDING, commentHeight()),
                       Qt::AlignLeft | Qt::AlignJustify | Qt::AlignTop, circuit->getComment());
     painter->restore();
 
