@@ -18,7 +18,7 @@ AtomSelector::AtomSelector(QWidget *parent)
     controlSelector = new ControlSelector(this);
     controlSelector->setFixedWidth(w);
     cableSelector = new CableSelector(this);
-    cableSelector->setFixedWidth(w);
+    cableSelector->setFixedWidth(w * 2);
 
     buttonNumber = new QPushButton(tr("Fixed number"));
     buttonInputOutput = new QPushButton(tr("Input / output"));

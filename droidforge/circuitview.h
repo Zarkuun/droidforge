@@ -33,7 +33,7 @@ public:
 
 private:
     void paintJacks(QPainter *painter, unsigned &line, unsigned y);
-    void paintJack(QPainter *painter, JackAssignment *ja, const QColor color, unsigned y, bool sel);
+    void paintJack(QPainter *painter, JackAssignment *ja, const QColor color, unsigned y);
     void paintOperator(QPainter *painter, unsigned x, unsigned y, QString o);
     void paintCursor(QPainter *painter) const;
     QRect headerRect() const;

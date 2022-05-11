@@ -21,11 +21,11 @@ void PatchSectionView::buildPatchSection()
 {
     QGraphicsScene *scene = new QGraphicsScene();
     QPixmap background(":images/background.png");
-    scene->setBackgroundBrush(QBrush(background.scaledToHeight(JSEL_BACKGROUND_HEIGHT)));
+    scene->setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
     // scene->setBackgroundBrush(PATV_COLOR_BACKGROUND);
     setScene(scene);
 
-    unsigned y = PATV_CIRCUIT_VERTICAL_MARGIN;
+    int y = 0;
     for (qsizetype i=0; i<section->circuits.size(); i++)
     {
         Circuit *circuit = section->circuits[i];

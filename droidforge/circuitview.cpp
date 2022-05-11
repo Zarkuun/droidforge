@@ -69,9 +69,9 @@ QRectF CircuitView::boundingRect() const
     unsigned height = contentHeight() + PATV_CIRCUIT_VERTICAL_MARGIN;
     return QRectF(
                 -CIRV_SIDE_PADDING,
-                -PATV_CIRCUIT_VERTICAL_MARGIN / 2,
+                -PATV_CIRCUIT_VERTICAL_MARGIN,
                 CIRV_WIDTH + 2*CIRV_SIDE_PADDING,
-                height + PATV_CIRCUIT_VERTICAL_MARGIN);
+                height + 2 * PATV_CIRCUIT_VERTICAL_MARGIN);
 }
 
 
@@ -148,7 +148,7 @@ void CircuitView::paintJacks(QPainter *painter, unsigned &line, unsigned y)
         case JACKTYPE_OUTPUT: textcolor = COLOR_JACK_OUTPUT; break;
         default: textcolor = COLOR_JACK_UNKNOWN; break;
         }
-        paintJack(painter, ja, textcolor, y, selected && (int)line == currentJack);
+        paintJack(painter, ja, textcolor, y);
         y += CIRV_JACK_HEIGHT;
         line++;
     }
@@ -156,7 +156,7 @@ void CircuitView::paintJacks(QPainter *painter, unsigned &line, unsigned y)
 }
 
 
-void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned y, bool sel)
+void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned y)
 {
     // CIRV_COLUMN 0: Name of the jack.
     painter->setPen(textcolor);

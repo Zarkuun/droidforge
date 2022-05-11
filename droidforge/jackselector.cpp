@@ -68,7 +68,7 @@ void JackSelector::initScene()
     setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
     QGraphicsScene *scene = new QGraphicsScene();
     QPixmap background(":images/background.png");
-    scene->setBackgroundBrush(QBrush(background.scaledToHeight(JSEL_BACKGROUND_HEIGHT)));
+    scene->setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
     setScene(scene);
 }
 
