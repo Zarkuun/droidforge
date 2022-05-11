@@ -9,6 +9,8 @@
 
 class AtomSubSelector : public QGroupBox
 {
+    Q_OBJECT
+
 public:
     AtomSubSelector(QWidget *parent = nullptr);
     virtual QString title() const = 0;
@@ -17,6 +19,10 @@ public:
     virtual void getFocus() = 0;
     virtual bool handlesAtom(const Atom *atom) const = 0;
     virtual void setAtom(const Patch *patch, const Atom *atom) = 0;
+    void mousePressEvent(QMouseEvent *event);
+
+signals:
+    void mouseClicked();
 };
 
 #endif // ATOMSUBSELECTOR_H
