@@ -129,6 +129,18 @@ void PatchSectionView::addNewJack(QString name)
 }
 
 
+void PatchSectionView::editJack()
+{
+    Circuit *circuit = currentCircuit();
+    JackAssignment *ja = circuit->jackAssignment(section->cursorPosition().row);
+    qDebug() << "UMBAUEN" << ja;
+
+
+
+}
+
+
+
 QString PatchSectionView::currentCircuitName() const
 {
     // TODO: Wenn es keinen current circuit gibt.
@@ -150,9 +162,8 @@ void PatchSectionView::editValue(const Patch *patch)
     }
     else if (row == -1)
         editCircuitComment();
-    else if (column == 0) {
-        // TODO: Exchange jack
-    }
+    else if (column == 0)
+        editJack();
     else
         editAtom(patch);
 }
@@ -317,7 +328,6 @@ void PatchSectionView::deleteCurrentAtom()
     }
     rebuildPatchSection();
 }
-
 
 void PatchSectionView::moveCursorLeftRight(int whence)
 {

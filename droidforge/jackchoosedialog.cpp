@@ -55,6 +55,21 @@ void JackChooseDialog::keyPressEvent(QKeyEvent *event)
         QDialog::keyPressEvent(event);
 }
 
+
+QString JackChooseDialog::chooseJack(const QString &circuit, const QStringList &used)
+{
+    static JackChooseDialog *dialog = 0;
+    if (!dialog)
+        dialog = new JackChooseDialog();
+
+    dialog->setCircuit(circuit, used);
+    if (dialog->exec() == QDialog::Accepted)
+        return dialog->getSelectedJack();
+    else
+        return "";
+}
+
+
 void JackChooseDialog::cursorMoved(bool onActive)
 {
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(onActive);

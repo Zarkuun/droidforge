@@ -45,6 +45,7 @@ private:
     void deleteCurrentComment();
     void deleteCurrentJack();
     void deleteCurrentAtom();
+    void editJack();
     void editAtom(const Patch *patch);
 };
 
