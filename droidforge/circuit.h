@@ -29,6 +29,7 @@ public:
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     void deleteJackAssignment(unsigned i);
     const Atom *atomAt(int row, int column) const;
+    void collectCables(QStringList &cables) const;
 
 };
 

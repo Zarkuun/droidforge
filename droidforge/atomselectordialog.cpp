@@ -24,10 +24,10 @@ AtomSelectorDialog::AtomSelectorDialog(QWidget *parent)
 }
 
 
-Atom *AtomSelectorDialog::editAtom(jacktype_t , const Atom *atom)
+Atom *AtomSelectorDialog::editAtom(const Patch *patch, jacktype_t , const Atom *atom)
 {
     // TODO: input / output unterscheiden
-    atomSelector->setAtom(atom);
+    atomSelector->setAtom(patch, atom);
 
     if (exec() == QDialog::Accepted)
         return atomSelector->getAtom();

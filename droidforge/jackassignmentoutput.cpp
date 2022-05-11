@@ -1,4 +1,5 @@
 #include "jackassignmentoutput.h"
+#include "atomcable.h"
 
 JackAssignmentOutput::JackAssignmentOutput(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
@@ -49,6 +50,12 @@ void JackAssignmentOutput::replaceAtom(int, Atom *newAtom)
     if (atom)
         delete atom;
     atom = newAtom;
+}
+
+void JackAssignmentOutput::collectCables(QStringList &cables) const
+{
+    if (atom && atom->isCable())
+        cables.append(((AtomCable *)atom)->getCable());
 }
 
 

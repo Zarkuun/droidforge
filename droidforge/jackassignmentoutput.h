@@ -15,6 +15,7 @@ public:
     QString valueToString() const;
     const Atom *atomAt(int) const { return atom; };
     void replaceAtom(int column, Atom *newAtom);
+    void collectCables(QStringList &cables) const;
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_OUTPUT; };

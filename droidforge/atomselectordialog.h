@@ -2,6 +2,7 @@
 #define ATOMSELECTORDIALOG_H
 
 #include "jackassignment.h"
+#include "patch.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -15,7 +16,7 @@ class AtomSelectorDialog : public QDialog
 
 public:
     AtomSelectorDialog(QWidget *parent = nullptr);
-    Atom *editAtom(jacktype_t, const Atom *atom);
+    Atom *editAtom(const Patch *patch, jacktype_t, const Atom *atom);
 };
 
 #endif // ATOMSELECTORDIALOG_H

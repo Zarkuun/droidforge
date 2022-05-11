@@ -257,7 +257,7 @@ void PatchParser::stripEmptyCommentLines()
 void PatchParser::startNewSection(QString name)
 {
     section = new PatchSection(name);
-    patch->sections.append(section);
+    patch->addSection(section);
 }
 
 

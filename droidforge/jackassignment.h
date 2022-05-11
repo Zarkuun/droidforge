@@ -2,7 +2,9 @@
 #define JACKASSIGNMENT_H
 
 #include "atom.h"
+
 #include <QString>
+#include <QSet>
 
 typedef enum {
     JACKTYPE_INPUT = 0,
@@ -28,6 +30,7 @@ public:
     QString jackName() const { return jack; };
     virtual const Atom *atomAt(int column) const = 0;
     virtual void replaceAtom(int column, Atom *newAtom) = 0;
+    virtual void collectCables(QStringList &cables) const = 0;
 
 protected:
     virtual QString valueToString() const = 0;

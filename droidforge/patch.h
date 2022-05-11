@@ -13,6 +13,7 @@ class Patch
     QString libraryMetaData; // break into structure later
     RegisterComments *registerComments;
     QStringList controllers;
+    QList<PatchSection *> sections;
 
 
 public:
@@ -21,6 +22,9 @@ public:
     Patch *clone() const;
     qsizetype numControllers() const { return controllers.size(); };
     QString controller(qsizetype i) const { return controllers[i]; };
+    qsizetype numSections() const { return sections.size(); };
+    PatchSection *section(qsizetype i) { return sections[i]; };
+    void addSection(PatchSection *section);
     void addController(QString name) { controllers.append(name); };
     bool saveToFile(QString filename);
     void addDescriptionLine(const QString &line);
@@ -32,7 +36,6 @@ public:
             const QString &shorthand,
             const QString &atomcomment);
 
-    QList<PatchSection *> sections;
 
     QString toString();
     const QString &getTitle() const;
@@ -40,6 +43,7 @@ public:
     void setTitle(const QString &newTitle);
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
+    QStringList allCables() const;
 };
 
 #endif // PATCH_H

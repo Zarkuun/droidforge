@@ -7,12 +7,14 @@
 
 class AtomCable : public Atom
 {
-public:
     QString name;
+
+public:
     AtomCable(QString n) : name(n) {};
     AtomCable *clone() const;
     QString toString() const;
     bool isCable() const { return true; };
+    QString getCable() const { return name; };
 };
 
 #endif // ATOMCABLE_H

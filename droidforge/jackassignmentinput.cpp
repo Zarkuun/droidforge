@@ -1,4 +1,5 @@
 #include "jackassignmentinput.h"
+#include "atomcable.h"
 #include "atomnumber.h"
 #include "parseexception.h"
 
@@ -113,6 +114,16 @@ QString JackAssignmentInput::valueToString() const
         else
             return atomA->toString() + " * " + atomB->toString() + op + sc;
     }
+}
+
+void JackAssignmentInput::collectCables(QStringList &cables) const
+{
+    if (atomA && atomA->isCable())
+        cables.append(((AtomCable *)atomA)->getCable());
+    if (atomB && atomB->isCable())
+        cables.append(((AtomCable *)atomB)->getCable());
+    if (atomC && atomC->isCable())
+        cables.append(((AtomCable *)atomC)->getCable());
 }
 
 

@@ -38,8 +38,8 @@ void PatchView::setPatch(Patch *newPatch)
 
     currentPatchSectionView = 0;
 
-    for (qsizetype i=0; i<patch->sections.count(); i++) {
-        PatchSection *section = patch->sections[i];
+    for (qsizetype i=0; i<patch->numSections(); i++) {
+        PatchSection *section = patch->section(i);
         PatchSectionView *psv = new PatchSectionView(section);
         QString title = section->title;
         if (title.isEmpty())
@@ -120,9 +120,7 @@ void PatchView::addJack()
 
 void PatchView::editValue()
 {
-    qDebug() << Q_FUNC_INFO;
-
     releaseKeyboard();
-    currentPatchSectionView->editValue();
+    currentPatchSectionView->editValue(patch);
     grabKeyboard();
 }

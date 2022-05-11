@@ -2,6 +2,7 @@
 #define ATOMSELECTOR_H
 
 #include "atom.h"
+#include "cableselector.h"
 #include "controlselector.h"
 #include "numberselector.h"
 #include "inputoutputselector.h"
@@ -25,11 +26,12 @@ class AtomSelector : public QWidget
     NumberSelector *numberSelector;
     InputOutputSelector *inputOutputSelector;
     ControlSelector *controlSelector;
+    CableSelector *cableSelector;
     select_t selectType;
 
 public:
     explicit AtomSelector(QWidget *parent = nullptr);
-    void setAtom(const Atom *atom);
+    void setAtom(const Patch *patch, const Atom *atom);
     Atom *getAtom();
 
 private:

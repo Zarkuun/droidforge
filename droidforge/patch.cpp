@@ -4,9 +4,6 @@
 #include <QTextStream>
 
 
-
-
-
 Patch::Patch()
     : registerComments(new RegisterComments())
 {
@@ -35,6 +32,11 @@ Patch *Patch::clone() const
         newpatch->sections.append(sections[i]->clone());
     }
     return newpatch;
+}
+
+void Patch::addSection(PatchSection *section)
+{
+    sections.append(section);
 }
 
 
@@ -85,6 +87,17 @@ QString Patch::getDescription() const
 void Patch::setTitle(const QString &newTitle)
 {
     title = newTitle;
+}
+
+
+QStringList Patch::allCables() const
+{
+    QStringList cables;
+    for (qsizetype i=0; i<sections.length(); i++)
+        sections[i]->collectCables(cables);
+    cables.removeDuplicates();
+    cables.sort();
+    return cables;
 }
 
 

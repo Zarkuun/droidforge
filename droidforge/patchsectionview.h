@@ -24,7 +24,7 @@ public:
     void addNewJack(QString name);
     QString currentCircuitName() const;
     QStringList usedJacks() const;
-    void editValue();
+    void editValue(const Patch *patch);
 
 private:
     bool handleMousePress(const QPointF &pos);
@@ -44,8 +44,7 @@ private:
     void deleteCurrentComment();
     void deleteCurrentJack();
     void deleteCurrentAtom();
-
-    void editAtom();
+    void editAtom(const Patch *patch);
 };
 
 #endif // PATCHSECTIONVIEW_H

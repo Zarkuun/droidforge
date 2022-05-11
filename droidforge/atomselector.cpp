@@ -17,7 +17,7 @@ AtomSelector::AtomSelector(QWidget *parent)
     inputOutputSelector->setFixedWidth(w);
     controlSelector = new ControlSelector(this);
     controlSelector->setFixedWidth(w);
-    QWidget *cableSelector = new QWidget(this);
+    cableSelector = new CableSelector(this);
     cableSelector->setFixedWidth(w);
 
     buttonNumber = new QPushButton(tr("Fixed number"));
@@ -45,7 +45,7 @@ AtomSelector::AtomSelector(QWidget *parent)
 }
 
 
-void AtomSelector::setAtom(const Atom *atom)
+void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
 {
     numberSelector->clearAtom();
     inputOutputSelector->clearAtom();
@@ -70,6 +70,7 @@ void AtomSelector::setAtom(const Atom *atom)
         }
     }
     else if (atom->isCable()) {
+        cableSelector->setAtom(patch, (AtomCable *)atom);
         setSelectType(SELECT_CABLE);
     }
     else // empty
@@ -86,7 +87,7 @@ Atom *AtomSelector::getAtom()
     case SELECT_CONTROL:
         return controlSelector->getAtom();
     case SELECT_CABLE:
-        return 0; // TODO
+        return cableSelector->getAtom();
     }
 }
 
@@ -96,6 +97,7 @@ void AtomSelector::setSelectType(select_t sel)
     numberSelector->setDisabled(sel != SELECT_NUMBER);
     inputOutputSelector->setDisabled(sel != SELECT_INPUT_OUTPUT);
     controlSelector->setDisabled(sel != SELECT_CONTROL);
+    cableSelector->setDisabled(sel != SELECT_CABLE);
 
     switch (selectType) {
     case SELECT_NUMBER:
@@ -111,6 +113,7 @@ void AtomSelector::setSelectType(select_t sel)
         break;
 
     case SELECT_CABLE:
+        cableSelector->getFocus();
         break;
     }
 
@@ -133,5 +136,5 @@ void AtomSelector::switchToControl()
 
 void AtomSelector::switchToCable()
 {
-    setSelectType(SELECT_INPUT_OUTPUT);
+    setSelectType(SELECT_CABLE);
 }

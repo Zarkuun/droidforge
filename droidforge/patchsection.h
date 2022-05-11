@@ -32,6 +32,7 @@ public:
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
     void addNewCircuit(int pos, QString name, jackselection_t jackSelection);
+    void collectCables(QStringList &cables) const;
 
     const CursorPosition &cursorPosition() { return cursor; };
     void setCursor(const CursorPosition &pos) { cursor = pos; };

@@ -46,6 +46,12 @@ const Atom *Circuit::atomAt(int row, int column) const
     return jackAssignments[row]->atomAt(column);
 }
 
+void Circuit::collectCables(QStringList &cables) const
+{
+    for (qsizetype i=0; i<jackAssignments.length(); i++)
+        jackAssignments[i]->collectCables(cables);
+}
+
 
 QString Circuit::toString()
 {

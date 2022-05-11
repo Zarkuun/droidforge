@@ -177,6 +177,13 @@ void PatchSection::addNewCircuit(int pos, QString name, jackselection_t jackSele
 }
 
 
+void PatchSection::collectCables(QStringList &cables) const
+{
+    for (qsizetype i=0; i<circuits.length(); i++)
+        circuits[i]->collectCables(cables);
+}
+
+
 Circuit *PatchSection::currentCircuit()
 {
     return circuits[cursor.circuitNr];

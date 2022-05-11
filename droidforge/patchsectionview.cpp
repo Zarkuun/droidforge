@@ -130,7 +130,7 @@ QStringList PatchSectionView::usedJacks() const
     return currentCircuitView()->usedJacks();
 }
 
-void PatchSectionView::editValue()
+void PatchSectionView::editValue(const Patch *patch)
 {
     int row = section->cursorPosition().row;
     int column = section->cursorPosition().column;
@@ -145,12 +145,12 @@ void PatchSectionView::editValue()
         // TODO: Exchange jack
     }
     else {
-        editAtom();
+        editAtom(patch);
     }
 }
 
 
-void PatchSectionView::editAtom()
+void PatchSectionView::editAtom(const Patch *patch)
 {
     Circuit *circuit = currentCircuit();
     JackAssignment *ja = circuit->jackAssignment(section->cursorPosition().row);
@@ -161,15 +161,11 @@ void PatchSectionView::editAtom()
         atomSelectorDialog = new AtomSelectorDialog(this);
 
     const Atom *atom = ja->atomAt(section->cursorPosition().column);
-    Atom *newAtom = atomSelectorDialog->editAtom(ja->jackType(), atom);
+    Atom *newAtom = atomSelectorDialog->editAtom(patch, ja->jackType(), atom);
     if (newAtom != atom) {
-        qDebug() << "1";
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
-        qDebug() << "2";
         the_forge->registerEdit(actionTitle);
-        qDebug() << "3";
         ja->replaceAtom(section->cursorPosition().column, newAtom);
-        qDebug() << "4";
     }
 }
 

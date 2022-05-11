@@ -13,6 +13,8 @@ public:
     jacktype_t jackType() const { return JACKTYPE_UNKNOWN; };
     const Atom *atomAt(int) const { return 0; };
     void replaceAtom(int column, Atom *newAtom);
+    void collectCables(QStringList &) const {};
+
 
 protected:
     JackAssignment *clone() const;
