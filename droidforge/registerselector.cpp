@@ -1,22 +1,36 @@
 #include "registerselector.h"
 #include "atomregister.h"
+#include "tuning.h"
 
-RegisterSelector::RegisterSelector(QChar reg, QWidget *parent)
+#include <QRegularExpressionValidator>
+
+RegisterSelector::RegisterSelector(bool isControl, QChar reg, QString regs, QWidget *parent)
     : QGroupBox{parent}
+    , isControl(isControl)
     , defaultRegisterType(reg)
+    , allowedRegisters(regs)
 {
-    lineEditNumber = new QLineEdit(this);
-
     valueBox = new QHBoxLayout();
     labelRegister = new QLabel();
     valueBox->addWidget(labelRegister);
+    lineEditController = new QLineEdit(this);
+    lineEditController->setValidator(validator());
+    valueBox->addWidget(lineEditController);
+    QLabel *labelDot = new QLabel(".");
+    valueBox->addWidget(labelDot);
+    lineEditNumber = new QLineEdit(this);
+    lineEditNumber->setValidator(validator());
     valueBox->addWidget(lineEditNumber);
 
     mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(valueBox);
     mainLayout->addStretch();
 
-    connect(lineEditNumber, &QLineEdit::textEdited, this, &RegisterSelector::lineEdited);
+    lineEditController->setVisible(isControl);
+    labelDot->setVisible(isControl);
+
+    connect(lineEditNumber, &QLineEdit::textEdited, this, &RegisterSelector::lineNumberEdited);
+    connect(lineEditController, &QLineEdit::textEdited, this, &RegisterSelector::lineControllerEdited);
 }
 
 
@@ -49,17 +63,31 @@ void RegisterSelector::switchRegister(QChar c)
     }
 }
 
+void RegisterSelector::setControllerNumber(unsigned controller)
+{
+    controllerNumber = controller;
+    lineEditController->setText(QString::number(controllerNumber));
+}
 
+
+void RegisterSelector::setRegisterNumber(unsigned n)
+{
+    registerNumber = n;
+    lineEditNumber->setText(QString::number(registerNumber));
+}
 
 void RegisterSelector::setAtom(const AtomRegister *areg)
 {
     setRegisterType(areg->getRegisterType());
     setRegisterNumber(areg->getNumber());
+    setControllerNumber(areg->getController());
 }
+
 
 void RegisterSelector::clearAtom()
 {
     setRegisterType(defaultRegisterType);
+    setControllerNumber(isControl ? 1 : 0);
     setRegisterNumber(1);
 }
 
@@ -67,7 +95,8 @@ void RegisterSelector::clearAtom()
 AtomRegister *RegisterSelector::getAtom()
 {
     unsigned number = lineEditNumber->text().toUInt();
-    return new AtomRegister(registerType, 0, number);
+    unsigned controller = isControl ? lineEditController->text().toUInt() : 0;
+    return new AtomRegister(registerType, controller, number);
 }
 
 
@@ -81,26 +110,58 @@ void RegisterSelector::getFocus()
     lineEditNumber->selectAll();
 }
 
-
-void RegisterSelector::setRegisterNumber(unsigned n)
-{
-    registerNumber = n;
-    lineEditNumber->setText(QString::number(registerNumber));
-}
-
-
-void RegisterSelector::lineEdited(QString text)
+void RegisterSelector::stripExtraChars(QLineEdit *edit)
 {
     // Extract register names and switch over to
     // different register.
 
+    QString text = edit->text();
     QString stripped;
     for (qsizetype i=0; i<text.size(); i++) {
         QChar c = text[i].toUpper();
-        if (c.isLetter())
+        if (isValidRegister(c)) {
             switchRegister(c);
+            if (isControl) {
+                lineEditController->setFocus();
+                lineEditController->selectAll();
+            }
+        }
+        else if (c == '.') {
+            lineEditNumber->setFocus();
+            lineEditNumber->selectAll();
+        }
         else
             stripped.append(c);
     }
-    lineEditNumber->setText(stripped);
+    edit->setText(stripped);
+}
+
+bool RegisterSelector::isValidRegister(QChar c)
+{
+    for (qsizetype i=0; i<buttons.count(); i++) {
+        if (buttons[i]->text().startsWith(c))
+            return true;
+    }
+    return false;
+}
+
+QValidator *RegisterSelector::validator() const
+{
+    QString regex = "[0-9" + allowedRegisters + allowedRegisters.toLower();
+    if (isControl)
+        regex += ".";
+    regex += "]+";
+    QRegularExpression re(regex);
+    return new QRegularExpressionValidator(re);
+}
+
+
+void RegisterSelector::lineNumberEdited(QString)
+{
+    stripExtraChars(lineEditNumber);
+}
+
+void RegisterSelector::lineControllerEdited(QString)
+{
+    stripExtraChars(lineEditController);
 }

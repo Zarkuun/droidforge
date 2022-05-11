@@ -48,7 +48,7 @@ void JackSelector::mousePressEvent(QMouseEvent *event)
 
 }
 
-void JackSelector::mouseDoubleClickEvent(QMouseEvent *event)
+void JackSelector::mouseDoubleClickEvent(QMouseEvent *)
 {
 
 }

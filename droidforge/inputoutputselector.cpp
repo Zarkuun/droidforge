@@ -6,7 +6,7 @@
 #include <QKeyEvent>
 
 InputOutputSelector::InputOutputSelector(QWidget *parent)
-    : RegisterSelector('I', parent)
+    : RegisterSelector(false, 'I', "IOGNRX", parent)
 {
     addRegisterButton('I', tr("Input"));
     addRegisterButton('O', tr("Output"));

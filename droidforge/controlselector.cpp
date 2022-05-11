@@ -2,7 +2,7 @@
 
 
 ControlSelector::ControlSelector(QWidget *parent)
-    : RegisterSelector('B', parent)
+    : RegisterSelector(true, 'B', "BLPSR", parent)
 {
     addRegisterButton('B', tr("Button"));
     addRegisterButton('L', tr("LED in Button"));

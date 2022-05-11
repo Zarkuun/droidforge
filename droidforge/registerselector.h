@@ -17,35 +17,42 @@ class RegisterSelector : public QGroupBox
 {
     Q_OBJECT
 
-    QLineEdit *lineEditNumber;
+    bool isControl;
+    QChar registerType;
     unsigned registerNumber;
+    unsigned controllerNumber;
+    QChar defaultRegisterType;
+    QString allowedRegisters;
 
+    QLineEdit *lineEditController;
+    QLineEdit *lineEditNumber;
     QVBoxLayout *mainLayout;
     QHBoxLayout *valueBox;
     QList<QPushButton *>buttons;
-    QChar registerType;
-    QChar defaultRegisterType;
     QLabel *labelRegister;
 
 public:
-    RegisterSelector(QChar reg, QWidget *parent = nullptr);
+    RegisterSelector(bool isControl, QChar reg, QString regs, QWidget *parent = nullptr);
     void getFocus();
     void setAtom(const AtomRegister *areg);
     void clearAtom();
     AtomRegister *getAtom();
 
 protected:
-    virtual bool isControl() = 0;
-
     void addRegisterButton(QChar reg, QString label);
     void setRegisterType(QChar reg);
     void switchRegister(QChar c);
 
 private:
+    void setControllerNumber(unsigned controller);
     void setRegisterNumber(unsigned number);
+    void stripExtraChars(QLineEdit *edit);
+    bool isValidRegister(QChar c);
+    QValidator *validator() const;
 
 private slots:
-    void lineEdited(QString text);
+    void lineNumberEdited(QString text);
+    void lineControllerEdited(QString text);
 
 };
 
