@@ -194,6 +194,7 @@ void PatchSectionView::editAtom(const Patch *patch)
     if (ja->jackType() == JACKTYPE_UNKNOWN)
         return; // TODO: Edit unknown data anyway?
 
+    // TODO: Dialog statisch anlegen und mit Edit arbeiten
     if (!atomSelectorDialog)
         atomSelectorDialog = new AtomSelectorDialog(this);
 

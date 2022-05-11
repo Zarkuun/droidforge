@@ -8,9 +8,8 @@
 
 #include <QGridLayout>
 #include <QPushButton>
-#include <QLabel>
-#include <QKeyEvent>
 #include <QMouseEvent>
+#include <QLabel>
 
 AtomSelector::AtomSelector(QWidget *parent)
     : QWidget{parent}
@@ -28,10 +27,14 @@ AtomSelector::AtomSelector(QWidget *parent)
         AtomSubSelector *ss = subSelectors[i];
         QPushButton *button = new QPushButton(ss->title());
         connect(button, &QPushButton::pressed, this, [this, i]() { this->switchToSelector(i); });
-        connect(ss, &AtomSubSelector::mouseClicked, this, [this, i]() { this->switchToSelector(i); });
         layout->addWidget(button, 0, i);
         layout->addWidget(ss, 1, i);
     }
+
+    // Dieses Widget kann Focus bekommen, und zwar nur durch
+    // die Tabtaste.
+    // setFocusPolicy(Qt::TabFocus);
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
@@ -60,11 +63,11 @@ Atom *AtomSelector::getAtom()
     return subSelectors[currentSelector]->getAtom();
 }
 
-void AtomSelector::keyPressEvent(QKeyEvent *event)
-{
-    qDebug() << "KEY" << event;
-    QWidget::keyPressEvent(event);
-}
+// void AtomSelector::keyPressEvent(QKeyEvent *event)
+// {
+//     qDebug() << "KEY" << event;
+//     // subSelectors[currentSelector]->kkeyPressEvent(event);
+// }
 
 void AtomSelector::mousePressEvent(QMouseEvent *event)
 {
@@ -74,6 +77,12 @@ void AtomSelector::mousePressEvent(QMouseEvent *event)
         if (geo.contains(event->pos()))
             switchToSelector(i);
     }
+}
+
+void AtomSelector::focusInEvent(QFocusEvent *event)
+{
+    qDebug() << "HIRN" << event;
+    switchToSelector((currentSelector + 1) % subSelectors.count());
 }
 
 void AtomSelector::switchToSelector(int index)

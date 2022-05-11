@@ -21,8 +21,9 @@ public:
     explicit AtomSelector(QWidget *parent = nullptr);
     void setAtom(const Patch *patch, const Atom *atom);
     Atom *getAtom();
-    void keyPressEvent(QKeyEvent *event);
+    // void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
+    void focusInEvent(QFocusEvent *event);
 
 private slots:
     void switchToSelector(int index);

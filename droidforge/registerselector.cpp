@@ -114,8 +114,16 @@ void RegisterSelector::getFocus()
         lineEditNumber->setText("1");
         registerNumber = 1;
     }
-    lineEditNumber->setFocus();
-    lineEditNumber->selectAll();
+
+    if (isControl)
+    {
+        lineEditController->setFocus();
+        lineEditController->selectAll();
+    }
+    else {
+        lineEditNumber->setFocus();
+        lineEditNumber->selectAll();
+    }
 }
 
 void RegisterSelector::stripExtraChars(QLineEdit *edit)
