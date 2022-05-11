@@ -12,7 +12,7 @@ JackAssignmentInput::JackAssignmentInput(QString jack, QString comment, QString 
     , atomB(0)
     , atomC(0)
 {
-    parseInputValue(jack, valueString);
+    parseInputExpression(jack, valueString);
 }
 
 
@@ -82,6 +82,10 @@ JackAssignment *JackAssignmentInput::clone() const
     return newas;
 }
 
+void JackAssignmentInput::parseExpression(const QString &expression)
+{
+    parseInputExpression(jack, expression);
+}
 
 QString JackAssignmentInput::valueToString() const
 {
@@ -131,7 +135,7 @@ void JackAssignmentInput::collectCables(QStringList &cables) const
 #define RATOMB "-[0-9][^*/+-]+"
 #define RATOM "(" RATOMA "|" RATOMB ")"
 
-void JackAssignmentInput::parseInputValue(QString jack, QString valueString)
+void JackAssignmentInput::parseInputExpression(QString jack, QString valueString)
 {
     static QRegularExpression spaces("\\s");
     QString value = valueString.toLower();

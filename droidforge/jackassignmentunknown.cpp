@@ -12,6 +12,10 @@ void JackAssignmentUnknown::replaceAtom(int, Atom *newAtom)
     valueString = newAtom->toString();
 }
 
+void JackAssignmentUnknown::parseExpression(const QString &expression)
+{
+    valueString = expression;
+}
 
 JackAssignment *JackAssignmentUnknown::clone() const
 {

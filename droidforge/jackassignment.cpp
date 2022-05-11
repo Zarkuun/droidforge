@@ -1,5 +1,6 @@
 #include "jackassignment.h"
 #include "atomcable.h"
+#include "atominvalid.h"
 #include "atomregister.h"
 #include "droidfirmware.h"
 #include "jackassignmentinput.h"
@@ -91,5 +92,6 @@ Atom *JackAssignment::parseRegister(QString s)
         return new AtomRegister(registerType, controller, number);
     }
 
-    return 0;
+    else
+        return new AtomInvalid(s);
 }

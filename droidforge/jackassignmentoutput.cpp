@@ -5,7 +5,7 @@ JackAssignmentOutput::JackAssignmentOutput(QString jack, QString comment, QStrin
     : JackAssignment(jack, comment)
     , atom(0)
 {
-    parseOutputValue(valueString);
+    parseExpression(valueString);
 }
 
 
@@ -58,13 +58,12 @@ void JackAssignmentOutput::collectCables(QStringList &cables) const
         cables.append(((AtomCable *)atom)->getCable());
 }
 
-
-void JackAssignmentOutput::parseOutputValue(QString valueString)
+void JackAssignmentOutput::parseExpression(const QString &expression)
 {
-    if (valueString.size() > 0) {
-        if (valueString[0] == '_')
-            atom = parseCable(valueString);
+    if (expression.size() > 0) {
+        if (expression[0] == '_')
+            atom = parseCable(expression);
         else
-            atom = parseRegister(valueString);
+            atom = parseRegister(expression);
     }
 }

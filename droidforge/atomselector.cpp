@@ -76,6 +76,13 @@ void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
         cableSelector->setAtom(patch, (AtomCable *)atom);
         setSelectType(SELECT_CABLE);
     }
+    else if (atom->isInvalid()) {
+        QString s = atom->toString();
+        if (!s.isEmpty() && s[0].isDigit())
+            setSelectType(SELECT_NUMBER);
+        else
+            setSelectType(SELECT_INPUT_OUTPUT);
+    }
     else // empty
         setSelectType(SELECT_NUMBER);
 }

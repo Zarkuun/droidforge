@@ -107,22 +107,12 @@ void PatchSectionView::addNewJack(QString name)
     QString actionTitle = QString("adding new jack '") + name + "' to circuit";
     the_forge->registerEdit(actionTitle);
 
-    Circuit *circuit = currentCircuit();
-    QString circuitName = circuit->getName();
-    JackAssignment *ja;
-    if (the_firmware->jackIsInput(circuitName, name))
-        ja = new JackAssignmentInput(name);
-    else if (the_firmware->jackIsOutput(circuitName, name))
-        ja = new JackAssignmentOutput(name);
-    else
-        ja = new JackAssignmentUnknown(name);
-
     int row = section->cursorPosition().row;
     int index = row + 1;
     if (index < 0)
         index = 0;
 
-    currentCircuit()->insertJackAssignment(ja, index);
+    currentCircuit()->insertJackAssignment(buildJackAssignment(name), index);
     section->setCursorRow(index);
     section->setCursorColumn(1);
     rebuildPatchSection();
@@ -130,16 +120,41 @@ void PatchSectionView::addNewJack(QString name)
 }
 
 
+JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
+{
+    Circuit *circuit = currentCircuit();
+    QString circuitName = circuit->getName();
+    if (the_firmware->jackIsInput(circuitName, name))
+        return new JackAssignmentInput(name);
+    else if (the_firmware->jackIsOutput(circuitName, name))
+        return new JackAssignmentOutput(name);
+    else
+        return new JackAssignmentUnknown(name);
+}
+
+
 void PatchSectionView::editJack()
 {
+    JackAssignment *ja = currentJackAssignment();
+
     QString name = JackChooseDialog::chooseJack(
                 currentCircuitName(),
                 usedJacks(),
-                currentJackAssignment()->jackType());
+                ja->jackType());
+
     if (!name.isEmpty()) {
         QString actionTitle = QString("replacing jack with '") + name + "'";
         the_forge->registerEdit(actionTitle);
-        currentJackAssignment()->changeJack(name);
+        // When we convert formerly unknown jacks to known jacks,
+        // we need to reparse the still unparsed value expression
+        if (ja->jackType() == JACKTYPE_UNKNOWN) {
+            JackAssignment *newJa = buildJackAssignment(name);
+            newJa->parseExpression(ja->valueToString());
+            section->deleteCurrentJackAssignment();
+            currentCircuit()->insertJackAssignment(newJa, section->cursorPosition().row);
+        }
+        else
+            currentJackAssignment()->changeJack(name);
     }
 }
 

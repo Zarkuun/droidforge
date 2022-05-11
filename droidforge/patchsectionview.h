@@ -48,6 +48,7 @@ private:
     void editCircuit();
     void editJack();
     void editAtom(const Patch *patch);
+    JackAssignment *buildJackAssignment(const QString &jackName);
 };
 
 #endif // PATCHSECTIONVIEW_H

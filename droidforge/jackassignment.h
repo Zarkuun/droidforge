@@ -28,15 +28,16 @@ public:
     virtual JackAssignment *clone() const = 0;
     virtual jacktype_t jackType() const = 0;
     QString toString() const;
+    virtual QString valueToString() const = 0;
     QString jackName() const { return jack; };
     virtual const Atom *atomAt(int column) const = 0;
     virtual void replaceAtom(int column, Atom *newAtom) = 0;
     virtual void collectCables(QStringList &cables) const = 0;
     void changeJack(QString j) { jack = j; };
     static JackAssignment *parseJackLine(const QString &circuit, QString line);
+    virtual void parseExpression(const QString &expression) = 0;
 
 protected:
-    virtual QString valueToString() const = 0;
     Atom *parseCable(QString s);
     Atom *parseRegister(QString s);
 };

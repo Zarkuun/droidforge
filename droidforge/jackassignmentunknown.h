@@ -14,6 +14,7 @@ public:
     const Atom *atomAt(int) const { return 0; };
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &) const {};
+    void parseExpression(const QString &expression);
 
 
 protected:

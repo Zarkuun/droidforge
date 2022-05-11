@@ -22,9 +22,10 @@ public:
 protected:
     jacktype_t jackType() const { return JACKTYPE_INPUT; };
     JackAssignment *clone() const;
+    void parseExpression(const QString &expression);
 
 private:
-    void parseInputValue(QString jack, QString valueString);
+    void parseInputExpression(QString jack, QString valueString);
     Atom *parseInputAtom(QString s);
     Atom *parseOnOff(QString s);
     Atom *parseNumber(QString s);

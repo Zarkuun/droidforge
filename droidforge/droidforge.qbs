@@ -14,6 +14,8 @@ QtApplication {
         "atom.h",
         "atomcable.cpp",
         "atomcable.h",
+        "atominvalid.cpp",
+        "atominvalid.h",
         "atomnumber.cpp",
         "atomnumber.h",
         "atomregister.cpp",

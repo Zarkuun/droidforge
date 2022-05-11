@@ -16,6 +16,7 @@ public:
     const Atom *atomAt(int) const { return atom; };
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &cables) const;
+    void parseExpression(const QString &expression);
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_OUTPUT; };

@@ -1,9 +1,9 @@
 #ifndef ATOMCABLE_H
 #define ATOMCABLE_H
 
-#include <QString>
-
 #include "atom.h"
+
+#include <QString>
 
 class AtomCable : public Atom
 {
