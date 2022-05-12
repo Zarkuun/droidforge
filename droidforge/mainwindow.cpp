@@ -27,8 +27,6 @@ MainWindow::MainWindow(const QString &initialFilename)
     the_forge = this;
     the_firmware = &firmware;
 
-
-
     ui->setupUi(this);
     QSplitter *splitter = new QSplitter();
     splitter->setOrientation(Qt::Vertical);
@@ -63,14 +61,13 @@ void MainWindow::loadPatch(QString afilename)
     setPatch(newpatch.clone());
 
     filename = afilename;
-    undoHistory.clear();
-    undoHistory.snapshot("Load from file", patch);
+    undoHistory.reset(&newpatch);
 }
 
 
 void MainWindow::registerEdit(QString name)
 {
-    undoHistory.snapshot(name, patch);
+    undoHistory.snapshot(patch, name);
     updateActions();
 }
 
@@ -114,12 +111,12 @@ void MainWindow::slotLoadPatch(const QString &filename)
         box.setStandardButtons(QMessageBox::Cancel);
         box.setDefaultButton(QMessageBox::Cancel);
         box.setIcon(QMessageBox::Critical);
-        box.setBaseSize(QSize(600, 220));
+        // TODO: Size of message box?
+        // box.setBaseSize(QSize(600, 220));
         box.exec();
         QApplication::quit();
     }
 }
-
 
 void MainWindow::createActions()
 {
@@ -160,7 +157,11 @@ void MainWindow::updateActions()
         redoAction->setText(tr("&Redo"));
         redoAction->setEnabled(false);
     }
-    return;
+
+    QString title = initialFilename + " - " + tr("DROID Forge");
+    if (undoHistory.isModified())
+        title += " (" + tr("modified") + ")";
+    setWindowTitle(title);
 }
 
 
@@ -168,11 +169,18 @@ void MainWindow::createFileMenu()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
 
-    // Open
+    // New
+    QAction *newAct = new QAction(icon("settings_input_composite"), tr("&New..."), this);
+    newAct->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
+    newAct->setStatusTip(tr("Create a new patch from scratch"));
+    connect(newAct, &QAction::triggered, this, &MainWindow::newPatch);
+    fileMenu->addAction(newAct);
+    toolbar->addAction(newAct);
 
+    // Open
     QAction *openAct = new QAction(icon("open_in_browser"), tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip(tr("Open an existing file"));
+    openAct->setStatusTip(tr("Open an existing patch"));
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
     fileMenu->addAction(openAct);
     toolbar->addAction(openAct);
@@ -242,6 +250,15 @@ void MainWindow::createEditMenu()
 }
 
 
+void MainWindow::newPatch()
+{
+    if (!checkModified())
+        return;
+
+   qDebug() << "NEW";
+}
+
+
 void MainWindow::open()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
@@ -252,7 +269,8 @@ void MainWindow::open()
 void MainWindow::save()
 {
     patch->saveToFile(filename + ".new");
-
+    undoHistory.clearModified();
+    updateActions();
 }
 
 void MainWindow::undo()
@@ -281,9 +299,34 @@ void MainWindow::redo()
 }
 
 
-bool MainWindow::maybeSave()
+bool MainWindow::checkModified()
 {
-    return true;
+    // TODO rackview modified
+    if (undoHistory.isModified()) {
+        patchview.releaseKeyboard();
+        QMessageBox box(
+                    QMessageBox::Warning,
+                    tr("Your patch is modified!"),
+                    tr("Do you want to save your changes before you proceed?"),
+                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                    this);
+        int ret = box.exec();
+        patchview.grabKeyboard();
+        switch (ret) {
+        case QMessageBox::Save:
+            // TODO: Check success of saving!
+            save();
+            return true;
+
+        case QMessageBox::Discard:
+            return true;
+
+        default: // QMessageBox::Cancel:
+            return false;
+        }
+    }
+    else
+        return true;
 }
 
 

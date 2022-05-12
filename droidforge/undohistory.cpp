@@ -3,15 +3,31 @@
 
 UndoHistory::UndoHistory()
     : redoPointer(0)
+    , versionOnDisk(0)
 {
 }
-
 
 UndoHistory::~UndoHistory()
 {
     clear();
 }
 
+void UndoHistory::reset(const Patch *patch)
+{
+    clear();
+    snapshot(patch);
+    versionOnDisk = redoPointer;
+}
+
+bool UndoHistory::isModified() const
+{
+    return versionOnDisk != redoPointer;
+}
+
+void UndoHistory::clearModified()
+{
+    versionOnDisk = redoPointer;
+}
 
 void UndoHistory::clear()
 {
@@ -21,8 +37,7 @@ void UndoHistory::clear()
     redoPointer = 0;
 }
 
-
-void UndoHistory::snapshot(QString name, const Patch *patch)
+void UndoHistory::snapshot(const Patch *patch, QString name)
 {
     // One new edit step erases all possible redos
     while (redoPointer < steps.size()) {
@@ -40,13 +55,11 @@ void UndoHistory::snapshot(QString name, const Patch *patch)
     }
 }
 
-
 Patch *UndoHistory::undo()
 {
     // assume undoPossible()
     return steps[--redoPointer]->getPatch()->clone();
 }
-
 
 Patch *UndoHistory::redo()
 {
@@ -54,18 +67,15 @@ Patch *UndoHistory::redo()
     return steps[redoPointer++]->getPatch()->clone();
 }
 
-
 QString UndoHistory::nextTitle() const
 {
     return steps.last()->getName();
 }
 
-
 bool UndoHistory::undoPossible() const
 {
     return redoPointer > 0;
 }
-
 
 bool UndoHistory::redoPossible() const
 {

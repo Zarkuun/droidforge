@@ -1,5 +1,5 @@
 #include "commentdialog.h"
-
+#include "tuning.h"
 
 #include <QVBoxLayout>
 #include <QKeyEvent>
@@ -7,7 +7,7 @@
 CommentDialog::CommentDialog(QWidget *parent)
     : QDialog{parent}
 {
-    resize(900, 600); // TODO: Größe merken. Standardgröße nach tuning.h
+    resize(CODI_WIDTH, CODI_HEIGHT); // TODO: Größe merken. Standardgröße nach tuning.h
     setWindowTitle(tr("Edit circuit comment")); // TODO Also for jack comments
 
     QVBoxLayout *layout = new QVBoxLayout(this);

@@ -48,7 +48,6 @@
 #define CIRV_COLOR_COMMENT                   QColor(200, 200, 200)
 #define CIRV_COLOR_COMMENT_BACKGROUND        QColor(40, 40, 40)
 
-
 // Circuit chooser (CICH)
 #define CICH_DIALOG_WIDTH                    890
 #define CICH_DIALOG_HEIGHT                   500
@@ -86,5 +85,8 @@
 // Atom selector
 #define ASEL_SUBSELECTOR_WIDTH               150
 
+// Comment dialog
+#define CODI_WIDTH                           600
+#define CODI_HEIGHT                          200
 
 #endif // TUNING_H

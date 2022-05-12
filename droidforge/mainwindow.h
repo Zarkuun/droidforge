@@ -60,6 +60,7 @@ protected:
 
 private slots:
     void slotLoadPatch(const QString &filename);
+    void newPatch();
     void open();
     void save();
     void undo();
@@ -71,7 +72,7 @@ signals:
 private:
     void createActions();
     void updateActions();
-    bool maybeSave();
+    bool checkModified();
     void loadFile(const QString &filename);
     QIcon icon(QString what) const;
 };
