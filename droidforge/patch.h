@@ -14,7 +14,7 @@ class Patch
     RegisterComments *registerComments;
     QStringList controllers;
     QList<PatchSection *> sections;
-
+    qsizetype sectionIndex; // part of cursor position
 
 public:
     Patch();
@@ -23,8 +23,11 @@ public:
     qsizetype numControllers() const { return controllers.size(); };
     QString controller(qsizetype i) const { return controllers[i]; };
     qsizetype numSections() const { return sections.size(); };
+    qsizetype currentSectionIndex() const { return sectionIndex; };
+    void setCurrentSectionIndex(qsizetype i) { sectionIndex = i; };
     PatchSection *section(qsizetype i) { return sections[i]; };
     void addSection(PatchSection *section);
+    void deleteSection(int index);
     void addController(QString name) { controllers.append(name); };
     bool saveToFile(QString filename);
     void addDescriptionLine(const QString &line);

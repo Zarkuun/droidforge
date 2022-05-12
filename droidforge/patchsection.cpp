@@ -23,7 +23,7 @@ PatchSection *PatchSection::clone() const
 }
 
 
-QString PatchSection::toString()
+QString PatchSection::toString() const
 {
     QString s;
 

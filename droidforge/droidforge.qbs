@@ -122,6 +122,8 @@ QtApplication {
         "registercomments.h",
         "registerselector.cpp",
         "registerselector.h",
+        "renamedialog.cpp",
+        "renamedialog.h",
         "resources.qrc",
         "tuning.h",
         "undohistory.cpp",

@@ -41,7 +41,11 @@ private:
     QAction *redoAction;
     QAction *addJackAction;
     QAction *editValueAction;
+    QAction *newCircuitAction;
     QAction *editCircuitCommentAction;
+    QAction *renamePatchSectionAction;
+    QAction *addPatchSectionAction;
+    QAction *deletePatchSectionAction;
 
     QMenu *fileMenu;
 

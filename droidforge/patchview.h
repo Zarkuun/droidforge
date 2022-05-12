@@ -11,7 +11,6 @@
 
 class PatchView : public QTabWidget
 {
-    PatchSectionView *currentPatchSectionView;
     Patch *patch;
     PatchPropertiesDialog *patchPropertiesDialog;
     CircuitChooseDialog *circuitChooseDialog;
@@ -21,7 +20,9 @@ public:
     ~PatchView();
     void setPatch(Patch *patch);
     bool handleKeyPress(int key);
-    const PatchSectionView *patchSectionView() const { return currentPatchSectionView; }
+    const PatchSectionView *patchSectionView() const;
+    PatchSectionView *patchSectionView();
+    int numSections() const;;
 
 public slots:
     void nextSection();
@@ -31,6 +32,12 @@ public slots:
     void addJack();
     void editValue();
     void editCircuitComment();
+    void renameCurrentSection();
+    void deleteCurrentSection();
+    void addSection();
+
+private slots:
+    void renameSection(int index);
 };
 
 #endif // PATCHVIEW_H

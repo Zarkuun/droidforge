@@ -5,6 +5,7 @@
 #define MAX_NUM_CONTROLLERS                  32 // When parsing a patch
 #define MAX_NUM_SUBJACKS                     64
 #define BOOLEAN_VALUE_THRESHOLD              0.1
+#define SECTION_DEFAULT_TITLE                tr("Circuits")
 
 
 // Standard for all dialogs
@@ -88,5 +89,9 @@
 // Comment dialog
 #define CODI_WIDTH                           600
 #define CODI_HEIGHT                          200
+
+// Rename dialog
+#define REDI_WIDTH                           400
+#define REDI_HEIGHT                          100
 
 #endif // TUNING_H

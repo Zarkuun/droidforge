@@ -6,6 +6,7 @@
 
 Patch::Patch()
     : registerComments(new RegisterComments())
+    , sectionIndex(0)
 {
 }
 
@@ -27,16 +28,23 @@ Patch *Patch::clone() const
     delete newpatch->registerComments;
     newpatch->registerComments = registerComments->clone();
     newpatch->controllers = controllers;
-
     for (unsigned i=0; i<sections.size(); i++) {
         newpatch->sections.append(sections[i]->clone());
     }
+    newpatch->sectionIndex = sectionIndex;
     return newpatch;
 }
 
 void Patch::addSection(PatchSection *section)
 {
     sections.append(section);
+}
+
+void Patch::deleteSection(int index)
+{
+    PatchSection *s = sections[index];
+    sections.remove(index);
+    delete s;
 }
 
 

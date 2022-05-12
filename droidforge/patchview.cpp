@@ -3,18 +3,22 @@
 #include "tuning.h"
 #include "patch.h"
 #include "patchsectionview.h"
+#include "renamedialog.h"
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
 
+// TODO: Im Undo-State muss man sich auch merken, welche Sektion
+// gerade angezeigt wird!
+
 PatchView::PatchView()
     : QTabWidget()
-    , currentPatchSectionView(0)
     , patch(0)
     , patchPropertiesDialog{}
     , circuitChooseDialog{}
 {
     grabKeyboard();
+    connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
 }
 
 PatchView::~PatchView()
@@ -29,22 +33,22 @@ void PatchView::setPatch(Patch *newPatch)
 {
     patch = newPatch;
 
-    while (this->tabBar()->count()) {
+    while (tabBar()->count()) {
         removeTab(0);
     }
 
-    currentPatchSectionView = 0;
 
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSection *section = patch->section(i);
         PatchSectionView *psv = new PatchSectionView(section);
-        QString title = section->title;
+        QString title = section->getTitle();
         if (title.isEmpty())
             title = "Circuits";
         addTab(psv, title);
-        if (currentPatchSectionView == 0)
-            currentPatchSectionView = psv;
     }
+
+    if (patch->numSections() > 0)
+        setCurrentIndex(patch->currentSectionIndex());
 
     if (patchPropertiesDialog)
         delete patchPropertiesDialog;
@@ -53,19 +57,39 @@ void PatchView::setPatch(Patch *newPatch)
 
 bool PatchView::handleKeyPress(int key)
 {
-    return currentPatchSectionView->handleKeyPress(key);
+    return patchSectionView()->handleKeyPress(key);
+}
+
+const PatchSectionView *PatchView::patchSectionView() const
+{
+    return (const PatchSectionView *)currentWidget();
+}
+
+PatchSectionView *PatchView::patchSectionView()
+{
+    return (PatchSectionView *)currentWidget();
+}
+
+int PatchView::numSections() const
+{
+    if (patch)
+        return patch->numSections();
+    else
+        return 0;
 }
 
 void PatchView::nextSection()
 {
-    this->setCurrentIndex((currentIndex() + 1) % count());
-    currentPatchSectionView = (PatchSectionView *)currentWidget();
+    int i = (currentIndex() + 1) % count();
+    this->setCurrentIndex(i);
+    patch->setCurrentSectionIndex(i);
 }
 
 void PatchView::previousSection()
 {
-    this->setCurrentIndex((currentIndex() - 1 + count()) % count());
-    currentPatchSectionView = (PatchSectionView *)currentWidget();
+    int i =(currentIndex() - 1 + count()) % count();
+    this->setCurrentIndex(i);
+    patch->setCurrentSectionIndex(i);
 }
 
 void PatchView::editProperties()
@@ -86,36 +110,85 @@ void PatchView::newCircuit()
     if (circuitChooseDialog->exec() == QDialog::Accepted) {
         QString name = circuitChooseDialog->getSelectedCircuit();
         if (!name.isEmpty())
-            currentPatchSectionView->addNewCircuit(name, circuitChooseDialog->getJackSelection());
+            patchSectionView()->addNewCircuit(name, circuitChooseDialog->getJackSelection());
     }
     grabKeyboard();
 }
 
 void PatchView::addJack()
 {
-    if (currentPatchSectionView->isEmpty())
+    if (patchSectionView()->isEmpty())
         return;
 
-    QString circuit = currentPatchSectionView->currentCircuitName();
-    QStringList usedJacks = currentPatchSectionView->usedJacks();
+    QString circuit = patchSectionView()->currentCircuitName();
+    QStringList usedJacks = patchSectionView()->usedJacks();
 
     releaseKeyboard();
     QString name = JackChooseDialog::chooseJack(circuit, "", usedJacks);
     if (!name.isEmpty())
-        currentPatchSectionView->addNewJack(name);
+        patchSectionView()->addNewJack(name);
     grabKeyboard();
 }
 
 void PatchView::editValue()
 {
     releaseKeyboard();
-    currentPatchSectionView->editValue(patch);
+    patchSectionView()->editValue(patch);
     grabKeyboard();
 }
 
 void PatchView::editCircuitComment()
 {
     releaseKeyboard();
-    currentPatchSectionView->editCircuitComment();
+    patchSectionView()->editCircuitComment();
+    grabKeyboard();
+}
+
+void PatchView::renameCurrentSection()
+{
+    renameSection(currentIndex());
+}
+
+void PatchView::deleteCurrentSection()
+{
+    QString actionTitle = QString("deleting patch section '") + patchSectionView()->getTitle() + "'";
+    the_forge->registerEdit(actionTitle);
+    int index = currentIndex();
+    patch->deleteSection(index);
+    removeTab(index);
+    patch->setCurrentSectionIndex(this->currentIndex());
+    the_forge->updateActions();
+}
+
+void PatchView::addSection()
+{
+    releaseKeyboard();
+    QString newname = RenameDialog::getRenameName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_TITLE);
+    grabKeyboard();
+
+    if (newname.isEmpty())
+        return;
+
+    QString actionTitle = QString("adding new patch section '") + newname + "'";
+    the_forge->registerEdit(actionTitle);
+    PatchSection *section = new PatchSection(newname);
+    PatchSectionView *psv = new PatchSectionView(section);
+    addTab(psv, newname);
+    setCurrentIndex(count() - 1);
+    patch->setCurrentSectionIndex(count() - 1);
+    the_forge->updateActions();
+}
+
+void PatchView::renameSection(int index)
+{
+    releaseKeyboard();
+    QString oldname =  patch->section(index)->getTitle();
+    QString newname = RenameDialog::getRenameName(tr("Rename patch section"), tr("New name:"), oldname);
+    if (oldname != newname) {
+        QString actionTitle = QString("renaming patch section to '") + newname + "'";
+        the_forge->registerEdit(actionTitle);
+        patch->section(index)->setTitle(newname);
+        this->setTabText(index, newname);
+    }
     grabKeyboard();
 }

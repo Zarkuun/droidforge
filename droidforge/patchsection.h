@@ -10,16 +10,18 @@
 class PatchSection
 {
     CursorPosition cursor;
+    QString title;
 
 public:
-    QString title;
     QList<Circuit *> circuits;
 
     PatchSection() {}; // no title
     PatchSection(QString t) : title(t) {};
     ~PatchSection();
     PatchSection *clone() const;
-    QString toString();
+    QString toString() const;
+    QString getTitle() const { return title; };
+    void setTitle(const QString &t) { title = t; };
     void deleteCurrentCircuit();
     void deleteCurrentJackAssignment();
     void deleteCurrentComment();

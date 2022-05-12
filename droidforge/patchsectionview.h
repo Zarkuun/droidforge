@@ -23,6 +23,7 @@ public:
     void addNewCircuit(QString name, jackselection_t jackSelection);
     void addNewJack(QString name);
     QString currentCircuitName() const;
+    QString getTitle() const { return section->getTitle(); };
     QStringList usedJacks() const;
     void editValue(const Patch *patch);
     void editCircuitComment();

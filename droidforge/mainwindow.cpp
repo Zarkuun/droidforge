@@ -161,10 +161,17 @@ void MainWindow::updateActions()
 
     const PatchSectionView *psv = patchview.patchSectionView();
     bool empty = !psv || psv->isEmpty();
-    qDebug() << "EMPTY" << empty;
     addJackAction->setEnabled(!empty);
     editValueAction->setEnabled(!empty);
     editCircuitCommentAction->setEnabled(!empty);
+    if (patchview.numSections() > 1) {
+        deletePatchSectionAction->setText(tr("Delete patch section") + " '" + psv->getTitle() + "'");
+        deletePatchSectionAction->setEnabled(true);
+    }
+    else {
+        deletePatchSectionAction->setText(tr("Delete patch section"));
+        deletePatchSectionAction->setEnabled(false);
+    }
 
     QString title = filename + " - " + tr("DROID Forge");
     if (undoHistory.isModified())
@@ -229,7 +236,7 @@ void MainWindow::createEditMenu()
     editMenu->addAction(redoAction);
 
     // New circuit...
-    QAction *newCircuitAction = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
+    newCircuitAction = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
     newCircuitAction->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
     connect(newCircuitAction, &QAction::triggered, &patchview, &PatchView::newCircuit);
     editMenu->addAction(newCircuitAction);
@@ -255,8 +262,23 @@ void MainWindow::createEditMenu()
     editCircuitCommentAction->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
     editMenu->addAction(editCircuitCommentAction);
     connect(editCircuitCommentAction, &QAction::triggered, &patchview, &PatchView::editCircuitComment);
-}
 
+    // Rename section
+    renamePatchSectionAction = new QAction(tr("Rename patch section..."), this);
+    editMenu->addAction(renamePatchSectionAction);
+    connect(renamePatchSectionAction, &QAction::triggered, &patchview, &PatchView::renameCurrentSection);
+
+    // Add section
+    addPatchSectionAction = new QAction(tr("New patch section..."), this);
+    editMenu->addAction(addPatchSectionAction);
+    connect(addPatchSectionAction, &QAction::triggered, &patchview, &PatchView::addSection);
+
+    // Delete section
+    deletePatchSectionAction = new QAction(tr("Delete patch section"), this);
+    editMenu->addAction(deletePatchSectionAction);
+    connect(deletePatchSectionAction, &QAction::triggered, &patchview, &PatchView::deleteCurrentSection);
+
+}
 
 void MainWindow::newPatch()
 {
@@ -269,7 +291,6 @@ void MainWindow::newPatch()
     filename = tr("newpatch.ini");
     updateActions();
 }
-
 
 void MainWindow::open()
 {
