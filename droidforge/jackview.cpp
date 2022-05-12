@@ -51,7 +51,6 @@ bool JackView::isActive(int subJack) const
         return active;
 }
 
-
 void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     // QFontMetrics fm(painter.font());

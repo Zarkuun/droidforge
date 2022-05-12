@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationName("Der Mann mit der Maschine");
     QCoreApplication::setOrganizationDomain("dmmdm.de");
-    QCoreApplication::setApplicationName("Droid Forge");
+    QCoreApplication::setApplicationName("DROID Forge");
 
     QApplication a(argc, argv);
     QFile cssFile(":droidforge.css");

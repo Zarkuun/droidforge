@@ -92,8 +92,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 }
 
 
-void MainWindow::closeEvent(QCloseEvent *)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if (!checkModified()) {
+        event->ignore();
+        return;
+    }
+
     QSettings settings;
     settings.setValue("mainwindow/position", pos());
     settings.setValue("mainwindow/size", size());
@@ -214,6 +219,15 @@ void MainWindow::createFileMenu()
     saveAsAct->setStatusTip(tr("Save patch to a different file"));
     connect(saveAsAct, &QAction::triggered, this, &MainWindow::saveAs);
     fileMenu->addAction(saveAsAct);
+
+    // Quit
+    QAction *quitAct = new QAction(tr("&Quit"), this);
+    quitAct->setShortcuts(QKeySequence::Quit);
+    quitAct->setStatusTip(tr("Quit DROID Forge"));
+    connect(quitAct, &QAction::triggered, this, &MainWindow::close);
+    fileMenu->addAction(quitAct);
+
+    fileMenu->addSeparator();
 
     // Patch properties
     QAction *patchPropertiesAct = new QAction(icon("dns"), tr("&Patch properties..."), this);
