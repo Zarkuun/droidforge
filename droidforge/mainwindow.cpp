@@ -42,7 +42,7 @@ MainWindow::MainWindow(const QString &initialFilename)
     createActions();
 
     if (!initialFilename.isEmpty())
-        QTimer::singleShot(0, this, [&] () {slotLoadPatch(initialFilename);});
+        QTimer::singleShot(0, this, [&] () {loadFile(initialFilename);});
 }
 
 
@@ -105,10 +105,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 
-void MainWindow::slotLoadPatch(const QString &filename)
+void MainWindow::loadFile(const QString &filename)
 {
+    if (!checkModified())
+        return;
+
     try {
+        addToRecentFiles(filename);
         loadPatch(filename);
+
     }
     catch (ParseException &e) {
         QMessageBox box;
@@ -205,6 +210,8 @@ void MainWindow::createFileMenu()
     fileMenu->addAction(openAct);
     toolbar->addAction(openAct);
 
+    createRecentFileActions();
+
     // Save
     QAction *saveAct = new QAction(icon("save"), tr("&Save..."), this);
     saveAct->setShortcuts(QKeySequence::Save);
@@ -236,6 +243,38 @@ void MainWindow::createFileMenu()
     fileMenu->addAction(patchPropertiesAct);
 }
 
+void MainWindow::createRecentFileActions()
+{
+    QMenu *menu = fileMenu->addMenu(tr("Recent files"));
+    QStringList recentFiles = getRecentFiles();
+    for (qsizetype i=0; i<recentFiles.count(); i++) {
+        QFileInfo fi(recentFiles[i]);
+        if (!fi.exists())
+            continue;
+        QAction *action = new QAction(fi.baseName(), this);
+        QString path = fi.absoluteFilePath();
+        connect(action, &QAction::triggered, this, [this, path]() { this->loadFile(path); });
+        menu->addAction(action);
+    }
+}
+
+QStringList MainWindow::getRecentFiles()
+{
+    QSettings settings;
+    return settings.value("recentfiles").toStringList();
+}
+
+void MainWindow::addToRecentFiles(const QString &path)
+{
+    QFileInfo fi(path);
+    QStringList files = getRecentFiles();
+    files.removeAll(fi.absoluteFilePath());
+    files.prepend(fi.absoluteFilePath());
+    while (files.size() > MAX_RECENT_FILES)
+        files.removeLast();
+    QSettings settings;
+    settings.setValue("recentfiles", files);
+}
 
 void MainWindow::createEditMenu()
 {
@@ -322,7 +361,7 @@ void MainWindow::open()
 
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty())
-        loadPatch(fileName);
+        loadFile(fileName);
 }
 
 void MainWindow::save()
@@ -344,6 +383,7 @@ void MainWindow::saveAs()
         filename = newFilename;
         undoHistory.clearModified();
         updateActions();
+        addToRecentFiles(newFilename);
     }
 }
 

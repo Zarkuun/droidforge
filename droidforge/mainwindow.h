@@ -53,9 +53,6 @@ public:
     MainWindow(const QString &initialFilename);
     ~MainWindow();
     void setPatch(Patch *);
-
-    void createFileMenu();
-    void createEditMenu();
     void loadPatch(QString filename);
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
@@ -65,8 +62,18 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void closeEvent(QCloseEvent* event);
 
+private:
+    void createFileMenu();
+    void createRecentFileActions();
+    void createEditMenu();
+    void createActions();
+    bool checkModified();
+    QIcon icon(QString what) const;
+    QStringList getRecentFiles();
+    void addToRecentFiles(const QString &path);
+
 private slots:
-    void slotLoadPatch(const QString &filename);
+    void loadFile(const QString &filename);
     void newPatch();
     void open();
     void save();
@@ -77,10 +84,5 @@ private slots:
 signals:
     void sigStarted();
 
-private:
-    void createActions();
-    bool checkModified();
-    void loadFile(const QString &filename);
-    QIcon icon(QString what) const;
 };
 #endif // MAINWINDOW_H

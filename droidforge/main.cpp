@@ -11,20 +11,12 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("Der Mann mit der Maschine");
-    QCoreApplication::setOrganizationDomain("dmmdm.de");
-    QCoreApplication::setApplicationName("DROID Forge");
 
-    QApplication a(argc, argv);
-    QFile cssFile(":droidforge.css");
-    if (!cssFile.open(QIODevice::ReadOnly)) {
-        qWarning() << "Cannot load style sheet.";
-    }
-    else {
-        QString css(cssFile.readAll());
-        a.setStyleSheet(css);
-        cssFile.close();
-    }
+    QApplication app(argc, argv);
+    app.setApplicationName("droidforge");
+    app.setApplicationDisplayName("DROID Forge");
+    app.setOrganizationName("Der Mann mit der Maschine");
+    app.setOrganizationDomain("dmmdm.de");
 
     QString initialFilename;
     if (argc > 1)
@@ -42,5 +34,5 @@ int main(int argc, char *argv[])
     if (settings.contains("mainwindow/position"))
         mainWindow.move(settings.value("mainwindow/position").toPoint());
 
-    return a.exec();
+    return app.exec();
 }
