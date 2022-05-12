@@ -4,9 +4,8 @@
 #include <QGridLayout>
 
 RenameDialog::RenameDialog(QWidget *parent)
-    : QDialog{parent}
+    : Dialog{"renamedialog", parent}
 {
-    resize(REDI_WIDTH, REDI_HEIGHT);
     setWindowTitle(tr("Rename"));
 
     QGridLayout *layout = new QGridLayout(this);

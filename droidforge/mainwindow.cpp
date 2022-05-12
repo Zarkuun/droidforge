@@ -127,13 +127,13 @@ void MainWindow::createActions()
 
     QAction *nextSectionAct = new QAction(tr("Next section"));
     nextSectionAct->setShortcut(QKeySequence(tr("Ctrl+Right")));
-    nextSectionAct->setStatusTip(tr("Switch to the next patch section"));
+    nextSectionAct->setStatusTip(tr("Switch to the next section"));
     addAction(nextSectionAct);
     connect(nextSectionAct, &QAction::triggered, &patchview, &PatchView::nextSection);
 
     QAction *prevSectionAct = new QAction(tr("Previous section"));
     prevSectionAct->setShortcut(QKeySequence(tr("Ctrl+Left")));
-    prevSectionAct->setStatusTip(tr("Switch to the previous patch section"));
+    prevSectionAct->setStatusTip(tr("Switch to the previous section"));
     addAction(prevSectionAct);
     connect(prevSectionAct, &QAction::triggered, &patchview, &PatchView::previousSection);
 }
@@ -165,11 +165,11 @@ void MainWindow::updateActions()
     editValueAction->setEnabled(!empty);
     editCircuitCommentAction->setEnabled(!empty);
     if (patchview.numSections() > 1) {
-        deletePatchSectionAction->setText(tr("Delete patch section") + " '" + psv->getTitle() + "'");
+        deletePatchSectionAction->setText(tr("Delete section") + " '" + psv->getTitle() + "'");
         deletePatchSectionAction->setEnabled(true);
     }
     else {
-        deletePatchSectionAction->setText(tr("Delete patch section"));
+        deletePatchSectionAction->setText(tr("Delete section"));
         deletePatchSectionAction->setEnabled(false);
     }
 

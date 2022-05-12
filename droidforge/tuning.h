@@ -7,7 +7,6 @@
 #define BOOLEAN_VALUE_THRESHOLD              0.1
 #define SECTION_DEFAULT_NAME                 tr("Circuits")
 
-
 // Standard for all dialogs
 #define STANDARD_SPACING                     10
 #define COLOR_LINE                           QColor(120, 120, 120)
@@ -85,13 +84,5 @@
 
 // Atom selector
 #define ASEL_SUBSELECTOR_WIDTH               150
-
-// Comment dialog
-#define CODI_WIDTH                           600
-#define CODI_HEIGHT                          200
-
-// Rename dialog
-#define REDI_WIDTH                           400
-#define REDI_HEIGHT                          100
 
 #endif // TUNING_H

@@ -2,13 +2,13 @@
 #define PATCHPROPERTIESDIALOG_H
 
 #include "patch.h"
-#include <QDialog>
+#include "dialog.h"
 
 namespace Ui {
 class PatchPropertiesDialog;
 }
 
-class PatchPropertiesDialog : public QDialog
+class PatchPropertiesDialog : public Dialog
 {
     Q_OBJECT
     Patch *patch;

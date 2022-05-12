@@ -5,10 +5,8 @@
 #include <QKeyEvent>
 
 AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
-    : QDialog{parent}
+    : Dialog{"atomselector", parent}
 {
-    resize(600, 200);
-
     if (jacktype == JACKTYPE_INPUT)
         setWindowTitle(tr("Edit value for input jack"));
     else

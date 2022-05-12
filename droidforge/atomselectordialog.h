@@ -3,13 +3,14 @@
 
 #include "jackassignment.h"
 #include "patch.h"
+#include "dialog.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
 
 class AtomSelector;
 
-class AtomSelectorDialog : public QDialog
+class AtomSelectorDialog : public Dialog
 {
     AtomSelector *atomSelector;
     QDialogButtonBox *buttonBox;

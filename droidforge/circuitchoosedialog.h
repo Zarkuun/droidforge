@@ -2,11 +2,11 @@
 #define CIRCUITCHOOSEDIALOG_H
 
 #include "circuitcollection.h"
+#include "dialog.h"
 
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QPushButton>
-#include <QDialog>
 #include <QTabWidget>
 #include <QLineEdit>
 
@@ -19,7 +19,7 @@ typedef enum {
 } jackselection_t;
 
 
-class CircuitChooseDialog : public QDialog
+class CircuitChooseDialog : public Dialog
 {
     Q_OBJECT
 

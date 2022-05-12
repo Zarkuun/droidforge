@@ -1,12 +1,14 @@
 #ifndef RENAMEDIALOG_H
 #define RENAMEDIALOG_H
 
+#include "dialog.h"
+
 #include <QLineEdit>
 #include <QLabel>
 #include <QDialog>
 #include <QDialogButtonBox>
 
-class RenameDialog : public QDialog
+class RenameDialog : public Dialog
 {
     Q_OBJECT
     QLineEdit *lineEdit;

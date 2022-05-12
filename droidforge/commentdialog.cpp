@@ -5,9 +5,8 @@
 #include <QKeyEvent>
 
 CommentDialog::CommentDialog(QWidget *parent)
-    : QDialog{parent}
+    : Dialog{"comment", parent}
 {
-    resize(CODI_WIDTH, CODI_HEIGHT); // TODO: Größe merken. Standardgröße nach tuning.h
     setWindowTitle(tr("Edit circuit comment")); // TODO Also for jack comments
 
     QVBoxLayout *layout = new QVBoxLayout(this);

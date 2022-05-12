@@ -7,10 +7,11 @@
 #include <QMessageBox>
 
 PatchPropertiesDialog::PatchPropertiesDialog(Patch *patch, QWidget *parent)
-    : QDialog(parent)
+    : Dialog("patchproperties", parent)
     , patch(patch)
     , ui(new Ui::PatchPropertiesDialog)
 {
+    // TODO: Get rid of all .ui files.
     ui->setupUi(this);
     ui->lineEditTitle->setText(patch->getTitle());
     ui->textEditDescription->setText(patch->getDescription());

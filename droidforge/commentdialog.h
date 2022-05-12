@@ -1,11 +1,12 @@
 #ifndef COMMENTDIALOG_H
 #define COMMENTDIALOG_H
 
+#include "dialog.h"
+
 #include <QTextEdit>
-#include <QDialog>
 #include <QDialogButtonBox>
 
-class CommentDialog : public QDialog
+class CommentDialog : public Dialog
 {
     Q_OBJECT
 

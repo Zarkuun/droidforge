@@ -3,11 +3,11 @@
 
 #include "jackselector.h"
 #include "jackassignment.h"
+#include "dialog.h"
 
-#include <QDialog>
 #include <QDialogButtonBox>
 
-class JackChooseDialog : public QDialog
+class JackChooseDialog : public Dialog
 {
     Q_OBJECT
 

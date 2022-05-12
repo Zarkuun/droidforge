@@ -46,6 +46,8 @@ QtApplication {
         "controlselector.h",
         "cursorposition.cpp",
         "cursorposition.h",
+        "dialog.cpp",
+        "dialog.h",
         "droidfirmware.cpp",
         "droidfirmware.h",
         "editorstate.cpp",

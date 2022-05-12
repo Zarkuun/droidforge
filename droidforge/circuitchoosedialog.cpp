@@ -13,11 +13,10 @@
 #define TAB_INDEX_FIRST_CATEGORY 1
 
 CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
-    : QDialog(parent)
+    : Dialog("circuitchooser", parent)
 {
     QSettings settings;
 
-    resize(CICH_DIALOG_WIDTH, CICH_DIALOG_HEIGHT);
     setWindowTitle(tr("Add new circuit"));
 
     // The tab widget contains one tab for every category of circuits
