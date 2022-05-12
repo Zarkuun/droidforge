@@ -139,6 +139,7 @@ void PatchSectionView::editJack()
 
     QString name = JackChooseDialog::chooseJack(
                 currentCircuitName(),
+                ja->jackName(),
                 usedJacks(),
                 ja->jackType());
 

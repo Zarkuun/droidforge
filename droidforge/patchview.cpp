@@ -102,7 +102,7 @@ void PatchView::addJack()
     QStringList usedJacks = currentPatchSectionView->usedJacks();
 
     releaseKeyboard();
-    QString name = JackChooseDialog::chooseJack(circuit, usedJacks);
+    QString name = JackChooseDialog::chooseJack(circuit, "", usedJacks);
     if (!name.isEmpty())
         currentPatchSectionView->addNewJack(name);
     grabKeyboard();

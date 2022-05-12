@@ -18,12 +18,13 @@ JackSelector::JackSelector(QWidget *parent)
 }
 
 
-void JackSelector::setCircuit(const QString &c, const QStringList &uj, jacktype_t onlyType, QString search)
+void JackSelector::setCircuit(const QString &c, const QString &current, const QStringList &uj, jacktype_t onlyType, QString search)
 {
     circuit = c;
     usedJacks = &uj;
     jackType = onlyType;
     loadJacks(circuit, search);
+    setCursor(current);
 }
 
 void JackSelector::keyPressEvent(QKeyEvent *event)
@@ -105,10 +106,28 @@ void JackSelector::loadJacks(QString circuit, QString search)
     int y = (totalHeight - JSEL_CIRCUIT_HEIGHT) / 2;
     scene()->addItem(jcv);
     jcv->setPos(x, y);
+}
 
+
+void JackSelector::setCursor(QString current)
+{
+    if (!current.isEmpty()) {
+        bool found=false;
+        for (unsigned c=0; c<2; c++) {
+            for (qsizetype i=0; i<jackViews[c].count(); i++) {
+                if (jackViews[c][i]->getJack() == current) {
+                    currentColumn = c;
+                    currentRow = i;
+                    found = true;
+                    break;
+                }
+            }
+            if (found)
+                break;
+        }
+    }
     if (jackViews[currentColumn].count() == 0)
         currentColumn = (currentColumn + 1) % 2;
-
     currentRow = qMin(currentRow, jackViews[currentColumn].count()-1);
     selectCurrentJack(true);
 }
@@ -294,4 +313,5 @@ void JackSelector::searchChanged(QString text)
 {
     qDebug() << "NEW SEARCH" << text;
     loadJacks(circuit, text);
+    setCursor();
 }
