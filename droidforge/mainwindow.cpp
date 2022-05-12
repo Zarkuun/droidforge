@@ -263,18 +263,20 @@ void MainWindow::createEditMenu()
     editMenu->addAction(editCircuitCommentAction);
     connect(editCircuitCommentAction, &QAction::triggered, &patchview, &PatchView::editCircuitComment);
 
-    // Rename section
-    renamePatchSectionAction = new QAction(tr("Rename patch section..."), this);
-    editMenu->addAction(renamePatchSectionAction);
-    connect(renamePatchSectionAction, &QAction::triggered, &patchview, &PatchView::renameCurrentSection);
+    editMenu->addSeparator();
 
     // Add section
-    addPatchSectionAction = new QAction(tr("New patch section..."), this);
+    addPatchSectionAction = new QAction(tr("Add section..."), this);
     editMenu->addAction(addPatchSectionAction);
     connect(addPatchSectionAction, &QAction::triggered, &patchview, &PatchView::addSection);
 
+    // Rename section
+    renamePatchSectionAction = new QAction(tr("Rename section..."), this);
+    editMenu->addAction(renamePatchSectionAction);
+    connect(renamePatchSectionAction, &QAction::triggered, &patchview, &PatchView::renameCurrentSection);
+
     // Delete section
-    deletePatchSectionAction = new QAction(tr("Delete patch section"), this);
+    deletePatchSectionAction = new QAction(tr("Delete section"), this);
     editMenu->addAction(deletePatchSectionAction);
     connect(deletePatchSectionAction, &QAction::triggered, &patchview, &PatchView::deleteCurrentSection);
 
@@ -285,7 +287,7 @@ void MainWindow::newPatch()
     if (!checkModified())
         return;
     Patch newpatch;
-    newpatch.addSection(new PatchSection("HIRN"));
+    newpatch.addSection(new PatchSection(SECTION_DEFAULT_NAME));
     setPatch(newpatch.clone());
     undoHistory.reset(&newpatch);
     filename = tr("newpatch.ini");

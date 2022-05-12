@@ -23,7 +23,7 @@ public:
     Atom *getAtom();
     // void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
-    void focusInEvent(QFocusEvent *event);
+    void focusInEvent(QFocusEvent *);
 
 private slots:
     void switchToSelector(int index);

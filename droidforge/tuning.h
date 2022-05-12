@@ -5,7 +5,7 @@
 #define MAX_NUM_CONTROLLERS                  32 // When parsing a patch
 #define MAX_NUM_SUBJACKS                     64
 #define BOOLEAN_VALUE_THRESHOLD              0.1
-#define SECTION_DEFAULT_TITLE                tr("Circuits")
+#define SECTION_DEFAULT_NAME                 tr("Circuits")
 
 
 // Standard for all dialogs

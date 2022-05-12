@@ -163,7 +163,7 @@ void PatchView::deleteCurrentSection()
 void PatchView::addSection()
 {
     releaseKeyboard();
-    QString newname = RenameDialog::getRenameName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_TITLE);
+    QString newname = RenameDialog::getRenameName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_NAME);
     grabKeyboard();
 
     if (newname.isEmpty())
@@ -173,9 +173,11 @@ void PatchView::addSection()
     the_forge->registerEdit(actionTitle);
     PatchSection *section = new PatchSection(newname);
     PatchSectionView *psv = new PatchSectionView(section);
-    addTab(psv, newname);
-    setCurrentIndex(count() - 1);
-    patch->setCurrentSectionIndex(count() - 1);
+    int i = currentIndex() + 1;
+    patch->insertSection(i, section);
+    patch->setCurrentSectionIndex(i);
+    insertTab(i, psv, newname);
+    setCurrentIndex(i);
     the_forge->updateActions();
 }
 

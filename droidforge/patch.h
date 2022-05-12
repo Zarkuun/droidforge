@@ -27,6 +27,7 @@ public:
     void setCurrentSectionIndex(qsizetype i) { sectionIndex = i; };
     PatchSection *section(qsizetype i) { return sections[i]; };
     void addSection(PatchSection *section);
+    void insertSection(int index, PatchSection *section);
     void deleteSection(int index);
     void addController(QString name) { controllers.append(name); };
     bool saveToFile(QString filename);

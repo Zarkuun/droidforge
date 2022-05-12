@@ -40,6 +40,11 @@ void Patch::addSection(PatchSection *section)
     sections.append(section);
 }
 
+void Patch::insertSection(int index, PatchSection *section)
+{
+    sections.insert(index, section);
+}
+
 void Patch::deleteSection(int index)
 {
     PatchSection *s = sections[index];

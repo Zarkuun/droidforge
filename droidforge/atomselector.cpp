@@ -74,7 +74,7 @@ void AtomSelector::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void AtomSelector::focusInEvent(QFocusEvent *event)
+void AtomSelector::focusInEvent(QFocusEvent *)
 {
     switchToSelector((currentSelector + 1) % subSelectors.count());
 }
