@@ -39,6 +39,9 @@ private:
     QToolBar *toolbar;
     QAction *undoAction;
     QAction *redoAction;
+    QAction *addJackAction;
+    QAction *editValueAction;
+    QAction *editCircuitCommentAction;
 
     QMenu *fileMenu;
 
@@ -52,6 +55,7 @@ public:
     void loadPatch(QString filename);
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
+    void updateActions();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -70,7 +74,6 @@ signals:
 
 private:
     void createActions();
-    void updateActions();
     bool checkModified();
     void loadFile(const QString &filename);
     QIcon icon(QString what) const;

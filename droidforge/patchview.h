@@ -21,6 +21,7 @@ public:
     ~PatchView();
     void setPatch(Patch *patch);
     bool handleKeyPress(int key);
+    const PatchSectionView *patchSectionView() const { return currentPatchSectionView; }
 
 public slots:
     void nextSection();

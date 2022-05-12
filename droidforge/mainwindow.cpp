@@ -62,6 +62,7 @@ void MainWindow::loadPatch(QString afilename)
 
     filename = afilename;
     undoHistory.reset(&newpatch);
+    updateActions();
 }
 
 
@@ -158,6 +159,13 @@ void MainWindow::updateActions()
         redoAction->setEnabled(false);
     }
 
+    const PatchSectionView *psv = patchview.patchSectionView();
+    bool empty = !psv || psv->isEmpty();
+    qDebug() << "EMPTY" << empty;
+    addJackAction->setEnabled(!empty);
+    editValueAction->setEnabled(!empty);
+    editCircuitCommentAction->setEnabled(!empty);
+
     QString title = filename + " - " + tr("DROID Forge");
     if (undoHistory.isModified())
         title += " (" + tr("modified") + ")";
@@ -228,14 +236,14 @@ void MainWindow::createEditMenu()
     toolbar->addAction(newCircuitAction);
 
     // New jacks assignment
-    QAction *addJackAction = new QAction(icon("settings_input_composite"), tr("&Add jack..."), this);
+    addJackAction = new QAction(icon("settings_input_composite"), tr("&Add jack..."), this);
     addJackAction->setShortcut(QKeySequence(tr("Ctrl+N")));
     connect(addJackAction, &QAction::triggered, &patchview, &PatchView::addJack);
     editMenu->addAction(addJackAction);
     toolbar->addAction(addJackAction);
 
     // Edit current line / field
-    QAction *editValueAction = new QAction(icon("edit"), tr("&Edit element under cursor..."), this);
+    editValueAction = new QAction(icon("edit"), tr("&Edit element under cursor..."), this);
     editValueAction->setShortcuts({
                                     QKeySequence(tr("Enter")),
                                     QKeySequence(tr("Return"))});
@@ -243,7 +251,7 @@ void MainWindow::createEditMenu()
     connect(editValueAction, &QAction::triggered, &patchview, &PatchView::editValue);
 
     // Edit comment of current circuit
-    QAction *editCircuitCommentAction = new QAction(tr("Edit circuit comment..."), this);
+    editCircuitCommentAction = new QAction(tr("Edit circuit comment..."), this);
     editCircuitCommentAction->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
     editMenu->addAction(editCircuitCommentAction);
     connect(editCircuitCommentAction, &QAction::triggered, &patchview, &PatchView::editCircuitComment);
@@ -255,9 +263,11 @@ void MainWindow::newPatch()
     if (!checkModified())
         return;
     Patch newpatch;
+    newpatch.addSection(new PatchSection("HIRN"));
     setPatch(newpatch.clone());
     undoHistory.reset(&newpatch);
     filename = tr("newpatch.ini");
+    updateActions();
 }
 
 

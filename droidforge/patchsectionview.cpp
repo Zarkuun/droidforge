@@ -44,7 +44,8 @@ void PatchSectionView::buildPatchSection()
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
         y += cv->boundingRect().height();
     }
-    currentCircuitView()->select(section->cursorPosition());
+    if (!isEmpty())
+        currentCircuitView()->select(section->cursorPosition());
 }
 
 void PatchSectionView::deletePatchSection()
@@ -91,7 +92,8 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
     QString actionTitle = QString("adding new '") + name + "' circuit";
     the_forge->registerEdit(actionTitle);
 
-    currentCircuitView()->deselect();
+    if (!isEmpty())
+        currentCircuitView()->deselect();
     int newPosition = section->cursorPosition().circuitNr;
     if (section->cursorPosition().row != -2)
         newPosition ++;
@@ -99,6 +101,7 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
     ensureVisible(currentCircuitView());
+    the_forge->updateActions();
 }
 
 
@@ -117,6 +120,7 @@ void PatchSectionView::addNewJack(QString name)
     section->setCursorColumn(1);
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
+    the_forge->updateActions();
 }
 
 
@@ -156,10 +160,9 @@ void PatchSectionView::editJack()
         }
         else
             currentJackAssignment()->changeJack(name);
+        the_forge->updateActions();
     }
 }
-
-
 
 QString PatchSectionView::currentCircuitName() const
 {
@@ -174,6 +177,9 @@ QStringList PatchSectionView::usedJacks() const
 
 void PatchSectionView::editValue(const Patch *patch)
 {
+    if (isEmpty())
+        return;
+
     int row = section->cursorPosition().row;
     int column = section->cursorPosition().column;
 
@@ -201,6 +207,7 @@ void PatchSectionView::editAtom(const Patch *patch)
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
+        the_forge->updateActions();
     }
 }
 
@@ -214,7 +221,13 @@ void PatchSectionView::editCircuitComment()
         QString actionTitle = QString("changing comment for circuit '") + circuit->getName() + "'";
         the_forge->registerEdit(actionTitle);
         circuit->setComment(newComment);
+        the_forge->updateActions();
     }
+}
+
+bool PatchSectionView::isEmpty() const
+{
+    return section->circuits.empty();
 }
 
 
@@ -278,7 +291,6 @@ JackAssignment *PatchSectionView::currentJackAssignment()
     return section->currentJackAssignment();
 }
 
-
 void PatchSectionView::moveCursorPageUpDown(int whence)
 {
     currentCircuitView()->deselect();
@@ -290,9 +302,11 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
     ensureVisible(currentCircuitView());
 }
 
-
 void PatchSectionView::deleteCurrentRow()
 {
+    if (isEmpty())
+        return;
+
     const CursorPosition &pos = section->cursorPosition();
     if (pos.row == -2)
         deleteCurrentCircuit();
@@ -311,6 +325,7 @@ void PatchSectionView::deleteCurrentCircuit()
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentCircuit();
     rebuildPatchSection();
+    the_forge->updateActions();
 }
 
 void PatchSectionView::deleteCurrentComment()
@@ -320,6 +335,7 @@ void PatchSectionView::deleteCurrentComment()
     section->deleteCurrentComment();
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
+    the_forge->updateActions();
 }
 
 
@@ -331,6 +347,7 @@ void PatchSectionView::deleteCurrentJack()
     section->deleteCurrentJackAssignment();
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
+    the_forge->updateActions();
 }
 
 void PatchSectionView::deleteCurrentAtom()
@@ -341,6 +358,7 @@ void PatchSectionView::deleteCurrentAtom()
         QString actionTitle = QString("deleting value of '") + ja->jackName() + "'";
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(column, 0);
+        the_forge->updateActions();
     }
     rebuildPatchSection();
 }
@@ -354,12 +372,16 @@ void PatchSectionView::editCircuit()
         QString actionTitle = QString("changing circuit type to '") + newCircuit + "'";
         the_forge->registerEdit(actionTitle);
         currentCircuit()->changeCircuit(newCircuit);
+        the_forge->updateActions();
     }
     rebuildPatchSection();
 }
 
 void PatchSectionView::moveCursorLeftRight(int whence)
 {
+    if (isEmpty())
+        return;
+
     if (whence == -1)
         section->moveCursorLeft();
     else
@@ -370,6 +392,9 @@ void PatchSectionView::moveCursorLeftRight(int whence)
 
 void PatchSectionView::moveCursorUpDown(int whence)
 {
+    if (isEmpty())
+        return;
+
     currentCircuitView()->deselect();
 
     if (whence == 1) // dowldiln

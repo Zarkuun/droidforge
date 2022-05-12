@@ -26,6 +26,7 @@ public:
     QStringList usedJacks() const;
     void editValue(const Patch *patch);
     void editCircuitComment();
+    bool isEmpty() const;
 
 private:
     bool handleMousePress(const QPointF &pos);

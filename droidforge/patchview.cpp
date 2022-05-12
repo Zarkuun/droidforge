@@ -17,7 +17,6 @@ PatchView::PatchView()
     grabKeyboard();
 }
 
-
 PatchView::~PatchView()
 {
     if (circuitChooseDialog)
@@ -25,7 +24,6 @@ PatchView::~PatchView()
     if (patchPropertiesDialog)
         delete patchPropertiesDialog;
 }
-
 
 void PatchView::setPatch(Patch *newPatch)
 {
@@ -53,19 +51,16 @@ void PatchView::setPatch(Patch *newPatch)
     patchPropertiesDialog = new PatchPropertiesDialog(patch, this);
 }
 
-
 bool PatchView::handleKeyPress(int key)
 {
     return currentPatchSectionView->handleKeyPress(key);
 }
-
 
 void PatchView::nextSection()
 {
     this->setCurrentIndex((currentIndex() + 1) % count());
     currentPatchSectionView = (PatchSectionView *)currentWidget();
 }
-
 
 void PatchView::previousSection()
 {
@@ -98,6 +93,9 @@ void PatchView::newCircuit()
 
 void PatchView::addJack()
 {
+    if (currentPatchSectionView->isEmpty())
+        return;
+
     QString circuit = currentPatchSectionView->currentCircuitName();
     QStringList usedJacks = currentPatchSectionView->usedJacks();
 
@@ -107,7 +105,6 @@ void PatchView::addJack()
         currentPatchSectionView->addNewJack(name);
     grabKeyboard();
 }
-
 
 void PatchView::editValue()
 {
