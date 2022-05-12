@@ -158,7 +158,7 @@ void MainWindow::updateActions()
         redoAction->setEnabled(false);
     }
 
-    QString title = initialFilename + " - " + tr("DROID Forge");
+    QString title = filename + " - " + tr("DROID Forge");
     if (undoHistory.isModified())
         title += " (" + tr("modified") + ")";
     setWindowTitle(title);
@@ -254,16 +254,21 @@ void MainWindow::newPatch()
 {
     if (!checkModified())
         return;
-
-   qDebug() << "NEW";
+    Patch newpatch;
+    setPatch(newpatch.clone());
+    undoHistory.reset(&newpatch);
+    filename = tr("newpatch.ini");
 }
 
 
 void MainWindow::open()
 {
+    if (!checkModified())
+        return;
+
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty())
-        loadFile(fileName);
+        loadPatch(fileName);
 }
 
 void MainWindow::save()
@@ -329,10 +334,6 @@ bool MainWindow::checkModified()
         return true;
 }
 
-
-void MainWindow::loadFile(const QString &)
-{
-}
 
 QIcon MainWindow::icon(QString what) const
 {

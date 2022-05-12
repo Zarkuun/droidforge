@@ -35,7 +35,6 @@ private:
     Patch *patch;
     QString filename; // of loaded patch
     RackView rackview;
-
     PatchView patchview;
     QToolBar *toolbar;
     QAction *undoAction;
