@@ -208,6 +208,13 @@ void MainWindow::createFileMenu()
     fileMenu->addAction(saveAct);
     toolbar->addAction(saveAct);
 
+    // Save as...
+    QAction *saveAsAct = new QAction(tr("Save &as..."), this);
+    saveAsAct->setShortcuts(QKeySequence::SaveAs);
+    saveAsAct->setStatusTip(tr("Save patch to a different file"));
+    connect(saveAsAct, &QAction::triggered, this, &MainWindow::saveAs);
+    fileMenu->addAction(saveAsAct);
+
     // Patch properties
     QAction *patchPropertiesAct = new QAction(icon("dns"), tr("&Patch properties..."), this);
     patchPropertiesAct->setShortcut(QKeySequence(tr("Ctrl+.")));
@@ -309,6 +316,21 @@ void MainWindow::save()
     patch->saveToFile(filename + ".new");
     undoHistory.clearModified();
     updateActions();
+}
+
+void MainWindow::saveAs()
+{
+    QString newFilename = QFileDialog::getSaveFileName(
+                this,
+                tr("Save patch to new file"),
+                filename,
+                tr("DROID patch files (*.ini)"));
+    if (!newFilename.isEmpty()) {
+        patch->saveToFile(newFilename);
+        filename = newFilename;
+        undoHistory.clearModified();
+        updateActions();
+    }
 }
 
 void MainWindow::undo()

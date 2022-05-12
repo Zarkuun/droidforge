@@ -24,8 +24,6 @@ AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
     mainLayout->addWidget(atomSelector, 0, 0, 1, -1);
     mainLayout->addWidget(buttonBox, 1, 1);
     setLayout(mainLayout);
-
-    // this->installEventFilter(this);
 }
 
 

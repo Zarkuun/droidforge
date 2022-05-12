@@ -2,7 +2,6 @@
 
 #include <QSettings>
 
-
 Dialog::Dialog(QString id, QWidget *parent)
     : QDialog(parent)
     , id(id)
@@ -16,15 +15,12 @@ Dialog::Dialog(QString id, QWidget *parent)
 
 void Dialog::resizeEvent(QResizeEvent *)
 {
-    qDebug() << "resize" << id;
     QSettings settings;
     settings.setValue(id + "/size", size());
 }
 
 void Dialog::moveEvent(QMoveEvent *)
 {
-    qDebug() << "move" << id;
     QSettings settings;
     settings.setValue(id + "/position", pos());
-
 }

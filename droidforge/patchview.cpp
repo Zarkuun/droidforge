@@ -3,7 +3,7 @@
 #include "tuning.h"
 #include "patch.h"
 #include "patchsectionview.h"
-#include "renamedialog.h"
+#include "namechoosedialog.h"
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
@@ -166,7 +166,7 @@ void PatchView::deleteCurrentSection()
 void PatchView::addSection()
 {
     releaseKeyboard();
-    QString newname = RenameDialog::getRenameName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_NAME);
+    QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_NAME);
     grabKeyboard();
 
     if (newname.isEmpty())
@@ -188,7 +188,7 @@ void PatchView::renameSection(int index)
 {
     releaseKeyboard();
     QString oldname =  patch->section(index)->getTitle();
-    QString newname = RenameDialog::getRenameName(tr("Rename patch section"), tr("New name:"), oldname);
+    QString newname = NameChooseDialog::getName(tr("Rename patch section"), tr("New name:"), oldname);
     if (oldname != newname) {
         QString actionTitle = QString("renaming patch section to '") + newname + "'";
         the_forge->registerEdit(actionTitle);

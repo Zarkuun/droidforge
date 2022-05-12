@@ -1,18 +1,16 @@
-#include "renamedialog.h"
+#include "namechoosedialog.h"
 #include "tuning.h"
 
 #include <QGridLayout>
 
-RenameDialog::RenameDialog(QWidget *parent)
-    : Dialog{"renamedialog", parent}
+NameChooseDialog::NameChooseDialog(QWidget *parent)
+    : Dialog{"namechooser", parent}
 {
-    setWindowTitle(tr("Rename"));
-
     QGridLayout *layout = new QGridLayout(this);
     setLayout(layout);
 
     // Label
-    label = new QLabel("FOO");
+    label = new QLabel();
     layout->addWidget(label, 0, 0);
 
     // Text editor
@@ -26,11 +24,11 @@ RenameDialog::RenameDialog(QWidget *parent)
     layout->addWidget(buttonBox, 1, 1, 1, 2);
 }
 
-QString RenameDialog::getRenameName(const QString &title, const QString &label, const QString &oldname)
+QString NameChooseDialog::getName(const QString &title, const QString &label, const QString &oldname)
 {
-     static RenameDialog *dialog = 0;
+     static NameChooseDialog *dialog = 0;
      if (!dialog)
-         dialog = new RenameDialog();
+         dialog = new NameChooseDialog();
 
      dialog->setWindowTitle(title);
      dialog->label->setText(label);

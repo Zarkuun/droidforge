@@ -70,6 +70,7 @@ private slots:
     void newPatch();
     void open();
     void save();
+    void saveAs();
     void undo();
     void redo();
 
