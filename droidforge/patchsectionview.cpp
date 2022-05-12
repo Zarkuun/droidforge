@@ -187,7 +187,6 @@ void PatchSectionView::editValue(const Patch *patch)
         editAtom(patch);
 }
 
-
 void PatchSectionView::editAtom(const Patch *patch)
 {
     Circuit *circuit = currentCircuit();
@@ -195,12 +194,9 @@ void PatchSectionView::editAtom(const Patch *patch)
     if (ja->jackType() == JACKTYPE_UNKNOWN)
         return; // TODO: Edit unknown data anyway?
 
-    // TODO: Dialog statisch anlegen und mit Edit arbeiten
-    if (!atomSelectorDialog)
-        atomSelectorDialog = new AtomSelectorDialog(this);
-
     const Atom *atom = ja->atomAt(section->cursorPosition().column);
-    Atom *newAtom = atomSelectorDialog->editAtom(patch, ja->jackType(), atom);
+    Atom *newAtom = AtomSelectorDialog::editAtom(patch, ja->jackType(), atom);
+
     if (newAtom != atom) {
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);

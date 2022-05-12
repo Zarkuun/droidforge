@@ -18,7 +18,7 @@ class AtomSelector : public QWidget
     QList<QPushButton *> buttons;
 
 public:
-    explicit AtomSelector(QWidget *parent = nullptr);
+    explicit AtomSelector(jacktype_t, QWidget *parent = nullptr);
     void setAtom(const Patch *patch, const Atom *atom);
     Atom *getAtom();
     // void keyPressEvent(QKeyEvent *event);

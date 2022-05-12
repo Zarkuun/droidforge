@@ -11,13 +11,14 @@
 #include <QMouseEvent>
 #include <QLabel>
 
-AtomSelector::AtomSelector(QWidget *parent)
+AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     : QWidget{parent}
     , currentSelector(0)
 {
-    subSelectors.append(new NumberSelector(this));
-    subSelectors.append(new InputOutputSelector(this));
-    subSelectors.append(new ControlSelector(this));
+    if (jacktype == JACKTYPE_INPUT)
+        subSelectors.append(new NumberSelector(this));
+    subSelectors.append(new InputOutputSelector(jacktype, this));
+    subSelectors.append(new ControlSelector(jacktype, this));
     subSelectors.append(new CableSelector(this));
 
     QGridLayout *layout = new QGridLayout(this);
@@ -63,12 +64,6 @@ Atom *AtomSelector::getAtom()
     return subSelectors[currentSelector]->getAtom();
 }
 
-// void AtomSelector::keyPressEvent(QKeyEvent *event)
-// {
-//     qDebug() << "KEY" << event;
-//     // subSelectors[currentSelector]->kkeyPressEvent(event);
-// }
-
 void AtomSelector::mousePressEvent(QMouseEvent *event)
 {
     for (qsizetype i=0; i<subSelectors.count(); i++) {
@@ -81,7 +76,6 @@ void AtomSelector::mousePressEvent(QMouseEvent *event)
 
 void AtomSelector::focusInEvent(QFocusEvent *event)
 {
-    qDebug() << "HIRN" << event;
     switchToSelector((currentSelector + 1) % subSelectors.count());
 }
 

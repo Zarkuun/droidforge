@@ -5,17 +5,36 @@
 #include <QPalette>
 #include <QKeyEvent>
 
-InputOutputSelector::InputOutputSelector(QWidget *parent)
-    : RegisterSelector(false, 'I', "IOGNRX", parent)
+InputOutputSelector::InputOutputSelector(jacktype_t jacktype, QWidget *parent)
+    : RegisterSelector(
+          false,
+          jacktype == JACKTYPE_INPUT ? 'I' : 'O',
+          jacktype == JACKTYPE_INPUT ? "IGRO" : "OGNRX",
+          parent)
+    , jacktype(jacktype)
 {
-    addRegisterButton('I', tr("Input"));
-    addRegisterButton('O', tr("Output"));
-    addRegisterButton('G', tr("Gate"));
-    addRegisterButton('N', tr("Normalization"));
-    addRegisterButton('R', tr("RGB-LED"));
-    addRegisterButton('X', tr("Special"));
+    if (jacktype == JACKTYPE_INPUT) {
+        addRegisterButton('I', tr("Input"));
+        addRegisterButton('G', tr("Gate"));
+        addRegisterButton('R', tr("RGB-LED"));
+        addRegisterButton('O', tr("Output"));
+    }
+    else {
+        addRegisterButton('O', tr("Output"));
+        addRegisterButton('G', tr("Gate"));
+        addRegisterButton('N', tr("Normalization"));
+        addRegisterButton('R', tr("RGB-LED"));
+        addRegisterButton('X', tr("Special"));
+    }
 }
 
+QString InputOutputSelector::title() const
+{
+    if (jacktype == JACKTYPE_INPUT)
+        return QString("External input");
+    else
+        return QString("External output");
+}
 
 bool InputOutputSelector::handlesAtom(const Atom *atom) const
 {

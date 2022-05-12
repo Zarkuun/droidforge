@@ -4,14 +4,18 @@
 #include <QGridLayout>
 #include <QKeyEvent>
 
-AtomSelectorDialog::AtomSelectorDialog(QWidget *parent)
+AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
     : QDialog{parent}
 {
     resize(600, 200);
-    setWindowTitle(tr("Edit value"));
+
+    if (jacktype == JACKTYPE_INPUT)
+        setWindowTitle(tr("Edit value for input jack"));
+    else
+        setWindowTitle(tr("Edit value for output jack"));
 
     // Special widget for selecting values
-    atomSelector = new AtomSelector(this);
+    atomSelector = new AtomSelector(jacktype, this);
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -27,13 +31,28 @@ AtomSelectorDialog::AtomSelectorDialog(QWidget *parent)
 }
 
 
-Atom *AtomSelectorDialog::editAtom(const Patch *patch, jacktype_t , const Atom *atom)
+// static
+Atom *AtomSelectorDialog::editAtom(const Patch *patch, jacktype_t jacktype, const Atom *atom)
 {
-    // TODO: input / output unterscheiden
-    atomSelector->setAtom(patch, atom);
+    static AtomSelectorDialog *inputAtomSelectorDialog = 0;
+    static AtomSelectorDialog *outputAtomSelectorDialog = 0;
 
-    if (exec() == QDialog::Accepted)
-        return atomSelector->getAtom();
+    AtomSelectorDialog *dialog;
+
+    if (jacktype == JACKTYPE_INPUT) {
+        if (!inputAtomSelectorDialog)
+            inputAtomSelectorDialog = new AtomSelectorDialog(JACKTYPE_INPUT);
+        dialog = inputAtomSelectorDialog;
+    }
+    else {
+        if (!outputAtomSelectorDialog)
+            outputAtomSelectorDialog = new AtomSelectorDialog(JACKTYPE_OUTPUT);
+        dialog = outputAtomSelectorDialog;
+    }
+
+    dialog->atomSelector->setAtom(patch, atom);
+    if (dialog->exec() == QDialog::Accepted)
+        return dialog->atomSelector->getAtom();
     else
         return const_cast<Atom *>(atom); // We know we haven't changed it
 }

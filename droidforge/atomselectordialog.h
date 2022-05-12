@@ -15,8 +15,8 @@ class AtomSelectorDialog : public QDialog
     QDialogButtonBox *buttonBox;
 
 public:
-    AtomSelectorDialog(QWidget *parent = nullptr);
-    Atom *editAtom(const Patch *patch, jacktype_t, const Atom *atom);
+    AtomSelectorDialog(jacktype_t, QWidget *parent = nullptr);
+    static Atom *editAtom(const Patch *patch, jacktype_t, const Atom *atom);
     bool eventFilter(QObject *o, QEvent *e);
 };
 

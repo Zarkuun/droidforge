@@ -5,9 +5,11 @@
 
 class InputOutputSelector : public RegisterSelector
 {
+    jacktype_t jacktype;
+
 public:
-    explicit InputOutputSelector(QWidget *parent = nullptr);
-    QString title() const { return tr("Input / output"); };
+    explicit InputOutputSelector(jacktype_t, QWidget *parent = nullptr);
+    QString title() const;
     bool handlesAtom(const Atom *atom) const;
 
 protected:
