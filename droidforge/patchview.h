@@ -38,6 +38,7 @@ public slots:
 
 private slots:
     void renameSection(int index);
+    void reorderSections(int fromindex, int toindex);
 };
 
 #endif // PATCHVIEW_H

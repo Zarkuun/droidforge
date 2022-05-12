@@ -7,6 +7,7 @@
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
+#include <QTabBar>
 
 // TODO: Im Undo-State muss man sich auch merken, welche Sektion
 // gerade angezeigt wird!
@@ -18,7 +19,9 @@ PatchView::PatchView()
     , circuitChooseDialog{}
 {
     grabKeyboard();
+    setMovable(true);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
+    connect(tabBar(), &QTabBar::tabMoved, this, &PatchView::reorderSections);
 }
 
 PatchView::~PatchView()
@@ -193,4 +196,10 @@ void PatchView::renameSection(int index)
         this->setTabText(index, newname);
     }
     grabKeyboard();
+}
+
+void PatchView::reorderSections(int fromindex, int toindex)
+{
+    the_forge->registerEdit("reordering sections");
+    patch->reorderSections(fromindex, toindex);
 }

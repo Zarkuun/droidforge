@@ -52,6 +52,13 @@ void Patch::deleteSection(int index)
     delete s;
 }
 
+void Patch::reorderSections(int fromindex, int toindex)
+{
+    PatchSection *moved = sections[fromindex];
+    sections.remove(fromindex);
+    sections.insert(toindex, moved);
+}
+
 
 bool Patch::saveToFile(QString filename)
 {

@@ -29,6 +29,7 @@ public:
     void addSection(PatchSection *section);
     void insertSection(int index, PatchSection *section);
     void deleteSection(int index);
+    void reorderSections(int fromindex, int toindex);
     void addController(QString name) { controllers.append(name); };
     bool saveToFile(QString filename);
     void addDescriptionLine(const QString &line);
