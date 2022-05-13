@@ -4,27 +4,24 @@
 #include "patch.h"
 #include "dialog.h"
 
-namespace Ui {
-class PatchPropertiesDialog;
-}
+#include <QLineEdit>
+#include <QTextEdit>
+
 
 class PatchPropertiesDialog : public Dialog
 {
     Q_OBJECT
+
     Patch *patch;
+    QLineEdit *lineEditTitle;
+    QTextEdit *textEditDescription;
 
 public:
-    explicit PatchPropertiesDialog(Patch *patch,
-            QWidget *parent = nullptr);
-    ~PatchPropertiesDialog();
+    static void editPatchProperties(Patch *patch);
 
 private:
-    Ui::PatchPropertiesDialog *ui;
-    void done(int r);
+    PatchPropertiesDialog(QWidget *parent = nullptr);
     bool validateInput();
-
-private slots:
-    void apply();
 };
 
 #endif // PATCHPROPERTIESDIALOG_H

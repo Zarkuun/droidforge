@@ -2,6 +2,7 @@
 #include "tuning.h"
 
 #include <QGridLayout>
+#include <QDialogButtonBox>
 
 NameChooseDialog::NameChooseDialog(QWidget *parent)
     : Dialog{"namechooser", parent}
@@ -18,7 +19,7 @@ NameChooseDialog::NameChooseDialog(QWidget *parent)
     layout->addWidget(lineEdit, 0, 1);
 
     // Buttons with OK/Cancel
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     layout->addWidget(buttonBox, 1, 1, 1, 2);

@@ -40,7 +40,6 @@ void PatchView::setPatch(Patch *newPatch)
         removeTab(0);
     }
 
-
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSection *section = patch->section(i);
         PatchSectionView *psv = new PatchSectionView(section);
@@ -52,10 +51,6 @@ void PatchView::setPatch(Patch *newPatch)
 
     if (patch->numSections() > 0)
         setCurrentIndex(patch->currentSectionIndex());
-
-    if (patchPropertiesDialog)
-        delete patchPropertiesDialog;
-    patchPropertiesDialog = new PatchPropertiesDialog(patch, this);
 }
 
 bool PatchView::handleKeyPress(int key)
@@ -98,7 +93,7 @@ void PatchView::previousSection()
 void PatchView::editProperties()
 {
     releaseKeyboard();
-    patchPropertiesDialog->exec();
+    PatchPropertiesDialog::editPatchProperties(patch);
     grabKeyboard();
 }
 

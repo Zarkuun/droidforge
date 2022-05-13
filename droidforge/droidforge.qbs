@@ -113,7 +113,6 @@ QtApplication {
         "patchparser.h",
         "patchpropertiesdialog.cpp",
         "patchpropertiesdialog.h",
-        "patchpropertiesdialog.ui",
         "patchsection.cpp",
         "patchsection.h",
         "patchsectionview.cpp",
