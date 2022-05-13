@@ -42,6 +42,7 @@ private:
     QAction *addJackAction;
     QAction *editValueAction;
     QAction *newCircuitAction;
+    QAction *openEnclosingFolderAction;
     QAction *editCircuitCommentAction;
     QAction *renamePatchSectionAction;
     QAction *addPatchSectionAction;
@@ -71,6 +72,7 @@ private:
     QIcon icon(QString what) const;
     QStringList getRecentFiles();
     void addToRecentFiles(const QString &path);
+    void openDirInFinder(const QString &filename);
 
 private slots:
     void loadFile(const QString &filename);
@@ -78,6 +80,7 @@ private slots:
     void open();
     void save();
     void saveAs();
+    void openEnclosingFolder();
     void undo();
     void redo();
 

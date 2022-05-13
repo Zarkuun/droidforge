@@ -11,7 +11,6 @@
 
 int main(int argc, char *argv[])
 {
-
     QApplication app(argc, argv);
     app.setApplicationName("droidforge");
     app.setApplicationDisplayName("DROID Forge");
@@ -21,8 +20,6 @@ int main(int argc, char *argv[])
     QString initialFilename;
     if (argc > 1)
         initialFilename = argv[1];
-    else
-        initialFilename = "/Users/mk/git/droidforge/testpatch.ini";
 
     MainWindow mainWindow(initialFilename);
     mainWindow.show();

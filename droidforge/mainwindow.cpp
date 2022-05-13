@@ -14,6 +14,8 @@
 #include <QTimer>
 #include <QFileDialog>
 #include <QSettings>
+#include <QtGlobal>
+#include <QProcess>
 
 MainWindow *the_forge;
 DroidFirmware *the_firmware;
@@ -183,7 +185,13 @@ void MainWindow::updateActions()
         deletePatchSectionAction->setEnabled(false);
     }
 
-    QString title = filename + " - " + tr("DROID Forge");
+    openEnclosingFolderAction->setEnabled(!filename.isEmpty());
+
+    QString title;
+    if (filename.isEmpty())
+        title = tr("(untitled patch)") + " - " + tr("DROID Forge");
+    else
+        title = filename + " - " + tr("DROID Forge");
     if (undoHistory.isModified())
         title += " (" + tr("modified") + ")";
     setWindowTitle(title);
@@ -210,8 +218,6 @@ void MainWindow::createFileMenu()
     fileMenu->addAction(openAct);
     toolbar->addAction(openAct);
 
-    createRecentFileActions();
-
     // Save
     QAction *saveAct = new QAction(icon("save"), tr("&Save..."), this);
     saveAct->setShortcuts(QKeySequence::Save);
@@ -227,7 +233,23 @@ void MainWindow::createFileMenu()
     connect(saveAsAct, &QAction::triggered, this, &MainWindow::saveAs);
     fileMenu->addAction(saveAsAct);
 
-    // Quit
+    // Open enclosing folder
+#if (defined Q_OS_MACOS || defined Q_OS_WIN)
+#ifdef Q_OS_MACOS
+    QString title = tr("Reveal in finder");
+#else
+    QString title = tr("Re&veal in explorer");
+#endif
+    openEnclosingFolderAction = new QAction(title, this);
+    openEnclosingFolderAction->setStatusTip(tr("Open the folder where the current patch is located."));
+    connect(openEnclosingFolderAction, &QAction::triggered, this, &MainWindow::openEnclosingFolder);
+    fileMenu->addAction(openEnclosingFolderAction);
+#endif
+
+    // Recent files
+    createRecentFileActions();
+
+    // Quit (automatically goes to Mac menu on mac)
     QAction *quitAct = new QAction(tr("&Quit"), this);
     quitAct->setShortcuts(QKeySequence::Quit);
     quitAct->setStatusTip(tr("Quit DROID Forge"));
@@ -350,7 +372,7 @@ void MainWindow::newPatch()
     newpatch.addSection(new PatchSection(SECTION_DEFAULT_NAME));
     setPatch(newpatch.clone());
     undoHistory.reset(&newpatch);
-    filename = tr("newpatch.ini");
+    filename = "";
     updateActions();
 }
 
@@ -366,9 +388,13 @@ void MainWindow::open()
 
 void MainWindow::save()
 {
-    patch->saveToFile(filename + ".new");
-    undoHistory.clearModified();
-    updateActions();
+    if (filename.isEmpty())
+        saveAs();
+    else {
+        patch->saveToFile(filename);
+        undoHistory.clearModified();
+        updateActions();
+    }
 }
 
 void MainWindow::saveAs()
@@ -385,6 +411,12 @@ void MainWindow::saveAs()
         updateActions();
         addToRecentFiles(newFilename);
     }
+}
+
+void MainWindow::openEnclosingFolder()
+{
+    QFileInfo fileinfo(filename);
+    openDirInFinder(fileinfo.absoluteFilePath());
 }
 
 void MainWindow::undo()
@@ -447,4 +479,28 @@ bool MainWindow::checkModified()
 QIcon MainWindow::icon(QString what) const
 {
     return QIcon(":/images/icons/white/" + what + ".png");
+}
+
+
+void MainWindow::openDirInFinder(const QString &filename)
+{
+    qDebug() << filename;
+#ifdef Q_OS_MACOS
+    QStringList args;
+    args << "-e";
+    args << "tell application \"Finder\"";
+    args << "-e";
+    args << "activate";
+    args << "-e";
+    args << "select POSIX file \""+filename+"\"";
+    args << "-e";
+    args << "end tell";
+    QProcess::startDetached("osascript", args);
+
+#endif
+#ifdef Q_OS_WIN
+    QStringList args;
+    args << "/select," << QDir::toNativeSeparators(filename);
+    QProcess::startDetached("explorer", args);
+#endif
 }
