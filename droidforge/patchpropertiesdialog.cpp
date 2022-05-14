@@ -63,11 +63,8 @@ void PatchPropertiesDialog::editPatchProperties(Patch *patch)
                 e.getWidget()->setFocus();
             }
         }
-        else
-            false;
     }
 }
-
 
 bool PatchPropertiesDialog::validateInput()
 {

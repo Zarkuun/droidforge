@@ -42,7 +42,7 @@ void PatchView::setPatch(Patch *newPatch)
 
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSection *section = patch->section(i);
-        PatchSectionView *psv = new PatchSectionView(section);
+        PatchSectionView *psv = new PatchSectionView(patch, section);
         QString title = section->getTitle();
         if (title.isEmpty())
             title = "Circuits";
@@ -55,7 +55,10 @@ void PatchView::setPatch(Patch *newPatch)
 
 bool PatchView::handleKeyPress(int key)
 {
-    return patchSectionView()->handleKeyPress(key);
+    releaseKeyboard(); // TODO: How can we get rid of this "grab keyboard" hack?
+    bool handled = patchSectionView()->handleKeyPress(key);
+    grabKeyboard();
+    return handled;
 }
 
 const PatchSectionView *PatchView::patchSectionView() const
@@ -131,7 +134,7 @@ void PatchView::addJack()
 void PatchView::editValue()
 {
     releaseKeyboard();
-    patchSectionView()->editValue(patch);
+    patchSectionView()->editValue();
     grabKeyboard();
 }
 
@@ -170,7 +173,7 @@ void PatchView::addSection()
     QString actionTitle = QString("adding new patch section '") + newname + "'";
     the_forge->registerEdit(actionTitle);
     PatchSection *section = new PatchSection(newname);
-    PatchSectionView *psv = new PatchSectionView(section);
+    PatchSectionView *psv = new PatchSectionView(patch, section);
     int i = currentIndex() + 1;
     patch->insertSection(i, section);
     patch->setCurrentSectionIndex(i);

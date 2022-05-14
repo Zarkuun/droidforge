@@ -135,7 +135,7 @@ void NumberSelector::getFocus()
         number = 1;
     }
     lineEdit->setFocus();
-    lineEdit->selectAll();
+    lineEdit->selectAll(); // TODO
 }
 
 
@@ -196,7 +196,6 @@ void NumberSelector::lineEdited(QString text)
     else {
         number = text.toFloat();
     }
-    qDebug() << "NUMBER:" << number;
 }
 
 

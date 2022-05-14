@@ -6,8 +6,8 @@
 #include "modulebuilder.h"
 #include "patchparser.h"
 #include "patchview.h"
+#include "tuning.h"
 
-#include <QSplitter>
 #include <QTextEdit>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -30,12 +30,16 @@ MainWindow::MainWindow(const QString &initialFilename)
     the_firmware = &firmware;
 
     ui->setupUi(this);
-    QSplitter *splitter = new QSplitter();
+    splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
     this->setCentralWidget(splitter);
-
     splitter->addWidget(&rackview);
     splitter->addWidget(&patchview);
+    splitter->setHandleWidth(SPLITTER_HANDLE_WIDTH);
+    QSettings settings;
+    if (settings.contains("mainwindow/splitposition"))
+        splitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
+    connect(splitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
     toolbar = new QToolBar(this);
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -45,6 +49,8 @@ MainWindow::MainWindow(const QString &initialFilename)
 
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename);});
+
+
 }
 
 
@@ -87,6 +93,7 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << event;
     if (!patchview.handleKeyPress(event->key())) {
         event->ignore();
         // QWidget::keyPressEvent(event);
@@ -267,7 +274,7 @@ void MainWindow::createFileMenu()
 
 void MainWindow::createRecentFileActions()
 {
-    QMenu *menu = fileMenu->addMenu(tr("Recent files"));
+    QMenu *menu = fileMenu->addMenu(tr("Open recent file"));
     QStringList recentFiles = getRecentFiles();
     for (qsizetype i=0; i<recentFiles.count(); i++) {
         QFileInfo fi(recentFiles[i]);
@@ -442,6 +449,12 @@ void MainWindow::redo()
         patchview.setPatch(patch);
         updateActions();
     }
+}
+
+void MainWindow::splitterMoved()
+{
+    QSettings settings;
+    settings.setValue("mainwindow/splitposition", splitter->saveState());
 }
 
 

@@ -11,12 +11,14 @@
 
 class PatchSectionView : public QGraphicsView
 {
+    const Patch *patch;
     PatchSection *section;
+
     QList<CircuitView *>circuitViews;
     AtomSelectorDialog *atomSelectorDialog; // TODO: Jede Section hat nen eigenen Dialog
 
 public:
-    PatchSectionView(PatchSection *section);
+    PatchSectionView(const Patch *patch, PatchSection *section);
     ~PatchSectionView();;
     bool handleKeyPress(int key);
     void mousePressEvent(QMouseEvent *event);
@@ -25,7 +27,7 @@ public:
     QString currentCircuitName() const;
     QString getTitle() const { return section->getTitle(); };
     QStringList usedJacks() const;
-    void editValue(const Patch *patch);
+    void editValue();
     void editCircuitComment();
     bool isEmpty() const;
 
@@ -49,8 +51,9 @@ private:
     void deleteCurrentAtom();
     void editCircuit();
     void editJack();
-    void editAtom(const Patch *patch);
+    void editAtom();
     JackAssignment *buildJackAssignment(const QString &jackName);
+    QChar keyToChar(int key);
 };
 
 #endif // PATCHSECTIONVIEW_H

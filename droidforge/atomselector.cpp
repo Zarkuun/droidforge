@@ -55,7 +55,6 @@ void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
         else
             subSelectors[i]->clearAtom();
     }
-
     switchToSelector(sel);
 }
 
@@ -69,14 +68,13 @@ void AtomSelector::mousePressEvent(QMouseEvent *event)
     for (qsizetype i=0; i<subSelectors.count(); i++) {
         AtomSubSelector *ss = subSelectors[i];
         QRect geo = ss->geometry();
-        if (geo.contains(event->pos()))
+        if (geo.contains(event->pos())) {
             switchToSelector(i);
+            event->accept();
+            return;
+        }
     }
-}
-
-void AtomSelector::focusInEvent(QFocusEvent *)
-{
-    switchToSelector((currentSelector + 1) % subSelectors.count());
+    event->ignore();
 }
 
 void AtomSelector::switchToSelector(int index)

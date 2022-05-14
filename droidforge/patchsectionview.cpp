@@ -10,8 +10,9 @@
 
 #include <QMouseEvent>
 
-PatchSectionView::PatchSectionView(PatchSection *section)
-    : section(section)
+PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section)
+    : patch(patch)
+    , section(section)
     , atomSelectorDialog{}
 {
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -73,8 +74,20 @@ bool PatchSectionView::handleKeyPress(int key)
     case Qt::Key_PageUp:    moveCursorPageUpDown(-1); return true;
     case Qt::Key_PageDown:  moveCursorPageUpDown(1);  return true;
     case Qt::Key_Backspace: deleteCurrentRow();       return true;
-    default: return false;
     }
+
+    // All keys that are used for entering a value popup the atom selector
+    // preselected accordingly.
+    if ( (key >= Qt::Key_A && key <= Qt::Key_Z)
+        || key == Qt::Key_Underscore
+        || (key >= Qt::Key_0 && key <= Qt::Key_9)
+         || key == Qt::Key_Period
+         || key == Qt::Key_Minus)
+    {
+        qDebug() << "TODO EDITIEREN";
+        return true;
+    }
+    return false;
 }
 
 
@@ -136,6 +149,13 @@ JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
         return new JackAssignmentUnknown(name);
 }
 
+QChar PatchSectionView::keyToChar(int key)
+{
+    if (key >= 0 && key <= 127)
+        return QChar(key);
+    else
+        return ' ';
+}
 
 void PatchSectionView::editJack()
 {
@@ -164,6 +184,7 @@ void PatchSectionView::editJack()
     }
 }
 
+
 QString PatchSectionView::currentCircuitName() const
 {
     // TODO: Wenn es keinen current circuit gibt.
@@ -175,7 +196,7 @@ QStringList PatchSectionView::usedJacks() const
     return currentCircuitView()->usedJacks();
 }
 
-void PatchSectionView::editValue(const Patch *patch)
+void PatchSectionView::editValue()
 {
     if (isEmpty())
         return;
@@ -190,10 +211,10 @@ void PatchSectionView::editValue(const Patch *patch)
     else if (column == 0)
         editJack();
     else
-        editAtom(patch);
+        editAtom();
 }
 
-void PatchSectionView::editAtom(const Patch *patch)
+void PatchSectionView::editAtom()
 {
     Circuit *circuit = currentCircuit();
     JackAssignment *ja = circuit->jackAssignment(section->cursorPosition().row);

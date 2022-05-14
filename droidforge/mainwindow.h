@@ -9,6 +9,7 @@
 
 #include <QMainWindow>
 #include <QToolBar>
+#include <QSplitter>
 
 class Patch;
 
@@ -36,6 +37,7 @@ private:
     QString filename; // of loaded patch
     RackView rackview;
     PatchView patchview;
+    QSplitter *splitter;
     QToolBar *toolbar;
     QAction *undoAction;
     QAction *redoAction;
@@ -83,6 +85,7 @@ private slots:
     void openEnclosingFolder();
     void undo();
     void redo();
+    void splitterMoved();
 
 signals:
     void sigStarted();

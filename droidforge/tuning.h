@@ -20,8 +20,9 @@
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
 
 // Rack view
-#define MIN_RACK_HEIGHT                      200
-#define MAX_RACK_HEIGHT                      300
+#define SPLITTER_HANDLE_WIDTH                12
+#define MIN_RACK_HEIGHT                      100
+#define MAX_RACK_HEIGHT                      400
 #define PIXEL_PER_HP                         88
 #define COLOR_RACK_BACKGROUND                QColor(20, 20, 20)
 
