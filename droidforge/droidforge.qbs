@@ -18,6 +18,8 @@ QtApplication {
         "atominvalid.h",
         "atomnumber.cpp",
         "atomnumber.h",
+        "atomoneliner.cpp",
+        "atomoneliner.h",
         "atomregister.cpp",
         "atomregister.h",
         "atomselector.cpp",

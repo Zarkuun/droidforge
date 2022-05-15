@@ -16,7 +16,6 @@ public:
     void collectCables(QStringList &) const {};
     void parseExpression(const QString &expression);
 
-
 protected:
     JackAssignment *clone() const;
 };

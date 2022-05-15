@@ -156,6 +156,19 @@ void CircuitView::paintJacks(QPainter *painter, unsigned &line, unsigned y)
 }
 
 
+void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom)
+{
+    if (atom) {
+        QString text = atom->toString();
+        if (atom->isInvalid())
+            painter->setPen(COLOR_TEXT_UNKNOWN);
+        else
+            painter->setPen(COLOR_TEXT);
+
+        painter->drawText(rect, Qt::AlignVCenter, text);
+    }
+}
+
 void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned y)
 {
     // CIRV_COLUMN 0: Name of the jack.
@@ -168,24 +181,14 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
     if (ja->jackType() == JACKTYPE_INPUT)
     {
         JackAssignmentInput *jai = (JackAssignmentInput *)ja;
-        Atom *atom = jai->getAtom(0);
-        if (atom) {
-            QString value = atom->toString();
-            painter->setPen(COLOR_TEXT);
-            painter->drawText(QRect(column_positions[1] + CIRV_TEXT_SIDE_PADDING, y, column_widths[1] - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT), Qt::AlignVCenter, value);
+        for (int a=0; a<3; a++) {
+            paintAtom(painter,
+                      QRect(column_positions[a+1] + CIRV_TEXT_SIDE_PADDING,
+                             y, column_widths[a+1] - CIRV_TEXT_SIDE_PADDING,
+                             CIRV_JACK_HEIGHT),
+                      jai->getAtom(a));
         }
-        atom = jai->getAtom(1);
-        if (atom) {
-            QString value = atom->toString();
-            painter->setPen(COLOR_TEXT);
-            painter->drawText(QRect(column_positions[2] + CIRV_TEXT_SIDE_PADDING, y, column_widths[2] - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT), Qt::AlignVCenter, value);
-        }
-        atom = jai->getAtom(2);
-        if (atom) {
-            QString value = atom->toString();
-            painter->setPen(COLOR_TEXT);
-            painter->drawText(QRect(column_positions[3] + CIRV_TEXT_SIDE_PADDING, y, column_widths[3] - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT), Qt::AlignVCenter, value);
-        }
+
         painter->setPen(CIRV_COLOR_LINE);
         paintOperator(painter, CIRV_OPERATOR_1_X, y, "✱");
         paintOperator(painter, CIRV_OPERATOR_2_X, y, "+");
@@ -200,23 +203,19 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
 
     else {
         QString text;
+        QRect rect(column_positions[1] + CIRV_TEXT_SIDE_PADDING, y, CIRV_COLUMN_123_WIDTH - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT);
         if (ja->jackType() == JACKTYPE_OUTPUT)
         {
             JackAssignmentOutput *jao = (JackAssignmentOutput *)ja;
-            Atom *atom = jao->getAtom();
-
-            if (atom) {
-                text = atom->toString();
-                painter->setPen(COLOR_TEXT);
-            }
+            paintAtom(painter, rect, jao->getAtom());
         }
         else  // UNKNOWN
         {
             JackAssignmentUnknown *jau = (JackAssignmentUnknown *)ja;
             text = jau->valueToString();
             painter->setPen(COLOR_TEXT_UNKNOWN);
+            painter->drawText(rect, Qt::AlignVCenter, text);
         }
-        painter->drawText(QRect(column_positions[1] + CIRV_TEXT_SIDE_PADDING, y, CIRV_COLUMN_123_WIDTH - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT), Qt::AlignVCenter, text);
     }
 }
 
@@ -313,4 +312,17 @@ int CircuitView::jackAt(unsigned y)
         return circuit->numJackAssignments() - 1;
     else
         return jack;
+}
+
+QPoint CircuitView::frameCursorPosition() const
+{
+    QPoint origin = pos().toPoint();
+    int y = origin.y();
+    if (currentJack == -1)
+        y += CIRV_HEADER_HEIGHT;
+    else if (currentJack >= 0)
+        y += CIRV_HEADER_HEIGHT + commentHeight() + currentJack * CIRV_JACK_HEIGHT;
+
+    int x = column_positions[currentColumn];
+    return QPoint(x, y);
 }

@@ -1,4 +1,5 @@
 #include "patchsectionview.h"
+#include "atomoneliner.h"
 #include "circuitview.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
@@ -9,6 +10,7 @@
 #include "circuitchoosedialog.h"
 
 #include <QMouseEvent>
+#include <QGraphicsProxyWidget>
 
 PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section)
     : patch(patch)
@@ -84,7 +86,7 @@ bool PatchSectionView::handleKeyPress(int key)
          || key == Qt::Key_Period
          || key == Qt::Key_Minus)
     {
-        qDebug() << "TODO EDITIEREN";
+        editAtom(key);
         return true;
     }
     return false;
@@ -211,10 +213,10 @@ void PatchSectionView::editValue()
     else if (column == 0)
         editJack();
     else
-        editAtom();
+        editAtom(0 /* full dialog */);
 }
 
-void PatchSectionView::editAtom()
+void PatchSectionView::editAtom(int key)
 {
     Circuit *circuit = currentCircuit();
     JackAssignment *ja = circuit->jackAssignment(section->cursorPosition().row);
@@ -222,15 +224,27 @@ void PatchSectionView::editAtom()
         return; // TODO: Edit unknown data anyway?
 
     const Atom *atom = ja->atomAt(section->cursorPosition().column);
-    Atom *newAtom = AtomSelectorDialog::editAtom(patch, ja->jackType(), atom);
+    Atom *newAtom;
 
-    if (newAtom != atom) {
+    if (key != 0) {
+        QPoint posRelativeToScene = currentCircuitView()->frameCursorPosition();
+        QPoint posRelativeToView = mapFromScene(posRelativeToScene);
+        QPoint posInScreen = mapToGlobal(posRelativeToView);
+        QChar c(key);
+        QString start(c);
+        newAtom = AtomOneliner::editAtom(posInScreen, patch, ja->jackType(), start);
+    }
+    else
+        newAtom = AtomSelectorDialog::editAtom(patch, ja->jackType(), atom);
+
+    if (newAtom != 0 && newAtom != atom) {
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
         the_forge->updateActions();
     }
 }
+
 
 void PatchSectionView::editCircuitComment()
 {

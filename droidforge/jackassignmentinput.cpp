@@ -187,7 +187,7 @@ void JackAssignmentInput::parseInputExpression(QString jack, QString valueString
 }
 
 
-Atom *JackAssignmentInput::parseInputAtom(QString atom)
+Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
 {
     if (atom == "")
         return 0;

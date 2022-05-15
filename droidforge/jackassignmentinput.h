@@ -18,6 +18,7 @@ public:
     void replaceAtom(int column, Atom *newAtom);
     QString valueToString() const;
     void collectCables(QStringList &cables) const;
+    static Atom *parseInputAtom(const QString &s);
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_INPUT; };
@@ -26,9 +27,8 @@ protected:
 
 private:
     void parseInputExpression(QString jack, QString valueString);
-    Atom *parseInputAtom(QString s);
-    Atom *parseOnOff(QString s);
-    Atom *parseNumber(QString s);
+    static Atom *parseOnOff(QString s);
+    static Atom *parseNumber(QString s);
 };
 
 #endif // JACKASSIGNMENTINPUT_H

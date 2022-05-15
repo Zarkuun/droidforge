@@ -51,7 +51,7 @@ private:
     void deleteCurrentAtom();
     void editCircuit();
     void editJack();
-    void editAtom();
+    void editAtom(int key);
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key);
 };

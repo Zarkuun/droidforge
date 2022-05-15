@@ -17,13 +17,14 @@ public:
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &cables) const;
     void parseExpression(const QString &expression);
+    static Atom *parseOutputAtom(const QString &s);
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_OUTPUT; };
     JackAssignment *clone() const;
 
 private:
-    void parseOutputValue(QString valueString);
+    // void parseOutputValue(QString valueString);
 };
 
 #endif // JACKASSIGNMENTOUTPUT_H

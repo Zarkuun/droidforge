@@ -30,6 +30,7 @@ public:
     void deselect();
     int columnAt(unsigned x);
     int jackAt(unsigned y);
+    QPoint frameCursorPosition() const;
 
 private:
     void paintJacks(QPainter *painter, unsigned &line, unsigned y);
@@ -40,6 +41,7 @@ private:
     QRect commentRect() const;
     QRect jackRect(int row) const;
     QRect atomRect(int row, int column) const;
+    void paintAtom(QPainter *painter, const QRect &rect, Atom *atom);
 };
 
 #endif // CIRCUITVIEW_H

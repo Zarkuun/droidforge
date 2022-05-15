@@ -13,7 +13,7 @@
 #define COLOR_LINE                           QColor(120, 120, 120)
 #define COLOR_FRAME_CURSOR                   QColor(255, 200, 50)
 #define COLOR_TEXT                           QColor(255, 255, 255)
-#define COLOR_TEXT_UNKNOWN                   QColor(160, 160, 160)
+#define COLOR_TEXT_UNKNOWN                   QColor(255, 255, 0)
 #define COLOR_JACK_INPUT                     QColor(0, 200, 255)
 #define COLOR_JACK_OUTPUT                    QColor(245, 60, 50)
 #define COLOR_JACK_UNKNOWN                   COLOR_TEXT_UNKNOWN
@@ -86,5 +86,9 @@
 
 // Atom selector
 #define ASEL_SUBSELECTOR_WIDTH               150
+
+// Atom selector one liner
+#define ASON_X_OFFSET                        13
+#define ASON_Y_OFFSET                        46
 
 #endif // TUNING_H

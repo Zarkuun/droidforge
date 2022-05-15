@@ -38,8 +38,8 @@ public:
     virtual void parseExpression(const QString &expression) = 0;
 
 protected:
-    Atom *parseCable(QString s);
-    Atom *parseRegister(QString s);
+    static Atom *parseCable(QString s);
+    static Atom *parseRegister(QString s);
 };
 
 #endif // JACKASSIGNMENT_H

@@ -1,11 +1,11 @@
 #include "jackassignmentoutput.h"
 #include "atomcable.h"
+#include "atominvalid.h"
 
 JackAssignmentOutput::JackAssignmentOutput(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
-    , atom(0)
 {
-    parseExpression(valueString);
+    atom = parseOutputAtom(valueString);
 }
 
 
@@ -60,10 +60,20 @@ void JackAssignmentOutput::collectCables(QStringList &cables) const
 
 void JackAssignmentOutput::parseExpression(const QString &expression)
 {
+    atom = parseOutputAtom(expression);
+}
+
+Atom *JackAssignmentOutput::parseOutputAtom(const QString &expression)
+{
+    Atom *atom = 0;
     if (expression.size() > 0) {
         if (expression[0] == '_')
             atom = parseCable(expression);
         else
             atom = parseRegister(expression);
     }
+    if (atom)
+        return atom;
+    else
+        return new AtomInvalid(expression);
 }
