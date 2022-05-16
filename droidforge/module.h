@@ -2,6 +2,7 @@
 #define MODULE_H
 
 #include <QString>
+#include <QPixmap>
 
 QT_BEGIN_NAMESPACE
 namespace Droid { class ModuleType; }
@@ -11,11 +12,15 @@ class Module
 {
 public:
     virtual ~Module() {};
-    virtual QString name() = 0;
-    virtual QString faceplate() = 0;
-    virtual QString title() = 0;
-    virtual unsigned hp() = 0;
+    virtual QString name() const = 0;
+    virtual QString faceplate() const = 0;
+    virtual QString title() const = 0;
+    virtual unsigned hp() const = 0;
+    QPixmap *faceplateImage() const;
+
 };
+
+
 
 
 #endif // MODULE_H

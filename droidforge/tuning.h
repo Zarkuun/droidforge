@@ -27,6 +27,13 @@
 #define RACV_BACKGROUND_HEIGHT               2600
 #define RACV_TOP_MARGIN                      170
 
+// Controller Selector
+#define CSEL_HEIGHT                          2600
+#define CSEL_SIDE_MARGIN                     50
+#define CSEL_TOP_MARGIN                      150
+#define CSEL_PIXEL_PER_HP                    RACV_PIXEL_PER_HP
+#define CSEL_CONTROLLER_DISTANCE             200
+
 // Patch view
 #define PATV_CIRCUIT_VERTICAL_MARGIN         STANDARD_SPACING
 #define PATV_CIRCUIT_COMMENT_PADDING         (0.5 * STANDARD_SPACING)
@@ -42,7 +49,6 @@
 #define CIRV_COLUMN_JACK_WIDTH               180
 #define CIRV_COLUMN_ATOM_WIDTH               170
 #define CIRV_COLUMN_OPERATOR_WIDTH            20
-
 #define CIRV_COLOR_LINE                      QColor(0, 0, 0)
 #define CIRV_COLOR_OPERATOR                  QColor(255, 255, 255)
 #define CIRV_COLOR_OPERATOR_BACKGROUND       QColor(60, 60, 60)

@@ -13,10 +13,11 @@
 
 #include <QStringList>
 
-ModuleBuilder::ModuleBuilder()
+const QStringList &ModuleBuilder::allControllers()
 {
+    static const QStringList controllers{"p2b8", "p4b2", "b32", "p10", "s10", "m4"};
+    return controllers;
 }
-
 
 Module *ModuleBuilder::buildModule(QString name)
 {
@@ -40,15 +41,9 @@ Module *ModuleBuilder::buildModule(QString name)
         return new ModuleB32();
     else
         return new ModuleInvalid();
-
 }
-
 
 bool ModuleBuilder::controllerExists(QString name)
 {
-    static QStringList controllers {
-        "p2b8", "p4b2", "b32", "p10", "s10", "m4",
-    };
-
-    return controllers.contains(name);
+    return allControllers().contains(name);
 }

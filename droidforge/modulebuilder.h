@@ -6,7 +6,7 @@
 class ModuleBuilder
 {
 public:
-    ModuleBuilder();
+    static const QStringList &allControllers();
     static Module *buildModule(QString name);
     static bool controllerExists(QString name);
 };

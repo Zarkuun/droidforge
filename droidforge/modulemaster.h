@@ -6,11 +6,11 @@
 class ModuleMaster : public Module
 {
 public:
-    ModuleMaster();
-    QString name();
-    QString faceplate();
-    QString title();
-    unsigned hp();
+    ModuleMaster() {  }
+    QString name() const { return "master"; }
+    QString faceplate() const { return "faceplate-master-off";  }
+    QString title() const { return "DROID master"; }
+    unsigned hp() const { return 8; }
 };
 
 #endif // MODULEMASTER_H

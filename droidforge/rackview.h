@@ -21,6 +21,7 @@ public:
     explicit RackView();
     void resizeEvent(QResizeEvent *event);
     void setPatch(Patch *patch);
+    void mousePressEvent(QMouseEvent *event);
 
 private:
     void addModule(const QString &name);

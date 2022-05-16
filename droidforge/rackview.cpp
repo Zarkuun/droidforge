@@ -32,6 +32,13 @@ void RackView::setPatch(Patch *newPatch)
     updateGraphics();
 }
 
+void RackView::mousePressEvent(QMouseEvent *event)
+{
+    if (event->type() == QMouseEvent::MouseButtonPress) {
+        addController();
+    }
+}
+
 void RackView::updateGraphics()
 {
     scene()->clear();
@@ -62,7 +69,7 @@ void RackView::updateSize()
 void RackView::addModule(const QString &name)
 {
     Module *module = ModuleBuilder::buildModule(name);
-    QPixmap *image = new QPixmap(QString(":images/faceplates/" + module->faceplate()));
+    QPixmap *image = module->faceplateImage();
     QGraphicsItem *gi = scene()->addPixmap(*image);
     gi->setPos(x, RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;

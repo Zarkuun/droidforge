@@ -7,11 +7,18 @@ ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
 {
     setWindowTitle(tr("Add controller"));
 
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+
+    // Area with clickable controllers
+    controllerSelector = new ControllerSelector(this);
+    connect(controllerSelector, &ControllerSelector::controllerSelected, this, &QDialog::accept);
+    mainLayout->addWidget(controllerSelector);
+
+    // OK, Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(buttonBox);
 }
 
@@ -22,7 +29,12 @@ QString ControllerChooseDialog::chooseController()
         dialog = new ControllerChooseDialog();
 
     if (dialog->exec() == QDialog::Accepted)
-        return "b32" ; // dialog->getSelectedJack();
+        return dialog->getSelectedController();
     else
         return "";
+}
+
+const QString &ControllerChooseDialog::getSelectedController() const
+{
+    return controllerSelector->getSelectedController();
 }
