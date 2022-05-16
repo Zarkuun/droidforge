@@ -26,7 +26,7 @@ protected:
     void parseExpression(const QString &expression);
 
 private:
-    void parseInputExpression(QString jack, QString valueString);
+    void parseInputExpression(QString, QString valueString);
     static Atom *parseOnOff(QString s);
     static Atom *parseNumber(QString s);
 };

@@ -136,7 +136,7 @@ void JackAssignmentInput::collectCables(QStringList &cables) const
 #define RATOMB "-[0-9][^*/+-]+"
 #define RATOM "(" RATOMA "|" RATOMB ")"
 
-void JackAssignmentInput::parseInputExpression(QString jack, QString valueString)
+void JackAssignmentInput::parseInputExpression(QString, QString valueString)
 {
     static QRegularExpression spaces("\\s");
     QString value = valueString.toLower();

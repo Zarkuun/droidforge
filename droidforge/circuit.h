@@ -33,7 +33,7 @@ public:
     void collectCables(QStringList &cables) const;
     void changeCircuit(QString newCircuit);
     bool needG8() const;
-
+    bool needX7() const;
 };
 
 #endif // CIRCUIT_H

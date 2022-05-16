@@ -67,6 +67,15 @@ bool JackAssignment::needG8() const
     return false;
 }
 
+bool JackAssignment::needX7() const
+{
+    for (int i=0; i<3; i++) {
+         const Atom *atom = atomAt(i);
+         if (atom && atom->needX7())
+             return true;
+    }
+    return false;
+}
 
 Atom *JackAssignment::parseCable(QString s)
 {

@@ -104,6 +104,8 @@ QtApplication {
         "modules10.h",
         "moduleview.cpp",
         "moduleview.h",
+        "modulex7.cpp",
+        "modulex7.h",
         "namechoosedialog.cpp",
         "namechoosedialog.h",
         "numberselector.cpp",

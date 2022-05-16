@@ -75,6 +75,18 @@ bool Circuit::needG8() const
     return false;
 }
 
+bool Circuit::needX7() const
+{
+    // TODO: This seems somewhat hacky...
+    if (name.startsWith("midi") || name == "firefacecontrol")
+        return true;
+    for (qsizetype i=0; i<jackAssignments.length(); i++) {
+        if (jackAssignments[i]->needX7())
+            return true;
+    }
+    return false;
+}
+
 
 QString Circuit::toString()
 {

@@ -34,8 +34,10 @@ void RackView::setPatch(const Patch *patch)
     addModule("master");
     if (patch->needG8())
         addModule("g8");
-    if (patch->needX7())
+    if (patch->needX7()) {
+        qDebug() << "XY";
         addModule("x7");
+    }
 
     for (qsizetype i=0; i<patch->numControllers(); i++)
         addModule(patch->controller(i));

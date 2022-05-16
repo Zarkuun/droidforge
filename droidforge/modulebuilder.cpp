@@ -2,6 +2,7 @@
 
 #include "modulemaster.h"
 #include "moduleg8.h"
+#include "modulex7.h"
 #include "modulep2b8.h"
 #include "modulep4b2.h"
 #include "moduleb32.h"
@@ -14,7 +15,6 @@
 
 ModuleBuilder::ModuleBuilder()
 {
-
 }
 
 
@@ -24,6 +24,8 @@ Module *ModuleBuilder::buildModule(QString name)
         return new ModuleMaster();
     else if (name == "g8")
         return new ModuleG8();
+    else if (name == "x7")
+        return new ModuleX7();
     else if (name == "p4b2")
         return new ModuleP4B2();
     else if (name == "p2b8")

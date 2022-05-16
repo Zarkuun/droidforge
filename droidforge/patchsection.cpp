@@ -217,6 +217,8 @@ bool PatchSection::needG8() const
 
 bool PatchSection::needX7() const
 {
-    // TODO: Make it work
+    for (qsizetype i=0; i<circuits.length(); i++)
+        if (circuits[i]->needX7())
+            return true;
     return false;
 }

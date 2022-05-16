@@ -33,6 +33,7 @@ public:
     unsigned getController() const { return controller; };
     unsigned getNumber() const { return number; };
     bool needG8() const;
+    bool needX7() const;
 };
 
 #endif // ATOMREGISTER_H

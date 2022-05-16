@@ -23,3 +23,11 @@ bool AtomRegister::needG8() const
            && number >= 1
            && number <= 8;
 }
+
+bool AtomRegister::needX7() const
+{
+    return registerType == 'G'
+           && controller == 0
+           && number >= 9
+           && number <= 12;
+}
