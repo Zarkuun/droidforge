@@ -57,6 +57,16 @@ JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString li
 
 }
 
+bool JackAssignment::needG8() const
+{
+    for (int i=0; i<3; i++) {
+         const Atom *atom = atomAt(i);
+         if (atom && atom->needG8())
+             return true;
+    }
+    return false;
+}
+
 
 Atom *JackAssignment::parseCable(QString s)
 {
@@ -72,7 +82,7 @@ Atom *JackAssignment::parseCable(QString s)
 
 Atom *JackAssignment::parseRegister(QString s)
 {
-    static QRegularExpression expa("^([INORX])([1-9][0-9]*)$", QRegularExpression::CaseInsensitiveOption);
+    static QRegularExpression expa("^([INOGRX])([1-9][0-9]*)$", QRegularExpression::CaseInsensitiveOption);
     static QRegularExpression expb("^([BLPS])([1-9][0-9]*)[.]([1-9][0-9]*)$", QRegularExpression::CaseInsensitiveOption);
 
     QRegularExpressionMatch m;

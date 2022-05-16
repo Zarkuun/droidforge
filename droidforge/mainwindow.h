@@ -59,7 +59,7 @@ public:
     void loadPatch(QString filename);
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
-    void updateActions();
+    void patchHasChanged();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -75,6 +75,9 @@ private:
     QStringList getRecentFiles();
     void addToRecentFiles(const QString &path);
     void openDirInFinder(const QString &filename);
+    void updateActions();
+    void updateWindowTitle();
+    void updateRackView();
 
 private slots:
     void loadFile(const QString &filename);

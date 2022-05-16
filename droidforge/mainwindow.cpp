@@ -71,14 +71,14 @@ void MainWindow::loadPatch(QString afilename)
 
     filename = afilename;
     undoHistory.reset(&newpatch);
-    updateActions();
+    patchHasChanged();
 }
 
 
 void MainWindow::registerEdit(QString name)
 {
     undoHistory.snapshot(patch, name);
-    updateActions();
+    patchHasChanged();
 }
 
 
@@ -143,7 +143,7 @@ void MainWindow::createActions()
 {
     createFileMenu();
     createEditMenu();
-    updateActions();
+    patchHasChanged();
 
     QAction *nextSectionAct = new QAction(tr("Next section"));
     nextSectionAct->setShortcut(QKeySequence(tr("Ctrl+Right")));
@@ -158,6 +158,13 @@ void MainWindow::createActions()
     connect(prevSectionAct, &QAction::triggered, &patchview, &PatchView::previousSection);
 }
 
+
+void MainWindow::patchHasChanged()
+{
+    updateActions();
+    updateWindowTitle();
+    updateRackView();
+}
 
 void MainWindow::updateActions()
 {
@@ -179,7 +186,7 @@ void MainWindow::updateActions()
         redoAction->setEnabled(false);
     }
 
-    const PatchSectionView *psv = patchview.patchSectionView();
+    const PatchSectionView *psv = patchview.currentPatchSectionView();
     bool empty = !psv || psv->isEmpty();
     addJackAction->setEnabled(!empty);
     editValueAction->setEnabled(!empty);
@@ -192,9 +199,12 @@ void MainWindow::updateActions()
         deletePatchSectionAction->setText(tr("Delete section"));
         deletePatchSectionAction->setEnabled(false);
     }
-
     openEnclosingFolderAction->setEnabled(!filename.isEmpty());
+}
 
+
+void MainWindow::updateWindowTitle()
+{
     QString title;
     if (filename.isEmpty())
         title = tr("(untitled patch)") + " - " + tr("DROID Forge");
@@ -203,6 +213,12 @@ void MainWindow::updateActions()
     if (undoHistory.isModified())
         title += " (" + tr("modified") + ")";
     setWindowTitle(title);
+}
+
+
+void MainWindow::updateRackView()
+{
+    rackview.setPatch(patch);
 }
 
 
@@ -381,7 +397,7 @@ void MainWindow::newPatch()
     setPatch(newpatch.clone());
     undoHistory.reset(&newpatch);
     filename = "";
-    updateActions();
+    patchHasChanged();
 }
 
 void MainWindow::open()
@@ -401,7 +417,7 @@ void MainWindow::save()
     else {
         patch->saveToFile(filename);
         undoHistory.clearModified();
-        updateActions();
+        patchHasChanged();
     }
 }
 
@@ -416,7 +432,7 @@ void MainWindow::saveAs()
         patch->saveToFile(newFilename);
         filename = newFilename;
         undoHistory.clearModified();
-        updateActions();
+        patchHasChanged();
         addToRecentFiles(newFilename);
     }
 }
@@ -435,7 +451,7 @@ void MainWindow::undo()
         patch = undoHistory.undo();
         rackview.setPatch(patch);
         patchview.setPatch(patch);
-        updateActions();
+        patchHasChanged();
     }
 }
 
@@ -448,7 +464,7 @@ void MainWindow::redo()
         patch = undoHistory.redo();
         rackview.setPatch(patch);
         patchview.setPatch(patch);
-        updateActions();
+        patchHasChanged();
     }
 }
 

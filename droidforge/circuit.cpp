@@ -66,6 +66,15 @@ void Circuit::changeCircuit(QString newCircuit)
     jackAssignments = newJacks;
 }
 
+bool Circuit::needG8() const
+{
+    for (qsizetype i=0; i<jackAssignments.length(); i++) {
+        if (jackAssignments[i]->needG8())
+            return true;
+    }
+    return false;
+}
+
 
 QString Circuit::toString()
 {

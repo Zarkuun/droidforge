@@ -116,7 +116,7 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
     ensureVisible(currentCircuitView());
-    the_forge->updateActions();
+    the_forge->patchHasChanged();
 }
 
 
@@ -135,7 +135,7 @@ void PatchSectionView::addNewJack(QString name)
     section->setCursorColumn(1);
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
-    the_forge->updateActions();
+    the_forge->patchHasChanged();
 }
 
 
@@ -185,7 +185,7 @@ void PatchSectionView::editJack(int key)
         }
         else
             currentJackAssignment()->changeJack(name);
-        the_forge->updateActions();
+        the_forge->patchHasChanged();
     }
 }
 
@@ -244,7 +244,7 @@ void PatchSectionView::editAtom(int key)
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
-        the_forge->updateActions();
+        the_forge->patchHasChanged();
     }
 }
 
@@ -263,7 +263,7 @@ void PatchSectionView::editCircuitComment(int key)
         QString actionTitle = QString("changing comment for circuit '") + circuit->getName() + "'";
         the_forge->registerEdit(actionTitle);
         circuit->setComment(newComment);
-        the_forge->updateActions();
+        the_forge->patchHasChanged();
     }
 }
 
@@ -367,7 +367,7 @@ void PatchSectionView::deleteCurrentCircuit()
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentCircuit();
     rebuildPatchSection();
-    the_forge->updateActions();
+    the_forge->patchHasChanged();
 }
 
 void PatchSectionView::deleteCurrentComment()
@@ -377,7 +377,7 @@ void PatchSectionView::deleteCurrentComment()
     section->deleteCurrentComment();
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
-    the_forge->updateActions();
+    the_forge->patchHasChanged();
 }
 
 
@@ -389,7 +389,7 @@ void PatchSectionView::deleteCurrentJack()
     section->deleteCurrentJackAssignment();
     rebuildPatchSection();
     currentCircuitView()->select(section->cursorPosition());
-    the_forge->updateActions();
+    the_forge->patchHasChanged();
 }
 
 void PatchSectionView::deleteCurrentAtom()
@@ -400,7 +400,7 @@ void PatchSectionView::deleteCurrentAtom()
         QString actionTitle = QString("deleting value of '") + ja->jackName() + "'";
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(column, 0);
-        the_forge->updateActions();
+        the_forge->patchHasChanged();
     }
     rebuildPatchSection();
 }
@@ -417,7 +417,7 @@ void PatchSectionView::editCircuit(int key)
         QString actionTitle = QString("changing circuit type to '") + newCircuit + "'";
         the_forge->registerEdit(actionTitle);
         currentCircuit()->changeCircuit(newCircuit);
-        the_forge->updateActions();
+        the_forge->patchHasChanged();
     }
     rebuildPatchSection();
 }

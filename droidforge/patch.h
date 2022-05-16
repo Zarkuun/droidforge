@@ -49,6 +49,8 @@ public:
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
     QStringList allCables() const;
+    bool needG8() const;
+    bool needX7() const;
 };
 
 #endif // PATCH_H

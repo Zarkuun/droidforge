@@ -32,6 +32,7 @@ public:
     const Atom *atomAt(int row, int column) const;
     void collectCables(QStringList &cables) const;
     void changeCircuit(QString newCircuit);
+    bool needG8() const;
 
 };
 

@@ -206,3 +206,17 @@ JackAssignment *PatchSection::currentJackAssignment()
     else
         return currentCircuit()->jackAssignment(cursor.row);
 }
+
+bool PatchSection::needG8() const
+{
+    for (qsizetype i=0; i<circuits.length(); i++)
+        if (circuits[i]->needG8())
+            return true;
+    return false;
+}
+
+bool PatchSection::needX7() const
+{
+    // TODO: Make it work
+    return false;
+}

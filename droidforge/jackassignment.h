@@ -36,6 +36,7 @@ public:
     void changeJack(QString j) { jack = j; };
     static JackAssignment *parseJackLine(const QString &circuit, QString line);
     virtual void parseExpression(const QString &expression) = 0;
+    bool needG8() const;
 
 protected:
     static Atom *parseCable(QString s);

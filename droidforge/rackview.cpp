@@ -27,15 +27,26 @@ void RackView::resizeEvent(QResizeEvent *)
 void RackView::setPatch(const Patch *patch)
 {
     scene()->clear();
-    unsigned x = 0;
+    if (!patch)
+        return;
+
+    x = 0;
+    addModule("master");
+    if (patch->needG8())
+        addModule("g8");
+    if (patch->needX7())
+        addModule("x7");
+
     for (qsizetype i=0; i<patch->numControllers(); i++)
-    {
-        QString name = patch->controller(i);
-        Module *module = ModuleBuilder::buildModule(name);
-        QPixmap *image = new QPixmap(QString(":images/faceplates/" + module->faceplate()));
-        QGraphicsItem *gi = scene()->addPixmap(*image);
-        gi->setPos(x, 0);
-        x += module->hp() * PIXEL_PER_HP;
-    }
+        addModule(patch->controller(i));
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+}
+
+void RackView::addModule(const QString &name)
+{
+    Module *module = ModuleBuilder::buildModule(name);
+    QPixmap *image = new QPixmap(QString(":images/faceplates/" + module->faceplate()));
+    QGraphicsItem *gi = scene()->addPixmap(*image);
+    gi->setPos(x, 0);
+    x += module->hp() * PIXEL_PER_HP;
 }

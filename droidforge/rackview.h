@@ -14,11 +14,15 @@ class RackView : public QGraphicsView
     Q_OBJECT
 
     QList<Module *> modules;
+    unsigned x;
 
 public:
     explicit RackView();
     void resizeEvent(QResizeEvent *event);
     void setPatch(const Patch *patch);
+
+private:
+    void addModule(const QString &name);
 };
 
 #endif // RACKVIEW_H

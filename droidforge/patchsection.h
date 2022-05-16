@@ -40,6 +40,8 @@ public:
     void setCursor(const CursorPosition &pos) { cursor = pos; };
     Circuit *currentCircuit();
     JackAssignment *currentJackAssignment();
+    bool needG8() const;
+    bool needX7() const;
 
 protected:
 };

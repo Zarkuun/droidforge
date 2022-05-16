@@ -16,6 +16,7 @@ public:
     virtual bool isRegister() const { return false; };
     virtual bool isCable() const { return false; };
     virtual bool isInvalid() const { return false; };
+    virtual bool needG8() const { return false; };
 };
 
 #endif // ATOM_H

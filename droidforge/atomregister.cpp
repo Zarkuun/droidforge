@@ -15,3 +15,11 @@ QString AtomRegister::toString() const
     else
         return registerType + QString::number(number);
 }
+
+bool AtomRegister::needG8() const
+{
+    return registerType == 'G'
+           && controller == 0
+           && number >= 1
+           && number <= 8;
+}

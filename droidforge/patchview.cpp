@@ -56,7 +56,7 @@ void PatchView::setPatch(Patch *newPatch)
 bool PatchView::handleKeyPress(int key)
 {
     releaseKeyboard(); // TODO: How can we get rid of this "grab keyboard" hack?
-    bool handled = patchSectionView()->handleKeyPress(key);
+    bool handled = currentPatchSectionView()->handleKeyPress(key);
     grabKeyboard();
     return handled;
 }
@@ -66,7 +66,7 @@ const PatchSectionView *PatchView::patchSectionView() const
     return (const PatchSectionView *)currentWidget();
 }
 
-PatchSectionView *PatchView::patchSectionView()
+PatchSectionView *PatchView::currentPatchSectionView()
 {
     return (PatchSectionView *)currentWidget();
 }
@@ -111,37 +111,37 @@ void PatchView::newCircuit()
     if (circuitChooseDialog->exec() == QDialog::Accepted) {
         QString name = circuitChooseDialog->getSelectedCircuit();
         if (!name.isEmpty())
-            patchSectionView()->addNewCircuit(name, circuitChooseDialog->getJackSelection());
+            currentPatchSectionView()->addNewCircuit(name, circuitChooseDialog->getJackSelection());
     }
     grabKeyboard();
 }
 
 void PatchView::addJack()
 {
-    if (patchSectionView()->isEmpty())
+    if (currentPatchSectionView()->isEmpty())
         return;
 
-    QString circuit = patchSectionView()->currentCircuitName();
-    QStringList usedJacks = patchSectionView()->usedJacks();
+    QString circuit = currentPatchSectionView()->currentCircuitName();
+    QStringList usedJacks = currentPatchSectionView()->usedJacks();
 
     releaseKeyboard();
     QString name = JackChooseDialog::chooseJack(circuit, "", usedJacks);
     if (!name.isEmpty())
-        patchSectionView()->addNewJack(name);
+        currentPatchSectionView()->addNewJack(name);
     grabKeyboard();
 }
 
 void PatchView::editValue()
 {
     releaseKeyboard();
-    patchSectionView()->editValue(0);
+    currentPatchSectionView()->editValue(0);
     grabKeyboard();
 }
 
 void PatchView::editCircuitComment()
 {
     releaseKeyboard();
-    patchSectionView()->editCircuitComment(0);
+    currentPatchSectionView()->editCircuitComment(0);
     grabKeyboard();
 }
 
@@ -152,13 +152,13 @@ void PatchView::renameCurrentSection()
 
 void PatchView::deleteCurrentSection()
 {
-    QString actionTitle = QString("deleting patch section '") + patchSectionView()->getTitle() + "'";
+    QString actionTitle = QString("deleting patch section '") + currentPatchSectionView()->getTitle() + "'";
     the_forge->registerEdit(actionTitle);
     int index = currentIndex();
     patch->deleteSection(index);
     removeTab(index);
     patch->setCurrentSectionIndex(this->currentIndex());
-    the_forge->updateActions();
+    the_forge->patchHasChanged();
 }
 
 void PatchView::addSection()
@@ -179,7 +179,7 @@ void PatchView::addSection()
     patch->setCurrentSectionIndex(i);
     insertTab(i, psv, newname);
     setCurrentIndex(i);
-    the_forge->updateActions();
+    the_forge->patchHasChanged();
 }
 
 void PatchView::renameSection(int index)
@@ -192,6 +192,7 @@ void PatchView::renameSection(int index)
         the_forge->registerEdit(actionTitle);
         patch->section(index)->setTitle(newname);
         this->setTabText(index, newname);
+        the_forge->patchHasChanged();
     }
     grabKeyboard();
 }
@@ -200,4 +201,5 @@ void PatchView::reorderSections(int fromindex, int toindex)
 {
     the_forge->registerEdit("reordering sections");
     patch->reorderSections(fromindex, toindex);
+    the_forge->patchHasChanged();
 }
