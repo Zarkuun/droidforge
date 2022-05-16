@@ -1,6 +1,8 @@
 #include "rackview.h"
+#include "mainwindow.h"
 #include "modulebuilder.h"
 #include "tuning.h"
+#include "controllerchoosedialog.h"
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
@@ -8,39 +10,52 @@
 RackView::RackView()
     : QGraphicsView()
 {
-    setMinimumHeight(MIN_RACK_HEIGHT);
-    setMaximumHeight(MAX_RACK_HEIGHT);
+    setMinimumHeight(RACV_MIN_HEIGHT);
+    setMaximumHeight(RACV_MAX_HEIGHT * 2);
 
     QGraphicsScene *thescene = new QGraphicsScene();
-    thescene->setBackgroundBrush(COLOR_RACK_BACKGROUND);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(thescene);
+    QPixmap background(":images/rackbackground.png");
+    QBrush brush(background.scaledToHeight(RACV_BACKGROUND_HEIGHT)); //kheight() * 50));
+    scene()->setBackgroundBrush(brush);
 }
-
 
 void RackView::resizeEvent(QResizeEvent *)
 {
-    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+    updateSize();
 }
 
+void RackView::setPatch(Patch *newPatch)
+{
+    patch = newPatch;
+    updateGraphics();
+}
 
-void RackView::setPatch(const Patch *patch)
+void RackView::updateGraphics()
 {
     scene()->clear();
     if (!patch)
         return;
 
-    x = 0;
+    // Add strut, so space above and below the modules is visible
+    scene()->addLine(0, 0, 0, RACV_BACKGROUND_HEIGHT, QPen(QColor(0, 0, 0, 0)));
+
+    x = 10;
     addModule("master");
     if (patch->needG8())
         addModule("g8");
-    if (patch->needX7()) {
-        qDebug() << "XY";
+    if (patch->needX7())
         addModule("x7");
-    }
+    addModule("blind");
 
     for (qsizetype i=0; i<patch->numControllers(); i++)
         addModule(patch->controller(i));
+    updateSize();
+}
+
+void RackView::updateSize()
+{
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
@@ -49,6 +64,18 @@ void RackView::addModule(const QString &name)
     Module *module = ModuleBuilder::buildModule(name);
     QPixmap *image = new QPixmap(QString(":images/faceplates/" + module->faceplate()));
     QGraphicsItem *gi = scene()->addPixmap(*image);
-    gi->setPos(x, 0);
-    x += module->hp() * PIXEL_PER_HP;
+    gi->setPos(x, RACV_TOP_MARGIN);
+    x += module->hp() * RACV_PIXEL_PER_HP;
+}
+
+void RackView::addController()
+{
+    QString controller = ControllerChooseDialog::chooseController();
+    if (!controller.isEmpty()) {
+        QString actionTitle = tr("adding %1 controller").arg(controller.toUpper());
+        the_forge->registerEdit(actionTitle);
+        patch->addController(controller);
+        updateGraphics();
+        the_forge->patchHasChanged();
+    }
 }

@@ -49,6 +49,7 @@ private:
     QAction *renamePatchSectionAction;
     QAction *addPatchSectionAction;
     QAction *deletePatchSectionAction;
+    QAction *addControllerAction;
 
     QMenu *fileMenu;
 
@@ -69,6 +70,7 @@ private:
     void createFileMenu();
     void createRecentFileActions();
     void createEditMenu();
+    void createRackMenu();
     void createActions();
     bool checkModified();
     QIcon icon(QString what) const;

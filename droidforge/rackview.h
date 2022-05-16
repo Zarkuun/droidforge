@@ -13,16 +13,22 @@ class RackView : public QGraphicsView
 {
     Q_OBJECT
 
+    Patch *patch;
     QList<Module *> modules;
     unsigned x;
 
 public:
     explicit RackView();
     void resizeEvent(QResizeEvent *event);
-    void setPatch(const Patch *patch);
+    void setPatch(Patch *patch);
 
 private:
     void addModule(const QString &name);
+    void updateGraphics();
+    void updateSize();
+
+public slots:
+    void addController();
 };
 
 #endif // RACKVIEW_H

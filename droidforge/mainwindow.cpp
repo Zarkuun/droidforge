@@ -36,7 +36,7 @@ MainWindow::MainWindow(const QString &initialFilename)
     this->setCentralWidget(splitter);
     splitter->addWidget(&rackview);
     splitter->addWidget(&patchview);
-    splitter->setHandleWidth(SPLITTER_HANDLE_WIDTH);
+    splitter->setHandleWidth(RACV_SPLITTER_HANDLE_WIDTH);
     QSettings settings;
     if (settings.contains("mainwindow/splitposition"))
         splitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
@@ -50,8 +50,6 @@ MainWindow::MainWindow(const QString &initialFilename)
 
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename);});
-
-
 }
 
 
@@ -142,6 +140,7 @@ void MainWindow::loadFile(const QString &filename)
 void MainWindow::createActions()
 {
     createFileMenu();
+    createRackMenu();
     createEditMenu();
     patchHasChanged();
 
@@ -386,6 +385,19 @@ void MainWindow::createEditMenu()
     editMenu->addAction(deletePatchSectionAction);
     connect(deletePatchSectionAction, &QAction::triggered, &patchview, &PatchView::deleteCurrentSection);
 
+}
+
+void MainWindow::createRackMenu()
+{
+    QMenu *rackMenu = menuBar()->addMenu(tr("&Rack"));
+
+    // Add controller
+    addControllerAction = new QAction(icon("keyboard"), tr("&Add controller..."), this);
+    // addControllerAction->setShortcut(QKeySequence(tr("Ctrl+N")));
+    connect(addControllerAction, &QAction::triggered, &rackview, &RackView::addController);
+    rackMenu->addAction(addControllerAction);
+    toolbar->addSeparator();
+    toolbar->addAction(addControllerAction);
 }
 
 void MainWindow::newPatch()

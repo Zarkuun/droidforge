@@ -1202,5 +1202,7 @@
         <file>images/icons/white/zoom_out_map.png</file>
         <file>images/background.png</file>
         <file>images/icons/warning.png</file>
+        <file>images/rackbackground.png</file>
+        <file>images/faceplates/faceplate-blind-front.jpg</file>
     </qresource>
 </RCC>

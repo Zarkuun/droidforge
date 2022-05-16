@@ -20,11 +20,12 @@
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
 
 // Rack view
-#define SPLITTER_HANDLE_WIDTH                12
-#define MIN_RACK_HEIGHT                      100
-#define MAX_RACK_HEIGHT                      400
-#define PIXEL_PER_HP                         88
-#define COLOR_RACK_BACKGROUND                QColor(20, 20, 20)
+#define RACV_SPLITTER_HANDLE_WIDTH           12
+#define RACV_MIN_HEIGHT                      100
+#define RACV_MAX_HEIGHT                      400
+#define RACV_PIXEL_PER_HP                    87
+#define RACV_BACKGROUND_HEIGHT               2600
+#define RACV_TOP_MARGIN                      170
 
 // Patch view
 #define PATV_CIRCUIT_VERTICAL_MARGIN         STANDARD_SPACING
