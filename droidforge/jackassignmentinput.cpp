@@ -1,5 +1,6 @@
 #include "jackassignmentinput.h"
 #include "atomcable.h"
+#include "atominvalid.h"
 #include "atomnumber.h"
 #include "parseexception.h"
 
@@ -179,7 +180,8 @@ void JackAssignmentInput::parseInputExpression(QString jack, QString valueString
         c = "-" + m.captured(2);
     }
     else {
-        throw ParseException("Invalid value for input " + jack + ": '" + value + "'");
+        atomA = new AtomInvalid(value);
+        return;
     }
     atomA = parseInputAtom(a);
     atomB = parseInputAtom(b);

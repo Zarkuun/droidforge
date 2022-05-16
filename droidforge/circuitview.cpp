@@ -158,14 +158,28 @@ void CircuitView::paintJacks(QPainter *painter, unsigned &line, unsigned y)
 
 void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom)
 {
+    static QImage warning(":images/icons/warning.png");
     if (atom) {
         QString text = atom->toString();
-        if (atom->isInvalid())
+        if (atom->isInvalid()) {
+            const int offset = (CIRV_JACK_HEIGHT - CIRV_ICON_WIDTH) / 2;
+            QRect imageRect(
+                        rect.x() + rect.width() - CIRV_JACK_HEIGHT,
+                        rect.y() + offset,
+                        CIRV_ICON_WIDTH, CIRV_ICON_WIDTH);
+            QRect textRect(
+                        rect.x(),
+                        rect.y(),
+                        rect.width() - CIRV_JACK_HEIGHT - CIRV_TEXT_SIDE_PADDING,
+                        rect.height());
+            painter->drawImage(imageRect, warning);
             painter->setPen(COLOR_TEXT_UNKNOWN);
-        else
+            painter->drawText(textRect, Qt::AlignVCenter, text);
+        }
+        else {
             painter->setPen(COLOR_TEXT);
-
-        painter->drawText(rect, Qt::AlignVCenter, text);
+            painter->drawText(rect, Qt::AlignVCenter, text);
+        }
     }
 }
 

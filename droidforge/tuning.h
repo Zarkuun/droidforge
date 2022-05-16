@@ -36,6 +36,7 @@
 #define CIRV_TEXT_SIDE_PADDING                 7
 #define CIRV_COMMENT_LINE_HEIGHT              18
 #define CIRV_JACK_HEIGHT                      22
+#define CIRV_ICON_WIDTH                       15
 #define CIRV_HEADER_HEIGHT                    22
 #define CIRV_COLUMN_JACK_WIDTH               180
 #define CIRV_COLUMN_ATOM_WIDTH               170
