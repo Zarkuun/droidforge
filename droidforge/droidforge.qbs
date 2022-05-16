@@ -108,6 +108,7 @@ QtApplication {
         "namechoosedialog.h",
         "numberselector.cpp",
         "numberselector.h",
+        "os.h",
         "parseexception.h",
         "patch.cpp",
         "patch.h",

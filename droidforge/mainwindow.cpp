@@ -7,6 +7,7 @@
 #include "patchparser.h"
 #include "patchview.h"
 #include "tuning.h"
+#include "os.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -308,7 +309,7 @@ void MainWindow::addToRecentFiles(const QString &path)
 void MainWindow::createEditMenu()
 {
     toolbar->addSeparator();
-    QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
+    QMenu *editMenu = menuBar()->addMenu(ZERO_WIDTH_SPACE + tr("&Edit"));
 
     // Undo
     undoAction = new QAction(icon("undo"), tr("&Undo"), this);
