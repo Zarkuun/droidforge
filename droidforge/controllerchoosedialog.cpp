@@ -1,4 +1,5 @@
 #include "controllerchoosedialog.h"
+#include "mainwindow.h"
 
 #include <QVBoxLayout>
 #include <QKeyEvent>
@@ -27,7 +28,7 @@ QString ControllerChooseDialog::chooseController()
 {
     static ControllerChooseDialog *dialog = 0;
     if (!dialog)
-        dialog = new ControllerChooseDialog();
+        dialog = new ControllerChooseDialog(the_forge);
 
     dialog->grabKeyboard();
     int result = dialog->exec();

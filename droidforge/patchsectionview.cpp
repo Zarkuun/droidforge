@@ -17,6 +17,7 @@ PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section)
     , section(section)
     , atomSelectorDialog{}
 {
+    setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     buildPatchSection();
 }

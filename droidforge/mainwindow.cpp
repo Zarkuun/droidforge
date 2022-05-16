@@ -92,6 +92,7 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << Q_FUNC_INFO << event << focusWidget();
     if (!patchview.handleKeyPress(event->key())) {
         event->ignore();
         // QWidget::keyPressEvent(event);
@@ -490,7 +491,6 @@ bool MainWindow::checkModified()
 {
     // TODO rackview modified
     if (undoHistory.isModified()) {
-        patchview.releaseKeyboard();
         QMessageBox box(
                     QMessageBox::Warning,
                     tr("Your patch is modified!"),
@@ -498,7 +498,6 @@ bool MainWindow::checkModified()
                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
                     this);
         int ret = box.exec();
-        patchview.grabKeyboard();
         switch (ret) {
         case QMessageBox::Save:
             // TODO: Check success of saving!

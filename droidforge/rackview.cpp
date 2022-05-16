@@ -10,6 +10,7 @@
 RackView::RackView()
     : QGraphicsView()
 {
+    setFocusPolicy(Qt::NoFocus);
     setMinimumHeight(RACV_MIN_HEIGHT);
     setMaximumHeight(RACV_MAX_HEIGHT * 2);
 
@@ -82,7 +83,8 @@ void RackView::addController()
         QString actionTitle = tr("adding %1 controller").arg(controller.toUpper());
         the_forge->registerEdit(actionTitle);
         patch->addController(controller);
-        updateGraphics();
+        addModule(controller);
+        updateSize();
         the_forge->patchHasChanged();
     }
 }

@@ -18,7 +18,6 @@ PatchView::PatchView()
     , patchPropertiesDialog{}
     , circuitChooseDialog{}
 {
-    grabKeyboard();
     setMovable(true);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
     connect(tabBar(), &QTabBar::tabMoved, this, &PatchView::reorderSections);
@@ -55,9 +54,7 @@ void PatchView::setPatch(Patch *newPatch)
 
 bool PatchView::handleKeyPress(int key)
 {
-    releaseKeyboard(); // TODO: How can we get rid of this "grab keyboard" hack?
     bool handled = currentPatchSectionView()->handleKeyPress(key);
-    grabKeyboard();
     return handled;
 }
 
@@ -95,14 +92,11 @@ void PatchView::previousSection()
 
 void PatchView::editProperties()
 {
-    releaseKeyboard();
     PatchPropertiesDialog::editPatchProperties(patch);
-    grabKeyboard();
 }
 
 void PatchView::newCircuit()
 {
-    releaseKeyboard();
     // We reuse the circuit choose dialog because we want it to
     // retain the current selection of cursor, category and stuff.
     if (!circuitChooseDialog)
@@ -113,7 +107,6 @@ void PatchView::newCircuit()
         if (!name.isEmpty())
             currentPatchSectionView()->addNewCircuit(name, circuitChooseDialog->getJackSelection());
     }
-    grabKeyboard();
 }
 
 void PatchView::addJack()
@@ -124,25 +117,19 @@ void PatchView::addJack()
     QString circuit = currentPatchSectionView()->currentCircuitName();
     QStringList usedJacks = currentPatchSectionView()->usedJacks();
 
-    releaseKeyboard();
     QString name = JackChooseDialog::chooseJack(circuit, "", usedJacks);
     if (!name.isEmpty())
         currentPatchSectionView()->addNewJack(name);
-    grabKeyboard();
 }
 
 void PatchView::editValue()
 {
-    releaseKeyboard();
     currentPatchSectionView()->editValue(0);
-    grabKeyboard();
 }
 
 void PatchView::editCircuitComment()
 {
-    releaseKeyboard();
     currentPatchSectionView()->editCircuitComment(0);
-    grabKeyboard();
 }
 
 void PatchView::renameCurrentSection()
@@ -163,9 +150,7 @@ void PatchView::deleteCurrentSection()
 
 void PatchView::addSection()
 {
-    releaseKeyboard();
     QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_NAME);
-    grabKeyboard();
 
     if (newname.isEmpty())
         return;
@@ -184,7 +169,6 @@ void PatchView::addSection()
 
 void PatchView::renameSection(int index)
 {
-    releaseKeyboard();
     QString oldname =  patch->section(index)->getTitle();
     QString newname = NameChooseDialog::getName(tr("Rename patch section"), tr("New name:"), oldname);
     if (oldname != newname) {
@@ -194,7 +178,6 @@ void PatchView::renameSection(int index)
         this->setTabText(index, newname);
         the_forge->patchHasChanged();
     }
-    grabKeyboard();
 }
 
 void PatchView::reorderSections(int fromindex, int toindex)
