@@ -56,10 +56,8 @@ Atom *AtomSelectorDialog::editAtom(const Patch *patch, jacktype_t jacktype, cons
 bool AtomSelectorDialog::eventFilter(QObject *o, QEvent *e)
 {
     if (e->type() == QEvent::KeyPress) {
-        qDebug() << "FILTER" << o << e;
         QKeyEvent *k = (QKeyEvent *)e;
         if (k->key() == Qt::Key_Left) {
-            qDebug( "Ate key press %d", k->key() );
             return true;
         }
     }

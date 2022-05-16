@@ -3,11 +3,13 @@
 
 #include <QGraphicsView>
 #include <QString>
+#include <QGraphicsRectItem>
 
 class ControllerSelector : public QGraphicsView
 {
     Q_OBJECT
     QString selectedController;
+    QGraphicsRectItem *cursor;
 
 public:
     explicit ControllerSelector(QWidget *parent = nullptr);
@@ -15,6 +17,10 @@ public:
     const QString &getSelectedController() const { return selectedController; };
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
+    void moveCursor(int whence);
+
+private:
+    void placeCursor();
 
 signals:
     void controllerSelected(QString name);

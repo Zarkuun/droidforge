@@ -1,6 +1,7 @@
 #include "controllerchoosedialog.h"
 
 #include <QVBoxLayout>
+#include <QKeyEvent>
 
 ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
     : Dialog("controllerchooser", parent)
@@ -28,7 +29,11 @@ QString ControllerChooseDialog::chooseController()
     if (!dialog)
         dialog = new ControllerChooseDialog();
 
-    if (dialog->exec() == QDialog::Accepted)
+    dialog->grabKeyboard();
+    int result = dialog->exec();
+    dialog->releaseKeyboard();
+
+    if (result == QDialog::Accepted)
         return dialog->getSelectedController();
     else
         return "";
@@ -37,4 +42,14 @@ QString ControllerChooseDialog::chooseController()
 const QString &ControllerChooseDialog::getSelectedController() const
 {
     return controllerSelector->getSelectedController();
+}
+
+void ControllerChooseDialog::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Left)
+        controllerSelector->moveCursor(-1);
+    else if (event->key() == Qt::Key_Right)
+       controllerSelector->moveCursor(1);
+    else
+        Dialog::keyPressEvent(event);
 }

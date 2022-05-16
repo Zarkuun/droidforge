@@ -18,6 +18,9 @@ class ControllerChooseDialog : public Dialog
 public:
     static QString chooseController();
     const QString &getSelectedController() const;
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // CONTROLLERCHOOSEDIALOG_H

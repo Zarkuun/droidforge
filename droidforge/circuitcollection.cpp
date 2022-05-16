@@ -3,7 +3,6 @@
 #include "droidfirmware.h"
 #include "tuning.h"
 
-#include <QDebug>
 #include <QMouseEvent>
 #include <QGraphicsRectItem>
 #include <QtGlobal>

@@ -92,7 +92,6 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << event;
     if (!patchview.handleKeyPress(event->key())) {
         event->ignore();
         // QWidget::keyPressEvent(event);
@@ -393,7 +392,7 @@ void MainWindow::createRackMenu()
 
     // Add controller
     addControllerAction = new QAction(icon("keyboard"), tr("&Add controller..."), this);
-    // addControllerAction->setShortcut(QKeySequence(tr("Ctrl+N")));
+    addControllerAction->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
     connect(addControllerAction, &QAction::triggered, &rackview, &RackView::addController);
     rackMenu->addAction(addControllerAction);
     toolbar->addSeparator();
@@ -526,7 +525,6 @@ QIcon MainWindow::icon(QString what) const
 
 void MainWindow::openDirInFinder(const QString &filename)
 {
-    qDebug() << filename;
 #ifdef Q_OS_MACOS
     QStringList args;
     args << "-e";

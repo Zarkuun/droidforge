@@ -75,6 +75,5 @@ QString JackChooseDialog::chooseJack(const QString &circuit, const QString &curr
 void JackChooseDialog::cursorMoved(bool onActive)
 {
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(onActive);
-    qDebug() << "MOVED" << onActive;
 
 }

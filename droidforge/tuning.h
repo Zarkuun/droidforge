@@ -33,6 +33,8 @@
 #define CSEL_TOP_MARGIN                      150
 #define CSEL_PIXEL_PER_HP                    RACV_PIXEL_PER_HP
 #define CSEL_CONTROLLER_DISTANCE             200
+#define CSEL_CURSOR_WIDTH                    8
+#define CSEL_CURSOR_HEIGHT                   2300
 
 // Patch view
 #define PATV_CIRCUIT_VERTICAL_MARGIN         STANDARD_SPACING

@@ -3,9 +3,6 @@
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 
-#include <QDebug>
-
-
 PatchSection::~PatchSection()
 {
     for (qsizetype i=0; i<circuits.length(); i++)

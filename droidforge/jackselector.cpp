@@ -255,7 +255,6 @@ void JackSelector::moveCursorLeftRight(int whence)
 
     int count = jackViews[currentColumn].count();
     float relpos = float(currentRow) / (count - 1);
-    qDebug() << "rel" << relpos;
     if (whence == -1)
         currentColumn = 0;
     else
@@ -311,7 +310,6 @@ bool JackSelector::handleMousePress(const QPointF &pos)
 
 void JackSelector::searchChanged(QString text)
 {
-    qDebug() << "NEW SEARCH" << text;
     loadJacks(circuit, text);
     setCursor();
 }
