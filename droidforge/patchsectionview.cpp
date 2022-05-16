@@ -86,7 +86,7 @@ bool PatchSectionView::handleKeyPress(int key)
          || key == Qt::Key_Period
          || key == Qt::Key_Minus)
     {
-        editAtom(key);
+        editValue(key);
         return true;
     }
     return false;
@@ -159,8 +159,11 @@ QChar PatchSectionView::keyToChar(int key)
         return ' ';
 }
 
-void PatchSectionView::editJack()
+void PatchSectionView::editJack(int key)
 {
+    if (key)
+        return; // direct editing currently not implemented
+
     JackAssignment *ja = currentJackAssignment();
 
     QString name = JackChooseDialog::chooseJack(
@@ -198,7 +201,7 @@ QStringList PatchSectionView::usedJacks() const
     return currentCircuitView()->usedJacks();
 }
 
-void PatchSectionView::editValue()
+void PatchSectionView::editValue(int key)
 {
     if (isEmpty())
         return;
@@ -207,13 +210,13 @@ void PatchSectionView::editValue()
     int column = section->cursorPosition().column;
 
     if (row == -2)
-        editCircuit();
+        editCircuit(key);
     else if (row == -1)
-        editCircuitComment();
+        editCircuitComment(key);
     else if (column == 0)
-        editJack();
+        editJack(key);
     else
-        editAtom(0 /* full dialog */);
+        editAtom(key);
 }
 
 void PatchSectionView::editAtom(int key)
@@ -246,11 +249,15 @@ void PatchSectionView::editAtom(int key)
 }
 
 
-void PatchSectionView::editCircuitComment()
+void PatchSectionView::editCircuitComment(int key)
 {
     Circuit *circuit = currentCircuit();
 
-    QString oldComment = circuit->getComment();
+    QString oldComment;
+    if (key)
+        oldComment = QString(QChar(key));
+    else
+        oldComment = circuit->getComment();
     QString newComment = CommentDialog::editComment(oldComment);
     if (newComment != oldComment) {
         QString actionTitle = QString("changing comment for circuit '") + circuit->getName() + "'";
@@ -398,8 +405,11 @@ void PatchSectionView::deleteCurrentAtom()
     rebuildPatchSection();
 }
 
-void PatchSectionView::editCircuit()
+void PatchSectionView::editCircuit(int key)
 {
+    if (key)
+        return; // Direct editing of circuit currently not possible
+
     QString oldCircuit = currentCircuitName();
     QString newCircuit = CircuitChooseDialog::chooseCircuit(oldCircuit);
     if (!newCircuit.isEmpty() && oldCircuit != newCircuit)

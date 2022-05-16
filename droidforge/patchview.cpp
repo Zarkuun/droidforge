@@ -134,14 +134,14 @@ void PatchView::addJack()
 void PatchView::editValue()
 {
     releaseKeyboard();
-    patchSectionView()->editValue();
+    patchSectionView()->editValue(0);
     grabKeyboard();
 }
 
 void PatchView::editCircuitComment()
 {
     releaseKeyboard();
-    patchSectionView()->editCircuitComment();
+    patchSectionView()->editCircuitComment(0);
     grabKeyboard();
 }
 

@@ -27,8 +27,8 @@ public:
     QString currentCircuitName() const;
     QString getTitle() const { return section->getTitle(); };
     QStringList usedJacks() const;
-    void editValue();
-    void editCircuitComment();
+    void editValue(int key);
+    void editCircuitComment(int key);
     bool isEmpty() const;
 
 private:
@@ -49,8 +49,8 @@ private:
     void deleteCurrentComment();
     void deleteCurrentJack();
     void deleteCurrentAtom();
-    void editCircuit();
-    void editJack();
+    void editCircuit(int key);
+    void editJack(int key);
     void editAtom(int key);
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key);
