@@ -15,6 +15,7 @@ public:
     ~JackAssignmentInput();
     Atom *getAtom(unsigned n) const;
     const Atom *atomAt(int column) const;
+    Atom *atomAt(int column);
     void replaceAtom(int column, Atom *newAtom);
     QString valueToString() const;
     void collectCables(QStringList &cables) const;

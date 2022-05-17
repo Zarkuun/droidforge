@@ -12,6 +12,7 @@ public:
     QString valueToString() const { return valueString; };
     jacktype_t jackType() const { return JACKTYPE_UNKNOWN; };
     const Atom *atomAt(int) const { return 0; };
+    Atom *atomAt(int) { return 0; };
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &) const {};
     void parseExpression(const QString &expression);

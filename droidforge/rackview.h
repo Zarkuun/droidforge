@@ -34,6 +34,7 @@ public slots:
 
 private slots:
     void removeController(int controller);
+    void moveController(int oldindex, int newindex);
 };
 
 #endif // RACKVIEW_H

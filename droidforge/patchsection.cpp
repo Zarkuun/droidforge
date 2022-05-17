@@ -219,3 +219,9 @@ bool PatchSection::needX7() const
             return true;
     return false;
 }
+
+void PatchSection::renumberControllerRegisters(int fromindex, int toindex)
+{
+    for (qsizetype i=0; i<circuits.length(); i++)
+        circuits[i]->renumberControllerRegisters(fromindex, toindex);
+}

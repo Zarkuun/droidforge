@@ -30,10 +30,12 @@ public:
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     void deleteJackAssignment(unsigned i);
     const Atom *atomAt(int row, int column) const;
+    Atom *atomAt(int row, int column);
     void collectCables(QStringList &cables) const;
     void changeCircuit(QString newCircuit);
     bool needG8() const;
     bool needX7() const;
+    void renumberControllerRegisters(int fromindex, int toindex);
 };
 
 #endif // CIRCUIT_H

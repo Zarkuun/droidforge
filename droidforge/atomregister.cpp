@@ -29,5 +29,13 @@ bool AtomRegister::needX7() const
     return registerType == 'G'
            && controller == 0
            && number >= 9
-           && number <= 12;
+            && number <= 12;
+}
+
+void AtomRegister::renumberControllerRegisters(int fromindex, int toindex)
+{
+    if (controller == fromindex)
+        controller = toindex;
+    else if (controller == toindex)
+        controller = fromindex;
 }

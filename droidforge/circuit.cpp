@@ -46,6 +46,11 @@ const Atom *Circuit::atomAt(int row, int column) const
     return jackAssignments[row]->atomAt(column);
 }
 
+Atom *Circuit::atomAt(int row, int column)
+{
+    return jackAssignments[row]->atomAt(column);
+}
+
 void Circuit::collectCables(QStringList &cables) const
 {
     for (qsizetype i=0; i<jackAssignments.length(); i++)
@@ -85,6 +90,12 @@ bool Circuit::needX7() const
             return true;
     }
     return false;
+}
+
+void Circuit::renumberControllerRegisters(int fromindex, int toindex)
+{
+    for (qsizetype i=0; i<jackAssignments.length(); i++)
+        jackAssignments[i]->renumberControllerRegisters(fromindex, toindex);
 }
 
 

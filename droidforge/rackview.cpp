@@ -43,6 +43,7 @@ void RackView::mousePressEvent(QMouseEvent *event)
                 qDebug() <<  item->data(0);
                 popupContextMenu(item->data(0).toInt());
             }
+            // TODO: Add context menu for adding a controller
         }
         else if (!item)
             addController();
@@ -52,13 +53,29 @@ void RackView::mousePressEvent(QMouseEvent *event)
 void RackView::popupContextMenu(int controller)
 {
    QMenu *menu=new QMenu(this);
-   menu->addAction(tr("Remove this controller"), this, [this,controller] () {this->removeController(controller); });
+   menu->addAction(tr("Remove this controller"), this,
+                   [this,controller] () {this->removeController(controller); });
+   if (controller > 0)
+       menu->addAction(tr("Move by position to the left"), this,
+                       [this,controller] () {this->moveController(controller, controller-1); });
+   if (controller+1 < patch->numControllers())
+       menu->addAction(tr("Move by position to the right"), this,
+                       [this,controller] () {this->moveController(controller, controller+1); });
+   menu->setAttribute(Qt::WA_DeleteOnClose);
    menu->popup(QCursor::pos());
 }
 
 void RackView::removeController(int controller)
 {
     qDebug() <<  "WEG MIT" << controller;
+}
+
+void RackView::moveController(int fromindex, int toindex)
+{
+    the_forge->registerEdit(tr("changing order of controllers"));
+    patch->reorderControllersSmart(fromindex, toindex);
+    the_forge->patchHasChanged();
+    updateGraphics();
 }
 
 void RackView::updateGraphics()

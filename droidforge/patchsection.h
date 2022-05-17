@@ -42,6 +42,7 @@ public:
     JackAssignment *currentJackAssignment();
     bool needG8() const;
     bool needX7() const;
+    void renumberControllerRegisters(int fromindex, int toindex);
 
 protected:
 };

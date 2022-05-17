@@ -59,6 +59,14 @@ void Patch::reorderSections(int fromindex, int toindex)
     sections.insert(toindex, moved);
 }
 
+void Patch::reorderControllersSmart(int fromindex, int toindex)
+{
+    QString moved = controllers[fromindex];
+    controllers.remove(fromindex);
+    controllers.insert(toindex, moved);
+    renumberControllerRegisters(fromindex, toindex);
+}
+
 
 bool Patch::saveToFile(QString filename)
 {
@@ -136,6 +144,12 @@ bool Patch::needX7() const
             return true;
 
     return false;
+}
+
+void Patch::renumberControllerRegisters(int fromindex, int toindex)
+{
+    for (qsizetype i=0; i<sections.length(); i++)
+        sections[i]->renumberControllerRegisters(fromindex, toindex);
 }
 
 QString Patch::toString()

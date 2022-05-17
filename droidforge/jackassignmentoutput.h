@@ -14,6 +14,7 @@ public:
     Atom *getAtom() const;;
     QString valueToString() const;
     const Atom *atomAt(int) const { return atom; };
+    Atom *atomAt(int) { return atom; };
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &cables) const;
     void parseExpression(const QString &expression);

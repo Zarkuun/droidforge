@@ -77,6 +77,15 @@ bool JackAssignment::needX7() const
     return false;
 }
 
+void JackAssignment::renumberControllerRegisters(int fromindex, int toindex)
+{
+    for (int i=0; i<3; i++) {
+         Atom *atom = atomAt(i);
+         if (atom)
+             atom->renumberControllerRegisters(fromindex, toindex);
+    }
+}
+
 Atom *JackAssignment::parseCable(QString s)
 {
     static QRegularExpression exp("^_[a-z][a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);

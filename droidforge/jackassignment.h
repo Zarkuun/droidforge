@@ -31,6 +31,7 @@ public:
     virtual QString valueToString() const = 0;
     QString jackName() const { return jack; };
     virtual const Atom *atomAt(int column) const = 0;
+    virtual Atom *atomAt(int column) = 0;
     virtual void replaceAtom(int column, Atom *newAtom) = 0;
     virtual void collectCables(QStringList &cables) const = 0;
     void changeJack(QString j) { jack = j; };
@@ -38,6 +39,7 @@ public:
     virtual void parseExpression(const QString &expression) = 0;
     bool needG8() const;
     bool needX7() const;
+    void renumberControllerRegisters(int fromindex, int toindex);
 
 protected:
     static Atom *parseCable(QString s);
