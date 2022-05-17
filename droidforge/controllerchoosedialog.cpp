@@ -22,6 +22,8 @@ ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     mainLayout->addWidget(buttonBox);
+
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 QString ControllerChooseDialog::chooseController()
@@ -30,11 +32,8 @@ QString ControllerChooseDialog::chooseController()
     if (!dialog)
         dialog = new ControllerChooseDialog(the_forge);
 
-    // dialog->grabKeyboard();
-    int result = dialog->exec();
-    // dialog->releaseKeyboard();
-
-    if (result == QDialog::Accepted)
+    dialog->setFocus();
+    if (dialog->exec() == QDialog::Accepted)
         return dialog->getSelectedController();
     else
         return "";

@@ -50,6 +50,15 @@ MainWindow::MainWindow(const QString &initialFilename)
 
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename);});
+
+//    QTimer *timer = new QTimer(this);
+//    connect(timer, &QTimer::timeout, this, &MainWindow::debug);
+//    timer->start(500);
+}
+
+
+void MainWindow::debug()
+{
 }
 
 
@@ -92,7 +101,6 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << Q_FUNC_INFO << event << focusWidget();
     if (!patchview.handleKeyPress(event->key())) {
         event->ignore();
         // QWidget::keyPressEvent(event);
@@ -111,13 +119,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("mainwindow/position", pos());
     settings.setValue("mainwindow/size", size());
 }
-
-bool MainWindow::eventFilter(QObject *, QEvent *e)
-{
-    qDebug() << Q_FUNC_INFO << e;
-    return false;
-}
-
 
 void MainWindow::loadFile(const QString &filename)
 {

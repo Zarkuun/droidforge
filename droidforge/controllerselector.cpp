@@ -40,6 +40,11 @@ ControllerSelector::ControllerSelector(QWidget *parent)
             QPen(QColor(0, 0, 0, 0));
 
     setScene(scene);
+
+    // This widget must not have focus. Otherwise a clock on
+    // one of the controllers will move the focus from the dialog
+    // away to here and the keyboard will stop working.
+    setFocusPolicy(Qt::NoFocus);
 }
 
 void ControllerSelector::resizeEvent(QResizeEvent *)
@@ -52,8 +57,15 @@ void ControllerSelector::mousePressEvent(QMouseEvent *event)
     if (event->type() == QMouseEvent::MouseButtonPress) {
         QGraphicsItem *item = itemAt(event->pos());
         if (item) {
-            selectedController = item->data(0).toString();
-            placeCursor();
+            // The cursor wire frame is also clickable and
+            // will appear here - shadowing the actual
+            // controller below it. So make sure we really
+            // have a valid controller name.
+            QString cname = item->data(0).toString();
+            if (!cname.isEmpty()) {
+                selectedController = cname;
+                placeCursor();
+            }
         }
     }
 }

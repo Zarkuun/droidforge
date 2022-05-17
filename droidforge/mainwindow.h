@@ -65,9 +65,9 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *event);
     void closeEvent(QCloseEvent* event);
-    bool eventFilter(QObject *, QEvent *);
 
 private:
+    void debug();
     void createFileMenu();
     void createRecentFileActions();
     void createEditMenu();

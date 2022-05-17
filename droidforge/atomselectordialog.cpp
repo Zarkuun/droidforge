@@ -47,36 +47,9 @@ Atom *AtomSelectorDialog::editAtom(const Patch *patch, jacktype_t jacktype, cons
     }
 
     dialog->atomSelector->setAtom(patch, atom);
-    // dialog->grabKeyboard();
     int result = dialog->exec();
-    // dialog->releaseKeyboard();
     if (result == QDialog::Accepted)
         return dialog->atomSelector->getAtom();
     else
         return const_cast<Atom *>(atom); // We know we haven't changed it
 }
-
-// void AtomSelectorDialog::keyPressEvent(QKeyEvent *event)
-// {
-//     qDebug() << Q_FUNC_INFO << event;
-//     Dialog::keyPressEvent(event);
-// }
-//
-// bool AtomSelectorDialog::eventFilter(QObject *o, QEvent *e)
-// {
-//     qDebug() << Q_FUNC_INFO << e;
-//     return false;
-//
-// }
-
-// bool AtomSelectorDialog::eventFilter(QObject *, QEvent *e)
-// {
-//     if (e->type() == QEvent::KeyPress) {
-//         QKeyEvent *k = (QKeyEvent *)e;
-//         if (k->key() == Qt::Key_Left) {
-//             return true;
-//         }
-//     }
-//     e->ignore();
-//     return false;
-// }

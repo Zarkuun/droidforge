@@ -6,6 +6,7 @@
 
 #include <QGraphicsItem>
 #include <QResizeEvent>
+#include <QMenu>
 
 RackView::RackView()
     : QGraphicsView()
@@ -36,8 +37,28 @@ void RackView::setPatch(Patch *newPatch)
 void RackView::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
-        addController();
+        QGraphicsItem *item = itemAt(event->pos());
+        if (event->button() == Qt::RightButton) {
+            if (item->data(0).isValid()) {
+                qDebug() <<  item->data(0);
+                popupContextMenu(item->data(0).toInt());
+            }
+        }
+        else if (!item)
+            addController();
     }
+}
+
+void RackView::popupContextMenu(int controller)
+{
+   QMenu *menu=new QMenu(this);
+   menu->addAction(tr("Remove this controller"), this, [this,controller] () {this->removeController(controller); });
+   menu->popup(QCursor::pos());
+}
+
+void RackView::removeController(int controller)
+{
+    qDebug() <<  "WEG MIT" << controller;
 }
 
 void RackView::updateGraphics()
@@ -58,7 +79,7 @@ void RackView::updateGraphics()
     addModule("blind");
 
     for (qsizetype i=0; i<patch->numControllers(); i++)
-        addModule(patch->controller(i));
+        addModule(patch->controller(i), i);
     updateSize();
 }
 
@@ -67,11 +88,13 @@ void RackView::updateSize()
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
-void RackView::addModule(const QString &name)
+void RackView::addModule(const QString &name, int controllerIndex)
 {
     Module *module = ModuleBuilder::buildModule(name);
     QPixmap *image = module->faceplateImage();
     QGraphicsItem *gi = scene()->addPixmap(*image);
+    if (controllerIndex >= 0)
+        gi->setData(0, controllerIndex);
     gi->setPos(x, RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;
 }

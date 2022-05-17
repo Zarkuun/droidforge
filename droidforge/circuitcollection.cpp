@@ -138,7 +138,7 @@ bool CircuitCollection::preselectCircuit(QString name)
 
 bool CircuitCollection::handleMousePress(const QPointF &pos)
 {
-    QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
+    QGraphicsItem *item = itemAt(pos.x(), pos.y());
 
     if (!item || item == backgroundRect)
         return false;

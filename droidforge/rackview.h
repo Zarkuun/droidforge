@@ -24,12 +24,16 @@ public:
     void mousePressEvent(QMouseEvent *event);
 
 private:
-    void addModule(const QString &name);
+    void addModule(const QString &name, int controllerIndex=-1);
     void updateGraphics();
     void updateSize();
+    void popupContextMenu(int controller);
 
 public slots:
     void addController();
+
+private slots:
+    void removeController(int controller);
 };
 
 #endif // RACKVIEW_H

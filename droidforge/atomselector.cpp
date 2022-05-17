@@ -65,10 +65,8 @@ Atom *AtomSelector::getAtom()
 {
     if (currentSelector)
         return currentSelector->getAtom();
-    else  {
-        qDebug() << "MIST 0";
-        return 0;
-    }
+    else
+        return 0; // should never happen
 }
 
 void AtomSelector::mousePressEvent(QMouseEvent *event)
