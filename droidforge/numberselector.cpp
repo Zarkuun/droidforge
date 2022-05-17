@@ -1,5 +1,6 @@
 #include "numberselector.h"
 #include "tuning.h"
+#include "atomselector.h"
 
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -138,6 +139,10 @@ void NumberSelector::getFocus()
     lineEdit->selectAll(); // TODO
 }
 
+void NumberSelector::installFocusFilter(QWidget *w)
+{
+    lineEdit->installEventFilter(w);
+}
 
 Atom *NumberSelector::getAtom() const
 {
@@ -207,6 +212,7 @@ void NumberSelector::switchToNumber()
         number /= 100;
     setNumberType(ATOM_NUMBER_NUMBER);
     lineEdit->setText(niceNumber(number));
+    lineEdit->setFocus();
 }
 
 
@@ -219,6 +225,7 @@ void NumberSelector::switchToVoltage()
         number /= 10;
     setNumberType(ATOM_NUMBER_VOLTAGE);
     lineEdit->setText(niceNumber(number));
+    lineEdit->setFocus();
 }
 
 
@@ -231,6 +238,7 @@ void NumberSelector::switchToPercentage()
         number *= 10;
     setNumberType(ATOM_NUMBER_PERCENTAGE);
     lineEdit->setText(niceNumber(number));
+    lineEdit->setFocus();
 }
 
 
@@ -243,4 +251,5 @@ void NumberSelector::switchToOnOff()
     number = number > BOOLEAN_VALUE_THRESHOLD ? 1 : 0;
     setNumberType(ATOM_NUMBER_ONOFF);
     lineEdit->setText(number ? "on" : "off");
+    lineEdit->setFocus();
 }

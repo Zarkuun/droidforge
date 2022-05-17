@@ -107,6 +107,12 @@ Atom *RegisterSelector::getAtom() const
     return new AtomRegister(registerType, controller, number);
 }
 
+void RegisterSelector::installFocusFilter(QWidget *w)
+{
+    lineEditController->installEventFilter(w);
+    lineEditNumber->installEventFilter(w);
+}
+
 
 void RegisterSelector::getFocus()
 {

@@ -24,6 +24,7 @@ public:
     void clearAtom();
     Atom *getAtom() const;
     void getFocus();
+    void installFocusFilter(QWidget *);
 
 private slots:
     void cableEdited(QString text);

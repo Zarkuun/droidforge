@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QMouseEvent>
 #include <QLabel>
+#include <QTimer>
 
 AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     : QWidget{parent}
@@ -26,6 +27,8 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
 
     for (qsizetype i=0; i<subSelectors.count(); i++) {
         AtomSubSelector *ss = subSelectors[i];
+        connect(ss, &AtomSubSelector::gotSelected, this, &AtomSelector::subselectorSelected);
+        ss->installFocusFilter(ss);
         QPushButton *button = new QPushButton(ss->title());
         connect(button, &QPushButton::pressed, this, [this, i]() { this->switchToSelector(i); });
         layout->addWidget(button, 0, i);
@@ -35,7 +38,7 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     // Dieses Widget kann Focus bekommen, und zwar nur durch
     // die Tabtaste.
     // setFocusPolicy(Qt::TabFocus);
-    setFocusPolicy(Qt::StrongFocus);
+    // setFocusPolicy(Qt::StrongFocus);
 }
 
 void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
@@ -60,7 +63,12 @@ void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
 
 Atom *AtomSelector::getAtom()
 {
-    return subSelectors[currentSelector]->getAtom();
+    if (currentSelector)
+        return currentSelector->getAtom();
+    else  {
+        qDebug() << "MIST 0";
+        return 0;
+    }
 }
 
 void AtomSelector::mousePressEvent(QMouseEvent *event)
@@ -77,13 +85,12 @@ void AtomSelector::mousePressEvent(QMouseEvent *event)
     event->ignore();
 }
 
+void AtomSelector::subselectorSelected(AtomSubSelector *ass)
+{
+     currentSelector = ass;
+}
+
 void AtomSelector::switchToSelector(int index)
 {
-    currentSelector = index;
-    for (qsizetype i=0; i<subSelectors.count(); i++) {
-        AtomSubSelector *ss = subSelectors[i];
-        ss->setEnabled(i == currentSelector);
-        if (i == currentSelector)
-            ss->getFocus();
-    }
+    subSelectors[index]->getFocus();
 }

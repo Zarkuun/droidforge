@@ -12,8 +12,8 @@
 class AtomSelector : public QWidget
 {
     Q_OBJECT
+    AtomSubSelector *currentSelector;
 
-    int currentSelector;
     QList<AtomSubSelector *> subSelectors;
     QList<QPushButton *> buttons;
 
@@ -24,8 +24,12 @@ public:
     // void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
 
+public slots:
+    void subselectorSelected(AtomSubSelector *ass);
+
 private slots:
     void switchToSelector(int index);
+
 };
 
 #endif // ATOMSELECTOR_H

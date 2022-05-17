@@ -49,6 +49,11 @@ void CableSelector::getFocus()
     comboBox->setFocus();
 }
 
+void CableSelector::installFocusFilter(QWidget *w)
+{
+    comboBox->installEventFilter(w);
+}
+
 void CableSelector::cableEdited(QString text)
 {
     if (text != text.toUpper())

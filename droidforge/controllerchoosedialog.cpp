@@ -30,9 +30,9 @@ QString ControllerChooseDialog::chooseController()
     if (!dialog)
         dialog = new ControllerChooseDialog(the_forge);
 
-    dialog->grabKeyboard();
+    // dialog->grabKeyboard();
     int result = dialog->exec();
-    dialog->releaseKeyboard();
+    // dialog->releaseKeyboard();
 
     if (result == QDialog::Accepted)
         return dialog->getSelectedController();

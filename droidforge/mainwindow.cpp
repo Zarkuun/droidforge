@@ -112,6 +112,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("mainwindow/size", size());
 }
 
+bool MainWindow::eventFilter(QObject *, QEvent *e)
+{
+    qDebug() << Q_FUNC_INFO << e;
+    return false;
+}
+
 
 void MainWindow::loadFile(const QString &filename)
 {

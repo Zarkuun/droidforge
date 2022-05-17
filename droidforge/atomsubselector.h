@@ -7,6 +7,8 @@
 #include <QGroupBox>
 #include <QObject>
 
+class AtomSelector;
+
 class AtomSubSelector : public QGroupBox
 {
     Q_OBJECT
@@ -19,6 +21,11 @@ public:
     virtual void getFocus() = 0;
     virtual bool handlesAtom(const Atom *atom) const = 0;
     virtual void setAtom(const Patch *patch, const Atom *atom) = 0;
+    virtual void installFocusFilter(QWidget *) {};
+    bool eventFilter(QObject *, QEvent *);
+
+signals:
+    void gotSelected(AtomSubSelector *);
 };
 
 #endif // ATOMSUBSELECTOR_H

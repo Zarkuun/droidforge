@@ -38,6 +38,7 @@ public:
     void setAtom(const Patch *, const Atom *atom);
     void clearAtom();
     Atom *getAtom() const;
+    void installFocusFilter(QWidget *);
 
 protected:
     void addRegisterButton(QChar reg, QString label);

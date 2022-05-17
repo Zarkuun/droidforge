@@ -33,6 +33,7 @@ public:
     Atom *getAtom() const;
     void setNumberType(atom_number_t t);
     void getFocus();
+    void installFocusFilter(QWidget *);
 
 private:
     QString niceNumber(float v);
