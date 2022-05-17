@@ -30,7 +30,7 @@ public:
     void insertSection(int index, PatchSection *section);
     void deleteSection(int index);
     void reorderSections(int fromindex, int toindex);
-    void reorderControllersSmart(int fromindex, int toindex);
+    void swapControllersSmart(int fromindex, int toindex);
     void addController(QString name) { controllers.append(name); };
     bool saveToFile(QString filename);
     void addDescriptionLine(const QString &line);
@@ -54,7 +54,7 @@ public:
     bool needX7() const;
 
 private:
-    void renumberControllerRegisters(int fromindex, int toindex);
+    void swapControllerNumbers(int fromindex, int toindex);
 };
 
 #endif // PATCH_H

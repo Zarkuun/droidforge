@@ -77,12 +77,12 @@ bool JackAssignment::needX7() const
     return false;
 }
 
-void JackAssignment::renumberControllerRegisters(int fromindex, int toindex)
+void JackAssignment::swapControllerNumbers(int fromindex, int toindex)
 {
     for (int i=0; i<3; i++) {
          Atom *atom = atomAt(i);
          if (atom)
-             atom->renumberControllerRegisters(fromindex, toindex);
+             atom->swapControllerNumbers(fromindex, toindex);
     }
 }
 

@@ -32,7 +32,7 @@ bool AtomRegister::needX7() const
             && number <= 12;
 }
 
-void AtomRegister::renumberControllerRegisters(int fromindex, int toindex)
+void AtomRegister::swapControllerNumbers(int fromindex, int toindex)
 {
     if (controller == fromindex)
         controller = toindex;

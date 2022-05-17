@@ -39,7 +39,7 @@ public:
     virtual void parseExpression(const QString &expression) = 0;
     bool needG8() const;
     bool needX7() const;
-    void renumberControllerRegisters(int fromindex, int toindex);
+    void swapControllerNumbers(int fromindex, int toindex);
 
 protected:
     static Atom *parseCable(QString s);

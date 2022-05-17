@@ -18,7 +18,7 @@ public:
     virtual bool isInvalid() const { return false; };
     virtual bool needG8() const { return false; };
     virtual bool needX7() const { return false; };
-    virtual void renumberControllerRegisters(int fromindex, int toindex) {};
+    virtual void swapControllerNumbers(int, int) {};
 };
 
 #endif // ATOM_H

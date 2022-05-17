@@ -81,6 +81,7 @@ private:
     void updateActions();
     void updateWindowTitle();
     void updateRackView();
+    void repaintPatchView();
 
 private slots:
     void loadFile(const QString &filename);

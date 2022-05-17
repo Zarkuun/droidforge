@@ -59,12 +59,19 @@ void Patch::reorderSections(int fromindex, int toindex)
     sections.insert(toindex, moved);
 }
 
-void Patch::reorderControllersSmart(int fromindex, int toindex)
+void Patch::swapControllersSmart(int fromindex, int toindex)
 {
-    QString moved = controllers[fromindex];
-    controllers.remove(fromindex);
-    controllers.insert(toindex, moved);
-    renumberControllerRegisters(fromindex, toindex);
+    QStringList newControllers;
+    for (qsizetype i=0; i<controllers.size(); i++) {
+        if (i == fromindex)
+            newControllers.append(controllers[toindex]);
+        else if (i == toindex)
+            newControllers.append(controllers[fromindex]);
+        else
+            newControllers.append(controllers[i]);
+    }
+    controllers = newControllers;
+    swapControllerNumbers(fromindex+1, toindex+1);
 }
 
 
@@ -146,10 +153,10 @@ bool Patch::needX7() const
     return false;
 }
 
-void Patch::renumberControllerRegisters(int fromindex, int toindex)
+void Patch::swapControllerNumbers(int fromindex, int toindex)
 {
     for (qsizetype i=0; i<sections.length(); i++)
-        sections[i]->renumberControllerRegisters(fromindex, toindex);
+        sections[i]->swapControllerNumbers(fromindex, toindex);
 }
 
 QString Patch::toString()

@@ -19,7 +19,7 @@ class PatchSectionView : public QGraphicsView
 
 public:
     PatchSectionView(const Patch *patch, PatchSection *section);
-    ~PatchSectionView();;
+    ~PatchSectionView();
     bool handleKeyPress(int key);
     void mousePressEvent(QMouseEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
@@ -30,6 +30,7 @@ public:
     void editValue(int key);
     void editCircuitComment(int key);
     bool isEmpty() const;
+    void updateCircuits();
 
 private:
     bool handleMousePress(const QPointF &pos);

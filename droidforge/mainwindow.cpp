@@ -170,6 +170,7 @@ void MainWindow::patchHasChanged()
     updateActions();
     updateWindowTitle();
     updateRackView();
+    repaintPatchView();
 }
 
 void MainWindow::updateActions()
@@ -227,6 +228,12 @@ void MainWindow::updateRackView()
     rackview.setPatch(patch);
 }
 
+void MainWindow::repaintPatchView()
+{
+    PatchSectionView *psv = patchview.currentPatchSectionView();
+    if (psv)
+        psv->updateCircuits();
+}
 
 void MainWindow::createFileMenu()
 {

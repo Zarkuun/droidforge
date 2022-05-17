@@ -29,7 +29,6 @@ PatchSectionView::~PatchSectionView()
         delete atomSelectorDialog;
 }
 
-
 void PatchSectionView::buildPatchSection()
 {
     QGraphicsScene *scene = new QGraphicsScene();
@@ -59,13 +58,11 @@ void PatchSectionView::deletePatchSection()
     circuitViews.clear();
 }
 
-
 void PatchSectionView::rebuildPatchSection()
 {
     deletePatchSection();
     buildPatchSection();
 }
-
 
 bool PatchSectionView::handleKeyPress(int key)
 {
@@ -273,6 +270,11 @@ bool PatchSectionView::isEmpty() const
     return section->circuits.empty();
 }
 
+void PatchSectionView::updateCircuits()
+{
+    for (unsigned i=0; i<circuitViews.size(); i++)
+        circuitViews[i]->update();
+}
 
 bool PatchSectionView::handleMousePress(const QPointF &pos)
 {

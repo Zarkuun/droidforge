@@ -92,10 +92,10 @@ bool Circuit::needX7() const
     return false;
 }
 
-void Circuit::renumberControllerRegisters(int fromindex, int toindex)
+void Circuit::swapControllerNumbers(int fromindex, int toindex)
 {
     for (qsizetype i=0; i<jackAssignments.length(); i++)
-        jackAssignments[i]->renumberControllerRegisters(fromindex, toindex);
+        jackAssignments[i]->swapControllerNumbers(fromindex, toindex);
 }
 
 

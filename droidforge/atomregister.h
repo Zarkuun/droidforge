@@ -34,7 +34,7 @@ public:
     unsigned getNumber() const { return number; };
     bool needG8() const;
     bool needX7() const;
-    void renumberControllerRegisters(int fromindex, int toindex);
+    void swapControllerNumbers(int fromindex, int toindex);
 };
 
 #endif // ATOMREGISTER_H
