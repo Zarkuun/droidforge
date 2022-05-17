@@ -17,7 +17,7 @@ ControllerSelector::ControllerSelector(QWidget *parent)
     {
         QString name = controllers[i];
         Module *module = ModuleBuilder::buildModule(name);
-        QPixmap *image = module->faceplateImage();
+        const QPixmap *image = module->getFaceplateImage();
         QGraphicsItem *gi = scene->addPixmap(*image);
         gi->setData(0, name);
         gi->setZValue(10); // make it above margin rect

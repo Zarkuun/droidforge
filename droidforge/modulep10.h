@@ -6,9 +6,9 @@
 class ModuleP10 : public Module
 {
 public:
-    ModuleP10() {}
+    ModuleP10() : Module("faceplate-p10") {}
     QString name() const { return "p10"; }
-    QString faceplate() const { return "faceplate-p10.jpg";  }
+    QString faceplate() const { return "faceplate-p10";  }
     QString title() const { return "P10 Controller"; }
     unsigned hp() const { return 5; }
 };

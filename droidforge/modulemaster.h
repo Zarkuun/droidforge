@@ -6,7 +6,7 @@
 class ModuleMaster : public Module
 {
 public:
-    ModuleMaster() {  }
+    ModuleMaster() : Module("faceplate-master-off") {  }
     QString name() const { return "master"; }
     QString faceplate() const { return "faceplate-master-off";  }
     QString title() const { return "DROID master"; }

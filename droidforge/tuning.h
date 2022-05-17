@@ -26,6 +26,7 @@
 #define RACV_PIXEL_PER_HP                    87
 #define RACV_BACKGROUND_HEIGHT               2600
 #define RACV_TOP_MARGIN                      170
+#define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)
 
 // Controller Selector
 #define CSEL_HEIGHT                          2600

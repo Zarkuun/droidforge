@@ -6,9 +6,9 @@
 class ModuleP4B2 : public Module
 {
 public:
-    ModuleP4B2() { }
+    ModuleP4B2() : Module("faceplate-p4b2-off") { }
     QString name() const { return "p4b2"; }
-    QString faceplate() const { return "faceplate-p4b2-off.jpg"; }
+    QString faceplate() const { return "faceplate-p4b2-off"; }
     QString title() const { return "P4B2 Controller"; }
     unsigned hp() const { return 5; }
 };

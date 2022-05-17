@@ -3,21 +3,27 @@
 
 #include <QString>
 #include <QPixmap>
+#include <QGraphicsItem>
 
 QT_BEGIN_NAMESPACE
 namespace Droid { class ModuleType; }
 QT_END_NAMESPACE
 
-class Module
+class Module : public QGraphicsItem
 {
+    QPixmap faceplateImage;
+
 public:
-    virtual ~Module() {};
+    Module(const QString &faceplate);
+    virtual ~Module();
     virtual QString name() const = 0;
-    virtual QString faceplate() const = 0;
     virtual QString title() const = 0;
     virtual unsigned hp() const = 0;
-    QPixmap *faceplateImage() const;
+    const QPixmap *getFaceplateImage() const { return &faceplateImage; };
 
+protected:
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 };
 
 

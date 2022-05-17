@@ -6,7 +6,7 @@
 class ModuleX7 : public Module
 {
 public:
-    ModuleX7() {}
+    ModuleX7() : Module("faceplate-x7-off") {};
     QString name() const { return "x7"; }
     QString faceplate() const { return "faceplate-x7-off"; }
     QString title() const { return "X7 MIDI/USB Expander"; }

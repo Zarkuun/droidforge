@@ -6,11 +6,11 @@
 class ModuleBlind : public Module
 {
 public:
-    ModuleBlind();
-    QString name()  { return "blind"; }
-    QString faceplate() { return "faceplate-blind-front"; }
-    QString title() { return "1HP Blind panel"; }
-    unsigned hp() { return 1; }
+    ModuleBlind() : Module("faceplate-blind-front") {  }
+    QString name() const { return "blind"; }
+    QString faceplate() const { return "faceplate-blind-front"; }
+    QString title() const { return "1HP Blind panel"; }
+    unsigned hp() const { return 1; }
 };
 
 #endif // MODULEBLIND_H

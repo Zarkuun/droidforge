@@ -107,11 +107,10 @@ void RackView::updateSize()
 void RackView::addModule(const QString &name, int controllerIndex)
 {
     Module *module = ModuleBuilder::buildModule(name);
-    QPixmap *image = module->faceplateImage();
-    QGraphicsItem *gi = scene()->addPixmap(*image);
+    scene()->addItem(module);
     if (controllerIndex >= 0)
-        gi->setData(0, controllerIndex);
-    gi->setPos(x, RACV_TOP_MARGIN);
+        module->setData(0, controllerIndex);
+    module->setPos(x, RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;
 }
 

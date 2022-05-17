@@ -6,9 +6,9 @@
 class ModuleM4 : public Module
 {
 public:
-    ModuleM4() {  }
+    ModuleM4() : Module("faceplate-m4") {  }
     QString name() const { return "m4"; }
-    QString faceplate() const { return "faceplate-m4.jpg";  }
+    QString faceplate() const { return "faceplate-m4";  }
     QString title() const { return "M4 Motor Fader Unit";  }
     unsigned hp() const { return 14; }
 };
