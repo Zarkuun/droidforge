@@ -10,7 +10,12 @@ public:
     QString name() const { return "g8"; }
     QString faceplate() const { return "faceplate-g8-off"; }
     QString title() const { return "G8 Gates Expander"; }
-    unsigned hp() const { return 4; }
+    float hp() const { return 4; }
+    unsigned numControls(QChar type) const;
+
+protected:
+    QPointF controlPosition(QChar type, unsigned number);;
+    float controlSize(QChar type, unsigned number);
 };
 
 #endif // MODULEG8_H

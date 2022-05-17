@@ -10,7 +10,12 @@ public:
     QString name() const { return "b32"; };
     QString faceplate() const { return "faceplate-b32-off"; };
     QString title() const { return "B32 Controller"; };
-    unsigned hp() const { return 10; };
+    float hp() const { return 10; };
+    unsigned numControls(QChar type) const;
+
+protected:
+    QPointF controlPosition(QChar type, unsigned number);;
+    float controlSize(QChar type, unsigned number);
 };
 
 #endif // MODULEB32_H

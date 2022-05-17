@@ -17,11 +17,10 @@ ControllerSelector::ControllerSelector(QWidget *parent)
     {
         QString name = controllers[i];
         Module *module = ModuleBuilder::buildModule(name);
-        const QPixmap *image = module->getFaceplateImage();
-        QGraphicsItem *gi = scene->addPixmap(*image);
-        gi->setData(0, name);
-        gi->setZValue(10); // make it above margin rect
-        gi->setPos(x, CSEL_TOP_MARGIN);
+        scene->addItem(module);
+        module->setData(0, name);
+        module->setZValue(10); // make it above margin rect
+        module->setPos(x, CSEL_TOP_MARGIN);
         x += module->hp() * CSEL_PIXEL_PER_HP;
         x += CSEL_CONTROLLER_DISTANCE;
     }

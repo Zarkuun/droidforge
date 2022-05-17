@@ -112,6 +112,7 @@ void RackView::addModule(const QString &name, int controllerIndex)
         module->setData(0, controllerIndex);
     module->setPos(x, RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;
+    module->hiliteControls(); // TODO TEST
 }
 
 void RackView::addController()

@@ -10,7 +10,12 @@ public:
     QString name() const { return "master"; }
     QString faceplate() const { return "faceplate-master-off";  }
     QString title() const { return "DROID master"; }
-    unsigned hp() const { return 8; }
+    float hp() const { return 8; }
+    unsigned numControls(QChar type) const;
+
+protected:
+    QPointF controlPosition(QChar type, unsigned number);;
+    float controlSize(QChar type, unsigned number);
 };
 
 #endif // MODULEMASTER_H

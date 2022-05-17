@@ -10,7 +10,12 @@ public:
     QString name() const { return "s10";  }
     QString faceplate() const  { return "faceplate-s10";  }
     QString title() const  { return "S10 Controller";  }
-    unsigned hp() const  { return 5; }
+    float hp() const  { return 5; }
+    unsigned numControls(QChar type) const;
+
+protected:
+    QPointF controlPosition(QChar type, unsigned number);;
+    float controlSize(QChar type, unsigned number);
 };
 
 #endif // MODULES10_H

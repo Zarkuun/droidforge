@@ -10,7 +10,12 @@ public:
     QString name() const { return "p10"; }
     QString faceplate() const { return "faceplate-p10";  }
     QString title() const { return "P10 Controller"; }
-    unsigned hp() const { return 5; }
+    float hp() const { return 5; }
+    unsigned numControls(QChar type) const;
+
+protected:
+    QPointF controlPosition(QChar type, unsigned number);;
+    float controlSize(QChar type, unsigned number);
 };
 
 #endif // MODULEP10_H

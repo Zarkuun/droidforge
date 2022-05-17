@@ -10,7 +10,7 @@ public:
     QString name() const { return "blind"; }
     QString faceplate() const { return "faceplate-blind-front"; }
     QString title() const { return "1HP Blind panel"; }
-    unsigned hp() const { return 1; }
+    float hp() const { return 1; }
 };
 
 #endif // MODULEBLIND_H

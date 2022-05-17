@@ -3,6 +3,9 @@
 
 #include "module.h"
 
+// TODO: Schwierigkeit, weil sowohl R als auch G
+// nicht bei 1 anfangen
+
 class ModuleX7 : public Module
 {
 public:
@@ -10,7 +13,12 @@ public:
     QString name() const { return "x7"; }
     QString faceplate() const { return "faceplate-x7-off"; }
     QString title() const { return "X7 MIDI/USB Expander"; }
-    unsigned hp() const { return 4; }
+    float hp() const { return 4; }
+    unsigned numControls(QChar type) const;
+
+protected:
+    QPointF controlPosition(QChar type, unsigned number);;
+    float controlSize(QChar type, unsigned number);
 };
 
 #endif // MODULEX7_H

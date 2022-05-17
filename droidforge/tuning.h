@@ -24,9 +24,19 @@
 #define RACV_MIN_HEIGHT                      100
 #define RACV_MAX_HEIGHT                      400
 #define RACV_PIXEL_PER_HP                    87
-#define RACV_BACKGROUND_HEIGHT               2600
+#define RACV_BACKGROUND_HEIGHT               2510
 #define RACV_TOP_MARGIN                      170
 #define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)
+
+#define CONTROL_LARGE_POT_SIZE               4.1
+#define CONTROL_SMALL_POT_SIZE               1.4
+#define CONTROL_BUTTON_SIZE                  2.0
+#define CONTROL_SMALL_SWITCH_SIZE            1.5
+#define CONTROL_M4_FADER_SIZE                3.0
+#define CONTROL_M4_TOUCH_SIZE                2.2
+#define CONTROL_RGBLED_SIZE                  1.6
+#define CONTROL_JACK_SIZE                    1.8
+#define CONTROL_EXTRA_SIZE                   7.8
 
 // Controller Selector
 #define CSEL_HEIGHT                          2600
