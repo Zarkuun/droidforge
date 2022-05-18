@@ -153,7 +153,7 @@ bool Patch::needX7() const
     return false;
 }
 
-void Patch::collectRegisterAtoms(QStringList &sl) const
+void Patch::collectRegisterAtoms(RegisterList &sl) const
 {
     for (qsizetype i=0; i<sections.length(); i++)
         sections[i]->collectRegisterAtoms(sl);

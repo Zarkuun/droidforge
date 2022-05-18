@@ -173,7 +173,7 @@ void MainWindow::patchHasChanged()
     repaintPatchView();
 }
 
-void MainWindow::hiliteRegisters(const QStringList &registers)
+void MainWindow::hiliteRegisters(const RegisterList &registers)
 {
     rackview.hiliteRegisters(registers);
 }

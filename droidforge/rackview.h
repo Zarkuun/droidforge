@@ -23,7 +23,7 @@ public:
     void setPatch(Patch *patch);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    void hiliteRegisters(const QStringList &registers);
+    void hiliteRegisters(const RegisterList &registers);
 
 private:
     void addModule(const QString &name, int controllerIndex=-1);

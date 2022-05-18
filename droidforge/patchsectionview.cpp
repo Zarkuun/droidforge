@@ -279,7 +279,7 @@ void PatchSectionView::updateCircuits()
 void PatchSectionView::updateRegisterHilites() const
 {
     CursorPosition cursor = section->cursorPosition();
-    QStringList registers;
+    RegisterList registers;
     const Circuit *circuit = currentCircuit();
     if (cursor.row == -2 || cursor.row == -1) // Circuit selected
         circuit->collectRegisterAtoms(registers);
@@ -289,11 +289,12 @@ void PatchSectionView::updateRegisterHilites() const
             ja->collectRegisterAtoms(registers);
         else {
             const Atom *atom = ja->atomAt(cursor.column);
-            if (atom)
-                atom->collectRegisterAtoms(registers);
+            if (atom->isRegister())
+                registers.append(*(AtomRegister *)atom);
         }
     }
-    registers.removeDuplicates();
+    // TODO:
+    //registers.removeDuplicates();
     the_forge->hiliteRegisters(registers);
 }
 

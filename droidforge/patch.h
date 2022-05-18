@@ -52,7 +52,7 @@ public:
     QStringList allCables() const;
     bool needG8() const;
     bool needX7() const;
-    void collectRegisterAtoms(QStringList &) const;
+    void collectRegisterAtoms(RegisterList &) const;
 
 private:
     void swapControllerNumbers(int fromindex, int toindex);

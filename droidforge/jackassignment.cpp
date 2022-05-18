@@ -7,6 +7,7 @@
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
 #include "parseexception.h"
+#include "atomregister.h"
 
 #include <QRegularExpression>
 
@@ -86,12 +87,14 @@ void JackAssignment::swapControllerNumbers(int fromindex, int toindex)
     }
 }
 
-void JackAssignment::collectRegisterAtoms(QStringList &sl) const
+void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
 {
     for (int i=0; i<3; i++) {
          const Atom *atom = atomAt(i);
-         if (atom)
-             atom->collectRegisterAtoms(sl);
+         if (atom && atom->isRegister()) {
+             AtomRegister *ar = (AtomRegister *)atom;
+             sl.append(*ar);
+         }
     }
 }
 

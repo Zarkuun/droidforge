@@ -68,7 +68,7 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void RackView::hiliteRegisters(const QStringList &registers)
+void RackView::hiliteRegisters(const RegisterList &registers)
 {
     QList<QGraphicsItem *> items = scene()->items();
     for (qsizetype i=0; i<items.count(); i++) {
@@ -83,22 +83,10 @@ void RackView::hiliteRegisters(const QStringList &registers)
             module->clearHilites();
             for (qsizetype r=0; r<registers.count(); r++)
             {
-                // "B12.3" or "G9"
-                QString reg = registers[r];
-                QChar type = reg[0];
-                QString numbers = reg.mid(1);
-                unsigned cont = 0;
-                unsigned num = 0;
-                if (numbers.contains(".")) {
-                    QStringList parts = numbers.split(".");
-                    cont = parts[0].toInt();
-                    num = parts[1].toInt();
-                    if (cont == controller) {
-                        module->hiliteControls(true, type, num);
-                    }
-                }
-                else
-                    num = numbers.toInt();
+                AtomRegister ar = registers[r];
+                if (ar.getController() == controller)
+                    module->hiliteControls(true, ar.getRegisterType(), ar.getNumber());
+                // TODO: Hilite inputs/ouputs
             }
             module->update();
         }

@@ -19,7 +19,6 @@ public:
     virtual bool needG8() const { return false; };
     virtual bool needX7() const { return false; };
     virtual void swapControllerNumbers(int, int) {};
-    virtual void collectRegisterAtoms(QStringList &) const {};
 };
 
 #endif // ATOM_H

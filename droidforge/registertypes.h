@@ -15,4 +15,5 @@
 #define    REGISTER_EXTRA     'X'
 
 extern const char register_types[];
+
 #endif // REGISTERTYPES_H

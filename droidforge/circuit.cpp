@@ -98,7 +98,7 @@ void Circuit::swapControllerNumbers(int fromindex, int toindex)
         jackAssignments[i]->swapControllerNumbers(fromindex, toindex);
 }
 
-void Circuit::collectRegisterAtoms(QStringList &sl) const
+void Circuit::collectRegisterAtoms(RegisterList &sl) const
 {
     for (qsizetype i=0; i<jackAssignments.length(); i++)
         jackAssignments[i]->collectRegisterAtoms(sl);

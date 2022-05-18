@@ -2,44 +2,63 @@
 
 #include <QStringList>
 
+AtomRegister::AtomRegister(QChar t, unsigned c, unsigned n)
+{
+    data.r.registerType = t.toLatin1();
+    data.r.controller = c;
+    data.r.number = n;
+    data.r.reserved = 0;
+}
+
+AtomRegister::AtomRegister(uint32_t raw)
+{
+    data.raw = raw;
+}
+
+AtomRegister::AtomRegister(const AtomRegister &ar)
+{
+    data.raw = ar.data.raw;
+}
+
+AtomRegister AtomRegister::operator=(const AtomRegister &ar)
+{
+    data.raw = ar.data.raw;
+    return *this;
+}
+
 AtomRegister *AtomRegister::clone() const
 {
-    return new AtomRegister(registerType, controller, number);
+    return new AtomRegister(*this);
 }
 
 QString AtomRegister::toString() const
 {
-    if (controller)
-        return registerType + QString::number(controller) + "." + QString::number(number);
+    if (data.r.controller)
+        return data.r.registerType + QString::number(data.r.controller) + "." + QString::number(data.r.number);
     else
-        return registerType + QString::number(number);
+        return data.r.registerType + QString::number(data.r.number);
 }
 
 bool AtomRegister::needG8() const
 {
-    return registerType == REGISTER_GATE
-           && controller == 0
-           && number >= 1
-           && number <= 8;
+    return data.r.registerType == REGISTER_GATE
+           && data.r.controller == 0
+           && data.r.number >= 1
+           && data.r.number <= 8;
 }
 
 bool AtomRegister::needX7() const
 {
-    return registerType == REGISTER_GATE
-           && controller == 0
-           && number >= 9
-            && number <= 12;
+    return data.r.registerType == REGISTER_GATE
+           && data.r.controller == 0
+           && data.r.number >= 9
+            && data.r.number <= 12;
 }
 
 void AtomRegister::swapControllerNumbers(int fromindex, int toindex)
 {
-    if ((int)controller == fromindex)
-        controller = toindex;
-    else if ((int)controller == toindex)
-        controller = fromindex;
-}
-
-void AtomRegister::collectRegisterAtoms(QStringList &l) const
-{
-    l.append(toString());
+    if ((int)data.r.controller == fromindex)
+        data.r.controller = toindex;
+    else if ((int)data.r.controller == toindex)
+        data.r.controller = fromindex;
 }
