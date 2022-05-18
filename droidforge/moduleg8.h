@@ -14,8 +14,8 @@ public:
     unsigned numControls(QChar type) const;
 
 protected:
-    QPointF controlPosition(QChar type, unsigned number);;
-    float controlSize(QChar type, unsigned number);
+    QPointF controlPosition(QChar type, unsigned number) const;
+    float controlSize(QChar type, unsigned number) const;
 };
 
 #endif // MODULEG8_H

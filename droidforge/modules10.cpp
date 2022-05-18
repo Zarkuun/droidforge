@@ -3,13 +3,13 @@
 
 unsigned ModuleS10::numControls(QChar type) const
 {
-    if (type == 'S')
+    if (type == REGISTER_SWITCH)
         return 10;
     else
         return 0;
 }
 
-QPointF ModuleS10::controlPosition(QChar, unsigned number)
+QPointF ModuleS10::controlPosition(QChar, unsigned number) const
 {
     if (number == 1)
         return QPointF(hp()/2, 3.63);
@@ -22,7 +22,7 @@ QPointF ModuleS10::controlPosition(QChar, unsigned number)
     }
 }
 
-float ModuleS10::controlSize(QChar, unsigned number)
+float ModuleS10::controlSize(QChar, unsigned number) const
 {
    if (number <= 2)
        return CONTROL_LARGE_POT_SIZE;

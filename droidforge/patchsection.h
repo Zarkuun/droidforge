@@ -43,6 +43,7 @@ public:
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromindex, int toindex);
+    void collectRegisterAtoms(QStringList &) const;
 
 protected:
 };

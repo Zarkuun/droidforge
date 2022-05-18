@@ -58,7 +58,7 @@ bool PatchView::handleKeyPress(int key)
     return handled;
 }
 
-const PatchSectionView *PatchView::patchSectionView() const
+const PatchSectionView *PatchView::currentPatchSectionView() const
 {
     return (const PatchSectionView *)currentWidget();
 }
@@ -74,6 +74,12 @@ int PatchView::numSections() const
         return patch->numSections();
     else
         return 0;
+}
+
+void PatchView::updateRegisterHilites() const
+{
+    if (currentPatchSectionView())
+        currentPatchSectionView()->updateRegisterHilites();
 }
 
 void PatchView::nextSection()

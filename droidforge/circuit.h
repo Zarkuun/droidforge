@@ -27,6 +27,7 @@ public:
     void addJackAssignment(JackAssignment *);
     void insertJackAssignment(JackAssignment *, int index);
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
+    const JackAssignment *jackAssignment(unsigned i) const { return jackAssignments[i]; };
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     void deleteJackAssignment(unsigned i);
     const Atom *atomAt(int row, int column) const;
@@ -36,6 +37,7 @@ public:
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromindex, int toindex);
+    void collectRegisterAtoms(QStringList &) const;
 };
 
 #endif // CIRCUIT_H

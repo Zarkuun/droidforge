@@ -20,9 +20,10 @@ public:
     ~PatchView();
     void setPatch(Patch *patch);
     bool handleKeyPress(int key);
-    const PatchSectionView *patchSectionView() const;
+    const PatchSectionView *currentPatchSectionView() const;
     PatchSectionView *currentPatchSectionView();
     int numSections() const;;
+    void updateRegisterHilites() const;
 
 public slots:
     void nextSection();

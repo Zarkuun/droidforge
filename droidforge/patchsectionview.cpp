@@ -34,7 +34,6 @@ void PatchSectionView::buildPatchSection()
     QGraphicsScene *scene = new QGraphicsScene();
     QPixmap background(":images/background.png");
     scene->setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
-    // scene->setBackgroundBrush(PATV_COLOR_BACKGROUND);
     setScene(scene);
 
     int y = 0;
@@ -48,7 +47,7 @@ void PatchSectionView::buildPatchSection()
         y += cv->boundingRect().height();
     }
     if (!isEmpty())
-        currentCircuitView()->select(section->cursorPosition());
+        updateCursor();
 }
 
 void PatchSectionView::deletePatchSection()
@@ -112,7 +111,7 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
         newPosition ++;
     section->addNewCircuit(newPosition, name, jackSelection);
     rebuildPatchSection();
-    currentCircuitView()->select(section->cursorPosition());
+    updateCursor();
     ensureVisible(currentCircuitView());
     the_forge->patchHasChanged();
 }
@@ -132,7 +131,7 @@ void PatchSectionView::addNewJack(QString name)
     section->setCursorRow(index);
     section->setCursorColumn(1);
     rebuildPatchSection();
-    currentCircuitView()->select(section->cursorPosition());
+    updateCursor();
     the_forge->patchHasChanged();
 }
 
@@ -242,6 +241,7 @@ void PatchSectionView::editAtom(int key)
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
+        updateCursor();
         the_forge->patchHasChanged();
     }
 }
@@ -274,6 +274,33 @@ void PatchSectionView::updateCircuits()
 {
     for (unsigned i=0; i<circuitViews.size(); i++)
         circuitViews[i]->update();
+}
+
+void PatchSectionView::updateRegisterHilites() const
+{
+    CursorPosition cursor = section->cursorPosition();
+    QStringList registers;
+    const Circuit *circuit = currentCircuit();
+    if (cursor.row == -2 || cursor.row == -1) // Circuit selected
+        circuit->collectRegisterAtoms(registers);
+    else {
+        const JackAssignment *ja = circuit->jackAssignment(cursor.row);
+        if (cursor.column == 0)
+            ja->collectRegisterAtoms(registers);
+        else {
+            const Atom *atom = ja->atomAt(cursor.column);
+            if (atom)
+                atom->collectRegisterAtoms(registers);
+        }
+    }
+    registers.removeDuplicates();
+    the_forge->hiliteRegisters(registers);
+}
+
+void PatchSectionView::updateCursor()
+{
+    currentCircuitView()->select(section->cursorPosition());
+    updateRegisterHilites();
 }
 
 bool PatchSectionView::handleMousePress(const QPointF &pos)
@@ -343,7 +370,7 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
         section->moveCursorToPreviousCircuit();
     else
         section->moveCursorToNextCircuit();
-    currentCircuitView()->select(section->cursorPosition());
+    updateCursor();
     ensureVisible(currentCircuitView());
 }
 
@@ -379,7 +406,7 @@ void PatchSectionView::deleteCurrentComment()
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentComment();
     rebuildPatchSection();
-    currentCircuitView()->select(section->cursorPosition());
+    updateCursor();
     the_forge->patchHasChanged();
 }
 
@@ -391,7 +418,7 @@ void PatchSectionView::deleteCurrentJack()
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentJackAssignment();
     rebuildPatchSection();
-    currentCircuitView()->select(section->cursorPosition());
+    updateCursor();
     the_forge->patchHasChanged();
 }
 
@@ -434,7 +461,7 @@ void PatchSectionView::moveCursorLeftRight(int whence)
         section->moveCursorLeft();
     else
         section->moveCursorRight();
-    currentCircuitView()->select(section->cursorPosition());
+    updateCursor();
 }
 
 
@@ -450,6 +477,6 @@ void PatchSectionView::moveCursorUpDown(int whence)
     else // up
         section->moveCursorUp();
 
-    currentCircuitView()->select(section->cursorPosition());
+    updateCursor();
     ensureVisible(currentCircuitView());
 }

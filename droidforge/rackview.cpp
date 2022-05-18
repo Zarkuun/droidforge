@@ -21,6 +21,7 @@ RackView::RackView()
     QPixmap background(":images/rackbackground.png");
     QBrush brush(background.scaledToHeight(RACV_BACKGROUND_HEIGHT)); //kheight() * 50));
     scene()->setBackgroundBrush(brush);
+    setMouseTracking(true);
 }
 
 void RackView::resizeEvent(QResizeEvent *)
@@ -49,6 +50,61 @@ void RackView::mousePressEvent(QMouseEvent *event)
     }
 }
 
+void RackView::mouseMoveEvent(QMouseEvent *event)
+{
+    QPoint pos = event->pos(); // mapToScene(event->pos()).toPoint();
+    QGraphicsItem *item = itemAt(pos);
+    if (item->data(1).isValid()) {
+        Module *module = (Module *)item;
+        QPointF relPos = mapToScene(pos) - module->pos();
+        qDebug() << relPos << module->name();
+        AtomRegister *ar = module->registerAt(relPos.toPoint());
+        if (ar) {
+            qDebug() << "REG" << ar->toString();
+            delete ar;
+        }
+        else
+            qDebug() << "NIX";
+    }
+}
+
+void RackView::hiliteRegisters(const QStringList &registers)
+{
+    QList<QGraphicsItem *> items = scene()->items();
+    for (qsizetype i=0; i<items.count(); i++) {
+        QGraphicsItem *gi = items[i];
+        if (gi->data(1).isValid()) {
+            Module *module = (Module *)gi;
+            unsigned controller = 0;
+            if (gi->data(0).isValid())
+                controller = gi->data(0).toInt() + 1;
+
+            // QString name = gi->data(1).toString();
+            module->clearHilites();
+            for (qsizetype r=0; r<registers.count(); r++)
+            {
+                // "B12.3" or "G9"
+                QString reg = registers[r];
+                QChar type = reg[0];
+                QString numbers = reg.mid(1);
+                unsigned cont = 0;
+                unsigned num = 0;
+                if (numbers.contains(".")) {
+                    QStringList parts = numbers.split(".");
+                    cont = parts[0].toInt();
+                    num = parts[1].toInt();
+                    if (cont == controller) {
+                        module->hiliteControls(true, type, num);
+                    }
+                }
+                else
+                    num = numbers.toInt();
+            }
+            module->update();
+        }
+    }
+}
+
 void RackView::popupContextMenu(int controller)
 {
    QMenu *menu=new QMenu(this);
@@ -66,7 +122,7 @@ void RackView::popupContextMenu(int controller)
 
 void RackView::removeController(int controller)
 {
-    // TODO:
+    // TODO
     qDebug() <<  "WEG MIT" << controller;
 }
 
@@ -107,12 +163,12 @@ void RackView::updateSize()
 void RackView::addModule(const QString &name, int controllerIndex)
 {
     Module *module = ModuleBuilder::buildModule(name);
+    module->setData(1, name);
     scene()->addItem(module);
     if (controllerIndex >= 0)
         module->setData(0, controllerIndex);
     module->setPos(x, RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;
-    module->hiliteControls(); // TODO TEST
 }
 
 void RackView::addController()

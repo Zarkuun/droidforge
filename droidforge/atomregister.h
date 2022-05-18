@@ -4,16 +4,9 @@
 #include <QChar>
 
 #include "atom.h"
+#include "registertypes.h"
 
-#define    REGISTER_INPUT  'I'
-#define    REGISTER_OUTPUT 'O'
-#define    REGISTER_BUTTON 'B'
-#define    REGISTER_LED    'L'
-#define    REGISTER_POT    'P'
-#define    REGISTER_SWITCH 'S'
-#define    REGISTER_RGB    'R'
-#define    REGISTER_EXTRA  'X'
-
+// TODO: use these in the Module... classes
 
 class AtomRegister : public Atom
 {
@@ -35,6 +28,7 @@ public:
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromindex, int toindex);
+    void collectRegisterAtoms(QStringList &) const;
 };
 
 #endif // ATOMREGISTER_H

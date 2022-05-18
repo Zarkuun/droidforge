@@ -79,7 +79,7 @@ void RegisterSelector::setRegisterNumber(unsigned n)
 void RegisterSelector::setAtom(const Patch *, const Atom *atom)
 {
     if (atom->isInvalid()) {
-        setRegisterType('I');
+        setRegisterType(REGISTER_INPUT);
         setRegisterNumber(1);
         setControllerNumber(0);
     }

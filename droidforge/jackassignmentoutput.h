@@ -13,8 +13,8 @@ public:
     ~JackAssignmentOutput();
     Atom *getAtom() const;;
     QString valueToString() const;
-    const Atom *atomAt(int) const { return atom; };
-    Atom *atomAt(int) { return atom; };
+    const Atom *atomAt(int a) const { return a == 1 ? atom : 0; };
+    Atom *atomAt(int a) { return a == 1 ? atom : 0; };
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &cables) const;
     void parseExpression(const QString &expression);

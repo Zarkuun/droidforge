@@ -225,3 +225,9 @@ void PatchSection::swapControllerNumbers(int fromindex, int toindex)
     for (qsizetype i=0; i<circuits.length(); i++)
         circuits[i]->swapControllerNumbers(fromindex, toindex);
 }
+
+void PatchSection::collectRegisterAtoms(QStringList &sl) const
+{
+    for (qsizetype i=0; i<circuits.length(); i++)
+        circuits[i]->collectRegisterAtoms(sl);
+}

@@ -3,18 +3,18 @@
 
 unsigned ModuleP2B8::numControls(QChar type) const
 {
-    if (type == 'B' || type == 'L')
+    if (type == REGISTER_BUTTON || type == REGISTER_LED)
         return 8;
-    else if (type == 'P')
+    else if (type == REGISTER_POT)
         return 2;
     else
         return 0;
 }
 
 
-QPointF ModuleP2B8::controlPosition(QChar type, unsigned number)
+QPointF ModuleP2B8::controlPosition(QChar type, unsigned number) const
 {
-    if (type == 'P') {
+    if (type == REGISTER_POT) {
         if (number == 1)
             return QPointF(hp()/2, 3.63);
         else
@@ -27,9 +27,9 @@ QPointF ModuleP2B8::controlPosition(QChar type, unsigned number)
     }
 }
 
-float ModuleP2B8::controlSize(QChar type, unsigned)
+float ModuleP2B8::controlSize(QChar type, unsigned) const
 {
-    if (type == 'P')
+    if (type == REGISTER_POT)
         return CONTROL_LARGE_POT_SIZE;
     else
         return CONTROL_BUTTON_SIZE;

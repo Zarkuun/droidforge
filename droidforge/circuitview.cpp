@@ -282,7 +282,6 @@ QRect CircuitView::atomRect(int row, int column) const
     return QRect(x, jackRect(row).top(), width, CIRV_JACK_HEIGHT);
 }
 
-
 void CircuitView::select(const CursorPosition &cursor)
 {
     currentJack = cursor.row;
@@ -290,7 +289,6 @@ void CircuitView::select(const CursorPosition &cursor)
     selected = true;
     update();
 }
-
 
 void CircuitView::deselect()
 {

@@ -22,6 +22,8 @@ public:
     void resizeEvent(QResizeEvent *event);
     void setPatch(Patch *patch);
     void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void hiliteRegisters(const QStringList &registers);
 
 private:
     void addModule(const QString &name, int controllerIndex=-1);

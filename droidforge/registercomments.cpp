@@ -1,5 +1,6 @@
 #include "registercomments.h"
 #include "tuning.h"
+#include "atomregister.h"
 
 
 RegisterComments::~RegisterComments()
@@ -43,11 +44,11 @@ QString RegisterComments::toString() const
 
     // First output global registers
     static regtitle_t globalRegtypes[] =  {
-        { 'I', "INPUTS" },
-        { 'N', "NORMALIZATIONS" },
-        { 'O', "OUTPUTS" },
-        { 'G', "GATES" },
-        { 'R', "RGB LEDS" },
+        { REGISTER_INPUT, "INPUTS" },
+        { REGISTER_NORMALIZE, "NORMALIZATIONS" },
+        { REGISTER_OUTPUT, "OUTPUTS" },
+        { REGISTER_GATE, "GATES" },
+        { REGISTER_RGB, "RGB LEDS" },
     };
 
     for (unsigned i=0; i<sizeof(globalRegtypes) / sizeof(regtitle_t); i++)
@@ -56,11 +57,11 @@ QString RegisterComments::toString() const
 
     // And now the registers on the controllers
     static regtitle_t controllerRegtypes[] =  {
-        { 'P', "POTS" },
-        { 'B', "BUTTONS" },
-        { 'L', "LEDS" },
-        { 'S', "SWITCHES" },
-        { 'R', "RGB LEDS" },
+        { REGISTER_POT, "POTS" },
+        { REGISTER_BUTTON, "BUTTONS" },
+        { REGISTER_LED, "LEDS" },
+        { REGISTER_SWITCH, "SWITCHES" },
+        { REGISTER_RGB, "RGB LEDS" },
     };
 
     for (unsigned cn=0; cn<MAX_NUM_CONTROLLERS; cn++) {

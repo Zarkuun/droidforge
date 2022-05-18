@@ -173,6 +173,11 @@ void MainWindow::patchHasChanged()
     repaintPatchView();
 }
 
+void MainWindow::hiliteRegisters(const QStringList &registers)
+{
+    rackview.hiliteRegisters(registers);
+}
+
 void MainWindow::updateActions()
 {
     if (undoHistory.undoPossible()) {
@@ -226,6 +231,7 @@ void MainWindow::updateWindowTitle()
 void MainWindow::updateRackView()
 {
     rackview.setPatch(patch);
+    patchview.updateRegisterHilites();
 }
 
 void MainWindow::repaintPatchView()

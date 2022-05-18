@@ -86,6 +86,15 @@ void JackAssignment::swapControllerNumbers(int fromindex, int toindex)
     }
 }
 
+void JackAssignment::collectRegisterAtoms(QStringList &sl) const
+{
+    for (int i=0; i<3; i++) {
+         const Atom *atom = atomAt(i);
+         if (atom)
+             atom->collectRegisterAtoms(sl);
+    }
+}
+
 Atom *JackAssignment::parseCable(QString s)
 {
     static QRegularExpression exp("^_[a-z][a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);

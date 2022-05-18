@@ -3,13 +3,13 @@
 
 unsigned ModuleM4::numControls(QChar type) const
 {
-    if (type == 'P' || type == 'B' || type == 'L')
+    if (type == REGISTER_POT || type == REGISTER_BUTTON || type == REGISTER_LED)
         return 4;
     else
         return 0;
 }
 
-QPointF ModuleM4::controlPosition(QChar type, unsigned number)
+QPointF ModuleM4::controlPosition(QChar type, unsigned number) const
 {
     const float faderPositions[4] = {
         17.5,
@@ -21,17 +21,16 @@ QPointF ModuleM4::controlPosition(QChar type, unsigned number)
     float x = 3.56 * (number - 1) + 1.65;
     float y;
 
-    if (type == 'P')
+    if (type == REGISTER_POT)
         y = faderPositions[number - 1];
     else
         y = 23.0;
     return QPointF(x, y);
 }
 
-
-float ModuleM4::controlSize(QChar type, unsigned)
+float ModuleM4::controlSize(QChar type, unsigned) const
 {
-    if (type == 'P')
+    if (type == REGISTER_POT)
         return CONTROL_M4_FADER_SIZE;
     else
         return CONTROL_M4_TOUCH_SIZE;

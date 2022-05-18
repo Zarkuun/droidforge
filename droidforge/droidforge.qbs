@@ -137,6 +137,8 @@ QtApplication {
         "registercomments.h",
         "registerselector.cpp",
         "registerselector.h",
+        "registertypes.cpp",
+        "registertypes.h",
         "resources.qrc",
         "tuning.h",
         "undohistory.cpp",

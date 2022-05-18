@@ -8,23 +8,23 @@
 InputOutputSelector::InputOutputSelector(jacktype_t jacktype, QWidget *parent)
     : RegisterSelector(
           false,
-          jacktype == JACKTYPE_INPUT ? 'I' : 'O',
+          jacktype == JACKTYPE_INPUT ? REGISTER_INPUT : REGISTER_OUTPUT,
           jacktype == JACKTYPE_INPUT ? "IGRO" : "OGNRX",
           parent)
     , jacktype(jacktype)
 {
     if (jacktype == JACKTYPE_INPUT) {
-        addRegisterButton('I', tr("Input"));
-        addRegisterButton('G', tr("Gate"));
-        addRegisterButton('R', tr("RGB-LED"));
-        addRegisterButton('O', tr("Output"));
+        addRegisterButton(REGISTER_INPUT, tr("Input"));
+        addRegisterButton(REGISTER_GATE, tr("Gate"));
+        addRegisterButton(REGISTER_RGB, tr("RGB-LED"));
+        addRegisterButton(REGISTER_OUTPUT, tr("Output"));
     }
     else {
-        addRegisterButton('O', tr("Output"));
-        addRegisterButton('G', tr("Gate"));
-        addRegisterButton('N', tr("Normalization"));
-        addRegisterButton('R', tr("RGB-LED"));
-        addRegisterButton('X', tr("Special"));
+        addRegisterButton(REGISTER_OUTPUT, tr("Output"));
+        addRegisterButton(REGISTER_GATE, tr("Gate"));
+        addRegisterButton(REGISTER_NORMALIZE, tr("Normalization"));
+        addRegisterButton(REGISTER_RGB, tr("RGB-LED"));
+        addRegisterButton(REGISTER_EXTRA, tr("Special"));
     }
 }
 

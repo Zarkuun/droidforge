@@ -31,8 +31,10 @@ public:
     void editCircuitComment(int key);
     bool isEmpty() const;
     void updateCircuits();
+    void updateRegisterHilites() const;
 
 private:
+    void updateCursor();
     bool handleMousePress(const QPointF &pos);
     void buildPatchSection();
     void deletePatchSection();

@@ -4,18 +4,18 @@
 ControlSelector::ControlSelector(jacktype_t jacktype, QWidget *parent)
     : RegisterSelector(
           true,
-          jacktype == JACKTYPE_INPUT ? 'B' : 'L',
+          jacktype == JACKTYPE_INPUT ? REGISTER_BUTTON : REGISTER_LED,
           jacktype == JACKTYPE_INPUT ? "BLPS" : "LS", parent)
 {
     if (jacktype == JACKTYPE_INPUT) {
-        addRegisterButton('B', tr("Button"));
-        addRegisterButton('L', tr("LED in Button"));
-        addRegisterButton('P', tr("Potentiometer"));
-        addRegisterButton('S', tr("Swich"));
+        addRegisterButton(REGISTER_BUTTON, tr("Button"));
+        addRegisterButton(REGISTER_LED, tr("LED in Button"));
+        addRegisterButton(REGISTER_POT, tr("Potentiometer"));
+        addRegisterButton(REGISTER_SWITCH, tr("Swich"));
     }
     else {
-        addRegisterButton('L', tr("LED in Button"));
-        addRegisterButton('S', tr("Swich"));
+        addRegisterButton(REGISTER_LED, tr("LED in Button"));
+        addRegisterButton(REGISTER_SWITCH, tr("Swich"));
     }
 }
 

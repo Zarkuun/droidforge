@@ -61,6 +61,7 @@ public:
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
     void patchHasChanged();
+    void hiliteRegisters(const QStringList &registers);
 
 protected:
     void keyPressEvent(QKeyEvent *event);
