@@ -40,10 +40,15 @@ void RackView::mousePressEvent(QMouseEvent *event)
     if (event->type() == QMouseEvent::MouseButtonPress) {
         QGraphicsItem *item = itemAt(event->pos());
         if (event->button() == Qt::RightButton) {
-            if (item->data(0).isValid()) {
-                popupContextMenu(item->data(0).toInt());
+            if (item->data(DATA_INDEX_CONTROLLER_INDEX).isValid()) {
+                popupContextMenu(item->data(DATA_INDEX_CONTROLLER_INDEX).toInt());
             }
             // TODO: Add context menu for adding a controller
+        }
+        else if (event->button() == Qt::LeftButton) {
+            QGraphicsItem *item = itemAt(event->pos());
+            if (item == registerMarker)
+                the_forge->clickOnRegister(markedRegister);
         }
         else if (!item)
             addController();
@@ -54,16 +59,17 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
     QGraphicsItem *item = itemAt(mousePos);
-    if (item->data(1).isValid()) {
+    if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
         Module *module = (Module *)item;
         QPointF relPos = mapToScene(mousePos) - module->pos();
         AtomRegister *ar = module->registerAt(relPos.toPoint());
         if (ar) {
+            qDebug() << "IS" << ar->toString();
             QChar t = ar->getRegisterType();
             unsigned n = ar->getNumber();
             float diameter = module->controlSize(t, n) * RACV_PIXEL_PER_HP;
             QPointF pos = module->controlPosition(t, n) * RACV_PIXEL_PER_HP;
-            updateRegisterMarker(pos + module->pos(), diameter);
+            updateRegisterMarker(ar, pos + module->pos(), diameter);
             delete ar;
         }
         else
@@ -76,13 +82,12 @@ void RackView::hiliteRegisters(const RegisterList &registers)
     QList<QGraphicsItem *> items = scene()->items();
     for (qsizetype i=0; i<items.count(); i++) {
         QGraphicsItem *gi = items[i];
-        if (gi->data(1).isValid()) {
+        if (gi->data(DATA_INDEX_MODULE_NAME).isValid()) {
             Module *module = (Module *)gi;
             unsigned controller = 0;
-            if (gi->data(0).isValid())
-                controller = gi->data(0).toInt() + 1;
+            if (gi->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+                controller = gi->data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
 
-            // QString name = gi->data(1).toString();
             module->clearHilites();
             for (qsizetype r=0; r<registers.count(); r++)
             {
@@ -96,8 +101,9 @@ void RackView::hiliteRegisters(const RegisterList &registers)
     }
 }
 
-void RackView::updateRegisterMarker(QPointF p, float diameter)
+void RackView::updateRegisterMarker(AtomRegister *ar, QPointF p, float diameter)
 {
+    markedRegister = *ar;
     diameter += RACV_REGMARKER_EXTRA_DIAMETER;
     QPointF pos(p.x() - diameter/2, p.y() - diameter/2);
     QRectF r(pos, QSizeF(diameter, diameter));
@@ -177,10 +183,10 @@ void RackView::updateSize()
 void RackView::addModule(const QString &name, int controllerIndex)
 {
     Module *module = ModuleBuilder::buildModule(name);
-    module->setData(1, name);
+    module->setData(DATA_INDEX_MODULE_NAME, name);
     scene()->addItem(module);
     if (controllerIndex >= 0)
-        module->setData(0, controllerIndex);
+        module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
     module->setPos(x, RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;
 }

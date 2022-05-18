@@ -294,8 +294,19 @@ void PatchSectionView::updateRegisterHilites() const
         }
     }
     // TODO:
-    //registers.removeDuplicates();
+    // registers.removeDuplicates();
     the_forge->hiliteRegisters(registers);
+}
+
+void PatchSectionView::clickOnRegister(AtomRegister ar)
+{
+    CursorPosition cursor = section->cursorPosition();
+    if (cursor.row < 0 || cursor.column == 0) return;
+    JackAssignment *ja = currentCircuit()->jackAssignment(cursor.row);
+
+    the_forge->registerEdit(tr("inserting register %1").arg(ar.toString()));
+    ja->replaceAtom(cursor.column, ar.clone());
+    the_forge->patchHasChanged();
 }
 
 void PatchSectionView::updateCursor()
@@ -328,7 +339,7 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
             pos.row = cv->jackAt(posInCircuit.y());
             pos.column = cv->columnAt(posInCircuit.x());
             section->setCursor(pos);
-            currentCircuitView()->select(pos);
+            updateCursor();
             ensureVisible(currentCircuitView());
         }
     }
@@ -390,7 +401,6 @@ void PatchSectionView::deleteCurrentRow()
     else
         deleteCurrentAtom();
 }
-
 
 void PatchSectionView::deleteCurrentCircuit()
 {

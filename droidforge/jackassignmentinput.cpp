@@ -57,6 +57,8 @@ Atom *JackAssignmentInput::atomAt(int column)
 
 void JackAssignmentInput::replaceAtom(int column, Atom *newAtom)
 {
+    // TODO: Sollten wir nicht so ein Array der Atome machen, anstelle
+    // von a, b und c?
     Atom *old;
     if (column == 1) {
         old = atomA;

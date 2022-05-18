@@ -24,6 +24,7 @@ public:
     PatchSectionView *currentPatchSectionView();
     int numSections() const;;
     void updateRegisterHilites() const;
+    void clickOnRegister(AtomRegister ar);
 
 public slots:
     void nextSection();

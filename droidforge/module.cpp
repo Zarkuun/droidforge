@@ -90,8 +90,8 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
 AtomRegister *Module::registerAtom(QChar type, unsigned number) const
 {
     unsigned controller = 0;
-    if (data(0).isValid())
-        controller = data(0).toInt();
+    if (data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+        controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
 
     return new AtomRegister(type, controller, number);
 }

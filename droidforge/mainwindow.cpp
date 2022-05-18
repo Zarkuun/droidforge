@@ -34,8 +34,8 @@ MainWindow::MainWindow(const QString &initialFilename)
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
     this->setCentralWidget(splitter);
-    splitter->addWidget(&rackview);
-    splitter->addWidget(&patchview);
+    splitter->addWidget(&rackView);
+    splitter->addWidget(&patchView);
     splitter->setHandleWidth(RACV_SPLITTER_HANDLE_WIDTH);
     QSettings settings;
     if (settings.contains("mainwindow/splitposition"))
@@ -94,14 +94,14 @@ void MainWindow::setPatch(Patch *newpatch)
     if (patch)
         delete patch;
     patch = newpatch;
-    rackview.setPatch(patch);
-    patchview.setPatch(patch);
+    rackView.setPatch(patch);
+    patchView.setPatch(patch);
 }
 
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (!patchview.handleKeyPress(event->key())) {
+    if (!patchView.handleKeyPress(event->key())) {
         event->ignore();
         // QWidget::keyPressEvent(event);
     }
@@ -155,13 +155,13 @@ void MainWindow::createActions()
     nextSectionAct->setShortcut(QKeySequence(tr("Ctrl+Right")));
     nextSectionAct->setStatusTip(tr("Switch to the next section"));
     addAction(nextSectionAct);
-    connect(nextSectionAct, &QAction::triggered, &patchview, &PatchView::nextSection);
+    connect(nextSectionAct, &QAction::triggered, &patchView, &PatchView::nextSection);
 
     QAction *prevSectionAct = new QAction(tr("Previous section"));
     prevSectionAct->setShortcut(QKeySequence(tr("Ctrl+Left")));
     prevSectionAct->setStatusTip(tr("Switch to the previous section"));
     addAction(prevSectionAct);
-    connect(prevSectionAct, &QAction::triggered, &patchview, &PatchView::previousSection);
+    connect(prevSectionAct, &QAction::triggered, &patchView, &PatchView::previousSection);
 }
 
 
@@ -175,7 +175,12 @@ void MainWindow::patchHasChanged()
 
 void MainWindow::hiliteRegisters(const RegisterList &registers)
 {
-    rackview.hiliteRegisters(registers);
+    rackView.hiliteRegisters(registers);
+}
+
+void MainWindow::clickOnRegister(AtomRegister ar)
+{
+    patchView.clickOnRegister(ar);
 }
 
 void MainWindow::updateActions()
@@ -198,12 +203,12 @@ void MainWindow::updateActions()
         redoAction->setEnabled(false);
     }
 
-    const PatchSectionView *psv = patchview.currentPatchSectionView();
+    const PatchSectionView *psv = patchView.currentPatchSectionView();
     bool empty = !psv || psv->isEmpty();
     addJackAction->setEnabled(!empty);
     editValueAction->setEnabled(!empty);
     editCircuitCommentAction->setEnabled(!empty);
-    if (patchview.numSections() > 1) {
+    if (patchView.numSections() > 1) {
         deletePatchSectionAction->setText(tr("Delete section") + " '" + psv->getTitle() + "'");
         deletePatchSectionAction->setEnabled(true);
     }
@@ -230,13 +235,13 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::updateRackView()
 {
-    rackview.setPatch(patch);
-    patchview.updateRegisterHilites();
+    rackView.setPatch(patch);
+    patchView.updateRegisterHilites();
 }
 
 void MainWindow::repaintPatchView()
 {
-    PatchSectionView *psv = patchview.currentPatchSectionView();
+    PatchSectionView *psv = patchView.currentPatchSectionView();
     if (psv)
         psv->updateCircuits();
 }
@@ -304,7 +309,7 @@ void MainWindow::createFileMenu()
     // Patch properties
     QAction *patchPropertiesAct = new QAction(icon("dns"), tr("&Patch properties..."), this);
     patchPropertiesAct->setShortcut(QKeySequence(tr("Ctrl+.")));
-    connect(patchPropertiesAct, &QAction::triggered, &patchview, &PatchView::editProperties);
+    connect(patchPropertiesAct, &QAction::triggered, &patchView, &PatchView::editProperties);
     fileMenu->addAction(patchPropertiesAct);
 }
 
@@ -363,14 +368,14 @@ void MainWindow::createEditMenu()
     // New circuit...
     newCircuitAction = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
     newCircuitAction->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
-    connect(newCircuitAction, &QAction::triggered, &patchview, &PatchView::newCircuit);
+    connect(newCircuitAction, &QAction::triggered, &patchView, &PatchView::newCircuit);
     editMenu->addAction(newCircuitAction);
     toolbar->addAction(newCircuitAction);
 
     // New jacks assignment
     addJackAction = new QAction(icon("settings_input_composite"), tr("&Add jack..."), this);
     addJackAction->setShortcut(QKeySequence(tr("Ctrl+N")));
-    connect(addJackAction, &QAction::triggered, &patchview, &PatchView::addJack);
+    connect(addJackAction, &QAction::triggered, &patchView, &PatchView::addJack);
     editMenu->addAction(addJackAction);
     toolbar->addAction(addJackAction);
 
@@ -380,30 +385,30 @@ void MainWindow::createEditMenu()
                                     QKeySequence(tr("Enter")),
                                     QKeySequence(tr("Return"))});
     editMenu->addAction(editValueAction);
-    connect(editValueAction, &QAction::triggered, &patchview, &PatchView::editValue);
+    connect(editValueAction, &QAction::triggered, &patchView, &PatchView::editValue);
 
     // Edit comment of current circuit
     editCircuitCommentAction = new QAction(tr("Edit circuit comment..."), this);
     editCircuitCommentAction->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
     editMenu->addAction(editCircuitCommentAction);
-    connect(editCircuitCommentAction, &QAction::triggered, &patchview, &PatchView::editCircuitComment);
+    connect(editCircuitCommentAction, &QAction::triggered, &patchView, &PatchView::editCircuitComment);
 
     editMenu->addSeparator();
 
     // Add section
     addPatchSectionAction = new QAction(tr("Add section..."), this);
     editMenu->addAction(addPatchSectionAction);
-    connect(addPatchSectionAction, &QAction::triggered, &patchview, &PatchView::addSection);
+    connect(addPatchSectionAction, &QAction::triggered, &patchView, &PatchView::addSection);
 
     // Rename section
     renamePatchSectionAction = new QAction(tr("Rename section..."), this);
     editMenu->addAction(renamePatchSectionAction);
-    connect(renamePatchSectionAction, &QAction::triggered, &patchview, &PatchView::renameCurrentSection);
+    connect(renamePatchSectionAction, &QAction::triggered, &patchView, &PatchView::renameCurrentSection);
 
     // Delete section
     deletePatchSectionAction = new QAction(tr("Delete section"), this);
     editMenu->addAction(deletePatchSectionAction);
-    connect(deletePatchSectionAction, &QAction::triggered, &patchview, &PatchView::deleteCurrentSection);
+    connect(deletePatchSectionAction, &QAction::triggered, &patchView, &PatchView::deleteCurrentSection);
 
 }
 
@@ -414,7 +419,7 @@ void MainWindow::createRackMenu()
     // Add controller
     addControllerAction = new QAction(icon("keyboard"), tr("&Add controller..."), this);
     addControllerAction->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
-    connect(addControllerAction, &QAction::triggered, &rackview, &RackView::addController);
+    connect(addControllerAction, &QAction::triggered, &rackView, &RackView::addController);
     rackMenu->addAction(addControllerAction);
     toolbar->addSeparator();
     toolbar->addAction(addControllerAction);
@@ -481,8 +486,8 @@ void MainWindow::undo()
         if (patch)
             delete patch;
         patch = undoHistory.undo();
-        rackview.setPatch(patch);
-        patchview.setPatch(patch);
+        rackView.setPatch(patch);
+        patchView.setPatch(patch);
         patchHasChanged();
     }
 }
@@ -494,8 +499,8 @@ void MainWindow::redo()
         if (patch)
             delete patch;
         patch = undoHistory.redo();
-        rackview.setPatch(patch);
-        patchview.setPatch(patch);
+        rackView.setPatch(patch);
+        patchView.setPatch(patch);
         patchHasChanged();
     }
 }

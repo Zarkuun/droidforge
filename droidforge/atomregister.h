@@ -19,6 +19,7 @@ class AtomRegister : public Atom
     } data;
 
 public:
+    AtomRegister();
     AtomRegister(QChar t, unsigned c, unsigned n);
     AtomRegister(uint32_t raw);
     AtomRegister(const AtomRegister& ar);

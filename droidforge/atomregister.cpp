@@ -2,6 +2,11 @@
 
 #include <QStringList>
 
+AtomRegister::AtomRegister()
+{
+    data.raw = 0;
+}
+
 AtomRegister::AtomRegister(QChar t, unsigned c, unsigned n)
 {
     data.r.registerType = t.toLatin1();

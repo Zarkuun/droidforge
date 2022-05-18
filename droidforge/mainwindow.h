@@ -35,8 +35,8 @@ private:
     QString initialFilename;
     Patch *patch;
     QString filename; // of loaded patch
-    RackView rackview;
-    PatchView patchview;
+    RackView rackView;
+    PatchView patchView;
     QSplitter *splitter;
     QToolBar *toolbar;
     QAction *undoAction;
@@ -62,6 +62,7 @@ public:
     void registerEdit(QString name);
     void patchHasChanged();
     void hiliteRegisters(const RegisterList &registers);
+    void clickOnRegister(AtomRegister);
 
 protected:
     void keyPressEvent(QKeyEvent *event);

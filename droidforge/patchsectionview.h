@@ -32,6 +32,7 @@ public:
     bool isEmpty() const;
     void updateCircuits();
     void updateRegisterHilites() const;
+    void clickOnRegister(AtomRegister ar);
 
 private:
     void updateCursor();

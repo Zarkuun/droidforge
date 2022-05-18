@@ -14,6 +14,11 @@ QT_END_NAMESPACE
 
 #define MAX_CONTROLS_OF_TYPE 32
 
+// for data(...) of QGraphicsItem
+#define DATA_INDEX_CONTROLLER_INDEX 0 // starting from 0, not from 1!
+#define DATA_INDEX_MODULE_NAME      1 // QString, etc. "b32"
+
+
 class Module : public QGraphicsItem
 {
     QPixmap faceplateImage;

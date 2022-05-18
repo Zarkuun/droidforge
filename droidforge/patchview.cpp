@@ -82,6 +82,12 @@ void PatchView::updateRegisterHilites() const
         currentPatchSectionView()->updateRegisterHilites();
 }
 
+void PatchView::clickOnRegister(AtomRegister ar)
+{
+    if (currentPatchSectionView())
+        currentPatchSectionView()->clickOnRegister(ar);
+}
+
 void PatchView::nextSection()
 {
     int i = (currentIndex() + 1) % count();

@@ -18,6 +18,7 @@ class RackView : public QGraphicsView
     QList<Module *> modules;
     unsigned x;
     QGraphicsEllipseItem *registerMarker;
+    AtomRegister markedRegister;
 
 public:
     explicit RackView();
@@ -26,7 +27,6 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void hiliteRegisters(const RegisterList &registers);
-    void updateRegisterMarker(QPointF, float);
     void hideRegisterMarker();
 
 private:
@@ -34,6 +34,7 @@ private:
     void updateGraphics();
     void updateSize();
     void popupContextMenu(int controller);
+    void updateRegisterMarker(AtomRegister *markedAtom, QPointF, float);
 
 public slots:
     void addController();
