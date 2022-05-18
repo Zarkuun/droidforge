@@ -11,11 +11,11 @@ public:
     QString faceplate() const { return "faceplate-m4";  }
     QString title() const { return "M4 Motor Fader Unit";  }
     float hp() const { return 14; }
-    unsigned numControls(QChar type) const;
+    unsigned numRegisters(QChar type) const;
 
 protected:
-    QPointF controlPosition(QChar type, unsigned number) const;
-    float controlSize(QChar type, unsigned number) const;
+    QPointF registerPosition(QChar type, unsigned number) const;
+    float registerSize(QChar type, unsigned number) const;
 };
 
 #endif // MODULEM4_H

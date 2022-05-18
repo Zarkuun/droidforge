@@ -5,7 +5,7 @@
 
 Module::Module(const QString &faceplate)
     : faceplateImage(":images/faceplates/" + faceplate)
-    , controlHilit{{0}}
+    , registerIsHilited{{0}}
 {
 }
 
@@ -15,7 +15,7 @@ Module::~Module()
 
 void Module::clearHilites()
 {
-    memset(&controlHilit, 0, sizeof(controlHilit));
+    memset(&registerIsHilited, 0, sizeof(registerIsHilited));
 }
 
 QRectF Module::boundingRect() const
@@ -30,28 +30,28 @@ void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
 
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         QChar type = register_types[i];
-        for (unsigned j=0; j<numControls(type); j++) {
-            if (controlHilit[i][j]) {
-                paintHiliteControl(painter, type, j+1);
+        for (unsigned j=0; j<numRegisters(type); j++) {
+            if (registerIsHilited[i][j]) {
+                paintHiliteRegister(painter, type, j+1);
             }
         }
     }
 }
 
-void Module::hiliteControls(bool on, QChar type, unsigned number)
+void Module::hiliteRegisters(bool on, QChar type, unsigned number)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         if (type == register_types[i] || type == 0) {
-            for (unsigned j=0; j<numControls(register_types[i]); j++) {
-                if (number == j+1 || number == 0) {
-                    controlHilit[i][j] = on;
+            for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
+                if (number == j+1+numberOffset(type) || number == 0) {
+                    registerIsHilited[i][j] = on;
                 }
             }
         }
     }
 }
 
-void Module::paintHiliteControl(QPainter *painter, QChar type, unsigned number)
+void Module::paintHiliteRegister(QPainter *painter, QChar type, unsigned number)
 {
     QRectF r = registerRect(type, number);
     QPen pen(QColor(255, 255, 0));
@@ -66,8 +66,8 @@ void Module::paintHiliteControl(QPainter *painter, QChar type, unsigned number)
 
 QRectF Module::registerRect(QChar type, unsigned number) const
 {
-    QPointF posHP = controlPosition(type, number); // in HP, mid
-    float size = controlSize(type, number) * RACV_PIXEL_PER_HP;
+    QPointF posHP = registerPosition(type, number); // in HP, mid
+    float size = registerSize(type, number) * RACV_PIXEL_PER_HP;
     QPointF pos(posHP.x() * RACV_PIXEL_PER_HP - size/2,
                 posHP.y() * RACV_PIXEL_PER_HP - size/2);
     return QRectF(pos, QSize(size, size));
@@ -79,7 +79,7 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
         QChar type = register_types[i];
         if (type == REGISTER_EXTRA)
             continue; // This should not be clickable
-        for (unsigned j=0; j<numControls(register_types[i]); j++) {
+        for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
             QRectF r = registerRect(type, j+1);
             if (r.contains(pos)) {
                 return registerAtom(type, j+1);
@@ -95,5 +95,5 @@ AtomRegister *Module::registerAtom(QChar type, unsigned number) const
     if (data(DATA_INDEX_CONTROLLER_INDEX).isValid())
         controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
 
-    return new AtomRegister(type, controller, number);
+    return new AtomRegister(type, controller, number + numberOffset(type));
 }

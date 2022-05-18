@@ -22,7 +22,7 @@ QT_END_NAMESPACE
 class Module : public QGraphicsItem
 {
     QPixmap faceplateImage;
-    bool controlHilit[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE];
+    bool registerIsHilited[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE];
 
 public:
     Module(const QString &faceplate);
@@ -30,12 +30,13 @@ public:
     virtual QString name() const = 0;
     virtual QString title() const = 0;
     virtual float hp() const = 0;
-    virtual unsigned numControls(QChar) const { return 0; };
-    virtual QPointF controlPosition(QChar, unsigned) const = 0; // in HP
-    virtual float controlSize(QChar, unsigned) const = 0; // in HP
+    virtual unsigned numRegisters(QChar) const { return 0; };
+    virtual unsigned numberOffset(QChar) const { return 0; };
+    virtual QPointF registerPosition(QChar, unsigned) const = 0; // in HP
+    virtual float registerSize(QChar, unsigned) const = 0; // in HP
 
     void clearHilites();
-    void hiliteControls(bool on=true, QChar type='\0', unsigned number=0);
+    void hiliteRegisters(bool on=true, QChar type='\0', unsigned number=0);
     const QPixmap *getFaceplateImage() const { return &faceplateImage; };
     AtomRegister *registerAt(const QPoint &pos) const;
     AtomRegister *registerAtom(QChar type, unsigned number) const;
@@ -45,7 +46,7 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
-    void paintHiliteControl(QPainter *painter, QChar type, unsigned number);
+    void paintHiliteRegister(QPainter *painter, QChar type, unsigned number);
     QRectF registerRect(QChar type, unsigned number) const;
 };
 

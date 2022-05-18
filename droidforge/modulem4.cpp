@@ -1,7 +1,7 @@
 #include "modulem4.h"
 #include "tuning.h"
 
-unsigned ModuleM4::numControls(QChar type) const
+unsigned ModuleM4::numRegisters(QChar type) const
 {
     if (type == REGISTER_POT || type == REGISTER_BUTTON || type == REGISTER_LED)
         return 4;
@@ -9,7 +9,7 @@ unsigned ModuleM4::numControls(QChar type) const
         return 0;
 }
 
-QPointF ModuleM4::controlPosition(QChar type, unsigned number) const
+QPointF ModuleM4::registerPosition(QChar type, unsigned number) const
 {
     const float faderPositions[4] = {
         17.5,
@@ -28,7 +28,7 @@ QPointF ModuleM4::controlPosition(QChar type, unsigned number) const
     return QPointF(x, y);
 }
 
-float ModuleM4::controlSize(QChar type, unsigned) const
+float ModuleM4::registerSize(QChar type, unsigned) const
 {
     if (type == REGISTER_POT)
         return CONTROL_M4_FADER_SIZE;

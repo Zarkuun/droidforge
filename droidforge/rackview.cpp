@@ -65,9 +65,9 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
         AtomRegister *ar = module->registerAt(relPos.toPoint());
         if (ar) {
             QChar t = ar->getRegisterType();
-            unsigned n = ar->getNumber();
-            float diameter = module->controlSize(t, n) * RACV_PIXEL_PER_HP;
-            QPointF pos = module->controlPosition(t, n) * RACV_PIXEL_PER_HP;
+            unsigned n = ar->getNumber() - module->numberOffset(t);
+            float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
+            QPointF pos = module->registerPosition(t, n) * RACV_PIXEL_PER_HP;
             updateRegisterMarker(ar, pos + module->pos(), diameter);
             delete ar;
         }
@@ -91,8 +91,9 @@ void RackView::hiliteRegisters(const RegisterList &registers)
             for (qsizetype r=0; r<registers.count(); r++)
             {
                 AtomRegister ar = registers[r];
+                qDebug() << "REG" << ar.toString();
                 if (ar.getController() == controller)
-                    module->hiliteControls(true, ar.getRegisterType(), ar.getNumber());
+                    module->hiliteRegisters(true, ar.getRegisterType(), ar.getNumber());
                 // TODO: Hilite inputs/ouputs
             }
             module->update();
@@ -161,13 +162,14 @@ void RackView::updateGraphics()
     // Add strut, so space above and below the modules is visible
     scene()->addLine(0, 0, 0, RACV_BACKGROUND_HEIGHT, QPen(QColor(0, 0, 0, 0)));
 
-    x = 10;
+    x = 0;
     addModule("master");
-    if (patch->needG8())
+    // if (patch->needG8())
         addModule("g8");
-    if (patch->needX7())
+    // if (patch->needX7())
         addModule("x7");
-    addModule("blind");
+    // addModule("blind");
+    x += 200;
 
     for (qsizetype i=0; i<patch->numControllers(); i++)
         addModule(patch->controller(i), i);

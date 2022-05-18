@@ -11,11 +11,11 @@ public:
     QString faceplate() const { return "faceplate-p2b8-off"; }
     QString title() const { return "P2B8 Controller"; }
     float hp() const  { return 5; }
-    unsigned numControls(QChar type) const;
+    unsigned numRegisters(QChar type) const;
 
 protected:
-    QPointF controlPosition(QChar type, unsigned number) const;
-    float controlSize(QChar type, unsigned number) const;
+    QPointF registerPosition(QChar type, unsigned number) const;
+    float registerSize(QChar type, unsigned number) const;
 };
 
 #endif // MODULEP2B8_H

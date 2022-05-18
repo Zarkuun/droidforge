@@ -1,7 +1,7 @@
 #include "modulex7.h"
 #include "tuning.h"
 
-unsigned ModuleX7::numControls(QChar type) const
+unsigned ModuleX7::numRegisters(QChar type) const
 {
     if (type == REGISTER_GATE)
         return 4;
@@ -11,7 +11,7 @@ unsigned ModuleX7::numControls(QChar type) const
         return 0;
 }
 
-QPointF ModuleX7::controlPosition(QChar type, unsigned number) const
+QPointF ModuleX7::registerPosition(QChar type, unsigned number) const
 {
     int column = (number - 1) % 2;
     int row = (number - 1) / 2;
@@ -33,11 +33,21 @@ QPointF ModuleX7::controlPosition(QChar type, unsigned number) const
 
 }
 
-float ModuleX7::controlSize(QChar type, unsigned) const
+float ModuleX7::registerSize(QChar type, unsigned) const
 {
     if (type == REGISTER_RGB)
         return CONTROL_RGBLED_SIZE;
     else
         return CONTROL_JACK_SIZE;
 
+}
+
+unsigned ModuleX7::numberOffset(QChar type) const
+{
+    if (type == REGISTER_GATE)
+        return 8;
+    else if (type == REGISTER_RGB)
+        return 24;
+    else
+        return 0;
 }

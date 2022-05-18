@@ -1,7 +1,7 @@
 #include "modulep2b8.h"
 #include "tuning.h"
 
-unsigned ModuleP2B8::numControls(QChar type) const
+unsigned ModuleP2B8::numRegisters(QChar type) const
 {
     if (type == REGISTER_BUTTON || type == REGISTER_LED)
         return 8;
@@ -12,7 +12,7 @@ unsigned ModuleP2B8::numControls(QChar type) const
 }
 
 
-QPointF ModuleP2B8::controlPosition(QChar type, unsigned number) const
+QPointF ModuleP2B8::registerPosition(QChar type, unsigned number) const
 {
     if (type == REGISTER_POT) {
         if (number == 1)
@@ -27,7 +27,7 @@ QPointF ModuleP2B8::controlPosition(QChar type, unsigned number) const
     }
 }
 
-float ModuleP2B8::controlSize(QChar type, unsigned) const
+float ModuleP2B8::registerSize(QChar type, unsigned) const
 {
     if (type == REGISTER_POT)
         return CONTROL_LARGE_POT_SIZE;
