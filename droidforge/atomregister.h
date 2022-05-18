@@ -29,6 +29,7 @@ public:
     bool isRegister() const { return true; };
     bool isControl() { return data.r.controller > 0; };
 
+    void setRegisterType(QChar t) { data.r.registerType = t.toLatin1(); };
     QChar getRegisterType() const { return data.r.registerType; };
     unsigned getController() const { return data.r.controller; };
     unsigned getNumber() const { return data.r.number; };

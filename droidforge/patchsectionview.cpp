@@ -304,6 +304,20 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     if (cursor.row < 0 || cursor.column == 0) return;
     JackAssignment *ja = currentCircuit()->jackAssignment(cursor.row);
 
+    // This is a bit of a hack, but I'm not sure how to do
+    // this in a much more clean way. If the user e.g. clicks
+    // on I5 but is just editing on output jack, he rather
+    // wants N5. Same is for buttons and LEDs. In the rare
+    // case of using LEDs as input, clicking simply does not
+    // work. The user has to select the register by other means.
+    // So what...
+    if (ja->isOutput()) {
+        if (ar.getRegisterType() == REGISTER_INPUT)
+            ar.setRegisterType(REGISTER_NORMALIZE);
+        else if (ar.getRegisterType() == REGISTER_BUTTON)
+            ar.setRegisterType(REGISTER_LED);
+    }
+
     the_forge->registerEdit(tr("inserting register %1").arg(ar.toString()));
     ja->replaceAtom(cursor.column, ar.clone());
     the_forge->patchHasChanged();

@@ -64,7 +64,6 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
         QPointF relPos = mapToScene(mousePos) - module->pos();
         AtomRegister *ar = module->registerAt(relPos.toPoint());
         if (ar) {
-            qDebug() << "IS" << ar->toString();
             QChar t = ar->getRegisterType();
             unsigned n = ar->getNumber();
             float diameter = module->controlSize(t, n) * RACV_PIXEL_PER_HP;

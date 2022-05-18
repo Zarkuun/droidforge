@@ -36,6 +36,7 @@ public:
     virtual JackAssignment *clone() const = 0;
     virtual jacktype_t jackType() const = 0;
     virtual QString valueToString() const = 0;
+    virtual bool isOutput() const { return false; };
     virtual const Atom *atomAt(int column) const = 0;
     virtual Atom *atomAt(int column) = 0;
     virtual void replaceAtom(int column, Atom *newAtom) = 0;

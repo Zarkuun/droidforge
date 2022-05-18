@@ -77,6 +77,8 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         QChar type = register_types[i];
+        if (type == REGISTER_EXTRA)
+            continue; // This should not be clickable
         for (unsigned j=0; j<numControls(register_types[i]); j++) {
             QRectF r = registerRect(type, j+1);
             if (r.contains(pos)) {
