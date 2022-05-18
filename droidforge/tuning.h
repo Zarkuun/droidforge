@@ -27,6 +27,11 @@
 #define RACV_BACKGROUND_HEIGHT               2510
 #define RACV_TOP_MARGIN                      170
 #define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)
+#define RACV_REGMARKER_EXTRA_DIAMETER        30
+#define RACV_REGMARKER_BACKGROUND            QColor(255, 255, 255, 100)
+#define RACV_REGMARKER_PEN_COLOR             QColor(255, 255, 255)
+#define RACV_REGMARKER_PEN_WIDTH             10
+#define RACV_REGMARKER_PEN_STYLE             Qt::DotLine
 
 #define CONTROL_LARGE_POT_SIZE               4.1
 #define CONTROL_SMALL_POT_SIZE               1.4

@@ -289,7 +289,7 @@ void PatchSectionView::updateRegisterHilites() const
             ja->collectRegisterAtoms(registers);
         else {
             const Atom *atom = ja->atomAt(cursor.column);
-            if (atom->isRegister())
+            if (atom && atom->isRegister())
                 registers.append(*(AtomRegister *)atom);
         }
     }

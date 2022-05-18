@@ -26,6 +26,8 @@ public:
     virtual QString title() const = 0;
     virtual float hp() const = 0;
     virtual unsigned numControls(QChar) const { return 0; };
+    virtual QPointF controlPosition(QChar, unsigned) const = 0; // in HP
+    virtual float controlSize(QChar, unsigned) const = 0; // in HP
 
     void clearHilites();
     void hiliteControls(bool on=true, QChar type='\0', unsigned number=0);
@@ -36,8 +38,6 @@ public:
 protected:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
-    virtual QPointF controlPosition(QChar, unsigned) const = 0;
-    virtual float controlSize(QChar, unsigned) const = 0;
 
 private:
     void paintHiliteControl(QPainter *painter, QChar type, unsigned number);

@@ -52,19 +52,22 @@ void RackView::mousePressEvent(QMouseEvent *event)
 
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
-    QPoint pos = event->pos(); // mapToScene(event->pos()).toPoint();
-    QGraphicsItem *item = itemAt(pos);
+    QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
+    QGraphicsItem *item = itemAt(mousePos);
     if (item->data(1).isValid()) {
         Module *module = (Module *)item;
-        QPointF relPos = mapToScene(pos) - module->pos();
-        qDebug() << relPos << module->name();
+        QPointF relPos = mapToScene(mousePos) - module->pos();
         AtomRegister *ar = module->registerAt(relPos.toPoint());
         if (ar) {
-            qDebug() << "REG" << ar->toString();
+            QChar t = ar->getRegisterType();
+            unsigned n = ar->getNumber();
+            float diameter = module->controlSize(t, n) * RACV_PIXEL_PER_HP;
+            QPointF pos = module->controlPosition(t, n) * RACV_PIXEL_PER_HP;
+            updateRegisterMarker(pos + module->pos(), diameter);
             delete ar;
         }
         else
-            qDebug() << "NIX";
+            hideRegisterMarker();
     }
 }
 
@@ -91,6 +94,20 @@ void RackView::hiliteRegisters(const RegisterList &registers)
             module->update();
         }
     }
+}
+
+void RackView::updateRegisterMarker(QPointF p, float diameter)
+{
+    diameter += RACV_REGMARKER_EXTRA_DIAMETER;
+    QPointF pos(p.x() - diameter/2, p.y() - diameter/2);
+    QRectF r(pos, QSizeF(diameter, diameter));
+    registerMarker->setRect(r);
+    registerMarker->setVisible(true);
+}
+
+void RackView::hideRegisterMarker()
+{
+    registerMarker->setVisible(false);
 }
 
 void RackView::popupContextMenu(int controller)
@@ -124,6 +141,15 @@ void RackView::moveController(int fromindex, int toindex)
 void RackView::updateGraphics()
 {
     scene()->clear();
+    QPen pen;
+    pen.setWidth(RACV_REGMARKER_PEN_WIDTH);
+    pen.setStyle(RACV_REGMARKER_PEN_STYLE);
+    pen.setColor(RACV_REGMARKER_PEN_COLOR);
+    registerMarker = scene()->addEllipse(QRect(0, 0, 0, 0), pen);
+    registerMarker->setPen(pen);
+    registerMarker->setBrush(RACV_REGMARKER_BACKGROUND);
+    registerMarker->setZValue(50);
+
     if (!patch)
         return;
 

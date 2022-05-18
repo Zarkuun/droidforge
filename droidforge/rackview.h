@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QGraphicsEllipseItem>
 
 
 class RackView : public QGraphicsView
@@ -16,6 +17,7 @@ class RackView : public QGraphicsView
     Patch *patch;
     QList<Module *> modules;
     unsigned x;
+    QGraphicsEllipseItem *registerMarker;
 
 public:
     explicit RackView();
@@ -24,6 +26,8 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void hiliteRegisters(const RegisterList &registers);
+    void updateRegisterMarker(QPointF, float);
+    void hideRegisterMarker();
 
 private:
     void addModule(const QString &name, int controllerIndex=-1);
