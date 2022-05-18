@@ -3,6 +3,7 @@
 
 #include "module.h"
 #include "patch.h"
+#include "registermarker.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -17,7 +18,7 @@ class RackView : public QGraphicsView
     Patch *patch;
     QList<Module *> modules;
     unsigned x;
-    QGraphicsEllipseItem *registerMarker;
+    RegisterMarker *registerMarker;
     AtomRegister markedRegister;
 
 public:

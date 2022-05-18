@@ -135,6 +135,8 @@ QtApplication {
         "rackview.h",
         "registercomments.cpp",
         "registercomments.h",
+        "registermarker.cpp",
+        "registermarker.h",
         "registerselector.cpp",
         "registerselector.h",
         "registertypes.cpp",

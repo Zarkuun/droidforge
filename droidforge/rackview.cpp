@@ -105,10 +105,11 @@ void RackView::updateRegisterMarker(AtomRegister *ar, QPointF p, float diameter)
 {
     markedRegister = *ar;
     diameter += RACV_REGMARKER_EXTRA_DIAMETER;
-    QPointF pos(p.x() - diameter/2, p.y() - diameter/2);
-    QRectF r(pos, QSizeF(diameter, diameter));
-    registerMarker->setRect(r);
+
+    registerMarker->setCenter(p);
+    registerMarker->setDiameter(diameter);
     registerMarker->setVisible(true);
+    registerMarker->startAnimation();
 }
 
 void RackView::hideRegisterMarker()
@@ -147,14 +148,8 @@ void RackView::moveController(int fromindex, int toindex)
 void RackView::updateGraphics()
 {
     scene()->clear();
-    QPen pen;
-    pen.setWidth(RACV_REGMARKER_PEN_WIDTH);
-    pen.setStyle(RACV_REGMARKER_PEN_STYLE);
-    pen.setColor(RACV_REGMARKER_PEN_COLOR);
-    registerMarker = scene()->addEllipse(QRect(0, 0, 0, 0), pen);
-    registerMarker->setPen(pen);
-    registerMarker->setBrush(RACV_REGMARKER_BACKGROUND);
-    registerMarker->setZValue(50);
+    registerMarker = new RegisterMarker();
+    scene()->addItem(registerMarker);
 
     if (!patch)
         return;
