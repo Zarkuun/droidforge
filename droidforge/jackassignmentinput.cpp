@@ -76,6 +76,42 @@ void JackAssignmentInput::replaceAtom(int column, Atom *newAtom)
         delete old;
 }
 
+void JackAssignmentInput::removeRegisterReferences(RegisterList &rl, int ih, int)
+{
+    if (ih == 0) // INPUT_LEAVE
+        return;
+
+    // Atom A
+    if (isInRegisterList(rl, atomA)) {
+        delete atomA;
+        if (ih == 1) // INPUT_SET_TO_ONE
+            atomA = new AtomNumber(1.0, ATOM_NUMBER_NUMBER);
+        else
+            atomA = 0;
+    }
+
+    if (isInRegisterList(rl, atomB)) {
+        delete atomB;
+        atomB = 0;
+    }
+
+    if (isInRegisterList(rl, atomC)) {
+        delete atomC;
+        atomC = 0;
+    }
+}
+
+
+bool JackAssignmentInput::isInRegisterList(const RegisterList &rl, Atom *atom)
+{
+    if (!atom)
+        return false;
+    if (!atom->isRegister())
+        return false;
+
+    return rl.contains(*(AtomRegister *)atom);
+}
+
 
 JackAssignment *JackAssignmentInput::clone() const
 {

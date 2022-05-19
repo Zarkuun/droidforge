@@ -44,6 +44,7 @@ public:
     virtual void replaceAtom(int column, Atom *newAtom) = 0;
     virtual void collectCables(QStringList &cables) const = 0;
     virtual void parseExpression(const QString &expression) = 0;
+    virtual void removeRegisterReferences(RegisterList &rl, int ih, int oh) = 0;
 
     static JackAssignment *parseJackLine(const QString &circuit, QString line);
 

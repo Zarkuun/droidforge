@@ -17,6 +17,7 @@ public:
     const Atom *atomAt(int column) const;
     Atom *atomAt(int column);
     void replaceAtom(int column, Atom *newAtom);
+    void removeRegisterReferences(RegisterList &rl, int ih, int);
     QString valueToString() const;
     void collectCables(QStringList &cables) const;
     static Atom *parseInputAtom(const QString &s);
@@ -30,6 +31,7 @@ private:
     void parseInputExpression(QString, QString valueString);
     static Atom *parseOnOff(QString s);
     static Atom *parseNumber(QString s);
+    bool isInRegisterList(const RegisterList &rl, Atom *atom);
 };
 
 #endif // JACKASSIGNMENTINPUT_H

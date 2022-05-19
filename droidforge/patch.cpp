@@ -175,6 +175,12 @@ void Patch::remapRegister(AtomRegister from, AtomRegister to)
         section->remapRegister(from, to);
 }
 
+void Patch::removeRegisterReferences(RegisterList &rl, int ih, int oh)
+{
+    for (auto section: sections)
+        section->removeRegisterReferences(rl, ih, oh);
+}
+
 void Patch::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto section: sections)

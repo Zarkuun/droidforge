@@ -20,6 +20,7 @@ public:
     void collectCables(QStringList &cables) const;
     void parseExpression(const QString &expression);
     static Atom *parseOutputAtom(const QString &s);
+    void removeRegisterReferences(RegisterList &rl, int ih, int oh);
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_OUTPUT; };

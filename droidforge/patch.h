@@ -55,6 +55,7 @@ public:
     bool needX7() const; // TODO: Do we need this?
     void collectRegisterAtoms(RegisterList &) const;
     void remapRegister(AtomRegister from, AtomRegister to);
+    void removeRegisterReferences(RegisterList &rl, int ih, int oh);
 
 private:
     void swapControllerNumbers(int fromindex, int toindex);

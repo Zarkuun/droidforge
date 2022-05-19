@@ -61,17 +61,17 @@ bool AtomRegister::needX7() const
             && data.r.number <= 12;
 }
 
-void AtomRegister::swapControllerNumbers(int fromNumber, int toNumber)
+void AtomRegister::swapControllerNumbers(int fromController, int toController)
 {
-    if ((int)data.r.controller == fromNumber)
-        data.r.controller = toNumber;
-    else if ((int)data.r.controller == toNumber)
-        data.r.controller = fromNumber;
+    if ((int)data.r.controller == fromController)
+        data.r.controller = toController;
+    else if ((int)data.r.controller == toController)
+        data.r.controller = fromController;
 }
 
-void AtomRegister::shiftControllerNumbers(int number)
+void AtomRegister::shiftControllerNumbers(int controller)
 {
-    if ((int)data.r.controller > number)
+    if ((int)data.r.controller > controller)
         data.r.controller --;
 }
 

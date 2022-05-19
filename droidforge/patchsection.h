@@ -46,6 +46,7 @@ public:
     void shiftControllerNumbers(int number);
     void collectRegisterAtoms(RegisterList &) const;
     void remapRegister(AtomRegister from, AtomRegister to);
+    void removeRegisterReferences(RegisterList &rl, int ih, int oh);
 
 protected:
 };

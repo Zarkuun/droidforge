@@ -77,3 +77,17 @@ Atom *JackAssignmentOutput::parseOutputAtom(const QString &expression)
     else
         return new AtomInvalid(expression);
 }
+
+void JackAssignmentOutput::removeRegisterReferences(RegisterList &rl, int ih, int oh)
+{
+    if (oh == 0)
+        return; // OUTPUT_LEAVE. Don't do anything
+
+    if (atom && atom->isRegister()) {
+        AtomRegister *ar = (AtomRegister *)atom;
+        if (rl.contains(*ar)) {
+            delete atom;
+            atom = 0;
+        }
+    }
+}

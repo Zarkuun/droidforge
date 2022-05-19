@@ -243,3 +243,9 @@ void PatchSection::remapRegister(AtomRegister from, AtomRegister to)
     for (auto circuit: circuits)
         circuit->remapRegister(from, to);
 }
+
+void PatchSection::removeRegisterReferences(RegisterList &rl, int ih, int oh)
+{
+    for (auto circuit: circuits)
+        circuit->removeRegisterReferences(rl, ih, oh);
+}

@@ -16,6 +16,7 @@ public:
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &) const {};
     void parseExpression(const QString &expression);
+    void removeRegisterReferences(RegisterList &, int, int) {};
 
 protected:
     JackAssignment *clone() const;

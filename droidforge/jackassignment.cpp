@@ -60,7 +60,7 @@ JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString li
 
 bool JackAssignment::needG8() const
 {
-    for (int i=0; i<3; i++) {
+    for (int i=1; i<=3; i++) {
          const Atom *atom = atomAt(i);
          if (atom && atom->needG8())
              return true;
@@ -70,7 +70,7 @@ bool JackAssignment::needG8() const
 
 bool JackAssignment::needX7() const
 {
-    for (int i=0; i<3; i++) {
+    for (int i=1; i<=3; i++) {
          const Atom *atom = atomAt(i);
          if (atom && atom->needX7())
              return true;
@@ -80,7 +80,7 @@ bool JackAssignment::needX7() const
 
 void JackAssignment::swapControllerNumbers(int fromNumber, int toNumber)
 {
-    for (int i=0; i<3; i++) {
+    for (int i=1; i<=3; i++) {
          Atom *atom = atomAt(i);
          if (atom)
              atom->swapControllerNumbers(fromNumber, toNumber);
@@ -89,7 +89,7 @@ void JackAssignment::swapControllerNumbers(int fromNumber, int toNumber)
 
 void JackAssignment::shiftControllerNumbers(int number)
 {
-    for (int i=0; i<3; i++) {
+    for (int i=1; i<=3; i++) {
          Atom *atom = atomAt(i);
          if (atom)
              atom->shiftControllerNumbers(number);
@@ -98,7 +98,7 @@ void JackAssignment::shiftControllerNumbers(int number)
 
 void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
 {
-    for (int i=0; i<3; i++) {
+    for (int i=1; i<=3; i++) {
          const Atom *atom = atomAt(i);
          if (atom && atom->isRegister()) {
              AtomRegister *ar = (AtomRegister *)atom;
@@ -109,7 +109,7 @@ void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
 
 void JackAssignment::remapRegister(AtomRegister from, AtomRegister to)
 {
-    for (int i=0; i<3; i++) {
+    for (int i=1; i<=3; i++) {
          const Atom *atom = atomAt(i);
          if (atom && atom->isRegister()) {
              AtomRegister *ar = (AtomRegister *)atom;

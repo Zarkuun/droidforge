@@ -26,14 +26,14 @@ public:
     void setRegistersToRemap(const RegisterList &rl);
     bool shouldRemap() const;
     typedef enum {
-        INPUT_LEAVE,
-        INPUT_SET_TO_ONE,
-        INPUT_REMOVE } InputHandling;
+        INPUT_LEAVE = 0,
+        INPUT_SET_TO_ONE = 1,
+        INPUT_REMOVE = 2} InputHandling;
     InputHandling inputHandling() const;
 
     typedef enum {
-        OUTPUT_LEAVE,
-        OUTPUT_REMOVE } OutputHandling;
+        OUTPUT_LEAVE = 0,
+        OUTPUT_REMOVE = 1} OutputHandling;
     OutputHandling outputHandling() const;
 };
 

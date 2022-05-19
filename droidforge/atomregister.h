@@ -37,8 +37,8 @@ public:
     unsigned getNumber() const { return data.r.number; };
     bool needG8() const;
     bool needX7() const;
-    void swapControllerNumbers(int fromNumber, int toNumber);
-    void shiftControllerNumbers(int number);
+    void swapControllerNumbers(int fromController, int toController);
+    void shiftControllerNumbers(int controller);
     friend bool operator==(const AtomRegister &a, const AtomRegister &b);
     friend bool operator<(const AtomRegister &a, const AtomRegister &b);
 };

@@ -9,6 +9,7 @@
 #include <QDesktopServices>
 #include <QResizeEvent>
 #include <QMenu>
+#include <QMessageBox>
 #include <algorithm>
 
 RackView::RackView()
@@ -131,7 +132,6 @@ void RackView::remapRegisters(
     // Loop through all registers to be remapped
     for (auto& toRemap: atomsToRemap)
     {
-        qDebug() << "remapping" << toRemap;
         // Loop through all candidate registers
         for (auto &candidate: allRegisters) {
             if (candidate.getController() == controller)
@@ -153,10 +153,8 @@ void RackView::remapRegisters(
         atomsToRemap.removeAll(atom);
 
     // Apply this remapping
-    for (unsigned i=0; i<remapFrom.size(); i++) {
-        qDebug() << remapFrom[i].toString() << " -> " << remapTo[i];
+    for (unsigned i=0; i<remapFrom.size(); i++)
         patch->remapRegister(remapFrom[i], remapTo[i]);
-    }
 }
 
 void RackView::collectAllRegisters(RegisterList &rl) const
@@ -327,7 +325,14 @@ void RackView::removeController(
 {
     the_forge->registerEdit(tr("removing %1 controller").arg(controllerName.toUpper()));
     remapRegisters(controllerIndex, atomsToRemap, inputHandling, outputHandling);
-    qDebug() << "NOT REMAPPED:" << atomsToRemap;
+
+    if (!atomsToRemap.isEmpty()) {
+        patch->removeRegisterReferences(
+                    atomsToRemap,
+                    inputHandling,
+                    outputHandling);
+    }
+
     patch->removeController(controllerIndex);
     removeModule(controllerIndex);
     updateSize();
@@ -339,12 +344,25 @@ void RackView::remapControls(
         int controllerIndex,
         QString controllerName)
 {
-    the_forge->registerEdit(tr("remapping used controlls of %1").arg(controllerName.toUpper()));
+    the_forge->registerEdit(tr("moving used controls of %1").arg(controllerName.toUpper()));
 
     RegisterList atomsToRemap;
     collectUsedRegisters(controllerIndex, atomsToRemap);
     remapRegisters(controllerIndex, atomsToRemap, ControllerRemovalDialog::INPUT_LEAVE, ControllerRemovalDialog::OUTPUT_LEAVE);
-    qDebug() << "NOT REMAPPED:" << atomsToRemap;
-    // TODO: Warnung zeigen, wenn was nicht geremappt werden konnte
+    if (!atomsToRemap.isEmpty())
+    {
+        QString listing;
+        for (auto& entry: atomsToRemap)
+            listing += " " + entry.toString();
+
+        QMessageBox box(
+                    QMessageBox::Warning,
+                    tr("Not all controlles remapped"),
+                    tr("The following registers havea not been remapped, since there "
+                       "was nothing free: %1").arg(listing),
+                    QMessageBox::Ok,
+                    this);
+        box.exec();
+    }
     the_forge->patchHasChanged();
 }
