@@ -47,6 +47,8 @@ private:
             ControllerRemovalDialog::InputHandling inputHandling,
             ControllerRemovalDialog::OutputHandling outputHandling);
     void collectAllRegisters(RegisterList &rl) const;
+    void collectUsedRegisters(int controllerIndex, RegisterList &used);
+    bool controllersRegistersUsed(int controllerIndex);
 
 public slots:
     void addController();
@@ -55,6 +57,7 @@ private slots:
     void askRemoveController(int controller, const QString name);
     void purchaseController(QString name);
     void moveController(int oldindex, int newindex);
+    void remapControls(int controllerIndex, QString controllerName);
 };
 
 #endif // RACKVIEW_H

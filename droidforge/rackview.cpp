@@ -112,20 +112,6 @@ void RackView::updateRegisterMarker(AtomRegister *ar, QPointF p, float diameter)
     registerMarker->startAnimation();
 }
 
-void RackView::removeController(
-        int controllerIndex,
-        QString controllerName,
-        RegisterList &atomsToRemap,
-        ControllerRemovalDialog::InputHandling inputHandling,
-        ControllerRemovalDialog::OutputHandling  outputHandling)
-{
-    the_forge->registerEdit(tr("removing %1 controller").arg(controllerName.toUpper()));
-    qDebug() << "REMOVE" << controllerIndex << atomsToRemap << inputHandling << outputHandling;
-    remapRegisters(controllerIndex, atomsToRemap, inputHandling, outputHandling);
-    qDebug() << "NOT REMAPPED:" << atomsToRemap;
-    the_forge->patchHasChanged();
-}
-
 void RackView::remapRegisters(
         int controllerIndex,
         RegisterList &atomsToRemap,
@@ -197,8 +183,12 @@ void RackView::popupContextMenu(int controllerIndex, QString name)
        if (controllerIndex+1 < patch->numControllers())
            menu->addAction(the_forge->icon("keyboard_arrow_right"), tr("Move by one position to the right"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex+1); });
-       menu->addSeparator();
    }
+   if (controllersRegistersUsed(controllerIndex))
+       menu->addAction(tr("Move used controls and LEDs to other controllers"),
+                       this, [this,controllerIndex,name] () {this->remapControls(controllerIndex, name); });
+   if (!menu->isEmpty())
+       menu->addSeparator();
    menu->addAction(the_forge->icon("purchase"), tr("Lookup this module in the shop"), this,
                    [this,name] () {this->purchaseController(name); });
    menu->setAttribute(Qt::WA_DeleteOnClose);
@@ -208,14 +198,8 @@ void RackView::popupContextMenu(int controllerIndex, QString name)
 void RackView::askRemoveController(int controllerIndex, const QString name)
 {
     // Get a list of all registers that are in use
-    unsigned controller = controllerIndex + 1;
     RegisterList atomsToRemap;
-    RegisterList allUsedRegisters;
-    patch->collectRegisterAtoms(allUsedRegisters); // these are all
-    for (auto& atom: allUsedRegisters) {
-        if (atom.getController() == controller && !atomsToRemap.contains(atom))
-            atomsToRemap.append(atom);
-    }
+    collectUsedRegisters(controllerIndex, atomsToRemap);
     if (atomsToRemap.empty())
         removeController(controllerIndex, name, atomsToRemap);
 
@@ -235,6 +219,27 @@ void RackView::askRemoveController(int controllerIndex, const QString name)
             removeController(controllerIndex, name, atomsToRemap, ih, oh);
         }
     }
+}
+
+
+void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
+{
+    RegisterList allUsedRegisters;
+    patch->collectRegisterAtoms(allUsedRegisters); // these are all
+
+    unsigned controller = controllerIndex + 1;
+    for (auto& atom: allUsedRegisters) {
+        if (atom.getController() == controller && !used.contains(atom))
+            used.append(atom);
+    }
+}
+
+
+bool RackView::controllersRegistersUsed(int controllerIndex)
+{
+    RegisterList used;
+    collectUsedRegisters(controllerIndex, used);
+    return !used.isEmpty();
 }
 
 void RackView::purchaseController(QString name)
@@ -305,3 +310,33 @@ void RackView::addController()
         the_forge->patchHasChanged();
     }
 }
+
+void RackView::removeController(
+        int controllerIndex,
+        QString controllerName,
+        RegisterList &atomsToRemap,
+        ControllerRemovalDialog::InputHandling inputHandling,
+        ControllerRemovalDialog::OutputHandling  outputHandling)
+{
+    the_forge->registerEdit(tr("removing %1 controller").arg(controllerName.toUpper()));
+    qDebug() << "REMOVE" << controllerIndex << atomsToRemap << inputHandling << outputHandling;
+    remapRegisters(controllerIndex, atomsToRemap, inputHandling, outputHandling);
+    qDebug() << "NOT REMAPPED:" << atomsToRemap;
+    the_forge->patchHasChanged();
+}
+
+
+void RackView::remapControls(
+        int controllerIndex,
+        QString controllerName)
+{
+    the_forge->registerEdit(tr("remapping used controlls of %1").arg(controllerName.toUpper()));
+
+    RegisterList atomsToRemap;
+    collectUsedRegisters(controllerIndex, atomsToRemap);
+    remapRegisters(controllerIndex, atomsToRemap, ControllerRemovalDialog::INPUT_LEAVE, ControllerRemovalDialog::OUTPUT_LEAVE);
+    qDebug() << "NOT REMAPPED:" << atomsToRemap;
+    // TODO: Warnung zeigen, wenn was nicht geremappt werden konnte
+    the_forge->patchHasChanged();
+}
+
