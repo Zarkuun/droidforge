@@ -3,6 +3,9 @@
 #include <QFile>
 #include <QTextStream>
 
+// TODO: use index and number correctly
+// Controller number goes from 1 ... 16
+// Indices start at 0
 
 Patch::Patch()
     : registerComments(new RegisterComments())
@@ -72,6 +75,13 @@ void Patch::swapControllersSmart(int fromindex, int toindex)
     }
     controllers = newControllers;
     swapControllerNumbers(fromindex+1, toindex+1);
+}
+
+void Patch::removeController(int index)
+{
+    for (auto section: sections)
+        section->shiftControllerNumbers(index + 1);
+    controllers.remove(index);
 }
 
 
@@ -165,10 +175,10 @@ void Patch::remapRegister(AtomRegister from, AtomRegister to)
         section->remapRegister(from, to);
 }
 
-void Patch::swapControllerNumbers(int fromindex, int toindex)
+void Patch::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto section: sections)
-        section->swapControllerNumbers(fromindex, toindex);
+        section->swapControllerNumbers(fromNumber, toNumber);
 }
 
 QString Patch::toString()

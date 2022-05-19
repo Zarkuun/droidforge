@@ -220,10 +220,16 @@ bool PatchSection::needX7() const
     return false;
 }
 
-void PatchSection::swapControllerNumbers(int fromindex, int toindex)
+void PatchSection::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto circuit: circuits)
-        circuit->swapControllerNumbers(fromindex, toindex);
+        circuit->swapControllerNumbers(fromNumber, toNumber);
+}
+
+void PatchSection::shiftControllerNumbers(int number)
+{
+    for (auto circuit: circuits)
+        circuit->shiftControllerNumbers(number);
 }
 
 void PatchSection::collectRegisterAtoms(RegisterList &sl) const

@@ -61,12 +61,18 @@ bool AtomRegister::needX7() const
             && data.r.number <= 12;
 }
 
-void AtomRegister::swapControllerNumbers(int fromindex, int toindex)
+void AtomRegister::swapControllerNumbers(int fromNumber, int toNumber)
 {
-    if ((int)data.r.controller == fromindex)
-        data.r.controller = toindex;
-    else if ((int)data.r.controller == toindex)
-        data.r.controller = fromindex;
+    if ((int)data.r.controller == fromNumber)
+        data.r.controller = toNumber;
+    else if ((int)data.r.controller == toNumber)
+        data.r.controller = fromNumber;
+}
+
+void AtomRegister::shiftControllerNumbers(int number)
+{
+    if ((int)data.r.controller > number)
+        data.r.controller --;
 }
 
 QDebug &operator<<(QDebug &out, const AtomRegister &ar) {

@@ -92,10 +92,16 @@ bool Circuit::needX7() const
     return false;
 }
 
-void Circuit::swapControllerNumbers(int fromindex, int toindex)
+void Circuit::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto ja: jackAssignments)
-        ja->swapControllerNumbers(fromindex, toindex);
+        ja->swapControllerNumbers(fromNumber, toNumber);
+}
+
+void Circuit::shiftControllerNumbers(int number)
+{
+    for (auto ja: jackAssignments)
+        ja->shiftControllerNumbers(number);
 }
 
 void Circuit::collectRegisterAtoms(RegisterList &sl) const

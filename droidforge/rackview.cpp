@@ -183,10 +183,10 @@ void RackView::popupContextMenu(int controllerIndex, QString name)
        if (controllerIndex+1 < patch->numControllers())
            menu->addAction(the_forge->icon("keyboard_arrow_right"), tr("Move by one position to the right"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex+1); });
+       if (controllersRegistersUsed(controllerIndex))
+           menu->addAction(tr("Move used controls and LEDs to other controllers"),
+                           this, [this,controllerIndex,name] () {this->remapControls(controllerIndex, name); });
    }
-   if (controllersRegistersUsed(controllerIndex))
-       menu->addAction(tr("Move used controls and LEDs to other controllers"),
-                       this, [this,controllerIndex,name] () {this->remapControls(controllerIndex, name); });
    if (!menu->isEmpty())
        menu->addSeparator();
    menu->addAction(the_forge->icon("purchase"), tr("Lookup this module in the shop"), this,
@@ -298,6 +298,13 @@ void RackView::addModule(const QString &name, int controllerIndex)
     x += module->hp() * RACV_PIXEL_PER_HP;
 }
 
+void RackView::removeModule(int controllerIndex)
+{
+    Module *module = modules[controllerIndex];
+    scene()->removeItem(module);
+    modules.remove(controllerIndex);
+}
+
 void RackView::addController()
 {
     QString controller = ControllerChooseDialog::chooseController();
@@ -319,9 +326,11 @@ void RackView::removeController(
         ControllerRemovalDialog::OutputHandling  outputHandling)
 {
     the_forge->registerEdit(tr("removing %1 controller").arg(controllerName.toUpper()));
-    qDebug() << "REMOVE" << controllerIndex << atomsToRemap << inputHandling << outputHandling;
     remapRegisters(controllerIndex, atomsToRemap, inputHandling, outputHandling);
     qDebug() << "NOT REMAPPED:" << atomsToRemap;
+    patch->removeController(controllerIndex);
+    removeModule(controllerIndex);
+    updateSize();
     the_forge->patchHasChanged();
 }
 
@@ -339,4 +348,3 @@ void RackView::remapControls(
     // TODO: Warnung zeigen, wenn was nicht geremappt werden konnte
     the_forge->patchHasChanged();
 }
-

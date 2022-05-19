@@ -32,6 +32,7 @@ public:
     void reorderSections(int fromindex, int toindex);
     void swapControllersSmart(int fromindex, int toindex);
     void addController(QString name) { controllers.append(name); };
+    void removeController(int index);
     bool saveToFile(QString filename);
     void addDescriptionLine(const QString &line);
     void setDescription(const QString &d);

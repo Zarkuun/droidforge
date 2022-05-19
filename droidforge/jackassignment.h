@@ -29,7 +29,8 @@ public:
     void changeJack(QString j) { jack = j; };
     bool needG8() const;
     bool needX7() const;
-    void swapControllerNumbers(int fromindex, int toindex);
+    void swapControllerNumbers(int fromNumber, int toNumber);
+    void shiftControllerNumbers(int number);
     void collectRegisterAtoms(RegisterList &) const;
     void remapRegister(AtomRegister from, AtomRegister to);
 

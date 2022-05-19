@@ -33,6 +33,7 @@ public:
 
 private:
     void addModule(const QString &name, int controllerIndex=-1);
+    void removeModule(int controllerIndex);
     void updateGraphics();
     void updateSize();
     void popupContextMenu(int controller, QString name);
