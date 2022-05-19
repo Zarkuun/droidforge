@@ -84,3 +84,10 @@ bool operator==(const AtomRegister &a, const AtomRegister &b)
 {
     return a.data.raw == b.data.raw;
 }
+
+bool operator<(const AtomRegister &a, const AtomRegister &b)
+{
+    return a.data.r.controller < b.data.r.controller
+            || a.data.r.registerType < b.data.r.registerType
+            || a.data.r.number < b.data.r.number;
+}

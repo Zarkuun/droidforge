@@ -9,6 +9,7 @@
 #include <QDesktopServices>
 #include <QResizeEvent>
 #include <QMenu>
+#include <algorithm>
 
 RackView::RackView()
     : QGraphicsView()
@@ -139,6 +140,7 @@ void RackView::remapRegisters(
 
     RegisterList remapFrom;
     RegisterList remapTo;
+    RegisterList remapped;
 
     // Loop through all registers to be remapped
     for (auto& toRemap: atomsToRemap)
@@ -155,11 +157,14 @@ void RackView::remapRegisters(
                 remapFrom.append(toRemap);
                 remapTo.append(candidate);
                 allRegisters.removeAll(candidate);
-                atomsToRemap.removeAll(toRemap);
+                remapped.append(toRemap);
                 break;
             }
         }
     }
+
+    for (auto& atom: remapped)
+        atomsToRemap.removeAll(atom);
 
     // Apply this remapping
     for (unsigned i=0; i<remapFrom.size(); i++) {
@@ -205,16 +210,17 @@ void RackView::askRemoveController(int controllerIndex, const QString name)
     // Get a list of all registers that are in use
     unsigned controller = controllerIndex + 1;
     RegisterList atomsToRemap;
-    RegisterList rl;
-    patch->collectRegisterAtoms(rl);
-    for (auto& atom: rl) {
-        if (atom.getController() == controller)
+    RegisterList allUsedRegisters;
+    patch->collectRegisterAtoms(allUsedRegisters); // these are all
+    for (auto& atom: allUsedRegisters) {
+        if (atom.getController() == controller && !atomsToRemap.contains(atom))
             atomsToRemap.append(atom);
     }
     if (atomsToRemap.empty())
         removeController(controllerIndex, name, atomsToRemap);
 
     else {
+        std::sort(atomsToRemap.begin(), atomsToRemap.end());
         static ControllerRemovalDialog *dialog = 0;
         if (!dialog)
             dialog = new ControllerRemovalDialog(this);

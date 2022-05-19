@@ -39,6 +39,7 @@ public:
     bool needX7() const;
     void swapControllerNumbers(int fromindex, int toindex);
     friend bool operator==(const AtomRegister &a, const AtomRegister &b);
+    friend bool operator<(const AtomRegister &a, const AtomRegister &b);
 };
 
 typedef QList<AtomRegister> RegisterList;
@@ -46,5 +47,6 @@ typedef QList<AtomRegister> RegisterList;
 QDebug &operator<<(QDebug &out, const AtomRegister &ar);
 QDebug &operator<<(QDebug &out, const RegisterList &rl);
 bool operator==(const AtomRegister &a, const AtomRegister &b);
+bool operator<(const AtomRegister &a, const AtomRegister &b);
 
 #endif // ATOMREGISTER_H
