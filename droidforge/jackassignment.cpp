@@ -98,6 +98,18 @@ void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
     }
 }
 
+void JackAssignment::remapRegister(AtomRegister from, AtomRegister to)
+{
+    for (int i=0; i<3; i++) {
+         const Atom *atom = atomAt(i);
+         if (atom && atom->isRegister()) {
+             AtomRegister *ar = (AtomRegister *)atom;
+             if (*ar == from)
+                 replaceAtom(i, to.clone());
+         }
+    }
+}
+
 Atom *JackAssignment::parseCable(QString s)
 {
     static QRegularExpression exp("^_[a-z][a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);

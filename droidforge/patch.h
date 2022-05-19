@@ -53,6 +53,7 @@ public:
     bool needG8() const; // TODO: Do we need this?
     bool needX7() const; // TODO: Do we need this?
     void collectRegisterAtoms(RegisterList &) const;
+    void remapRegister(AtomRegister from, AtomRegister to);
 
 private:
     void swapControllerNumbers(int fromindex, int toindex);

@@ -113,15 +113,16 @@ void RackView::updateRegisterMarker(AtomRegister *ar, QPointF p, float diameter)
 
 void RackView::removeController(
         int controllerIndex,
-        QString, // controllerName,
+        QString controllerName,
         RegisterList &atomsToRemap,
         ControllerRemovalDialog::InputHandling inputHandling,
         ControllerRemovalDialog::OutputHandling  outputHandling)
 {
-    // the_forge->registerEdit(tr("removing %1 controller").arg(controllerName.toUpper()));
+    the_forge->registerEdit(tr("removing %1 controller").arg(controllerName.toUpper()));
     qDebug() << "REMOVE" << controllerIndex << atomsToRemap << inputHandling << outputHandling;
     remapRegisters(controllerIndex, atomsToRemap, inputHandling, outputHandling);
-    // the_forge->patchHasChanged();
+    qDebug() << "NOT REMAPPED:" << atomsToRemap;
+    the_forge->patchHasChanged();
 }
 
 void RackView::remapRegisters(
@@ -131,6 +132,7 @@ void RackView::remapRegisters(
         ControllerRemovalDialog::OutputHandling ) // outputHandling)
 {
     unsigned controller = controllerIndex + 1;
+
     // Get list of all registers.
     RegisterList allRegisters;
     collectAllRegisters(allRegisters); // all including our controller
@@ -159,18 +161,11 @@ void RackView::remapRegisters(
         }
     }
 
+    // Apply this remapping
     for (unsigned i=0; i<remapFrom.size(); i++) {
         qDebug() << remapFrom[i].toString() << " -> " << remapTo[i];
+        patch->remapRegister(remapFrom[i], remapTo[i]);
     }
-
-
-    // 2. Remove those of the to-be-removed controller
-    // 3. find a replacement for each of our registers
-    // -> Collect these in a replacement list
-    // -> keep track of unreplacable atoms
-    // 4. Ask the user?
-    // 5. Apply replacements to the patch
-    // Done.
 }
 
 void RackView::collectAllRegisters(RegisterList &rl) const

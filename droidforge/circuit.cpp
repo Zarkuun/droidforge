@@ -94,16 +94,21 @@ bool Circuit::needX7() const
 
 void Circuit::swapControllerNumbers(int fromindex, int toindex)
 {
-    for (qsizetype i=0; i<jackAssignments.length(); i++)
-        jackAssignments[i]->swapControllerNumbers(fromindex, toindex);
+    for (auto ja: jackAssignments)
+        ja->swapControllerNumbers(fromindex, toindex);
 }
 
 void Circuit::collectRegisterAtoms(RegisterList &sl) const
 {
-    for (qsizetype i=0; i<jackAssignments.length(); i++)
-        jackAssignments[i]->collectRegisterAtoms(sl);
+    for (auto ja: jackAssignments)
+        ja->collectRegisterAtoms(sl);
 }
 
+void Circuit::remapRegister(AtomRegister from, AtomRegister to)
+{
+    for (auto ja: jackAssignments)
+        ja->remapRegister(from, to);
+}
 
 QString Circuit::toString()
 {

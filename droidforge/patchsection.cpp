@@ -214,20 +214,26 @@ bool PatchSection::needG8() const
 
 bool PatchSection::needX7() const
 {
-    for (qsizetype i=0; i<circuits.length(); i++)
-        if (circuits[i]->needX7())
+    for (auto circuit: circuits)
+        if (circuit->needX7())
             return true;
     return false;
 }
 
 void PatchSection::swapControllerNumbers(int fromindex, int toindex)
 {
-    for (qsizetype i=0; i<circuits.length(); i++)
-        circuits[i]->swapControllerNumbers(fromindex, toindex);
+    for (auto circuit: circuits)
+        circuit->swapControllerNumbers(fromindex, toindex);
 }
 
 void PatchSection::collectRegisterAtoms(RegisterList &sl) const
 {
-    for (qsizetype i=0; i<circuits.length(); i++)
-        circuits[i]->collectRegisterAtoms(sl);
+    for (auto circuit: circuits)
+        circuit->collectRegisterAtoms(sl);
+}
+
+void PatchSection::remapRegister(AtomRegister from, AtomRegister to)
+{
+    for (auto circuit: circuits)
+        circuit->remapRegister(from, to);
 }

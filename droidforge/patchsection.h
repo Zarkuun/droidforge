@@ -44,6 +44,7 @@ public:
     bool needX7() const;
     void swapControllerNumbers(int fromindex, int toindex);
     void collectRegisterAtoms(RegisterList &) const;
+    void remapRegister(AtomRegister from, AtomRegister to);
 
 protected:
 };
