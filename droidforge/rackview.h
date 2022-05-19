@@ -4,6 +4,7 @@
 #include "module.h"
 #include "patch.h"
 #include "registermarker.h"
+#include "controllerremovaldialog.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -34,14 +35,25 @@ private:
     void addModule(const QString &name, int controllerIndex=-1);
     void updateGraphics();
     void updateSize();
-    void popupContextMenu(int controller);
+    void popupContextMenu(int controller, QString name);
     void updateRegisterMarker(AtomRegister *markedAtom, QPointF, float);
+    void removeController(int controllerIndex, QString controllerName,
+            RegisterList &atomsToRemap,
+            ControllerRemovalDialog::InputHandling ih = ControllerRemovalDialog::INPUT_LEAVE,
+            ControllerRemovalDialog::OutputHandling oh = ControllerRemovalDialog::OUTPUT_LEAVE);
+    void remapRegisters(
+            int controllerIndex,
+            RegisterList &atomsToRemap,
+            ControllerRemovalDialog::InputHandling inputHandling,
+            ControllerRemovalDialog::OutputHandling outputHandling);
+    void collectAllRegisters(RegisterList &rl) const;
 
 public slots:
     void addController();
 
 private slots:
-    void removeController(int controller);
+    void askRemoveController(int controller, const QString name);
+    void purchaseController(QString name);
     void moveController(int oldindex, int newindex);
 };
 

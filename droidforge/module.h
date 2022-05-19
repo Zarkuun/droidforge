@@ -39,7 +39,8 @@ public:
     void hiliteRegisters(bool on=true, QChar type='\0', unsigned number=0);
     const QPixmap *getFaceplateImage() const { return &faceplateImage; };
     AtomRegister *registerAt(const QPoint &pos) const;
-    AtomRegister *registerAtom(QChar type, unsigned number) const;
+    AtomRegister registerAtom(QChar type, unsigned number) const;
+    void collectAllRegisters(RegisterList &rl) const;
 
 protected:
     QRectF boundingRect() const override;

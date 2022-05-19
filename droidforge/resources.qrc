@@ -1204,5 +1204,6 @@
         <file>images/icons/warning.png</file>
         <file>images/rackbackground.png</file>
         <file>images/faceplates/faceplate-blind-front.jpg</file>
+        <file>images/icons/white/purchase.png</file>
     </qresource>
 </RCC>

@@ -155,8 +155,8 @@ bool Patch::needX7() const
 
 void Patch::collectRegisterAtoms(RegisterList &sl) const
 {
-    for (qsizetype i=0; i<sections.length(); i++)
-        sections[i]->collectRegisterAtoms(sl);
+    for (auto section: sections)
+        section->collectRegisterAtoms(sl);
 }
 
 void Patch::swapControllerNumbers(int fromindex, int toindex)

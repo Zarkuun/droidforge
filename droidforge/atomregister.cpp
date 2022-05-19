@@ -1,6 +1,7 @@
 #include "atomregister.h"
 
 #include <QStringList>
+#include <QDebug>
 
 AtomRegister::AtomRegister()
 {
@@ -66,4 +67,20 @@ void AtomRegister::swapControllerNumbers(int fromindex, int toindex)
         data.r.controller = toindex;
     else if ((int)data.r.controller == toindex)
         data.r.controller = fromindex;
+}
+
+QDebug &operator<<(QDebug &out, const AtomRegister &ar) {
+    out << ar.toString();
+    return out;
+}
+
+QDebug &operator<<(QDebug &out, const RegisterList &rl) {
+    for (auto& entry: rl)
+        out << entry;
+    return out;
+}
+
+bool operator==(const AtomRegister &a, const AtomRegister &b)
+{
+    return a.data.raw == b.data.raw;
 }

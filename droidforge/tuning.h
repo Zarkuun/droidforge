@@ -1,6 +1,8 @@
 #ifndef TUNING_H
 #define TUNING_H
 
+#define SHOP_PRODUCTS_URL "https://shop.dermannmitdermaschine.de/products/"
+
 #define MAX_RECENT_FILES                     10
 #define UNDO_HISTORY_SIZE                    1000
 #define MAX_NUM_CONTROLLERS                  32 // When parsing a patch

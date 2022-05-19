@@ -63,6 +63,7 @@ public:
     void patchHasChanged();
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);
+    QIcon icon(QString what) const;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -76,7 +77,6 @@ private:
     void createRackMenu();
     void createActions();
     bool checkModified();
-    QIcon icon(QString what) const;
     QStringList getRecentFiles();
     void addToRecentFiles(const QString &path);
     void openDirInFinder(const QString &filename);

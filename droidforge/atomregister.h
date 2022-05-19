@@ -2,6 +2,8 @@
 #define ATOMREGISTER_H
 
 #include <QChar>
+#include <QDataStream>
+#include <QList>
 
 #include "atom.h"
 #include "registertypes.h"
@@ -36,9 +38,13 @@ public:
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromindex, int toindex);
+    friend bool operator==(const AtomRegister &a, const AtomRegister &b);
 };
 
 typedef QList<AtomRegister> RegisterList;
 
+QDebug &operator<<(QDebug &out, const AtomRegister &ar);
+QDebug &operator<<(QDebug &out, const RegisterList &rl);
+bool operator==(const AtomRegister &a, const AtomRegister &b);
 
 #endif // ATOMREGISTER_H

@@ -82,18 +82,28 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
             QRectF r = registerRect(type, j+1);
             if (r.contains(pos)) {
-                return registerAtom(type, j+1);
+                return registerAtom(type, j+1).clone();
             }
         }
     }
     return 0;
 }
 
-AtomRegister *Module::registerAtom(QChar type, unsigned number) const
+AtomRegister Module::registerAtom(QChar type, unsigned number) const
 {
     unsigned controller = 0;
     if (data(DATA_INDEX_CONTROLLER_INDEX).isValid())
         controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
 
-    return new AtomRegister(type, controller, number + numberOffset(type));
+    return AtomRegister(type, controller, number + numberOffset(type));
+}
+
+void Module::collectAllRegisters(RegisterList &rl) const
+{
+    for (unsigned i=0; i<NUM_REGISTER_TYPES; i++) {
+        QChar type = register_types[i];
+        unsigned num = numRegisters(type);
+        for (unsigned j=1; j<=num; j++)
+            rl.append(registerAtom(type, j));
+    }
 }
