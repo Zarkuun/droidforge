@@ -278,9 +278,12 @@ void PatchSectionView::updateCircuits()
 
 void PatchSectionView::updateRegisterHilites() const
 {
+    const Circuit *circuit = currentCircuit();
+    if (!currentCircuit()) // 0 for empty section
+        return;
+
     CursorPosition cursor = section->cursorPosition();
     RegisterList registers;
-    const Circuit *circuit = currentCircuit();
     if (cursor.row == -2 || cursor.row == -1) // Circuit selected
         circuit->collectRegisterAtoms(registers);
     else {

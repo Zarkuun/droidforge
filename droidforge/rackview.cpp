@@ -48,17 +48,16 @@ void RackView::mousePressEvent(QMouseEvent *event)
                 int index = -1;
                 if (item->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
                     index = item->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
-                popupContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
+                popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
             }
-            // TODO: Add context menu for adding a controller
+            else if (!item)
+                popupBackgroundContextMenu();
         }
         else if (event->button() == Qt::LeftButton) {
             QGraphicsItem *item = itemAt(event->pos());
             if (item == registerMarker)
                 the_forge->clickOnRegister(markedRegister);
         }
-        else if (!item)
-            addController();
     }
 }
 
@@ -169,10 +168,11 @@ void RackView::hideRegisterMarker()
     registerMarker->setVisible(false);
 }
 
-void RackView::popupContextMenu(int controllerIndex, QString name)
+void RackView::popupControllerContextMenu(int controllerIndex, QString name)
 {
    QMenu *menu=new QMenu(this);
    if (controllerIndex >= 0) {
+       menu->addAction(the_forge->getAddControllerAction());
        menu->addAction(the_forge->icon("delete"), tr("Remove this controller"), this,
                        [this,controllerIndex,name] () {this->askRemoveController(controllerIndex, name); });
        if (controllerIndex > 0)
@@ -181,7 +181,7 @@ void RackView::popupContextMenu(int controllerIndex, QString name)
        if (controllerIndex+1 < patch->numControllers())
            menu->addAction(the_forge->icon("keyboard_arrow_right"), tr("Move by one position to the right"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex+1); });
-       if (controllersRegistersUsed(controllerIndex))
+       if (controllersRegistersUsed(controllerIndex) && numControllers() >= 2)
            menu->addAction(tr("Move used controls and LEDs to other controllers"),
                            this, [this,controllerIndex,name] () {this->remapControls(controllerIndex, name); });
    }
@@ -190,6 +190,13 @@ void RackView::popupContextMenu(int controllerIndex, QString name)
    menu->addAction(the_forge->icon("purchase"), tr("Lookup this module in the shop"), this,
                    [this,name] () {this->purchaseController(name); });
    menu->setAttribute(Qt::WA_DeleteOnClose);
+   menu->popup(QCursor::pos());
+}
+
+void RackView::popupBackgroundContextMenu()
+{
+   QMenu *menu = new QMenu(this);
+   menu->addAction(the_forge->getAddControllerAction());
    menu->popup(QCursor::pos());
 }
 
@@ -294,6 +301,15 @@ void RackView::addModule(const QString &name, int controllerIndex)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
     module->setPos(x, RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;
+}
+
+unsigned RackView::numControllers() const
+{
+    unsigned n=0;
+    for (auto module: modules)
+        if (module->isController())
+            n++;
+    return n;
 }
 
 void RackView::removeModule(int controllerIndex)

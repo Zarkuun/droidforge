@@ -35,6 +35,7 @@ public:
     virtual QPointF registerPosition(QChar, unsigned) const = 0; // in HP
     virtual float registerSize(QChar, unsigned) const = 0; // in HP
 
+    bool isController() const;
     void clearHilites();
     void hiliteRegisters(bool on=true, QChar type='\0', unsigned number=0);
     const QPixmap *getFaceplateImage() const { return &faceplateImage; };

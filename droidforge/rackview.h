@@ -33,10 +33,12 @@ public:
 
 private:
     void addModule(const QString &name, int controllerIndex=-1);
+    unsigned numControllers() const;
     void removeModule(int controllerIndex);
     void updateGraphics();
     void updateSize();
-    void popupContextMenu(int controller, QString name);
+    void popupControllerContextMenu(int controller, QString name);
+    void popupBackgroundContextMenu();
     void updateRegisterMarker(AtomRegister *markedAtom, QPointF, float);
     void removeController(int controllerIndex, QString controllerName,
             RegisterList &atomsToRemap,

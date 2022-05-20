@@ -13,6 +13,11 @@ Module::~Module()
 {
 }
 
+bool Module::isController() const
+{
+    return data(DATA_INDEX_CONTROLLER_INDEX).isValid();
+}
+
 void Module::clearHilites()
 {
     memset(&registerIsHilited, 0, sizeof(registerIsHilited));

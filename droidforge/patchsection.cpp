@@ -192,7 +192,10 @@ void PatchSection::collectCables(QStringList &cables) const
 
 Circuit *PatchSection::currentCircuit()
 {
-    return circuits[cursor.circuitNr];
+    if (circuits.size())
+        return circuits[cursor.circuitNr];
+    else
+        return 0;
 }
 
 

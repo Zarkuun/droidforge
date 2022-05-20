@@ -64,6 +64,7 @@ public:
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
+    QAction *getAddControllerAction() { return addControllerAction; };
 
 protected:
     void keyPressEvent(QKeyEvent *event);
