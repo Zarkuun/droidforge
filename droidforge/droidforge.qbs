@@ -10,6 +10,7 @@ QtApplication {
     ]
 
     files: [
+        "Patch/hirn.h",
         "atom.cpp",
         "atom.h",
         "atomcable.cpp",

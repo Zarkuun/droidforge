@@ -17,12 +17,12 @@ ControllerRemovalDialog::ControllerRemovalDialog(QWidget *parent)
 
     labelRemap = new QLabel();
     mainLayout->addWidget(labelRemap);
-    QFont font("Hack");
+    QFont font("Hack"); // TODO: more portable way for monospaced font. Or ship HACK.
     labelRemap->setFont(font);
     mainLayout->addSpacing(STANDARD_SPACING);
 
     // Checkbox for remapping
-    checkboxRemap = new QCheckBox(tr("Try to remap these controlls to other controllers as far as possible "));
+    checkboxRemap = new QCheckBox(tr("Try to remap these controls to other controllers as far as possible "));
     checkboxRemap->setChecked(true);
     mainLayout->addWidget(checkboxRemap);
     mainLayout->addSpacing(STANDARD_SPACING);

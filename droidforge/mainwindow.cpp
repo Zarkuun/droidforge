@@ -77,13 +77,13 @@ void MainWindow::loadPatch(const QString &aFilename)
     patchHasChanged();
 }
 
-void MainWindow::insertPatch(const QString &aFilename)
+void MainWindow::integratePatch(const QString &aFilename)
 {
     Patch newpatch;
     parser.parse(aFilename, &newpatch);
 
-    registerEdit(tr("Inserting new patch '%1'").arg(newpatch.getTitle()));
-    patch->insertPatch(&newpatch);
+    registerEdit(tr("integrating new patch '%1'").arg(newpatch.getTitle()));
+    patch->integratePatch(&newpatch);
     patchView.setPatch(patch);
     patchHasChanged();
 }
@@ -134,7 +134,7 @@ void MainWindow::loadFile(const QString &filename, int how)
         if (how == FILE_MODE_LOAD)
             loadPatch(filename);
         else
-            insertPatch(filename);
+            integratePatch(filename);
 
     }
     catch (ParseException &e) {
@@ -315,14 +315,14 @@ void MainWindow::createFileMenu()
     // Recent files
     createRecentFileActions();
 
-    // Insert
-    QAction *insertAct = new QAction(icon("extension"), tr("&Insert other patch as new section"), this);
-    insertAct->setShortcut(QKeySequence(tr("Ctrl+I")));
-    insertAct->setStatusTip(tr("Load another patch, add that as a new section after the currently selected section "
+    // Integrate
+    QAction *integrateAct = new QAction(icon("extension"), tr("&Integrate other patch as new section"), this);
+    integrateAct->setShortcut(QKeySequence(tr("Ctrl+I")));
+    integrateAct->setStatusTip(tr("Load another patch, add that as a new section after the currently selected section "
                                "and try to move the controls, inputs and outputs of that patch to unused "
                                "jacks and controlls"));
-    connect(insertAct, &QAction::triggered, this, &MainWindow::insert);
-    fileMenu->addAction(insertAct);
+    connect(integrateAct, &QAction::triggered, this, &MainWindow::integrate);
+    fileMenu->addAction(integrateAct);
 
     // Quit (automatically goes to Mac menu on mac)
     QAction *quitAct = new QAction(tr("&Quit"), this);
@@ -474,11 +474,11 @@ void MainWindow::open()
         loadFile(fileName, FILE_MODE_LOAD);
 }
 
-void MainWindow::insert()
+void MainWindow::integrate()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty())
-        loadFile(fileName, FILE_MODE_INSERT);
+        loadFile(fileName, FILE_MODE_INTEGRATE);
 }
 
 void MainWindow::save()

@@ -30,7 +30,7 @@ public:
     PatchSection *section(qsizetype i) { return sections[i]; };
     void addSection(PatchSection *section);
     void insertSection(int index, PatchSection *section);
-    void insertPatch(const Patch *snippet);
+    void integratePatch(const Patch *snippet);
     void deleteSection(int index);
     void reorderSections(int fromindex, int toindex);
     void swapControllersSmart(int fromindex, int toindex);

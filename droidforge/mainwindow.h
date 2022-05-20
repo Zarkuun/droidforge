@@ -24,7 +24,7 @@ extern MainWindow *the_forge;
 extern DroidFirmware *the_firmware;
 
 #define FILE_MODE_LOAD 0
-#define FILE_MODE_INSERT 1
+#define FILE_MODE_INTEGRATE 1
 
 class MainWindow : public QMainWindow
 {
@@ -62,7 +62,7 @@ public:
     ~MainWindow();
     void setPatch(Patch *);
     void loadPatch(const QString &filename);
-    void insertPatch(const QString &filename);
+    void integratePatch(const QString &filename);
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
     void patchHasChanged();
@@ -96,7 +96,7 @@ private slots:
     void loadFile(const QString &filename, int how);
     void newPatch();
     void open();
-    void insert();
+    void integrate();
     void save();
     void saveAs();
     void openEnclosingFolder();

@@ -49,7 +49,7 @@ void Patch::insertSection(int index, PatchSection *section)
     qDebug() << "Nun sind es " << sections.count() << "sections";
 }
 
-void Patch::insertPatch(const Patch *snippet)
+void Patch::integratePatch(const Patch *snippet)
 {
     int index;
     if (isEmpty())
