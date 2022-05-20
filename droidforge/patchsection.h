@@ -21,6 +21,7 @@ public:
     PatchSection *clone() const;
     QString toString() const;
     QString getTitle() const { return title; };
+    QString getNonemptyTitle() const;
     void setTitle(const QString &t) { title = t; };
     void deleteCurrentCircuit();
     void deleteCurrentJackAssignment();

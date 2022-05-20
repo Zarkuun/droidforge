@@ -23,8 +23,9 @@ int main(int argc, char *argv[])
 
     MainWindow mainWindow(initialFilename);
     mainWindow.show();
-    QSettings settings;
+    QDir::setCurrent(mainWindow.userPatchDirectory().absolutePath());
 
+    QSettings settings;
     if (settings.contains("mainwindow/size"))
         mainWindow.resize(settings.value("mainwindow/size").toSize());
 

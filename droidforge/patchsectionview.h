@@ -25,7 +25,7 @@ public:
     void addNewCircuit(QString name, jackselection_t jackSelection);
     void addNewJack(QString name);
     QString currentCircuitName() const;
-    QString getTitle() const { return section->getTitle(); };
+    QString getTitle() const { return section->getNonemptyTitle(); };
     QStringList usedJacks() const;
     void editValue(int key);
     void editCircuitComment(int key);

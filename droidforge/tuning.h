@@ -1,14 +1,15 @@
 #ifndef TUNING_H
 #define TUNING_H
 
-#define SHOP_PRODUCTS_URL "https://shop.dermannmitdermaschine.de/products/"
+#define SHOP_PRODUCTS_URL                   "https://shop.dermannmitdermaschine.de/products/"
+#define PATCH_DIRECTORY_NAME                "DROID Patches"
+#define SECTION_DEFAULT_NAME                "Circuits"
 
 #define MAX_RECENT_FILES                     10
 #define UNDO_HISTORY_SIZE                    1000
 #define MAX_NUM_CONTROLLERS                  32 // When parsing a patch
 #define MAX_NUM_SUBJACKS                     64
 #define BOOLEAN_VALUE_THRESHOLD              0.1
-#define SECTION_DEFAULT_NAME                 tr("Circuits")
 
 // Standard for all dialogs
 #define STANDARD_SPACING                     10

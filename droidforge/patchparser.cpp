@@ -23,6 +23,8 @@ PatchParser::PatchParser()
 
 void PatchParser::parse(QString fileName, Patch *patch)
 {
+    QFileInfo fi(fileName);
+    patch->setFileName(fi.baseName());
     errorMessage = "";
     errorLine = 0;
     section = 0;

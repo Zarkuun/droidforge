@@ -172,7 +172,7 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString name)
 {
    QMenu *menu=new QMenu(this);
    if (controllerIndex >= 0) {
-       menu->addAction(the_forge->getAddControllerAction());
+      menu->addAction(the_forge->getAddControllerAction());
        menu->addAction(the_forge->icon("delete"), tr("Remove this controller"), this,
                        [this,controllerIndex,name] () {this->askRemoveController(controllerIndex, name); });
        if (controllerIndex > 0)

@@ -8,6 +8,8 @@
 #include <QGraphicsItem>
 #include <QResizeEvent>
 #include <QTabBar>
+#include <QApplication>
+#include <QMenu>
 
 // TODO: Im Undo-State muss man sich auch merken, welche Sektion
 // gerade angezeigt wird!
@@ -20,6 +22,7 @@ PatchView::PatchView()
 {
     setMovable(true);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
+    connect(this, &QTabWidget::tabBarClicked, this, &PatchView::tabContextMenu);
     connect(tabBar(), &QTabBar::tabMoved, this, &PatchView::reorderSections);
 }
 
@@ -35,16 +38,13 @@ void PatchView::setPatch(Patch *newPatch)
 {
     patch = newPatch;
 
-    while (tabBar()->count()) {
+    while (tabBar()->count())
         removeTab(0);
-    }
 
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSection *section = patch->section(i);
         PatchSectionView *psv = new PatchSectionView(patch, section);
-        QString title = section->getTitle();
-        if (title.isEmpty())
-            title = "Circuits";
+        QString title = section->getNonemptyTitle();
         addTab(psv, title);
     }
 
@@ -151,9 +151,14 @@ void PatchView::renameCurrentSection()
 
 void PatchView::deleteCurrentSection()
 {
-    QString actionTitle = QString("deleting patch section '") + currentPatchSectionView()->getTitle() + "'";
+    deleteSection(currentIndex());
+}
+
+void PatchView::deleteSection(int index)
+{
+    QString title = currentPatchSectionView()->getTitle();
+    QString actionTitle = tr("deleting patch section '%1'").arg(title);
     the_forge->registerEdit(actionTitle);
-    int index = currentIndex();
     patch->deleteSection(index);
     removeTab(index);
     patch->setCurrentSectionIndex(this->currentIndex());
@@ -197,4 +202,26 @@ void PatchView::reorderSections(int fromindex, int toindex)
     the_forge->registerEdit("reordering sections");
     patch->reorderSections(fromindex, toindex);
     the_forge->patchHasChanged();
+}
+
+void PatchView::tabContextMenu(int index)
+{
+    if (QApplication::mouseButtons() == Qt::RightButton) {
+        QMenu *menu = new QMenu(this);
+        QString title = patch->section(index)->getNonemptyTitle();
+
+        // Delete
+        QAction *actionDelete = new QAction(tr("Delete patch section '%1'").arg(title));
+        menu->addAction(actionDelete);
+        connect(actionDelete, &QAction::triggered, this, [this,index]() {
+            this->deleteSection(index); });
+
+        // TODO:
+        // Move right
+        // Move left
+        // Merge with right
+        // Merge with left
+
+        menu->popup(QCursor::pos());
+    }
 }

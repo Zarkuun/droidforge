@@ -104,11 +104,16 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
     QString actionTitle = QString("adding new '") + name + "' circuit";
     the_forge->registerEdit(actionTitle);
 
-    if (!isEmpty())
+    int newPosition;
+    if (!isEmpty()) {
         currentCircuitView()->deselect();
-    int newPosition = section->cursorPosition().circuitNr;
-    if (section->cursorPosition().row != -2)
-        newPosition ++;
+        newPosition = section->cursorPosition().circuitNr;
+        if (section->cursorPosition().row != -2)
+            newPosition ++;
+    }
+    else
+        newPosition = 0;
+
     section->addNewCircuit(newPosition, name, jackSelection);
     rebuildPatchSection();
     updateCursor();

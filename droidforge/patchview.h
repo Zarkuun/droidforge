@@ -36,11 +36,13 @@ public slots:
     void editCircuitComment();
     void renameCurrentSection();
     void deleteCurrentSection();
+    void deleteSection(int index);
     void addSection();
 
 private slots:
     void renameSection(int index);
     void reorderSections(int fromindex, int toindex);
+    void tabContextMenu(int index);
 };
 
 #endif // PATCHVIEW_H

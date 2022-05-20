@@ -46,6 +46,34 @@ void Patch::addSection(PatchSection *section)
 void Patch::insertSection(int index, PatchSection *section)
 {
     sections.insert(index, section);
+    qDebug() << "Nun sind es " << sections.count() << "sections";
+}
+
+void Patch::insertPatch(const Patch *snippet)
+{
+    int index;
+    if (isEmpty())
+        index = 0;
+    else
+        index = sectionIndex + 1;
+    int startIndex = index;
+
+    for (auto section: snippet->sections) {
+        PatchSection *clonedSection = section->clone();
+        if (snippet->numSections() == 1 && clonedSection->getTitle().isEmpty()) {
+            QString title = snippet->getTitle();
+            if (title.isEmpty())
+                title = snippet->getFileName();
+            clonedSection->setTitle(title);
+        }
+        insertSection(index++, clonedSection);
+        qDebug() << "NEUE SECTION" << clonedSection->getTitle();
+    }
+    sectionIndex = startIndex; // move user directly to new section
+
+    // TODO: If the section has no native name and it's a single
+    //       section, use the patch title instead
+    // TODO: Move used registers to free things if required
 }
 
 void Patch::deleteSection(int index)

@@ -49,11 +49,7 @@ MainWindow::MainWindow(const QString &initialFilename)
     createActions();
 
     if (!initialFilename.isEmpty())
-        QTimer::singleShot(0, this, [&] () {loadFile(initialFilename);});
-
-//    QTimer *timer = new QTimer(this);
-//    connect(timer, &QTimer::timeout, this, &MainWindow::debug);
-//    timer->start(500);
+        QTimer::singleShot(0, this, [&] () {loadFile(initialFilename, FILE_MODE_LOAD);});
 }
 
 
@@ -70,24 +66,33 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::loadPatch(QString afilename)
+void MainWindow::loadPatch(const QString &aFilename)
 {
     Patch newpatch;
-    parser.parse(afilename, &newpatch);
+    parser.parse(aFilename, &newpatch);
     setPatch(newpatch.clone());
 
-    filename = afilename;
+    filename = aFilename;
     undoHistory.reset(&newpatch);
     patchHasChanged();
 }
 
+void MainWindow::insertPatch(const QString &aFilename)
+{
+    Patch newpatch;
+    parser.parse(aFilename, &newpatch);
+
+    registerEdit(tr("Inserting new patch '%1'").arg(newpatch.getTitle()));
+    patch->insertPatch(&newpatch);
+    patchView.setPatch(patch);
+    patchHasChanged();
+}
 
 void MainWindow::registerEdit(QString name)
 {
     undoHistory.snapshot(patch, name);
     patchHasChanged();
 }
-
 
 void MainWindow::setPatch(Patch *newpatch)
 {
@@ -97,7 +102,6 @@ void MainWindow::setPatch(Patch *newpatch)
     rackView.setPatch(patch);
     patchView.setPatch(patch);
 }
-
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
@@ -120,14 +124,17 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("mainwindow/size", size());
 }
 
-void MainWindow::loadFile(const QString &filename)
+void MainWindow::loadFile(const QString &filename, int how)
 {
-    if (!checkModified())
+    if (!checkModified() && how == FILE_MODE_LOAD)
         return;
 
     try {
         addToRecentFiles(filename);
-        loadPatch(filename);
+        if (how == FILE_MODE_LOAD)
+            loadPatch(filename);
+        else
+            insertPatch(filename);
 
     }
     catch (ParseException &e) {
@@ -246,6 +253,17 @@ void MainWindow::repaintPatchView()
         psv->updateCircuits();
 }
 
+QDir MainWindow::userPatchDirectory() const
+{
+    // TODO: Make patch directory configurable
+    QDir dir = QDir::homePath();
+    if (!dir.cd(PATCH_DIRECTORY_NAME)) {
+        dir.mkdir(PATCH_DIRECTORY_NAME);
+        dir.cd(PATCH_DIRECTORY_NAME);
+    }
+    return dir;
+}
+
 void MainWindow::createFileMenu()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -297,6 +315,15 @@ void MainWindow::createFileMenu()
     // Recent files
     createRecentFileActions();
 
+    // Insert
+    QAction *insertAct = new QAction(icon("extension"), tr("&Insert other patch as new section"), this);
+    insertAct->setShortcut(QKeySequence(tr("Ctrl+I")));
+    insertAct->setStatusTip(tr("Load another patch, add that as a new section after the currently selected section "
+                               "and try to move the controls, inputs and outputs of that patch to unused "
+                               "jacks and controlls"));
+    connect(insertAct, &QAction::triggered, this, &MainWindow::insert);
+    fileMenu->addAction(insertAct);
+
     // Quit (automatically goes to Mac menu on mac)
     QAction *quitAct = new QAction(tr("&Quit"), this);
     quitAct->setShortcuts(QKeySequence::Quit);
@@ -323,7 +350,7 @@ void MainWindow::createRecentFileActions()
             continue;
         QAction *action = new QAction(fi.baseName(), this);
         QString path = fi.absoluteFilePath();
-        connect(action, &QAction::triggered, this, [this, path]() { this->loadFile(path); });
+        connect(action, &QAction::triggered, this, [this, path]() { this->loadFile(path, FILE_MODE_LOAD); });
         menu->addAction(action);
     }
 }
@@ -444,7 +471,14 @@ void MainWindow::open()
 
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty())
-        loadFile(fileName);
+        loadFile(fileName, FILE_MODE_LOAD);
+}
+
+void MainWindow::insert()
+{
+    QString fileName = QFileDialog::getOpenFileName(this);
+    if (!fileName.isEmpty())
+        loadFile(fileName, FILE_MODE_INSERT);
 }
 
 void MainWindow::save()
@@ -545,7 +579,6 @@ QIcon MainWindow::icon(QString what) const
 {
     return QIcon(":/images/icons/white/" + what + ".png");
 }
-
 
 void MainWindow::openDirInFinder(const QString &filename)
 {

@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <QToolBar>
 #include <QSplitter>
+#include <QDir>
 
 class Patch;
 
@@ -21,6 +22,9 @@ class MainWindow;
 extern MainWindow *the_forge;
 
 extern DroidFirmware *the_firmware;
+
+#define FILE_MODE_LOAD 0
+#define FILE_MODE_INSERT 1
 
 class MainWindow : public QMainWindow
 {
@@ -57,7 +61,8 @@ public:
     MainWindow(const QString &initialFilename);
     ~MainWindow();
     void setPatch(Patch *);
-    void loadPatch(QString filename);
+    void loadPatch(const QString &filename);
+    void insertPatch(const QString &filename);
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
     void patchHasChanged();
@@ -65,6 +70,7 @@ public:
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
     QAction *getAddControllerAction() { return addControllerAction; };
+    QDir userPatchDirectory() const;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -87,9 +93,10 @@ private:
     void repaintPatchView();
 
 private slots:
-    void loadFile(const QString &filename);
+    void loadFile(const QString &filename, int how);
     void newPatch();
     void open();
+    void insert();
     void save();
     void saveAs();
     void openEnclosingFolder();

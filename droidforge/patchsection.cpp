@@ -2,6 +2,7 @@
 #include "droidfirmware.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
+#include "tuning.h"
 
 PatchSection::~PatchSection()
 {
@@ -34,6 +35,14 @@ QString PatchSection::toString() const
         s += circuits[i]->toString();
 
     return s;
+}
+
+QString PatchSection::getNonemptyTitle() const
+{
+    if (title.isEmpty())
+        return SECTION_DEFAULT_NAME;
+    else
+        return title;
 }
 
 
