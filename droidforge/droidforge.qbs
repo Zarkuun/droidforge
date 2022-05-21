@@ -17,6 +17,7 @@ QtApplication {
 
 
     files: [
+        "mainwindow.ui",
         "resources.qrc",
         "atomoneliner.cpp",
         "atomoneliner.h",
