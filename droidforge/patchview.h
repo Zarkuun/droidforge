@@ -22,7 +22,7 @@ public:
     bool handleKeyPress(int key);
     const PatchSectionView *currentPatchSectionView() const;
     PatchSectionView *currentPatchSectionView();
-    int numSections() const;;
+    int numSections() const;
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
 

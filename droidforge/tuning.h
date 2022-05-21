@@ -4,6 +4,8 @@
 #define SHOP_PRODUCTS_URL                   "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                "DROID Patches"
 #define SECTION_DEFAULT_NAME                "Circuits"
+#define CIRCUIT_ICON_PATH                   ":images/circuits/"
+#define CIRCUIT_ICON_SUFFIX                 ".png"
 
 #define MAX_RECENT_FILES                     10
 #define UNDO_HISTORY_SIZE                    1000
@@ -61,21 +63,22 @@
 #define PATV_COLOR_BACKGROUND                QColor(20, 20, 20)
 
 // Circuit view (in patch view)
-#define CIRV_SIDE_PADDING                     STANDARD_SPACING
+#define CIRV_SIDE_PADDING                    0 // STANDARD_SPACING
 #define CIRV_TEXT_SIDE_PADDING                 7
 #define CIRV_COMMENT_LINE_HEIGHT              18
 #define CIRV_JACK_HEIGHT                      22
 #define CIRV_ICON_WIDTH                       15
+#define CIRV_ICON_MARGIN                     (STANDARD_SPACING / 2)
 #define CIRV_HEADER_HEIGHT                    22
-#define CIRV_COLUMN_JACK_WIDTH               180
-#define CIRV_COLUMN_ATOM_WIDTH               170
+#define CIRV_COLUMN_JACK_MINIMUM_WIDTH        80
+#define CIRV_COLUMN_ATOM_MINIMUM_WIDTH        70
 #define CIRV_COLUMN_OPERATOR_WIDTH            20
-#define CIRV_COLOR_LINE                      QColor(0, 0, 0)
+#define CIRV_COLOR_LINE                      QColor(0, 0, 0, 96)
 #define CIRV_COLOR_OPERATOR                  QColor(255, 255, 255)
 #define CIRV_COLOR_OPERATOR_BACKGROUND       QColor(60, 60, 60)
-#define CIRV_COLOR_CIRCUIT_BACKGROUND        QColor(30, 30, 30)
+#define CIRV_COLOR_CIRCUIT_BACKGROUND        QColor(30, 37, 45, 128)
 #define CIRV_COLOR_CIRCUIT_NAME              QColor(250, 250, 250)
-#define CIRV_COLOR_CIRCUIT_NAME_BACKGROUND   QColor(60, 60, 60)
+#define CIRV_COLOR_CIRCUIT_NAME_BACKGROUND   QColor(60, 60, 60, 128)
 #define CIRV_COLOR_COMMENT                   QColor(200, 200, 200)
 #define CIRV_COLOR_COMMENT_BACKGROUND        QColor(40, 40, 40)
 

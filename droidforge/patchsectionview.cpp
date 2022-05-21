@@ -19,7 +19,11 @@ PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     buildPatchSection();
+    QPixmap background(":images/background.png");
+    setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
 }
 
 PatchSectionView::~PatchSectionView()
@@ -31,16 +35,15 @@ PatchSectionView::~PatchSectionView()
 
 void PatchSectionView::buildPatchSection()
 {
+    unsigned circuitWidth = viewport()->width();
     QGraphicsScene *scene = new QGraphicsScene();
-    QPixmap background(":images/background.png");
-    scene->setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
     setScene(scene);
 
     int y = 0;
     for (qsizetype i=0; i<section->circuits.size(); i++)
     {
         Circuit *circuit = section->circuits[i];
-        CircuitView *cv = new CircuitView(circuit, fontMetrics().lineSpacing());
+        CircuitView *cv = new CircuitView(circuit, circuitWidth, fontMetrics().lineSpacing());
         circuitViews.append(cv);
         scene->addItem(cv);
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
@@ -99,6 +102,12 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
     }
 }
 
+void PatchSectionView::resizeEvent(QResizeEvent *event)
+{
+    rebuildPatchSection();
+    updateCursor();
+}
+
 void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection)
 {
     QString actionTitle = QString("adding new '") + name + "' circuit";
@@ -117,7 +126,6 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
     section->addNewCircuit(newPosition, name, jackSelection);
     rebuildPatchSection();
     updateCursor();
-    ensureVisible(currentCircuitView());
     the_forge->patchHasChanged();
 }
 
@@ -334,6 +342,8 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
 void PatchSectionView::updateCursor()
 {
     currentCircuitView()->select(section->cursorPosition());
+    qDebug(".");
+    ensureVisible(currentCircuitView(), 0, 0);
     updateRegisterHilites();
 }
 
@@ -362,7 +372,6 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
             pos.column = cv->columnAt(posInCircuit.x());
             section->setCursor(pos);
             updateCursor();
-            ensureVisible(currentCircuitView());
         }
     }
     return true;
@@ -405,7 +414,6 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
     else
         section->moveCursorToNextCircuit();
     updateCursor();
-    ensureVisible(currentCircuitView());
 }
 
 void PatchSectionView::deleteCurrentRow()
@@ -504,12 +512,9 @@ void PatchSectionView::moveCursorUpDown(int whence)
         return;
 
     currentCircuitView()->deselect();
-
     if (whence == 1) // dowldiln
         section->moveCursorDown();
     else // up
         section->moveCursorUp();
-
     updateCursor();
-    ensureVisible(currentCircuitView());
 }

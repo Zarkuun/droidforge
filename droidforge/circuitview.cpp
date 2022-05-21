@@ -8,36 +8,23 @@
 
 #define NUM_COLUMNS 4
 
-unsigned column_widths[NUM_COLUMNS] = {
-  CIRV_COLUMN_JACK_WIDTH,
-  CIRV_COLUMN_ATOM_WIDTH,
-  CIRV_COLUMN_ATOM_WIDTH,
-  CIRV_COLUMN_ATOM_WIDTH,
-};
+#define CIRV_OPERATOR_1_X  (columnPosition(1) + columnWidth(1))
+#define CIRV_OPERATOR_2_X  (columnPosition(2) + columnWidth(2))
+#define CIRV_WIDTH         (columnPosition(3) + columnWidth(3))
+
+#define CIRV_COLUMN_123_WIDTH (columnPosition(3) + columnWidth(3) - columnPosition(1))
 
 
-unsigned column_positions[NUM_COLUMNS] = {
-  0,
-  CIRV_COLUMN_JACK_WIDTH,
-  CIRV_COLUMN_JACK_WIDTH + CIRV_COLUMN_ATOM_WIDTH + CIRV_COLUMN_OPERATOR_WIDTH,
-  CIRV_COLUMN_JACK_WIDTH + 2 * (CIRV_COLUMN_ATOM_WIDTH + CIRV_COLUMN_OPERATOR_WIDTH),
-};
-
-
-#define CIRV_OPERATOR_1_X  (column_positions[1] + column_widths[1])
-#define CIRV_OPERATOR_2_X  (column_positions[2] + column_widths[2])
-#define CIRV_WIDTH         (column_positions[3] + column_widths[3])
-
-#define CIRV_COLUMN_123_WIDTH (3 * CIRV_COLUMN_ATOM_WIDTH + 2 * CIRV_COLUMN_OPERATOR_WIDTH)
-
-
-CircuitView::CircuitView(Circuit *circuit, unsigned lineHeight)
+CircuitView::CircuitView(Circuit *circuit, unsigned width, unsigned lineHeight)
     : circuit(circuit)
+    , totalWidth(width)
     , lineHeight(lineHeight)
     , selected(false)
     , currentJack(-2)
     , currentColumn(0)
+    , icon(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
 {
+    icon = icon.scaledToHeight(CIRV_HEADER_HEIGHT);
     effect.setBlurRadius(15);
     effect.setColor(QColor(0,0,0));
     effect.setOffset(0, 0);
@@ -66,12 +53,12 @@ unsigned CircuitView::contentHeight() const
 
 QRectF CircuitView::boundingRect() const
 {
-    unsigned height = contentHeight() + PATV_CIRCUIT_VERTICAL_MARGIN;
+    // unsigned height = contentHeight() + PATV_CIRCUIT_VERTICAL_MARGIN;
     return QRectF(
-                -CIRV_SIDE_PADDING,
-                -PATV_CIRCUIT_VERTICAL_MARGIN,
+                0, // -CIRV_SIDE_PADDING,
+                0, // -PATV_CIRCUIT_VERTICAL_MARGIN,
                 CIRV_WIDTH + 2*CIRV_SIDE_PADDING,
-                height + 2 * PATV_CIRCUIT_VERTICAL_MARGIN);
+                contentHeight() + PATV_CIRCUIT_VERTICAL_MARGIN);
 }
 
 
@@ -80,12 +67,15 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     unsigned height = contentHeight();
     painter->fillRect(0, 0, CIRV_WIDTH, height, CIRV_COLOR_CIRCUIT_BACKGROUND);
 
-    unsigned x = CIRV_SIDE_PADDING;
-
     // Circuit name
     painter->fillRect(headerRect(), CIRV_COLOR_CIRCUIT_NAME_BACKGROUND);
+    painter->drawPixmap(headerRect().topLeft(), icon);
     painter->setPen(CIRV_COLOR_CIRCUIT_NAME);
-    painter->drawText(QRect(x, 0, CIRV_WIDTH-x, CIRV_HEADER_HEIGHT),
+    painter->drawText(
+                QRect(CIRV_HEADER_HEIGHT + CIRV_ICON_MARGIN,
+                      0,
+                      CIRV_WIDTH - CIRV_HEADER_HEIGHT - CIRV_ICON_MARGIN,
+                      CIRV_HEADER_HEIGHT),
                       Qt::AlignVCenter, circuit->getName().toUpper());
 
     // Comment
@@ -103,7 +93,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     painter->save();
     painter->setPen(CIRV_COLOR_LINE);
     painter->drawLine(0, 0, 0, height);
-    painter->drawLine(column_positions[1], t, column_positions[1], height);
+    painter->drawLine(columnPosition(1), t, columnPosition(1), height);
     painter->drawLine(CIRV_WIDTH, 0, CIRV_WIDTH, height);
     painter->drawLine(0, 0, CIRV_WIDTH, 0);
     painter->drawLine(0, height, CIRV_WIDTH, height);
@@ -183,13 +173,47 @@ void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom)
     }
 }
 
+unsigned CircuitView::columnWidth(int c) const
+{
+    const int minWidth =
+            CIRV_COLUMN_JACK_MINIMUM_WIDTH +
+            CIRV_COLUMN_ATOM_MINIMUM_WIDTH * 3 +
+            CIRV_COLUMN_OPERATOR_WIDTH * 2;
+
+    int sparePerColumn = (totalWidth - minWidth) / NUM_COLUMNS;
+    if (sparePerColumn < 0)
+        sparePerColumn = 0;
+
+    if (c == 0)
+        return CIRV_COLUMN_JACK_MINIMUM_WIDTH + sparePerColumn;
+    else
+        return CIRV_COLUMN_ATOM_MINIMUM_WIDTH + sparePerColumn;
+}
+
+unsigned CircuitView::columnPosition(int c) const
+{
+    unsigned pos = 0;
+    for (int i=0; i<c; i++)
+        pos += columnWidth(i);
+    if (c >= 2)
+        pos += CIRV_COLUMN_OPERATOR_WIDTH;
+    if (c >= 3)
+        pos += CIRV_COLUMN_OPERATOR_WIDTH;
+    return pos;
+}
+
 void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned y)
 {
     // CIRV_COLUMN 0: Name of the jack.
     painter->setPen(textcolor);
-    painter->drawText(QRect(column_positions[0] + CIRV_TEXT_SIDE_PADDING, y, column_widths[0] - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT), Qt::AlignVCenter, ja->jackName());
+    painter->drawText(QRect(columnPosition(0) + CIRV_TEXT_SIDE_PADDING, y, columnWidth(0) - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT), Qt::AlignVCenter, ja->jackName());
     painter->setPen(CIRV_COLOR_LINE);
     painter->drawLine(0, y, CIRV_WIDTH, y);
+
+    QRectF bgrect(columnPosition(0), y,
+                  columnPosition(3) + columnWidth(3),
+                  CIRV_JACK_HEIGHT);
+    // painter->fillRect(bgrect, QColor(0, 255, 0, 138));
 
     // CIRV_COLUMN 1: A (first mult). Only for inputs
     if (ja->jackType() == JACKTYPE_INPUT)
@@ -197,8 +221,8 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         JackAssignmentInput *jai = (JackAssignmentInput *)ja;
         for (int a=0; a<3; a++) {
             paintAtom(painter,
-                      QRect(column_positions[a+1] + CIRV_TEXT_SIDE_PADDING,
-                             y, column_widths[a+1] - CIRV_TEXT_SIDE_PADDING,
+                      QRect(columnPosition(a+1) + CIRV_TEXT_SIDE_PADDING,
+                             y, columnWidth(a+1) - CIRV_TEXT_SIDE_PADDING,
                              CIRV_JACK_HEIGHT),
                       jai->getAtom(a));
         }
@@ -207,8 +231,8 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         paintOperator(painter, CIRV_OPERATOR_1_X, y, "✱");
         paintOperator(painter, CIRV_OPERATOR_2_X, y, "+");
         painter->setPen(CIRV_COLOR_LINE);
-        painter->drawLine(column_positions[2], y, column_positions[2], y + CIRV_JACK_HEIGHT);
-        painter->drawLine(column_positions[3], y, column_positions[3], y + CIRV_JACK_HEIGHT);
+        painter->drawLine(columnPosition(2), y, columnPosition(2), y + CIRV_JACK_HEIGHT);
+        painter->drawLine(columnPosition(3), y, columnPosition(3), y + CIRV_JACK_HEIGHT);
         painter->drawLine(CIRV_OPERATOR_1_X, y, CIRV_OPERATOR_1_X, y + CIRV_JACK_HEIGHT);
         painter->drawLine(CIRV_OPERATOR_2_X, y, CIRV_OPERATOR_2_X, y + CIRV_JACK_HEIGHT);
 
@@ -217,7 +241,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
 
     else {
         QString text;
-        QRect rect(column_positions[1] + CIRV_TEXT_SIDE_PADDING, y, CIRV_COLUMN_123_WIDTH - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT);
+        QRect rect(columnPosition(1) + CIRV_TEXT_SIDE_PADDING, y, CIRV_COLUMN_123_WIDTH - CIRV_TEXT_SIDE_PADDING, CIRV_JACK_HEIGHT);
         if (ja->jackType() == JACKTYPE_OUTPUT)
         {
             JackAssignmentOutput *jao = (JackAssignmentOutput *)ja;
@@ -262,7 +286,7 @@ QRect CircuitView::jackRect(int row) const
     return QRect(
                 0,
                 CIRV_HEADER_HEIGHT + commentHeight() + row * CIRV_JACK_HEIGHT,
-                column_widths[0],
+                columnWidth(0),
             CIRV_JACK_HEIGHT);
 }
 
@@ -272,11 +296,11 @@ QRect CircuitView::atomRect(int row, int column) const
     int x, width;
 
     if (ja->jackType() == JACKTYPE_INPUT) {
-        x = column_positions[column];
-        width = column_widths[column];
+        x = columnPosition(column);
+        width = columnWidth(column);
     }
     else {
-        x = column_positions[1];
+        x = columnPosition(1);
         width = CIRV_COLUMN_123_WIDTH;
     }
     return QRect(x, jackRect(row).top(), width, CIRV_JACK_HEIGHT);
@@ -298,7 +322,7 @@ void CircuitView::deselect()
 
 int CircuitView::columnAt(unsigned x)
 {
-    if (x <= column_positions[1])
+    if (x <= columnPosition(1))
         return 0;
     else if (x <= CIRV_OPERATOR_1_X)
         return 1;
@@ -335,6 +359,6 @@ QPoint CircuitView::frameCursorPosition() const
     else if (currentJack >= 0)
         y += CIRV_HEADER_HEIGHT + commentHeight() + currentJack * CIRV_JACK_HEIGHT;
 
-    int x = column_positions[currentColumn];
+    int x = columnPosition(currentColumn);
     return QPoint(x, y);
 }

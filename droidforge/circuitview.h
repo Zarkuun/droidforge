@@ -11,14 +11,16 @@
 class CircuitView : public QGraphicsItem
 {
     Circuit *circuit;
+    unsigned totalWidth;
     unsigned lineHeight;
     QGraphicsDropShadowEffect effect;
     bool selected;
     int currentJack;
     unsigned currentColumn;
+    QPixmap icon;
 
 public:
-    CircuitView(Circuit *circuit, unsigned lineHeight);
+    CircuitView(Circuit *circuit, unsigned width, unsigned lineHeight);
     unsigned commentHeight() const;
     unsigned contentHeight() const;
     QRectF boundingRect() const override;
@@ -42,6 +44,8 @@ private:
     QRect jackRect(int row) const;
     QRect atomRect(int row, int column) const;
     void paintAtom(QPainter *painter, const QRect &rect, Atom *atom);
+    unsigned columnWidth(int c) const;
+    unsigned columnPosition(int c) const;
 };
 
 #endif // CIRCUITVIEW_H

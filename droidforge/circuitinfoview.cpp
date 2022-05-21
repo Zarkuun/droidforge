@@ -48,9 +48,9 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                       the_firmware->circuitDescription(circuit));
 
     // Icon
-    QPixmap image(QString(":images/circuits/" +  circuit + ".png"));
+    QPixmap image(QString(CIRCUIT_ICON_PATH +  circuit + CIRCUIT_ICON_SUFFIX));
     if (image.isNull())
-        image = QPixmap(QString(":images/circuits/noicon.png"));
+        image = QPixmap(QString(CIRCUIT_ICON_PATH) + "noicon" + CIRCUIT_ICON_SUFFIX);
     painter->drawPixmap(QRect(CICH_PADDING, CICH_PADDING,
                               CICH_ICON_WIDTH, CICH_ICON_WIDTH), image);
 

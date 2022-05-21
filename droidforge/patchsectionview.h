@@ -8,6 +8,7 @@
 #include "atomselectordialog.h"
 
 #include <QGraphicsView>
+#include <QResizeEvent>
 
 class PatchSectionView : public QGraphicsView
 {
@@ -21,7 +22,6 @@ public:
     PatchSectionView(const Patch *patch, PatchSection *section);
     ~PatchSectionView();
     bool handleKeyPress(int key);
-    void mousePressEvent(QMouseEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
     void addNewJack(QString name);
     QString currentCircuitName() const;
@@ -33,6 +33,10 @@ public:
     void updateCircuits();
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
+
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void resizeEvent(QResizeEvent *event);
 
 private:
     void updateCursor();
