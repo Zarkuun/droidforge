@@ -19,6 +19,7 @@ PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    setMinimumWidth(CircuitView::minimumWidth() + CIRV_ASSUMED_SCROLLBAR_WIDTH);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     buildPatchSection();
@@ -42,8 +43,13 @@ void PatchSectionView::buildPatchSection()
     int y = 0;
     for (qsizetype i=0; i<section->circuits.size(); i++)
     {
+        bool isLast = i == section->circuits.size() - 1;
         Circuit *circuit = section->circuits[i];
-        CircuitView *cv = new CircuitView(circuit, circuitWidth, fontMetrics().lineSpacing());
+        CircuitView *cv = new CircuitView(
+                    circuit,
+                    circuitWidth,
+                    fontMetrics().lineSpacing(),
+                    isLast ? CIRV_TOP_PADDING : 0);
         circuitViews.append(cv);
         scene->addItem(cv);
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
@@ -102,7 +108,7 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void PatchSectionView::resizeEvent(QResizeEvent *event)
+void PatchSectionView::resizeEvent(QResizeEvent *)
 {
     rebuildPatchSection();
     updateCursor();

@@ -13,6 +13,9 @@ class CircuitView : public QGraphicsItem
     Circuit *circuit;
     unsigned totalWidth;
     unsigned lineHeight;
+    unsigned bottomPadding;
+    unsigned jackColumnWidth;
+    unsigned atomColumnWidth;
     QGraphicsDropShadowEffect effect;
     bool selected;
     int currentJack;
@@ -20,10 +23,9 @@ class CircuitView : public QGraphicsItem
     QPixmap icon;
 
 public:
-    CircuitView(Circuit *circuit, unsigned width, unsigned lineHeight);
-    unsigned commentHeight() const;
-    unsigned contentHeight() const;
+    CircuitView(Circuit *circuit, unsigned width, unsigned lineHeight, unsigned bottomPadding);
     QRectF boundingRect() const override;
+    static unsigned minimumWidth();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                    QWidget *widget) override;
     unsigned numJackAssignments() { return circuit->numJackAssignments(); };
@@ -35,8 +37,8 @@ public:
     QPoint frameCursorPosition() const;
 
 private:
-    void paintJacks(QPainter *painter, unsigned &line, unsigned y);
-    void paintJack(QPainter *painter, JackAssignment *ja, const QColor color, unsigned y);
+    void paintJacks(QPainter *painter);
+    void paintJack(QPainter *painter, JackAssignment *ja, const QColor color, unsigned row);
     void paintOperator(QPainter *painter, unsigned x, unsigned y, QString o);
     void paintCursor(QPainter *painter) const;
     QRect headerRect() const;
@@ -44,8 +46,15 @@ private:
     QRect jackRect(int row) const;
     QRect atomRect(int row, int column) const;
     void paintAtom(QPainter *painter, const QRect &rect, Atom *atom);
+    // geometry helpers
+    QRectF contentRect() const;
+    unsigned contentHeight() const;
+    unsigned commentHeight() const;
+    unsigned contentWidth() const;
     unsigned columnWidth(int c) const;
+    unsigned column123Width() const;
     unsigned columnPosition(int c) const;
+    unsigned operatorPosition(int o) const; // o is 0 or 1
 };
 
 #endif // CIRCUITVIEW_H
