@@ -14,6 +14,7 @@ class PatchView : public QTabWidget
     Patch *patch;
     PatchPropertiesDialog *patchPropertiesDialog;
     CircuitChooseDialog *circuitChooseDialog;
+    int zoomLevel;
 
 public:
     PatchView();
@@ -38,6 +39,8 @@ public slots:
     void deleteCurrentSection();
     void deleteSection(int index);
     void addSection();
+    void zoom(int how);
+
 
 private slots:
     void renameSection(int index);

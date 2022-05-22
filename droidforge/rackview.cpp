@@ -17,7 +17,7 @@ RackView::RackView()
 {
     setFocusPolicy(Qt::NoFocus);
     setMinimumHeight(RACV_MIN_HEIGHT);
-    setMaximumHeight(RACV_MAX_HEIGHT * 2);
+    setMaximumHeight(RACV_MAX_HEIGHT);
 
     QGraphicsScene *thescene = new QGraphicsScene();
     setAlignment(Qt::AlignLeft | Qt::AlignTop);

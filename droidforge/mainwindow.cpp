@@ -156,6 +156,7 @@ void MainWindow::createActions()
     createFileMenu();
     createRackMenu();
     createEditMenu();
+    createViewMenu();
     patchHasChanged();
 
     QAction *nextSectionAct = new QAction(tr("Next section"));
@@ -437,6 +438,26 @@ void MainWindow::createEditMenu()
     editMenu->addAction(deletePatchSectionAction);
     connect(deletePatchSectionAction, &QAction::triggered, &patchView, &PatchView::deleteCurrentSection);
 
+}
+
+void MainWindow::createViewMenu()
+{
+    viewMenu = menuBar()->addMenu(tr("&View"));
+
+    zoomResetAction = new QAction(icon("zoom_in"), tr("Normal font size"), this);
+    zoomResetAction->setShortcut(QKeySequence(tr("Ctrl+0")));
+    viewMenu->addAction(zoomResetAction);
+    connect(zoomResetAction, &QAction::triggered, &patchView, [this] () { patchView.zoom(0); });
+
+    zoomInAction = new QAction(icon("zoom_in"), tr("Increase font size"), this);
+    zoomInAction->setShortcuts(QKeySequence::ZoomIn);
+    viewMenu->addAction(zoomInAction);
+    connect(zoomInAction, &QAction::triggered, &patchView, [this] () { patchView.zoom(1); });
+
+    zoomOutAction = new QAction(icon("zoom_out"), tr("Outcrease font size"), this);
+    zoomOutAction->setShortcuts(QKeySequence::ZoomOut);
+    viewMenu->addAction(zoomOutAction);
+    connect(zoomOutAction, &QAction::triggered, &patchView, [this] () { patchView.zoom(-1); });
 }
 
 void MainWindow::createRackMenu()

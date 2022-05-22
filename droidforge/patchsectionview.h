@@ -14,12 +14,13 @@ class PatchSectionView : public QGraphicsView
 {
     const Patch *patch;
     PatchSection *section;
+    float zoomFactor;
 
     QList<CircuitView *>circuitViews;
     AtomSelectorDialog *atomSelectorDialog; // TODO: Jede Section hat nen eigenen Dialog
 
 public:
-    PatchSectionView(const Patch *patch, PatchSection *section);
+    PatchSectionView(const Patch *patch, PatchSection *section, int zoom);
     ~PatchSectionView();
     bool handleKeyPress(int key);
     void addNewCircuit(QString name, jackselection_t jackSelection);
@@ -33,6 +34,7 @@ public:
     void updateCircuits();
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
+    void setZoom(int zoom);
 
 protected:
     void mousePressEvent(QMouseEvent *event);

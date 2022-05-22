@@ -11,8 +11,9 @@
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
+#include <QTransform>
 
-PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section)
+PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section, int zoom)
     : patch(patch)
     , section(section)
     , atomSelectorDialog{}
@@ -25,6 +26,7 @@ PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section)
     buildPatchSection();
     QPixmap background(":images/background.png");
     setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
+    setZoom(zoom);
 }
 
 PatchSectionView::~PatchSectionView()
@@ -36,7 +38,7 @@ PatchSectionView::~PatchSectionView()
 
 void PatchSectionView::buildPatchSection()
 {
-    unsigned circuitWidth = viewport()->width();
+    unsigned circuitWidth = viewport()->width() / zoomFactor;
     QGraphicsScene *scene = new QGraphicsScene();
     setScene(scene);
 
@@ -343,6 +345,15 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     the_forge->registerEdit(tr("inserting register %1").arg(ar.toString()));
     ja->replaceAtom(cursor.column, ar.clone());
     the_forge->patchHasChanged();
+}
+
+void PatchSectionView::setZoom(int zoom)
+{
+    zoomFactor = pow(ZOOM_STEP, double(zoom));
+    QTransform transform;
+    transform.scale(zoomFactor, zoomFactor);
+    setTransform(transform);
+    rebuildPatchSection();
 }
 
 void PatchSectionView::updateCursor()

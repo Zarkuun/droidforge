@@ -93,32 +93,24 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     // Comment
     painter->fillRect(commentRect(), CIRV_COLOR_COMMENT_BACKGROUND);
     painter->setPen(CIRV_COLOR_COMMENT);
-    painter->save();
     painter->drawText(
                 QRect(CIRV_TEXT_SIDE_PADDING,
                       headerRect().bottom() + CIRV_COMMENT_PADDING,
                       headerRect().width() -  2 * CIRV_TEXT_SIDE_PADDING,
                       commentHeight()),
                       Qt::AlignLeft | Qt::AlignJustify | Qt::AlignTop, circuit->getComment());
-    painter->restore();
 
     // Jacks
     paintJacks(painter);
 
     // Lines
-    painter->save();
     painter->setPen(CIRV_COLOR_LINE);
     painter->drawRect(cr); // borders
-    // painter->drawLine(cr.left(), cr.top(), cr.left(), cr.height());     // left border
-    // painter->drawLine(cr.right(), cr.top(), cr.right(), cr.height());   // right border
-    // painter->drawLine(cr.left(), cr.top(), cr.width(), cr.top());       // top line
-    // painter->drawLine(cr.left(), cr.bottom(), cr.right(), cr.bottom()); // bottom line
     painter->drawLine(
                 columnPosition(1),
                 headerRect().bottom(),
                 columnPosition(1),
                 cr.bottom()); // line after jack column
-    painter->restore();
 
     if (selected)
         paintCursor(painter);
@@ -242,15 +234,13 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
                       jr.top(),
                       columnWidth(0) - 2 * CIRV_TEXT_SIDE_PADDING,
                       CIRV_JACK_HEIGHT), Qt::AlignVCenter, ja->jackName());
-    painter->setPen(CIRV_COLOR_LINE);
-    painter->drawLine(jr.left(), jr.top(), contentWidth(), jr.top());
 
     // CIRV_COLUMN 1: A (first mult). Only for inputs
     if (ja->jackType() == JACKTYPE_INPUT)
     {
         JackAssignmentInput *jai = (JackAssignmentInput *)ja;
-        for (int a=1; a<=3; a++) {
-            QRect ar = atomRect(row, a);
+        for (int a=0; a<3; a++) {
+            QRect ar = atomRect(row, a+1);
             paintAtom(painter,
                       QRect(ar.left() + CIRV_TEXT_SIDE_PADDING,
                           ar.top(),
@@ -264,12 +254,10 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         paintOperator(painter, operatorPosition(0), ar.top(), "✱");
         paintOperator(painter, operatorPosition(1), ar.top(), "+");
         painter->setPen(CIRV_COLOR_LINE);
-        painter->drawLine(columnPosition(2), ar.top(), columnPosition(2), ar.top() + CIRV_JACK_HEIGHT);
-        painter->drawLine(columnPosition(3), ar.top(), columnPosition(3), ar.top() + CIRV_JACK_HEIGHT);
+        painter->drawLine(columnPosition(2),   ar.top(), columnPosition(2),   ar.top() + CIRV_JACK_HEIGHT);
+        painter->drawLine(columnPosition(3),   ar.top(), columnPosition(3),   ar.top() + CIRV_JACK_HEIGHT);
         painter->drawLine(operatorPosition(0), ar.top(), operatorPosition(0), ar.top() + CIRV_JACK_HEIGHT);
         painter->drawLine(operatorPosition(1), ar.top(), operatorPosition(1), ar.top() + CIRV_JACK_HEIGHT);
-
-        // TODO: B and C
     }
 
     else { // JACKTYPE_OUTPUT
@@ -292,6 +280,10 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
             painter->drawText(rect, Qt::AlignVCenter, text);
         }
     }
+
+    // horizontal line
+    painter->setPen(CIRV_COLOR_LINE);
+    painter->drawLine(jr.left(), jr.top(), jr.left() + contentWidth(), jr.top());
 }
 
 
@@ -301,9 +293,9 @@ void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QStri
     painter->fillRect(r, CIRV_COLOR_OPERATOR_BACKGROUND);
     painter->setPen(CIRV_COLOR_OPERATOR);
     painter->save();
-    painter->setPen(COLOR_TEXT);
     const QFont &font = painter->font();
     painter->setFont(QFont(font.family(), font.pointSize() * 1.2));
+    painter->setPen(COLOR_TEXT);
     painter->drawText(r, o, Qt::AlignVCenter | Qt::AlignCenter);
     painter->restore();
 }

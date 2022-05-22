@@ -10,6 +10,7 @@
 #include <QTabBar>
 #include <QApplication>
 #include <QMenu>
+#include <QSettings>
 
 // TODO: Im Undo-State muss man sich auch merken, welche Sektion
 // gerade angezeigt wird!
@@ -19,11 +20,16 @@ PatchView::PatchView()
     , patch(0)
     , patchPropertiesDialog{}
     , circuitChooseDialog{}
+    , zoomLevel(0)
 {
     setMovable(true);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
     connect(this, &QTabWidget::tabBarClicked, this, &PatchView::tabContextMenu);
     connect(tabBar(), &QTabBar::tabMoved, this, &PatchView::reorderSections);
+
+    QSettings settings;
+    if (settings.contains("patchwindow/zoom"))
+        zoomLevel = settings.value("patchwindow/zoom").toInt();
 }
 
 PatchView::~PatchView()
@@ -43,7 +49,7 @@ void PatchView::setPatch(Patch *newPatch)
 
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSection *section = patch->section(i);
-        PatchSectionView *psv = new PatchSectionView(patch, section);
+        PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
         QString title = section->getNonemptyTitle();
         addTab(psv, title);
     }
@@ -175,7 +181,7 @@ void PatchView::addSection()
     QString actionTitle = QString("adding new patch section '") + newname + "'";
     the_forge->registerEdit(actionTitle);
     PatchSection *section = new PatchSection(newname);
-    PatchSectionView *psv = new PatchSectionView(patch, section);
+    PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
     int i = currentIndex() + 1;
     patch->insertSection(i, section);
     patch->setCurrentSectionIndex(i);
@@ -184,9 +190,22 @@ void PatchView::addSection()
     the_forge->patchHasChanged();
 }
 
+void PatchView::zoom(int how)
+{
+    QSettings settings;
+    if (how == 0)
+        zoomLevel = 0;
+    else
+        zoomLevel += how; // TODO: Impose some limits
+    zoomLevel = qMin(ZOOM_MAX, qMax(ZOOM_MIN, zoomLevel));
+    settings.setValue("patchwindow/zoom", zoomLevel);
+    if (currentPatchSectionView())
+        currentPatchSectionView()->setZoom(zoomLevel);
+}
+
 void PatchView::renameSection(int index)
 {
-    QString oldname =  patch->section(index)->getTitle();
+    QString oldname = patch->section(index)->getTitle();
     QString newname = NameChooseDialog::getName(tr("Rename patch section"), tr("New name:"), oldname);
     if (oldname != newname) {
         QString actionTitle = QString("renaming patch section to '") + newname + "'";

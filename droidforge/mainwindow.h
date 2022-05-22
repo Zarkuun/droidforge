@@ -57,6 +57,11 @@ private:
 
     QMenu *fileMenu;
 
+    QMenu *viewMenu;
+    QAction *zoomResetAction;
+    QAction *zoomInAction;
+    QAction *zoomOutAction;
+
 public:
     MainWindow(const QString &initialFilename);
     ~MainWindow();
@@ -81,6 +86,7 @@ private:
     void createFileMenu();
     void createRecentFileActions();
     void createEditMenu();
+    void createViewMenu();
     void createRackMenu();
     void createActions();
     bool checkModified();
