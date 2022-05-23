@@ -238,10 +238,10 @@ void PatchSection::swapControllerNumbers(int fromNumber, int toNumber)
         circuit->swapControllerNumbers(fromNumber, toNumber);
 }
 
-void PatchSection::shiftControllerNumbers(int number)
+void PatchSection::shiftControllerNumbers(int number, int by)
 {
     for (auto circuit: circuits)
-        circuit->shiftControllerNumbers(number);
+        circuit->shiftControllerNumbers(number, by);
 }
 
 void PatchSection::collectRegisterAtoms(RegisterList &sl) const

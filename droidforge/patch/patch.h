@@ -35,6 +35,8 @@ public:
     void deleteSection(int index);
     void reorderSections(int fromindex, int toindex);
     void swapControllersSmart(int fromindex, int toindex);
+    void swapControllerNumbers(int fromindex, int toindex);
+    void shiftControllerNumbers(int number, int by=-1);
     void addController(QString name) { controllers.append(name); };
     void removeController(int index);
     bool saveToFile(QString filename);
@@ -64,7 +66,6 @@ public:
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);
 
 private:
-    void swapControllerNumbers(int fromindex, int toindex);
 };
 
 #endif // PATCH_H

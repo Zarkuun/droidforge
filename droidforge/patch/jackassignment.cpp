@@ -87,12 +87,12 @@ void JackAssignment::swapControllerNumbers(int fromNumber, int toNumber)
     }
 }
 
-void JackAssignment::shiftControllerNumbers(int number)
+void JackAssignment::shiftControllerNumbers(int number, int by)
 {
     for (int i=1; i<=3; i++) {
          Atom *atom = atomAt(i);
          if (atom)
-             atom->shiftControllerNumbers(number);
+             atom->shiftControllerNumbers(number, by);
     }
 }
 

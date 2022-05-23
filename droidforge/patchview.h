@@ -26,6 +26,7 @@ public:
     int numSections() const;
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
+    void integratePatch(const RegisterList &availableRegisters, Patch *otherpatch);
 
 public slots:
     void nextSection();
@@ -40,7 +41,6 @@ public slots:
     void deleteSection(int index);
     void addSection();
     void zoom(int how);
-
 
 private slots:
     void renameSection(int index);

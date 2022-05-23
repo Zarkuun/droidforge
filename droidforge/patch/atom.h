@@ -19,7 +19,7 @@ public:
     virtual bool needG8() const { return false; };
     virtual bool needX7() const { return false; };
     virtual void swapControllerNumbers(int, int) {};
-    virtual void shiftControllerNumbers(int) {};
+    virtual void shiftControllerNumbers(int, int) {};
 };
 
 #endif // ATOM_H

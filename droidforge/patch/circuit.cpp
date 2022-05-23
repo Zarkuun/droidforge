@@ -98,10 +98,10 @@ void Circuit::swapControllerNumbers(int fromNumber, int toNumber)
         ja->swapControllerNumbers(fromNumber, toNumber);
 }
 
-void Circuit::shiftControllerNumbers(int number)
+void Circuit::shiftControllerNumbers(int number, int by)
 {
     for (auto ja: jackAssignments)
-        ja->shiftControllerNumbers(number);
+        ja->shiftControllerNumbers(number, by);
 }
 
 void Circuit::collectRegisterAtoms(RegisterList &sl) const

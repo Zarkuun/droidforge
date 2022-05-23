@@ -44,7 +44,7 @@ public:
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromNumber, int toNumber);
-    void shiftControllerNumbers(int number);
+    void shiftControllerNumbers(int number, int by);
     void collectRegisterAtoms(RegisterList &) const;
     void remapRegister(AtomRegister from, AtomRegister to);
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);

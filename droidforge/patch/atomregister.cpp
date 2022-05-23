@@ -69,10 +69,10 @@ void AtomRegister::swapControllerNumbers(int fromController, int toController)
         data.r.controller = fromController;
 }
 
-void AtomRegister::shiftControllerNumbers(int controller)
+void AtomRegister::shiftControllerNumbers(int controller, int by)
 {
     if ((int)data.r.controller > controller)
-        data.r.controller --;
+        data.r.controller += by;
 }
 
 QDebug &operator<<(QDebug &out, const AtomRegister &ar) {

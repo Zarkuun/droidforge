@@ -11,6 +11,7 @@
 #include <QApplication>
 #include <QMenu>
 #include <QSettings>
+#include <QMessageBox>
 
 // TODO: Im Undo-State muss man sich auch merken, welche Sektion
 // gerade angezeigt wird!
@@ -92,6 +93,69 @@ void PatchView::clickOnRegister(AtomRegister ar)
 {
     if (currentPatchSectionView())
         currentPatchSectionView()->clickOnRegister(ar);
+}
+
+void PatchView::integratePatch(const RegisterList &availableRegisters, Patch *otherpatch)
+{
+    const QStringList &controllers = otherpatch->allControllers();
+    if (!controllers.isEmpty())
+    {
+        int reply = QMessageBox::question(
+                    this,
+                    tr("Controllers"),
+                    tr("The integrated patch contains controller definitions: %1. "
+                       "Do you want to add these definitions to your patch?")
+                       .arg(controllers.join(" ").toUpper()),
+                    QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::Yes);
+
+        if (reply == QMessageBox::Cancel)
+            return;
+        else if (reply == QMessageBox::Yes) {
+            int numExistingControllers = patch->numControllers();
+            for (auto &c: controllers)
+                patch->addController(c);
+            otherpatch->shiftControllerNumbers(-1, numExistingControllers);
+        }
+    }
+
+    // // Do we need to remap stuff (depending on controller integration?)
+
+    // RegisterList occupiedRegisters;
+    // patch->collectRegisterAtoms(occupiedRegisters);
+
+    // RegisterList allRegisters;
+    // otherpatch->collectRegisterAtoms(allRegisters);
+
+    // int needRemapJacks = 0;
+    // int needRemapControls = 0;
+    // int needRemapDespiteControllers = 0;
+
+    // for (auto reg: allRegisters) {
+    //     qDebug() << reg.toString() << "?";
+    //     if (availableRegisters.contains(reg) && !occupiedRegisters.contains(reg)) {
+    //         qDebug() << reg.toString() << "is free";
+    //         continue;
+    //     }
+    //     else
+    //         qDebug() << reg.toString() << "is NOT free";
+    //     if (reg.isControl())
+    //     {
+    //         needRemapControls++;
+    //         if (reg.controller() > controllers.size())
+    //             needRemapDespiteControllers++;
+    //     }
+    //     else // register on master/X7/G8
+    //     {
+    //         needRemapJacks++;
+    //     }
+    // }
+    // qDebug() << "ALL" << allRegisters << "rn jacks" << needRemapJacks << "rn controls" << needRemapControls << "despite" << needRemapDespiteControllers;
+
+    the_forge->registerEdit(tr("integrating otherw patch '%1'").arg(otherpatch->getTitle()));
+    patch->integratePatch(otherpatch);
+    setPatch(patch);
+    the_forge->patchHasChanged();
 }
 
 void PatchView::nextSection()

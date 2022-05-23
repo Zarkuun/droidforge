@@ -106,10 +106,9 @@ void Patch::swapControllersSmart(int fromindex, int toindex)
 void Patch::removeController(int index)
 {
     for (auto section: sections)
-        section->shiftControllerNumbers(index + 1);
+        section->shiftControllerNumbers(index + 1, -1);
     controllers.remove(index);
 }
-
 
 bool Patch::saveToFile(QString filename)
 {
@@ -211,6 +210,13 @@ void Patch::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto section: sections)
         section->swapControllerNumbers(fromNumber, toNumber);
+}
+
+void Patch::shiftControllerNumbers(int number, int by)
+{
+    for (auto section: sections)
+        section->shiftControllerNumbers(number, by);
+
 }
 
 QString Patch::toString()

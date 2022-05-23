@@ -40,7 +40,7 @@ public:
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromController, int toController);
-    void shiftControllerNumbers(int controller);
+    void shiftControllerNumbers(int controller, int by);
     friend bool operator==(const AtomRegister &a, const AtomRegister &b);
     friend bool operator<(const AtomRegister &a, const AtomRegister &b);
 };

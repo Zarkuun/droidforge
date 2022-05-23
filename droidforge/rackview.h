@@ -31,12 +31,12 @@ public:
     void hiliteRegisters(const RegisterList &registers);
     void hideRegisterMarker();
     void collectAllRegisters(RegisterList &rl) const;
+    void updateGraphics();
 
 private:
     void addModule(const QString &name, int controllerIndex=-1);
     unsigned numControllers() const;
     void removeModule(int controllerIndex);
-    void updateGraphics();
     void updateSize();
     void popupControllerContextMenu(int controller, QString name);
     void popupBackgroundContextMenu();
