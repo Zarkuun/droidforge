@@ -359,7 +359,6 @@ void PatchSectionView::setZoom(int zoom)
 void PatchSectionView::updateCursor()
 {
     currentCircuitView()->select(section->cursorPosition());
-    qDebug(".");
     ensureVisible(currentCircuitView(), 0, 0);
     updateRegisterHilites();
 }

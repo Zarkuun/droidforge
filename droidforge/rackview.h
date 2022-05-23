@@ -30,6 +30,7 @@ public:
     void mouseMoveEvent(QMouseEvent *event);
     void hiliteRegisters(const RegisterList &registers);
     void hideRegisterMarker();
+    void collectAllRegisters(RegisterList &rl) const;
 
 private:
     void addModule(const QString &name, int controllerIndex=-1);
@@ -49,7 +50,6 @@ private:
             RegisterList &atomsToRemap,
             ControllerRemovalDialog::InputHandling inputHandling,
             ControllerRemovalDialog::OutputHandling outputHandling);
-    void collectAllRegisters(RegisterList &rl) const;
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
 

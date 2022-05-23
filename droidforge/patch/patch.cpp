@@ -46,7 +46,6 @@ void Patch::addSection(PatchSection *section)
 void Patch::insertSection(int index, PatchSection *section)
 {
     sections.insert(index, section);
-    qDebug() << "Nun sind es " << sections.count() << "sections";
 }
 
 void Patch::integratePatch(const Patch *snippet)
@@ -67,7 +66,6 @@ void Patch::integratePatch(const Patch *snippet)
             clonedSection->setTitle(title);
         }
         insertSection(index++, clonedSection);
-        qDebug() << "NEUE SECTION" << clonedSection->getTitle();
     }
     sectionIndex = startIndex; // move user directly to new section
 

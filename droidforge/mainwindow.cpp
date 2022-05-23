@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "parseexception.h"
 #include "patch.h"
+#include "patchintegrationdialog.h"
 #include "ui_mainwindow.h"
 #include "rackview.h"
 #include "modulebuilder.h"
@@ -82,6 +83,52 @@ void MainWindow::integratePatch(const QString &aFilename)
     Patch newpatch;
     parser.parse(aFilename, &newpatch);
 
+    PatchIntegrationDialog *dialog = new PatchIntegrationDialog(this);
+
+    // Controller checkbox may only appear if we have controllers
+    const QStringList &allControllers = newpatch.allControllers();
+    dialog->setControllers(allControllers);
+
+    // Do we need to remap stuff (depending on controller integration?)
+    RegisterList availableRegisters;
+    rackView.collectAllRegisters(availableRegisters);
+
+    RegisterList occupiedRegisters;
+    patch->collectRegisterAtoms(occupiedRegisters);
+
+    RegisterList allRegisters;
+    newpatch.collectRegisterAtoms(allRegisters);
+
+    int needRemapJacks = 0;
+    int needRemapControls = 0;
+    int needRemapDespiteControllers = 0;
+
+    for (auto reg: allRegisters) {
+        qDebug() << reg.toString() << "?";
+        if (availableRegisters.contains(reg) && !occupiedRegisters.contains(reg)) {
+            qDebug() << reg.toString() << "is free";
+            continue;
+        }
+        else
+            qDebug() << reg.toString() << "is NOT free";
+        if (reg.isControl())
+        {
+            needRemapControls++;
+            if (reg.controller() > allControllers.size())
+                needRemapDespiteControllers++;
+        }
+        else // register on master/X7/G8
+        {
+            needRemapJacks++;
+        }
+    }
+    qDebug() << "ALL" << allRegisters << "rn jacks" << needRemapJacks << "rn controls" << needRemapControls << "despite" << needRemapDespiteControllers;
+
+    dialog->setRemaps(needRemapJacks, needRemapControls, needRemapDespiteControllers);
+    dialog->updateCheckboxes();
+    dialog->exec();
+    return;
+
     registerEdit(tr("integrating new patch '%1'").arg(newpatch.getTitle()));
     patch->integratePatch(&newpatch);
     patchView.setPatch(patch);
@@ -131,8 +178,11 @@ void MainWindow::loadFile(const QString &filename, int how)
 
     try {
         addToRecentFiles(filename);
-        if (how == FILE_MODE_LOAD)
+        if (how == FILE_MODE_LOAD) {
             loadPatch(filename);
+            integratePatch("/Users/mk/git/droidforge/hirn.ini");
+            // exit(0);
+        }
         else
             integratePatch(filename);
 

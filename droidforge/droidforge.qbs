@@ -17,7 +17,11 @@ QtApplication {
 
 
     files: [
+        "hintdialog.cpp",
+        "hintdialog.h",
         "mainwindow.ui",
+        "patchintegrationdialog.cpp",
+        "patchintegrationdialog.h",
         "resources.qrc",
         "atomoneliner.cpp",
         "atomoneliner.h",

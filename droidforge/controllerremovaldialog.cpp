@@ -13,7 +13,7 @@ ControllerRemovalDialog::ControllerRemovalDialog(QWidget *parent)
     setLayout(mainLayout);
 
     mainLayout->addWidget(new QLabel(tr("The following controlls of this module are "
-                                       "used by your current patch. What shall we do?")));
+                                        "used by your current patch. What shall we do?")));
 
     labelRemap = new QLabel();
     mainLayout->addWidget(labelRemap);

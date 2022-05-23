@@ -30,11 +30,13 @@ public:
     QString toString() const;
     bool isRegister() const { return true; };
     bool isControl() { return data.r.controller > 0; };
+    bool isOnMasterG8X7() { return data.r.controller == 0; };
+
+    unsigned controller() const { return data.r.controller; };
+    unsigned number() const { return data.r.number; };
 
     void setRegisterType(QChar t) { data.r.registerType = t.toLatin1(); };
     QChar getRegisterType() const { return data.r.registerType; };
-    unsigned getController() const { return data.r.controller; };
-    unsigned getNumber() const { return data.r.number; };
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromController, int toController);

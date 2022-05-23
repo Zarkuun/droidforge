@@ -23,6 +23,7 @@ public:
     Patch *clone() const;
     qsizetype numControllers() const { return controllers.size(); };
     QString controller(qsizetype i) const { return controllers[i]; };
+    const QStringList &allControllers() const { return controllers; };
     qsizetype numSections() const { return sections.size(); };
     bool isEmpty() const { return numSections() == 0; };
     qsizetype currentSectionIndex() const { return sectionIndex; };

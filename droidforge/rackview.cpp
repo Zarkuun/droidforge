@@ -71,7 +71,7 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
         AtomRegister *ar = module->registerAt(relPos.toPoint());
         if (ar) {
             QChar t = ar->getRegisterType();
-            unsigned n = ar->getNumber() - module->numberOffset(t);
+            unsigned n = ar->number() - module->numberOffset(t);
             float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
             QPointF pos = module->registerPosition(t, n) * RACV_PIXEL_PER_HP;
             updateRegisterMarker(ar, pos + module->pos(), diameter);
@@ -93,8 +93,8 @@ void RackView::hiliteRegisters(const RegisterList &registers)
         for (qsizetype r=0; r<registers.count(); r++)
         {
             AtomRegister ar = registers[r];
-            if (ar.getController() == controller)
-                module->hiliteRegisters(true, ar.getRegisterType(), ar.getNumber());
+            if (ar.controller() == controller)
+                module->hiliteRegisters(true, ar.getRegisterType(), ar.number());
             // TODO: Hilite inputs/ouputs
         }
         module->update();
@@ -133,7 +133,7 @@ void RackView::remapRegisters(
     {
         // Loop through all candidate registers
         for (auto &candidate: allRegisters) {
-            if (candidate.getController() == controller)
+            if (candidate.controller() == controller)
                 continue; // Don't remap to ourselves
             if (toRemap.getRegisterType() == candidate.getRegisterType())
             // TODO: remapp G to I or O, but then we need to known
@@ -234,7 +234,7 @@ void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
 
     unsigned controller = controllerIndex + 1;
     for (auto& atom: allUsedRegisters) {
-        if (atom.getController() == controller && !used.contains(atom))
+        if (atom.controller() == controller && !used.contains(atom))
             used.append(atom);
     }
 }
