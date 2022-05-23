@@ -45,10 +45,7 @@ public:
     friend bool operator<(const AtomRegister &a, const AtomRegister &b);
 };
 
-typedef QList<AtomRegister> RegisterList;
-
 QDebug &operator<<(QDebug &out, const AtomRegister &ar);
-QDebug &operator<<(QDebug &out, const RegisterList &rl);
 bool operator==(const AtomRegister &a, const AtomRegister &b);
 bool operator<(const AtomRegister &a, const AtomRegister &b);
 

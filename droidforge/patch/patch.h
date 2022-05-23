@@ -61,7 +61,8 @@ public:
     QStringList allCables() const;
     bool needG8() const; // TODO: Do we need this?
     bool needX7() const; // TODO: Do we need this?
-    void collectRegisterAtoms(RegisterList &) const;
+    void collectUsedRegisterAtoms(RegisterList &) const;
+    void collectAvailableRegisterAtoms(RegisterList &) const;
     void remapRegister(AtomRegister from, AtomRegister to);
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);
 

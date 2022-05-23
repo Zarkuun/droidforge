@@ -81,9 +81,7 @@ void MainWindow::integratePatch(const QString &aFilename)
 {
     Patch otherpatch;
     parser.parse(aFilename, &otherpatch);
-    RegisterList availableRegisters;
-    rackView.collectAllRegisters(availableRegisters);
-    Patch *newPatch = patchView.integratePatch(availableRegisters, &otherpatch);
+    Patch *newPatch = patchView.integratePatch(&otherpatch);
     if (newPatch) {
         registerEdit(tr("integrating other patch '%1'").arg(otherpatch.getTitle()));
         setPatch(newPatch);
@@ -129,14 +127,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::loadFile(const QString &filename, int how)
 {
-    if (!checkModified() && how == FILE_MODE_LOAD)
+    if (FILE_MODE_LOAD && !checkModified())
         return;
 
     try {
         addToRecentFiles(filename);
         if (how == FILE_MODE_LOAD) {
             loadPatch(filename);
-            integratePatch("/Users/mk/git/droidforge/hirn.ini");
+            // integratePatch("/Users/mk/git/droidforge/hirn.ini");
             // exit(0);
         }
         else

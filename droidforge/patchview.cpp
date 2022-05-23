@@ -95,7 +95,7 @@ void PatchView::clickOnRegister(AtomRegister ar)
         currentPatchSectionView()->clickOnRegister(ar);
 }
 
-Patch *PatchView::integratePatch(const RegisterList &availableRegisters, Patch *otherpatch)
+Patch *PatchView::integratePatch(Patch *otherpatch)
 {
     Patch *newPatch = patch->clone();
 
@@ -129,23 +129,28 @@ Patch *PatchView::integratePatch(const RegisterList &availableRegisters, Patch *
     }
 
     // Phase 2: Remap non-existing or conflicting registers.
+    RegisterList availableRegisters;
+    patch->collectAvailableRegisterAtoms(availableRegisters);
+    qDebug() << "AVAILABLE" << availableRegisters.toString();
     RegisterList occupiedRegisters;
-    patch->collectRegisterAtoms(occupiedRegisters);
+    patch->collectUsedRegisterAtoms(occupiedRegisters);
     RegisterList neededRegisters;
-    otherpatch->collectRegisterAtoms(neededRegisters);
-    RegisterList needRemap;
+    otherpatch->collectUsedRegisterAtoms(neededRegisters);
+    RegisterList atomsToRemap;
     for (auto &reg: neededRegisters) {
         if (occupiedRegisters.contains(reg) || !availableRegisters.contains(reg)) {
-            needRemap.append(reg);
+            atomsToRemap.append(reg);
         }
+        else
+            occupiedRegisters.append(reg); // now occupied
     }
-    if (needRemap.count()) {
+    if (atomsToRemap.count()) {
         int reply = QMessageBox::question(
                     this,
                     tr("Register conflicts"),
                     tr("Some of the register references in the integrated patch either do not exist in your "
                        "current rack definition or are already occupied. Shall I try to find useful replacements "
-                       "for those?"),
+                       "for those?\n\n%1").arg(atomsToRemap.toString()),
                     QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::Yes);
 
@@ -154,14 +159,55 @@ Patch *PatchView::integratePatch(const RegisterList &availableRegisters, Patch *
             return 0;
         }
         else if (reply == QMessageBox::Yes) {
-            qDebug() << "TODO: Register umbelegen" << needRemap;
+            RegisterList remapFrom;
+            RegisterList remapTo;
+            RegisterList remapped;
 
-            // TODO: Erstmal den Code von remapRegisters von RackView
-            // nach Patch umziehen. Und da sauber aufräumen.
-            // Wenn sich manche nicht umlegen lassen, nochmal nachfragen,
-            // was jetzt passieren soll: Entfernen oder lassen
+            for (auto& toRemap: atomsToRemap) {
+                for (auto &candidate: availableRegisters) {
+                    if (occupiedRegisters.contains(candidate))
+                        continue;
+                    if (toRemap.getRegisterType() != candidate.getRegisterType())
+                        continue;
+                    remapFrom.append(toRemap);
+                    remapTo.append(candidate);
+                    occupiedRegisters.append(candidate);
+                    remapped.append(toRemap);
+                }
+            }
+
+            for (auto& atom: remapped)
+                atomsToRemap.removeAll(atom);
+
+            // Apply this remapping
+            for (unsigned i=0; i<remapFrom.size(); i++)
+                otherpatch->remapRegister(remapFrom[i], remapTo[i]);
+
+            // Phase 2b: Remaining un remapped registers
+            if (!atomsToRemap.isEmpty()) {
+                int reply = QMessageBox::question(
+                            this,
+                            tr("Register conflicts"),
+                            tr("For some register references I could not find a valid replacement in your patch. "
+                               "Shall I remove these references (otherwise I would just leave them as "
+                               "they are and you check yourselves later)?\n\n%1").arg(atomsToRemap.toString()),
+                            QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
+                            QMessageBox::Yes);
+
+                if (reply == QMessageBox::Cancel) {
+                    delete newPatch;
+                    return 0;
+                }
+                else if (reply == QMessageBox::Yes) {
+                    otherpatch->removeRegisterReferences(
+                                atomsToRemap,
+                                ControllerRemovalDialog::INPUT_REMOVE,
+                                ControllerRemovalDialog::OUTPUT_REMOVE);
+                }
+            }
         }
     }
+
 
     // Phase 3: Cables
     // TODO: Alle Kabel des otherpatch sammeln. KOnflikte finden.

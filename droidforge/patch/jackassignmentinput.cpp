@@ -16,7 +16,6 @@ JackAssignmentInput::JackAssignmentInput(QString jack, QString comment, QString 
     parseInputExpression(jack, valueString);
 }
 
-
 JackAssignmentInput::JackAssignmentInput(QString jack, QString comment)
     : JackAssignment(jack, comment)
     , atomA(0)
@@ -25,14 +24,12 @@ JackAssignmentInput::JackAssignmentInput(QString jack, QString comment)
 {
 }
 
-
 JackAssignmentInput::~JackAssignmentInput()
 {
     if (atomA) delete atomA;
     if (atomB) delete atomB;
     if (atomC) delete atomC;
 }
-
 
 Atom *JackAssignmentInput::getAtom(unsigned n) const
 {

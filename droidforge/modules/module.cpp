@@ -96,6 +96,7 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
 
 AtomRegister Module::registerAtom(QChar type, unsigned number) const
 {
+    // TODO: This sucks somehow. Too much graphics and logic entanglement.
     unsigned controller = 0;
     if (data(DATA_INDEX_CONTROLLER_INDEX).isValid())
         controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
@@ -103,12 +104,17 @@ AtomRegister Module::registerAtom(QChar type, unsigned number) const
     return AtomRegister(type, controller, number + numberOffset(type));
 }
 
-void Module::collectAllRegisters(RegisterList &rl) const
+// TODO: Hier fehlt die Controllernummer!!!!!
+void Module::collectAllRegisters(RegisterList &rl, int number) const
 {
     for (unsigned i=0; i<NUM_REGISTER_TYPES; i++) {
         QChar type = register_types[i];
-        unsigned num = numRegisters(type);
-        for (unsigned j=1; j<=num; j++)
-            rl.append(registerAtom(type, j));
+        unsigned count = numRegisters(type);
+        for (unsigned j=1; j<=count; j++) {
+            if (number >= 1)
+                rl.append(AtomRegister(type, number, j));
+            else
+                rl.append(registerAtom(type, j));
+        }
     }
 }

@@ -20,6 +20,8 @@ QtApplication {
         "hintdialog.cpp",
         "hintdialog.h",
         "mainwindow.ui",
+        "patch/registerlist.cpp",
+        "patch/registerlist.h",
         "patchintegrationdialog.cpp",
         "patchintegrationdialog.h",
         "resources.qrc",

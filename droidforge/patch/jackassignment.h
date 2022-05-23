@@ -3,6 +3,7 @@
 
 #include "atom.h"
 #include "atomregister.h"
+#include "registerlist.h"
 
 #include <QString>
 #include <QSet>

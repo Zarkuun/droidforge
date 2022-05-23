@@ -3,6 +3,7 @@
 
 #include "dialog.h"
 #include "atomregister.h"
+#include "registerlist.h"
 
 #include <QObject>
 #include <QCheckBox>

@@ -75,14 +75,9 @@ void AtomRegister::shiftControllerNumbers(int controller, int by)
         data.r.controller += by;
 }
 
+
 QDebug &operator<<(QDebug &out, const AtomRegister &ar) {
     out << ar.toString();
-    return out;
-}
-
-QDebug &operator<<(QDebug &out, const RegisterList &rl) {
-    for (auto& entry: rl)
-        out << entry;
     return out;
 }
 

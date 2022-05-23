@@ -1,5 +1,6 @@
 #include "patchsectionview.h"
 #include "atomoneliner.h"
+#include "atomregister.h"
 #include "circuitview.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
@@ -359,8 +360,10 @@ void PatchSectionView::setZoom(int zoom)
 
 void PatchSectionView::updateCursor()
 {
-    currentCircuitView()->select(section->cursorPosition());
-    ensureVisible(currentCircuitView(), 0, 0);
+    if (currentCircuitView()) {
+        currentCircuitView()->select(section->cursorPosition());
+        ensureVisible(currentCircuitView(), 0, 0);
+    }
     updateRegisterHilites();
 }
 
@@ -397,12 +400,18 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
 
 CircuitView *PatchSectionView::currentCircuitView()
 {
-    return circuitViews[section->cursorPosition().circuitNr];
+    if (circuitViews.isEmpty())
+        return 0;
+    else
+        return circuitViews[section->cursorPosition().circuitNr];
 }
 
 const CircuitView *PatchSectionView::currentCircuitView() const
 {
-    return circuitViews[section->cursorPosition().circuitNr];
+    if (circuitViews.isEmpty())
+        return 0;
+    else
+        return circuitViews[section->cursorPosition().circuitNr];
 }
 
 

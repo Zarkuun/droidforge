@@ -26,7 +26,7 @@ public:
     int numSections() const;
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
-    Patch *integratePatch(const RegisterList &availableRegisters, Patch *otherpatch);
+    Patch *integratePatch(Patch *otherpatch);
 
 public slots:
     void nextSection();

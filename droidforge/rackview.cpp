@@ -118,13 +118,11 @@ void RackView::remapRegisters(
         ControllerRemovalDialog::InputHandling , // inputHandling,
         ControllerRemovalDialog::OutputHandling ) // outputHandling)
 {
-    // TODO: This should be done by Patch, not here. In the view class.
-
     unsigned controller = controllerIndex + 1;
 
     // Get list of all registers.
     RegisterList allRegisters;
-    collectAllRegisters(allRegisters); // all including our controller
+    patch->collectAvailableRegisterAtoms(allRegisters);
 
     RegisterList remapFrom;
     RegisterList remapTo;
@@ -137,6 +135,7 @@ void RackView::remapRegisters(
         for (auto &candidate: allRegisters) {
             if (candidate.controller() == controller)
                 continue; // Don't remap to ourselves
+            // TODO: Fehlt da nicht ein check, ob das schon belegt ist?
             if (toRemap.getRegisterType() == candidate.getRegisterType())
             // TODO: remapp G to I or O, but then we need to known
             // wether G is used as an input or output.
@@ -156,13 +155,6 @@ void RackView::remapRegisters(
     // Apply this remapping
     for (unsigned i=0; i<remapFrom.size(); i++)
         patch->remapRegister(remapFrom[i], remapTo[i]);
-}
-
-void RackView::collectAllRegisters(RegisterList &rl) const
-{
-    for (auto module: modules) {
-        module->collectAllRegisters(rl);
-    }
 }
 
 void RackView::hideRegisterMarker()
@@ -232,7 +224,7 @@ void RackView::askRemoveController(int controllerIndex, const QString name)
 void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
 {
     RegisterList allUsedRegisters;
-    patch->collectRegisterAtoms(allUsedRegisters); // these are all
+    patch->collectUsedRegisterAtoms(allUsedRegisters); // these are all
 
     unsigned controller = controllerIndex + 1;
     for (auto& atom: allUsedRegisters) {

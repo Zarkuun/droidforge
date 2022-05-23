@@ -30,7 +30,6 @@ public:
     void mouseMoveEvent(QMouseEvent *event);
     void hiliteRegisters(const RegisterList &registers);
     void hideRegisterMarker();
-    void collectAllRegisters(RegisterList &rl) const;
     void updateGraphics();
 
 private:

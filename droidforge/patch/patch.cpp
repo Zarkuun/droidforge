@@ -1,4 +1,5 @@
 #include "patch.h"
+#include "modulebuilder.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -188,10 +189,24 @@ bool Patch::needX7() const
     return false;
 }
 
-void Patch::collectRegisterAtoms(RegisterList &sl) const
+void Patch::collectUsedRegisterAtoms(RegisterList &sl) const
 {
     for (auto section: sections)
         section->collectRegisterAtoms(sl);
+}
+
+void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
+{
+    // TODO: Hardcode G8 and X7 here?
+    ModuleBuilder::allRegistersOf("master", 0, rl);
+    ModuleBuilder::allRegistersOf("g8", 0, rl);
+    ModuleBuilder::allRegistersOf("x7", 0, rl);
+    unsigned controllerNumber = 1;
+
+    for (auto &controller: controllers) {
+        ModuleBuilder::allRegistersOf(controller, controllerNumber, rl);
+        controllerNumber++;
+    }
 }
 
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
