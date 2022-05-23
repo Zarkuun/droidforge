@@ -282,6 +282,7 @@ void PatchSectionView::editCircuitComment(int key)
         QString actionTitle = QString("changing comment for circuit '") + circuit->getName() + "'";
         the_forge->registerEdit(actionTitle);
         circuit->setComment(newComment);
+        rebuildPatchSection();
         the_forge->patchHasChanged();
     }
 }

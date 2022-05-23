@@ -94,9 +94,9 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     painter->fillRect(commentRect(), CIRV_COLOR_COMMENT_BACKGROUND);
     painter->setPen(CIRV_COLOR_COMMENT);
     painter->drawText(
-                QRect(CIRV_TEXT_SIDE_PADDING,
+                QRect(commentRect().left() + CIRV_TEXT_SIDE_PADDING,
                       headerRect().bottom() + CIRV_COMMENT_PADDING,
-                      headerRect().width() -  2 * CIRV_TEXT_SIDE_PADDING,
+                      commentRect().width() -  2 * CIRV_TEXT_SIDE_PADDING,
                       commentHeight()),
                       Qt::AlignLeft | Qt::AlignJustify | Qt::AlignTop, circuit->getComment());
 

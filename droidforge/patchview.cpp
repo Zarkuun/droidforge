@@ -95,8 +95,15 @@ void PatchView::clickOnRegister(AtomRegister ar)
         currentPatchSectionView()->clickOnRegister(ar);
 }
 
-void PatchView::integratePatch(const RegisterList &availableRegisters, Patch *otherpatch)
+Patch *PatchView::integratePatch(const RegisterList &availableRegisters, Patch *otherpatch)
 {
+    Patch *newPatch = patch->clone();
+
+    // TODO: It's a hack that we need to get the list of availableRegisters here
+    // as an argument. that should be computed by patch, not by rackview.
+
+    // Phase 1: If the other patch defines controllers, we can add these
+    // controllers to our patch (and shift all references, of course)
     const QStringList &controllers = otherpatch->allControllers();
     if (!controllers.isEmpty())
     {
@@ -109,8 +116,10 @@ void PatchView::integratePatch(const RegisterList &availableRegisters, Patch *ot
                     QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::Yes);
 
-        if (reply == QMessageBox::Cancel)
-            return;
+        if (reply == QMessageBox::Cancel) {
+            delete newPatch;
+            return 0;
+        }
         else if (reply == QMessageBox::Yes) {
             int numExistingControllers = patch->numControllers();
             for (auto &c: controllers)
@@ -119,43 +128,49 @@ void PatchView::integratePatch(const RegisterList &availableRegisters, Patch *ot
         }
     }
 
-    // // Do we need to remap stuff (depending on controller integration?)
+    // Phase 2: Remap non-existing or conflicting registers.
+    RegisterList occupiedRegisters;
+    patch->collectRegisterAtoms(occupiedRegisters);
+    RegisterList neededRegisters;
+    otherpatch->collectRegisterAtoms(neededRegisters);
+    RegisterList needRemap;
+    for (auto &reg: neededRegisters) {
+        if (occupiedRegisters.contains(reg) || !availableRegisters.contains(reg)) {
+            needRemap.append(reg);
+        }
+    }
+    if (needRemap.count()) {
+        int reply = QMessageBox::question(
+                    this,
+                    tr("Register conflicts"),
+                    tr("Some of the register references in the integrated patch either do not exist in your "
+                       "current rack definition or are already occupied. Shall I try to find useful replacements "
+                       "for those?"),
+                    QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::Yes);
 
-    // RegisterList occupiedRegisters;
-    // patch->collectRegisterAtoms(occupiedRegisters);
+        if (reply == QMessageBox::Cancel) {
+            delete newPatch;
+            return 0;
+        }
+        else if (reply == QMessageBox::Yes) {
+            qDebug() << "TODO: Register umbelegen" << needRemap;
 
-    // RegisterList allRegisters;
-    // otherpatch->collectRegisterAtoms(allRegisters);
+            // TODO: Erstmal den Code von remapRegisters von RackView
+            // nach Patch umziehen. Und da sauber aufräumen.
+            // Wenn sich manche nicht umlegen lassen, nochmal nachfragen,
+            // was jetzt passieren soll: Entfernen oder lassen
+        }
+    }
 
-    // int needRemapJacks = 0;
-    // int needRemapControls = 0;
-    // int needRemapDespiteControllers = 0;
-
-    // for (auto reg: allRegisters) {
-    //     qDebug() << reg.toString() << "?";
-    //     if (availableRegisters.contains(reg) && !occupiedRegisters.contains(reg)) {
-    //         qDebug() << reg.toString() << "is free";
-    //         continue;
-    //     }
-    //     else
-    //         qDebug() << reg.toString() << "is NOT free";
-    //     if (reg.isControl())
-    //     {
-    //         needRemapControls++;
-    //         if (reg.controller() > controllers.size())
-    //             needRemapDespiteControllers++;
-    //     }
-    //     else // register on master/X7/G8
-    //     {
-    //         needRemapJacks++;
-    //     }
-    // }
-    // qDebug() << "ALL" << allRegisters << "rn jacks" << needRemapJacks << "rn controls" << needRemapControls << "despite" << needRemapDespiteControllers;
-
-    the_forge->registerEdit(tr("integrating otherw patch '%1'").arg(otherpatch->getTitle()));
-    patch->integratePatch(otherpatch);
-    setPatch(patch);
-    the_forge->patchHasChanged();
+    // Phase 3: Cables
+    // TODO: Alle Kabel des otherpatch sammeln. KOnflikte finden.
+    // Wenn es welche gibt, fragen:
+    // - umbenennen
+    // - lassen
+    // - abbrechen
+    newPatch->integratePatch(otherpatch);
+    return newPatch;
 }
 
 void PatchView::nextSection()

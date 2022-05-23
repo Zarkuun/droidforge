@@ -118,6 +118,8 @@ void RackView::remapRegisters(
         ControllerRemovalDialog::InputHandling , // inputHandling,
         ControllerRemovalDialog::OutputHandling ) // outputHandling)
 {
+    // TODO: This should be done by Patch, not here. In the view class.
+
     unsigned controller = controllerIndex + 1;
 
     // Get list of all registers.

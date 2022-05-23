@@ -79,13 +79,16 @@ void MainWindow::loadPatch(const QString &aFilename)
 
 void MainWindow::integratePatch(const QString &aFilename)
 {
-    Patch newpatch;
-    parser.parse(aFilename, &newpatch);
+    Patch otherpatch;
+    parser.parse(aFilename, &otherpatch);
     RegisterList availableRegisters;
     rackView.collectAllRegisters(availableRegisters);
-    patchView.integratePatch(availableRegisters, &newpatch);
-    rackView.setPatch(patch);
-    // rackView.updateGraphics();
+    Patch *newPatch = patchView.integratePatch(availableRegisters, &otherpatch);
+    if (newPatch) {
+        registerEdit(tr("integrating other patch '%1'").arg(otherpatch.getTitle()));
+        setPatch(newPatch);
+        patchHasChanged();
+    }
 }
 
 void MainWindow::registerEdit(QString name)
