@@ -19,7 +19,6 @@ CircuitView::CircuitView(Circuit *circuit, unsigned width, unsigned lineHeight, 
     , currentColumn(0)
     , icon(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
 {
-    icon = icon.scaledToHeight(CIRV_HEADER_HEIGHT);
     effect.setBlurRadius(15);
     effect.setColor(QColor(0,0,0));
     effect.setOffset(0, 0);
@@ -79,9 +78,10 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     QRectF cr = contentRect();
     painter->fillRect(cr, CIRV_COLOR_CIRCUIT_BACKGROUND);
 
-    // Circuit name
+    // Icon and circuit name
     painter->fillRect(headerRect(), CIRV_COLOR_CIRCUIT_NAME_BACKGROUND);
-    painter->drawPixmap(headerRect().topLeft(), icon);
+    QRect imageRect( headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
+    painter->drawPixmap(imageRect, icon);
     painter->setPen(CIRV_COLOR_CIRCUIT_NAME);
     painter->drawText(
                 QRect(headerRect().left() + CIRV_HEADER_HEIGHT + CIRV_ICON_MARGIN,
