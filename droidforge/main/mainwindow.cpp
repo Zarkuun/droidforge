@@ -203,6 +203,8 @@ void MainWindow::clickOnRegister(AtomRegister ar)
 
 void MainWindow::updateActions()
 {
+    pasteAction->setEnabled(patchView.clipboardFilled());
+
     if (undoHistory.undoPossible()) {
         undoAction->setText(tr("&Undo ") + undoHistory.nextUndoTitle());
         undoAction->setEnabled(true);
@@ -387,7 +389,7 @@ void MainWindow::addToRecentFiles(const QString &path)
 void MainWindow::createEditMenu()
 {
     toolbar->addSeparator();
-    QMenu *editMenu = menuBar()->addMenu(ZERO_WIDTH_SPACE + tr("&Edit"));
+    editMenu = menuBar()->addMenu(ZERO_WIDTH_SPACE + tr("&Edit"));
 
     // Undo
     undoAction = new QAction(icon("undo"), tr("&Undo"), this);
@@ -402,6 +404,28 @@ void MainWindow::createEditMenu()
     redoAction->setStatusTip(tr("Redo last edit action"));
     connect(redoAction, &QAction::triggered, this, &MainWindow::redo);
     editMenu->addAction(redoAction);
+
+    editMenu->addSeparator();
+
+    // Copy & Paste
+    cutAction = new QAction(icon("cut"), tr("C&ut"), this);
+    cutAction->setShortcuts(QKeySequence::Cut);
+    cutAction->setStatusTip(tr("Cut selection to clipboard"));
+    connect(cutAction, &QAction::triggered, &patchView, &PatchView::cut);
+    editMenu->addAction(cutAction);
+
+    copyAction = new QAction(icon("copy"), tr("&Copy"), this);
+    copyAction->setShortcuts(QKeySequence::Copy);
+    copyAction->setStatusTip(tr("Copy selected stuff to clipboard"));
+    connect(copyAction, &QAction::triggered, &patchView, &PatchView::copy);
+    editMenu->addAction(copyAction);
+
+    pasteAction = new QAction(icon("paste"), tr("&Paste"), this);
+    pasteAction->setShortcuts(QKeySequence::Paste);
+    pasteAction->setStatusTip(tr("Paste contents from clipboard"));
+    connect(pasteAction, &QAction::triggered, &patchView, &PatchView::paste);
+    editMenu->addAction(pasteAction);
+
 
     // New circuit...
     newCircuitAction = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
@@ -569,6 +593,7 @@ void MainWindow::redo()
         patchHasChanged();
     }
 }
+
 
 void MainWindow::splitterMoved()
 {

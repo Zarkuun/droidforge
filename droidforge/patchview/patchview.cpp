@@ -75,6 +75,11 @@ PatchSectionView *PatchView::currentPatchSectionView()
     return (PatchSectionView *)currentWidget();
 }
 
+bool PatchView::clipboardFilled() const
+{
+    return !clipboard.isEmpty();
+}
+
 int PatchView::numSections() const
 {
     if (patch)
@@ -328,6 +333,23 @@ void PatchView::zoom(int how)
         currentPatchSectionView()->setZoom(zoomLevel);
 }
 
+void PatchView::cut()
+{
+    copyToClipboard();
+    currentPatchSectionView()->deleteCursorOrSelection();
+}
+
+void PatchView::copy()
+{
+    copyToClipboard();
+    the_forge->updateActions();
+}
+
+void PatchView::paste()
+{
+    currentPatchSectionView()->pasteFromClipboard(clipboard);
+}
+
 void PatchView::renameSection(int index)
 {
     QString oldname = patch->section(index)->getTitle();
@@ -368,4 +390,9 @@ void PatchView::tabContextMenu(int index)
 
         menu->popup(QCursor::pos());
     }
+}
+
+void PatchView::copyToClipboard()
+{
+    currentPatchSectionView()->copyToClipboard(clipboard);
 }

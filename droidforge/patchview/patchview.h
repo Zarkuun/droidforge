@@ -6,6 +6,7 @@
 #include "circuitchoosedialog.h"
 #include "jackchoosedialog.h"
 #include "patchpropertiesdialog.h"
+#include "clipboard.h"
 
 #include <QTabWidget>
 
@@ -15,6 +16,7 @@ class PatchView : public QTabWidget
     PatchPropertiesDialog *patchPropertiesDialog;
     CircuitChooseDialog *circuitChooseDialog;
     int zoomLevel;
+    Clipboard clipboard;
 
 public:
     PatchView();
@@ -23,6 +25,7 @@ public:
     bool handleKeyPress(QKeyEvent *event);
     const PatchSectionView *currentPatchSectionView() const;
     PatchSectionView *currentPatchSectionView();
+    bool clipboardFilled() const;
     int numSections() const;
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
@@ -41,11 +44,17 @@ public slots:
     void deleteSection(int index);
     void addSection();
     void zoom(int how);
+    void cut();
+    void copy();
+    void paste();
 
 private slots:
     void renameSection(int index);
     void reorderSections(int fromindex, int toindex);
     void tabContextMenu(int index);
+
+private:
+    void copyToClipboard();
 };
 
 #endif // PATCHVIEW_H

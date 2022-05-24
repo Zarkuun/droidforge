@@ -76,6 +76,9 @@ void PatchSectionView::rebuildPatchSection()
 {
     deletePatchSection();
     buildPatchSection();
+    // TODO: Scheinbar springt der Viewport hier immer nach oben.
+    // Und das ensureVisible bewirkt erstmal nix bis man den Cursor
+    // bewegt
 }
 
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
@@ -195,6 +198,19 @@ QChar PatchSectionView::keyToChar(int key)
         return ' ';
 }
 
+void PatchSectionView::copyToClipboard(Clipboard &clipboard)
+{
+    if (selection) {
+        clipboard.copyFromSelection(selection, section);
+        qDebug() << "KOPERT VON SELCTION";
+    }
+    else {
+        Selection sel(section->cursorPosition());
+        clipboard.copyFromSelection(&sel, section);
+        qDebug() << "KOPERT VON CURSOR";
+    }
+}
+
 void PatchSectionView::editJack(int key)
 {
     if (key)
@@ -236,6 +252,7 @@ QStringList PatchSectionView::usedJacks() const
 {
     return currentCircuitView()->usedJacks();
 }
+
 
 void PatchSectionView::editValue(int key)
 {
@@ -379,7 +396,11 @@ void PatchSectionView::updateCursor()
 {
     if (currentCircuitView()) {
         currentCircuitView()->select(section->cursorPosition());
-        ensureVisible(currentCircuitView(), 0, 0);
+        QRectF br = currentCircuitView()->boundingRect();
+        QRectF tbr = br.translated(currentCircuitView()->pos());
+        qDebug() << "R" << br << tbr;
+        ensureVisible(tbr);
+        qDebug() << currentCircuitView() << "cursor" << section->cursorPosition().circuitNr << "ensure visible" << currentCircuitView()->pos();
     }
     updateRegisterHilites();
 }
@@ -534,6 +555,24 @@ void PatchSectionView::deleteCursorOrSelection()
     clearSelection();
 }
 
+void PatchSectionView::pasteFromClipboard(Clipboard &clipboard)
+{
+    if (clipboard.isCircuits()) {
+        pasteCircuitsFromClipboard(clipboard);
+        qDebug() << "TODO: Hier Dialog wegen anpassen der Register!";
+    }
+    else if (isEmpty()) {
+        qDebug() << "Mist. Wir seind leer";
+        // TODO: updateActions in mainwindow soll paste deaktivieren, wenn
+        // dieser Fall da ist.
+        return;
+    }
+    else {
+        qDebug() << "TODO: hier jacks, atoms, comment pasten";
+    }
+
+}
+
 void PatchSectionView::deleteCurrentRow()
 {
     if (isEmpty())
@@ -633,6 +672,23 @@ void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int
     rebuildPatchSection();
 }
 
+void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
+{
+    int position = section->cursorPosition().circuitNr;
+    currentCircuitView()->deselect();
+
+    the_forge->registerEdit(QString("pasting %1 circuits").arg(clipboard.getCircuits()->count()));
+    for (auto circuit: *clipboard.getCircuits()) {
+        Circuit *newCircuit = circuit->clone();
+        section->addCircuit(position, newCircuit);
+        section->moveCursorToNextCircuit();
+    }
+    // TODO: Hier klappt das nicht mit der Cursorsichtbarkeit.
+    // Das ensureVisible macht irgendwie nix
+    the_forge->patchHasChanged();
+    rebuildPatchSection();
+}
+
 void PatchSectionView::editCircuit(int key)
 {
     if (key)
@@ -662,7 +718,6 @@ void PatchSectionView::moveCursorLeftRight(int whence)
 
     updateCursor();
 }
-
 
 void PatchSectionView::moveCursorUpDown(int whence)
 {

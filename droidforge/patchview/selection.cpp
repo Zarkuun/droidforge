@@ -28,6 +28,11 @@ Selection::Selection(const CursorPosition &fromPos, const CursorPosition &toPos)
     }
 }
 
+Selection::Selection(const CursorPosition &fromAndto)
+    : Selection(fromAndto, fromAndto)
+{
+}
+
 bool Selection::circuitSelected(int circuitNr) const
 {
     return isCircuitSelection()

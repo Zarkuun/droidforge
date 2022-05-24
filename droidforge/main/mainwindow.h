@@ -46,8 +46,13 @@ private:
     PatchView patchView;
     QSplitter *splitter;
     QToolBar *toolbar;
+
+    QMenu *editMenu;
     QAction *undoAction;
     QAction *redoAction;
+    QAction *cutAction;
+    QAction *copyAction;
+    QAction *pasteAction;
     QAction *addJackAction;
     QAction *editValueAction;
     QAction *newCircuitAction;
@@ -74,6 +79,7 @@ public:
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
     void patchHasChanged();
+    void updateActions();
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
@@ -96,7 +102,6 @@ private:
     QStringList getRecentFiles();
     void addToRecentFiles(const QString &path);
     void openDirInFinder(const QString &filename);
-    void updateActions();
     void updateWindowTitle();
     void updateRackView();
     void repaintPatchView();

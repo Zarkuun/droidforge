@@ -13,7 +13,7 @@ class PatchSection
     QString title;
 
 public:
-    QList<Circuit *> circuits;
+    QList<Circuit *> circuits; // TODO: Make this private
 
     PatchSection() {}; // no title
     PatchSection(QString t) : title(t) {};
@@ -37,6 +37,8 @@ public:
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
     void addNewCircuit(int pos, QString name, jackselection_t jackSelection);
+    void addCircuit(int pos, Circuit *circuit);
+
     void collectCables(QStringList &cables) const;
 
     const CursorPosition &cursorPosition() { return cursor; };

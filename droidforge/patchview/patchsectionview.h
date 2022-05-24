@@ -7,6 +7,7 @@
 #include "tuning.h"
 #include "circuitchoosedialog.h"
 #include "atomselectordialog.h"
+#include "clipboard.h"
 
 #include <QGraphicsView>
 #include <QResizeEvent>
@@ -30,6 +31,8 @@ public:
     QString currentCircuitName() const;
     QString getTitle() const { return section->getNonemptyTitle(); };
     QStringList usedJacks() const;
+    void deleteCursorOrSelection();
+    void pasteFromClipboard(Clipboard &clipboard);
     void editValue(int key);
     void editCircuitComment(int key);
     bool isEmpty() const;
@@ -37,6 +40,7 @@ public:
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
     void setZoom(int zoom);
+    void copyToClipboard(Clipboard &clipboard);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -59,7 +63,6 @@ private:
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
     void moveCursorPageUpDown(int whence);
-    void deleteCursorOrSelection();
     void deleteCurrentRow();
     void deleteCurrentCircuit();
     void deleteMultipleCircuits(int from, int to);
@@ -68,6 +71,7 @@ private:
     void deleteMultipleJacks(int circuitNr, int from, int to);
     void deleteCurrentAtom();
     void deleteMultipleAtoms(int circuitNr, int row, int from, int to);
+    void pasteCircuitsFromClipboard(const Clipboard &clipboard);
     void editCircuit(int key);
     void editJack(int key);
     void editAtom(int key);

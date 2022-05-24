@@ -24,6 +24,8 @@ QtApplication {
     ]
 
     files: [
+        "patchview/clipboard.cpp",
+        "patchview/clipboard.h",
         "patchview/selection.cpp",
         "patchview/selection.h",
         "resources.qrc",

@@ -174,15 +174,15 @@ void PatchSection::moveCursorToNextCircuit()
 {
     if (cursor.circuitNr < circuits.size()-1) {
         cursor.circuitNr ++;
-        cursor.row = -1;
+        cursor.row = -2;
     }
 }
 
 
 void PatchSection::moveCursorToPreviousCircuit()
 {
-    if (cursor.row > -1)
-        cursor.row = -1;
+    if (cursor.row > -2)
+        cursor.row = -2;
     else if (cursor.circuitNr > 0)
         cursor.circuitNr --;
 }
@@ -204,6 +204,11 @@ void PatchSection::addNewCircuit(int pos, QString name, jackselection_t jackSele
     circuits.insert(pos, circuit);
     cursor.row = -2;
     cursor.circuitNr = pos;
+}
+
+void PatchSection::addCircuit(int pos, Circuit *circuit)
+{
+    circuits.insert(pos, circuit);
 }
 
 

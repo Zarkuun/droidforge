@@ -9,6 +9,7 @@ class Selection
 
 public:
     Selection(const CursorPosition &from, const CursorPosition &to);
+    Selection(const CursorPosition &fromAndto);
     bool circuitSelected(int n) const;
     bool commentSelected(int n) const;
     bool jackSelected(int n, int r) const;
