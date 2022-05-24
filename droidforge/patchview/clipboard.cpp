@@ -45,7 +45,22 @@ bool Clipboard::isEmpty() const
 
 bool Clipboard::isCircuits() const
 {
-    return (!circuits.isEmpty());
+    return !circuits.isEmpty();
+}
+
+bool Clipboard::isComment() const
+{
+    return !comment.isEmpty();
+}
+
+bool Clipboard::isJacks() const
+{
+    return !jackAssignments.isEmpty();
+}
+
+bool Clipboard::isAtoms() const
+{
+    return !atoms.isEmpty();
 }
 
 void Clipboard::clear()

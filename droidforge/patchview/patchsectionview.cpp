@@ -567,8 +567,14 @@ void PatchSectionView::pasteFromClipboard(Clipboard &clipboard)
         // dieser Fall da ist.
         return;
     }
+    else if (clipboard.isComment())
+        pasteCommentFromClipboard(clipboard);
+    else if (clipboard.isJacks())
+        pasteJacksFromClipboard(clipboard);
+    else if (clipboard.isAtoms())
+        pasteAtomsFromClipboard(clipboard);
     else {
-        qDebug() << "TODO: hier jacks, atoms, comment pasten";
+        qDebug() << "TODO: Das hier darf nicht passieren";
     }
 
 }
@@ -677,8 +683,8 @@ void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
     int position = section->cursorPosition().circuitNr;
     currentCircuitView()->deselect();
 
-    the_forge->registerEdit(QString("pasting %1 circuits").arg(clipboard.getCircuits()->count()));
-    for (auto circuit: *clipboard.getCircuits()) {
+    the_forge->registerEdit(tr("pasting %1 circuits").arg(clipboard.getCircuits().count()));
+    for (auto circuit: clipboard.getCircuits()) {
         Circuit *newCircuit = circuit->clone();
         section->addCircuit(position, newCircuit);
         section->moveCursorToNextCircuit();
@@ -687,6 +693,29 @@ void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
     // Das ensureVisible macht irgendwie nix
     the_forge->patchHasChanged();
     rebuildPatchSection();
+}
+
+void PatchSectionView::pasteCommentFromClipboard(const Clipboard &clipboard)
+{
+    QString comment = clipboard.getComment();
+    if (comment != currentCircuit()->getComment()) {
+        the_forge->registerEdit(tr("pasting circuit comment"));
+        currentCircuit()->setComment(comment);
+        the_forge->patchHasChanged();
+        rebuildPatchSection();
+    }
+}
+
+void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
+{
+    // TODO
+
+}
+
+void PatchSectionView::pasteAtomsFromClipboard(const Clipboard &clipboard)
+{
+    // TODO
+
 }
 
 void PatchSectionView::editCircuit(int key)
@@ -702,8 +731,8 @@ void PatchSectionView::editCircuit(int key)
         the_forge->registerEdit(actionTitle);
         currentCircuit()->changeCircuit(newCircuit);
         the_forge->patchHasChanged();
+        rebuildPatchSection();
     }
-    rebuildPatchSection();
 }
 
 void PatchSectionView::moveCursorLeftRight(int whence)

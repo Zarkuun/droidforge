@@ -72,6 +72,9 @@ private:
     void deleteCurrentAtom();
     void deleteMultipleAtoms(int circuitNr, int row, int from, int to);
     void pasteCircuitsFromClipboard(const Clipboard &clipboard);
+    void pasteCommentFromClipboard(const Clipboard &clipboard);
+    void pasteJacksFromClipboard(const Clipboard &clipboard);
+    void pasteAtomsFromClipboard(const Clipboard &clipboard);
     void editCircuit(int key);
     void editJack(int key);
     void editAtom(int key);

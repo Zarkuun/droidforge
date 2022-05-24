@@ -22,7 +22,13 @@ public:
     void copyFromSelection(Selection *sel, PatchSection *section);
     bool isEmpty() const;
     bool isCircuits() const;
-    const QList<Circuit *> *getCircuits() const { return &circuits; };
+    bool isComment() const;
+    bool isJacks() const;
+    bool isAtoms() const;
+    const QList<Circuit *> &getCircuits() const { return circuits; };
+    const QString &getComment() const { return comment; };
+    const QList<JackAssignment *> getJackAssignment() const { return jackAssignments; };
+    const QList<Atom *> &getAtoms() const { return atoms; };
 
 private:
     void clear();
