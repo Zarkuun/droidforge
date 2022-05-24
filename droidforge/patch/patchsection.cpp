@@ -48,32 +48,29 @@ QString PatchSection::getNonemptyTitle() const
 
 void PatchSection::deleteCurrentCircuit()
 {
-    Circuit *c = circuits[cursor.circuitNr];
-    circuits.remove(cursor.circuitNr);
-    delete c;
-    if (cursor.circuitNr >= circuits.size())
-        cursor.circuitNr--;
-    cursor.column = 0;
-    cursor.row = -2;
+    deleteCircuit(cursor.circuitNr);
 }
 
+void PatchSection::deleteCircuit(int circuitNumber)
+{
+    Circuit *c = circuits[circuitNumber];
+    circuits.remove(circuitNumber);
+    delete c;
+    sanitizeCursor();
+}
 
 void PatchSection::deleteCurrentJackAssignment()
 {
     Circuit *circuit = currentCircuit();
     circuit->deleteJackAssignment(cursor.row);
-    if (cursor.row >= circuit->numJackAssignments()) {
-        cursor.row = circuit->numJackAssignments() - 1;
-        if (cursor.row == -1 && !circuit->hasComment())
-            cursor.row = -2;
-    }
+    sanitizeCursor();
 }
 
 void PatchSection::deleteCurrentComment()
 {
     Circuit *circuit = currentCircuit();
     circuit->removeComment();
-    cursor.row = -2;
+    sanitizeCursor();
 }
 
 
@@ -137,7 +134,6 @@ void PatchSection::moveCursorLeft()
     }
 }
 
-
 void PatchSection::moveCursorRight()
 {
     cursor.column ++;
@@ -153,6 +149,25 @@ void PatchSection::setCursorRow(int row)
 void PatchSection::setCursorColumn(int column)
 {
     cursor.column = column;
+}
+
+void PatchSection::sanitizeCursor()
+{
+    if (cursor.circuitNr >= circuits.size()) {
+        cursor.circuitNr = circuits.size() - 1;
+        cursor.column = 0;
+        cursor.row = -2;
+        return;
+    }
+
+    Circuit *circuit = currentCircuit();
+
+    if (cursor.row >= circuit->numJackAssignments())
+        cursor.row = circuit->numJackAssignments() - 1;
+
+    else if (cursor.row == -1 && !circuit->hasComment())
+        cursor.row = -2;
+
 }
 
 void PatchSection::moveCursorToNextCircuit()

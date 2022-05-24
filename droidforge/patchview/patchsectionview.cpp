@@ -93,7 +93,7 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
     case Qt::Key_Right:     moveCursorLeftRight(1);   moved = true; break;
     case Qt::Key_PageUp:    moveCursorPageUpDown(-1); moved = true; break;
     case Qt::Key_PageDown:  moveCursorPageUpDown(1);  moved = true; break;
-    case Qt::Key_Backspace: deleteCurrentRow();       return true; // TODO
+    case Qt::Key_Backspace: deleteCursorOrSelection(); return true; // TODO
     }
 
     if (moved) {
@@ -500,6 +500,40 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
     updateCursor();
 }
 
+void PatchSectionView::deleteCursorOrSelection()
+{
+    if (selection) {
+        // When just a single object is selected, we can use
+        // the existing functions for deleting at the cursor position
+        if (selection->isCommentSelection())
+            deleteCurrentComment(); // cursor must be in selection
+        else if (selection->isSingleCircuitSelection())
+            deleteCurrentCircuit();
+        else if (selection->isSingleJackSelection())
+            deleteCurrentJack();
+        else if (selection->isSingleAtomSelection())
+            deleteCurrentAtom();
+
+        // Multiple selection
+        else if (selection->isCircuitSelection())
+            deleteMultipleCircuits(selection->fromPos().circuitNr,
+                           selection->toPos().circuitNr);
+        else if (selection->isJackSelection())
+            deleteMultipleJacks(selection->fromPos().circuitNr,
+                                selection->fromPos().row,
+                                selection->toPos().row);
+        else if (selection->isAtomSelection())
+            deleteMultipleAtoms(selection->fromPos().circuitNr,
+                                selection->fromPos().row,
+                                selection->fromPos().column,
+                                selection->toPos().column);
+    }
+    else {
+        deleteCurrentRow();
+    }
+    clearSelection();
+}
+
 void PatchSectionView::deleteCurrentRow()
 {
     if (isEmpty())
@@ -525,6 +559,16 @@ void PatchSectionView::deleteCurrentCircuit()
     the_forge->patchHasChanged();
 }
 
+void PatchSectionView::deleteMultipleCircuits(int from, int to)
+{
+    QString actionTitle = QString("deleting %1 circuits").arg(to - from + 1);
+    the_forge->registerEdit(actionTitle);
+    for (int i=to; i>=from; i--)
+        section->deleteCircuit(i);
+    rebuildPatchSection();
+    the_forge->patchHasChanged();
+}
+
 void PatchSectionView::deleteCurrentComment()
 {
     QString actionTitle = QString("deleting comment");
@@ -534,7 +578,6 @@ void PatchSectionView::deleteCurrentComment()
     updateCursor();
     the_forge->patchHasChanged();
 }
-
 
 void PatchSectionView::deleteCurrentJack()
 {
@@ -547,6 +590,17 @@ void PatchSectionView::deleteCurrentJack()
     the_forge->patchHasChanged();
 }
 
+void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
+{
+    QString actionTitle = QString("deleting %1 jack assignments").arg(to - from + 1);
+    the_forge->registerEdit(actionTitle);
+    for (int i=to; i>=from; i--)
+        section->circuit(circuitNr)->deleteJackAssignment(i);
+    section->sanitizeCursor();
+    rebuildPatchSection();
+    the_forge->patchHasChanged();
+}
+
 void PatchSectionView::deleteCurrentAtom()
 {
     JackAssignment *ja = section->currentJackAssignment();
@@ -555,6 +609,25 @@ void PatchSectionView::deleteCurrentAtom()
         QString actionTitle = QString("deleting value of '") + ja->jackName() + "'";
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(column, 0);
+        the_forge->patchHasChanged();
+    }
+    rebuildPatchSection();
+}
+
+void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int to)
+{
+    Circuit *circuit = section->circuit(circuitNr);
+    JackAssignment *ja = circuit->jackAssignment(row);
+    bool something = false;
+    for (int i=from; i<=to; i++)
+        if (ja->atomAt(i))
+            something = true;
+
+    if (something) {
+        QString actionTitle = QString("deleting %1 values of '%2'").arg(to-from+1).arg(ja->jackName());
+        the_forge->registerEdit(actionTitle);
+        for (int i=from; i<=to; i++)
+            ja->replaceAtom(i, 0);
         the_forge->patchHasChanged();
     }
     rebuildPatchSection();

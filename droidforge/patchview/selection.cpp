@@ -66,8 +66,29 @@ bool Selection::atomSelected(int circuitNr, int row, int atom) const
 bool Selection::isAtomSelection() const
 {
     return from.circuitNr == to.circuitNr &&
+            from.row >= 0 &&
             from.row == to.row &&
             from.column > 0;
+}
+
+bool Selection::isSingleAtomSelection() const
+{
+    return isAtomSelection() &&
+            from.column == to.column;
+}
+
+bool Selection::isJackSelection() const
+{
+    return from.circuitNr == to.circuitNr &&
+            from.row >= 0 &&
+            (from.column == 0 ||
+             from.row != to.row);
+}
+
+bool Selection::isSingleJackSelection() const
+{
+    return isJackSelection() &&
+            from.row == to.row;
 }
 
 bool Selection::isCircuitSelection() const
@@ -85,4 +106,15 @@ bool Selection::isCircuitSelection() const
         return true;
 
     return false;
+}
+
+bool Selection::isSingleCircuitSelection() const
+{
+    return isCircuitSelection() && from.circuitNr == to.circuitNr;
+}
+
+bool Selection::isCommentSelection() const
+{
+    return from.circuitNr == to.circuitNr &&
+            from.row == -1 && to.row == -1;
 }

@@ -59,11 +59,15 @@ private:
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
     void moveCursorPageUpDown(int whence);
+    void deleteCursorOrSelection();
     void deleteCurrentRow();
     void deleteCurrentCircuit();
+    void deleteMultipleCircuits(int from, int to);
     void deleteCurrentComment();
     void deleteCurrentJack();
+    void deleteMultipleJacks(int circuitNr, int from, int to);
     void deleteCurrentAtom();
+    void deleteMultipleAtoms(int circuitNr, int row, int from, int to);
     void editCircuit(int key);
     void editJack(int key);
     void editAtom(int key);

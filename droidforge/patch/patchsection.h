@@ -24,6 +24,7 @@ public:
     QString getNonemptyTitle() const;
     void setTitle(const QString &t) { title = t; };
     void deleteCurrentCircuit();
+    void deleteCircuit(int i);
     void deleteCurrentJackAssignment();
     void deleteCurrentComment();
     void moveCursorUp();
@@ -32,6 +33,7 @@ public:
     void moveCursorRight();
     void setCursorRow(int row);
     void setCursorColumn(int column);
+    void sanitizeCursor();
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
     void addNewCircuit(int pos, QString name, jackselection_t jackSelection);
@@ -40,6 +42,7 @@ public:
     const CursorPosition &cursorPosition() { return cursor; };
     void setCursor(const CursorPosition &pos) { cursor = pos; };
     Circuit *currentCircuit();
+    Circuit *circuit(int n) { return circuits[n]; };
     JackAssignment *currentJackAssignment();
     bool needG8() const;
     bool needX7() const;

@@ -15,10 +15,15 @@ public:
     bool atomSelected(int n, int r, int a) const;
     const CursorPosition &fromPos() const { return from; };
     const CursorPosition &toPos() const { return to; };
+    bool isAtomSelection() const;
+    bool isSingleAtomSelection() const;
+    bool isJackSelection() const;
+    bool isSingleJackSelection() const;
+    bool isCircuitSelection() const;
+    bool isSingleCircuitSelection() const;
+    bool isCommentSelection() const;
 
 private:
-    bool isAtomSelection() const;
-    bool isCircuitSelection() const;
 };
 
 #endif // SELECTION_H
