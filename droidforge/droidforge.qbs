@@ -15,6 +15,7 @@ QtApplication {
         "modules",
         "patchview",
         "patchview/jackselector",
+        "patchview/atomeditor",
         "rackview",
         "utilities",
         "main",
