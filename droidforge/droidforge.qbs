@@ -24,6 +24,8 @@ QtApplication {
     ]
 
     files: [
+        "patchview/selection.cpp",
+        "patchview/selection.h",
         "resources.qrc",
         "main/droidfirmware.cpp",
         "main/droidfirmware.h",

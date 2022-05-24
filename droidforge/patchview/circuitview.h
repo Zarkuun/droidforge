@@ -3,6 +3,7 @@
 
 #include "circuit.h"
 #include "cursorposition.h"
+#include "selection.h"
 
 #include <QGraphicsItem>
 #include <QStyleOptionGraphicsItem>
@@ -11,6 +12,8 @@
 class CircuitView : public QGraphicsItem
 {
     Circuit *circuit;
+    unsigned circuitNumber; // within section
+    const Selection * const *selection;
     unsigned totalWidth;
     unsigned lineHeight;
     unsigned bottomPadding;
@@ -23,7 +26,7 @@ class CircuitView : public QGraphicsItem
     QPixmap icon;
 
 public:
-    CircuitView(Circuit *circuit, unsigned width, unsigned lineHeight, unsigned bottomPadding);
+    CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const *selection, unsigned width, unsigned lineHeight, unsigned bottomPadding);
     QRectF boundingRect() const override;
     static unsigned minimumWidth();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -43,6 +46,7 @@ private:
     void paintCursor(QPainter *painter) const;
     QRect headerRect() const;
     QRect commentRect() const;
+    QRect jackLineRect(int row) const;
     QRect jackRect(int row) const;
     QRect atomRect(int row, int column) const;
     void paintAtom(QPainter *painter, const QRect &rect, Atom *atom);

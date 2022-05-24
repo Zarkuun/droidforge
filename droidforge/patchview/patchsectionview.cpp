@@ -18,6 +18,7 @@ PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section, in
     : patch(patch)
     , section(section)
     , atomSelectorDialog{}
+    , selection(0)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -50,6 +51,8 @@ void PatchSectionView::buildPatchSection()
         Circuit *circuit = section->circuits[i];
         CircuitView *cv = new CircuitView(
                     circuit,
+                    i,
+                    &selection,
                     circuitWidth,
                     fontMetrics().lineSpacing(),
                     isLast ? CIRV_TOP_PADDING : 0);
@@ -367,6 +370,23 @@ void PatchSectionView::updateCursor()
     updateRegisterHilites();
 }
 
+void PatchSectionView::setSelection(const CursorPosition &to)
+{
+    if (selection)
+        delete selection;
+    selection = new Selection(section->cursorPosition(), to);
+    updateCircuits();
+}
+
+void PatchSectionView::clearSelection()
+{
+    if (selection) {
+        delete selection;
+        selection = 0;
+        updateCircuits();
+    }
+}
+
 bool PatchSectionView::handleMousePress(const QPointF &pos)
 {
     // itemAt() applies the transformation of the graphics
@@ -390,7 +410,12 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
             pos.circuitNr = i;
             pos.row = cv->jackAt(posInCircuit.y());
             pos.column = cv->columnAt(posInCircuit.x());
-            section->setCursor(pos);
+            if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
+                setSelection(pos);
+            else {
+                clearSelection();
+                section->setCursor(pos);
+            }
             updateCursor();
         }
     }

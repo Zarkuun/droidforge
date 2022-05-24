@@ -5,12 +5,15 @@
 #include "tuning.h"
 
 #include <QPainter>
+#include <QFontMetrics>
 
 #define NUM_COLUMNS 4
 
 
-CircuitView::CircuitView(Circuit *circuit, unsigned width, unsigned lineHeight, unsigned bottomPadding)
+CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const*selection, unsigned width, unsigned lineHeight, unsigned bottomPadding)
     : circuit(circuit)
+    , circuitNumber(circuitNumber)
+    , selection(selection)
     , totalWidth(width)
     , lineHeight(lineHeight)
     , bottomPadding(bottomPadding)
@@ -72,15 +75,15 @@ unsigned CircuitView::minimumWidth()
             CIRV_SIDE_PADDING * 2;
 }
 
-
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     QRectF cr = contentRect();
     painter->fillRect(cr, CIRV_COLOR_CIRCUIT_BACKGROUND);
 
+
     // Icon and circuit name
     painter->fillRect(headerRect(), CIRV_COLOR_CIRCUIT_NAME_BACKGROUND);
-    QRect imageRect( headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
+    QRect imageRect(headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
     painter->drawPixmap(imageRect, icon);
     painter->setPen(CIRV_COLOR_CIRCUIT_NAME);
     painter->drawText(
@@ -99,6 +102,8 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
                       commentRect().width() -  2 * CIRV_TEXT_SIDE_PADDING,
                       commentHeight()),
                       Qt::AlignLeft | Qt::AlignJustify | Qt::AlignTop, circuit->getComment());
+    if (*selection && (*selection)->commentSelected(circuitNumber))
+        painter->fillRect(commentRect(), CIRV_COLOR_SELECTION);
 
     // Jacks
     paintJacks(painter);
@@ -111,6 +116,9 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
                 headerRect().bottom(),
                 columnPosition(1),
                 cr.bottom()); // line after jack column
+
+    if (*selection && (*selection)->circuitSelected(circuitNumber))
+        painter->fillRect(cr, CIRV_COLOR_SELECTION);
 
     if (selected)
         paintCursor(painter);
@@ -247,6 +255,8 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
                           ar.width() - 2 * CIRV_TEXT_SIDE_PADDING,
                           ar.height()),
                       jai->getAtom(a));
+            if (*selection && (*selection)->atomSelected(circuitNumber, row, a+1))
+                painter->fillRect(ar, CIRV_COLOR_SELECTION);
         }
 
         QRect ar = atomRect(row, 1);
@@ -279,7 +289,12 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
             painter->setPen(COLOR_TEXT_UNKNOWN);
             painter->drawText(rect, Qt::AlignVCenter, text);
         }
+        if (*selection && (*selection)->atomSelected(circuitNumber, row, 1))
+            painter->fillRect(ar, CIRV_COLOR_SELECTION);
     }
+
+    if (*selection && (*selection)->jackSelected(circuitNumber, row))
+        painter->fillRect(jackLineRect(row), CIRV_COLOR_SELECTION);
 
     // horizontal line
     painter->setPen(CIRV_COLOR_LINE);
@@ -313,6 +328,15 @@ QRect CircuitView::commentRect() const
                  CIRV_TOP_PADDING + CIRV_HEADER_HEIGHT,
                  totalWidth - 2 * CIRV_SIDE_PADDING,
                  commentHeight());
+}
+
+QRect CircuitView::jackLineRect(int row) const
+{
+    return QRect(
+                CIRV_SIDE_PADDING,
+                CIRV_TOP_PADDING + CIRV_HEADER_HEIGHT + commentHeight() + row * CIRV_JACK_HEIGHT,
+                totalWidth - 2 * CIRV_SIDE_PADDING,
+                CIRV_JACK_HEIGHT);
 }
 
 QRect CircuitView::jackRect(int row) const

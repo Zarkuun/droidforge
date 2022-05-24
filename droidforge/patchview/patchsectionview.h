@@ -3,6 +3,7 @@
 
 #include "circuitview.h"
 #include "patchsection.h"
+#include "selection.h"
 #include "tuning.h"
 #include "circuitchoosedialog.h"
 #include "atomselectordialog.h"
@@ -18,6 +19,7 @@ class PatchSectionView : public QGraphicsView
 
     QList<CircuitView *>circuitViews;
     AtomSelectorDialog *atomSelectorDialog; // TODO: Jede Section hat nen eigenen Dialog
+    Selection *selection;
 
 public:
     PatchSectionView(const Patch *patch, PatchSection *section, int zoom);
@@ -42,6 +44,8 @@ protected:
 
 private:
     void updateCursor();
+    void setSelection(const CursorPosition &to);
+    void clearSelection();
     bool handleMousePress(const QPointF &pos);
     void buildPatchSection();
     void deletePatchSection();

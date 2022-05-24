@@ -16,8 +16,8 @@ QString RegisterList::toString() const
     return result;
 }
 
-QDebug &operator<<(QDebug &out, const RegisterList &rl) {
-    for (auto& entry: rl)
+QDebug &operator<<(QDebug &out, const RegisterList &pos) {
+    for (auto& entry: pos)
         out << entry;
     return out;
 }
