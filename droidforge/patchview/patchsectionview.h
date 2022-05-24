@@ -24,7 +24,7 @@ class PatchSectionView : public QGraphicsView
 public:
     PatchSectionView(const Patch *patch, PatchSection *section, int zoom);
     ~PatchSectionView();
-    bool handleKeyPress(int key);
+    bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
     void addNewJack(QString name);
     QString currentCircuitName() const;
@@ -44,7 +44,8 @@ protected:
 
 private:
     void updateCursor();
-    void setSelection(const CursorPosition &to);
+    void setMouseSelection(const CursorPosition &to);
+    void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
     void clearSelection();
     bool handleMousePress(const QPointF &pos);
     void buildPatchSection();

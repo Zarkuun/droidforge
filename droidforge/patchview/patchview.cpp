@@ -59,9 +59,9 @@ void PatchView::setPatch(Patch *newPatch)
         setCurrentIndex(patch->currentSectionIndex());
 }
 
-bool PatchView::handleKeyPress(int key)
+bool PatchView::handleKeyPress(QKeyEvent *event)
 {
-    bool handled = currentPatchSectionView()->handleKeyPress(key);
+    bool handled = currentPatchSectionView()->handleKeyPress(event);
     return handled;
 }
 

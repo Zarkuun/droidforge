@@ -20,7 +20,7 @@ public:
     PatchView();
     ~PatchView();
     void setPatch(Patch *patch);
-    bool handleKeyPress(int key);
+    bool handleKeyPress(QKeyEvent *event);
     const PatchSectionView *currentPatchSectionView() const;
     PatchSectionView *currentPatchSectionView();
     int numSections() const;

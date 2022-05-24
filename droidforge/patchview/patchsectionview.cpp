@@ -78,16 +78,30 @@ void PatchSectionView::rebuildPatchSection()
     buildPatchSection();
 }
 
-bool PatchSectionView::handleKeyPress(int key)
+bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 {
+    int key = event->key();
+    bool shiftHeld = event->modifiers() & Qt::ShiftModifier;
+
+    CursorPosition posBefore = section->cursorPosition();
+    bool moved = false;
+
     switch (key) {
-    case Qt::Key_Up:        moveCursorUpDown(-1);     return true;
-    case Qt::Key_Down:      moveCursorUpDown(1);      return true;
-    case Qt::Key_Left:      moveCursorLeftRight(-1);  return true;
-    case Qt::Key_Right:     moveCursorLeftRight(1);   return true;
-    case Qt::Key_PageUp:    moveCursorPageUpDown(-1); return true;
-    case Qt::Key_PageDown:  moveCursorPageUpDown(1);  return true;
-    case Qt::Key_Backspace: deleteCurrentRow();       return true;
+    case Qt::Key_Up:        moveCursorUpDown(-1);     moved = true; break;
+    case Qt::Key_Down:      moveCursorUpDown(1);      moved = true; break;
+    case Qt::Key_Left:      moveCursorLeftRight(-1);  moved = true; break;
+    case Qt::Key_Right:     moveCursorLeftRight(1);   moved = true; break;
+    case Qt::Key_PageUp:    moveCursorPageUpDown(-1); moved = true; break;
+    case Qt::Key_PageDown:  moveCursorPageUpDown(1);  moved = true; break;
+    case Qt::Key_Backspace: deleteCurrentRow();       return true; // TODO
+    }
+
+    if (moved) {
+        if (shiftHeld)
+            updateKeyboardSelection(posBefore, section->cursorPosition());
+        else
+            clearSelection();
+        return true;
     }
 
     // All keys that are used for entering a value popup the atom selector
@@ -101,7 +115,7 @@ bool PatchSectionView::handleKeyPress(int key)
         editValue(key);
         return true;
     }
-    return false;
+    return true;
 }
 
 
@@ -370,12 +384,31 @@ void PatchSectionView::updateCursor()
     updateRegisterHilites();
 }
 
-void PatchSectionView::setSelection(const CursorPosition &to)
+void PatchSectionView::setMouseSelection(const CursorPosition &to)
 {
     if (selection)
         delete selection;
     selection = new Selection(section->cursorPosition(), to);
     updateCircuits();
+}
+
+void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
+{
+    if (selection) {
+        CursorPosition from, to;
+        if (selection->fromPos() == before) {
+            from = after;
+            to = selection->toPos();
+        }
+        else {
+            from = selection->fromPos();
+            to = after;
+        }
+        delete selection;
+        selection = new Selection(from, to);
+    }
+    else
+        selection = new Selection(before, after);
 }
 
 void PatchSectionView::clearSelection()
@@ -411,7 +444,7 @@ bool PatchSectionView::handleMousePress(const QPointF &pos)
             pos.row = cv->jackAt(posInCircuit.y());
             pos.column = cv->columnAt(posInCircuit.x());
             if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
-                setSelection(pos);
+                setMouseSelection(pos);
             else {
                 clearSelection();
                 section->setCursor(pos);
@@ -553,6 +586,7 @@ void PatchSectionView::moveCursorLeftRight(int whence)
         section->moveCursorLeft();
     else
         section->moveCursorRight();
+
     updateCursor();
 }
 

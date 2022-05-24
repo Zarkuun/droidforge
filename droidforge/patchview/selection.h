@@ -13,6 +13,8 @@ public:
     bool commentSelected(int n) const;
     bool jackSelected(int n, int r) const;
     bool atomSelected(int n, int r, int a) const;
+    const CursorPosition &fromPos() const { return from; };
+    const CursorPosition &toPos() const { return to; };
 
 private:
     bool isAtomSelection() const;

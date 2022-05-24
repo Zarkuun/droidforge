@@ -112,7 +112,7 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (!patchView.handleKeyPress(event->key())) {
+    if (!patchView.handleKeyPress(event)) {
         event->ignore();
         // QWidget::keyPressEvent(event);
     }

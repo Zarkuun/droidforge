@@ -13,5 +13,6 @@ struct CursorPosition
 };
 
 QDebug &operator<<(QDebug &out, const CursorPosition &pos);
+bool operator==(const CursorPosition &a, const CursorPosition &b);
 
 #endif // CURSORPOSITION_H
