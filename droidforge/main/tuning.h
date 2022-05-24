@@ -1,6 +1,7 @@
 #ifndef TUNING_H
 #define TUNING_H
 
+#define APPLICATION_NAME                     "DROID Forge"
 #define SHOP_PRODUCTS_URL                    "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"
 #define SECTION_DEFAULT_NAME                 "Circuits"

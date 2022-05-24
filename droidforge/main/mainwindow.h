@@ -11,12 +11,12 @@
 #include <QToolBar>
 #include <QSplitter>
 #include <QDir>
+#include <QApplication>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QVBoxLayout>
 
 class Patch;
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
 
 class MainWindow;
 extern MainWindow *the_forge;
@@ -29,10 +29,13 @@ extern DroidFirmware *the_firmware;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    QWidget *centralwidget;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *verticalLayout;
+    QMenuBar *menubar;
+    QStatusBar *statusbar;
 
 private:
-    Ui::MainWindow *ui;
-
     DroidFirmware firmware;
     UndoHistory undoHistory;
     PatchParser parser;

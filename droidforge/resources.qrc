@@ -1206,5 +1206,7 @@
         <file>images/faceplates/faceplate-blind-front.jpg</file>
         <file>images/icons/white/purchase.png</file>
         <file>images/circuits/copy.png</file>
+        <file>images/circuits/mixer.png</file>
+        <file>images/circuits/compare.png</file>
     </qresource>
 </RCC>

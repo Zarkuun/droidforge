@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "parseexception.h"
 #include "patch.h"
-#include "ui_mainwindow.h"
 #include "rackview.h"
 #include "modulebuilder.h"
 #include "patchparser.h"
@@ -23,20 +22,28 @@ DroidFirmware *the_firmware;
 
 MainWindow::MainWindow(const QString &initialFilename)
     : QMainWindow()
-    , ui(new Ui::MainWindow)
     , initialFilename(initialFilename)
     , patch(0)
 {
     the_forge = this;
     the_firmware = &firmware;
 
-    ui->setupUi(this);
+    setWindowTitle(APPLICATION_NAME);
+
+    menubar = new QMenuBar(this);
+    setMenuBar(menubar);
+
+    statusbar = new QStatusBar(this);
+    setStatusBar(statusbar);
+
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
-    this->setCentralWidget(splitter);
+    setCentralWidget(splitter);
     splitter->addWidget(&rackView);
     splitter->addWidget(&patchView);
     splitter->setHandleWidth(RACV_SPLITTER_HANDLE_WIDTH);
+
+    resize(800, 600);
     QSettings settings;
     if (settings.contains("mainwindow/splitposition"))
         splitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
@@ -62,7 +69,6 @@ MainWindow::~MainWindow()
 {
     if (patch)
         delete patch;
-    delete ui;
 }
 
 
