@@ -708,8 +708,24 @@ void PatchSectionView::pasteCommentFromClipboard(const Clipboard &clipboard)
 
 void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
 {
-    // TODO
-
+    // TODO: Die Jacks müssen eigentlich zum Circuit passen.
+    // Müssen wir die neu parsen??
+    const QList<JackAssignment *> &jas = clipboard.getJackAssignment();
+    the_forge->registerEdit(tr("pasting %1 jack assignments").arg(jas.count()));
+    Circuit *circuit = currentCircuit();
+    int index = qMin(circuit->numJackAssignments(), qMax(0, section->cursorPosition().row + 1));
+    for (auto ja: jas) {
+        // We need to reparse the jack assignment, because the circuit we
+        // paste into is maybe another circuit and e.g. "clock" might have
+        // to change from an input to an output.
+        QString asString = ja->toString();
+        JackAssignment *jaReparsed = JackAssignment::parseJackLine(circuit->getName(), asString);
+        circuit->insertJackAssignment(jaReparsed, index);
+        section->setCursorRow(index);
+        index++;
+    }
+    the_forge->patchHasChanged();
+    rebuildPatchSection();
 }
 
 void PatchSectionView::pasteAtomsFromClipboard(const Clipboard &clipboard)
