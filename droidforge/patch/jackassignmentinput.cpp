@@ -182,6 +182,7 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
     QString value = valueString.toLower();
     value.replace(spaces, "");
 
+    static QRegularExpression form0("^$");
     static QRegularExpression form1("^" RATOM "$");
     static QRegularExpression form2("^" RATOM "[*]" RATOM "$");
     static QRegularExpression form3("^" RATOM "[*]" RATOM "[+]" RATOM "$");
@@ -195,7 +196,10 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
     QString a, b, c;
 
     QRegularExpressionMatch m;
-    if ((m = form1.match(value)).hasMatch())
+    if ((m = form0.match(value)).hasMatch()) {
+        // empty atoms
+    }
+    else if ((m = form1.match(value)).hasMatch())
         a = m.captured(1);
     else if ((m = form2.match(value)).hasMatch()) {
         a = m.captured(1);

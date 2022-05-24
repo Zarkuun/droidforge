@@ -26,10 +26,12 @@ void Clipboard::copyFromSelection(Selection *sel, PatchSection *section)
             for (int i=from.row; i<=to.row; i++)
                 jackAssignments.append(circuit->jackAssignment(i)->clone());
 
-        else if (sel->isAtomSelection())
-            for (int i=from.column; i<=to.column; i++)
-                atoms.append(circuit->jackAssignment(from.row)->atomAt(i)->clone());
-
+        else if (sel->isAtomSelection()) {
+            for (int i=from.column; i<=to.column; i++) {
+                const Atom *atom = circuit->jackAssignment(from.row)->atomAt(i);
+                atoms.append(atom ? atom->clone() : 0);
+            }
+        }
         else // circuit comment selection
             comment = circuit->getComment();
     }

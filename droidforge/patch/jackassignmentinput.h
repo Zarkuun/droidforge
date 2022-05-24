@@ -13,6 +13,7 @@ public:
     JackAssignmentInput(QString jack, QString comment, QString valueString);
     JackAssignmentInput(QString jack, QString comment="");
     ~JackAssignmentInput();
+    bool isInput() const { return true; };
     Atom *getAtom(unsigned n) const;
     const Atom *atomAt(int column) const;
     Atom *atomAt(int column);

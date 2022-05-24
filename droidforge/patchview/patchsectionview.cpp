@@ -1,4 +1,5 @@
 #include "patchsectionview.h"
+#include "atominvalid.h"
 #include "atomoneliner.h"
 #include "atomregister.h"
 #include "circuitview.h"
@@ -202,12 +203,10 @@ void PatchSectionView::copyToClipboard(Clipboard &clipboard)
 {
     if (selection) {
         clipboard.copyFromSelection(selection, section);
-        qDebug() << "KOPERT VON SELCTION";
     }
     else {
         Selection sel(section->cursorPosition());
         clipboard.copyFromSelection(&sel, section);
-        qDebug() << "KOPERT VON CURSOR";
     }
 }
 
@@ -398,9 +397,7 @@ void PatchSectionView::updateCursor()
         currentCircuitView()->select(section->cursorPosition());
         QRectF br = currentCircuitView()->boundingRect();
         QRectF tbr = br.translated(currentCircuitView()->pos());
-        qDebug() << "R" << br << tbr;
         ensureVisible(tbr);
-        qDebug() << currentCircuitView() << "cursor" << section->cursorPosition().circuitNr << "ensure visible" << currentCircuitView()->pos();
     }
     updateRegisterHilites();
 }
@@ -562,7 +559,6 @@ void PatchSectionView::pasteFromClipboard(Clipboard &clipboard)
         qDebug() << "TODO: Hier Dialog wegen anpassen der Register!";
     }
     else if (isEmpty()) {
-        qDebug() << "Mist. Wir seind leer";
         // TODO: updateActions in mainwindow soll paste deaktivieren, wenn
         // dieser Fall da ist.
         return;
@@ -574,7 +570,7 @@ void PatchSectionView::pasteFromClipboard(Clipboard &clipboard)
     else if (clipboard.isAtoms())
         pasteAtomsFromClipboard(clipboard);
     else {
-        qDebug() << "TODO: Das hier darf nicht passieren";
+        // Should never happen
     }
 
 }
@@ -730,8 +726,39 @@ void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
 
 void PatchSectionView::pasteAtomsFromClipboard(const Clipboard &clipboard)
 {
-    // TODO
-
+    JackAssignment *ja = currentJackAssignment();
+    if (!ja) {
+        qDebug() << "das geht hier nicht";
+        return;
+    }
+    int column = section->cursorPosition().column;
+    if (column < 1 || column > 3) {
+        qDebug() << "das geht hier auch nicht";
+        return;
+    }
+    const QList<Atom *> &atoms = clipboard.getAtoms();
+    the_forge->registerEdit(tr("pasting parameters"));
+    for (auto atom: atoms) {
+        // We need to reparse, as people might copy an input
+        // value like "17.4" to an output parameter.
+        Atom *newAtom = 0;
+        if (atom) {
+            QString asString = atom->toString();
+            if (ja->isOutput())
+                newAtom = JackAssignmentOutput::parseOutputAtom(asString);
+            else if (ja->isInput())
+                newAtom = JackAssignmentInput::parseInputAtom(asString);
+            else
+                newAtom = new AtomInvalid(asString);
+        }
+        ja->replaceAtom(column, newAtom);
+        section->setCursorColumn(column);
+        column ++;
+        if (column > 3)
+            break;
+    }
+    the_forge->patchHasChanged();
+    rebuildPatchSection();
 }
 
 void PatchSectionView::editCircuit(int key)

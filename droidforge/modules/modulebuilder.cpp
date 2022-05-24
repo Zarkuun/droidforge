@@ -51,7 +51,6 @@ bool ModuleBuilder::controllerExists(QString name)
 void ModuleBuilder::allRegistersOf(QString name, unsigned number, RegisterList &rl)
 {
     Module *m = buildModule(name);
-    qDebug() << name << "wird zu" << m->name();
     m->collectAllRegisters(rl, number);
     delete m;
 }

@@ -3,21 +3,45 @@
 
 JackAssignmentUnknown::JackAssignmentUnknown(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
-    , valueString(valueString)
+    , atom(new AtomInvalid(valueString))
 {
+}
+
+JackAssignmentUnknown::~JackAssignmentUnknown()
+{
+    if (atom)
+        delete atom;
+}
+
+QString JackAssignmentUnknown::valueToString() const
+{
+    if (atom)
+        return atom->toString();
+    else
+        return "";
+}
+
+Atom *JackAssignmentUnknown::atomAt(int)
+{
+    return atom;
 }
 
 void JackAssignmentUnknown::replaceAtom(int, Atom *newAtom)
 {
-    valueString = newAtom->toString();
+    atom = new AtomInvalid(newAtom->toString());
 }
 
 void JackAssignmentUnknown::parseExpression(const QString &expression)
 {
-    valueString = expression;
+    if (atom)
+        delete atom;
+    if (expression.isEmpty())
+        atom = 0;
+    else
+        atom = new AtomInvalid(expression);
 }
 
 JackAssignment *JackAssignmentUnknown::clone() const
 {
-    return new JackAssignmentUnknown(jack, comment, valueString);
+    return new JackAssignmentUnknown(jack, comment, atom ? atom->toString() : "");
 }
