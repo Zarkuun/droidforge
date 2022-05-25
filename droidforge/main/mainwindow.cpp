@@ -228,6 +228,7 @@ void MainWindow::updateActions()
     }
 
     pasteAction->setEnabled(patchView.clipboardFilled());
+    pasteSmartAction->setEnabled(patchView.circuitsInClipboard());
 
     const PatchSectionView *psv = patchView.currentPatchSectionView();
     bool empty = !psv || psv->isEmpty();
@@ -424,25 +425,34 @@ void MainWindow::createEditMenu()
 
     editMenu->addSeparator();
 
-    // Copy & Paste
+    // Cut
     cutAction = new QAction(icon("cut"), tr("C&ut"), this);
     cutAction->setShortcuts(QKeySequence::Cut);
     cutAction->setStatusTip(tr("Cut selection to clipboard"));
     connect(cutAction, &QAction::triggered, &patchView, &PatchView::cut);
     editMenu->addAction(cutAction);
 
+    // Copy
     copyAction = new QAction(icon("copy"), tr("&Copy"), this);
     copyAction->setShortcuts(QKeySequence::Copy);
     copyAction->setStatusTip(tr("Copy selected stuff to clipboard"));
     connect(copyAction, &QAction::triggered, &patchView, &PatchView::copy);
     editMenu->addAction(copyAction);
 
+    // Paste
     pasteAction = new QAction(icon("paste"), tr("&Paste"), this);
     pasteAction->setShortcuts(QKeySequence::Paste);
     pasteAction->setStatusTip(tr("Paste contents from clipboard"));
     connect(pasteAction, &QAction::triggered, &patchView, &PatchView::paste);
     editMenu->addAction(pasteAction);
 
+    // Paste smart
+    pasteSmartAction = new QAction(tr("&Paste smart"), this);
+    pasteSmartAction->setShortcut(QKeySequence(tr("Shift+Ctrl+V")));
+    pasteSmartAction->setStatusTip(tr("Paste circuits from clipboard but remap registers and internal connections "
+                                 "in order to avoid conflicts."));
+    connect(pasteSmartAction, &QAction::triggered, &patchView, &PatchView::pasteSmart);
+    editMenu->addAction(pasteSmartAction);
 
     // New circuit...
     newCircuitAction = new QAction(icon("open_in_new"), tr("&New circuit..."), this);

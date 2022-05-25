@@ -80,6 +80,11 @@ bool PatchView::clipboardFilled() const
     return !clipboard.isEmpty();
 }
 
+bool PatchView::circuitsInClipboard() const
+{
+    return clipboard.numCircuits();
+}
+
 bool PatchView::circuitsSelected() const
 {
     if (!currentPatchSectionView())
@@ -108,13 +113,8 @@ void PatchView::clickOnRegister(AtomRegister ar)
         currentPatchSectionView()->clickOnRegister(ar);
 }
 
-Patch *PatchView::integratePatch(Patch *otherpatch)
+bool PatchView::interactivelyRemapRegisters(Patch *otherpatch)
 {
-    Patch *newPatch = patch->clone();
-
-    // TODO: It's a hack that we need to get the list of availableRegisters here
-    // as an argument. that should be computed by patch, not by rackview.
-
     // Phase 1: If the other patch defines controllers, we can add these
     // controllers to our patch (and shift all references, of course)
     const QStringList &controllers = otherpatch->allControllers();
@@ -129,10 +129,9 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
                     QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::Yes);
 
-        if (reply == QMessageBox::Cancel) {
-            delete newPatch;
-            return 0;
-        }
+        if (reply == QMessageBox::Cancel)
+            return false;
+
         else if (reply == QMessageBox::Yes) {
             int numExistingControllers = patch->numControllers();
             for (auto &c: controllers)
@@ -144,7 +143,6 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
     // Phase 2: Remap non-existing or conflicting registers.
     RegisterList availableRegisters;
     patch->collectAvailableRegisterAtoms(availableRegisters);
-    qDebug() << "AVAILABLE" << availableRegisters.toString();
     RegisterList occupiedRegisters;
     patch->collectUsedRegisterAtoms(occupiedRegisters);
     RegisterList neededRegisters;
@@ -167,10 +165,9 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
                     QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::Yes);
 
-        if (reply == QMessageBox::Cancel) {
-            delete newPatch;
-            return 0;
-        }
+        if (reply == QMessageBox::Cancel)
+            return false;
+
         else if (reply == QMessageBox::Yes) {
             RegisterList remapFrom;
             RegisterList remapTo;
@@ -207,10 +204,9 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
                             QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
                             QMessageBox::Yes);
 
-                if (reply == QMessageBox::Cancel) {
-                    delete newPatch;
-                    return 0;
-                }
+                if (reply == QMessageBox::Cancel)
+                    return false;
+
                 else if (reply == QMessageBox::Yes) {
                     otherpatch->removeRegisterReferences(
                                 atomsToRemap,
@@ -221,15 +217,25 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
         }
     }
 
-
     // Phase 3: Cables
     // TODO: Alle Kabel des otherpatch sammeln. KOnflikte finden.
     // Wenn es welche gibt, fragen:
     // - umbenennen
     // - lassen
     // - abbrechen
-    newPatch->integratePatch(otherpatch);
-    return newPatch;
+    return true;
+}
+
+
+Patch *PatchView::integratePatch(Patch *otherpatch)
+{
+    if (interactivelyRemapRegisters(otherpatch)) {
+        Patch *newPatch = patch->clone();
+        newPatch->integratePatch(otherpatch);
+        return newPatch;
+    }
+    else
+        return 0;
 }
 
 Patch *PatchView::getSelectionAsPatch() const
@@ -381,6 +387,21 @@ void PatchView::copy()
 void PatchView::paste()
 {
     currentPatchSectionView()->pasteFromClipboard(clipboard);
+}
+
+void PatchView::pasteSmart()
+{
+    Patch *patch = clipboard.getAsPatch();
+    if (!interactivelyRemapRegisters(patch)) {
+        delete patch;
+        return;
+    }
+
+    the_forge->registerEdit(tr("Smart pasting %1 circuits").arg(clipboard.getCircuits().count()));
+    Clipboard cb(patch->section(0)->circuits);
+    currentPatchSectionView()->pasteFromClipboard(cb);
+    delete patch;
+    the_forge->patchHasChanged();
 }
 
 void PatchView::renameSection(int index)

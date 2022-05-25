@@ -1,7 +1,14 @@
 #include "clipboard.h"
+#include "patch.h"
 
 Clipboard::Clipboard()
 {
+}
+
+Clipboard::Clipboard(const QList<Circuit *>cs)
+{
+    for (auto circuit: cs)
+        circuits.append(circuit->clone());
 }
 
 Clipboard::~Clipboard()
@@ -53,6 +60,16 @@ unsigned Clipboard::numCircuits() const
 bool Clipboard::isComment() const
 {
     return !comment.isEmpty();
+}
+
+Patch *Clipboard::getAsPatch() const
+{
+    Patch *patch = new Patch();
+    PatchSection *ps = new PatchSection();
+    for (auto circuit: circuits)
+        ps->addCircuit(circuit->clone());
+    patch->addSection(ps);
+    return patch;
 }
 
 unsigned Clipboard::numJacks() const

@@ -33,6 +33,7 @@ public:
     QStringList usedJacks() const;
     void deleteCursorOrSelection();
     void pasteFromClipboard(Clipboard &clipboard);
+    void pasteCircuitsFromClipboard(const Clipboard &clipboard);
     void editValue(int key);
     void editCircuitComment(int key);
     bool isEmpty() const;
@@ -73,7 +74,6 @@ private:
     void deleteMultipleJacks(int circuitNr, int from, int to);
     void deleteCurrentAtom();
     void deleteMultipleAtoms(int circuitNr, int row, int from, int to);
-    void pasteCircuitsFromClipboard(const Clipboard &clipboard);
     void pasteCommentFromClipboard(const Clipboard &clipboard);
     void pasteJacksFromClipboard(const Clipboard &clipboard);
     void pasteAtomsFromClipboard(const Clipboard &clipboard);

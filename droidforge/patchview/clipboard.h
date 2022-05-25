@@ -4,6 +4,7 @@
 #include "circuit.h"
 #include "jackassignment.h"
 #include "atom.h"
+#include "patch.h"
 #include "patchsection.h"
 #include "selection.h"
 
@@ -18,6 +19,7 @@ class Clipboard
 
 public:
     Clipboard();
+    Clipboard(const QList<Circuit *>);
     ~Clipboard();
     void copyFromSelection(Selection *sel, PatchSection *section);
     bool isEmpty() const;
@@ -29,6 +31,7 @@ public:
     const QString &getComment() const { return comment; };
     const QList<JackAssignment *> getJackAssignment() const { return jackAssignments; };
     const QList<Atom *> &getAtoms() const { return atoms; };
+    Patch *getAsPatch() const;
 
 private:
     void clear();

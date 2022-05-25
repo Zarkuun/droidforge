@@ -214,12 +214,7 @@ Patch *PatchSectionView::getSelectionAsPatch() const
 {
     Clipboard cb;
     cb.copyFromSelection(selection, section);
-    Patch *patch = new Patch();
-    PatchSection *ps = new PatchSection(section->getTitle());
-    for (auto circuit: cb.getCircuits())
-        ps->addCircuit(circuit->clone());
-    patch->addSection(ps);
-    return patch;
+    return cb.getAsPatch();
 }
 
 void PatchSectionView::editJack(int key)
@@ -696,13 +691,13 @@ void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int
 
 void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
 {
-    int position = section->cursorPosition().circuitNr;
     if (!isEmpty())
         currentCircuitView()->deselect();
 
     the_forge->registerEdit(tr("pasting %1 circuits").arg(clipboard.getCircuits().count()));
     for (auto circuit: clipboard.getCircuits()) {
         Circuit *newCircuit = circuit->clone();
+        int position = section->cursorPosition().circuitNr;
         section->addCircuit(position, newCircuit);
         section->moveCursorToNextCircuit();
     }

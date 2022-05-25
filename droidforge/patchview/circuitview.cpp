@@ -80,7 +80,6 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     QRectF cr = contentRect();
     painter->fillRect(cr, CIRV_COLOR_CIRCUIT_BACKGROUND);
 
-
     // Icon and circuit name
     painter->fillRect(headerRect(), CIRV_COLOR_CIRCUIT_NAME_BACKGROUND);
     QRect imageRect(headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
@@ -113,7 +112,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     painter->drawRect(cr); // borders
     painter->drawLine(
                 columnPosition(1),
-                headerRect().bottom(),
+                commentRect().bottom(),
                 columnPosition(1),
                 cr.bottom()); // line after jack column
 

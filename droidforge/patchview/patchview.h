@@ -26,6 +26,7 @@ public:
     const PatchSectionView *currentPatchSectionView() const;
     PatchSectionView *currentPatchSectionView();
     bool clipboardFilled() const;
+    bool circuitsInClipboard() const;
     bool circuitsSelected() const;
     int numSections() const;
     void updateRegisterHilites() const;
@@ -33,6 +34,7 @@ public:
     Patch *integratePatch(Patch *otherpatch);
     Patch *getSelectionAsPatch() const;
 
+    bool interactivelyRemapRegisters(Patch *otherpatch);
 public slots:
     void nextSection();
     void previousSection();
@@ -50,6 +52,7 @@ public slots:
     void cut();
     void copy();
     void paste();
+    void pasteSmart();
 
 private slots:
     void renameSection(int index);
