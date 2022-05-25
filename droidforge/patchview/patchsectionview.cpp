@@ -677,7 +677,8 @@ void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int
 void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
 {
     int position = section->cursorPosition().circuitNr;
-    currentCircuitView()->deselect();
+    if (!isEmpty())
+        currentCircuitView()->deselect();
 
     the_forge->registerEdit(tr("pasting %1 circuits").arg(clipboard.getCircuits().count()));
     for (auto circuit: clipboard.getCircuits()) {
@@ -704,8 +705,6 @@ void PatchSectionView::pasteCommentFromClipboard(const Clipboard &clipboard)
 
 void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
 {
-    // TODO: Die Jacks müssen eigentlich zum Circuit passen.
-    // Müssen wir die neu parsen??
     const QList<JackAssignment *> &jas = clipboard.getJackAssignment();
     the_forge->registerEdit(tr("pasting %1 jack assignments").arg(jas.count()));
     Circuit *circuit = currentCircuit();
