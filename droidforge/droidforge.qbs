@@ -24,6 +24,8 @@ QtApplication {
     ]
 
     files: [
+        "patchview/cablecolorizer.cpp",
+        "patchview/cablecolorizer.h",
         "patchview/clipboard.cpp",
         "patchview/clipboard.h",
         "patchview/selection.cpp",

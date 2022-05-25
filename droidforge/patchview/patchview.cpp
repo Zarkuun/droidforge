@@ -1,4 +1,5 @@
 #include "patchview.h"
+#include "cablecolorizer.h"
 #include "mainwindow.h"
 #include "tuning.h"
 #include "patch.h"
@@ -57,6 +58,9 @@ void PatchView::setPatch(Patch *newPatch)
 
     if (patch->numSections() > 0)
         setCurrentIndex(patch->currentSectionIndex());
+
+    QStringList allCables = patch->allCables();
+    the_cable_colorizer->colorizeAllCables(allCables);
 }
 
 bool PatchView::handleKeyPress(QKeyEvent *event)
@@ -314,12 +318,57 @@ void PatchView::moveIntoSection()
     QString newname = NameChooseDialog::getName(tr("Move into new section"), tr("New name:"));
     if (newname.isEmpty())
         return;
-    the_forge->registerEdit(tr("Move circuits into new section"));
+    the_forge->registerEdit(tr("moving circuits into new section"));
     Clipboard cb;
     copyToClipboard(&cb);
     currentPatchSectionView()->deleteCursorOrSelection();
-    addNewSection(newname);
+    addNewSection(newname, currentIndex() + 1);
     currentPatchSectionView()->pasteFromClipboard(cb);
+    the_forge->patchHasChanged();
+}
+
+void PatchView::duplicateSection(int index)
+{
+    PatchSection *oldSection = patch->section(index);
+    QString newname = NameChooseDialog::getName(
+                tr("Duplicate section"),
+                tr("New name:"),
+                oldSection->getTitle());
+    if (newname.isEmpty())
+        return;
+
+    Patch *newpatch = new Patch();
+    newpatch->addSection(oldSection->clone());
+    if (!interactivelyRemapRegisters(newpatch)) {
+        delete newpatch;
+        return;
+    }
+
+    the_forge->registerEdit(tr("duplicating section '%1'").arg(oldSection->getTitle()));
+    PatchSection *newsection = newpatch->section(0)->clone();
+    PatchSectionView *psv = new PatchSectionView(patch, newsection, zoomLevel);
+    patch->insertSection(index + 1, newsection);
+    patch->setCurrentSectionIndex(index + 1);
+    insertTab(index + 1, psv, newname);
+    setCurrentIndex(patch->currentSectionIndex());
+    delete newpatch;
+    the_forge->patchHasChanged();
+}
+
+void PatchView::mergeSections(int indexa, int indexb)
+{
+    // Make sure indexa < indexb
+    if (indexa > indexb) {
+        int x = indexb;
+        indexb = indexa;
+        indexa = x;
+    }
+    the_forge->registerEdit(tr("merging sections '%1' and '%2'")
+                .arg(sectionName(indexa), sectionName(indexb)));
+    patch->mergeSections(indexa, indexb);
+    removeTab(indexb);
+    setCurrentIndex(patch->currentSectionIndex());
+    currentPatchSectionView()->rebuildPatchSection();
     the_forge->patchHasChanged();
 }
 
@@ -329,12 +378,17 @@ void PatchView::deleteSection(int index)
     QString actionTitle = tr("deleting patch section '%1'").arg(title);
     the_forge->registerEdit(actionTitle);
     patch->deleteSection(index);
-    removeTab(index);
-    patch->setCurrentSectionIndex(this->currentIndex());
+    removeTab(index); patch->setCurrentSectionIndex(this->currentIndex());
     the_forge->patchHasChanged();
 }
 
-void PatchView::addSection()
+void PatchView::newSectionAfterCurrent()
+{
+    newSectionAt(currentIndex() + 1);
+}
+
+
+void PatchView::newSectionAt(int index)
 {
     QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_NAME);
 
@@ -343,20 +397,24 @@ void PatchView::addSection()
 
     QString actionTitle = QString("adding new patch section '") + newname + "'";
     the_forge->registerEdit(actionTitle);
-    addNewSection(newname);
+    addNewSection(newname, index);
     the_forge->patchHasChanged();
 }
 
-PatchSection *PatchView::addNewSection(QString name)
+PatchSection *PatchView::addNewSection(QString name, int index)
 {
     PatchSection *section = new PatchSection(name);
     PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
-    int i = currentIndex() + 1;
-    patch->insertSection(i, section);
-    patch->setCurrentSectionIndex(i);
-    insertTab(i, psv, name);
-    setCurrentIndex(i);
+    patch->insertSection(index, section);
+    patch->setCurrentSectionIndex(index);
+    insertTab(index, psv, name);
+    setCurrentIndex(index);
     return section;
+}
+
+QString PatchView::sectionName(int index)
+{
+    return patch->section(index)->getNonemptyTitle();
 }
 
 void PatchView::zoom(int how)
@@ -430,17 +488,43 @@ void PatchView::tabContextMenu(int index)
         QMenu *menu = new QMenu(this);
         QString title = patch->section(index)->getNonemptyTitle();
 
+        // New
+        QAction *actionNew = new QAction(tr("New section"));
+        menu->addAction(actionNew);
+        connect(actionNew, &QAction::triggered, this, [this,index]() {
+            this->newSectionAt(index+1); });
+
+        // Duplicate
+        QAction *actionDuplicate = new QAction(tr("Duplicate section, adapt registers"));
+        menu->addAction(actionDuplicate);
+        connect(actionDuplicate, &QAction::triggered, this, [this,index]() {
+            this->duplicateSection(index); });
+
+        // Move selection
+        QAction *action = the_forge->getMoveIntoSectionAction();
+        menu->addAction(action);
+
+        // Merge with left
+        if (index > 0) {
+            QAction *actionMergeWithLeft = new QAction(tr("Merge with left section"));
+            menu->addAction(actionMergeWithLeft);
+            connect(actionMergeWithLeft, &QAction::triggered, this, [this,index]() {
+                this->mergeSections(index, index-1); });
+        }
+
+        // Merge with right
+        if (index < numSections() - 1) {
+            QAction *actionMergeWithRight = new QAction(tr("Merge with right section"));
+            menu->addAction(actionMergeWithRight);
+            connect(actionMergeWithRight, &QAction::triggered, this, [this,index]() {
+                this->mergeSections(index, index+1); });
+        }
+
         // Delete
-        QAction *actionDelete = new QAction(tr("Delete patch section '%1'").arg(title));
+        QAction *actionDelete = new QAction(tr("Delete section"));
         menu->addAction(actionDelete);
         connect(actionDelete, &QAction::triggered, this, [this,index]() {
             this->deleteSection(index); });
-
-        // TODO:
-        // Move right
-        // Move left
-        // Merge with right
-        // Merge with left
 
         menu->popup(QCursor::pos());
     }

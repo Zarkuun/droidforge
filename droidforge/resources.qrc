@@ -1208,5 +1208,15 @@
         <file>images/circuits/copy.png</file>
         <file>images/circuits/mixer.png</file>
         <file>images/circuits/compare.png</file>
+        <file>images/cables/cable-blue.png</file>
+        <file>images/cables/cable-green-0.png</file>
+        <file>images/cables/cable-green-1.png</file>
+        <file>images/cables/cable-green-2.png</file>
+        <file>images/cables/cable-green-3.png</file>
+        <file>images/cables/cable-green-4.png</file>
+        <file>images/cables/cable-green-5.png</file>
+        <file>images/cables/cable-green-white-2.png</file>
+        <file>images/cables/cable-green.png</file>
+        <file>images/cables/cable-magenta.png</file>
     </qresource>
 </RCC>

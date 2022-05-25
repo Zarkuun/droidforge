@@ -3,6 +3,7 @@
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
 #include "tuning.h"
+#include "cablecolorizer.h"
 
 #include <QPainter>
 #include <QFontMetrics>
@@ -167,6 +168,12 @@ void CircuitView::paintJacks(QPainter *painter)
 void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom)
 {
     static QImage warning(":images/icons/warning.png");
+
+    float aspect = the_cable_colorizer->imageAspect();
+    int imageHeight = 15;
+    int imageWidth = imageHeight * aspect;
+    int imageTop = 4;
+
     if (atom) {
         QString text = atom->toString();
         if (atom->isInvalid()) {
@@ -185,8 +192,16 @@ void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom)
             painter->drawText(textRect, Qt::AlignVCenter, text);
         }
         else {
+            QRect r = rect;
+            if (atom->isCable()) {
+                text = text.mid(1);
+                QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
+                const QImage *image = the_cable_colorizer->imageForCable(text);
+                painter->drawImage(imageRect, *image);
+                r = r.translated(imageWidth + STANDARD_SPACING, 0);
+            }
             painter->setPen(COLOR_TEXT);
-            painter->drawText(rect, Qt::AlignVCenter, text);
+            painter->drawText(r, Qt::AlignVCenter, text);
         }
     }
 }

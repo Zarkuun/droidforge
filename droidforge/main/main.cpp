@@ -3,11 +3,14 @@
 #include "patch.h"
 
 #include "unistd.h"
+#include "cablecolorizer.h"
 
 #include <QApplication>
 #include <QDir>
 #include <QSettings>
 #include <QFile>
+
+CableColorizer *the_cable_colorizer;
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +23,9 @@ int main(int argc, char *argv[])
     QString initialFilename;
     if (argc > 1)
         initialFilename = argv[1];
+
+    CableColorizer cableColorizer;
+    the_cable_colorizer = &cableColorizer;
 
     MainWindow mainWindow(initialFilename);
     mainWindow.show();

@@ -31,6 +31,8 @@ public:
     PatchSection *section(qsizetype i) { return sections[i]; };
     void addSection(PatchSection *section);
     void insertSection(int index, PatchSection *section);
+    void mergeSections(int indexa, int indexb);
+    void removeSection(int index);
     void integratePatch(const Patch *snippet);
     void deleteSection(int index);
     void reorderSections(int fromindex, int toindex);

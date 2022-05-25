@@ -49,6 +49,22 @@ void Patch::insertSection(int index, PatchSection *section)
     sections.insert(index, section);
 }
 
+void Patch::mergeSections(int indexa, int indexb)
+{
+    PatchSection *sectiona = sections[indexa];
+    PatchSection *sectionb = sections[indexb];
+    for (auto circuit: sectionb->getCircuits())
+        sectiona->addCircuit(circuit->clone());
+    removeSection(indexb);
+    sectionIndex = qMin(indexa, indexb);
+}
+
+void Patch::removeSection(int index)
+{
+    delete sections[index];
+    sections.remove(index);
+}
+
 void Patch::integratePatch(const Patch *snippet)
 {
     int index;

@@ -236,7 +236,7 @@ void MainWindow::updateActions()
     editValueAction->setEnabled(!empty);
     editCircuitCommentAction->setEnabled(!empty);
     if (patchView.numSections() > 1) {
-        deletePatchSectionAction->setText(tr("Delete section") + " '" + psv->getTitle() + "'");
+        deletePatchSectionAction->setText(tr("Delete section '%1'").arg(psv->getTitle()));
         deletePatchSectionAction->setEnabled(true);
     }
     else {
@@ -487,7 +487,7 @@ void MainWindow::createEditMenu()
     // Add section
     newPatchSectionAction = new QAction(tr("New section..."), this);
     editMenu->addAction(newPatchSectionAction);
-    connect(newPatchSectionAction, &QAction::triggered, &patchView, &PatchView::addSection);
+    connect(newPatchSectionAction, &QAction::triggered, &patchView, &PatchView::newSectionAfterCurrent);
 
     // Rename section
     renamePatchSectionAction = new QAction(tr("Rename section..."), this);

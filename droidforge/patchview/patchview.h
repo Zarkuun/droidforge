@@ -33,8 +33,8 @@ public:
     void clickOnRegister(AtomRegister ar);
     Patch *integratePatch(Patch *otherpatch);
     Patch *getSelectionAsPatch() const;
-
     bool interactivelyRemapRegisters(Patch *otherpatch);
+
 public slots:
     void nextSection();
     void previousSection();
@@ -46,8 +46,11 @@ public slots:
     void renameCurrentSection();
     void deleteCurrentSection();
     void moveIntoSection();
+    void duplicateSection(int index);
+    void mergeSections(int indexa, int indexb);
     void deleteSection(int index);
-    void addSection();
+    void newSectionAfterCurrent();
+    void newSectionAt(int index);
     void zoom(int how);
     void cut();
     void copy();
@@ -61,7 +64,8 @@ private slots:
 
 private:
     void copyToClipboard(Clipboard *cb = 0);
-    PatchSection *addNewSection(QString name);
+    PatchSection *addNewSection(QString name, int index=-1);
+    QString sectionName(int index);
 };
 
 #endif // PATCHVIEW_H

@@ -92,6 +92,7 @@ public:
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
     QAction *getAddControllerAction() { return addControllerAction; };
+    QAction *getMoveIntoSectionAction() { return moveIntoSectionAction; };
     QDir userPatchDirectory() const;
 
 protected:

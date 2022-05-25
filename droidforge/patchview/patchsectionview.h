@@ -44,6 +44,7 @@ public:
     void setZoom(int zoom);
     void copyToClipboard(Clipboard &clipboard);
     Patch *getSelectionAsPatch() const;
+    void rebuildPatchSection();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -57,7 +58,6 @@ private:
     bool handleMousePress(const QPointF &pos);
     void buildPatchSection();
     void deletePatchSection();
-    void rebuildPatchSection();
     CircuitView *currentCircuitView();
     const CircuitView *currentCircuitView() const;
     Circuit *currentCircuit();
