@@ -45,9 +45,9 @@ bool Clipboard::isEmpty() const
             && comment.isEmpty();
 }
 
-bool Clipboard::isCircuits() const
+unsigned Clipboard::numCircuits() const
 {
-    return !circuits.isEmpty();
+    return circuits.size();
 }
 
 bool Clipboard::isComment() const
@@ -55,14 +55,14 @@ bool Clipboard::isComment() const
     return !comment.isEmpty();
 }
 
-bool Clipboard::isJacks() const
+unsigned Clipboard::numJacks() const
 {
-    return !jackAssignments.isEmpty();
+    return jackAssignments.size();
 }
 
-bool Clipboard::isAtoms() const
+unsigned Clipboard::numAtoms() const
 {
-    return !atoms.isEmpty();
+    return atoms.size();
 }
 
 void Clipboard::clear()

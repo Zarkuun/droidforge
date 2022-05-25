@@ -13,7 +13,7 @@ class NameChooseDialog : public Dialog
     QLabel *label;
 
 public:
-    static QString getName(const QString &title, const QString &label, const QString &oldname);
+    static QString getName(const QString &title, const QString &label, QString oldname = "");
 
 private:
     NameChooseDialog(QWidget *parent = nullptr);

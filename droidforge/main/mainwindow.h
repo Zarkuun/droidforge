@@ -59,8 +59,9 @@ private:
     QAction *openEnclosingFolderAction;
     QAction *editCircuitCommentAction;
     QAction *renamePatchSectionAction;
-    QAction *addPatchSectionAction;
+    QAction *newPatchSectionAction;
     QAction *deletePatchSectionAction;
+    QAction *moveIntoSectionAction;
     QAction *addControllerAction;
 
     QMenu *fileMenu;
@@ -85,6 +86,7 @@ public:
     void registerEdit(QString name);
     void patchHasChanged();
     void updateActions();
+    void updateClipboardInfo(QString info);
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;

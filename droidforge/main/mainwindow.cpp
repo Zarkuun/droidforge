@@ -206,6 +206,7 @@ void MainWindow::updateActions()
     // File menu
     saveAct->setEnabled(undoHistory.isModified());
     exportSelectionAct->setEnabled(patchView.circuitsSelected());
+    openEnclosingFolderAction->setEnabled(!filename.isEmpty());
 
     // Edit menu
     if (undoHistory.undoPossible()) {
@@ -241,7 +242,12 @@ void MainWindow::updateActions()
         deletePatchSectionAction->setText(tr("Delete section"));
         deletePatchSectionAction->setEnabled(false);
     }
-    openEnclosingFolderAction->setEnabled(!filename.isEmpty());
+    moveIntoSectionAction->setEnabled(patchView.circuitsSelected());
+}
+
+void MainWindow::updateClipboardInfo(QString info)
+{
+    statusbar->showMessage(info);
 }
 
 
@@ -446,7 +452,7 @@ void MainWindow::createEditMenu()
     toolbar->addAction(newCircuitAction);
 
     // New jacks assignment
-    addJackAction = new QAction(icon("settings_input_composite"), tr("&Add jack..."), this);
+    addJackAction = new QAction(icon("settings_input_composite"), tr("&New jack..."), this);
     addJackAction->setShortcut(QKeySequence(tr("Ctrl+N")));
     connect(addJackAction, &QAction::triggered, &patchView, &PatchView::addJack);
     editMenu->addAction(addJackAction);
@@ -469,9 +475,9 @@ void MainWindow::createEditMenu()
     editMenu->addSeparator();
 
     // Add section
-    addPatchSectionAction = new QAction(tr("Add section..."), this);
-    editMenu->addAction(addPatchSectionAction);
-    connect(addPatchSectionAction, &QAction::triggered, &patchView, &PatchView::addSection);
+    newPatchSectionAction = new QAction(tr("New section..."), this);
+    editMenu->addAction(newPatchSectionAction);
+    connect(newPatchSectionAction, &QAction::triggered, &patchView, &PatchView::addSection);
 
     // Rename section
     renamePatchSectionAction = new QAction(tr("Rename section..."), this);
@@ -483,6 +489,10 @@ void MainWindow::createEditMenu()
     editMenu->addAction(deletePatchSectionAction);
     connect(deletePatchSectionAction, &QAction::triggered, &patchView, &PatchView::deleteCurrentSection);
 
+    // Move into sectin
+    moveIntoSectionAction = new QAction(tr("Move selection into new section"), this);
+    editMenu->addAction(moveIntoSectionAction);
+    connect(moveIntoSectionAction, &QAction::triggered, &patchView, &PatchView::moveIntoSection);
 }
 
 void MainWindow::createViewMenu()
@@ -510,7 +520,7 @@ void MainWindow::createRackMenu()
     QMenu *rackMenu = menuBar()->addMenu(tr("&Rack"));
 
     // Add controller
-    addControllerAction = new QAction(icon("keyboard"), tr("&Add controller..."), this);
+    addControllerAction = new QAction(icon("keyboard"), tr("&New controller..."), this);
     addControllerAction->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
     connect(addControllerAction, &QAction::triggered, &rackView, &RackView::addController);
     rackMenu->addAction(addControllerAction);

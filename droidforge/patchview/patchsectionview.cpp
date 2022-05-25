@@ -574,7 +574,7 @@ void PatchSectionView::deleteCursorOrSelection()
 
 void PatchSectionView::pasteFromClipboard(Clipboard &clipboard)
 {
-    if (clipboard.isCircuits()) {
+    if (clipboard.numCircuits()) {
         pasteCircuitsFromClipboard(clipboard);
         qDebug() << "TODO: Hier Dialog wegen anpassen der Register!";
     }
@@ -585,9 +585,9 @@ void PatchSectionView::pasteFromClipboard(Clipboard &clipboard)
     }
     else if (clipboard.isComment())
         pasteCommentFromClipboard(clipboard);
-    else if (clipboard.isJacks())
+    else if (clipboard.numJacks())
         pasteJacksFromClipboard(clipboard);
-    else if (clipboard.isAtoms())
+    else if (clipboard.numAtoms())
         pasteAtomsFromClipboard(clipboard);
     else {
         // Should never happen

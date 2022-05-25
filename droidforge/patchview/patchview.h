@@ -43,6 +43,7 @@ public slots:
     void editCircuitComment();
     void renameCurrentSection();
     void deleteCurrentSection();
+    void moveIntoSection();
     void deleteSection(int index);
     void addSection();
     void zoom(int how);
@@ -56,7 +57,8 @@ private slots:
     void tabContextMenu(int index);
 
 private:
-    void copyToClipboard();
+    void copyToClipboard(Clipboard *cb = 0);
+    PatchSection *addNewSection(QString name);
 };
 
 #endif // PATCHVIEW_H

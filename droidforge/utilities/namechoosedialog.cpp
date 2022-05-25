@@ -25,7 +25,7 @@ NameChooseDialog::NameChooseDialog(QWidget *parent)
     layout->addWidget(buttonBox, 1, 1, 1, 2);
 }
 
-QString NameChooseDialog::getName(const QString &title, const QString &label, const QString &oldname)
+QString NameChooseDialog::getName(const QString &title, const QString &label, QString oldname)
 {
      static NameChooseDialog *dialog = 0;
      if (!dialog)

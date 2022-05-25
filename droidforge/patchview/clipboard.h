@@ -21,10 +21,10 @@ public:
     ~Clipboard();
     void copyFromSelection(Selection *sel, PatchSection *section);
     bool isEmpty() const;
-    bool isCircuits() const;
+    unsigned numCircuits() const;
+    unsigned numJacks() const;
+    unsigned numAtoms() const;
     bool isComment() const;
-    bool isJacks() const;
-    bool isAtoms() const;
     const QList<Circuit *> &getCircuits() const { return circuits; };
     const QString &getComment() const { return comment; };
     const QList<JackAssignment *> getJackAssignment() const { return jackAssignments; };

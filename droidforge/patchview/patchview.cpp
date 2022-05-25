@@ -303,6 +303,20 @@ void PatchView::deleteCurrentSection()
     deleteSection(currentIndex());
 }
 
+void PatchView::moveIntoSection()
+{
+    QString newname = NameChooseDialog::getName(tr("Move into new section"), tr("New name:"));
+    if (newname.isEmpty())
+        return;
+    the_forge->registerEdit(tr("Move circuits into new section"));
+    Clipboard cb;
+    copyToClipboard(&cb);
+    currentPatchSectionView()->deleteCursorOrSelection();
+    addNewSection(newname);
+    currentPatchSectionView()->pasteFromClipboard(cb);
+    the_forge->patchHasChanged();
+}
+
 void PatchView::deleteSection(int index)
 {
     QString title = currentPatchSectionView()->getTitle();
@@ -323,14 +337,20 @@ void PatchView::addSection()
 
     QString actionTitle = QString("adding new patch section '") + newname + "'";
     the_forge->registerEdit(actionTitle);
-    PatchSection *section = new PatchSection(newname);
+    addNewSection(newname);
+    the_forge->patchHasChanged();
+}
+
+PatchSection *PatchView::addNewSection(QString name)
+{
+    PatchSection *section = new PatchSection(name);
     PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
     int i = currentIndex() + 1;
     patch->insertSection(i, section);
     patch->setCurrentSectionIndex(i);
-    insertTab(i, psv, newname);
+    insertTab(i, psv, name);
     setCurrentIndex(i);
-    the_forge->patchHasChanged();
+    return section;
 }
 
 void PatchView::zoom(int how)
@@ -405,7 +425,21 @@ void PatchView::tabContextMenu(int index)
     }
 }
 
-void PatchView::copyToClipboard()
+void PatchView::copyToClipboard(Clipboard *cb)
 {
-    currentPatchSectionView()->copyToClipboard(clipboard);
+    currentPatchSectionView()->copyToClipboard(cb ? *cb : clipboard);
+
+    QString info;
+    if (clipboard.isEmpty())
+        info = "";
+    else if (clipboard.numCircuits())
+        info = tr("Clipboard: %1 circuits").arg(clipboard.numCircuits());
+    else if (clipboard.numJacks())
+        info = tr("Clipboard: %1 jack assignments").arg(clipboard.numJacks());
+    else if (clipboard.numAtoms())
+        info = tr("Clipboard: %1 parameters").arg(clipboard.numAtoms());
+    else if (clipboard.isComment())
+        info = tr("Clipboard: comment");
+
+    the_forge->updateClipboardInfo(info);
 }
