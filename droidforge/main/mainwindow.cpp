@@ -203,8 +203,11 @@ void MainWindow::clickOnRegister(AtomRegister ar)
 
 void MainWindow::updateActions()
 {
-    pasteAction->setEnabled(patchView.clipboardFilled());
+    // File menu
+    saveAct->setEnabled(undoHistory.isModified());
+    exportSelectionAct->setEnabled(patchView.circuitsSelected());
 
+    // Edit menu
     if (undoHistory.undoPossible()) {
         undoAction->setText(tr("&Undo ") + undoHistory.nextUndoTitle());
         undoAction->setEnabled(true);
@@ -222,6 +225,8 @@ void MainWindow::updateActions()
         redoAction->setText(tr("&Redo"));
         redoAction->setEnabled(false);
     }
+
+    pasteAction->setEnabled(patchView.clipboardFilled());
 
     const PatchSectionView *psv = patchView.currentPatchSectionView();
     bool empty = !psv || psv->isEmpty();
@@ -282,7 +287,7 @@ void MainWindow::createFileMenu()
     fileMenu = menuBar()->addMenu(tr("&File"));
 
     // New
-    QAction *newAct = new QAction(icon("settings_input_composite"), tr("&New..."), this);
+    newAct = new QAction(icon("settings_input_composite"), tr("&New..."), this);
     newAct->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
     newAct->setStatusTip(tr("Create a new patch from scratch"));
     connect(newAct, &QAction::triggered, this, &MainWindow::newPatch);
@@ -290,7 +295,7 @@ void MainWindow::createFileMenu()
     toolbar->addAction(newAct);
 
     // Open
-    QAction *openAct = new QAction(icon("open_in_browser"), tr("&Open..."), this);
+    openAct = new QAction(icon("open_in_browser"), tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing patch"));
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
@@ -298,7 +303,7 @@ void MainWindow::createFileMenu()
     toolbar->addAction(openAct);
 
     // Save
-    QAction *saveAct = new QAction(icon("save"), tr("&Save..."), this);
+    saveAct = new QAction(icon("save"), tr("&Save..."), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save patch to file"));
     connect(saveAct, &QAction::triggered, this, &MainWindow::save);
@@ -306,11 +311,17 @@ void MainWindow::createFileMenu()
     toolbar->addAction(saveAct);
 
     // Save as...
-    QAction *saveAsAct = new QAction(tr("Save &as..."), this);
+    saveAsAct = new QAction(tr("Save &as..."), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     saveAsAct->setStatusTip(tr("Save patch to a different file"));
     connect(saveAsAct, &QAction::triggered, this, &MainWindow::saveAs);
     fileMenu->addAction(saveAsAct);
+
+    // Export selection
+    exportSelectionAct = new QAction(tr("E&xport selection as patch..."), this);
+    exportSelectionAct->setStatusTip(tr("Save the currently selected circuits into a new patch file"));
+    connect(exportSelectionAct, &QAction::triggered, this, &MainWindow::exportSelection);
+    fileMenu->addAction(exportSelectionAct);
 
     // Open enclosing folder
 #if (defined Q_OS_MACOS || defined Q_OS_WIN)
@@ -559,6 +570,21 @@ void MainWindow::saveAs()
         filename = newFilename;
         undoHistory.clearModified();
         patchHasChanged();
+        addToRecentFiles(newFilename);
+    }
+}
+
+void MainWindow::exportSelection()
+{
+    QString newFilename = QFileDialog::getSaveFileName(
+                this,
+                tr("Export selection into new patch"),
+                "",
+                tr("DROID patch files (*.ini)"));
+    if (!newFilename.isEmpty()) {
+        Patch *patch = patchView.getSelectionAsPatch();
+        patch->saveToFile(newFilename);
+        delete patch;
         addToRecentFiles(newFilename);
     }
 }

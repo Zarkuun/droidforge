@@ -210,6 +210,18 @@ void PatchSectionView::copyToClipboard(Clipboard &clipboard)
     }
 }
 
+Patch *PatchSectionView::getSelectionAsPatch() const
+{
+    Clipboard cb;
+    cb.copyFromSelection(selection, section);
+    Patch *patch = new Patch();
+    PatchSection *ps = new PatchSection(section->getTitle());
+    for (auto circuit: cb.getCircuits())
+        ps->addCircuit(circuit->clone());
+    patch->addSection(ps);
+    return patch;
+}
+
 void PatchSectionView::editJack(int key)
 {
     if (key)
@@ -326,6 +338,11 @@ bool PatchSectionView::isEmpty() const
     return section->circuits.empty();
 }
 
+bool PatchSectionView::circuitsSelected() const
+{
+    return selection && selection->isCircuitSelection();
+}
+
 void PatchSectionView::updateCircuits()
 {
     for (unsigned i=0; i<circuitViews.size(); i++)
@@ -408,6 +425,7 @@ void PatchSectionView::setMouseSelection(const CursorPosition &to)
         delete selection;
     selection = new Selection(section->cursorPosition(), to);
     updateCircuits();
+    the_forge->updateActions();
 }
 
 void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
@@ -427,6 +445,7 @@ void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, con
     }
     else
         selection = new Selection(before, after);
+    the_forge->updateActions();
 }
 
 void PatchSectionView::clearSelection()
@@ -435,6 +454,7 @@ void PatchSectionView::clearSelection()
         delete selection;
         selection = 0;
         updateCircuits();
+        the_forge->updateActions();
     }
 }
 

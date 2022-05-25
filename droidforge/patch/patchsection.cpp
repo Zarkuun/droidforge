@@ -187,7 +187,6 @@ void PatchSection::moveCursorToPreviousCircuit()
         cursor.circuitNr --;
 }
 
-
 void PatchSection::addNewCircuit(int pos, QString name, jackselection_t jackSelection)
 {
     QStringList emptyComment;
@@ -211,13 +210,16 @@ void PatchSection::addCircuit(int pos, Circuit *circuit)
     circuits.insert(pos, circuit);
 }
 
+void PatchSection::addCircuit(Circuit *circuit)
+{
+    circuits.append(circuit);
+}
 
 void PatchSection::collectCables(QStringList &cables) const
 {
     for (qsizetype i=0; i<circuits.length(); i++)
         circuits[i]->collectCables(cables);
 }
-
 
 Circuit *PatchSection::currentCircuit()
 {
@@ -226,7 +228,6 @@ Circuit *PatchSection::currentCircuit()
     else
         return 0;
 }
-
 
 JackAssignment *PatchSection::currentJackAssignment()
 {

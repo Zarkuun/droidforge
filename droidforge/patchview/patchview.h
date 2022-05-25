@@ -26,10 +26,12 @@ public:
     const PatchSectionView *currentPatchSectionView() const;
     PatchSectionView *currentPatchSectionView();
     bool clipboardFilled() const;
+    bool circuitsSelected() const;
     int numSections() const;
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
     Patch *integratePatch(Patch *otherpatch);
+    Patch *getSelectionAsPatch() const;
 
 public slots:
     void nextSection();

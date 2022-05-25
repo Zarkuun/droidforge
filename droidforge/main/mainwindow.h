@@ -64,6 +64,11 @@ private:
     QAction *addControllerAction;
 
     QMenu *fileMenu;
+    QAction *newAct;
+    QAction *openAct;
+    QAction *saveAct;
+    QAction *saveAsAct;
+    QAction *exportSelectionAct;
 
     QMenu *viewMenu;
     QAction *zoomResetAction;
@@ -113,6 +118,7 @@ private slots:
     void integrate();
     void save();
     void saveAs();
+    void exportSelection();
     void openEnclosingFolder();
     void undo();
     void redo();

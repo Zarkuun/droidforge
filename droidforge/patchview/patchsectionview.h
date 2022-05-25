@@ -36,11 +36,13 @@ public:
     void editValue(int key);
     void editCircuitComment(int key);
     bool isEmpty() const;
+    bool circuitsSelected() const;
     void updateCircuits();
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
     void setZoom(int zoom);
     void copyToClipboard(Clipboard &clipboard);
+    Patch *getSelectionAsPatch() const;
 
 protected:
     void mousePressEvent(QMouseEvent *event);

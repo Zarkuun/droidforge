@@ -80,6 +80,14 @@ bool PatchView::clipboardFilled() const
     return !clipboard.isEmpty();
 }
 
+bool PatchView::circuitsSelected() const
+{
+    if (!currentPatchSectionView())
+        return false;
+    else
+        return currentPatchSectionView()->circuitsSelected();
+}
+
 int PatchView::numSections() const
 {
     if (patch)
@@ -222,6 +230,11 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
     // - abbrechen
     newPatch->integratePatch(otherpatch);
     return newPatch;
+}
+
+Patch *PatchView::getSelectionAsPatch() const
+{
+    return currentPatchSectionView()->getSelectionAsPatch();
 }
 
 void PatchView::nextSection()
