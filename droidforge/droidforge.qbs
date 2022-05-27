@@ -24,6 +24,8 @@ QtApplication {
     ]
 
     files: [
+        "main/cablestatusindicator.cpp",
+        "main/cablestatusindicator.h",
         "patchview/cablecolorizer.cpp",
         "patchview/cablecolorizer.h",
         "patchview/clipboard.cpp",

@@ -1,4 +1,5 @@
 #include "patchsectionview.h"
+#include "atomcable.h"
 #include "atominvalid.h"
 #include "atomoneliner.h"
 #include "atomregister.h"
@@ -410,8 +411,23 @@ void PatchSectionView::updateCursor()
         QRectF br = currentCircuitView()->boundingRect();
         QRectF tbr = br.translated(currentCircuitView()->pos());
         ensureVisible(tbr);
+        updateCableIndicator();
     }
     updateRegisterHilites();
+}
+
+void PatchSectionView::updateCableIndicator()
+{
+    const Atom *atom = currentAtom();
+    if (atom && atom->isCable()) {
+        AtomCable *ac = (AtomCable *)atom;
+        QString name = ac->getCable();
+        int numAsOutput = 1;
+        int numAsInput = 2;
+        the_forge->cableIndicator()->set(name, numAsOutput, numAsInput);
+    }
+    else
+        the_forge->cableIndicator()->clear();
 }
 
 void PatchSectionView::setMouseSelection(const CursorPosition &to)
@@ -655,6 +671,17 @@ void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
     section->sanitizeCursor();
     rebuildPatchSection();
     the_forge->patchHasChanged();
+}
+
+const Atom *PatchSectionView::currentAtom()
+{
+    JackAssignment *ja = section->currentJackAssignment();
+    if (!ja)
+        return 0;
+    else {
+        int column = section->cursorPosition().column;
+        return ja->atomAt(column);
+    }
 }
 
 void PatchSectionView::deleteCurrentAtom()

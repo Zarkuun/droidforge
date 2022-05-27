@@ -8,6 +8,7 @@
 #include "tuning.h"
 #include "os.h"
 
+
 #include <QTextEdit>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -35,6 +36,8 @@ MainWindow::MainWindow(const QString &initialFilename)
 
     statusbar = new QStatusBar(this);
     setStatusBar(statusbar);
+    cableStatusIndicator = new CableStatusIndicator;
+    statusbar->addPermanentWidget(cableStatusIndicator);
 
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);

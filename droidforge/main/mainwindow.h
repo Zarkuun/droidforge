@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "cablestatusindicator.h"
 #include "droidfirmware.h"
 #include "patchview.h"
 #include "rackview.h"
@@ -34,6 +35,7 @@ class MainWindow : public QMainWindow
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
     QStatusBar *statusbar;
+    CableStatusIndicator *cableStatusIndicator;
 
 private:
     DroidFirmware firmware;
@@ -94,6 +96,7 @@ public:
     QAction *getAddControllerAction() { return addControllerAction; };
     QAction *getMoveIntoSectionAction() { return moveIntoSectionAction; };
     QDir userPatchDirectory() const;
+    CableStatusIndicator *cableIndicator() { return cableStatusIndicator; };
 
 protected:
     void keyPressEvent(QKeyEvent *event);

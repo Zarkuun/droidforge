@@ -28,6 +28,13 @@
 #define COLOR_JACK_UNKNOWN                   COLOR_TEXT_UNKNOWN
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
 
+// Cable status indicator in status bar
+#define CSD_IMAGE_MARGIN                     3
+#define CSD_WIDTH                            300
+#define CSD_SIDE_PADDING                     STANDARD_SPACING
+#define CSD_BACKGROUND_COLOR                 QColor(160, 160, 160)
+#define CSD_CABLE_THICKNESS                  0.4
+
 // Rack view
 #define RACV_SPLITTER_HANDLE_WIDTH           12
 #define RACV_MIN_HEIGHT                      100

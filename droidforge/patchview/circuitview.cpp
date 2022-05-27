@@ -169,6 +169,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom, bo
 {
     static QImage warning(":images/icons/warning.png");
 
+    // TODO: Das hier aufraumen
     float aspect = the_cable_colorizer->imageAspect();
     int imageHeight = 15;
     int imageWidth = imageHeight * aspect;

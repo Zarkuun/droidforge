@@ -52,6 +52,7 @@ protected:
 
 private:
     void updateCursor();
+    void updateCableIndicator();
     void setMouseSelection(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
     void clearSelection();
@@ -82,6 +83,7 @@ private:
     void editAtom(int key);
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key);
+    const Atom *currentAtom();
 };
 
 #endif // PATCHSECTIONVIEW_H

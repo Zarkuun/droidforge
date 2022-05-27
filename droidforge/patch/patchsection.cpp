@@ -231,10 +231,14 @@ Circuit *PatchSection::currentCircuit()
 
 JackAssignment *PatchSection::currentJackAssignment()
 {
-    if (cursor.row == -1)
+    Circuit *c = currentCircuit();
+    if (!c)
+        return 0;
+
+    if (cursor.row <= 0)
         return 0;
     else
-        return currentCircuit()->jackAssignment(cursor.row);
+        return c->jackAssignment(cursor.row);
 }
 
 bool PatchSection::needG8() const
