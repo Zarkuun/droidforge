@@ -121,10 +121,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (!checkModified()) {
-        event->ignore();
-        return;
-    }
+    // TODO: Das hier wieder aktivieren
+    // if (!checkModified()) {
+    //     event->ignore();
+    //     return;
+    // }
 
     QSettings settings;
     settings.setValue("mainwindow/position", pos());

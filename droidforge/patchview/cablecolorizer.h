@@ -9,7 +9,7 @@ class CableColorizer
 {
     QList<QImage *>images;
     QMap<QString, int> cableColors;
-    int nextFreeIndex;
+    bool *used;
 
 public:
     CableColorizer();
@@ -22,6 +22,7 @@ public:
 private:
     int chooseColorForCable(QString name);
     void loadImages();
+    void clearAssignments();
 };
 
 extern CableColorizer *the_cable_colorizer;

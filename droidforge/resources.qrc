@@ -1215,7 +1215,36 @@
         <file>images/cables/cable-green-3.png</file>
         <file>images/cables/cable-green-4.png</file>
         <file>images/cables/cable-green-5.png</file>
-        <file>images/cables/cable-green.png</file>
         <file>images/cables/cable-magenta.png</file>
+        <file>images/cables/cable-green-6.png</file>
+        <file>images/cables/cable-green-7.png</file>
+        <file>images/cables/cable-green-8.png</file>
+        <file>images/cables/cable-cyan-0.png</file>
+        <file>images/cables/cable-cyan-1.png</file>
+        <file>images/cables/cable-cyan-2.png</file>
+        <file>images/cables/cable-cyan-3.png</file>
+        <file>images/cables/cable-cyan-4.png</file>
+        <file>images/cables/cable-cyan-5.png</file>
+        <file>images/cables/cable-cyan-6.png</file>
+        <file>images/cables/cable-cyan-7.png</file>
+        <file>images/cables/cable-cyan-8.png</file>
+        <file>images/cables/cable-red-0.png</file>
+        <file>images/cables/cable-red-1.png</file>
+        <file>images/cables/cable-red-2.png</file>
+        <file>images/cables/cable-red-3.png</file>
+        <file>images/cables/cable-red-4.png</file>
+        <file>images/cables/cable-red-5.png</file>
+        <file>images/cables/cable-red-6.png</file>
+        <file>images/cables/cable-red-7.png</file>
+        <file>images/cables/cable-red-8.png</file>
+        <file>images/cables/yellow-0.png</file>
+        <file>images/cables/yellow-1.png</file>
+        <file>images/cables/yellow-2.png</file>
+        <file>images/cables/yellow-3.png</file>
+        <file>images/cables/yellow-4.png</file>
+        <file>images/cables/yellow-5.png</file>
+        <file>images/cables/yellow-6.png</file>
+        <file>images/cables/yellow-7.png</file>
+        <file>images/cables/yellow-8.png</file>
     </qresource>
 </RCC>

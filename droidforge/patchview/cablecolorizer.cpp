@@ -3,13 +3,15 @@
 #include <QDir>
 
 CableColorizer::CableColorizer()
-    : nextFreeIndex(0)
 {
     loadImages();
+    used = new bool[images.count()];
+    clearAssignments();
 }
 
 CableColorizer::~CableColorizer()
 {
+    delete[] used;
     for (auto image: images)
         delete image;
 }
@@ -21,12 +23,16 @@ float CableColorizer::imageAspect() const
 
 void CableColorizer::colorizeAllCables(const QStringList &sl)
 {
-    cableColors.clear();
-    for (auto &name: sl)
-        imageForCable(name);
+    // We need to choose a color for each of the cables in
+    // sl (which are all cables of a patch).
+    clearAssignments();
 
-    // TODO: Now remove all entries that are not contained
-    // in sl
+    // Sort the list, so that we get a deterministic behaviour.
+    QStringList sorted = sl;
+    sorted.sort();
+
+    for (auto &name: sorted)
+        imageForCable(name); // ignore result, just assign
 }
 
 const QImage *CableColorizer::imageForCable(QString name)
@@ -41,13 +47,19 @@ const QImage *CableColorizer::imageForCable(QString name)
 
 int CableColorizer::chooseColorForCable(QString name)
 {
-    // TODO: Beim zweiten Durchlauf schauen, ob es belegte
-    // oder Löcher gibt. Die Löcher auffüllen. Wenn alle
-    // voll sind, dann erst Doppelbelegungen machen.
-    int index = nextFreeIndex++;
-    if (nextFreeIndex >= images.count())
-        nextFreeIndex = 0;
+    uint hash = qHash(name);
+    int index = hash % images.count();
+
+    // Starting at our hash, find the next
+    // empty cable image. If all are full, use
+    // the hash anyway.
+    for (int i=0; i<images.count(); i++) {
+        if (used[index] == false)
+            break;
+        index = (index + 1) % images.count();
+    }
     cableColors[name] = index;
+    used[index] = true;
     qDebug() << name << "->" << index;
     return index;
 }
@@ -61,4 +73,11 @@ void CableColorizer::loadImages()
         images.append(image);
         qDebug() << "LOAD" << entry << "=" << images.count() - 1;
     }
+}
+
+void CableColorizer::clearAssignments()
+{
+    cableColors.clear();
+    for (unsigned i=0; i<images.count(); i++)
+        used[i] = false;
 }
