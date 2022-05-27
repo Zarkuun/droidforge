@@ -422,9 +422,10 @@ void PatchSectionView::updateCableIndicator()
     if (atom && atom->isCable()) {
         AtomCable *ac = (AtomCable *)atom;
         QString name = ac->getCable();
-        int numAsOutput = 1;
-        int numAsInput = 2;
-        the_forge->cableIndicator()->set(name, numAsOutput, numAsInput);
+        int numAsOutput = 0;
+        int numAsInput = 0;
+        patch->findCableConnections(name, numAsInput, numAsOutput);
+        the_forge->cableIndicator()->set(name, numAsInput, numAsOutput);
     }
     else
         the_forge->cableIndicator()->clear();

@@ -18,6 +18,7 @@ public:
     Atom *atomAt(int a) { return a == 1 ? atom : 0; };
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &cables) const;
+    void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     void parseExpression(const QString &expression);
     static Atom *parseOutputAtom(const QString &s);
     void removeRegisterReferences(RegisterList &rl, int, int oh);

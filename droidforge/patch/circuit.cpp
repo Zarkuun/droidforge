@@ -53,8 +53,14 @@ Atom *Circuit::atomAt(int row, int column)
 
 void Circuit::collectCables(QStringList &cables) const
 {
-    for (qsizetype i=0; i<jackAssignments.length(); i++)
-        jackAssignments[i]->collectCables(cables);
+    for (auto ja: jackAssignments)
+        ja->collectCables(cables);
+}
+
+void Circuit::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
+{
+    for (auto ja: jackAssignments)
+        ja->findCableConnections(cable, asInput, asOutput);
 }
 
 void Circuit::changeCircuit(QString newCircuit)

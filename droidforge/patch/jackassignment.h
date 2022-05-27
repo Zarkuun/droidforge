@@ -45,6 +45,7 @@ public:
     virtual Atom *atomAt(int column) = 0;
     virtual void replaceAtom(int column, Atom *newAtom) = 0;
     virtual void collectCables(QStringList &cables) const = 0;
+    virtual void findCableConnections(const QString &, int &, int &) const {};
     virtual void parseExpression(const QString &expression) = 0;
     virtual void removeRegisterReferences(RegisterList &rl, int ih, int oh) = 0;
 

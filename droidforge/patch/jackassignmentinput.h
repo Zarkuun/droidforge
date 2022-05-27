@@ -21,6 +21,7 @@ public:
     void removeRegisterReferences(RegisterList &rl, int ih, int);
     QString valueToString() const;
     void collectCables(QStringList &cables) const;
+    void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     static Atom *parseInputAtom(const QString &s);
 
 protected:

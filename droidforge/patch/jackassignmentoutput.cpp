@@ -58,6 +58,12 @@ void JackAssignmentOutput::collectCables(QStringList &cables) const
         cables.append(((AtomCable *)atom)->getCable());
 }
 
+void JackAssignmentOutput::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
+{
+    if (atom && atom->isCable() && ((AtomCable *)atom)->getCable() == cable)
+        asOutput ++;
+}
+
 void JackAssignmentOutput::parseExpression(const QString &expression)
 {
     atom = parseOutputAtom(expression);

@@ -30,10 +30,23 @@
 
 // Cable status indicator in status bar
 #define CSD_IMAGE_MARGIN                     3
-#define CSD_WIDTH                            300
+#define CSD_WIDTH                            350
+#define CSD_MAX_NAME_WIDTH                   150
 #define CSD_SIDE_PADDING                     STANDARD_SPACING
-#define CSD_BACKGROUND_COLOR                 QColor(160, 160, 160)
+#define CSD_MARKER_DISTANCE                  STANDARD_SPACING
+#define CSD_BACKGROUND_COLOR                 QColor(70, 70, 70)
 #define CSD_CABLE_THICKNESS                  0.4
+#define CSD_CABLE_COLOR                      QColor(30, 30, 30)
+#define CSD_CABLE_HILITE_COLOR               QColor(80, 80, 80)
+#define CSD_LABEL_BACKGROUND                 QColor(0, 0, 0, 90)
+#define CSD_LABEL_FONT_SIZE                  12
+#define CSD_MARKER_FONT_SIZE                 9
+#define CSD_MARKER_LETTER_SPACING            95
+#define CSD_GOOD_MARKER_BACKGROUND           QColor(50, 50, 50)
+#define CSD_GOOD_MARKER_BORDER               QColor(180, 180, 180)
+#define CSD_BAD_MARKER_BACKGROUND            QColor(180, 0, 0)
+#define CSD_BAD_MARKER_BORDER                QColor(255, 0, 0)
+#define CSD_NAME_PADDING                     STANDARD_SPACING
 
 // Rack view
 #define RACV_SPLITTER_HANDLE_WIDTH           12

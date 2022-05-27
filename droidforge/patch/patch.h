@@ -51,7 +51,6 @@ public:
             const QString &shorthand,
             const QString &atomcomment);
 
-
     QString toString();
     const QString &getTitle() const;
     void setFileName(const QString &f) { fileName = f; };
@@ -61,6 +60,7 @@ public:
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
     QStringList allCables() const;
+    void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     bool needG8() const; // TODO: Do we need this?
     bool needX7() const; // TODO: Do we need this?
     void collectUsedRegisterAtoms(RegisterList &) const;

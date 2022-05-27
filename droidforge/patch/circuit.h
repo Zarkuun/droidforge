@@ -33,6 +33,8 @@ public:
     const Atom *atomAt(int row, int column) const;
     Atom *atomAt(int row, int column);
     void collectCables(QStringList &cables) const;
+    void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
+
     void changeCircuit(QString newCircuit);
     bool needG8() const;
     bool needX7() const;

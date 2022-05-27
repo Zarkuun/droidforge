@@ -163,12 +163,23 @@ QString JackAssignmentInput::valueToString() const
 
 void JackAssignmentInput::collectCables(QStringList &cables) const
 {
+    // TODO: Endlich atoms als Liste!!
     if (atomA && atomA->isCable())
         cables.append(((AtomCable *)atomA)->getCable());
     if (atomB && atomB->isCable())
         cables.append(((AtomCable *)atomB)->getCable());
     if (atomC && atomC->isCable())
         cables.append(((AtomCable *)atomC)->getCable());
+}
+
+void JackAssignmentInput::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
+{
+    if (atomA && atomA->isCable() && ((AtomCable *)atomA)->getCable() == cable)
+        asInput ++;
+    if (atomB && atomB->isCable() && ((AtomCable *)atomB)->getCable() == cable)
+        asInput ++;
+    if (atomC && atomC->isCable() && ((AtomCable *)atomC)->getCable() == cable)
+        asInput ++;
 }
 
 

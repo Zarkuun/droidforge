@@ -187,6 +187,12 @@ QStringList Patch::allCables() const
     return cables;
 }
 
+void Patch::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
+{
+    for (auto section: sections)
+        section->findCableConnections(cable, asInput, asOutput);
+}
+
 bool Patch::needG8() const
 {
     for (qsizetype i=0; i<sections.length(); i++)

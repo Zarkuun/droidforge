@@ -217,8 +217,14 @@ void PatchSection::addCircuit(Circuit *circuit)
 
 void PatchSection::collectCables(QStringList &cables) const
 {
-    for (qsizetype i=0; i<circuits.length(); i++)
-        circuits[i]->collectCables(cables);
+    for (auto circuit: circuits)
+        circuit->collectCables(cables);
+}
+
+void PatchSection::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
+{
+    for (auto circuit: circuits)
+        circuit->findCableConnections(cable, asInput, asOutput);
 }
 
 Circuit *PatchSection::currentCircuit()
@@ -235,7 +241,7 @@ JackAssignment *PatchSection::currentJackAssignment()
     if (!c)
         return 0;
 
-    if (cursor.row <= 0)
+    if (cursor.row < 0)
         return 0;
     else
         return c->jackAssignment(cursor.row);
