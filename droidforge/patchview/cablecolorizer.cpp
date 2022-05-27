@@ -60,7 +60,6 @@ int CableColorizer::chooseColorForCable(QString name)
     }
     cableColors[name] = index;
     used[index] = true;
-    qDebug() << name << "->" << index;
     return index;
 }
 
@@ -71,7 +70,6 @@ void CableColorizer::loadImages()
     for (auto &entry: entries) {
         QImage *image = new QImage(dir.filePath(entry));
         images.append(image);
-        qDebug() << "LOAD" << entry << "=" << images.count() - 1;
     }
 }
 
