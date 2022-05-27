@@ -165,7 +165,7 @@ void CircuitView::paintJacks(QPainter *painter)
 }
 
 
-void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom)
+void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom, bool isInput)
 {
     static QImage warning(":images/icons/warning.png");
 
@@ -197,7 +197,10 @@ void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom)
                 text = text.mid(1);
                 QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
                 const QImage *image = the_cable_colorizer->imageForCable(text);
-                painter->drawImage(imageRect, *image);
+                if (isInput)
+                    painter->drawImage(imageRect, *image);
+                else
+                    painter->drawImage(imageRect, (*image).mirrored(true, false));
                 r = r.translated(imageWidth + STANDARD_SPACING, 0);
             }
             painter->setPen(COLOR_TEXT);
@@ -268,7 +271,8 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
                           ar.top(),
                           ar.width() - 2 * CIRV_TEXT_SIDE_PADDING,
                           ar.height()),
-                      jai->getAtom(a));
+                      jai->getAtom(a),
+                      true);
             if (*selection && (*selection)->atomSelected(circuitNumber, row, a+1))
                 painter->fillRect(ar, CIRV_COLOR_SELECTION);
         }
@@ -294,7 +298,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         if (ja->jackType() == JACKTYPE_OUTPUT)
         {
             JackAssignmentOutput *jao = (JackAssignmentOutput *)ja;
-            paintAtom(painter, rect, jao->getAtom());
+            paintAtom(painter, rect, jao->getAtom(), false);
         }
         else  // UNKNOWN
         {
