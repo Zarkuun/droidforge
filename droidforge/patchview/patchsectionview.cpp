@@ -237,6 +237,11 @@ void PatchSectionView::resizeEvent(QResizeEvent *)
     updateCursor();
 }
 
+void PatchSectionView::showEvent(QShowEvent *event)
+{
+    updateCableIndicator();
+}
+
 void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection)
 {
     QString actionTitle = QString("adding new '") + name + "' circuit";
@@ -529,6 +534,7 @@ void PatchSectionView::updateCursor()
 
 void PatchSectionView::updateCableIndicator()
 {
+    // TODO: Das hier sollte mit einem Signal geregelt werden.
     const Atom *atom = currentAtom();
     if (atom && atom->isCable()) {
         AtomCable *ac = (AtomCable *)atom;

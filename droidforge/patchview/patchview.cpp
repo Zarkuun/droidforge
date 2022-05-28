@@ -301,6 +301,7 @@ void PatchView::editValue()
 
 void PatchView::createInternalCable()
 {
+
     qDebug() << "create";
 }
 

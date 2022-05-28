@@ -53,6 +53,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void showEvent(QShowEvent *event);
 
 private:
     void updateCursor();
