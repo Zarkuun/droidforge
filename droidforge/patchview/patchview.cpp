@@ -386,7 +386,6 @@ void PatchView::followInternalCable()
         if (atom == currentAtom)
             waitForNext = true;
         else if (waitForNext && atom->isCable() && ((AtomCable *)atom)->getCable() == name) {
-            qDebug() << "FOUND 1";
             found = true;
             break;
         }
@@ -399,7 +398,6 @@ void PatchView::followInternalCable()
         while (*it && *it != currentAtom) {
             Atom *atom = *it;
             if (atom->isCable() && ((AtomCable *)atom)->getCable() == name) {
-                qDebug() << "FOUND 2";
                 found = true;
                 break;
             }

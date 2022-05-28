@@ -8,6 +8,7 @@
 CableStatusIndicator::CableStatusIndicator(QWidget *parent)
     : QWidget{parent}
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
+    , animation(this, "animationPhase")
     , patching(false)
 {
     resize(400, 100);
@@ -17,6 +18,7 @@ CableStatusIndicator::CableStatusIndicator(QWidget *parent)
     cablePen.setColor(CSD_CABLE_COLOR);
     cableHilitePen.setColor(CSD_CABLE_HILITE_COLOR);
     cableHilitePen.setWidth(1);
+
 }
 
 void CableStatusIndicator::paintEvent(QPaintEvent *)
@@ -32,9 +34,21 @@ void CableStatusIndicator::paintEvent(QPaintEvent *)
 void CableStatusIndicator::paintPatching(QPainter &painter)
 {
     painter.fillRect(rect(), CSD_BACKGROUND_COLOR);
-    paintCable(painter, CSD_SIDE_PADDING, width() - CSD_SIDE_PADDING);
+    float left = CSD_SIDE_PADDING + animationPhase * CSD_ANIMATION_RANGE;
+    float right = width() - CSD_SIDE_PADDING - (animationPhase * CSD_ANIMATION_RANGE);
+    paintCable(painter, left, right);
     paintLabel(painter, width() / 2, tr("Patching..."));
+
+    float imgHeight = height() - 2 * CSD_IMAGE_MARGIN;
+    float imgWidth =  imgHeight * the_cable_colorizer->imageAspect();
+    QRectF leftPlugRect(left, CSD_IMAGE_MARGIN, imgWidth, imgHeight);
+    QRectF rightPlugRect(right - imgWidth, CSD_IMAGE_MARGIN, imgWidth, imgHeight);
+    const QImage *plugImage = the_cable_colorizer->ghostPlug();
+    QImage mirroredPlugImage = plugImage->mirrored(true, false);
+    painter.drawImage(rightPlugRect, *plugImage);
+    painter.drawImage(leftPlugRect, mirroredPlugImage);
 }
+
 
 void CableStatusIndicator::paintCableInfo(QPainter &painter)
 {
@@ -42,7 +56,6 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
         return;
     }
     painter.fillRect(rect(), CSD_BACKGROUND_COLOR);
-
 
     float imgHeight = height() - 2 * CSD_IMAGE_MARGIN;
     float imgWidth =  imgHeight * the_cable_colorizer->imageAspect();
@@ -181,8 +194,27 @@ void CableStatusIndicator::clear()
 
 void CableStatusIndicator::setPatchingState(bool p)
 {
+    if (p) {
+        animation.setDuration(CSD_ANIMATION_DURATION);
+        animation.setKeyValueAt(0, 0.0);
+        animation.setKeyValueAt(0.8, 1.0);
+        animation.setKeyValueAt(1.0, 0.0);
+        animation.setEasingCurve(QEasingCurve::InQuad);
+        animation.setLoopCount(-1); // forever
+        animation.start();
+    }
+    else
+        animation.stop();
+
     patching = p;
     update();
+}
+
+void CableStatusIndicator::setanimationPhase(float newanimationPhase)
+{
+    animationPhase = newanimationPhase;
+    update();
+    emit animationPhaseChanged(); // TODO: needed?
 }
 
 

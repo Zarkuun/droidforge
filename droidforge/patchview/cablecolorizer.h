@@ -8,6 +8,7 @@
 class CableColorizer
 {
     QList<QImage *>images;
+    QImage *ghostImage;
     QMap<QString, int> cableColors;
     bool *used;
 
@@ -18,6 +19,7 @@ public:
     float imageAspect() const;
     void colorizeAllCables(const QStringList &sl);
     const QImage *imageForCable(QString name);
+    const QImage *ghostPlug() { return ghostImage; };
 
 private:
     int chooseColorForCable(QString name);

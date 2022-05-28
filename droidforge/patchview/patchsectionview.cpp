@@ -11,6 +11,7 @@
 #include "tuning.h"
 #include "commentdialog.h"
 #include "circuitchoosedialog.h"
+#include "patchview.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -192,7 +193,6 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
     // TODO: Show a different menu when a selection is active and
     // a cell from the selection is being hit?
     if (selection) {
-        qDebug("SELECTIONMENU");
         return;
     }
 
@@ -220,7 +220,7 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
             }
             else {
                 const Atom *atom = currentAtom();
-                // if (atom && atom->isCable())
+                if (atom && atom->isCable())
                     menu->addAction(the_forge->action(ACTION_FOLLOW_INTERNAL_CABLE));
                 menu->addAction(the_forge->action(ACTION_START_PATCHING));
                 menu->addAction(the_forge->action(ACTION_FINISH_PATCHING));
@@ -239,9 +239,15 @@ void PatchSectionView::resizeEvent(QResizeEvent *)
     updateCursor();
 }
 
-void PatchSectionView::showEvent(QShowEvent *event)
+void PatchSectionView::showEvent(QShowEvent *)
 {
     updateCableIndicator();
+}
+
+PatchView *PatchSectionView::patchView()
+{
+    // TODO: Das hier ist der Megahack.
+    return (PatchView *)parent()->parent();
 }
 
 void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection)
@@ -371,8 +377,6 @@ void PatchSectionView::editValue(int key)
     if (isEmpty())
         return;
 
-    qDebug("editValue");
-
     int row = section->cursorPosition().row;
     int column = section->cursorPosition().column;
 
@@ -397,6 +401,13 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 
 void PatchSectionView::editAtom(int key)
 {
+    PatchView *pv = patchView();
+
+    if (key == 0 && patchView()->isPatching())  {
+        patchView()->finishPatching();
+        return;
+    }
+
     Circuit *circuit = currentCircuit();
     JackAssignment *ja = circuit->jackAssignment(section->cursorPosition().row);
     if (ja->jackType() == JACKTYPE_UNKNOWN)
@@ -884,15 +895,11 @@ void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
 void PatchSectionView::pasteAtomsFromClipboard(const Clipboard &clipboard)
 {
     JackAssignment *ja = currentJackAssignment();
-    if (!ja) {
-        qDebug() << "das geht hier nicht";
-        return;
-    }
+    Q_ASSERT(ja);
+
     int column = section->cursorPosition().column;
-    if (column < 1 || column > 3) {
-        qDebug() << "das geht hier auch nicht";
-        return;
-    }
+    Q_ASSERT(column >= 1 && column <= 3);
+
     const QList<Atom *> &atoms = clipboard.getAtoms();
     the_forge->registerEdit(tr("pasting parameters"));
     for (auto atom: atoms) {

@@ -242,7 +242,6 @@ void MainWindow::updateActions()
     pasteSmartAction->setEnabled(patchView.circuitsInClipboard());
 
     const PatchSectionView *psv = patchView.currentPatchSectionView();
-    qDebug() << "psv" << psv;
     bool empty = !psv || psv->isEmpty();
     actions[ACTION_ADD_JACK]->setEnabled(!empty);
     actions[ACTION_EDIT_VALUE]->setEnabled(!empty);
@@ -524,7 +523,6 @@ void MainWindow::createEditMenu()
     actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcutVisibleInContextMenu(true);
-    qDebug() << "Kontesxt" << actions[ACTION_EDIT_CIRCUIT_COMMENT]->shortcutContext();
     editMenu->addAction(actions[ACTION_EDIT_CIRCUIT_COMMENT]);
     connect(actions[ACTION_EDIT_CIRCUIT_COMMENT], &QAction::triggered, &patchView, &PatchView::editCircuitComment);
 

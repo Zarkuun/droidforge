@@ -3,6 +3,7 @@
 #include <QDir>
 
 CableColorizer::CableColorizer()
+    : ghostImage(0)
 {
     loadImages();
     used = new bool[images.count()];
@@ -14,6 +15,8 @@ CableColorizer::~CableColorizer()
     delete[] used;
     for (auto image: images)
         delete image;
+    if (ghostImage)
+        delete ghostImage;
 }
 
 float CableColorizer::imageAspect() const
@@ -69,7 +72,10 @@ void CableColorizer::loadImages()
     QStringList entries = dir.entryList();
     for (auto &entry: entries) {
         QImage *image = new QImage(dir.filePath(entry));
-        images.append(image);
+        if (entry == "ghost.png")
+            ghostImage = image;
+        else
+            images.append(image);
     }
 }
 

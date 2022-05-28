@@ -48,6 +48,8 @@
 #define CSD_BAD_MARKER_BACKGROUND            QColor(180, 0, 0)
 #define CSD_BAD_MARKER_BORDER                QColor(255, 0, 0)
 #define CSD_NAME_PADDING                     STANDARD_SPACING
+#define CSD_ANIMATION_RANGE                  20
+#define CSD_ANIMATION_DURATION               1000
 
 // Rack view
 #define RACV_SPLITTER_HANDLE_WIDTH           12

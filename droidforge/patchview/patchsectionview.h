@@ -12,6 +12,8 @@
 #include <QGraphicsView>
 #include <QResizeEvent>
 
+class PatchView;
+
 class PatchSectionView : public QGraphicsView
 {
     const Patch *patch;
@@ -59,6 +61,7 @@ protected:
     void showEvent(QShowEvent *event);
 
 private:
+    PatchView *patchView();
     void updateCursor();
     void updateCableIndicator();
     void setMouseSelection(const CursorPosition &to);
