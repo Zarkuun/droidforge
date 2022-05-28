@@ -315,6 +315,7 @@ void PatchView::startPatching()
     patching = true;
     patchingStartSection = currentIndex();
     patchingStartPosition = currentPatchSectionView()->getCursorPosition();
+    the_forge->updateActions();
     the_forge->cableIndicator()->setPatchingState(true);
 }
 
@@ -343,8 +344,10 @@ void PatchView::finishPatching()
         cableName = ((AtomCable *)endAtom)->getCable();
     else {
         cableName = NameChooseDialog::getName(tr("Create new internal patch cable"), tr("Cable name:"));
-        if (cableName == "")
+        if (cableName == "") {
+            the_forge->updateActions();
             return;
+        }
         cableName = cableName.toUpper();
     }
 
@@ -360,6 +363,7 @@ void PatchView::finishPatching()
 void PatchView::abortPatching()
 {
     patching = false;
+    the_forge->updateActions();
     the_forge->cableIndicator()->setPatchingState(false);
 }
 

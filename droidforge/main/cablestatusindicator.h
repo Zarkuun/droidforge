@@ -30,11 +30,13 @@ public:
     void setPatchingState(bool);
 
 private:
-
     void paintPatching(QPainter &painter);
     void paintCableInfo(QPainter &painter);
-signals:
+    void paintCable(QPainter &painter, int left, int right);
+    void paintMarker(QPainter &painter, int xpos, QColor border, QColor fill, int number);
 
+    void paintLabel(QPainter &painter, int xpos, QString text);
+signals:
 };
 
 #endif // CABLESTATUSINDICATOR_H

@@ -1,3 +1,4 @@
+
 #include "cablestatusindicator.h"
 #include "cablecolorizer.h"
 #include "tuning.h"
@@ -28,21 +29,20 @@ void CableStatusIndicator::paintEvent(QPaintEvent *)
         paintCableInfo(painter);
 }
 
-
 void CableStatusIndicator::paintPatching(QPainter &painter)
 {
-    painter.fillRect(rect(), QColor(128, 200, 80));
-    painter.drawText(rect(), tr("Patching..."), Qt::AlignHCenter | Qt::AlignVCenter);
+    painter.fillRect(rect(), CSD_BACKGROUND_COLOR);
+    paintCable(painter, CSD_SIDE_PADDING, width() - CSD_SIDE_PADDING);
+    paintLabel(painter, width() / 2, tr("Patching..."));
 }
-
 
 void CableStatusIndicator::paintCableInfo(QPainter &painter)
 {
     if (cableName == "") {
         return;
     }
-
     painter.fillRect(rect(), CSD_BACKGROUND_COLOR);
+
 
     float imgHeight = height() - 2 * CSD_IMAGE_MARGIN;
     float imgWidth =  imgHeight * the_cable_colorizer->imageAspect();
@@ -69,42 +69,20 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
         setToolTip(problem.arg(cableName));
     }
 
-    // First paint the "cable"
-    cablePen.setWidth(imgHeight * CSD_CABLE_THICKNESS);
-    painter.setPen(cablePen);
-    painter.drawLine(leftPlugRect.right(), height()/2, rightPlugRect.left(), height()/2);
-
-    painter.setPen(cableHilitePen);
-    painter.drawLine(leftPlugRect.right(), height()/2 - 1, rightPlugRect.left(), height()/2 - 1);
-
+    paintCable(painter, leftPlugRect.right(), rightPlugRect.left());
     const QImage *plugImage = the_cable_colorizer->imageForCable(cableName);
     QImage mirroredPlugImage = plugImage->mirrored(true, false);
-
-    // Markers with number of usages
-    unsigned markerHeight = imgHeight;
-    unsigned markerWidth = 20; // markerHeight * CSD_MARKER_WIDTH;
-    const QFont &font = painter.font();
-    QFont markerFont(font.family(), CSD_MARKER_FONT_SIZE);
-    markerFont.setLetterSpacing(QFont::PercentageSpacing, CSD_MARKER_LETTER_SPACING);
 
     // Indicate number of times this cable is used as output
     if (numAsOutput) {
         painter.drawImage(leftPlugRect, mirroredPlugImage);
         if (numAsOutput > 1) {
-            QRectF markerRect(
-                          leftPlugRect.right() + CSD_MARKER_DISTANCE,
-                          leftPlugRect.top(),
-                          markerWidth,
-                          markerHeight);
-            painter.setBrush(CSD_BAD_MARKER_BACKGROUND);
-            painter.setPen(CSD_BAD_MARKER_BORDER);
-            painter.drawEllipse(markerRect);
-            painter.setFont(markerFont);
-            painter.setPen(QColor(255, 255, 255));
-            painter.drawText(
-                        markerRect,
-                        QString::number(numAsOutput) + "X",
-                        Qt::AlignVCenter | Qt::AlignCenter);
+            paintMarker(
+                    painter,
+                    leftPlugRect.right() + CSD_MARKER_DISTANCE,
+                    CSD_BAD_MARKER_BORDER,
+                    CSD_BAD_MARKER_BACKGROUND,
+                    numAsOutput);
         }
     }
 
@@ -112,42 +90,79 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
     if (numAsInput) {
         painter.drawImage(rightPlugRect, *plugImage);
         if (numAsInput > 1) {
-            QRectF markerRect(
-                          rightPlugRect.left() - CSD_MARKER_DISTANCE - markerHeight,
-                          leftPlugRect.top(),
-                          markerWidth,
-                          markerHeight);
-
-            painter.setBrush(CSD_GOOD_MARKER_BACKGROUND);
-            painter.setPen(CSD_GOOD_MARKER_BORDER);
-            painter.drawEllipse(markerRect);
-            painter.setFont(markerFont);
-            painter.setPen(QColor(255, 255, 255));
-            painter.drawText(
-                        markerRect,
-                        QString::number(numAsInput) + "X",
-                        Qt::AlignVCenter | Qt::AlignCenter);
+            paintMarker(
+                    painter,
+                    rightPlugRect.left() - CSD_MARKER_DISTANCE,
+                    CSD_GOOD_MARKER_BORDER,
+                    CSD_GOOD_MARKER_BACKGROUND,
+                    numAsInput);
         }
     }
 
     // Finally print the name of the cable on top of all
+    paintLabel(painter, (width() - problemMarkerWidth) / 2 + problemMarkerWidth, cableName);
+}
+
+void CableStatusIndicator::paintLabel(QPainter &painter, int xpos, QString text)
+{
+    const QFont &font = painter.font();
     QFont cableFont(font.family(), CSD_LABEL_FONT_SIZE);
-    cableFont.setLetterSpacing(QFont::PercentageSpacing, CSD_MARKER_LETTER_SPACING);
     QFontMetrics fm(cableFont);
-    int nameWidth = qMin(fm.horizontalAdvance(cableName), CSD_MAX_NAME_WIDTH) +
+    int nameWidth = qMin(fm.horizontalAdvance(text), CSD_MAX_NAME_WIDTH) +
             CSD_NAME_PADDING * 2;
     QRectF nameRect(
-                (width() - problemMarkerWidth) / 2 - nameWidth / 2 + problemMarkerWidth,
-                leftPlugRect.top(),
+                xpos - nameWidth / 2,
+                CSD_IMAGE_MARGIN,
                 nameWidth,
-                leftPlugRect.height());
+                height() - 2*CSD_IMAGE_MARGIN);
     painter.setBrush(CSD_LABEL_BACKGROUND);
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(nameRect, 5, 5);
     painter.setPen(QColor(255, 255, 255));
     painter.setFont(cableFont);
-    painter.drawText(nameRect, cableName, Qt::AlignVCenter | Qt::AlignCenter);
+    painter.drawText(nameRect, text, Qt::AlignVCenter | Qt::AlignCenter);
 
+}
+
+void CableStatusIndicator::paintMarker(QPainter &painter, int xpos, QColor border, QColor fill, int number)
+{
+    painter.save();
+    float markerHeight = height() - 2 * CSD_IMAGE_MARGIN;
+    QRectF markerRect(
+                xpos - CSD_MARKER_WIDTH / 2,
+                CSD_IMAGE_MARGIN,
+                CSD_MARKER_WIDTH,
+                markerHeight);
+
+    painter.setPen(border);
+    painter.setBrush(fill);
+    painter.drawEllipse(markerRect);
+
+    const QFont &font = painter.font();
+    QFont markerFont(font.family(), CSD_MARKER_FONT_SIZE);
+    markerFont.setLetterSpacing(QFont::PercentageSpacing, CSD_MARKER_LETTER_SPACING);
+
+    painter.setFont(markerFont);
+    painter.setPen(QColor(255, 255, 255));
+    painter.drawText(
+                markerRect,
+                QString::number(number) + "X",
+                Qt::AlignVCenter | Qt::AlignCenter);
+    painter.restore();
+}
+
+
+void CableStatusIndicator::paintCable(QPainter &painter, int left, int right)
+{
+    // First paint the "cable"
+    painter.save();
+    float imgHeight = height() - 2 * CSD_IMAGE_MARGIN;
+    cablePen.setWidth(imgHeight * CSD_CABLE_THICKNESS);
+    painter.setPen(cablePen);
+    painter.drawLine(left, height()/2, right, height()/2);
+    painter.setPen(cableHilitePen);
+    painter.drawLine(left, height()/2 - 1, right, height()/2 - 1);
+    painter.restore();
 }
 
 void CableStatusIndicator::set(QString name, int numAsIn, int numAsOut)

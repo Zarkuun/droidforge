@@ -371,6 +371,8 @@ void PatchSectionView::editValue(int key)
     if (isEmpty())
         return;
 
+    qDebug("editValue");
+
     int row = section->cursorPosition().row;
     int column = section->cursorPosition().column;
 
