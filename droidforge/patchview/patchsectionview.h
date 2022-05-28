@@ -51,6 +51,7 @@ public:
 
 protected:
     void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
 
 private:
@@ -84,9 +85,11 @@ private:
     void pasteAtomsFromClipboard(const Clipboard &clipboard);
     void editCircuit(int key);
     void editJack(int key);
+    void editValueByMouse(CursorPosition &pos);
     void editAtom(int key);
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key); // TODO: was soll das hier?
+    void mouseClick(QPoint pos, int button, bool doubleClock);
 };
 
 #endif // PATCHSECTIONVIEW_H

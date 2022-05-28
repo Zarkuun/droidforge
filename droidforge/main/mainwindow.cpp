@@ -249,7 +249,7 @@ void MainWindow::updateActions()
         actions[ACTION_CREATE_INTERNAL_CABLE]->setEnabled(psv->atomCellSelected());
     }
 
-    if (patchView.numSections() > 1) {
+    if (psv && patchView.numSections() > 1) {
         deletePatchSectionAction->setText(tr("Delete section '%1'").arg(psv->getTitle()));
         deletePatchSectionAction->setEnabled(true);
     }

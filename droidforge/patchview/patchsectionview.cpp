@@ -126,11 +126,16 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 
 void PatchSectionView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->type() != QMouseEvent::MouseButtonPress)
-        return;
+    mouseClick(event->pos(), event->button(), false);
+}
 
-    QPoint pos = event->pos();
+void PatchSectionView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    mouseClick(event->pos(), event->button(), true);
+}
 
+void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
+{
     // itemAt() applies the transformation of the graphics
     // view such as the scroll bar and the alignment.
     QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
@@ -151,7 +156,9 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
                 curPos.row = cv->jackAt(posInCircuit.y());
                 curPos.column = cv->columnAt(posInCircuit.x());
 
-                if (event->button() == Qt::LeftButton)
+                if (doubleClick)
+                    editValueByMouse(curPos);
+                else if (button == Qt::LeftButton)
                     handleLeftMousePress(curPos);
                 else
                     handleRightMousePress(cv, curPos);
@@ -163,9 +170,10 @@ void PatchSectionView::mousePressEvent(QMouseEvent *event)
     // click on background
     // TODO: The new circuit should appear at the end of the
     // section, not where the cursor is.
-    if (event->button() == Qt::RightButton)
+    if (button == Qt::RightButton)
         handleRightMousePress(0, CursorPosition());
 }
+
 
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 {
@@ -368,6 +376,15 @@ void PatchSectionView::editValue(int key)
     else
         editAtom(key);
 }
+
+
+void PatchSectionView::editValueByMouse(CursorPosition &pos)
+{
+    section->setCursor(pos);
+    updateCursor();
+    editValue(0);
+}
+
 
 void PatchSectionView::editAtom(int key)
 {
