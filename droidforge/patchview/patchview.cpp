@@ -308,7 +308,9 @@ void PatchView::followInternalCable()
     Patch::iterator it = patch->begin();
     qDebug() << "FOLLOW";
     while (*it) {
-        qDebug() << "ATOM" << *it;
+        Atom *atom = *it;
+        qDebug() << "ATOM" << atom->toString();
+        it.advance();
     }
     qDebug("END");
 }

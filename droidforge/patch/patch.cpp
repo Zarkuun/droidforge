@@ -294,3 +294,83 @@ QString Patch::toString()
     return s;
 
 }
+
+void Patch::iterator::moveToFirstAtom()
+{
+    atom = 0;
+    for (nSection = 0; nSection < patch->sections.size(); nSection++)
+    {
+        section = patch->sections[nSection];
+        for (nCircuit = 0; nCircuit < section->circuits.size(); nCircuit++)
+        {
+            circuit = section->circuits[nCircuit];
+            for (nJack=0; nJack<circuit->numJackAssignments(); nJack++)
+            {
+                jackAssignment = circuit->jackAssignment(nJack);
+                for (nAtom=1; nAtom<=3; nAtom++) {
+                    atom = jackAssignment->atomAt(nAtom);
+                    if (atom)
+                        return;
+                }
+            }
+        }
+    }
+}
+
+
+bool Patch::iterator::advance()
+{
+    while (true) {
+        nAtom ++;
+        if (nAtom > 3) {
+            if  (!advanceJack()) { // sets nAtom to 0
+                atom = 0;
+                return false;
+            }
+            nAtom = 1;
+        }
+        if (jackAssignment->atomAt(nAtom)) {
+            atom = jackAssignment->atomAt(nAtom);
+            return true;
+        }
+    }
+}
+
+bool Patch::iterator::advanceJack()
+{
+    while (true) {
+        if (nJack+1 < circuit->numJackAssignments()) {
+            nJack ++;
+            jackAssignment = circuit->jackAssignment(nJack);
+            return true;
+        }
+        else if (!advanceCircuit())
+            return false;
+        nJack = -1;
+    }
+}
+
+bool Patch::iterator::advanceCircuit()
+{
+    while (true) {
+        if (nCircuit+1 < section->circuits.size()) {
+            nCircuit ++;
+            circuit = section->circuits[nCircuit];
+            return true;
+        }
+        else if (!advanceSection())
+            return false;
+        nCircuit = -1;
+    }
+}
+
+bool Patch::iterator::advanceSection()
+{
+    if (nSection+1 < patch->sections.size()) {
+        nSection ++;
+        section = patch->sections[nSection];
+        return true;
+    }
+    else
+        return false;
+}

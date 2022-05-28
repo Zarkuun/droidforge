@@ -70,76 +70,33 @@ public:
 
     // #define T Atom
     class iterator {
-        Atom *atom;
+        Atom *atom; // is 0 at end of iteration, otherwise never
         Patch *patch;
-        int nSection;
-        int nCircuit;
-        int nJack;
-        int nAtom;
+        int nSection; // always points to valid section
+        int nCircuit; // always points to valid circuit
+        int nJack; // always points to valid jack
+        int nAtom; // always points to valid atom (1, 2, or 3)
+
+        // if atom is != 0, the following three variables
+        // always point to the objects according to the n... numbers
+        PatchSection *section; // always reflects nSection
+        Circuit *circuit; // always reflects nCircuit
+        JackAssignment *jackAssignment; // always reflects nJack
+
 
     public:
-        iterator(Patch *p) : atom(0), patch(p), nSection(0), nCircuit(0), nJack(0), nAtom(-1) {
-            advance();
+        iterator(Patch *p) : patch(p) {
+            moveToFirstAtom();
         }
+        bool advance();
         Atom *&operator*() { return atom; }
         Atom **operator->() { return &atom; }
 
     private:
-
-        bool advanceSection() {
-            nSection++;
-            nCircuit = 0;
-            nJack = 0;
-            nAtom = 0;
-            return nSection < patch->sections.size();
-        }
-
-        bool advanceCircuit() {
-            nCircuit++;
-            nJack = 0;
-            nAtom = 0;
-            PatchSection *section = patch->sections[nSection];
-            while (nCircuit >= section->circuits.size()) {
-                if (!advanceSection())
-                    return false; // was in last section
-                // nCircuit was reset to 0 by advanceSection()
-                section = patch->sections[nSection];
-            }
-            return true;
-        }
-
-        bool advanceJack() {
-            nJack++;
-            nAtom = 0;
-            PatchSection *section = patch->sections[nSection];
-            Circuit *circuit = section->circuits[nCircuit];
-            while (nJack >= circuit->numJackAssignments()) {
-                if (!advanceCircuit())
-                    return false;
-                section = patch->sections[nSection];
-                circuit = section->circuits[nCircuit];
-            }
-            return true;
-        }
-
-        bool advance() {
-            nAtom ++;
-            PatchSection *section = patch->sections[nSection];
-            Circuit *circuit = section->circuits[nCircuit];
-            JackAssignment *ja = circuit->jackAssignment(nJack);
-            while (!ja->atomAt(nAtom+1)) {
-                nAtom++;
-                if (nAtom > 3) {
-                    if (!advanceCircuit())
-                        return false;
-                }
-                section = patch->sections[nSection];
-                circuit = section->circuits[nCircuit];
-                ja = circuit->jackAssignment(nJack);
-            }
-            atom = ja->atomAt(nAtom+1);
-            return true;
-        }
+        void moveToFirstAtom();
+        bool advanceSection();
+        bool advanceCircuit();
+        bool advanceJack();
     };
 
     iterator begin() { return iterator(this); }
