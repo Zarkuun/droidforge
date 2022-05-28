@@ -46,6 +46,7 @@ public:
     const CursorPosition &cursorPosition() { return cursor; };
     void setCursor(const CursorPosition &pos) { cursor = pos; };
     Circuit *currentCircuit();
+    bool isEmpty() const { return circuits.size() == 0; };
     Circuit *circuit(int n) { return circuits[n]; };
     const QList<Circuit *> &getCircuits() const { return circuits; };
     JackAssignment *currentJackAssignment();

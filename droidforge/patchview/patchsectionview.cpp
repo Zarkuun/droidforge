@@ -819,7 +819,7 @@ void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
     the_forge->registerEdit(tr("pasting %1 circuits").arg(clipboard.getCircuits().count()));
     for (auto circuit: clipboard.getCircuits()) {
         Circuit *newCircuit = circuit->clone();
-        int position = section->cursorPosition().circuitNr;
+        int position = section->isEmpty() ? 0 : section->cursorPosition().circuitNr;
         section->addCircuit(position, newCircuit);
         section->moveCursorToNextCircuit();
     }
