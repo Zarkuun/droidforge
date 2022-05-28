@@ -7,6 +7,7 @@
 CableStatusIndicator::CableStatusIndicator(QWidget *parent)
     : QWidget{parent}
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
+    , patching(false)
 {
     resize(400, 100);
     setMinimumWidth(CSD_WIDTH);
@@ -19,9 +20,24 @@ CableStatusIndicator::CableStatusIndicator(QWidget *parent)
 
 void CableStatusIndicator::paintEvent(QPaintEvent *)
 {
-    QPainter painter(this);
-
     setToolTip("");
+    QPainter painter(this);
+    if (patching)
+        paintPatching(painter);
+    else
+        paintCableInfo(painter);
+}
+
+
+void CableStatusIndicator::paintPatching(QPainter &painter)
+{
+    painter.fillRect(rect(), QColor(128, 200, 80));
+    painter.drawText(rect(), tr("Patching..."), Qt::AlignHCenter | Qt::AlignVCenter);
+}
+
+
+void CableStatusIndicator::paintCableInfo(QPainter &painter)
+{
     if (cableName == "") {
         return;
     }
@@ -145,6 +161,12 @@ void CableStatusIndicator::set(QString name, int numAsIn, int numAsOut)
 void CableStatusIndicator::clear()
 {
     cableName = "";
+    update();
+}
+
+void CableStatusIndicator::setPatchingState(bool p)
+{
+    patching = p;
     update();
 }
 

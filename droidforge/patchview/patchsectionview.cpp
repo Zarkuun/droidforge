@@ -220,9 +220,11 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
             }
             else {
                 const Atom *atom = currentAtom();
-                if (atom && atom->isCable())
+                // if (atom && atom->isCable())
                     menu->addAction(the_forge->action(ACTION_FOLLOW_INTERNAL_CABLE));
-                menu->addAction(the_forge->action(ACTION_CREATE_INTERNAL_CABLE));
+                menu->addAction(the_forge->action(ACTION_START_PATCHING));
+                menu->addAction(the_forge->action(ACTION_FINISH_PATCHING));
+                menu->addAction(the_forge->action(ACTION_ABORT_PATCHING));
             }
         }
     }
@@ -766,6 +768,18 @@ const Atom *PatchSectionView::currentAtom() const
     }
 }
 
+Atom *PatchSectionView::currentAtom()
+{
+    // TODO: Kann man hier nicht Copy & Paste vermeiden?
+    JackAssignment *ja = section->currentJackAssignment();
+    if (!ja)
+        return 0;
+    else {
+        int column = section->cursorPosition().column;
+        return ja->atomAt(column);
+    }
+}
+
 bool PatchSectionView::atomCellSelected() const
 {
     const CursorPosition &cp = section->cursorPosition();
@@ -777,6 +791,11 @@ void PatchSectionView::setCursorPosition(const CursorPosition &pos)
     currentCircuitView()->deselect();
     section->setCursor(pos);
     updateCursor();
+}
+
+const CursorPosition &PatchSectionView::getCursorPosition() const
+{
+    return section->cursorPosition();
 }
 
 void PatchSectionView::deleteCurrentAtom()

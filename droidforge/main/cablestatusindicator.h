@@ -13,6 +13,8 @@ class CableStatusIndicator : public QWidget
     QString cableName;
     QImage warningImage;
 
+    bool patching;
+
     int numAsInput;
     int numAsOutput;
 
@@ -25,9 +27,12 @@ public:
     // Das hier verbinden
     void set(QString name, int numAsInput, int numAsOutput);
     void clear();
+    void setPatchingState(bool);
 
 private:
 
+    void paintPatching(QPainter &painter);
+    void paintCableInfo(QPainter &painter);
 signals:
 
 };

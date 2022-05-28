@@ -17,6 +17,9 @@ class PatchView : public QTabWidget
     CircuitChooseDialog *circuitChooseDialog;
     int zoomLevel;
     Clipboard clipboard;
+    bool patching;
+    unsigned patchingStartSection;
+    CursorPosition patchingStartPosition;
 
 public:
     PatchView();
@@ -34,6 +37,10 @@ public:
     Patch *integratePatch(Patch *otherpatch);
     Patch *getSelectionAsPatch() const;
     bool interactivelyRemapRegisters(Patch *otherpatch);
+    bool isPatching() const { return patching; };
+    void abortAllActions();
+    // TODO: patching zurücksetzen, wenn sich irgendwas am Patch geändert
+    // hat. Am besten per Signal oder so.
 
 public slots:
     void nextSection();
@@ -42,7 +49,9 @@ public slots:
     void newCircuit();
     void addJack();
     void editValue();
-    void createInternalCable();
+    void startPatching();
+    void finishPatching();
+    void abortPatching();
     void followInternalCable();
     void editCircuitComment();
     void renameCurrentSection();

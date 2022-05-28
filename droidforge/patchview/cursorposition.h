@@ -11,6 +11,7 @@ struct CursorPosition
 
     CursorPosition();
     CursorPosition(int c, int r, int co) : circuitNr(c), row(r), column(co) {};
+    bool isAtAtom() const;
 };
 
 QDebug &operator<<(QDebug &out, const CursorPosition &pos);

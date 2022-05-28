@@ -24,6 +24,7 @@ PatchView::PatchView()
     , patchPropertiesDialog{}
     , circuitChooseDialog{}
     , zoomLevel(0)
+    , patching(false)
 {
     setMovable(true);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
@@ -231,6 +232,16 @@ bool PatchView::interactivelyRemapRegisters(Patch *otherpatch)
     return true;
 }
 
+void PatchView::abortAllActions()
+{
+    if (patching)
+        abortPatching();
+    for (qsizetype i=0; i<patch->numSections(); i++) {
+        PatchSectionView *psv = (PatchSectionView *)widget(i);
+        psv->clearSelection();
+     }
+}
+
 
 Patch *PatchView::integratePatch(Patch *otherpatch)
 {
@@ -299,11 +310,59 @@ void PatchView::editValue()
     currentPatchSectionView()->editValue(0);
 }
 
-void PatchView::createInternalCable()
+void PatchView::startPatching()
 {
-
-    qDebug() << "create";
+    patching = true;
+    patchingStartSection = currentIndex();
+    patchingStartPosition = currentPatchSectionView()->getCursorPosition();
+    the_forge->cableIndicator()->setPatchingState(true);
 }
+
+void PatchView::finishPatching()
+{
+    Q_ASSERT(patching);
+    patching = false;
+    the_forge->cableIndicator()->setPatchingState(false);
+
+    Q_ASSERT(patchingStartSection < count());
+
+    PatchSectionView *startView = (PatchSectionView *)widget(patchingStartSection);
+    PatchSection *startSection = patch->section(patchingStartSection);
+    CursorPosition startPos = patchingStartPosition;
+    const Atom *startAtom = startSection->atomAt(startPos);
+
+    PatchSectionView *endView = currentPatchSectionView();
+    PatchSection *endSection = patch->section(currentIndex());
+    CursorPosition endPos = currentPatchSectionView()->getCursorPosition();
+    const Atom *endAtom = endSection->atomAt(endPos);
+
+    QString cableName;
+    if (startAtom && startAtom->isCable())
+        cableName = ((AtomCable *)startAtom)->getCable();
+    else if (endAtom && endAtom->isCable())
+        cableName = ((AtomCable *)endAtom)->getCable();
+    else {
+        cableName = NameChooseDialog::getName(tr("Create new internal patch cable"), tr("Cable name:"));
+        if (cableName == "")
+            return;
+        cableName = cableName.toUpper();
+    }
+
+    the_forge->registerEdit(tr("Creating internal cable '%1'").arg(cableName));
+    startSection->setAtomAt(startPos, new AtomCable(cableName));
+    endSection->setAtomAt(endPos, new AtomCable(cableName));
+    if (startView != endView)
+        startView->rebuildPatchSection();
+    endView->rebuildPatchSection();
+    the_forge->patchHasChanged();
+}
+
+void PatchView::abortPatching()
+{
+    patching = false;
+    the_forge->cableIndicator()->setPatchingState(false);
+}
+
 
 void PatchView::followInternalCable()
 {

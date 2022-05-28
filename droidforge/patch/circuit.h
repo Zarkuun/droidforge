@@ -32,6 +32,7 @@ public:
     void deleteJackAssignment(unsigned i);
     const Atom *atomAt(int row, int column) const;
     Atom *atomAt(int row, int column);
+    void setAtomAt(int row, int column, Atom *atom);
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
 

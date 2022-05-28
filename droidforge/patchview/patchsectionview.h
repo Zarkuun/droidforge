@@ -44,10 +44,13 @@ public:
     void setZoom(int zoom);
     void copyToClipboard(Clipboard &clipboard);
     Patch *getSelectionAsPatch() const;
+    void clearSelection();
     void rebuildPatchSection();
     const Atom *currentAtom() const;
+    Atom *currentAtom();
     bool atomCellSelected() const;
     void setCursorPosition(const CursorPosition &pos);
+    const CursorPosition &getCursorPosition() const;
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -60,7 +63,6 @@ private:
     void updateCableIndicator();
     void setMouseSelection(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
-    void clearSelection();
     void handleLeftMousePress(const CursorPosition &curPos);
     void handleRightMousePress(CircuitView *cv, const CursorPosition &curPos);
     void buildPatchSection();

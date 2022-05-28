@@ -235,6 +235,17 @@ Circuit *PatchSection::currentCircuit()
         return 0;
 }
 
+const Atom *PatchSection::atomAt(const CursorPosition &pos)
+{
+    return circuits[pos.circuitNr]->atomAt(pos.row, pos.column);
+}
+
+void PatchSection::setAtomAt(const CursorPosition &pos, Atom *atom)
+{
+    circuits[pos.circuitNr]->setAtomAt(pos.row, pos.column, atom);
+
+}
+
 JackAssignment *PatchSection::currentJackAssignment()
 {
     Circuit *c = currentCircuit();

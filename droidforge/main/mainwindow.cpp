@@ -115,9 +115,12 @@ void MainWindow::setPatch(Patch *newpatch)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (!patchView.handleKeyPress(event)) {
+    if (event->key() == Qt::Key_Escape) {
+        patchView.abortAllActions();
+        // rackView.abortAllAction();
+    }
+    else  if (!patchView.handleKeyPress(event)) {
         event->ignore();
-        // QWidget::keyPressEvent(event);
     }
 }
 
@@ -192,6 +195,7 @@ void MainWindow::createActions()
 
 void MainWindow::patchHasChanged()
 {
+    patchView.abortPatching();
     updateActions();
     updateWindowTitle();
     updateRackView();
@@ -243,11 +247,15 @@ void MainWindow::updateActions()
     actions[ACTION_ADD_JACK]->setEnabled(!empty);
     actions[ACTION_EDIT_VALUE]->setEnabled(!empty);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(!empty);
-    if (psv) {
-        const Atom *atom = psv->currentAtom();
-        actions[ACTION_FOLLOW_INTERNAL_CABLE]->setEnabled(atom && atom->isCable());
-        actions[ACTION_CREATE_INTERNAL_CABLE]->setEnabled(psv->atomCellSelected());
-    }
+    const Atom *atom = 0;
+    if (psv)
+        atom = psv->currentAtom();
+    bool isAtAtom = psv && psv->getCursorPosition().isAtAtom();
+
+    actions[ACTION_FOLLOW_INTERNAL_CABLE]->setEnabled(atom && atom->isCable());
+    actions[ACTION_START_PATCHING]->setVisible(isAtAtom && !patchView.isPatching());
+    actions[ACTION_FINISH_PATCHING]->setVisible(isAtAtom && patchView.isPatching());
+    actions[ACTION_ABORT_PATCHING]->setVisible(patchView.isPatching());
 
     if (psv && patchView.numSections() > 1) {
         deletePatchSectionAction->setText(tr("Delete section '%1'").arg(psv->getTitle()));
@@ -496,10 +504,21 @@ void MainWindow::createEditMenu()
     connect(actions[ACTION_FOLLOW_INTERNAL_CABLE], &QAction::triggered, &patchView, &PatchView::followInternalCable);
 
     // Create internal connection
-    actions[ACTION_CREATE_INTERNAL_CABLE] = new QAction(icon("swap_horiz"), tr("Create internal cable"), this);
-    actions[ACTION_CREATE_INTERNAL_CABLE]->setShortcut(QKeySequence(tr("=")));
-    editMenu->addAction(actions[ACTION_CREATE_INTERNAL_CABLE]);
-    connect(actions[ACTION_CREATE_INTERNAL_CABLE], &QAction::triggered, &patchView, &PatchView::createInternalCable);
+    actions[ACTION_START_PATCHING] = new QAction(icon("swap_horiz"), tr("Start creating internal cable"), this);
+    actions[ACTION_START_PATCHING]->setShortcut(QKeySequence(tr("=")));
+    editMenu->addAction(actions[ACTION_START_PATCHING]);
+    connect(actions[ACTION_START_PATCHING], &QAction::triggered, &patchView, &PatchView::startPatching);
+
+    // Finish internal connection
+    actions[ACTION_FINISH_PATCHING] = new QAction(icon("swap_horiz"), tr("Finish creating internal cable"), this);
+    actions[ACTION_FINISH_PATCHING]->setShortcut(QKeySequence(tr("=")));
+    editMenu->addAction(actions[ACTION_FINISH_PATCHING]);
+    connect(actions[ACTION_FINISH_PATCHING], &QAction::triggered, &patchView, &PatchView::finishPatching);
+
+    // Abort patching
+    actions[ACTION_ABORT_PATCHING] = new QAction(icon("swap_horiz"), tr("Abort creating internal cable"), this);
+    editMenu->addAction(actions[ACTION_ABORT_PATCHING]);
+    connect(actions[ACTION_ABORT_PATCHING], &QAction::triggered, &patchView, &PatchView::abortPatching);
 
     // Edit comment of current circuit
     actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);

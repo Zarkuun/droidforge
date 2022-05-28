@@ -7,6 +7,11 @@ CursorPosition::CursorPosition()
 {
 }
 
+bool CursorPosition::isAtAtom() const
+{
+    return row >= 0 && column >= 1;
+}
+
 QDebug &operator<<(QDebug &out, const CursorPosition &pos)
 {
     out << QString("%1.%2.%3").arg(pos.circuitNr).arg(pos.row).arg(pos.column);

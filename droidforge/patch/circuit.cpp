@@ -51,6 +51,11 @@ Atom *Circuit::atomAt(int row, int column)
     return jackAssignments[row]->atomAt(column);
 }
 
+void Circuit::setAtomAt(int row, int column, Atom *atom)
+{
+    jackAssignments[row]->replaceAtom(column, atom);
+}
+
 void Circuit::collectCables(QStringList &cables) const
 {
     for (auto ja: jackAssignments)
