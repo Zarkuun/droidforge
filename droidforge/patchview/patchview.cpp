@@ -305,14 +305,17 @@ void PatchView::createInternalCable()
 
 void PatchView::followInternalCable()
 {
-    Patch::iterator it = patch->begin();
-    qDebug() << "FOLLOW";
-    while (*it) {
-        Atom *atom = *it;
+    for (auto atom: *patch) {
         qDebug() << "ATOM" << atom->toString();
-        it.advance();
     }
-    qDebug("END");
+
+    // Patch::iterator it = patch->begin();
+    // qDebug() << "FOLLOW";
+    // while (*it) {
+    //     Atom *atom = *it;
+    //     it.advance();
+    // }
+    // qDebug("END");
 }
 
 void PatchView::editCircuitComment()
