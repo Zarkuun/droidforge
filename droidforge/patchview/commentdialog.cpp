@@ -33,7 +33,7 @@ QString CommentDialog::editComment(QString c)
     dialog->textEdit->setText(c);
     dialog->textEdit->moveCursor(QTextCursor::End);
     if (dialog->exec() == QDialog::Accepted)
-        return dialog->textEdit->toPlainText();
+        return dialog->textEdit->toPlainText().trimmed();
     else
         return c;
 }

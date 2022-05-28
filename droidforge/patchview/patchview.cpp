@@ -298,6 +298,21 @@ void PatchView::editValue()
     currentPatchSectionView()->editValue(0);
 }
 
+void PatchView::createInternalCable()
+{
+    qDebug() << "create";
+}
+
+void PatchView::followInternalCable()
+{
+    Patch::iterator it = patch->begin();
+    qDebug() << "FOLLOW";
+    while (*it) {
+        qDebug() << "ATOM" << *it;
+    }
+    qDebug("END");
+}
+
 void PatchView::editCircuitComment()
 {
     currentPatchSectionView()->editCircuitComment(0);
@@ -486,7 +501,8 @@ void PatchView::tabContextMenu(int index)
 {
     if (QApplication::mouseButtons() == Qt::RightButton) {
         QMenu *menu = new QMenu(this);
-        QString title = patch->section(index)->getNonemptyTitle();
+        // TODO: Für was war das?
+        // QString title = patch->section(index)->getNonemptyTitle();
 
         // New
         QAction *actionNew = new QAction(tr("New section"));
@@ -501,8 +517,7 @@ void PatchView::tabContextMenu(int index)
             this->duplicateSection(index); });
 
         // Move selection
-        QAction *action = the_forge->getMoveIntoSectionAction();
-        menu->addAction(action);
+        menu->addAction(the_forge->action(ACTION_MOVE_INTO_SECTION));
 
         // Merge with left
         if (index > 0) {

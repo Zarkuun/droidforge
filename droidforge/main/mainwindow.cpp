@@ -184,6 +184,9 @@ void MainWindow::createActions()
     prevSectionAct->setStatusTip(tr("Switch to the previous section"));
     addAction(prevSectionAct);
     connect(prevSectionAct, &QAction::triggered, &patchView, &PatchView::previousSection);
+
+    for (unsigned i=0; i<NUM_ACTIONS; i++)
+        actions[i]->setShortcutVisibleInContextMenu(true);
 }
 
 
@@ -235,10 +238,17 @@ void MainWindow::updateActions()
     pasteSmartAction->setEnabled(patchView.circuitsInClipboard());
 
     const PatchSectionView *psv = patchView.currentPatchSectionView();
+    qDebug() << "psv" << psv;
     bool empty = !psv || psv->isEmpty();
-    addJackAction->setEnabled(!empty);
-    editValueAction->setEnabled(!empty);
-    editCircuitCommentAction->setEnabled(!empty);
+    actions[ACTION_ADD_JACK]->setEnabled(!empty);
+    actions[ACTION_EDIT_VALUE]->setEnabled(!empty);
+    actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(!empty);
+    if (psv) {
+        const Atom *atom = psv->currentAtom();
+        actions[ACTION_FOLLOW_INTERNAL_CABLE]->setEnabled(atom && atom->isCable());
+        actions[ACTION_CREATE_INTERNAL_CABLE]->setEnabled(psv->atomCellSelected());
+    }
+
     if (patchView.numSections() > 1) {
         deletePatchSectionAction->setText(tr("Delete section '%1'").arg(psv->getTitle()));
         deletePatchSectionAction->setEnabled(true);
@@ -247,7 +257,7 @@ void MainWindow::updateActions()
         deletePatchSectionAction->setText(tr("Delete section"));
         deletePatchSectionAction->setEnabled(false);
     }
-    moveIntoSectionAction->setEnabled(patchView.circuitsSelected());
+    actions[ACTION_MOVE_INTO_SECTION]->setEnabled(patchView.circuitsSelected());
 }
 
 void MainWindow::updateClipboardInfo(QString info)
@@ -459,32 +469,45 @@ void MainWindow::createEditMenu()
     editMenu->addAction(pasteSmartAction);
 
     // New circuit...
-    newCircuitAction = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
-    newCircuitAction->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
-    connect(newCircuitAction, &QAction::triggered, &patchView, &PatchView::newCircuit);
-    editMenu->addAction(newCircuitAction);
-    toolbar->addAction(newCircuitAction);
+    actions[ACTION_NEW_CIRCUIT] = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
+    actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
+    connect(actions[ACTION_NEW_CIRCUIT], &QAction::triggered, &patchView, &PatchView::newCircuit);
+    editMenu->addAction(actions[ACTION_NEW_CIRCUIT]);
+    toolbar->addAction(actions[ACTION_NEW_CIRCUIT]);
 
     // New jacks assignment
-    addJackAction = new QAction(icon("settings_input_composite"), tr("&New jack..."), this);
-    addJackAction->setShortcut(QKeySequence(tr("Ctrl+N")));
-    connect(addJackAction, &QAction::triggered, &patchView, &PatchView::addJack);
-    editMenu->addAction(addJackAction);
-    toolbar->addAction(addJackAction);
+    actions[ACTION_ADD_JACK] = new QAction(icon("settings_input_composite"), tr("&New jack..."), this);
+    actions[ACTION_ADD_JACK]->setShortcut(QKeySequence(tr("Ctrl+N")));
+    connect(actions[ACTION_ADD_JACK], &QAction::triggered, &patchView, &PatchView::addJack);
+    editMenu->addAction(actions[ACTION_ADD_JACK]);
+    toolbar->addAction(actions[ACTION_ADD_JACK]);
 
     // Edit current line / field
-    editValueAction = new QAction(icon("edit"), tr("&Edit element under cursor..."), this);
-    editValueAction->setShortcuts({
-                                    QKeySequence(tr("Enter")),
+    actions[ACTION_EDIT_VALUE] = new QAction(icon("edit"), tr("&Edit element under cursor..."), this);
+    actions[ACTION_EDIT_VALUE]->setShortcuts({ QKeySequence(tr("Enter")),
                                     QKeySequence(tr("Return"))});
-    editMenu->addAction(editValueAction);
-    connect(editValueAction, &QAction::triggered, &patchView, &PatchView::editValue);
+    editMenu->addAction(actions[ACTION_EDIT_VALUE]);
+    connect(actions[ACTION_EDIT_VALUE], &QAction::triggered, &patchView, &PatchView::editValue);
+
+    // Follow internal connection
+    actions[ACTION_FOLLOW_INTERNAL_CABLE] = new QAction(icon("youtube_searched_for"), tr("&Follow internal cable"), this);
+    actions[ACTION_FOLLOW_INTERNAL_CABLE]->setShortcut(QKeySequence(tr("?")));
+    editMenu->addAction(actions[ACTION_FOLLOW_INTERNAL_CABLE]);
+    connect(actions[ACTION_FOLLOW_INTERNAL_CABLE], &QAction::triggered, &patchView, &PatchView::followInternalCable);
+
+    // Create internal connection
+    actions[ACTION_CREATE_INTERNAL_CABLE] = new QAction(icon("swap_horiz"), tr("Create internal cable"), this);
+    actions[ACTION_CREATE_INTERNAL_CABLE]->setShortcut(QKeySequence(tr("=")));
+    editMenu->addAction(actions[ACTION_CREATE_INTERNAL_CABLE]);
+    connect(actions[ACTION_CREATE_INTERNAL_CABLE], &QAction::triggered, &patchView, &PatchView::createInternalCable);
 
     // Edit comment of current circuit
-    editCircuitCommentAction = new QAction(tr("Edit circuit comment..."), this);
-    editCircuitCommentAction->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
-    editMenu->addAction(editCircuitCommentAction);
-    connect(editCircuitCommentAction, &QAction::triggered, &patchView, &PatchView::editCircuitComment);
+    actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);
+    actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
+    actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcutVisibleInContextMenu(true);
+    qDebug() << "Kontesxt" << actions[ACTION_EDIT_CIRCUIT_COMMENT]->shortcutContext();
+    editMenu->addAction(actions[ACTION_EDIT_CIRCUIT_COMMENT]);
+    connect(actions[ACTION_EDIT_CIRCUIT_COMMENT], &QAction::triggered, &patchView, &PatchView::editCircuitComment);
 
     editMenu->addSeparator();
 
@@ -504,9 +527,9 @@ void MainWindow::createEditMenu()
     connect(deletePatchSectionAction, &QAction::triggered, &patchView, &PatchView::deleteCurrentSection);
 
     // Move into sectin
-    moveIntoSectionAction = new QAction(tr("Move selection into new section"), this);
-    editMenu->addAction(moveIntoSectionAction);
-    connect(moveIntoSectionAction, &QAction::triggered, &patchView, &PatchView::moveIntoSection);
+    actions[ACTION_MOVE_INTO_SECTION] = new QAction(tr("Move selection into new section"), this);
+    editMenu->addAction(actions[ACTION_MOVE_INTO_SECTION]);
+    connect(actions[ACTION_MOVE_INTO_SECTION], &QAction::triggered, &patchView, &PatchView::moveIntoSection);
 }
 
 void MainWindow::createViewMenu()
@@ -534,12 +557,12 @@ void MainWindow::createRackMenu()
     QMenu *rackMenu = menuBar()->addMenu(tr("&Rack"));
 
     // Add controller
-    addControllerAction = new QAction(icon("keyboard"), tr("&New controller..."), this);
-    addControllerAction->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
-    connect(addControllerAction, &QAction::triggered, &rackView, &RackView::addController);
-    rackMenu->addAction(addControllerAction);
+    actions[ACTION_ADD_CONTROLLER] = new QAction(icon("keyboard"), tr("&New controller..."), this);
+    actions[ACTION_ADD_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
+    connect(actions[ACTION_ADD_CONTROLLER], &QAction::triggered, &rackView, &RackView::addController);
+    rackMenu->addAction(actions[ACTION_ADD_CONTROLLER]);
     toolbar->addSeparator();
-    toolbar->addAction(addControllerAction);
+    toolbar->addAction(actions[ACTION_ADD_CONTROLLER]);
 }
 
 void MainWindow::newPatch()

@@ -45,6 +45,8 @@ public:
     void copyToClipboard(Clipboard &clipboard);
     Patch *getSelectionAsPatch() const;
     void rebuildPatchSection();
+    const Atom *currentAtom() const;
+    bool atomCellSelected() const;
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -56,7 +58,8 @@ private:
     void setMouseSelection(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
     void clearSelection();
-    bool handleMousePress(const QPointF &pos);
+    void handleLeftMousePress(const CursorPosition &curPos);
+    void handleRightMousePress(CircuitView *cv, const CursorPosition &curPos);
     void buildPatchSection();
     void deletePatchSection();
     CircuitView *currentCircuitView();
@@ -82,8 +85,7 @@ private:
     void editJack(int key);
     void editAtom(int key);
     JackAssignment *buildJackAssignment(const QString &jackName);
-    QChar keyToChar(int key);
-    const Atom *currentAtom();
+    QChar keyToChar(int key); // TODO: was soll das hier?
 };
 
 #endif // PATCHSECTIONVIEW_H

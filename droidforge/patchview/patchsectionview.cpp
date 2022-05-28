@@ -15,6 +15,7 @@
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
 #include <QTransform>
+#include <QMenu>
 
 PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section, int zoom)
     : patch(patch)
@@ -123,14 +124,103 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
     return true;
 }
 
-
 void PatchSectionView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->type() == QMouseEvent::MouseButtonPress) {
-        if (!handleMousePress(event->pos())) {
-            // NIX
+    if (event->type() != QMouseEvent::MouseButtonPress)
+        return;
+
+    QPoint pos = event->pos();
+
+    // itemAt() applies the transformation of the graphics
+    // view such as the scroll bar and the alignment.
+    QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
+
+    if (item)
+    {
+        CircuitView *cv = (CircuitView *)item;
+        QPointF posInScene(mapToScene(pos));
+        QPointF posInCircuit = posInScene - item->pos();
+
+        // Loop over all circuits because we need the index number
+        // of the clicked circuit, not just the pointer.
+        for (unsigned i=0; i<circuitViews.size(); i++)
+        {
+            if (circuitViews[i] == cv) {
+                CursorPosition curPos;
+                curPos.circuitNr = i;
+                curPos.row = cv->jackAt(posInCircuit.y());
+                curPos.column = cv->columnAt(posInCircuit.x());
+
+                if (event->button() == Qt::LeftButton)
+                    handleLeftMousePress(curPos);
+                else
+                    handleRightMousePress(cv, curPos);
+                return;
+            }
         }
     }
+
+    // click on background
+    // TODO: The new circuit should appear at the end of the
+    // section, not where the cursor is.
+    if (event->button() == Qt::RightButton)
+        handleRightMousePress(0, CursorPosition());
+}
+
+void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
+{
+    currentCircuitView()->deselect();
+    if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
+        setMouseSelection(curPos);
+    else {
+        clearSelection();
+        section->setCursor(curPos);
+    }
+    updateCursor();
+}
+
+void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPosition &curPos)
+{
+    // TODO: Show a different menu when a selection is active and
+    // a cell from the selection is being hit?
+    if (selection) {
+        qDebug("SELECTIONMENU");
+        return;
+    }
+
+    // Make sure that cursor is set to the cell the menu is
+    // working with. Otherwise all actions would address the
+    // wrong cell.
+    if (cv) {
+        section->setCursor(curPos);
+        updateCursor();
+    }
+
+    QMenu *menu = new QMenu(this);
+    menu->addAction(the_forge->action(ACTION_NEW_CIRCUIT));
+    if (cv) {
+        menu->addAction(the_forge->action(ACTION_EDIT_VALUE));
+        menu->addAction(the_forge->action(ACTION_ADD_JACK));
+        // TOOD:
+        // - remove circut
+        // - remove comment
+        // ..
+        if (curPos.row >= 0) {
+            if (curPos.column == 0) {
+                // TODO:
+                // - delete jack assignment
+            }
+            else {
+                const Atom *atom = currentAtom();
+                if (atom && atom->isCable())
+                    menu->addAction(the_forge->action(ACTION_FOLLOW_INTERNAL_CABLE));
+                menu->addAction(the_forge->action(ACTION_CREATE_INTERNAL_CABLE));
+            }
+        }
+    }
+
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->popup(QCursor::pos());
 }
 
 void PatchSectionView::resizeEvent(QResizeEvent *)
@@ -323,7 +413,10 @@ void PatchSectionView::editCircuitComment(int key)
     if (newComment != oldComment) {
         QString actionTitle = QString("changing comment for circuit '") + circuit->getName() + "'";
         the_forge->registerEdit(actionTitle);
-        circuit->setComment(newComment);
+        if (newComment != "")
+            circuit->setComment(newComment);
+        else
+            circuit->removeComment();
         rebuildPatchSection();
         the_forge->patchHasChanged();
     }
@@ -414,6 +507,7 @@ void PatchSectionView::updateCursor()
         updateCableIndicator();
     }
     updateRegisterHilites();
+    the_forge->updateActions(); // TODO: Sollte das nicht besser ein Signal sein?
 }
 
 void PatchSectionView::updateCableIndicator()
@@ -469,42 +563,6 @@ void PatchSectionView::clearSelection()
         the_forge->updateActions();
     }
 }
-
-bool PatchSectionView::handleMousePress(const QPointF &pos)
-{
-    // itemAt() applies the transformation of the graphics
-    // view such as the scroll bar and the alignment.
-    QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
-
-    if (!item)
-        return false;
-
-    CircuitView *cv = (CircuitView *)item;
-    QPointF posInScene(mapToScene(pos.toPoint()));
-    QPointF posInCircuit = posInScene - item->pos();
-
-    // Loop over all circuits because we need the index number
-    // of the clicked circuit, not just the pointer.
-    for (unsigned i=0; i<circuitViews.size(); i++)
-    {
-        if (circuitViews[i] == cv) {
-            currentCircuitView()->deselect();
-            CursorPosition pos;
-            pos.circuitNr = i;
-            pos.row = cv->jackAt(posInCircuit.y());
-            pos.column = cv->columnAt(posInCircuit.x());
-            if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
-                setMouseSelection(pos);
-            else {
-                clearSelection();
-                section->setCursor(pos);
-            }
-            updateCursor();
-        }
-    }
-    return true;
-}
-
 
 CircuitView *PatchSectionView::currentCircuitView()
 {
@@ -674,7 +732,7 @@ void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
     the_forge->patchHasChanged();
 }
 
-const Atom *PatchSectionView::currentAtom()
+const Atom *PatchSectionView::currentAtom() const
 {
     JackAssignment *ja = section->currentJackAssignment();
     if (!ja)
@@ -683,6 +741,12 @@ const Atom *PatchSectionView::currentAtom()
         int column = section->cursorPosition().column;
         return ja->atomAt(column);
     }
+}
+
+bool PatchSectionView::atomCellSelected() const
+{
+    const CursorPosition &cp = section->cursorPosition();
+    return (cp.row >= 0 && cp.column > 0);
 }
 
 void PatchSectionView::deleteCurrentAtom()

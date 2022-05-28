@@ -68,6 +68,104 @@ public:
     void remapRegister(AtomRegister from, AtomRegister to);
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);
 
+    // #define T Atom
+    class iterator {
+        Atom *atom;
+        Patch *patch;
+        int nSection;
+        int nCircuit;
+        int nJack;
+        int nAtom;
+
+    public:
+        iterator(Patch *p) : atom(0), patch(p), nSection(0), nCircuit(0), nJack(0), nAtom(-1) {
+            advance();
+        }
+        Atom *&operator*() { return atom; }
+        Atom **operator->() { return &atom; }
+
+    private:
+
+        bool advanceSection() {
+            nSection++;
+            nCircuit = 0;
+            nJack = 0;
+            nAtom = 0;
+            return nSection < patch->sections.size();
+        }
+
+        bool advanceCircuit() {
+            nCircuit++;
+            nJack = 0;
+            nAtom = 0;
+            PatchSection *section = patch->sections[nSection];
+            while (nCircuit >= section->circuits.size()) {
+                if (!advanceSection())
+                    return false; // was in last section
+                // nCircuit was reset to 0 by advanceSection()
+                section = patch->sections[nSection];
+            }
+            return true;
+        }
+
+        bool advanceJack() {
+            nJack++;
+            nAtom = 0;
+            PatchSection *section = patch->sections[nSection];
+            Circuit *circuit = section->circuits[nCircuit];
+            while (nJack >= circuit->numJackAssignments()) {
+                if (!advanceCircuit())
+                    return false;
+                section = patch->sections[nSection];
+                circuit = section->circuits[nCircuit];
+            }
+            return true;
+        }
+
+        bool advance() {
+            nAtom ++;
+            PatchSection *section = patch->sections[nSection];
+            Circuit *circuit = section->circuits[nCircuit];
+            JackAssignment *ja = circuit->jackAssignment(nJack);
+            while (!ja->atomAt(nAtom+1)) {
+                nAtom++;
+                if (nAtom > 3) {
+                    if (!advanceCircuit())
+                        return false;
+                }
+                section = patch->sections[nSection];
+                circuit = section->circuits[nCircuit];
+                ja = circuit->jackAssignment(nJack);
+            }
+            atom = ja->atomAt(nAtom+1);
+            return true;
+        }
+    };
+
+    iterator begin() { return iterator(this); }
+    /*
+    ////
+    ////     T *i = nullptr;
+    //// public:
+    ////     using difference_type = qsizetype;
+    ////     using value_type = T;
+    ////     // libstdc++ shipped with gcc < 11 does not have a fix for defect LWG 3346
+#if //// __cplusplus >= 202002L && (!defined(_GLIBCXX_RELEASE) || _GLIBCXX_RELEASE >= 11)
+    ////     using iterator_category = std::contiguous_iterator_tag;
+    ////     using element_type = value_type;
+#els//// e
+    ////     using iterator_category = std::random_access_iterator_tag;
+#end//// if
+
+    ////     using pointer = T *;
+    ////     using reference = T &;
+    ////     inline constexpr iterator() = default;
+    ////     inline iterator(T *n) : i(n) {}
+    ////     inline T &operator*() const { return *i; }
+    ////     inline T *operator->() const { return i; }
+    };
+    */
+
 private:
 };
 

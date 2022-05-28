@@ -27,6 +27,18 @@ extern DroidFirmware *the_firmware;
 #define FILE_MODE_LOAD 0
 #define FILE_MODE_INTEGRATE 1
 
+typedef enum {
+    ACTION_ADD_CONTROLLER,
+    ACTION_ADD_JACK,
+    ACTION_EDIT_VALUE,
+    ACTION_CREATE_INTERNAL_CABLE,
+    ACTION_FOLLOW_INTERNAL_CABLE,
+    ACTION_NEW_CIRCUIT,
+    ACTION_EDIT_CIRCUIT_COMMENT,
+    ACTION_MOVE_INTO_SECTION,
+    NUM_ACTIONS,
+} action_t;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -36,6 +48,7 @@ class MainWindow : public QMainWindow
     QMenuBar *menubar;
     QStatusBar *statusbar;
     CableStatusIndicator *cableStatusIndicator;
+    QAction *actions[NUM_ACTIONS];
 
 private:
     DroidFirmware firmware;
@@ -57,15 +70,10 @@ private:
     QAction *pasteAction;
     QAction *pasteSmartAction;
     QAction *addJackAction;
-    QAction *editValueAction;
-    QAction *newCircuitAction;
     QAction *openEnclosingFolderAction;
-    QAction *editCircuitCommentAction;
     QAction *renamePatchSectionAction;
     QAction *newPatchSectionAction;
     QAction *deletePatchSectionAction;
-    QAction *moveIntoSectionAction;
-    QAction *addControllerAction;
 
     QMenu *fileMenu;
     QAction *newAct;
@@ -93,10 +101,9 @@ public:
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
-    QAction *getAddControllerAction() { return addControllerAction; };
-    QAction *getMoveIntoSectionAction() { return moveIntoSectionAction; };
     QDir userPatchDirectory() const;
     CableStatusIndicator *cableIndicator() { return cableStatusIndicator; };
+    QAction *action(action_t a) { return actions[a]; };
 
 protected:
     void keyPressEvent(QKeyEvent *event);

@@ -42,6 +42,8 @@ public slots:
     void newCircuit();
     void addJack();
     void editValue();
+    void createInternalCable();
+    void followInternalCable();
     void editCircuitComment();
     void renameCurrentSection();
     void deleteCurrentSection();
