@@ -10,6 +10,7 @@ struct CursorPosition
     int column;
 
     CursorPosition();
+    CursorPosition(int c, int r, int co) : circuitNr(c), row(r), column(co) {};
 };
 
 QDebug &operator<<(QDebug &out, const CursorPosition &pos);

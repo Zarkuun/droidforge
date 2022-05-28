@@ -176,7 +176,6 @@ void Patch::setTitle(const QString &newTitle)
     title = newTitle;
 }
 
-
 QStringList Patch::allCables() const
 {
     QStringList cables;

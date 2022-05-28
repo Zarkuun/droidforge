@@ -1,4 +1,5 @@
 #include "patchview.h"
+#include "atomcable.h"
 #include "cablecolorizer.h"
 #include "mainwindow.h"
 #include "tuning.h"
@@ -305,17 +306,51 @@ void PatchView::createInternalCable()
 
 void PatchView::followInternalCable()
 {
-    for (auto atom: *patch) {
-        qDebug() << "ATOM" << atom->toString();
+    const Atom *currentAtom = currentPatchSectionView()->currentAtom();
+    if (!currentAtom || !currentAtom->isCable())
+        return;
+
+    QString name = ((AtomCable *)currentAtom)->getCable();
+
+    bool waitForNext = false;
+    bool found = false;
+
+    // First try to find the next atom *after* the current
+    Patch::iterator it = patch->begin();
+    while (*it) {
+        Atom *atom = *it;
+        if (atom == currentAtom)
+            waitForNext = true;
+        else if (waitForNext && atom->isCable() && ((AtomCable *)atom)->getCable() == name) {
+            qDebug() << "FOUND 1";
+            found = true;
+            break;
+        }
+        ++it;
     }
 
-    // Patch::iterator it = patch->begin();
-    // qDebug() << "FOLLOW";
-    // while (*it) {
-    //     Atom *atom = *it;
-    //     it.advance();
-    // }
-    // qDebug("END");
+    // Now try from the start of the patch
+    if (!found) {
+        it = patch->begin();
+        while (*it && *it != currentAtom) {
+            Atom *atom = *it;
+            if (atom->isCable() && ((AtomCable *)atom)->getCable() == name) {
+                qDebug() << "FOUND 2";
+                found = true;
+                break;
+            }
+            ++it;
+        }
+    }
+
+    if (!found)
+        return;
+
+    unsigned targetSection = it.sectionIndex();
+    setCurrentIndex(targetSection);
+    CursorPosition curPos = it.cursorPosition();
+    qDebug() << "MOVE TO POS" << curPos.circuitNr << curPos.row << curPos.column;
+    currentPatchSectionView()->setCursorPosition(curPos);
 }
 
 void PatchView::editCircuitComment()

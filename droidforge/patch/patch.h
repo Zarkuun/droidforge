@@ -60,6 +60,7 @@ public:
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
     QStringList allCables() const;
+    // TODO: überall den neuen Iterator verwenden!
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     bool needG8() const; // TODO: Do we need this?
     bool needX7() const; // TODO: Do we need this?
@@ -89,6 +90,9 @@ public:
         Atom *&operator*() { return atom; }
         bool operator != (const iterator &it) { return atom != it.atom; };
         void operator ++() { advance(); };
+        int sectionIndex() const { return nSection; };
+        CursorPosition cursorPosition() const {
+               return CursorPosition(nCircuit, nJack, nAtom); };
 
     private:
         void moveToFirstAtom();

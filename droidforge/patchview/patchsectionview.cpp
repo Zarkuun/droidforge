@@ -749,6 +749,13 @@ bool PatchSectionView::atomCellSelected() const
     return (cp.row >= 0 && cp.column > 0);
 }
 
+void PatchSectionView::setCursorPosition(const CursorPosition &pos)
+{
+    currentCircuitView()->deselect();
+    section->setCursor(pos);
+    updateCursor();
+}
+
 void PatchSectionView::deleteCurrentAtom()
 {
     JackAssignment *ja = section->currentJackAssignment();

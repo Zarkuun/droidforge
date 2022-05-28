@@ -47,6 +47,7 @@ public:
     void rebuildPatchSection();
     const Atom *currentAtom() const;
     bool atomCellSelected() const;
+    void setCursorPosition(const CursorPosition &pos);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
