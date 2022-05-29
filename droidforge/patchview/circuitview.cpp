@@ -18,9 +18,9 @@ CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selecti
     , totalWidth(width)
     , lineHeight(lineHeight)
     , bottomPadding(bottomPadding)
-    , selected(false)
-    , currentJack(-2)
-    , currentColumn(0)
+    // , selected(false)
+    // , currentJack(-2)
+    // , currentColumn(0)
     , icon(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
 {
     effect.setBlurRadius(15);
@@ -127,8 +127,8 @@ QRectF CircuitView::cellRect(int row, int column) const
         return headerRect();
     else if (row == -1)
         return commentRect();
-    else if (currentColumn == 0)
-        return jackRect(currentJack);
+    else if (column == 0)
+        return jackRect(row);
     else
         return atomRect(row, column);
 }
@@ -378,20 +378,6 @@ QRect CircuitView::atomRect(int row, int column) const
     return QRect(x, jackRect(row).top(), width, CIRV_JACK_HEIGHT);
 }
 
-void CircuitView::select(const CursorPosition &cursor)
-{
-    currentJack = cursor.row;
-    currentColumn = cursor.column;
-    selected = true;
-    update();
-}
-
-void CircuitView::deselect()
-{
-    selected = false;
-    update();
-}
-
 int CircuitView::columnAt(unsigned x)
 {
     if (x <= columnPosition(1))
@@ -403,7 +389,6 @@ int CircuitView::columnAt(unsigned x)
     else
         return 3;
 }
-
 
 int CircuitView::jackAt(unsigned y)
 {
@@ -420,18 +405,4 @@ int CircuitView::jackAt(unsigned y)
         return circuit->numJackAssignments() - 1;
     else
         return jack;
-}
-
-QPoint CircuitView::frameCursorPosition() const
-{
-    // TODO: Brauch ich das noch?
-    QPoint origin = pos().toPoint();
-    int y = origin.y();
-    if (currentJack == -1)
-        y += CIRV_HEADER_HEIGHT;
-    else if (currentJack >= 0)
-        y += CIRV_HEADER_HEIGHT + commentHeight() + currentJack * CIRV_JACK_HEIGHT;
-
-    int x = columnPosition(currentColumn);
-    return QPoint(x, y);
 }

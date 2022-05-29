@@ -20,9 +20,6 @@ class CircuitView : public QGraphicsItem
     unsigned jackColumnWidth;
     unsigned atomColumnWidth;
     QGraphicsDropShadowEffect effect;
-    bool selected;
-    int currentJack;
-    unsigned currentColumn;
     QPixmap icon;
 
 public:
@@ -34,11 +31,8 @@ public:
     QRectF cellRect(int row, int column) const;
     unsigned numJackAssignments() { return circuit->numJackAssignments(); };
     QStringList usedJacks() const;
-    void select(const CursorPosition &); // TODO: Depracated
-    void deselect(); // TODO: Depracated
     int columnAt(unsigned x);
     int jackAt(unsigned y);
-    QPoint frameCursorPosition() const;
 
 private:
     void paintJacks(QPainter *painter);

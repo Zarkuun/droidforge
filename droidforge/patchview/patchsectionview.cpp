@@ -183,7 +183,6 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
 
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 {
-    currentCircuitView()->deselect();
     if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
         setMouseSelection(curPos);
     else {
@@ -262,7 +261,6 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
 
     int newPosition;
     if (!isEmpty()) {
-        currentCircuitView()->deselect();
         newPosition = section->cursorPosition().circuitNr;
         if (section->cursorPosition().row != -2)
             newPosition ++;
@@ -416,11 +414,13 @@ void PatchSectionView::editAtom(int key)
     if (ja->jackType() == JACKTYPE_UNKNOWN)
         return; // TODO: Edit unknown data anyway?
 
-    const Atom *atom = ja->atomAt(section->cursorPosition().column);
+    CursorPosition curPos = section->cursorPosition();
+    const Atom *atom = ja->atomAt(curPos.column);
     Atom *newAtom;
 
     if (key != 0) {
-        QPoint posRelativeToScene = currentCircuitView()->frameCursorPosition();
+        QRectF cursor = currentCircuitView()->cellRect(curPos.row, curPos.column);
+        QPointF posRelativeToScene = cursor.topLeft();
         QPoint posRelativeToView = mapFromScene(posRelativeToScene);
         QPoint posInScreen = mapToGlobal(posRelativeToView);
         QChar c(key);
@@ -542,7 +542,6 @@ void PatchSectionView::updateCursor()
     const CursorPosition &pos = section->cursorPosition();
 
     if (currentCircuitView()) {
-        currentCircuitView()->select(pos);
         QRectF br = currentCircuitView()->boundingRect();
         QRectF tbr = br.translated(currentCircuitView()->pos());
         ensureVisible(tbr);
@@ -648,7 +647,6 @@ JackAssignment *PatchSectionView::currentJackAssignment()
 
 void PatchSectionView::moveCursorPageUpDown(int whence)
 {
-    currentCircuitView()->deselect();
     if (whence == -1)
         section->moveCursorToPreviousCircuit();
     else
@@ -811,7 +809,6 @@ bool PatchSectionView::atomCellSelected() const
 
 void PatchSectionView::setCursorPosition(const CursorPosition &pos)
 {
-    currentCircuitView()->deselect();
     section->setCursor(pos);
     updateCursor();
 }
@@ -855,9 +852,6 @@ void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int
 
 void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
 {
-    if (!isEmpty())
-        currentCircuitView()->deselect();
-
     the_forge->registerEdit(tr("pasting %1 circuits").arg(clipboard.getCircuits().count()));
     for (auto circuit: clipboard.getCircuits()) {
         Circuit *newCircuit = circuit->clone();
@@ -970,7 +964,6 @@ void PatchSectionView::moveCursorUpDown(int whence)
     if (isEmpty())
         return;
 
-    currentCircuitView()->deselect();
     if (whence == 1) // dowldiln
         section->moveCursorDown();
     else // up

@@ -325,7 +325,7 @@ void PatchView::finishPatching()
     patching = false;
     the_forge->cableIndicator()->setPatchingState(false);
 
-    Q_ASSERT(patchingStartSection < count());
+    Q_ASSERT((int)patchingStartSection < count());
 
     PatchSectionView *startView = (PatchSectionView *)widget(patchingStartSection);
     PatchSection *startSection = patch->section(patchingStartSection);
