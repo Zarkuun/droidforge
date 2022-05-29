@@ -30,6 +30,8 @@ QtApplication {
         "patchview/cablecolorizer.h",
         "patchview/clipboard.cpp",
         "patchview/clipboard.h",
+        "patchview/framecursor.cpp",
+        "patchview/framecursor.h",
         "patchview/selection.cpp",
         "patchview/selection.h",
         "resources.qrc",

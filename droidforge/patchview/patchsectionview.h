@@ -2,6 +2,7 @@
 #define PATCHSECTIONVIEW_H
 
 #include "circuitview.h"
+#include "framecursor.h"
 #include "patchsection.h"
 #include "selection.h"
 #include "tuning.h"
@@ -11,6 +12,7 @@
 
 #include <QGraphicsView>
 #include <QResizeEvent>
+#include <QGraphicsRectItem>
 
 class PatchView;
 
@@ -23,6 +25,7 @@ class PatchSectionView : public QGraphicsView
     QList<CircuitView *>circuitViews;
     AtomSelectorDialog *atomSelectorDialog; // TODO: Jede Section hat nen eigenen Dialog
     Selection *selection;
+    FrameCursor *frameCursor;
 
 public:
     PatchSectionView(const Patch *patch, PatchSection *section, int zoom);

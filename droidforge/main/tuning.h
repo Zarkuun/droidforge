@@ -21,6 +21,7 @@
 #define STANDARD_SPACING                     10
 #define COLOR_LINE                           QColor(120, 120, 120)
 #define COLOR_FRAME_CURSOR                   QColor(255, 200, 50)
+#define COLOR_FRAME_CURSOR_BACKGROUND        COLOR_FRAME_CURSOR
 #define COLOR_TEXT                           QColor(255, 255, 255)
 #define COLOR_TEXT_UNKNOWN                   QColor(255, 255, 0)
 #define COLOR_JACK_INPUT                     QColor(0, 200, 255)

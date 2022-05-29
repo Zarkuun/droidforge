@@ -119,22 +119,18 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 
     if (*selection && (*selection)->circuitSelected(circuitNumber))
         painter->fillRect(cr, CIRV_COLOR_SELECTION);
-
-    if (selected)
-        paintCursor(painter);
 }
 
-void CircuitView::paintCursor(QPainter *painter) const
+QRectF CircuitView::cellRect(int row, int column) const
 {
-    painter->setPen(COLOR_FRAME_CURSOR);
-    if (currentJack == -2)
-        painter->drawRect(headerRect());
-    else if (currentJack == -1)
-        painter->drawRect(commentRect());
+    if (row == -2) // TODO: Endlich makros für -2 und -1 !!
+        return headerRect();
+    else if (row == -1)
+        return commentRect();
     else if (currentColumn == 0)
-        painter->drawRect(jackRect(currentJack));
+        return jackRect(currentJack);
     else
-        painter->drawRect(atomRect(currentJack, currentColumn));
+        return atomRect(row, column);
 }
 
 QStringList CircuitView::usedJacks() const
@@ -146,7 +142,6 @@ QStringList CircuitView::usedJacks() const
     }
     return used;
 }
-
 
 void CircuitView::paintJacks(QPainter *painter)
 {
@@ -429,6 +424,7 @@ int CircuitView::jackAt(unsigned y)
 
 QPoint CircuitView::frameCursorPosition() const
 {
+    // TODO: Brauch ich das noch?
     QPoint origin = pos().toPoint();
     int y = origin.y();
     if (currentJack == -1)

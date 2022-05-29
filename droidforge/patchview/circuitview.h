@@ -31,10 +31,11 @@ public:
     static unsigned minimumWidth();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                    QWidget *widget) override;
+    QRectF cellRect(int row, int column) const;
     unsigned numJackAssignments() { return circuit->numJackAssignments(); };
     QStringList usedJacks() const;
-    void select(const CursorPosition &);
-    void deselect();
+    void select(const CursorPosition &); // TODO: Depracated
+    void deselect(); // TODO: Depracated
     int columnAt(unsigned x);
     int jackAt(unsigned y);
     QPoint frameCursorPosition() const;
@@ -43,7 +44,6 @@ private:
     void paintJacks(QPainter *painter);
     void paintJack(QPainter *painter, JackAssignment *ja, const QColor color, unsigned row);
     void paintOperator(QPainter *painter, unsigned x, unsigned y, QString o);
-    void paintCursor(QPainter *painter) const;
     QRect headerRect() const;
     QRect commentRect() const;
     QRect jackLineRect(int row) const;

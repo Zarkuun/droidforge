@@ -23,6 +23,7 @@ PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section, in
     , section(section)
     , atomSelectorDialog{}
     , selection(0)
+    , frameCursor(0)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -65,8 +66,12 @@ void PatchSectionView::buildPatchSection()
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
         y += cv->boundingRect().height();
     }
-    if (!isEmpty())
+
+    if (section->circuits.size() > 0) {
+        frameCursor = new FrameCursor();
+        scene->addItem(frameCursor);
         updateCursor();
+    }
 }
 
 void PatchSectionView::deletePatchSection()
@@ -401,8 +406,6 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 
 void PatchSectionView::editAtom(int key)
 {
-    PatchView *pv = patchView();
-
     if (key == 0 && patchView()->isPatching())  {
         patchView()->finishPatching();
         return;
@@ -536,13 +539,20 @@ void PatchSectionView::setZoom(int zoom)
 
 void PatchSectionView::updateCursor()
 {
+    const CursorPosition &pos = section->cursorPosition();
+
     if (currentCircuitView()) {
-        currentCircuitView()->select(section->cursorPosition());
+        currentCircuitView()->select(pos);
         QRectF br = currentCircuitView()->boundingRect();
         QRectF tbr = br.translated(currentCircuitView()->pos());
         ensureVisible(tbr);
         updateCableIndicator();
+
+        QRectF cr = currentCircuitView()->cellRect(pos.row, pos.column).translated(currentCircuitView()->pos());
+        frameCursor->setRect(cr);
+        frameCursor->startAnimation();
     }
+
     updateRegisterHilites();
     the_forge->updateActions(); // TODO: Sollte das nicht besser ein Signal sein?
 }
