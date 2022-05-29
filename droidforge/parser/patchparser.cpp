@@ -28,6 +28,7 @@ void PatchParser::parse(QString fileName, Patch *patch)
     errorMessage = "";
     errorLine = 0;
     section = 0;
+    circuit = 0;
 
     this->patch = patch;
 
@@ -46,6 +47,7 @@ void PatchParser::parse(QString fileName, Patch *patch)
             parseLine(line);
         }
         catch (ParseException &e) {
+            qDebug() << "Da kam ne Exceptin:" << e.toString();
             QString error = QString("Line ") + QString::number(errorLine) + ": " + e.toString() + "\n";
             lineerrors += error;
         }
@@ -181,22 +183,40 @@ void PatchParser::parseLibraryMetaData(QString data)
     patch->setLibraryMetaData(data);
 }
 
-
 void PatchParser::parseCircuitLine(QString line)
 {
+    static QRegularExpression withComment("^\\[([a-zA-Z0-9]+)\\][[:space:]]*#(.*)$");
+    static QRegularExpression withoutComment("^\\[([a-zA-Z0-9]+)\\]$");
+
+    QString circuitName;
+    QString comment;
+
+    QRegularExpressionMatch m;
+    m = withComment.match(line);
+    if (m.hasMatch()) {
+        circuitName = m.captured(1);
+        comment = m.captured(2);
+    }
+    else {
+        m = withoutComment.match(line);
+        if (m.hasMatch())
+            circuitName = m.captured(1);
+        else {
+            throw ParseException("Invalid line starting with [");
+        }
+    }
+
     commentState = CIRCUIT_HEADER;
-
-    if (!line.endsWith(']'))
-        throw ParseException("Missing ] at the end of the line");
-
-    QString circuitName = line.sliced(1).chopped(1);
 
     if (ModuleBuilder::controllerExists(circuitName.toLower())) {
         patch->addController(circuitName.toLower());
         currentComment.clear();
     }
-    else
+    else {
+        if (comment != "")
+            currentComment.append(comment);
         parseCircuit(circuitName);
+    }
 }
 
 void PatchParser::parseCircuit(QString name)
