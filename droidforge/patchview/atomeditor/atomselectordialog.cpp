@@ -26,9 +26,14 @@ AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
     setLayout(mainLayout);
 }
 
+void AtomSelectorDialog::setAllowFraction(bool allowFraction)
+{
+    atomSelector->setAllowFraction(allowFraction);
+}
+
 
 // static
-Atom *AtomSelectorDialog::editAtom(const Patch *patch, jacktype_t jacktype, const Atom *atom)
+Atom *AtomSelectorDialog::editAtom(const Patch *patch, jacktype_t jacktype, bool allowFraction, const Atom *atom)
 {
     static AtomSelectorDialog *inputAtomSelectorDialog = 0;
     static AtomSelectorDialog *outputAtomSelectorDialog = 0;
@@ -38,6 +43,7 @@ Atom *AtomSelectorDialog::editAtom(const Patch *patch, jacktype_t jacktype, cons
     if (jacktype == JACKTYPE_INPUT) {
         if (!inputAtomSelectorDialog)
             inputAtomSelectorDialog = new AtomSelectorDialog(JACKTYPE_INPUT);
+        inputAtomSelectorDialog->setAllowFraction(allowFraction);
         dialog = inputAtomSelectorDialog;
     }
     else {

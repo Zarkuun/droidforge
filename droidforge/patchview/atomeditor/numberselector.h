@@ -17,6 +17,8 @@ class NumberSelector : public AtomSubSelector
 
     QLineEdit *lineEdit;
     QLabel *labelUnit;
+    QLabel *labelFraction;
+    QPushButton *buttonFraction;
     QPushButton *buttonNumber;
     QPushButton *buttonVoltage;
     QPushButton *buttonPercentage;
@@ -29,6 +31,7 @@ public:
     QString title() const { return tr("Fixed number"); };
     bool handlesAtom(const Atom *atom) const;
     void setAtom(const Patch *patch, const Atom *atom);
+    void setAllowFraction(bool af);
     void clearAtom();
     Atom *getAtom() const;
     void setNumberType(atom_number_t t);
@@ -46,6 +49,7 @@ private slots:
     void switchToVoltage();
     void switchToPercentage();
     void switchToOnOff();
+    void toggleFraction(bool checked);
 };
 
 #endif // NUMBERSELECTOR_H

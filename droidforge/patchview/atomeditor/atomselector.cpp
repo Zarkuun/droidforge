@@ -15,9 +15,12 @@
 AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     : QWidget{parent}
     , currentSelector(0)
+    , numberSelector(0)
 {
-    if (jacktype == JACKTYPE_INPUT)
-        subSelectors.append(new NumberSelector(this));
+    if (jacktype == JACKTYPE_INPUT) {
+        numberSelector = new NumberSelector(this);
+        subSelectors.append(numberSelector);
+    }
     subSelectors.append(new InputOutputSelector(jacktype, this));
     subSelectors.append(new ControlSelector(jacktype, this));
     subSelectors.append(new CableSelector(this));
@@ -39,6 +42,12 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     // die Tabtaste.
     // setFocusPolicy(Qt::TabFocus);
     // setFocusPolicy(Qt::StrongFocus);
+}
+
+void AtomSelector::setAllowFraction(bool af)
+{
+    if (numberSelector)
+        numberSelector->setAllowFraction(af);
 }
 
 void AtomSelector::setAtom(const Patch *patch, const Atom *atom)

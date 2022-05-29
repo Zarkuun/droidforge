@@ -441,7 +441,7 @@ void PatchSectionView::editAtom(int key)
         newAtom = AtomOneliner::editAtom(posInScreen, patch, ja->jackType(), start);
     }
     else
-        newAtom = AtomSelectorDialog::editAtom(patch, ja->jackType(), atom);
+        newAtom = AtomSelectorDialog::editAtom(patch, ja->jackType(), curPos.column == 2, atom);
 
     if (newAtom != 0 && newAtom != atom) {
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();

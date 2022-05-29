@@ -11,14 +11,18 @@ NumberSelector::NumberSelector(QWidget *parent)
     , number(0.0)
     , numberType(ATOM_NUMBER_NUMBER)
 {
+    labelFraction = new QLabel(tr("1 /"), this);
     lineEdit = new QLineEdit(this);
     labelUnit = new QLabel(this);
     QHBoxLayout *valueBox = new QHBoxLayout();
+    valueBox->addWidget(labelFraction);
     valueBox->addWidget(lineEdit);
     valueBox->addWidget(labelUnit);
 
     // Buttons for switching between different units
     QGridLayout *buttonBox = new QGridLayout();
+    buttonFraction = new QPushButton(tr("1 / X"), this);
+    buttonFraction->setCheckable(true);
     buttonNumber = new QPushButton("➞ " + tr("#"), this);
     buttonVoltage = new QPushButton("➞ " + tr("V"), this);
     buttonPercentage = new QPushButton("➞ " + tr("%"), this);
@@ -27,6 +31,7 @@ NumberSelector::NumberSelector(QWidget *parent)
     buttonBox->addWidget(buttonVoltage, 0, 1);
     buttonBox->addWidget(buttonPercentage, 1, 0);
     buttonBox->addWidget(buttonOnOff, 1, 1);
+    buttonBox->addWidget(buttonFraction, 2, 0, 1, 2);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(valueBox);
@@ -35,6 +40,7 @@ NumberSelector::NumberSelector(QWidget *parent)
 
     connect(lineEdit, &QLineEdit::textEdited, this, &NumberSelector::lineEdited);
     connect(buttonNumber, &QPushButton::pressed, this, &NumberSelector::switchToNumber);
+    connect(buttonFraction, &QPushButton::toggled, this, &NumberSelector::toggleFraction);
     connect(buttonVoltage, &QPushButton::pressed, this, &NumberSelector::switchToVoltage);
     connect(buttonPercentage, &QPushButton::pressed, this, &NumberSelector::switchToPercentage);
     connect(buttonOnOff, &QPushButton::pressed, this, &NumberSelector::switchToOnOff);
@@ -64,7 +70,11 @@ void NumberSelector::setAtom(const Patch *, const Atom *atom)
     else {
         AtomNumber *an = (AtomNumber *)atom;
         setNumberType(an->getType());
+        buttonFraction->setChecked(an->isFraction());
+        labelFraction->setVisible(an->isFraction());
         number = an->getNumber();
+        if (number != 0 && an->isFraction())
+            number = 1.0 / number;
         if (numberType == ATOM_NUMBER_ONOFF) {
             number = number > BOOLEAN_VALUE_THRESHOLD ? 1 : 0;
             lineEdit->setText(number ? "on" : "off");
@@ -79,6 +89,10 @@ void NumberSelector::setAtom(const Patch *, const Atom *atom)
     }
 }
 
+void NumberSelector::setAllowFraction(bool af)
+{
+    buttonFraction->setVisible(af);
+}
 
 void NumberSelector::clearAtom()
 {
@@ -86,7 +100,6 @@ void NumberSelector::clearAtom()
     number = 0;
     lineEdit->setText("");
 }
-
 
 void NumberSelector::setNumberType(atom_number_t t)
 {
@@ -151,9 +164,14 @@ Atom *NumberSelector::getAtom() const
         value /= 10;
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
         value /= 100;
-    return new AtomNumber(value, numberType);
-}
 
+    bool frac = false;
+    if (buttonFraction->isChecked()) {
+        frac = true;
+        value = 1.0 / value;
+    }
+    return new AtomNumber(value, numberType, frac);
+}
 
 QString NumberSelector::niceNumber(float v)
 {
@@ -167,7 +185,6 @@ QString NumberSelector::niceNumber(float v)
         s.chop(1);
     return s;
 }
-
 
 void NumberSelector::lineEdited(QString text)
 {
@@ -203,7 +220,6 @@ void NumberSelector::lineEdited(QString text)
     }
 }
 
-
 void NumberSelector::switchToNumber()
 {
     if (numberType == ATOM_NUMBER_VOLTAGE)
@@ -214,7 +230,6 @@ void NumberSelector::switchToNumber()
     lineEdit->setText(niceNumber(number));
     lineEdit->setFocus();
 }
-
 
 void NumberSelector::switchToVoltage()
 {
@@ -228,7 +243,6 @@ void NumberSelector::switchToVoltage()
     lineEdit->setFocus();
 }
 
-
 void NumberSelector::switchToPercentage()
 {
     if (numberType == ATOM_NUMBER_NUMBER ||
@@ -241,7 +255,6 @@ void NumberSelector::switchToPercentage()
     lineEdit->setFocus();
 }
 
-
 void NumberSelector::switchToOnOff()
 {
     if (numberType == ATOM_NUMBER_VOLTAGE)
@@ -252,4 +265,18 @@ void NumberSelector::switchToOnOff()
     setNumberType(ATOM_NUMBER_ONOFF);
     lineEdit->setText(number ? "on" : "off");
     lineEdit->setFocus();
+}
+
+void NumberSelector::toggleFraction(bool checked)
+{
+    if (number == 0.0) {
+        buttonFraction->setChecked(false);
+        checked = false;
+    }
+    else {
+        number = 1.0 / number;
+        lineEdit->setText(niceNumber(number));
+        lineEdit->setFocus();
+    }
+    labelFraction->setVisible(checked);
 }

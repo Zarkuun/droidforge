@@ -82,7 +82,7 @@ void JackAssignmentInput::removeRegisterReferences(RegisterList &rl, int ih, int
     if (isInRegisterList(rl, atomA)) {
         delete atomA;
         if (ih == 1) // INPUT_SET_TO_ONE
-            atomA = new AtomNumber(1.0, ATOM_NUMBER_NUMBER);
+            atomA = new AtomNumber(1.0, ATOM_NUMBER_NUMBER, false);
         else
             atomA = 0;
     }
@@ -130,6 +130,12 @@ void JackAssignmentInput::parseExpression(const QString &expression)
 
 QString JackAssignmentInput::valueToString() const
 {
+    QString bOperator;
+    if (atomB && atomB->isNumber() && ((AtomNumber *)atomB)->isFraction())
+        bOperator = " / ";
+    else
+        bOperator = " * ";
+
     // Do more intelligent work for a nice transformation
     // into A * B + C
     if (!atomA && !atomB && !atomC) // none defined
@@ -141,7 +147,7 @@ QString JackAssignmentInput::valueToString() const
     else if (!atomA && !atomB && atomC) // just C
         return atomC->toString();
     else if (atomA && atomB && !atomC) // just A and B
-        return atomA->toString() + " * " + atomB->toString();
+        return atomA->toString() + bOperator + atomB->toString();
     else { // C is defined, but not just C
         QString sc, op;
         if (atomC->isNegatable()) {
@@ -157,7 +163,7 @@ QString JackAssignmentInput::valueToString() const
         else if (!atomA && atomB && atomC) // just B and C
             return atomB->toString() + op + sc;
         else
-            return atomA->toString() + " * " + atomB->toString() + op + sc;
+            return atomA->toString() + bOperator + atomB->toString() + op + sc;
     }
 }
 
@@ -267,11 +273,10 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
         atomA = parseInputAtom(a);
         atomC = parseInputAtom(c);
         float bf = b.toFloat();
-        qDebug() << "A" << a << "B" << b << "C" << c << "bf" << bf;
         if (bf == 0)
             atomB = new AtomInvalid(b);
         else
-            atomB = new AtomNumber(1.0 / bf, ATOM_NUMBER_NUMBER); // TODO: Fraction
+            atomB = new AtomNumber(1.0 / bf, ATOM_NUMBER_NUMBER, true);
         return;
     }
     atomA = parseInputAtom(a);
@@ -299,9 +304,9 @@ Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
 Atom *JackAssignmentInput::parseOnOff(QString s)
 {
     if (s == "on")
-        return new AtomNumber(1.0, ATOM_NUMBER_ONOFF);
+        return new AtomNumber(1.0, ATOM_NUMBER_ONOFF, false);
     else if (s == "off")
-        return new AtomNumber(0.0, ATOM_NUMBER_ONOFF);
+        return new AtomNumber(0.0, ATOM_NUMBER_ONOFF, false);
     else
         return 0;
 }
@@ -326,5 +331,5 @@ Atom *JackAssignmentInput::parseNumber(QString s)
     if (!ok)
         return 0;
     else
-        return new AtomNumber(number * factor, at);
+        return new AtomNumber(number * factor, at, false);
 }

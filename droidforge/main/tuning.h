@@ -7,6 +7,7 @@
 #define SECTION_DEFAULT_NAME                 "Circuits"
 #define CIRCUIT_ICON_PATH                    ":images/circuits/"
 #define CIRCUIT_ICON_SUFFIX                  ".png"
+#define FRACTION_PRECISION                   0.0001
 
 #define MAX_RECENT_FILES                     10
 #define UNDO_HISTORY_SIZE                    1000
