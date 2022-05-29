@@ -186,6 +186,7 @@ void JackAssignmentInput::findCableConnections(const QString &cable, int &asInpu
 #define RATOMA "[^*/+-]+"
 #define RATOMB "-[0-9][^*/+-]+"
 #define RATOM "(" RATOMA "|" RATOMB ")"
+#define RNUMBER "(-?([0-9]+[.])?[0-9]+)"
 
 void JackAssignmentInput::parseInputExpression(QString, QString valueString)
 {
@@ -200,6 +201,9 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
     static QRegularExpression form4("^" RATOM "[+]" RATOM "$");
     static QRegularExpression form5("^" RATOM "[*]" RATOM "[-]" RATOM "$");
     static QRegularExpression form6("^" RATOM "[-]" RATOM "$");
+    static QRegularExpression form7("^" RATOM "[/]" RNUMBER "$");
+    static QRegularExpression form8("^" RATOM "[/]" RNUMBER "[+]" RATOM "$");
+    static QRegularExpression form9("^" RATOM "[/]" RNUMBER "[-]" RNUMBER "$");
 
     // TODO: Hier fehlen noch ein paar Formen. Z.B. auch was mit
     // Division
@@ -235,7 +239,39 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
         c = "-" + m.captured(2);
     }
     else {
-        atomA = new AtomInvalid(value);
+        qDebug() << "try division on " << value;
+        // Forms with A / B are special, because B must be
+        // fixed number. And the atom gets a hint.
+        if ((m = form7.match(value)).hasMatch()) {
+            qDebug() << "form7";
+            a = m.captured(1);
+            b = m.captured(2);
+        }
+        else if ((m = form8.match(value)).hasMatch()) {
+            qDebug() << "form8";
+            a = m.captured(1);
+            b = m.captured(2);
+            c = m.captured(3);
+        }
+        else if ((m = form9.match(value)).hasMatch()) {
+            qDebug() << "form9";
+            a = m.captured(1);
+            b = m.captured(2);
+            c = "-" + m.captured(3);
+        }
+        else {
+            atomA = new AtomInvalid(value);
+            return;
+        }
+
+        atomA = parseInputAtom(a);
+        atomC = parseInputAtom(c);
+        float bf = b.toFloat();
+        qDebug() << "A" << a << "B" << b << "C" << c << "bf" << bf;
+        if (bf == 0)
+            atomB = new AtomInvalid(b);
+        else
+            atomB = new AtomNumber(1.0 / bf, ATOM_NUMBER_NUMBER); // TODO: Fraction
         return;
     }
     atomA = parseInputAtom(a);

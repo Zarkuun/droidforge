@@ -246,13 +246,11 @@ void PatchParser::stripEmptyCommentLines()
     }
 }
 
-
 void PatchParser::startNewSection(QString name)
 {
     section = new PatchSection(name);
     patch->addSection(section);
 }
-
 
 void PatchParser::parseJackLine(Circuit *circuit, QString line)
 {
