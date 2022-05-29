@@ -12,13 +12,16 @@
 #include "commentdialog.h"
 #include "circuitchoosedialog.h"
 #include "patchview.h"
+#include "namechoosedialog.h"
+
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
 #include <QTransform>
 #include <QMenu>
+#include <QMessageBox>
 
-PatchSectionView::PatchSectionView(const Patch *patch, PatchSection *section, int zoom)
+PatchSectionView::PatchSectionView(Patch *patch, PatchSection *section, int zoom)
     : patch(patch)
     , section(section)
     , atomSelectorDialog{}
@@ -61,6 +64,7 @@ void PatchSectionView::buildPatchSection()
                     circuitWidth,
                     fontMetrics().lineSpacing(),
                     isLast ? CIRV_TOP_PADDING : 0);
+        cv->setData(0, true);
         circuitViews.append(cv);
         scene->addItem(cv);
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
@@ -144,13 +148,19 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
 {
     // itemAt() applies the transformation of the graphics
     // view such as the scroll bar and the alignment.
-    QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
 
-    if (item)
+    CircuitView *cv = 0;
+    for (auto item: items(pos)) {
+        if (item->data(0).isValid()) {
+            cv = (CircuitView *)item;
+            break;
+        }
+    }
+
+    if (cv)
     {
-        CircuitView *cv = (CircuitView *)item;
         QPointF posInScene(mapToScene(pos));
-        QPointF posInCircuit = posInScene - item->pos();
+        QPointF posInCircuit = posInScene - cv->pos();
 
         // Loop over all circuits because we need the index number
         // of the clicked circuit, not just the pointer.
@@ -223,9 +233,12 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
                 // - delete jack assignment
             }
             else {
+                menu->addSeparator();
                 const Atom *atom = currentAtom();
-                if (atom && atom->isCable())
+                if (atom && atom->isCable()) {
                     menu->addAction(the_forge->action(ACTION_FOLLOW_INTERNAL_CABLE));
+                    menu->addAction(the_forge->action(ACTION_RENAME_INTERNAL_CABLE));
+                }
                 menu->addAction(the_forge->action(ACTION_START_PATCHING));
                 menu->addAction(the_forge->action(ACTION_FINISH_PATCHING));
                 menu->addAction(the_forge->action(ACTION_ABORT_PATCHING));
@@ -460,6 +473,43 @@ void PatchSectionView::editCircuitComment(int key)
         rebuildPatchSection();
         the_forge->patchHasChanged();
     }
+}
+
+void PatchSectionView::renameCable()
+{
+    const Atom *atom = currentAtom();
+    if (!atom || !atom->isCable())
+        return;
+
+    // TODO: Automatisch immer groß schreiben der Kabel
+    QString oldName = ((AtomCable *)atom)->getCable();
+    QString newName = NameChooseDialog::getName(
+                tr("Rename internal cable '%1'").arg(oldName),
+                tr("New name:"),
+                oldName);
+    if (newName == oldName)
+        return;
+
+    newName = newName.toUpper();
+    QStringList all = patch->allCables();
+    if (all.contains(newName)) {
+        int reply = QMessageBox::warning(
+                    this,
+                    tr("Conflict"),
+                    tr("There already is a cable with this name. Choosing the name '%1'"
+                       "will join these cables and make all according inputs and outputs "
+                       "connected.\n\n"
+                       "Do you want want to join both cables?").arg(newName),
+                    QMessageBox::Cancel | QMessageBox::Yes,
+                    QMessageBox::Cancel);
+        if (reply == QMessageBox::Cancel)
+            return;
+    }
+
+    the_forge->registerEdit(tr("renaming cable '%1' to '%2'").arg(oldName).arg(newName));
+    patch->renameCable(oldName, newName);
+    rebuildPatchSection();
+    the_forge->patchHasChanged();
 }
 
 bool PatchSectionView::isEmpty() const

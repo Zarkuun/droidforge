@@ -121,7 +121,7 @@ void JackAssignment::remapRegister(AtomRegister from, AtomRegister to)
 
 Atom *JackAssignment::parseCable(QString s)
 {
-    static QRegularExpression exp("^_[a-z][a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);
+    static QRegularExpression exp("^_[a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);
 
     if (exp.match(s).hasMatch())
         return new AtomCable(s.mid(1).toUpper());

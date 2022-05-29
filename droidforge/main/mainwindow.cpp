@@ -252,6 +252,7 @@ void MainWindow::updateActions()
     bool isAtAtom = psv && psv->getCursorPosition().isAtAtom();
 
     actions[ACTION_FOLLOW_INTERNAL_CABLE]->setEnabled(atom && atom->isCable());
+    actions[ACTION_RENAME_INTERNAL_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_START_PATCHING]->setVisible(isAtAtom && !patchView.isPatching());
     actions[ACTION_FINISH_PATCHING]->setVisible(isAtAtom && patchView.isPatching());
     actions[ACTION_ABORT_PATCHING]->setVisible(patchView.isPatching());
@@ -496,13 +497,19 @@ void MainWindow::createEditMenu()
     editMenu->addAction(actions[ACTION_EDIT_VALUE]);
     connect(actions[ACTION_EDIT_VALUE], &QAction::triggered, &patchView, &PatchView::editValue);
 
-    // Follow internal connection
+    // Follow internal cable
     actions[ACTION_FOLLOW_INTERNAL_CABLE] = new QAction(icon("youtube_searched_for"), tr("&Follow internal cable"), this);
     actions[ACTION_FOLLOW_INTERNAL_CABLE]->setShortcut(QKeySequence(tr("?")));
     editMenu->addAction(actions[ACTION_FOLLOW_INTERNAL_CABLE]);
     connect(actions[ACTION_FOLLOW_INTERNAL_CABLE], &QAction::triggered, &patchView, &PatchView::followInternalCable);
 
-    // Create internal connection
+    // rename internal cable
+    actions[ACTION_RENAME_INTERNAL_CABLE] = new QAction(tr("&Rename internal cable"), this);
+    actions[ACTION_RENAME_INTERNAL_CABLE]->setShortcut(QKeySequence(tr("Ctrl+R")));
+    editMenu->addAction(actions[ACTION_RENAME_INTERNAL_CABLE]);
+    connect(actions[ACTION_RENAME_INTERNAL_CABLE], &QAction::triggered, &patchView, &PatchView::renameInternalCable);
+
+    // Create internal cable
     actions[ACTION_START_PATCHING] = new QAction(icon("swap_horiz"), tr("Start creating internal cable"), this);
     actions[ACTION_START_PATCHING]->setShortcut(QKeySequence(tr("=")));
     editMenu->addAction(actions[ACTION_START_PATCHING]);

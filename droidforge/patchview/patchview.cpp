@@ -351,7 +351,7 @@ void PatchView::finishPatching()
         cableName = cableName.toUpper();
     }
 
-    the_forge->registerEdit(tr("Creating internal cable '%1'").arg(cableName));
+    the_forge->registerEdit(tr("creating internal cable '%1'").arg(cableName));
     startSection->setAtomAt(startPos, new AtomCable(cableName));
     endSection->setAtomAt(endPos, new AtomCable(cableName));
     if (startView != endView)
@@ -411,8 +411,12 @@ void PatchView::followInternalCable()
     unsigned targetSection = it.sectionIndex();
     setCurrentIndex(targetSection);
     CursorPosition curPos = it.cursorPosition();
-    qDebug() << "MOVE TO POS" << curPos.circuitNr << curPos.row << curPos.column;
     currentPatchSectionView()->setCursorPosition(curPos);
+}
+
+void PatchView::renameInternalCable()
+{
+    currentPatchSectionView()->renameCable();
 }
 
 void PatchView::editCircuitComment()

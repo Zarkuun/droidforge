@@ -19,7 +19,6 @@ CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     initBackgroundRect(numCircuits);
 }
 
-
 CircuitCollection::CircuitCollection(QWidget *parent)
     : QGraphicsView(parent)
     , backgroundRect(0)
@@ -27,7 +26,6 @@ CircuitCollection::CircuitCollection(QWidget *parent)
 {
     initScene();
 }
-
 
 void CircuitCollection::initScene()
 {
@@ -37,7 +35,6 @@ void CircuitCollection::initScene()
     scene->setBackgroundBrush(CICH_BACKGROUND_COLOR);
     setScene(scene);
 }
-
 
 void CircuitCollection::initBackgroundRect(int numCircuits)
 {
@@ -62,11 +59,9 @@ void CircuitCollection::initBackgroundRect(int numCircuits)
     scene()->addItem(backgroundRect);
 }
 
-
 CircuitCollection::~CircuitCollection()
 {
 }
-
 
 void CircuitCollection::mousePressEvent(QMouseEvent *event)
 {
@@ -82,7 +77,6 @@ void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
     if (handleMousePress(event->pos()))
             chooseCurrentCircuit();
 }
-
 
 void CircuitCollection::keyPressEvent(QKeyEvent *event)
 {
@@ -115,9 +109,7 @@ void CircuitCollection::updateSearch(QString text)
 
 void CircuitCollection::resizeEvent(QResizeEvent *event)
 {
-    circuitViewWidth =
-            event->size().width()
-            -  CICH_WIDTH_MARGIN;
+    circuitViewWidth = event->size().width() - CICH_WIDTH_MARGIN;
 }
 
 bool CircuitCollection::preselectCircuit(QString name)
@@ -157,7 +149,6 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
     return true;
 }
 
-
 void CircuitCollection::loadCircuitCategory(QString category, QString search)
 {
     search = search.toLower();
@@ -186,7 +177,6 @@ void CircuitCollection::loadCircuitCategory(QString category, QString search)
     moveCursorUpDown(0); // sanitize cursor position
 }
 
-
 void CircuitCollection::moveCursorUpDown(int whence)
 {
     if (circuits.empty())
@@ -198,7 +188,6 @@ void CircuitCollection::moveCursorUpDown(int whence)
     ensureVisible(currentCircuit(), 0, 0);
 }
 
-
 CircuitInfoView *CircuitCollection::currentCircuit()
 {
     if (circuits.empty())
@@ -206,7 +195,6 @@ CircuitInfoView *CircuitCollection::currentCircuit()
     else
         return circuits[selectedCircuit];
 }
-
 
 void CircuitCollection::chooseCurrentCircuit()
 {

@@ -45,6 +45,11 @@ QString AtomRegister::toString() const
         return data.r.registerType + QString::number(data.r.number);
 }
 
+QString AtomRegister::toDisplay() const
+{
+    return QString(registerName(data.r.registerType)) + " " + toString();
+}
+
 bool AtomRegister::needG8() const
 {
     return data.r.registerType == REGISTER_GATE

@@ -1,0 +1,17 @@
+GROSSE THEMEN:
+
+- Fehler und Warnungen
+- Deploy (MIDI, SD-Karte)
+- Labels von Controls
+- Kommentare von Jacks
+
+
+KLEINERE FEATURE:
+- Jackzeilen oder Circuits disablen (auskommentieren)
+- View source code (oder open source code in text editor)
+
+BUGS:
+
+- Kommentare nach Circuitnamen [copy] # hier kommt was
+- vontmp.ini crasht
+

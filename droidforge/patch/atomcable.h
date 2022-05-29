@@ -15,6 +15,7 @@ public:
     QString toString() const;
     bool isCable() const { return true; };
     QString getCable() const { return name; };
+    void setCable(const QString &n) { name = n; };
 };
 
 #endif // ATOMCABLE_H

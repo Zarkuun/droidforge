@@ -9,7 +9,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsDropShadowEffect>
 
-class CircuitView : public QGraphicsItem
+class CircuitView : public QObject, public QGraphicsItem
 {
     Circuit *circuit;
     unsigned circuitNumber; // within section

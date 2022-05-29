@@ -22,3 +22,24 @@ const char register_types[NUM_REGISTER_TYPES] = {
   REGISTER_RGB,
   REGISTER_EXTRA,
 };
+
+const char *register_names[NUM_REGISTER_TYPES] = {
+    "Input",
+    "Potentiometer",
+    "Button",
+    "Switch",
+    "Gate",
+    "Input-Normalization",
+    "Output",
+    "LED",
+    "RGB-LED",
+    "Extra",
+};
+
+const char *registerName(char registerType)
+{
+    for (unsigned i=0; i<NUM_REGISTER_TYPES; i++)
+        if (register_types[i] == registerType)
+            return register_names[i];
+    return "(invalid)";
+}

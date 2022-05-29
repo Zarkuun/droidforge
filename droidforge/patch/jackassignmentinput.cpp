@@ -172,7 +172,7 @@ void JackAssignmentInput::collectCables(QStringList &cables) const
         cables.append(((AtomCable *)atomC)->getCable());
 }
 
-void JackAssignmentInput::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
+void JackAssignmentInput::findCableConnections(const QString &cable, int &asInput, int &) const
 {
     if (atomA && atomA->isCable() && ((AtomCable *)atomA)->getCable() == cable)
         asInput ++;

@@ -27,14 +27,15 @@ NameChooseDialog::NameChooseDialog(QWidget *parent)
 
 QString NameChooseDialog::getName(const QString &title, const QString &label, QString oldname)
 {
-     static NameChooseDialog *dialog = 0;
-     if (!dialog)
-         dialog = new NameChooseDialog();
+    static NameChooseDialog *dialog = 0;
+    if (!dialog)
+        dialog = new NameChooseDialog();
 
-     dialog->setWindowTitle(title);
-     dialog->label->setText(label);
-     dialog->lineEdit->setText(oldname);
-     dialog->lineEdit->selectAll();
+    dialog->setWindowTitle(title);
+    dialog->label->setText(label);
+    dialog->lineEdit->setText(oldname);
+    dialog->lineEdit->selectAll();
+    // TODO: Avoid OK if new name is empty
     if (dialog->exec() == QDialog::Accepted)
         return dialog->lineEdit->text().trimmed();
     else

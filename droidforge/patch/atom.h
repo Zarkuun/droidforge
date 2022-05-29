@@ -9,6 +9,7 @@ public:
     Atom() {};
     virtual ~Atom() {};
     virtual QString toString() const = 0;
+    virtual QString toDisplay() const { return toString(); };
     virtual Atom *clone() const = 0;
     virtual bool isNegatable() const { return false; };
     virtual QString toNegatedString() const { return ""; };

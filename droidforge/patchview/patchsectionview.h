@@ -18,7 +18,7 @@ class PatchView;
 
 class PatchSectionView : public QGraphicsView
 {
-    const Patch *patch;
+    Patch *patch;
     PatchSection *section;
     float zoomFactor;
 
@@ -28,7 +28,7 @@ class PatchSectionView : public QGraphicsView
     FrameCursor *frameCursor;
 
 public:
-    PatchSectionView(const Patch *patch, PatchSection *section, int zoom);
+    PatchSectionView(Patch *patch, PatchSection *section, int zoom);
     ~PatchSectionView();
     bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
@@ -41,6 +41,7 @@ public:
     void pasteCircuitsFromClipboard(const Clipboard &clipboard);
     void editValue(int key);
     void editCircuitComment(int key);
+    void renameCable();
     bool isEmpty() const;
     bool circuitsSelected() const;
     void updateCircuits();

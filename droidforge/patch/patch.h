@@ -60,6 +60,7 @@ public:
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
     QStringList allCables() const;
+    void renameCable(const QString &oldName, const QString &newName);
     // TODO: überall den neuen Iterator verwenden!
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     bool needG8() const; // TODO: Do we need this?

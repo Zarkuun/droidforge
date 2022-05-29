@@ -53,6 +53,7 @@ public slots:
     void finishPatching();
     void abortPatching();
     void followInternalCable();
+    void renameInternalCable();
     void editCircuitComment();
     void renameCurrentSection();
     void deleteCurrentSection();

@@ -1,4 +1,5 @@
 #include "patch.h"
+#include "atomcable.h"
 #include "modulebuilder.h"
 
 #include <QFile>
@@ -184,6 +185,17 @@ QStringList Patch::allCables() const
     cables.removeDuplicates();
     cables.sort();
     return cables;
+}
+
+void Patch::renameCable(const QString &oldName, const QString &newName)
+{
+    for (auto atom: *this) {
+        if (atom->isCable()) {
+            AtomCable *ac = (AtomCable *)atom;
+            if (ac->getCable() == oldName)
+                ac->setCable(newName);
+        }
+    }
 }
 
 void Patch::findCableConnections(const QString &cable, int &asInput, int &asOutput) const

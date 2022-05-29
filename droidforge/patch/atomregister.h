@@ -28,6 +28,7 @@ public:
     AtomRegister operator=(const AtomRegister &ar);
     AtomRegister *clone() const;
     QString toString() const;
+    QString toDisplay() const;
     bool isRegister() const { return true; };
     bool isControl() { return data.r.controller > 0; };
     bool isOnMasterG8X7() { return data.r.controller == 0; };

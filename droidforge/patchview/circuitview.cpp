@@ -171,7 +171,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRect &rect, Atom *atom, bo
     int imageTop = 4;
 
     if (atom) {
-        QString text = atom->toString();
+        QString text(tr(atom->toDisplay().toLatin1()));
         if (atom->isInvalid()) {
             const int offset = (CIRV_JACK_HEIGHT - CIRV_ICON_WIDTH) / 2;
             QRect imageRect(
