@@ -1,5 +1,8 @@
 #include "jackassignmentunknown.h"
 
+#include <QCoreApplication>
+
+#define tr(s) QCoreApplication::translate("Patch", s)
 
 JackAssignmentUnknown::JackAssignmentUnknown(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
@@ -39,6 +42,14 @@ void JackAssignmentUnknown::parseExpression(const QString &expression)
         atom = 0;
     else
         atom = new AtomInvalid(expression);
+}
+
+QList<PatchProblem *> JackAssignmentUnknown::collectProblems(const Patch *) const
+{
+    QList<PatchProblem *>problems;
+    problems.append(
+                new PatchProblem(-1, 0, tr("Unknown parameter '%1' in this circuit'").arg(jackName())));
+    return problems;
 }
 
 JackAssignment *JackAssignmentUnknown::clone() const

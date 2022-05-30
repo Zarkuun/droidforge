@@ -1,7 +1,13 @@
 #include "atomregister.h"
+#include "patchproblem.h"
+#include "tuning.h"
+#include "patch.h"
 
 #include <QStringList>
 #include <QDebug>
+#include <QCoreApplication>
+
+#define tr(s) QCoreApplication::translate("Patch", s)
 
 AtomRegister::AtomRegister()
 {
@@ -80,6 +86,52 @@ void AtomRegister::shiftControllerNumbers(int controller, int by)
         data.r.controller += by;
 }
 
+QList<PatchProblem *> AtomRegister::collectProblemsAsInput(const Patch *patch) const
+{
+    QList<PatchProblem *> problems;
+    QString g = generalProblem(patch);
+    if (g != "")
+        problems.append(new PatchProblem(0, 0, g));
+    return problems;
+}
+
+QList<PatchProblem *> AtomRegister::collectProblemsAsOutput(const Patch *patch) const
+{
+    QList<PatchProblem *> problems;
+    QString s;
+    switch (data.r.registerType) {
+        case REGISTER_INPUT:
+                s = tr("You cannot use an input of the master as output"); break;
+        case REGISTER_POT:
+                s = tr("You cannot use a potentiometer as output"); break;
+        case REGISTER_BUTTON:
+                s = tr("You cannot use a button as output"); break;
+        case REGISTER_SWITCH:
+                s = tr("You cannot use a switch as output"); break;
+    }
+    if (s != "")
+        problems.append(new PatchProblem(0, 0, s));
+    problems += collectProblemsAsInput(patch);
+    return problems;
+}
+
+QString AtomRegister::generalProblem(const Patch *patch) const
+{
+    if (data.r.number <= 0)
+        return tr("The number of the register may not be less than 1");
+    else if (data.r.controller > patch->numControllers())
+        return tr("Invalid controller number %1. You have just %2 controllers")
+                .arg(data.r.controller).arg(patch->numControllers());
+    else {
+        // TODO: This is probably super slow!
+        RegisterList available;
+        patch->collectAvailableRegisterAtoms(available);
+        if (!available.contains(*this))
+            return tr("This jack / control is not available");
+    }
+
+    return "";
+}
 
 QDebug &operator<<(QDebug &out, const AtomRegister &ar) {
     out << ar.toString();

@@ -242,6 +242,21 @@ void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
     }
 }
 
+QList<PatchProblem *> Patch::collectProblems() const
+{
+    QList<PatchProblem *> allProblems;
+    int sectionNr=0;
+    for (auto section: sections) {
+        auto problems = section->collectProblems(this);
+        for (auto problem: problems)
+            problem->setSection(sectionNr);
+        allProblems += problems;
+        sectionNr++;
+    }
+    return allProblems;
+}
+
+
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
 {
     for (auto section: sections)

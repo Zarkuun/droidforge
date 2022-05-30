@@ -18,7 +18,6 @@ CableStatusIndicator::CableStatusIndicator(QWidget *parent)
     cablePen.setColor(CSD_CABLE_COLOR);
     cableHilitePen.setColor(CSD_CABLE_HILITE_COLOR);
     cableHilitePen.setWidth(1);
-
 }
 
 void CableStatusIndicator::paintEvent(QPaintEvent *)
@@ -48,7 +47,6 @@ void CableStatusIndicator::paintPatching(QPainter &painter)
     painter.drawImage(rightPlugRect, *plugImage);
     painter.drawImage(leftPlugRect, mirroredPlugImage);
 }
-
 
 void CableStatusIndicator::paintCableInfo(QPainter &painter)
 {

@@ -4,6 +4,7 @@
 #include "jackassignmentoutput.h"
 #include "tuning.h"
 
+
 PatchSection::~PatchSection()
 {
     for (qsizetype i=0; i<circuits.length(); i++)
@@ -225,6 +226,21 @@ void PatchSection::findCableConnections(const QString &cable, int &asInput, int 
 {
     for (auto circuit: circuits)
         circuit->findCableConnections(cable, asInput, asOutput);
+}
+
+QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
+{
+    QList<PatchProblem *> allProblems;
+
+    int circuitNr=0;
+    for (auto circuit: circuits) {
+        for (auto problem: circuit->collectProblems(patch)) {
+            problem->setCircuit(circuitNr);
+            allProblems.append(problem);
+        }
+        circuitNr++;
+    }
+    return allProblems;
 }
 
 Circuit *PatchSection::currentCircuit()

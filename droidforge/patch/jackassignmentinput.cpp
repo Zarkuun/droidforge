@@ -6,6 +6,9 @@
 
 #include <QRegularExpression>
 #include <QException>
+#include <QCoreApplication>
+
+#define tr(s) QCoreApplication::translate("Patch", s)
 
 JackAssignmentInput::JackAssignmentInput(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
@@ -298,6 +301,24 @@ Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
     else
         return parseRegister(atom);
 
+}
+
+QList<PatchProblem *> JackAssignmentInput::collectProblems(const Patch *patch) const
+{
+    QList<PatchProblem *>problems;
+
+    if (!atomA && !atomB && !atomC) {
+        problems.append(
+                    new PatchProblem(-1, 1, tr("You need to set a value for at least one of the three columns")));
+    }
+    if (atomA)
+        problems += atomA->collectProblemsAsInput(patch);
+    if (atomB)
+        problems += atomB->collectProblemsAsInput(patch);
+    if (atomC)
+        problems += atomC->collectProblemsAsInput(patch);
+
+    return problems;
 }
 
 

@@ -195,6 +195,7 @@ void MainWindow::createActions()
 
 void MainWindow::patchHasChanged()
 {
+    updateProblems();
     patchView.abortPatching();
     updateActions();
     updateWindowTitle();
@@ -266,6 +267,19 @@ void MainWindow::updateActions()
         deletePatchSectionAction->setEnabled(false);
     }
     actions[ACTION_MOVE_INTO_SECTION]->setEnabled(patchView.circuitsSelected());
+}
+
+void MainWindow::updateProblems()
+{
+    qDebug("Patch problems:");
+    if (!patch) {
+        qDebug("Oh. kein Patch");
+        return;
+    }
+    QList<PatchProblem *> problems = patch->collectProblems();
+    for (auto problem: problems) {
+        qDebug() << "problem:" << *problem;
+    }
 }
 
 void MainWindow::updateClipboardInfo(QString info)
@@ -428,7 +442,6 @@ void MainWindow::addToRecentFiles(const QString &path)
 
 void MainWindow::createEditMenu()
 {
-    toolbar->addSeparator();
     editMenu = menuBar()->addMenu(ZERO_WIDTH_SPACE + tr("&Edit"));
 
     // Undo

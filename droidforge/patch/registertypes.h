@@ -11,7 +11,7 @@
 #define    REGISTER_LED       'L'
 #define    REGISTER_POT       'P'
 #define    REGISTER_SWITCH    'S'
-#define    REGISTER_RGB       'R'
+#define    REGISTER_RGB_LED   'R'
 #define    REGISTER_EXTRA     'X'
 
 extern const char register_types[];

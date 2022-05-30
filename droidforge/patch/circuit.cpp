@@ -1,4 +1,9 @@
 #include "circuit.h"
+#include "droidfirmware.h"
+
+#include <QCoreApplication>
+
+#define tr(s) QCoreApplication::translate("Patch", s)
 
 Circuit::Circuit(QString name, const QStringList &comment)
     : name(name)
@@ -68,15 +73,44 @@ void Circuit::findCableConnections(const QString &cable, int &asInput, int &asOu
         ja->findCableConnections(cable, asInput, asOutput);
 }
 
+QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
+{
+    QList<PatchProblem *> allProblems;
+    // TODO: Account for RAM usage in DROID
+    if (!the_firmware->circuitExists(name)) {
+        allProblems.append(
+            new PatchProblem(-2, 0, tr("There is no such circuit with the name '%1'").arg(name)));
+    }
+
+    QSet<QString> usedJacks;
+
+    int row=0;
+    for (auto ja: jackAssignments) {
+        for (auto problem: ja->collectProblems(patch)) {
+            problem->setRow(row);
+            allProblems.append(problem);
+        }
+        QString name = ja->jackName();
+        if (usedJacks.contains(name)) {
+            allProblems.append(
+                new PatchProblem(row, 0, tr("Duplicate definition of parameter '%1'").arg(name)));
+        }
+        else
+            usedJacks.insert(name);
+        row++;
+    }
+    return allProblems;
+}
+
 void Circuit::changeCircuit(QString newCircuit)
 {
     name = newCircuit;
     QList<JackAssignment *> newJacks;
-    for (qsizetype i=0; i<jackAssignments.length(); i++) {
-        QString asString = jackAssignments[i]->toString();
-        delete jackAssignments[i];
-        JackAssignment *ja = JackAssignment::parseJackLine(newCircuit, asString);
-        newJacks.append(ja);
+    for (auto ja: jackAssignments) {
+        QString asString = ja->toString();
+        delete ja;
+        JackAssignment *newJa = JackAssignment::parseJackLine(newCircuit, asString);
+        newJacks.append(newJa);
     }
     jackAssignments.clear();
     jackAssignments = newJacks;
@@ -84,6 +118,7 @@ void Circuit::changeCircuit(QString newCircuit)
 
 bool Circuit::needG8() const
 {
+    // TODO: Toplevel lösen mit atom-iterator
     for (qsizetype i=0; i<jackAssignments.length(); i++) {
         if (jackAssignments[i]->needG8())
             return true;

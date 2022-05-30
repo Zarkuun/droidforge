@@ -48,7 +48,7 @@ QString RegisterComments::toString() const
         { REGISTER_NORMALIZE, "NORMALIZATIONS" },
         { REGISTER_OUTPUT, "OUTPUTS" },
         { REGISTER_GATE, "GATES" },
-        { REGISTER_RGB, "RGB LEDS" },
+        { REGISTER_RGB_LED, "RGB LEDS" },
     };
 
     for (unsigned i=0; i<sizeof(globalRegtypes) / sizeof(regtitle_t); i++)
@@ -61,7 +61,7 @@ QString RegisterComments::toString() const
         { REGISTER_BUTTON, "BUTTONS" },
         { REGISTER_LED, "LEDS" },
         { REGISTER_SWITCH, "SWITCHES" },
-        { REGISTER_RGB, "RGB LEDS" },
+        { REGISTER_RGB_LED, "RGB LEDS" },
     };
 
     for (unsigned cn=0; cn<MAX_NUM_CONTROLLERS; cn++) {

@@ -2,10 +2,13 @@
 #define CIRCUIT_H
 
 #include "jackassignment.h"
+#include "patchproblem.h"
 
 #include <QList>
 #include <QString>
 #include <QStringList>
+
+class Patch;
 
 class Circuit
 {
@@ -35,6 +38,7 @@ public:
     void setAtomAt(int row, int column, Atom *atom);
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
+    QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     void changeCircuit(QString newCircuit);
     bool needG8() const;

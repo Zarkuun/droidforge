@@ -22,6 +22,7 @@ public:
     void parseExpression(const QString &expression);
     static Atom *parseOutputAtom(const QString &s);
     void removeRegisterReferences(RegisterList &rl, int, int oh);
+    QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_OUTPUT; };
@@ -29,6 +30,7 @@ protected:
 
 private:
     // void parseOutputValue(QString valueString);
+
 };
 
 #endif // JACKASSIGNMENTOUTPUT_H

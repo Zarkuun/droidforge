@@ -19,6 +19,7 @@ public:
     void collectCables(QStringList &) const {};
     void parseExpression(const QString &expression);
     void removeRegisterReferences(RegisterList &, int, int) {};
+    QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
 protected:
     JackAssignment *clone() const;

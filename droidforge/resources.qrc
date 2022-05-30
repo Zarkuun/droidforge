@@ -1317,5 +1317,7 @@
         <file>images/cables/yellow-7.png</file>
         <file>images/cables/yellow-8.png</file>
         <file>images/cables/ghost.png</file>
+        <file>images/circuits/math.png</file>
+        <file>images/circuits/logic.png</file>
     </qresource>
 </RCC>

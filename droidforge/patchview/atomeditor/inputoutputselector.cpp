@@ -16,14 +16,14 @@ InputOutputSelector::InputOutputSelector(jacktype_t jacktype, QWidget *parent)
     if (jacktype == JACKTYPE_INPUT) {
         addRegisterButton(REGISTER_INPUT, tr("Input"));
         addRegisterButton(REGISTER_GATE, tr("Gate"));
-        addRegisterButton(REGISTER_RGB, tr("RGB-LED"));
+        addRegisterButton(REGISTER_RGB_LED, tr("RGB-LED"));
         addRegisterButton(REGISTER_OUTPUT, tr("Output"));
     }
     else {
         addRegisterButton(REGISTER_OUTPUT, tr("Output"));
         addRegisterButton(REGISTER_GATE, tr("Gate"));
         addRegisterButton(REGISTER_NORMALIZE, tr("Normalization"));
-        addRegisterButton(REGISTER_RGB, tr("RGB-LED"));
+        addRegisterButton(REGISTER_RGB_LED, tr("RGB-LED"));
         addRegisterButton(REGISTER_EXTRA, tr("Special"));
     }
 }

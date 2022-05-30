@@ -9,6 +9,12 @@
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001
 
+#define NUMBER_INPUTS                        8
+#define NUMBER_OUTPUTS                       8
+#define NUMBER_GATES                         12
+#define NUMBER_RGB_LEDS                      32
+#define NUMBER_EXTRA_REGISTERS               1
+
 #define MAX_RECENT_FILES                     10
 #define UNDO_HISTORY_SIZE                    1000
 #define MAX_NUM_CONTROLLERS                  32 // When parsing a patch

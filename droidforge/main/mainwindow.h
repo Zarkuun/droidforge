@@ -100,6 +100,7 @@ public:
     void registerEdit(QString name);
     void patchHasChanged();
     void updateActions();
+    void updateProblems();
     void updateClipboardInfo(QString info);
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);

@@ -1,6 +1,7 @@
 #ifndef PATCH_H
 #define PATCH_H
 
+#include "patchproblem.h"
 #include "patchsection.h"
 #include "registercomments.h"
 
@@ -21,14 +22,37 @@ public:
     Patch();
     ~Patch();
     Patch *clone() const;
+    QString toString();
+    bool saveToFile(QString filename);
+
+    // Simple access functions
+    const QString &getTitle() const;
+    const QString &getFileName() const { return fileName; };
+    QString getDescription() const;
+    const QString &getLibraryMetaData() const { return libraryMetaData; }
     qsizetype numControllers() const { return controllers.size(); };
     QString controller(qsizetype i) const { return controllers[i]; };
     const QStringList &allControllers() const { return controllers; };
-    qsizetype numSections() const { return sections.size(); };
     bool isEmpty() const { return numSections() == 0; };
+    qsizetype numSections() const { return sections.size(); };
     qsizetype currentSectionIndex() const { return sectionIndex; };
-    void setCurrentSectionIndex(qsizetype i) { sectionIndex = i; };
     PatchSection *section(qsizetype i) { return sections[i]; };
+
+    // More complex analysis
+    QStringList allCables() const;
+    void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
+    bool needG8() const; // TODO: Do we need this?
+    bool needX7() const; // TODO: Do we need this?
+    void collectUsedRegisterAtoms(RegisterList &) const;
+    void collectAvailableRegisterAtoms(RegisterList &) const;
+    QList<PatchProblem *>collectProblems() const;
+
+    // Modifications
+    void addDescriptionLine(const QString &line);
+    void setFileName(const QString &f) { fileName = f; };
+    void setTitle(const QString &newTitle);
+    void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
+    void switchCurrentSection(qsizetype i) { sectionIndex = i; };
     void addSection(PatchSection *section);
     void insertSection(int index, PatchSection *section);
     void mergeSections(int indexa, int indexb);
@@ -41,8 +65,6 @@ public:
     void shiftControllerNumbers(int number, int by=-1);
     void addController(QString name) { controllers.append(name); };
     void removeController(int index);
-    bool saveToFile(QString filename);
-    void addDescriptionLine(const QString &line);
     void setDescription(const QString &d);
     void addRegisterComment(
             QChar registerName,
@@ -50,26 +72,12 @@ public:
             unsigned number,
             const QString &shorthand,
             const QString &atomcomment);
-
-    QString toString();
-    const QString &getTitle() const;
-    void setFileName(const QString &f) { fileName = f; };
-    const QString &getFileName() const { return fileName; };
-    QString getDescription() const;
-    void setTitle(const QString &newTitle);
-    const QString &getLibraryMetaData() const { return libraryMetaData; }
-    void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
-    QStringList allCables() const;
-    void renameCable(const QString &oldName, const QString &newName);
-    // TODO: überall den neuen Iterator verwenden!
-    void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
-    bool needG8() const; // TODO: Do we need this?
-    bool needX7() const; // TODO: Do we need this?
-    void collectUsedRegisterAtoms(RegisterList &) const;
-    void collectAvailableRegisterAtoms(RegisterList &) const;
     void remapRegister(AtomRegister from, AtomRegister to);
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);
+    void renameCable(const QString &oldName, const QString &newName);
 
+    // Iteration of all atoms in this patch
+    // TODO: Move to own file?
     class iterator {
         Atom *atom; // is 0 at end of iteration, otherwise never
         Patch *patch;
@@ -77,7 +85,6 @@ public:
         int nCircuit; // always points to valid circuit
         int nJack; // always points to valid jack
         int nAtom; // always points to valid atom (1, 2, or 3)
-
         // if atom is != 0, the following three variables
         // always point to the objects according to the n... numbers
         PatchSection *section; // always reflects nSection
@@ -104,8 +111,6 @@ public:
 
     auto begin() { return iterator(this); }
     auto end() { return iterator(); }
-
-private:
 };
 
 #endif // PATCH_H

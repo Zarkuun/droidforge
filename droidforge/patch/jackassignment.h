@@ -3,10 +3,13 @@
 
 #include "atom.h"
 #include "atomregister.h"
+#include "patchproblem.h"
 #include "registerlist.h"
 
 #include <QString>
 #include <QSet>
+
+class Patch;
 
 typedef enum {
     JACKTYPE_INPUT = 0,
@@ -48,6 +51,7 @@ public:
     virtual void findCableConnections(const QString &, int &, int &) const {};
     virtual void parseExpression(const QString &expression) = 0;
     virtual void removeRegisterReferences(RegisterList &rl, int ih, int oh) = 0;
+    virtual QList<PatchProblem *> collectProblems(const Patch *patch) const = 0;
 
     static JackAssignment *parseJackLine(const QString &circuit, QString line);
 

@@ -62,7 +62,7 @@ void Module::paintHiliteRegister(QPainter *painter, QChar type, unsigned number)
     QPen pen(QColor(255, 255, 0));
     pen.setWidth(10);
     painter->setPen(pen);
-    if (type == REGISTER_RGB || type == REGISTER_EXTRA)
+    if (type == REGISTER_RGB_LED || type == REGISTER_EXTRA)
         painter->drawRect(r);
     else
         painter->drawEllipse(r);

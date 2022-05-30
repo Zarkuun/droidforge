@@ -5,7 +5,7 @@ unsigned ModuleX7::numRegisters(QChar type) const
 {
     if (type == REGISTER_GATE)
         return 4;
-    else if (type == REGISTER_RGB)
+    else if (type == REGISTER_RGB_LED)
         return 8;
     else
         return 0;
@@ -35,7 +35,7 @@ QPointF ModuleX7::registerPosition(QChar type, unsigned number) const
 
 float ModuleX7::registerSize(QChar type, unsigned) const
 {
-    if (type == REGISTER_RGB)
+    if (type == REGISTER_RGB_LED)
         return CONTROL_RGBLED_SIZE;
     else
         return CONTROL_JACK_SIZE;
@@ -46,7 +46,7 @@ unsigned ModuleX7::numberOffset(QChar type) const
 {
     if (type == REGISTER_GATE)
         return 8;
-    else if (type == REGISTER_RGB)
+    else if (type == REGISTER_RGB_LED)
         return 24;
     else
         return 0;

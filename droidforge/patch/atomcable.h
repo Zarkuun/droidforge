@@ -16,6 +16,8 @@ public:
     bool isCable() const { return true; };
     QString getCable() const { return name; };
     void setCable(const QString &n) { name = n; };
+    QList<PatchProblem *> collectProblemsAsInput(const Patch *patch) const;
+    QList<PatchProblem *> collectProblemsAsOutput(const Patch *patch) const;
 };
 
 #endif // ATOMCABLE_H

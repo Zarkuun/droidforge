@@ -4,8 +4,11 @@
 #include "circuit.h"
 #include "circuitchoosedialog.h"
 #include "cursorposition.h"
+#include "patchproblem.h"
 
 #include <QList>
+
+class Patch;
 
 class PatchSection
 {
@@ -42,6 +45,7 @@ public:
 
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
+    QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     const CursorPosition &cursorPosition() { return cursor; };
     void setCursor(const CursorPosition &pos) { cursor = pos; };

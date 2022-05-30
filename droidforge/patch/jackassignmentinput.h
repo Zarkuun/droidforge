@@ -23,6 +23,7 @@ public:
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     static Atom *parseInputAtom(const QString &s);
+    QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_INPUT; };
@@ -34,6 +35,7 @@ private:
     static Atom *parseOnOff(QString s);
     static Atom *parseNumber(QString s);
     bool isInRegisterList(const RegisterList &rl, Atom *atom);
+
 };
 
 #endif // JACKASSIGNMENTINPUT_H

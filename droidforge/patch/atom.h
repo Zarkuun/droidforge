@@ -1,7 +1,12 @@
 #ifndef ATOM_H
 #define ATOM_H
 
+class PatchProblem;
+
 #include <QString>
+#include <QList>
+
+class Patch;
 
 class Atom
 {
@@ -21,6 +26,8 @@ public:
     virtual bool needX7() const { return false; };
     virtual void swapControllerNumbers(int, int) {};
     virtual void shiftControllerNumbers(int, int) {};
+    virtual QList<PatchProblem *> collectProblemsAsInput(const Patch *patch) const = 0;
+    virtual QList<PatchProblem *> collectProblemsAsOutput(const Patch *patch) const = 0;
 };
 
 #endif // ATOM_H

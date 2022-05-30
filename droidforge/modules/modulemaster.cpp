@@ -6,7 +6,7 @@ unsigned ModuleMaster::numRegisters(QChar type) const
 {
     if (type == REGISTER_INPUT || type == REGISTER_OUTPUT || type == REGISTER_NORMALIZE)
         return 8;
-    else if (type == REGISTER_RGB)
+    else if (type == REGISTER_RGB_LED)
         return 16;
     else if (type == REGISTER_EXTRA)
         return 1;
@@ -26,7 +26,7 @@ QPointF ModuleMaster::registerPosition(QChar type, unsigned number) const
         y = row * 2.55 + 14.5;
     else if (type == REGISTER_OUTPUT)
         y = row * 2.55 + 19.6;
-    else if (type == REGISTER_RGB) {
+    else if (type == REGISTER_RGB_LED) {
         y = row * 1.8 + 5.8;
         if (row >= 2)
             y += 0.3;
@@ -40,7 +40,7 @@ QPointF ModuleMaster::registerPosition(QChar type, unsigned number) const
 
 float ModuleMaster::registerSize(QChar type, unsigned) const
 {
-    if (type == REGISTER_RGB)
+    if (type == REGISTER_RGB_LED)
         return CONTROL_RGBLED_SIZE;
     else if (type == REGISTER_EXTRA)
         return CONTROL_EXTRA_SIZE;

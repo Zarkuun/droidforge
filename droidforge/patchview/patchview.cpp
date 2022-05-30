@@ -263,14 +263,14 @@ void PatchView::nextSection()
 {
     int i = (currentIndex() + 1) % count();
     this->setCurrentIndex(i);
-    patch->setCurrentSectionIndex(i);
+    patch->switchCurrentSection(i);
 }
 
 void PatchView::previousSection()
 {
     int i =(currentIndex() - 1 + count()) % count();
     this->setCurrentIndex(i);
-    patch->setCurrentSectionIndex(i);
+    patch->switchCurrentSection(i);
 }
 
 void PatchView::editProperties()
@@ -469,7 +469,7 @@ void PatchView::duplicateSection(int index)
     PatchSection *newsection = newpatch->section(0)->clone();
     PatchSectionView *psv = new PatchSectionView(patch, newsection, zoomLevel);
     patch->insertSection(index + 1, newsection);
-    patch->setCurrentSectionIndex(index + 1);
+    patch->switchCurrentSection(index + 1);
     insertTab(index + 1, psv, newname);
     setCurrentIndex(patch->currentSectionIndex());
     delete newpatch;
@@ -499,7 +499,7 @@ void PatchView::deleteSection(int index)
     QString actionTitle = tr("deleting patch section '%1'").arg(title);
     the_forge->registerEdit(actionTitle);
     patch->deleteSection(index);
-    removeTab(index); patch->setCurrentSectionIndex(this->currentIndex());
+    removeTab(index); patch->switchCurrentSection(this->currentIndex());
     the_forge->patchHasChanged();
 }
 
@@ -527,7 +527,7 @@ PatchSection *PatchView::addNewSection(QString name, int index)
     PatchSection *section = new PatchSection(name);
     PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
     patch->insertSection(index, section);
-    patch->setCurrentSectionIndex(index);
+    patch->switchCurrentSection(index);
     insertTab(index, psv, name);
     setCurrentIndex(index);
     return section;

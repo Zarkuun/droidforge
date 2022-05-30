@@ -1,5 +1,11 @@
 #include "atomnumber.h"
 #include "tuning.h"
+#include "patchproblem.h"
+
+#include <QCoreApplication>
+
+#define tr(s) QCoreApplication::translate("Patch", s)
+
 
 AtomNumber *AtomNumber::clone() const
 {
@@ -47,6 +53,19 @@ QString AtomNumber::toNegatedString() const
 {
     AtomNumber n(-number, numberType, fraction);
     return n.toString();
+}
+
+QList<PatchProblem *> AtomNumber::collectProblemsAsInput(const Patch *) const
+{
+    return QList<PatchProblem *>();
+}
+
+QList<PatchProblem *> AtomNumber::collectProblemsAsOutput(const Patch *) const
+{
+    QList<PatchProblem *> problems;
+    problems.append(
+                new PatchProblem(0, 0, tr("You cannot use a fixed number for an output parameter")));
+    return problems;
 }
 
 QString AtomNumber::toFractionString(float number) const

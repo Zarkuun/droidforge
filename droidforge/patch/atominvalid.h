@@ -14,6 +14,8 @@ public:
     AtomInvalid *clone() const;
     QString toString() const { return rawtext; };
     bool isInvalid() const { return true; };
+    QList<PatchProblem *> collectProblemsAsInput(const Patch *) const;
+    QList<PatchProblem *> collectProblemsAsOutput(const Patch *) const;
 };
 
 #endif // ATOMINVALID_H

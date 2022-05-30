@@ -2,6 +2,10 @@
 #include "atomcable.h"
 #include "atominvalid.h"
 
+#include <QCoreApplication>
+
+#define tr(s) QCoreApplication::translate("Patch", s)
+
 JackAssignmentOutput::JackAssignmentOutput(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
 {
@@ -71,6 +75,9 @@ void JackAssignmentOutput::parseExpression(const QString &expression)
 
 Atom *JackAssignmentOutput::parseOutputAtom(const QString &expression)
 {
+    if (expression == "")
+        return 0;
+
     Atom *atom = 0;
     if (expression.size() > 0) {
         if (expression[0] == '_')
@@ -96,4 +103,14 @@ void JackAssignmentOutput::removeRegisterReferences(RegisterList &rl, int, int o
             atom = 0;
         }
     }
+}
+
+QList<PatchProblem *> JackAssignmentOutput::collectProblems(const Patch *patch) const
+{
+    QList<PatchProblem *>problems;
+    if (!atom)
+        problems.append( new PatchProblem(-1, 1, tr("You need to set a value for this parameter")));
+    else
+        problems += atom->collectProblemsAsOutput(patch);
+    return problems;
 }
