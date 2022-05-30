@@ -27,8 +27,10 @@
 // Standard for all dialogs
 #define STANDARD_SPACING                     10
 #define COLOR_LINE                           QColor(120, 120, 120)
-#define COLOR_FRAME_CURSOR                   QColor(255, 200, 50)
-#define COLOR_FRAME_CURSOR_BACKGROUND        COLOR_FRAME_CURSOR
+#define COLOR_CURSOR_NORMAL                  QColor(255, 255, 255)
+#define COLOR_CURSOR_PROBLEM                 QColor(255, 0, 0)
+#define COLOR_CURSOR_PATCHING                QColor(50, 100, 255)
+#define COLOR_CURSOR_INACTIVE                QColor(180, 180, 180)
 #define COLOR_TEXT                           QColor(255, 255, 255)
 #define COLOR_TEXT_UNKNOWN                   QColor(255, 255, 0)
 #define COLOR_JACK_INPUT                     QColor(0, 200, 255)
@@ -155,7 +157,6 @@
 #define JSEL_COLOR_CIRCUIT_BACKGROUND        QColor(20, 20, 20)
 #define JSEL_COLOR_JACK_LINE                 QColor(120, 120, 120)
 #define JSEL_COLOR_JACK_INACTIVE             QColor(80, 80, 80)
-#define JSEL_COLOR_CURSOR_INACTIVE           QColor(250, 250, 250)
 
 // Atom selector
 #define ASEL_SUBSELECTOR_WIDTH               150

@@ -50,6 +50,7 @@ public:
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
     void setZoom(int zoom);
+    void setCursorMode(cursor_mode_t mode);
     void copyToClipboard(Clipboard &clipboard);
     Patch *getSelectionAsPatch() const;
     void clearSelection();
@@ -59,6 +60,9 @@ public:
     bool atomCellSelected() const;
     void setCursorPosition(const CursorPosition &pos);
     const CursorPosition &getCursorPosition() const;
+    void updateCursor();
+    void updateProblemMarkers();
+    void patchHasChanged();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -68,7 +72,6 @@ protected:
 
 private:
     PatchView *patchView();
-    void updateCursor();
     void updateCableIndicator();
     void setMouseSelection(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);

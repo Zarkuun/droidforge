@@ -47,10 +47,7 @@ void JackAssignmentUnknown::parseExpression(const QString &expression)
 QList<PatchProblem *> JackAssignmentUnknown::collectProblems(const Patch *) const
 {
     QList<PatchProblem *>problems;
-    problems.append(
-                new PatchProblem(-1, 1, tr("Unknown parameter '%1' in this circuit'").arg(jackName())));
-    for (auto problem: problems)
-        problem->setColumn(1);
+    problems.append(new PatchProblem(-1, 0, tr("Unknown parameter '%1' in this circuit'").arg(jackName())));
     return problems;
 }
 

@@ -49,6 +49,7 @@ private:
     void copyToClipboard(Clipboard *cb = 0);
     PatchSection *addNewSection(QString name, int index=-1);
     QString sectionName(int index);
+    void patchHasChanged();
 
 public slots:
     void nextSection();

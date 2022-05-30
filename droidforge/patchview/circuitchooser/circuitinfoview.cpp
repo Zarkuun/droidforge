@@ -57,11 +57,8 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     // Cursor
     if (selected)
     {
-        painter->setPen(COLOR_FRAME_CURSOR);
+        painter->setPen(COLOR_CURSOR_NORMAL);
         painter->setBrush(Qt::NoBrush);
         painter->drawRect(boundingRect());
     }
 }
-
-
-

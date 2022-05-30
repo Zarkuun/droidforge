@@ -77,7 +77,7 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *> allProblems;
     // TODO: Account for RAM usage in DROID
-    if (!the_firmware->circuitExists(name)) {
+    if (the_firmware->circuitExists(name)) {
         allProblems.append(
             new PatchProblem(-2, 0, tr("There is no such circuit with the name '%1'").arg(name)));
     }
@@ -86,17 +86,18 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 
     int row=0;
     for (auto ja: jackAssignments) {
-        for (auto problem: ja->collectProblems(patch)) {
-            problem->setRow(row);
-            allProblems.append(problem);
-        }
         QString name = ja->jackName();
         if (usedJacks.contains(name)) {
             allProblems.append(
                 new PatchProblem(row, 0, tr("Duplicate definition of parameter '%1'").arg(name)));
         }
-        else
+        else { // check other errors only if not duplicate (avoid double errors)
             usedJacks.insert(name);
+            for (auto problem: ja->collectProblems(patch)) {
+                problem->setRow(row);
+                allProblems.append(problem);
+            }
+        }
         row++;
     }
     return allProblems;

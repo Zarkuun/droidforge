@@ -325,6 +325,7 @@ void PatchView::startPatching()
     patchingStartPosition = currentPatchSectionView()->getCursorPosition();
     the_forge->updateActions();
     the_forge->cableIndicator()->setPatchingState(true);
+    currentPatchSectionView()->updateCursor(); // TODO: This seems to be hack
 }
 
 void PatchView::finishPatching()
@@ -374,7 +375,6 @@ void PatchView::abortPatching()
     the_forge->updateActions();
     the_forge->cableIndicator()->setPatchingState(false);
 }
-
 
 void PatchView::followInternalCable()
 {
@@ -545,6 +545,12 @@ QString PatchView::sectionName(int index)
     return patch->section(index)->getNonemptyTitle();
 }
 
+void PatchView::patchHasChanged()
+{
+    the_forge->patchHasChanged();
+    currentPatchSectionView()->patchHasChanged();
+}
+
 void PatchView::zoom(int how)
 {
     QSettings settings;
@@ -660,6 +666,15 @@ void PatchView::tabContextMenu(int index)
 
 void PatchView::sectionCursorMoved(const CursorPosition &pos)
 {
+    cursor_mode_t mode;
+
+    if (patching)
+        mode = CURSOR_PATCHING;
+    else if (patch->problemAt(currentIndex(), pos) != "")
+        mode = CURSOR_PROBLEM;
+    else
+        mode = CURSOR_NORMAL;
+    currentPatchSectionView()->setCursorMode(mode);
     emit cursorMoved(currentIndex(), pos);
 }
 

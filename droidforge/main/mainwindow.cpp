@@ -93,7 +93,7 @@ void MainWindow::loadPatch(const QString &aFilename)
 
     filename = aFilename;
     undoHistory.reset(&newpatch);
-    patchHasChanged();
+    the_forge->patchHasChanged();
 }
 
 void MainWindow::integratePatch(const QString &aFilename)
@@ -104,14 +104,14 @@ void MainWindow::integratePatch(const QString &aFilename)
     if (newPatch) {
         registerEdit(tr("integrating other patch '%1'").arg(otherpatch.getTitle()));
         setPatch(newPatch);
-        patchHasChanged();
+        the_forge->patchHasChanged();
     }
 }
 
 void MainWindow::registerEdit(QString name)
 {
     undoHistory.snapshot(patch, name);
-    patchHasChanged();
+    the_forge->patchHasChanged();
 }
 
 void MainWindow::setPatch(Patch *newpatch)
@@ -119,6 +119,7 @@ void MainWindow::setPatch(Patch *newpatch)
     if (patch)
         delete patch;
     patch = newpatch;
+    patch->updateProblems();
     rackView.setPatch(patch);
     patchView.setPatch(patch);
 }
@@ -628,7 +629,7 @@ void MainWindow::newPatch()
     setPatch(newpatch.clone());
     undoHistory.reset(&newpatch);
     filename = "";
-    patchHasChanged();
+    the_forge->patchHasChanged();
 }
 
 void MainWindow::open()
@@ -655,7 +656,7 @@ void MainWindow::save()
     else {
         patch->saveToFile(filename);
         undoHistory.clearModified();
-        patchHasChanged();
+        the_forge->patchHasChanged();
     }
 }
 
@@ -670,7 +671,7 @@ void MainWindow::saveAs()
         patch->saveToFile(newFilename);
         filename = newFilename;
         undoHistory.clearModified();
-        patchHasChanged();
+        the_forge->patchHasChanged();
         addToRecentFiles(newFilename);
     }
 }
@@ -702,9 +703,10 @@ void MainWindow::undo()
         if (patch)
             delete patch;
         patch = undoHistory.undo();
+        patch->updateProblems();
         rackView.setPatch(patch);
         patchView.setPatch(patch);
-        patchHasChanged();
+        the_forge->patchHasChanged();
     }
 }
 
@@ -715,9 +717,10 @@ void MainWindow::redo()
         if (patch)
             delete patch;
         patch = undoHistory.redo();
+        patch->updateProblems();
         rackView.setPatch(patch);
         patchView.setPatch(patch);
-        patchHasChanged();
+        the_forge->patchHasChanged();
     }
 }
 
@@ -738,14 +741,12 @@ void MainWindow::splitterMoved()
 
 void MainWindow::cursorMoved(int section, const CursorPosition &pos)
 {
-    qDebug() << "CURSOR MOVED" << section;
     QString problem = patch->problemAt(section, pos);
     if (problem != "")
         statusbar->showMessage(problem);
     else
         statusbar->clearMessage();
 }
-
 
 bool MainWindow::checkModified()
 {

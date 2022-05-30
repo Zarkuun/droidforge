@@ -50,6 +50,7 @@ public:
     void updateProblems();
     unsigned numProblems() const { return problems.count(); };
     QString problemAt(int section, const CursorPosition &pos);
+    const QList<PatchProblem *> &allProblems() const { return problems; };
     const PatchProblem *problem(unsigned nr) { return problems[nr]; };
     bool registerAvailable(AtomRegister ar) const;
 

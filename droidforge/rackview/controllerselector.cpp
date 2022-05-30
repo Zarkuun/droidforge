@@ -25,7 +25,7 @@ ControllerSelector::ControllerSelector(QWidget *parent)
         x += CSEL_CONTROLLER_DISTANCE;
     }
 
-    QPen pen(COLOR_FRAME_CURSOR);
+    QPen pen(COLOR_CURSOR_NORMAL);
     pen.setWidth(CSEL_CURSOR_WIDTH);
     cursor = scene->addRect(0, 0, 0, 0, pen);
     cursor->setZValue(20);

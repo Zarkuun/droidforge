@@ -6,6 +6,7 @@
 FrameCursor::FrameCursor()
     : animation(this, "animationPhase")
 {
+    setMode(CURSOR_NORMAL);
     setZValue(50);
 
     animation.setDuration(800);
@@ -20,6 +21,16 @@ FrameCursor::~FrameCursor()
 {
 }
 
+void FrameCursor::setMode(cursor_mode_t m)
+{
+   if (m == CURSOR_PATCHING)
+       setPen(COLOR_CURSOR_PATCHING);
+   else if (m == CURSOR_PROBLEM)
+       setPen(COLOR_CURSOR_PROBLEM);
+   else
+       setPen(COLOR_CURSOR_NORMAL);
+}
+
 float FrameCursor::getanimationPhase() const
 {
     return animationPhase;
@@ -32,12 +43,7 @@ void FrameCursor::setanimationPhase(float newAnimationPhase)
     // Braucht man das vielleicht doch?
     animationPhase = newAnimationPhase;
 
-    QPen pen;
-    pen.setWidth(1);
-    pen.setColor(COLOR_FRAME_CURSOR);
-    setPen(pen);
-
-    QColor c = COLOR_FRAME_CURSOR_BACKGROUND;
+    QColor c = pen().color();
     c.setAlphaF(animationPhase * 0.3);
     setBrush(c); // QColor(255, 60, 10, 50));
 

@@ -13,13 +13,17 @@
 #include "circuitchoosedialog.h"
 #include "patchview.h"
 #include "namechoosedialog.h"
-
+#include "problemmarker.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
 #include <QTransform>
 #include <QMenu>
 #include <QMessageBox>
+
+#define DATA_INDEX_CIRCUIT 0
+#define DATA_INDEX_PROBLEM 1
+
 
 PatchSectionView::PatchSectionView(Patch *patch, PatchSection *section, int zoom)
     : patch(patch)
@@ -30,7 +34,7 @@ PatchSectionView::PatchSectionView(Patch *patch, PatchSection *section, int zoom
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    setMinimumWidth(CircuitView::minimumWidth() + CIRV_ASSUMED_SCROLLBAR_WIDTH);
+     // setMinimumWidth(CircuitView::minimumWidth() + CIRV_ASSUMED_SCROLLBAR_WIDTH);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     buildPatchSection();
@@ -64,7 +68,7 @@ void PatchSectionView::buildPatchSection()
                     circuitWidth,
                     fontMetrics().lineSpacing(),
                     isLast ? CIRV_TOP_PADDING : 0);
-        cv->setData(0, true);
+        cv->setData(DATA_INDEX_CIRCUIT, true);
         circuitViews.append(cv);
         scene->addItem(cv);
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
@@ -78,6 +82,36 @@ void PatchSectionView::buildPatchSection()
     }
 }
 
+void PatchSectionView::updateProblemMarkers()
+{
+    for (auto item: scene()->items()) {
+        if (item->data(DATA_INDEX_PROBLEM).isValid()) {
+            scene()->removeItem(item);
+        }
+    }
+
+    for (auto problem: patch->allProblems())
+    {
+        if (problem->getSection() == patch->currentSectionIndex()) { // TODO: HACK!!
+            const CursorPosition &pos = problem->getCursorPosition();
+            CircuitView *cv = circuitViews[pos.circuitNr];
+            QRectF rect = cv->cellRect(pos.row, pos.column);
+            ProblemMarker *marker = new ProblemMarker(rect.height(), problem->getReason());
+            scene()->addItem(marker);
+            QPointF p(cv->pos().x() + rect.right() - rect.height(),
+                      cv->pos().y() + rect.top());
+            marker->setPos(p);
+            marker->setData(DATA_INDEX_PROBLEM, true);
+        }
+    }
+}
+
+void PatchSectionView::patchHasChanged()
+{
+     the_forge->patchHasChanged();
+     updateProblemMarkers();
+}
+
 void PatchSectionView::deletePatchSection()
 {
     for (unsigned i=0; i<circuitViews.size(); i++)
@@ -89,6 +123,7 @@ void PatchSectionView::rebuildPatchSection()
 {
     deletePatchSection();
     buildPatchSection();
+    updateProblemMarkers();
     // TODO: Scheinbar springt der Viewport hier immer nach oben.
     // Und das ensureVisible bewirkt erstmal nix bis man den Cursor
     // bewegt
@@ -151,7 +186,7 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
 
     CircuitView *cv = 0;
     for (auto item: items(pos)) {
-        if (item->data(0).isValid()) {
+        if (item->data(DATA_INDEX_CIRCUIT).isValid()) {
             cv = (CircuitView *)item;
             break;
         }
@@ -284,7 +319,7 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
     section->addNewCircuit(newPosition, name, jackSelection);
     rebuildPatchSection();
     updateCursor();
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 
@@ -303,7 +338,7 @@ void PatchSectionView::addNewJack(QString name)
     section->setCursorColumn(1);
     rebuildPatchSection();
     updateCursor();
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 
@@ -371,7 +406,7 @@ void PatchSectionView::editJack(int key)
         }
         else
             currentJackAssignment()->changeJack(name);
-        the_forge->patchHasChanged();
+        patchHasChanged();
     }
 }
 
@@ -447,7 +482,7 @@ void PatchSectionView::editAtom(int key)
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
-        the_forge->patchHasChanged();
+        patchHasChanged();
         updateCursor();
     }
 }
@@ -471,7 +506,7 @@ void PatchSectionView::editCircuitComment(int key)
         else
             circuit->removeComment();
         rebuildPatchSection();
-        the_forge->patchHasChanged();
+        patchHasChanged();
     }
 }
 
@@ -509,7 +544,7 @@ void PatchSectionView::renameCable()
     the_forge->registerEdit(tr("renaming cable '%1' to '%2'").arg(oldName).arg(newName));
     patch->renameCable(oldName, newName);
     rebuildPatchSection();
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 bool PatchSectionView::isEmpty() const
@@ -575,7 +610,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
 
     the_forge->registerEdit(tr("inserting register %1").arg(ar.toString()));
     ja->replaceAtom(cursor.column, ar.clone());
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 void PatchSectionView::setZoom(int zoom)
@@ -585,6 +620,12 @@ void PatchSectionView::setZoom(int zoom)
     transform.scale(zoomFactor, zoomFactor);
     setTransform(transform);
     rebuildPatchSection();
+    setMinimumWidth(CircuitView::minimumWidth() * zoomFactor + CIRV_ASSUMED_SCROLLBAR_WIDTH);
+}
+
+void PatchSectionView::setCursorMode(cursor_mode_t mode)
+{
+    frameCursor->setMode(mode);
 }
 
 void PatchSectionView::updateCursor()
@@ -596,11 +637,10 @@ void PatchSectionView::updateCursor()
         QRectF tbr = br.translated(currentCircuitView()->pos());
         ensureVisible(tbr);
         updateCableIndicator();
-        qDebug("MOVED");
         emit cursorMoved(pos);
 
-        QRectF cr = currentCircuitView()->cellRect(pos.row, pos.column).translated(currentCircuitView()->pos());
-        frameCursor->setRect(cr);
+        QRectF cr = currentCircuitView()->cellRect(pos.row, pos.column);
+        frameCursor->setRect(cr.translated(currentCircuitView()->pos()));
         frameCursor->startAnimation();
     }
 
@@ -786,7 +826,7 @@ void PatchSectionView::deleteCurrentCircuit()
     the_forge->registerEdit(actionTitle);
     section->deleteCurrentCircuit();
     rebuildPatchSection();
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 void PatchSectionView::deleteMultipleCircuits(int from, int to)
@@ -796,7 +836,7 @@ void PatchSectionView::deleteMultipleCircuits(int from, int to)
     for (int i=to; i>=from; i--)
         section->deleteCircuit(i);
     rebuildPatchSection();
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 void PatchSectionView::deleteCurrentComment()
@@ -806,7 +846,7 @@ void PatchSectionView::deleteCurrentComment()
     section->deleteCurrentComment();
     rebuildPatchSection();
     updateCursor();
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 void PatchSectionView::deleteCurrentJack()
@@ -817,7 +857,7 @@ void PatchSectionView::deleteCurrentJack()
     section->deleteCurrentJackAssignment();
     rebuildPatchSection();
     updateCursor();
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
@@ -828,7 +868,7 @@ void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
         section->circuit(circuitNr)->deleteJackAssignment(i);
     section->sanitizeCursor();
     rebuildPatchSection();
-    the_forge->patchHasChanged();
+    patchHasChanged();
 }
 
 const Atom *PatchSectionView::currentAtom() const
@@ -879,7 +919,7 @@ void PatchSectionView::deleteCurrentAtom()
         QString actionTitle = QString("deleting value of '") + ja->jackName() + "'";
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(column, 0);
-        the_forge->patchHasChanged();
+        patchHasChanged();
     }
     rebuildPatchSection();
 }
@@ -898,7 +938,7 @@ void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int
         the_forge->registerEdit(actionTitle);
         for (int i=from; i<=to; i++)
             ja->replaceAtom(i, 0);
-        the_forge->patchHasChanged();
+        patchHasChanged();
     }
     rebuildPatchSection();
 }
@@ -914,7 +954,7 @@ void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
     }
     // TODO: Hier klappt das nicht mit der Cursorsichtbarkeit.
     // Das ensureVisible macht irgendwie nix
-    the_forge->patchHasChanged();
+    patchHasChanged();
     rebuildPatchSection();
 }
 
@@ -924,7 +964,7 @@ void PatchSectionView::pasteCommentFromClipboard(const Clipboard &clipboard)
     if (comment != currentCircuit()->getComment()) {
         the_forge->registerEdit(tr("pasting circuit comment"));
         currentCircuit()->setComment(comment);
-        the_forge->patchHasChanged();
+        patchHasChanged();
         rebuildPatchSection();
     }
 }
@@ -945,7 +985,7 @@ void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
         section->setCursorRow(index);
         index++;
     }
-    the_forge->patchHasChanged();
+    patchHasChanged();
     rebuildPatchSection();
 }
 
@@ -978,7 +1018,7 @@ void PatchSectionView::pasteAtomsFromClipboard(const Clipboard &clipboard)
         if (column > 3)
             break;
     }
-    the_forge->patchHasChanged();
+    patchHasChanged();
     rebuildPatchSection();
 }
 
@@ -994,7 +1034,7 @@ void PatchSectionView::editCircuit(int key)
         QString actionTitle = QString("changing circuit type to '") + newCircuit + "'";
         the_forge->registerEdit(actionTitle);
         currentCircuit()->changeCircuit(newCircuit);
-        the_forge->patchHasChanged();
+        patchHasChanged();
         rebuildPatchSection();
     }
 }

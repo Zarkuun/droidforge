@@ -36,6 +36,8 @@ QtApplication {
         "patchview/clipboard.h",
         "patchview/framecursor.cpp",
         "patchview/framecursor.h",
+        "patchview/problemmarker.cpp",
+        "patchview/problemmarker.h",
         "patchview/selection.cpp",
         "patchview/selection.h",
         "resources.qrc",
