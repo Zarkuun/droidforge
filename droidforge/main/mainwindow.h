@@ -39,6 +39,7 @@ typedef enum {
     ACTION_NEW_CIRCUIT,
     ACTION_EDIT_CIRCUIT_COMMENT,
     ACTION_MOVE_INTO_SECTION,
+    ACTION_JUMP_TO_NEXT_PROBLEM,
     NUM_ACTIONS,
 } action_t;
 
@@ -51,6 +52,8 @@ class MainWindow : public QMainWindow
     QMenuBar *menubar;
     QStatusBar *statusbar;
     CableStatusIndicator *cableStatusIndicator;
+    QList<PatchProblem *> patchProblems;
+    unsigned currentProblem;
     QAction *actions[NUM_ACTIONS];
 
 private:
@@ -66,29 +69,31 @@ private:
     QToolBar *toolbar;
 
     QMenu *editMenu;
-    QAction *undoAction;
-    QAction *redoAction;
-    QAction *cutAction;
-    QAction *copyAction;
-    QAction *pasteAction;
-    QAction *pasteSmartAction;
-    QAction *addJackAction;
-    QAction *openEnclosingFolderAction;
-    QAction *renamePatchSectionAction;
-    QAction *newPatchSectionAction;
-    QAction *deletePatchSectionAction;
+    QAction *actionUndo;
+    QAction *actionRedo;
+    QAction *actionCut;
+    QAction *actionCopy;
+    QAction *actionPaste;
+    QAction *actionPasteSmart;
+    QAction *actionAddJack;
+    QAction *actionOpenEnclosingFolder;
+    QAction *actionRenamePatchSection;
+    QAction *actionNewPatchSection;
+    QAction *actionDeletePatchSection;
 
     QMenu *fileMenu;
-    QAction *newAct;
-    QAction *openAct;
-    QAction *saveAct;
-    QAction *saveAsAct;
-    QAction *exportSelectionAct;
+    // TODO: Umstellen auf actions[]
+    QAction *actionNew;
+    QAction *actionOpen;
+    QAction *actionSave;
+    QAction *actionSaveAs;
+    QAction *actionExportSelection;
+    QAction *actionIntegrate;
 
     QMenu *viewMenu;
-    QAction *zoomResetAction;
-    QAction *zoomInAction;
-    QAction *zoomOutAction;
+    QAction *actionResetZoom;
+    QAction *actionZoomIn;
+    QAction *actionZoomOut;
 
 public:
     MainWindow(const QString &initialFilename);
@@ -140,6 +145,7 @@ private slots:
     void openEnclosingFolder();
     void undo();
     void redo();
+    void jumpToNextProblem();
     void splitterMoved();
 
 signals:

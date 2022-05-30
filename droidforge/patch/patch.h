@@ -46,6 +46,7 @@ public:
     void collectUsedRegisterAtoms(RegisterList &) const;
     void collectAvailableRegisterAtoms(RegisterList &) const;
     QList<PatchProblem *>collectProblems() const;
+    bool registerAvailable(AtomRegister ar) const;
 
     // Modifications
     void addDescriptionLine(const QString &line);
@@ -75,6 +76,8 @@ public:
     void remapRegister(AtomRegister from, AtomRegister to);
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);
     void renameCable(const QString &oldName, const QString &newName);
+
+public:
 
     // Iteration of all atoms in this patch
     // TODO: Move to own file?

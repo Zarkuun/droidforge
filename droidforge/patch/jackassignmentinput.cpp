@@ -248,22 +248,18 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
         c = "-" + m.captured(2);
     }
     else {
-        qDebug() << "try division on " << value;
         // Forms with A / B are special, because B must be
         // fixed number. And the atom gets a hint.
         if ((m = form7.match(value)).hasMatch()) {
-            qDebug() << "form7";
             a = m.captured(1);
             b = m.captured(2);
         }
         else if ((m = form8.match(value)).hasMatch()) {
-            qDebug() << "form8";
             a = m.captured(1);
             b = m.captured(2);
             c = m.captured(3);
         }
         else if ((m = form9.match(value)).hasMatch()) {
-            qDebug() << "form9";
             a = m.captured(1);
             b = m.captured(2);
             c = "-" + m.captured(3);
@@ -286,7 +282,6 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
     atomB = parseInputAtom(b);
     atomC = parseInputAtom(c);
 }
-
 
 Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
 {
@@ -311,13 +306,22 @@ QList<PatchProblem *> JackAssignmentInput::collectProblems(const Patch *patch) c
         problems.append(
                     new PatchProblem(-1, 1, tr("You need to set a value for at least one of the three columns")));
     }
-    if (atomA)
-        problems += atomA->collectProblemsAsInput(patch);
-    if (atomB)
-        problems += atomB->collectProblemsAsInput(patch);
-    if (atomC)
-        problems += atomC->collectProblemsAsInput(patch);
-
+    // TODO: Mach endlich ne Liste!!![
+    if (atomA) {
+        QString text = atomA->problemAsInput(patch);
+        if (text != "")
+            problems.append(new PatchProblem(-1, 1, text));
+    }
+    if (atomB) {
+        QString text = atomB->problemAsInput(patch);
+        if (text != "")
+            problems.append(new PatchProblem(-1, 2, text));
+    }
+    if (atomC) {
+        QString text = atomC->problemAsInput(patch);
+        if (text != "")
+            problems.append(new PatchProblem(-1, 3, text));
+    }
     return problems;
 }
 

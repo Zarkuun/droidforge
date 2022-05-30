@@ -24,6 +24,8 @@ public:
     QStringList outputsOfCircuit(QString circuit, jackselection_t sel = JACKSELECTION_FULL);
     QStringList jacksOfCircuit(QString circuit, QString whence, jackselection_t);
     QStringList jackGroupsOfCircuit(QString circuit, QString whence, QString search);
+    unsigned numControllerRegisters(const QString &controller, char registerType);
+    unsigned numGlobalRegisters(char registerType);
 
 private:
     QJsonValue findJack(QString circuit, QString whence, QString jack);

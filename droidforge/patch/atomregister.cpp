@@ -86,33 +86,24 @@ void AtomRegister::shiftControllerNumbers(int controller, int by)
         data.r.controller += by;
 }
 
-QList<PatchProblem *> AtomRegister::collectProblemsAsInput(const Patch *patch) const
+QString AtomRegister::problemAsInput(const Patch *patch) const
 {
-    QList<PatchProblem *> problems;
-    QString g = generalProblem(patch);
-    if (g != "")
-        problems.append(new PatchProblem(0, 0, g));
-    return problems;
+    return generalProblem(patch);
 }
 
-QList<PatchProblem *> AtomRegister::collectProblemsAsOutput(const Patch *patch) const
+QString AtomRegister::problemAsOutput(const Patch *patch) const
 {
-    QList<PatchProblem *> problems;
-    QString s;
     switch (data.r.registerType) {
         case REGISTER_INPUT:
-                s = tr("You cannot use an input of the master as output"); break;
+                return tr("You cannot use an input of the master as output");
         case REGISTER_POT:
-                s = tr("You cannot use a potentiometer as output"); break;
+                return tr("You cannot use a potentiometer as output");
         case REGISTER_BUTTON:
-                s = tr("You cannot use a button as output"); break;
+                return tr("You cannot use a button as output");
         case REGISTER_SWITCH:
-                s = tr("You cannot use a switch as output"); break;
+                return tr("You cannot use a switch as output");
     }
-    if (s != "")
-        problems.append(new PatchProblem(0, 0, s));
-    problems += collectProblemsAsInput(patch);
-    return problems;
+    return generalProblem(patch);
 }
 
 QString AtomRegister::generalProblem(const Patch *patch) const
@@ -122,13 +113,8 @@ QString AtomRegister::generalProblem(const Patch *patch) const
     else if (data.r.controller > patch->numControllers())
         return tr("Invalid controller number %1. You have just %2 controllers")
                 .arg(data.r.controller).arg(patch->numControllers());
-    else {
-        // TODO: This is probably super slow!
-        RegisterList available;
-        patch->collectAvailableRegisterAtoms(available);
-        if (!available.contains(*this))
-            return tr("This jack / control is not available");
-    }
+    else if (!patch->registerAvailable(*this))
+        return tr("This jack / control is not available");
 
     return "";
 }

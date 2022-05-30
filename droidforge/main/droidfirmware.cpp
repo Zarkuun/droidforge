@@ -1,5 +1,6 @@
 #include "droidfirmware.h"
 #include "circuitchoosedialog.h"
+#include "registertypes.h"
 
 #include <QFile>
 #include <QJsonArray>
@@ -111,7 +112,6 @@ QStringList DroidFirmware::jacksOfCircuit(QString circuit, QString whence, jacks
     return result;
 }
 
-
 QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence, QString search)
 {
     QStringList result;
@@ -127,6 +127,64 @@ QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence, 
             result.append(name);
     }
     return result;
+}
+
+unsigned DroidFirmware::numGlobalRegisters(char registerType)
+{
+    switch (registerType) {
+    case REGISTER_INPUT:     return 8;
+    case REGISTER_NORMALIZE: return 8;
+    case REGISTER_OUTPUT:    return 8;
+    case REGISTER_GATE:      return 12;
+    case REGISTER_RGB_LED:   return 32;
+    case REGISTER_EXTRA:     return 1;
+    default:                 return 0;
+    }
+
+}
+
+unsigned DroidFirmware::numControllerRegisters(const QString &module, char registerType)
+{
+    if (module == "p4b2") {
+        switch (registerType) {
+        case REGISTER_POT:    return 4;
+        case REGISTER_BUTTON: return 2;
+        case REGISTER_LED:    return 2;
+        }
+    }
+    else if (module == "p2b8") {
+        switch (registerType) {
+        case REGISTER_POT:    return 2;
+        case REGISTER_BUTTON: return 8;
+        case REGISTER_LED:    return 8;
+        }
+    }
+    else if (module == "p10") {
+        switch (registerType) {
+        case REGISTER_POT:    return 10;
+        }
+    }
+    else if (module == "b32") {
+        switch (registerType) {
+        case REGISTER_BUTTON: return 32;
+        case REGISTER_LED:    return 32;
+        }
+    }
+    else if (module == "s10") {
+        switch (registerType) {
+        case REGISTER_SWITCH: return 10;
+        }
+    }
+    else if (module == "m4") {
+        switch (registerType) {
+        case REGISTER_POT:     return 4;
+        case REGISTER_BUTTON:  return 4;
+        case REGISTER_RGB_LED: return 4;
+        case REGISTER_LED:     return 4;
+        }
+    }
+
+    return 0;
 }
 
 

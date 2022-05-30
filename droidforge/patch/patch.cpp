@@ -1,9 +1,13 @@
 #include "patch.h"
 #include "atomcable.h"
+#include "droidfirmware.h"
 #include "modulebuilder.h"
 
 #include <QFile>
 #include <QTextStream>
+#include <QElapsedTimer>
+
+
 
 // TODO: use index and number correctly
 // Controller number goes from 1 ... 16
@@ -256,6 +260,23 @@ QList<PatchProblem *> Patch::collectProblems() const
     return allProblems;
 }
 
+bool Patch::registerAvailable(AtomRegister ar) const
+{
+    char regType = ar.getRegisterType().toLatin1();
+    unsigned max;
+
+    if (ar.isControl()) {
+        unsigned c = ar.controller();
+        if (c > controllers.count())
+            return false;
+        QString name = controllers[c-1];
+        max = the_firmware->numControllerRegisters(name, regType);
+    }
+    else
+        max = the_firmware->numGlobalRegisters(regType);
+
+    return ar.number() >= 1 && ar.number() <= max;
+}
 
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
 {

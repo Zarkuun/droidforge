@@ -216,31 +216,31 @@ void MainWindow::clickOnRegister(AtomRegister ar)
 void MainWindow::updateActions()
 {
     // File menu
-    saveAct->setEnabled(undoHistory.isModified());
-    exportSelectionAct->setEnabled(patchView.circuitsSelected());
-    openEnclosingFolderAction->setEnabled(!filename.isEmpty());
+    actionSave->setEnabled(undoHistory.isModified());
+    actionExportSelection->setEnabled(patchView.circuitsSelected());
+    actionOpenEnclosingFolder->setEnabled(!filename.isEmpty());
 
     // Edit menu
     if (undoHistory.undoPossible()) {
-        undoAction->setText(tr("&Undo ") + undoHistory.nextUndoTitle());
-        undoAction->setEnabled(true);
+        actionUndo->setText(tr("&Undo ") + undoHistory.nextUndoTitle());
+        actionUndo->setEnabled(true);
     }
     else {
-        undoAction->setText(tr("&Undo"));
-        undoAction->setEnabled(false);
+        actionUndo->setText(tr("&Undo"));
+        actionUndo->setEnabled(false);
     }
 
     if (undoHistory.redoPossible()) {
-        redoAction->setText(tr("&Redo ") + undoHistory.nextRedoTitle());
-        redoAction->setEnabled(true);
+        actionRedo->setText(tr("&Redo ") + undoHistory.nextRedoTitle());
+        actionRedo->setEnabled(true);
     }
     else {
-        redoAction->setText(tr("&Redo"));
-        redoAction->setEnabled(false);
+        actionRedo->setText(tr("&Redo"));
+        actionRedo->setEnabled(false);
     }
 
-    pasteAction->setEnabled(patchView.clipboardFilled());
-    pasteSmartAction->setEnabled(patchView.circuitsInClipboard());
+    actionPaste->setEnabled(patchView.clipboardFilled());
+    actionPasteSmart->setEnabled(patchView.circuitsInClipboard());
 
     const PatchSectionView *psv = patchView.currentPatchSectionView();
     bool empty = !psv || psv->isEmpty();
@@ -259,34 +259,36 @@ void MainWindow::updateActions()
     actions[ACTION_ABORT_PATCHING]->setVisible(patchView.isPatching());
 
     if (psv && patchView.numSections() > 1) {
-        deletePatchSectionAction->setText(tr("Delete section '%1'").arg(psv->getTitle()));
-        deletePatchSectionAction->setEnabled(true);
+        actionDeletePatchSection->setText(tr("Delete section '%1'").arg(psv->getTitle()));
+        actionDeletePatchSection->setEnabled(true);
     }
     else {
-        deletePatchSectionAction->setText(tr("Delete section"));
-        deletePatchSectionAction->setEnabled(false);
+        actionDeletePatchSection->setText(tr("Delete section"));
+        actionDeletePatchSection->setEnabled(false);
     }
     actions[ACTION_MOVE_INTO_SECTION]->setEnabled(patchView.circuitsSelected());
 }
 
 void MainWindow::updateProblems()
 {
-    qDebug("Patch problems:");
-    if (!patch) {
-        qDebug("Oh. kein Patch");
-        return;
-    }
-    QList<PatchProblem *> problems = patch->collectProblems();
-    for (auto problem: problems) {
+    for (auto problem: patchProblems)
+        delete problem;
+    patchProblems.clear();
+
+    if (patch)
+        patchProblems = patch->collectProblems();
+
+    for (auto problem: patchProblems) {
         qDebug() << "problem:" << *problem;
     }
+    actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(!patchProblems.isEmpty());
+    currentProblem = 0;
 }
 
 void MainWindow::updateClipboardInfo(QString info)
 {
     statusbar->showMessage(info);
 }
-
 
 void MainWindow::updateWindowTitle()
 {
@@ -330,41 +332,41 @@ void MainWindow::createFileMenu()
     fileMenu = menuBar()->addMenu(tr("&File"));
 
     // New
-    newAct = new QAction(icon("settings_input_composite"), tr("&New..."), this);
-    newAct->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
-    newAct->setStatusTip(tr("Create a new patch from scratch"));
-    connect(newAct, &QAction::triggered, this, &MainWindow::newPatch);
-    fileMenu->addAction(newAct);
-    toolbar->addAction(newAct);
+    actionNew = new QAction(icon("settings_input_composite"), tr("&New..."), this);
+    actionNew->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
+    actionNew->setStatusTip(tr("Create a new patch from scratch"));
+    connect(actionNew, &QAction::triggered, this, &MainWindow::newPatch);
+    fileMenu->addAction(actionNew);
+    toolbar->addAction(actionNew);
 
     // Open
-    openAct = new QAction(icon("open_in_browser"), tr("&Open..."), this);
-    openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip(tr("Open an existing patch"));
-    connect(openAct, &QAction::triggered, this, &MainWindow::open);
-    fileMenu->addAction(openAct);
-    toolbar->addAction(openAct);
+    actionOpen = new QAction(icon("open_in_browser"), tr("&Open..."), this);
+    actionOpen->setShortcuts(QKeySequence::Open);
+    actionOpen->setStatusTip(tr("Open an existing patch"));
+    connect(actionOpen, &QAction::triggered, this, &MainWindow::open);
+    fileMenu->addAction(actionOpen);
+    toolbar->addAction(actionOpen);
 
     // Save
-    saveAct = new QAction(icon("save"), tr("&Save..."), this);
-    saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save patch to file"));
-    connect(saveAct, &QAction::triggered, this, &MainWindow::save);
-    fileMenu->addAction(saveAct);
-    toolbar->addAction(saveAct);
+    actionSave = new QAction(icon("save"), tr("&Save..."), this);
+    actionSave->setShortcuts(QKeySequence::Save);
+    actionSave->setStatusTip(tr("Save patch to file"));
+    connect(actionSave, &QAction::triggered, this, &MainWindow::save);
+    fileMenu->addAction(actionSave);
+    toolbar->addAction(actionSave);
 
     // Save as...
-    saveAsAct = new QAction(tr("Save &as..."), this);
-    saveAsAct->setShortcuts(QKeySequence::SaveAs);
-    saveAsAct->setStatusTip(tr("Save patch to a different file"));
-    connect(saveAsAct, &QAction::triggered, this, &MainWindow::saveAs);
-    fileMenu->addAction(saveAsAct);
+    actionSaveAs = new QAction(tr("Save &as..."), this);
+    actionSaveAs->setShortcuts(QKeySequence::SaveAs);
+    actionSaveAs->setStatusTip(tr("Save patch to a different file"));
+    connect(actionSaveAs, &QAction::triggered, this, &MainWindow::saveAs);
+    fileMenu->addAction(actionSaveAs);
 
     // Export selection
-    exportSelectionAct = new QAction(tr("E&xport selection as patch..."), this);
-    exportSelectionAct->setStatusTip(tr("Save the currently selected circuits into a new patch file"));
-    connect(exportSelectionAct, &QAction::triggered, this, &MainWindow::exportSelection);
-    fileMenu->addAction(exportSelectionAct);
+    actionExportSelection = new QAction(tr("E&xport selection as patch..."), this);
+    actionExportSelection->setStatusTip(tr("Save the currently selected circuits into a new patch file"));
+    connect(actionExportSelection, &QAction::triggered, this, &MainWindow::exportSelection);
+    fileMenu->addAction(actionExportSelection);
 
     // Open enclosing folder
 #if (defined Q_OS_MACOS || defined Q_OS_WIN)
@@ -373,23 +375,34 @@ void MainWindow::createFileMenu()
 #else
     QString title = tr("Re&veal in explorer");
 #endif
-    openEnclosingFolderAction = new QAction(title, this);
-    openEnclosingFolderAction->setStatusTip(tr("Open the folder where the current patch is located."));
-    connect(openEnclosingFolderAction, &QAction::triggered, this, &MainWindow::openEnclosingFolder);
-    fileMenu->addAction(openEnclosingFolderAction);
+    actionOpenEnclosingFolder = new QAction(title, this);
+    actionOpenEnclosingFolder->setStatusTip(tr("Open the folder where the current patch is located."));
+    connect(actionOpenEnclosingFolder, &QAction::triggered, this, &MainWindow::openEnclosingFolder);
+    fileMenu->addAction(actionOpenEnclosingFolder);
 #endif
 
     // Recent files
     createRecentFileActions();
 
     // Integrate
-    QAction *integrateAct = new QAction(icon("extension"), tr("&Integrate other patch as new section"), this);
-    integrateAct->setShortcut(QKeySequence(tr("Ctrl+I")));
-    integrateAct->setStatusTip(tr("Load another patch, add that as a new section after the currently selected section "
+    actionIntegrate = new QAction(icon("extension"), tr("&Integrate other patch as new section"), this);
+    actionIntegrate->setShortcut(QKeySequence(tr("Ctrl+I")));
+    actionIntegrate->setStatusTip(tr("Load another patch, add that as a new section after the currently selected section "
                                "and try to move the controls, inputs and outputs of that patch to unused "
                                "jacks and controlls"));
-    connect(integrateAct, &QAction::triggered, this, &MainWindow::integrate);
-    fileMenu->addAction(integrateAct);
+    connect(actionIntegrate, &QAction::triggered, this, &MainWindow::integrate);
+    fileMenu->addAction(actionIntegrate);
+
+
+    // Find next problem
+    actions[ACTION_JUMP_TO_NEXT_PROBLEM] = new QAction(icon("warning"), tr("&Jump to next problem"), this);
+    actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setShortcut(QKeySequence(tr("F6")));
+    actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setStatusTip(tr("Jump to the next problem in your patch. You "
+                                             "need to fix all these problems before you can load "
+                                             "the patch to your master."));
+    connect(actions[ACTION_JUMP_TO_NEXT_PROBLEM], &QAction::triggered, this, &MainWindow::jumpToNextProblem);
+    fileMenu->addAction(actions[ACTION_JUMP_TO_NEXT_PROBLEM]);
+
 
     // Quit (automatically goes to Mac menu on mac)
     QAction *quitAct = new QAction(tr("&Quit"), this);
@@ -445,49 +458,49 @@ void MainWindow::createEditMenu()
     editMenu = menuBar()->addMenu(ZERO_WIDTH_SPACE + tr("&Edit"));
 
     // Undo
-    undoAction = new QAction(icon("undo"), tr("&Undo"), this);
-    undoAction->setShortcuts(QKeySequence::Undo);
-    undoAction->setStatusTip(tr("Undo last edit action"));
-    connect(undoAction, &QAction::triggered, this, &MainWindow::undo);
-    editMenu->addAction(undoAction);
+    actionUndo = new QAction(icon("undo"), tr("&Undo"), this);
+    actionUndo->setShortcuts(QKeySequence::Undo);
+    actionUndo->setStatusTip(tr("Undo last edit action"));
+    connect(actionUndo, &QAction::triggered, this, &MainWindow::undo);
+    editMenu->addAction(actionUndo);
 
     // Redo
-    redoAction = new QAction(icon("redo"), tr("&Redo"), this);
-    redoAction->setShortcuts(QKeySequence::Redo);
-    redoAction->setStatusTip(tr("Redo last edit action"));
-    connect(redoAction, &QAction::triggered, this, &MainWindow::redo);
-    editMenu->addAction(redoAction);
+    actionRedo = new QAction(icon("redo"), tr("&Redo"), this);
+    actionRedo->setShortcuts(QKeySequence::Redo);
+    actionRedo->setStatusTip(tr("Redo last edit action"));
+    connect(actionRedo, &QAction::triggered, this, &MainWindow::redo);
+    editMenu->addAction(actionRedo);
 
     editMenu->addSeparator();
 
     // Cut
-    cutAction = new QAction(icon("cut"), tr("C&ut"), this);
-    cutAction->setShortcuts(QKeySequence::Cut);
-    cutAction->setStatusTip(tr("Cut selection to clipboard"));
-    connect(cutAction, &QAction::triggered, &patchView, &PatchView::cut);
-    editMenu->addAction(cutAction);
+    actionCut = new QAction(icon("cut"), tr("C&ut"), this);
+    actionCut->setShortcuts(QKeySequence::Cut);
+    actionCut->setStatusTip(tr("Cut selection to clipboard"));
+    connect(actionCut, &QAction::triggered, &patchView, &PatchView::cut);
+    editMenu->addAction(actionCut);
 
     // Copy
-    copyAction = new QAction(icon("copy"), tr("&Copy"), this);
-    copyAction->setShortcuts(QKeySequence::Copy);
-    copyAction->setStatusTip(tr("Copy selected stuff to clipboard"));
-    connect(copyAction, &QAction::triggered, &patchView, &PatchView::copy);
-    editMenu->addAction(copyAction);
+    actionCopy = new QAction(icon("copy"), tr("&Copy"), this);
+    actionCopy->setShortcuts(QKeySequence::Copy);
+    actionCopy->setStatusTip(tr("Copy selected stuff to clipboard"));
+    connect(actionCopy, &QAction::triggered, &patchView, &PatchView::copy);
+    editMenu->addAction(actionCopy);
 
     // Paste
-    pasteAction = new QAction(icon("paste"), tr("&Paste"), this);
-    pasteAction->setShortcuts(QKeySequence::Paste);
-    pasteAction->setStatusTip(tr("Paste contents from clipboard"));
-    connect(pasteAction, &QAction::triggered, &patchView, &PatchView::paste);
-    editMenu->addAction(pasteAction);
+    actionPaste = new QAction(icon("paste"), tr("&Paste"), this);
+    actionPaste->setShortcuts(QKeySequence::Paste);
+    actionPaste->setStatusTip(tr("Paste contents from clipboard"));
+    connect(actionPaste, &QAction::triggered, &patchView, &PatchView::paste);
+    editMenu->addAction(actionPaste);
 
     // Paste smart
-    pasteSmartAction = new QAction(tr("&Paste smart"), this);
-    pasteSmartAction->setShortcut(QKeySequence(tr("Shift+Ctrl+V")));
-    pasteSmartAction->setStatusTip(tr("Paste circuits from clipboard but remap registers and internal connections "
+    actionPasteSmart = new QAction(tr("&Paste smart"), this);
+    actionPasteSmart->setShortcut(QKeySequence(tr("Shift+Ctrl+V")));
+    actionPasteSmart->setStatusTip(tr("Paste circuits from clipboard but remap registers and internal connections "
                                  "in order to avoid conflicts."));
-    connect(pasteSmartAction, &QAction::triggered, &patchView, &PatchView::pasteSmart);
-    editMenu->addAction(pasteSmartAction);
+    connect(actionPasteSmart, &QAction::triggered, &patchView, &PatchView::pasteSmart);
+    editMenu->addAction(actionPasteSmart);
 
     // New circuit...
     actions[ACTION_NEW_CIRCUIT] = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
@@ -549,19 +562,19 @@ void MainWindow::createEditMenu()
     editMenu->addSeparator();
 
     // Add section
-    newPatchSectionAction = new QAction(tr("New section..."), this);
-    editMenu->addAction(newPatchSectionAction);
-    connect(newPatchSectionAction, &QAction::triggered, &patchView, &PatchView::newSectionAfterCurrent);
+    actionNewPatchSection = new QAction(tr("New section..."), this);
+    editMenu->addAction(actionNewPatchSection);
+    connect(actionNewPatchSection, &QAction::triggered, &patchView, &PatchView::newSectionAfterCurrent);
 
     // Rename section
-    renamePatchSectionAction = new QAction(tr("Rename section..."), this);
-    editMenu->addAction(renamePatchSectionAction);
-    connect(renamePatchSectionAction, &QAction::triggered, &patchView, &PatchView::renameCurrentSection);
+    actionRenamePatchSection = new QAction(tr("Rename section..."), this);
+    editMenu->addAction(actionRenamePatchSection);
+    connect(actionRenamePatchSection, &QAction::triggered, &patchView, &PatchView::renameCurrentSection);
 
     // Delete section
-    deletePatchSectionAction = new QAction(tr("Delete section"), this);
-    editMenu->addAction(deletePatchSectionAction);
-    connect(deletePatchSectionAction, &QAction::triggered, &patchView, &PatchView::deleteCurrentSection);
+    actionDeletePatchSection = new QAction(tr("Delete section"), this);
+    editMenu->addAction(actionDeletePatchSection);
+    connect(actionDeletePatchSection, &QAction::triggered, &patchView, &PatchView::deleteCurrentSection);
 
     // Move into sectin
     actions[ACTION_MOVE_INTO_SECTION] = new QAction(tr("Move selection into new section"), this);
@@ -573,20 +586,20 @@ void MainWindow::createViewMenu()
 {
     viewMenu = menuBar()->addMenu(tr("&View"));
 
-    zoomResetAction = new QAction(icon("zoom_in"), tr("Normal font size"), this);
-    zoomResetAction->setShortcut(QKeySequence(tr("Ctrl+0")));
-    viewMenu->addAction(zoomResetAction);
-    connect(zoomResetAction, &QAction::triggered, &patchView, [this] () { patchView.zoom(0); });
+    actionResetZoom = new QAction(icon("zoom_in"), tr("Normal font size"), this);
+    actionResetZoom->setShortcut(QKeySequence(tr("Ctrl+0")));
+    viewMenu->addAction(actionResetZoom);
+    connect(actionResetZoom, &QAction::triggered, &patchView, [this] () { patchView.zoom(0); });
 
-    zoomInAction = new QAction(icon("zoom_in"), tr("Increase font size"), this);
-    zoomInAction->setShortcuts(QKeySequence::ZoomIn);
-    viewMenu->addAction(zoomInAction);
-    connect(zoomInAction, &QAction::triggered, &patchView, [this] () { patchView.zoom(1); });
+    actionZoomIn = new QAction(icon("zoom_in"), tr("Increase font size"), this);
+    actionZoomIn->setShortcuts(QKeySequence::ZoomIn);
+    viewMenu->addAction(actionZoomIn);
+    connect(actionZoomIn, &QAction::triggered, &patchView, [this] () { patchView.zoom(1); });
 
-    zoomOutAction = new QAction(icon("zoom_out"), tr("Outcrease font size"), this);
-    zoomOutAction->setShortcuts(QKeySequence::ZoomOut);
-    viewMenu->addAction(zoomOutAction);
-    connect(zoomOutAction, &QAction::triggered, &patchView, [this] () { patchView.zoom(-1); });
+    actionZoomOut = new QAction(icon("zoom_out"), tr("Outcrease font size"), this);
+    actionZoomOut->setShortcuts(QKeySequence::ZoomOut);
+    viewMenu->addAction(actionZoomOut);
+    connect(actionZoomOut, &QAction::triggered, &patchView, [this] () { patchView.zoom(-1); });
 }
 
 void MainWindow::createRackMenu()
@@ -702,6 +715,14 @@ void MainWindow::redo()
         patchView.setPatch(patch);
         patchHasChanged();
     }
+}
+
+void MainWindow::jumpToNextProblem()
+{
+    PatchProblem *problem = patchProblems[currentProblem++];
+    if (currentProblem >= patchProblems.count())
+        currentProblem = 0;
+    patchView.jumpTo(problem->getSection(), problem->getCursorPosition());
 }
 
 

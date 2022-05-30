@@ -11,18 +11,12 @@ AtomInvalid *AtomInvalid::clone() const
     return new AtomInvalid(rawtext);
 }
 
-QList<PatchProblem *> AtomInvalid::collectProblemsAsInput(const Patch *) const
+QString AtomInvalid::problemAsInput(const Patch *patch) const
 {
-    QList<PatchProblem *>problems;
-    problems.append(
-                new PatchProblem(0, 0, tr("Invalid (garbled) value")));
-    return problems;
+    return tr("Invalid (garbled) value");
 }
 
-QList<PatchProblem *> AtomInvalid::collectProblemsAsOutput(const Patch *) const
+QString AtomInvalid::problemAsOutput(const Patch *patch) const
 {
-    QList<PatchProblem *>problems;
-    problems.append(
-                new PatchProblem(0, 0, tr("Invalid value or value that cannot be used as output")));
-    return problems;
+    return tr("Invalid value or value that cannot be used as output");
 }

@@ -42,8 +42,8 @@ public:
     bool needX7() const;
     void swapControllerNumbers(int fromController, int toController);
     void shiftControllerNumbers(int controller, int by);
-    QList<PatchProblem *> collectProblemsAsInput(const Patch *) const;
-    QList<PatchProblem *> collectProblemsAsOutput(const Patch *) const;
+    QString problemAsInput(const Patch *patch) const;
+    QString problemAsOutput(const Patch *patch) const;
 
     friend bool operator==(const AtomRegister &a, const AtomRegister &b);
     friend bool operator<(const AtomRegister &a, const AtomRegister &b);

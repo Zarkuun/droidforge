@@ -39,6 +39,7 @@ public:
     bool interactivelyRemapRegisters(Patch *otherpatch);
     bool isPatching() const { return patching; };
     void abortAllActions();
+    void jumpTo(int section, const CursorPosition &curPos);
     // TODO: patching zurücksetzen, wenn sich irgendwas am Patch geändert
     // hat. Am besten per Signal oder so.
 

@@ -29,8 +29,8 @@ public:
     bool isNegatable() const;
     QString toNegatedString() const;
     bool isNumber() const { return true; };
-    QList<PatchProblem *> collectProblemsAsInput(const Patch *) const;
-    QList<PatchProblem *> collectProblemsAsOutput(const Patch *) const;
+    QString problemAsInput(const Patch *patch) const;
+    QString problemAsOutput(const Patch *patch) const;
 
 private:
     QString toFractionString(float number) const;

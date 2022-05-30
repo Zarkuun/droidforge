@@ -109,8 +109,11 @@ QList<PatchProblem *> JackAssignmentOutput::collectProblems(const Patch *patch) 
 {
     QList<PatchProblem *>problems;
     if (!atom)
-        problems.append( new PatchProblem(-1, 1, tr("You need to set a value for this parameter")));
-    else
-        problems += atom->collectProblemsAsOutput(patch);
+        problems.append(new PatchProblem(-1, 1, tr("You need to set a value for this parameter")));
+    else {
+        QString text = atom->problemAsOutput(patch);
+        if (text != "")
+            problems.append(new PatchProblem(-1, 1, text));
+    }
     return problems;
 }

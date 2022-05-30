@@ -55,17 +55,14 @@ QString AtomNumber::toNegatedString() const
     return n.toString();
 }
 
-QList<PatchProblem *> AtomNumber::collectProblemsAsInput(const Patch *) const
+QString AtomNumber::problemAsInput(const Patch *patch) const
 {
-    return QList<PatchProblem *>();
+    return "";
 }
 
-QList<PatchProblem *> AtomNumber::collectProblemsAsOutput(const Patch *) const
+QString AtomNumber::problemAsOutput(const Patch *patch) const
 {
-    QList<PatchProblem *> problems;
-    problems.append(
-                new PatchProblem(0, 0, tr("You cannot use a fixed number for an output parameter")));
-    return problems;
+    return tr("You cannot use a fixed number for an output parameter");
 }
 
 QString AtomNumber::toFractionString(float number) const

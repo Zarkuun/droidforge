@@ -239,7 +239,14 @@ void PatchView::abortAllActions()
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSectionView *psv = (PatchSectionView *)widget(i);
         psv->clearSelection();
-     }
+    }
+}
+
+void PatchView::jumpTo(int section, const CursorPosition &curPos)
+{
+    setCurrentIndex(section);
+    currentPatchSectionView()->setCursorPosition(curPos);
+    patch->switchCurrentSection(section);
 }
 
 
@@ -262,7 +269,7 @@ Patch *PatchView::getSelectionAsPatch() const
 void PatchView::nextSection()
 {
     int i = (currentIndex() + 1) % count();
-    this->setCurrentIndex(i);
+    setCurrentIndex(i);
     patch->switchCurrentSection(i);
 }
 
@@ -408,10 +415,7 @@ void PatchView::followInternalCable()
     if (!found)
         return;
 
-    unsigned targetSection = it.sectionIndex();
-    setCurrentIndex(targetSection);
-    CursorPosition curPos = it.cursorPosition();
-    currentPatchSectionView()->setCursorPosition(curPos);
+    jumpTo(it.sectionIndex(), it.cursorPosition());
 }
 
 void PatchView::renameInternalCable()

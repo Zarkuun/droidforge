@@ -26,8 +26,8 @@ public:
     virtual bool needX7() const { return false; };
     virtual void swapControllerNumbers(int, int) {};
     virtual void shiftControllerNumbers(int, int) {};
-    virtual QList<PatchProblem *> collectProblemsAsInput(const Patch *patch) const = 0;
-    virtual QList<PatchProblem *> collectProblemsAsOutput(const Patch *patch) const = 0;
+    virtual QString problemAsInput(const Patch *patch) const = 0;
+    virtual QString problemAsOutput(const Patch *patch) const = 0;
 };
 
 #endif // ATOM_H

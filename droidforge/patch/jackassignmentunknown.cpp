@@ -48,7 +48,9 @@ QList<PatchProblem *> JackAssignmentUnknown::collectProblems(const Patch *) cons
 {
     QList<PatchProblem *>problems;
     problems.append(
-                new PatchProblem(-1, 0, tr("Unknown parameter '%1' in this circuit'").arg(jackName())));
+                new PatchProblem(-1, 1, tr("Unknown parameter '%1' in this circuit'").arg(jackName())));
+    for (auto problem: problems)
+        problem->setColumn(1);
     return problems;
 }
 
