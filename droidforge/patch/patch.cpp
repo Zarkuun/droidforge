@@ -246,18 +246,29 @@ void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
     }
 }
 
-QList<PatchProblem *> Patch::collectProblems() const
+void Patch::updateProblems()
 {
-    QList<PatchProblem *> allProblems;
+    for (auto problem: problems)
+        delete problem;
+    problems.clear();
+
     int sectionNr=0;
     for (auto section: sections) {
-        auto problems = section->collectProblems(this);
-        for (auto problem: problems)
+        auto sectionProblems = section->collectProblems(this);
+        for (auto problem: sectionProblems)
             problem->setSection(sectionNr);
-        allProblems += problems;
+        problems += sectionProblems;
         sectionNr++;
     }
-    return allProblems;
+}
+
+QString Patch::problemAt(int section, const CursorPosition &pos)
+{
+    for (auto problem: problems) {
+        if (problem->isAt(section, pos))
+            return problem->getReason();
+    }
+    return "";
 }
 
 bool Patch::registerAvailable(AtomRegister ar) const

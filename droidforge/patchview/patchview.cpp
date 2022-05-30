@@ -54,6 +54,7 @@ void PatchView::setPatch(Patch *newPatch)
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSection *section = patch->section(i);
         PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
+        connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
         QString title = section->getNonemptyTitle();
         addTab(psv, title);
     }
@@ -472,6 +473,7 @@ void PatchView::duplicateSection(int index)
     the_forge->registerEdit(tr("duplicating section '%1'").arg(oldSection->getTitle()));
     PatchSection *newsection = newpatch->section(0)->clone();
     PatchSectionView *psv = new PatchSectionView(patch, newsection, zoomLevel);
+    connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
     patch->insertSection(index + 1, newsection);
     patch->switchCurrentSection(index + 1);
     insertTab(index + 1, psv, newname);
@@ -530,6 +532,7 @@ PatchSection *PatchView::addNewSection(QString name, int index)
 {
     PatchSection *section = new PatchSection(name);
     PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
+    connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
     patch->insertSection(index, section);
     patch->switchCurrentSection(index);
     insertTab(index, psv, name);
@@ -653,6 +656,11 @@ void PatchView::tabContextMenu(int index)
 
         menu->popup(QCursor::pos());
     }
+}
+
+void PatchView::sectionCursorMoved(const CursorPosition &pos)
+{
+    emit cursorMoved(currentIndex(), pos);
 }
 
 void PatchView::copyToClipboard(Clipboard *cb)

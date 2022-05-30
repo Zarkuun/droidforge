@@ -21,6 +21,7 @@ public:
     void setCircuit(int circuitNr) { curPos.circuitNr = circuitNr; };
     void setRow(int row) { curPos.row = row; };
     void setColumn(int column) { curPos.column = column; };
+    bool isAt(int section, const CursorPosition &pos) const;
     const CursorPosition &getCursorPosition() const { return curPos; };
     const QString &getReason() const { return reason; };
 };

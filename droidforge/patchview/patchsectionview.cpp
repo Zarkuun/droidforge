@@ -447,8 +447,8 @@ void PatchSectionView::editAtom(int key)
         QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
         the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
-        updateCursor();
         the_forge->patchHasChanged();
+        updateCursor();
     }
 }
 
@@ -596,6 +596,8 @@ void PatchSectionView::updateCursor()
         QRectF tbr = br.translated(currentCircuitView()->pos());
         ensureVisible(tbr);
         updateCableIndicator();
+        qDebug("MOVED");
+        emit cursorMoved(pos);
 
         QRectF cr = currentCircuitView()->cellRect(pos.row, pos.column).translated(currentCircuitView()->pos());
         frameCursor->setRect(cr);
@@ -615,6 +617,7 @@ void PatchSectionView::updateCableIndicator()
         QString name = ac->getCable();
         int numAsOutput = 0;
         int numAsInput = 0;
+        // TODO: Das hier mit Signalen lösen
         patch->findCableConnections(name, numAsInput, numAsOutput);
         the_forge->cableIndicator()->set(name, numAsInput, numAsOutput);
     }

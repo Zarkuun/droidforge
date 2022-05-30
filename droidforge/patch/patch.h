@@ -4,6 +4,7 @@
 #include "patchproblem.h"
 #include "patchsection.h"
 #include "registercomments.h"
+#include "patchproblem.h"
 
 #include <QStringList>
 
@@ -17,6 +18,7 @@ class Patch
     QStringList controllers;
     QList<PatchSection *> sections;
     qsizetype sectionIndex; // part of cursor position
+    QList<PatchProblem *> problems;
 
 public:
     Patch();
@@ -45,7 +47,10 @@ public:
     bool needX7() const; // TODO: Do we need this?
     void collectUsedRegisterAtoms(RegisterList &) const;
     void collectAvailableRegisterAtoms(RegisterList &) const;
-    QList<PatchProblem *>collectProblems() const;
+    void updateProblems();
+    unsigned numProblems() const { return problems.count(); };
+    QString problemAt(int section, const CursorPosition &pos);
+    const PatchProblem *problem(unsigned nr) { return problems[nr]; };
     bool registerAvailable(AtomRegister ar) const;
 
     // Modifications

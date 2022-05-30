@@ -11,12 +11,12 @@ CableStatusIndicator::CableStatusIndicator(QWidget *parent)
     , animation(this, "animationPhase")
     , patching(false)
 {
-    resize(400, 100);
-    setMinimumWidth(CSD_WIDTH);
-    setMaximumWidth(CSD_WIDTH);
+    resize(400, 100); // TODO: Was ist hiermit?
+    setMinimumWidth(CSI_WIDTH);
+    setMaximumWidth(CSI_WIDTH);
 
-    cablePen.setColor(CSD_CABLE_COLOR);
-    cableHilitePen.setColor(CSD_CABLE_HILITE_COLOR);
+    cablePen.setColor(CSI_CABLE_COLOR);
+    cableHilitePen.setColor(CSI_CABLE_HILITE_COLOR);
     cableHilitePen.setWidth(1);
 }
 
@@ -32,16 +32,16 @@ void CableStatusIndicator::paintEvent(QPaintEvent *)
 
 void CableStatusIndicator::paintPatching(QPainter &painter)
 {
-    painter.fillRect(rect(), CSD_BACKGROUND_COLOR);
-    float left = CSD_SIDE_PADDING + animationPhase * CSD_ANIMATION_RANGE;
-    float right = width() - CSD_SIDE_PADDING - (animationPhase * CSD_ANIMATION_RANGE);
+    painter.fillRect(rect(), CSI_BACKGROUND_COLOR);
+    float left = CSI_SIDE_PADDING + animationPhase * CSI_ANIMATION_RANGE;
+    float right = width() - CSI_SIDE_PADDING - (animationPhase * CSI_ANIMATION_RANGE);
     paintCable(painter, left, right);
     paintLabel(painter, width() / 2, tr("Patching..."));
 
-    float imgHeight = height() - 2 * CSD_IMAGE_MARGIN;
+    float imgHeight = height() - 2 * CSI_IMAGE_MARGIN;
     float imgWidth =  imgHeight * the_cable_colorizer->imageAspect();
-    QRectF leftPlugRect(left, CSD_IMAGE_MARGIN, imgWidth, imgHeight);
-    QRectF rightPlugRect(right - imgWidth, CSD_IMAGE_MARGIN, imgWidth, imgHeight);
+    QRectF leftPlugRect(left, CSI_IMAGE_MARGIN, imgWidth, imgHeight);
+    QRectF rightPlugRect(right - imgWidth, CSI_IMAGE_MARGIN, imgWidth, imgHeight);
     const QImage *plugImage = the_cable_colorizer->ghostPlug();
     QImage mirroredPlugImage = plugImage->mirrored(true, false);
     painter.drawImage(rightPlugRect, *plugImage);
@@ -53,17 +53,17 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
     if (cableName == "") {
         return;
     }
-    painter.fillRect(rect(), CSD_BACKGROUND_COLOR);
+    painter.fillRect(rect(), CSI_BACKGROUND_COLOR);
 
-    float imgHeight = height() - 2 * CSD_IMAGE_MARGIN;
+    float imgHeight = height() - 2 * CSI_IMAGE_MARGIN;
     float imgWidth =  imgHeight * the_cable_colorizer->imageAspect();
     bool haveProblem = numAsOutput != 1 || numAsInput == 0;
     unsigned problemMarkerWidth = haveProblem ? (imgHeight + STANDARD_SPACING / 2) : 0;
-    QRectF leftPlugRect(CSD_SIDE_PADDING + problemMarkerWidth, CSD_IMAGE_MARGIN, imgWidth, imgHeight);
-    QRectF rightPlugRect(width() - CSD_SIDE_PADDING - imgWidth, CSD_IMAGE_MARGIN, imgWidth, imgHeight);
+    QRectF leftPlugRect(CSI_SIDE_PADDING + problemMarkerWidth, CSI_IMAGE_MARGIN, imgWidth, imgHeight);
+    QRectF rightPlugRect(width() - CSI_SIDE_PADDING - imgWidth, CSI_IMAGE_MARGIN, imgWidth, imgHeight);
 
     if (haveProblem) {
-        QRectF warnRect(CSD_SIDE_PADDING,
+        QRectF warnRect(CSI_SIDE_PADDING,
                         leftPlugRect.top(),
                         imgHeight,
                         imgHeight);
@@ -90,9 +90,9 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
         if (numAsOutput > 1) {
             paintMarker(
                     painter,
-                    leftPlugRect.right() + CSD_MARKER_DISTANCE,
-                    CSD_BAD_MARKER_BORDER,
-                    CSD_BAD_MARKER_BACKGROUND,
+                    leftPlugRect.right() + CSI_MARKER_DISTANCE,
+                    CSI_BAD_MARKER_BORDER,
+                    CSI_BAD_MARKER_BACKGROUND,
                     numAsOutput);
         }
     }
@@ -103,9 +103,9 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
         if (numAsInput > 1) {
             paintMarker(
                     painter,
-                    rightPlugRect.left() - CSD_MARKER_DISTANCE,
-                    CSD_GOOD_MARKER_BORDER,
-                    CSD_GOOD_MARKER_BACKGROUND,
+                    rightPlugRect.left() - CSI_MARKER_DISTANCE,
+                    CSI_GOOD_MARKER_BORDER,
+                    CSI_GOOD_MARKER_BACKGROUND,
                     numAsInput);
         }
     }
@@ -117,16 +117,16 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
 void CableStatusIndicator::paintLabel(QPainter &painter, int xpos, QString text)
 {
     const QFont &font = painter.font();
-    QFont cableFont(font.family(), CSD_LABEL_FONT_SIZE);
+    QFont cableFont(font.family(), CSI_LABEL_FONT_SIZE);
     QFontMetrics fm(cableFont);
-    int nameWidth = qMin(fm.horizontalAdvance(text), CSD_MAX_NAME_WIDTH) +
-            CSD_NAME_PADDING * 2;
+    int nameWidth = qMin(fm.horizontalAdvance(text), CSI_MAX_NAME_WIDTH) +
+            CSI_NAME_PADDING * 2;
     QRectF nameRect(
                 xpos - nameWidth / 2,
-                CSD_IMAGE_MARGIN,
+                CSI_IMAGE_MARGIN,
                 nameWidth,
-                height() - 2*CSD_IMAGE_MARGIN);
-    painter.setBrush(CSD_LABEL_BACKGROUND);
+                height() - 2*CSI_IMAGE_MARGIN);
+    painter.setBrush(CSI_LABEL_BACKGROUND);
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(nameRect, 5, 5);
     painter.setPen(QColor(255, 255, 255));
@@ -138,11 +138,11 @@ void CableStatusIndicator::paintLabel(QPainter &painter, int xpos, QString text)
 void CableStatusIndicator::paintMarker(QPainter &painter, int xpos, QColor border, QColor fill, int number)
 {
     painter.save();
-    float markerHeight = height() - 2 * CSD_IMAGE_MARGIN;
+    float markerHeight = height() - 2 * CSI_IMAGE_MARGIN;
     QRectF markerRect(
-                xpos - CSD_MARKER_WIDTH / 2,
-                CSD_IMAGE_MARGIN,
-                CSD_MARKER_WIDTH,
+                xpos - CSI_MARKER_WIDTH / 2,
+                CSI_IMAGE_MARGIN,
+                CSI_MARKER_WIDTH,
                 markerHeight);
 
     painter.setPen(border);
@@ -150,8 +150,8 @@ void CableStatusIndicator::paintMarker(QPainter &painter, int xpos, QColor borde
     painter.drawEllipse(markerRect);
 
     const QFont &font = painter.font();
-    QFont markerFont(font.family(), CSD_MARKER_FONT_SIZE);
-    markerFont.setLetterSpacing(QFont::PercentageSpacing, CSD_MARKER_LETTER_SPACING);
+    QFont markerFont(font.family(), CSI_MARKER_FONT_SIZE);
+    markerFont.setLetterSpacing(QFont::PercentageSpacing, CSI_MARKER_LETTER_SPACING);
 
     painter.setFont(markerFont);
     painter.setPen(QColor(255, 255, 255));
@@ -167,8 +167,8 @@ void CableStatusIndicator::paintCable(QPainter &painter, int left, int right)
 {
     // First paint the "cable"
     painter.save();
-    float imgHeight = height() - 2 * CSD_IMAGE_MARGIN;
-    cablePen.setWidth(imgHeight * CSD_CABLE_THICKNESS);
+    float imgHeight = height() - 2 * CSI_IMAGE_MARGIN;
+    cablePen.setWidth(imgHeight * CSI_CABLE_THICKNESS);
     painter.setPen(cablePen);
     painter.drawLine(left, height()/2, right, height()/2);
     painter.setPen(cableHilitePen);
@@ -193,7 +193,7 @@ void CableStatusIndicator::clear()
 void CableStatusIndicator::setPatchingState(bool p)
 {
     if (p) {
-        animation.setDuration(CSD_ANIMATION_DURATION);
+        animation.setDuration(CSI_ANIMATION_DURATION);
         animation.setKeyValueAt(0, 0.0);
         animation.setKeyValueAt(0.8, 1.0);
         animation.setKeyValueAt(1.0, 0.0);

@@ -36,28 +36,34 @@
 #define COLOR_JACK_UNKNOWN                   COLOR_TEXT_UNKNOWN
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
 
+// Patch problem indicator
+#define PPI_WIDTH                            130
+#define PPI_SIDE_PADDING                     STANDARD_SPACING
+#define PPI_IMAGE_MARGIN                     3
+#define PPI_BACKGROUND_COLOR                 QColor(70, 70, 70)
+
 // Cable status indicator in status bar
-#define CSD_IMAGE_MARGIN                     3
-#define CSD_WIDTH                            350
-#define CSD_MAX_NAME_WIDTH                   150
-#define CSD_SIDE_PADDING                     STANDARD_SPACING
-#define CSD_BACKGROUND_COLOR                 QColor(70, 70, 70)
-#define CSD_CABLE_THICKNESS                  0.4
-#define CSD_CABLE_COLOR                      QColor(30, 30, 30)
-#define CSD_CABLE_HILITE_COLOR               QColor(80, 80, 80)
-#define CSD_LABEL_BACKGROUND                 QColor(0, 0, 0, 90)
-#define CSD_LABEL_FONT_SIZE                  12
-#define CSD_MARKER_WIDTH                     20
-#define CSD_MARKER_DISTANCE                  STANDARD_SPACING
-#define CSD_MARKER_FONT_SIZE                 9
-#define CSD_MARKER_LETTER_SPACING            95
-#define CSD_GOOD_MARKER_BACKGROUND           QColor(50, 50, 50)
-#define CSD_GOOD_MARKER_BORDER               QColor(180, 180, 180)
-#define CSD_BAD_MARKER_BACKGROUND            QColor(180, 0, 0)
-#define CSD_BAD_MARKER_BORDER                QColor(255, 0, 0)
-#define CSD_NAME_PADDING                     STANDARD_SPACING
-#define CSD_ANIMATION_RANGE                  20
-#define CSD_ANIMATION_DURATION               1000
+#define CSI_IMAGE_MARGIN                     3
+#define CSI_WIDTH                            350
+#define CSI_MAX_NAME_WIDTH                   150
+#define CSI_SIDE_PADDING                     STANDARD_SPACING
+#define CSI_BACKGROUND_COLOR                 QColor(70, 70, 70)
+#define CSI_CABLE_THICKNESS                  0.4
+#define CSI_CABLE_COLOR                      QColor(30, 30, 30)
+#define CSI_CABLE_HILITE_COLOR               QColor(80, 80, 80)
+#define CSI_LABEL_BACKGROUND                 QColor(0, 0, 0, 90)
+#define CSI_LABEL_FONT_SIZE                  12
+#define CSI_MARKER_WIDTH                     20
+#define CSI_MARKER_DISTANCE                  STANDARD_SPACING
+#define CSI_MARKER_FONT_SIZE                 9
+#define CSI_MARKER_LETTER_SPACING            95
+#define CSI_GOOD_MARKER_BACKGROUND           QColor(50, 50, 50)
+#define CSI_GOOD_MARKER_BORDER               QColor(180, 180, 180)
+#define CSI_BAD_MARKER_BACKGROUND            QColor(180, 0, 0)
+#define CSI_BAD_MARKER_BORDER                QColor(255, 0, 0)
+#define CSI_NAME_PADDING                     STANDARD_SPACING
+#define CSI_ANIMATION_RANGE                  20
+#define CSI_ANIMATION_DURATION               1000
 
 // Rack view
 #define RACV_SPLITTER_HANDLE_WIDTH           12

@@ -34,17 +34,13 @@ MainWindow::MainWindow(const QString &initialFilename)
     menubar = new QMenuBar(this);
     setMenuBar(menubar);
 
-    statusbar = new QStatusBar(this);
-    setStatusBar(statusbar);
-    cableStatusIndicator = new CableStatusIndicator;
-    statusbar->addPermanentWidget(cableStatusIndicator);
-
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
     setCentralWidget(splitter);
     splitter->addWidget(&rackView);
     splitter->addWidget(&patchView);
     splitter->setHandleWidth(RACV_SPLITTER_HANDLE_WIDTH);
+    connect(&patchView, &PatchView::cursorMoved, this, &MainWindow::cursorMoved);
 
     resize(800, 600);
     QSettings settings;
@@ -56,24 +52,38 @@ MainWindow::MainWindow(const QString &initialFilename)
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     addToolBar(Qt::LeftToolBarArea, toolbar);
 
+    // TODO: Actions und Menus getrennt regeln
     createActions();
+    createStatusBar();
 
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename, FILE_MODE_LOAD);});
 }
 
 
+void MainWindow::createStatusBar()
+{
+    statusbar = new QStatusBar(this);
+    setStatusBar(statusbar);
+
+    cableStatusIndicator = new CableStatusIndicator;
+    statusbar->addPermanentWidget(cableStatusIndicator);
+
+    patchProblemIndicator = new PatchProblemIndicator;
+    statusbar->addPermanentWidget(patchProblemIndicator);
+    connect(this, &MainWindow::problemsChanged, patchProblemIndicator, &PatchProblemIndicator::problemsChanged);
+    connect(patchProblemIndicator, &PatchProblemIndicator::clicked, actions[ACTION_JUMP_TO_NEXT_PROBLEM], &QAction::trigger);
+}
+
 void MainWindow::debug()
 {
 }
-
 
 MainWindow::~MainWindow()
 {
     if (patch)
         delete patch;
 }
-
 
 void MainWindow::loadPatch(const QString &aFilename)
 {
@@ -174,7 +184,6 @@ void MainWindow::createActions()
     createRackMenu();
     createEditMenu();
     createViewMenu();
-    patchHasChanged();
 
     QAction *nextSectionAct = new QAction(tr("Next section"));
     nextSectionAct->setShortcut(QKeySequence(tr("Ctrl+Right")));
@@ -201,6 +210,7 @@ void MainWindow::patchHasChanged()
     updateWindowTitle();
     updateRackView();
     repaintPatchView();
+    emit patchChanged();
 }
 
 void MainWindow::hiliteRegisters(const RegisterList &registers)
@@ -271,23 +281,17 @@ void MainWindow::updateActions()
 
 void MainWindow::updateProblems()
 {
-    for (auto problem: patchProblems)
-        delete problem;
-    patchProblems.clear();
-
-    if (patch)
-        patchProblems = patch->collectProblems();
-
-    for (auto problem: patchProblems) {
-        qDebug() << "problem:" << *problem;
+    if (patch) {
+        patch->updateProblems();
+        actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems());
+        currentProblem = 0;
+        emit problemsChanged(patch->numProblems());
     }
-    actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(!patchProblems.isEmpty());
-    currentProblem = 0;
 }
 
-void MainWindow::updateClipboardInfo(QString info)
+void MainWindow::updateClipboardInfo(QString)
 {
-    statusbar->showMessage(info);
+    // statusbar->showMessage(info); // TODO: brauchen wir das?
 }
 
 void MainWindow::updateWindowTitle()
@@ -719,8 +723,8 @@ void MainWindow::redo()
 
 void MainWindow::jumpToNextProblem()
 {
-    PatchProblem *problem = patchProblems[currentProblem++];
-    if (currentProblem >= patchProblems.count())
+    const PatchProblem *problem = patch->problem(currentProblem++);
+    if (currentProblem >= patch->numProblems())
         currentProblem = 0;
     patchView.jumpTo(problem->getSection(), problem->getCursorPosition());
 }
@@ -730,6 +734,16 @@ void MainWindow::splitterMoved()
 {
     QSettings settings;
     settings.setValue("mainwindow/splitposition", splitter->saveState());
+}
+
+void MainWindow::cursorMoved(int section, const CursorPosition &pos)
+{
+    qDebug() << "CURSOR MOVED" << section;
+    QString problem = patch->problemAt(section, pos);
+    if (problem != "")
+        statusbar->showMessage(problem);
+    else
+        statusbar->clearMessage();
 }
 
 

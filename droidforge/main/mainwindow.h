@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "cablestatusindicator.h"
+#include "patchproblemindicator.h"
 #include "droidfirmware.h"
 #include "patchview.h"
 #include "rackview.h"
@@ -52,7 +53,7 @@ class MainWindow : public QMainWindow
     QMenuBar *menubar;
     QStatusBar *statusbar;
     CableStatusIndicator *cableStatusIndicator;
-    QList<PatchProblem *> patchProblems;
+    PatchProblemIndicator *patchProblemIndicator;
     unsigned currentProblem;
     QAction *actions[NUM_ACTIONS];
 
@@ -133,6 +134,7 @@ private:
     void updateWindowTitle();
     void updateRackView();
     void repaintPatchView();
+    void createStatusBar();
 
 private slots:
     void loadFile(const QString &filename, int how);
@@ -147,9 +149,12 @@ private slots:
     void redo();
     void jumpToNextProblem();
     void splitterMoved();
+    void cursorMoved(int section, const CursorPosition &pos);
 
 signals:
     void sigStarted();
+    void patchChanged();
+    void problemsChanged(unsigned);
 
 };
 #endif // MAINWINDOW_H

@@ -12,6 +12,8 @@
 
 class PatchView : public QTabWidget
 {
+    Q_OBJECT
+
     Patch *patch;
     PatchPropertiesDialog *patchPropertiesDialog;
     CircuitChooseDialog *circuitChooseDialog;
@@ -42,6 +44,11 @@ public:
     void jumpTo(int section, const CursorPosition &curPos);
     // TODO: patching zurücksetzen, wenn sich irgendwas am Patch geändert
     // hat. Am besten per Signal oder so.
+
+private:
+    void copyToClipboard(Clipboard *cb = 0);
+    PatchSection *addNewSection(QString name, int index=-1);
+    QString sectionName(int index);
 
 public slots:
     void nextSection();
@@ -74,11 +81,10 @@ private slots:
     void renameSection(int index);
     void reorderSections(int fromindex, int toindex);
     void tabContextMenu(int index);
+    void sectionCursorMoved(const CursorPosition &pos);
 
-private:
-    void copyToClipboard(Clipboard *cb = 0);
-    PatchSection *addNewSection(QString name, int index=-1);
-    QString sectionName(int index);
+signals:
+    void cursorMoved(int section, const CursorPosition &pos);
 };
 
 #endif // PATCHVIEW_H

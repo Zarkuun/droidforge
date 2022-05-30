@@ -14,6 +14,11 @@ QString PatchProblem::toString() const
     return text;
 }
 
+bool PatchProblem::isAt(int sec, const CursorPosition &pos) const
+{
+    return section == sec && curPos == pos;
+}
+
 QDebug &operator<<(QDebug &out, const PatchProblem &pb)
 {
     return out << pb.toString();

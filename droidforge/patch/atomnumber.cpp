@@ -55,12 +55,12 @@ QString AtomNumber::toNegatedString() const
     return n.toString();
 }
 
-QString AtomNumber::problemAsInput(const Patch *patch) const
+QString AtomNumber::problemAsInput(const Patch *) const
 {
     return "";
 }
 
-QString AtomNumber::problemAsOutput(const Patch *patch) const
+QString AtomNumber::problemAsOutput(const Patch *) const
 {
     return tr("You cannot use a fixed number for an output parameter");
 }

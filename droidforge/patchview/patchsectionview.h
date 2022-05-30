@@ -18,6 +18,8 @@ class PatchView;
 
 class PatchSectionView : public QGraphicsView
 {
+    Q_OBJECT
+
     Patch *patch;
     PatchSection *section;
     float zoomFactor;
@@ -100,6 +102,9 @@ private:
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key); // TODO: was soll das hier?
     void mouseClick(QPoint pos, int button, bool doubleClock);
+
+signals:
+    void cursorMoved(const CursorPosition &pos);
 };
 
 #endif // PATCHSECTIONVIEW_H
