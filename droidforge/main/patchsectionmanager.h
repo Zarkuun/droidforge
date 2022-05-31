@@ -42,7 +42,6 @@ public slots:
 
     void renameSection();
     void deleteSection();
-    void moveIntoSection();
     void duplicateSection();
     void mergeWithPreviousSection();
     void mergeWithNextSection();

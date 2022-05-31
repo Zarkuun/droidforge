@@ -18,6 +18,7 @@
 #include "circuitchoosedialog.h"
 #include "updatehub.h"
 #include "jackchoosedialog.h"
+#include "interactivepatchoperation.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -78,7 +79,8 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_CUT, &PatchSectionView::cut);
     CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
-    // CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, &PatchSectionView::createSectionFromSelection);
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     // CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
     // CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
@@ -336,14 +338,34 @@ void PatchSectionView::paste()
     }
 }
 
+void PatchSectionView::pasteSmart()
+{
+    Patch *pastedPatch = the_clipboard->getAsPatch();
+    if (!InteractivePatchOperation::interactivelyRemapRegisters(patch, pastedPatch)) {
+        delete pastedPatch;
+        return;
+    }
+
+    int position = 0;
+    for (auto circuit: pastedPatch->section(0)->getCircuits()) {
+        Circuit *newCircuit = circuit->clone();
+        position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
+        section()->addCircuit(position, newCircuit);
+    }
+    section()->setCursor(CursorPosition(position, -2, 0));
+    patch->commit(tr("smart pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
+    emit patchModified();
+}
+
 void PatchSectionView::pasteCircuitsFromClipboard()
 {
+    int position = 0;
     for (auto circuit: the_clipboard->getCircuits()) {
         Circuit *newCircuit = circuit->clone();
-        int position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr;
+        position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
         section()->addCircuit(position, newCircuit);
-        section()->moveCursorToNextCircuit();
     }
+    section()->setCursor(CursorPosition(position, -2, 0));
     patch->commit(tr("pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
 }
@@ -589,6 +611,24 @@ Patch *PatchSectionView::getSelectionAsPatch() const
     Clipboard cb;
     cb.copyFromSelection(selection, section());
     return cb.getAsPatch();
+}
+
+void PatchSectionView::createSectionFromSelection()
+{
+    QString newname = NameChooseDialog::getName(tr("Create new section from selection"), tr("New name:"));
+    if (newname.isEmpty())
+        return;
+    Clipboard cb;
+    cb.copyFromSelection(selection, patch->currentSection());
+    deleteCursorOrSelection();
+    PatchSection *newSection = new PatchSection(newname);
+    for (auto circuit: cb.getCircuits())
+        newSection->addCircuit(circuit->clone());
+    int index = patch->currentSectionIndex() + 1;
+    patch->insertSection(index, newSection);
+    patch->switchCurrentSection(index);
+    patch->commit(tr("moving circuits into new section"));
+    emit patchModified();
 }
 
 void PatchSectionView::editJack(int key)

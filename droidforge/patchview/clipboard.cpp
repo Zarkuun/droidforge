@@ -5,7 +5,10 @@ Clipboard *the_clipboard = 0;
 
 Clipboard::Clipboard()
 {
-    the_clipboard = this;
+    // Hm. This seems like a hack. The first clipboard goes global.
+    // Intermediate clipboards come later and will not overwrite this.
+    if (the_clipboard == 0)
+        the_clipboard = this;
 }
 
 Clipboard::Clipboard(const QList<Circuit *>cs)

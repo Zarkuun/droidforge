@@ -1,31 +1,4 @@
 #ifdef NIXDA
-#include "patchview.h"
-#include "atomcable.h"
-#include "mainwindow.h"
-#include "tuning.h"
-#include "patch.h"
-#include "patchsectionview.h"
-#include "namechoosedialog.h"
-
-#include <QGraphicsItem>
-#include <QResizeEvent>
-#include <QTabBar>
-#include <QApplication>
-#include <QMenu>
-#include <QSettings>
-#include <QMessageBox>
-
-// TODO: Im Undo-State muss man sich auch merken, welche Sektion
-// gerade angezeigt wird!
-
-PatchView::PatchView()
-    : QTabWidget()
-    , patch(0)
-    , patching(false)
-{
-}
-
-
 void PatchView::jumpTo(int section, const CursorPosition &curPos)
 {
     setCurrentIndex(section);
@@ -161,45 +134,6 @@ void PatchView::followInternalCable()
     jumpTo(it.sectionIndex(), it.cursorPosition());
 }
 
-void PatchView::renameInternalCable()
-{
-    currentPatchSectionView()->renameCable();
-}
-
-void PatchView::editCircuitComment()
-{
-    currentPatchSectionView()->editCircuitComment(0);
-}
-
-void PatchView::moveIntoSection()
-{
-    QString newname = NameChooseDialog::getName(tr("Move into new section"), tr("New name:"));
-    if (newname.isEmpty())
-        return;
-    the_forge->registerEdit(tr("moving circuits into new section"));
-    Clipboard cb;
-    copyToClipboard(&cb);
-    currentPatchSectionView()->deleteCursorOrSelection();
-    addNewSection(newname, currentIndex() + 1);
-    currentPatchSectionView()->pasteFromClipboard(cb);
-    the_forge->patchHasChanged();
-}
-
-void PatchView::pasteSmart()
-{
-    Patch *patch = clipboard.getAsPatch();
-    if (!interactivelyRemapRegisters(patch)) {
-        delete patch;
-        return;
-    }
-
-    the_forge->registerEdit(tr("Smart pasting %1 circuits").arg(clipboard.getCircuits().count()));
-    Clipboard cb(patch->section(0)->circuits);
-    currentPatchSectionView()->pasteFromClipboard(cb);
-    delete patch;
-    the_forge->patchHasChanged();
-}
-
 void PatchView::reorderSections(int fromindex, int toindex)
 {
     the_forge->registerEdit("reordering sections");
@@ -225,25 +159,4 @@ void PatchView::tabContextMenu(int index)
         menu->popup(QCursor::pos());
     }
 }
-
-void PatchView::sectionCursorMoved(const CursorPosition &pos)
-{
-    cursor_mode_t mode;
-
-    if (patching)
-        mode = CURSOR_PATCHING;
-    else if (patch->problemAt(currentIndex(), pos) != "")
-        mode = CURSOR_PROBLEM;
-    else
-        mode = CURSOR_NORMAL;
-    currentPatchSectionView()->setCursorMode(mode);
-    emit cursorMoved(currentIndex(), pos);
-}
-
-void PatchView::copyToClipboard(Clipboard *cb)
-{
-    currentPatchSectionView()->copyToClipboard(cb ? *cb : clipboard);
-
-}
-
 #endif

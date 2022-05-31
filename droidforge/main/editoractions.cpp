@@ -69,7 +69,7 @@ void EditorActions::changeClipboard()
 void EditorActions::changeSelection(const Selection *selection)
 {
     actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
-    actions[ACTION_MOVE_INTO_SECTION]->setEnabled(selection && selection->isCircuitSelection());
+    actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
 }
 
 void EditorActions::createActions()
@@ -193,8 +193,8 @@ void EditorActions::createActions()
 
     actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("Delete section"), this);
 
-    actions[ACTION_MOVE_INTO_SECTION] = new QAction(tr("Move selection into new section"), this);
-    actions[ACTION_MOVE_INTO_SECTION]->setEnabled(false);
+    actions[ACTION_CREATE_SECTION_FROM_SELECTION] = new QAction(tr("Create new section from selection"), this);
+    actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(false);
 
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("Merge with previous section"));
 

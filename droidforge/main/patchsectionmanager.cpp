@@ -1,4 +1,5 @@
 #include "patchsectionmanager.h"
+#include "clipboard.h"
 #include "tuning.h"
 #include "updatehub.h"
 #include "editoractions.h"
@@ -50,7 +51,6 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_MERGE_WITH_PREVIOUS_SECTION, &PatchSectionManager::mergeWithPreviousSection);
     CONNECT_ACTION(ACTION_MERGE_WITH_NEXT_SECTION, &PatchSectionManager::mergeWithNextSection);
     CONNECT_ACTION(ACTION_MERGE_ALL_SECTIONS, &PatchSectionManager::mergeAllSections);
-    CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchSectionManager::moveIntoSection);
 }
 
 void PatchSectionManager::popupSectionMenu(int index)
@@ -66,7 +66,7 @@ void PatchSectionManager::popupSectionMenu(int index)
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_NEXT_SECTION, menu);
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_ALL_SECTIONS, menu);
     }
-    ADD_ACTION_IF_ENABLED(ACTION_MOVE_INTO_SECTION, menu);
+    ADD_ACTION_IF_ENABLED(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
     menu->popup(QCursor::pos());
 }
 
@@ -142,11 +142,6 @@ void PatchSectionManager::deleteSection()
     patch->removeSection(index);
     patch->commit(tr("deleting patch section '%1'").arg(title));
     emit patchModified();
-}
-
-void PatchSectionManager::moveIntoSection()
-{
-
 }
 
 void PatchSectionManager::duplicateSection()

@@ -35,6 +35,10 @@ bool InteractivePatchOperation::interactivelyRemapRegisters(Patch *patch, Patch 
         }
     }
 
+    // TODO: Hier gibt's nochn Bug. Beispiel. Ich hab im otherpatch I1, I2 und I3.
+    // Und im alten auch. Es wird aber nur I1->I4 gelegt. I2, und I3 sagt er kann
+    // er nicht.
+
     // Phase 2: Remap non-existing or conflicting registers.
     RegisterList availableRegisters;
     patch->collectAvailableRegisterAtoms(availableRegisters);
