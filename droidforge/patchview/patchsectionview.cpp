@@ -1132,13 +1132,11 @@ void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int
             something = true;
 
     if (something) {
-        QString actionTitle = QString("deleting %1 values of '%2'").arg(to-from+1).arg(ja->jackName());
-        the_forge->registerEdit(actionTitle);
         for (int i=from; i<=to; i++)
             ja->replaceAtom(i, 0);
-        patchHasChanged();
+        patch->commit(tr("deleting %1 values of '%2'").arg(to-from+1).arg(ja->jackName()));
+        emit patchModified();
     }
-    rebuildPatchSection();
 }
 
 void PatchSectionView::editCircuit(int key)
