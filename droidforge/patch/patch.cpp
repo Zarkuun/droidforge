@@ -71,6 +71,7 @@ void Patch::removeSection(int index)
 {
     delete sections[index];
     sections.remove(index);
+    sectionIndex = qMin(sectionIndex, sections.size() - 1);
 }
 
 void Patch::integratePatch(const Patch *snippet)
@@ -100,13 +101,6 @@ void Patch::integratePatch(const Patch *snippet)
     // TODO: If the section has no native name and it's a single
     //       section, use the patch title instead
     // TODO: Move used registers to free things if required
-}
-
-void Patch::deleteSection(int index)
-{
-    PatchSection *s = sections[index];
-    sections.remove(index);
-    delete s;
 }
 
 void Patch::reorderSections(int fromindex, int toindex)

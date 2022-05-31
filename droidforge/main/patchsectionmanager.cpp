@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QSettings>
 #include <QResizeEvent>
+#include <QMenu>
 
 #define DATA_INDEX_SECTION_INDEX 0
 
@@ -46,9 +47,25 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchSectionManager::duplicateSection);
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchSectionManager::deleteSection);
     CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchSectionManager::renameSection);
-    CONNECT_ACTION(ACTION_MERGE_WITH_LEFT_SECTION, &PatchSectionManager::mergeWithLeftSection);
-    CONNECT_ACTION(ACTION_MERGE_WITH_RIGHT_SECTION, &PatchSectionManager::mergeWithRightSection);
+    CONNECT_ACTION(ACTION_MERGE_WITH_PREVIOUS_SECTION, &PatchSectionManager::mergeWithLeftSection);
+    CONNECT_ACTION(ACTION_MERGE_WITH_NEXT_SECTION, &PatchSectionManager::mergeWithRightSection);
     CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchSectionManager::moveIntoSection);
+}
+
+void PatchSectionManager::popupSectionMenu(int index)
+{
+    QMenu *menu = new QMenu(this);
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
+    if (index >= 0) {
+        ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
+        ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
+        ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_PREVIOUS_SECTION, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_NEXT_SECTION, menu);
+    }
+    ADD_ACTION_IF_ENABLED(ACTION_MOVE_INTO_SECTION, menu);
+    menu->popup(QCursor::pos());
 }
 
 void PatchSectionManager::resizeEvent(QResizeEvent *)
@@ -61,10 +78,14 @@ void PatchSectionManager::mousePressEvent(QMouseEvent *event)
 {
     for (auto item: items(event->pos())) {
         if (item->data(DATA_INDEX_SECTION_INDEX).isValid()) {
-            switchToSection(item->data(DATA_INDEX_SECTION_INDEX).toInt());
-            break;
+            int index = item->data(DATA_INDEX_SECTION_INDEX).toInt();
+            switchToSection(index);
+            if (event->button() == Qt::RightButton)
+                popupSectionMenu(index);
+            return;
         }
     }
+    popupSectionMenu();
 }
 
 void PatchSectionManager::changePatch(VersionedPatch *newPatch)
@@ -90,7 +111,11 @@ void PatchSectionManager::renameSection()
 
 void PatchSectionManager::deleteSection()
 {
-
+    int index = patch->currentSectionIndex();
+    QString title = patch->currentSection()->getNonemptyTitle();
+    patch->removeSection(index);
+    patch->commit(tr("deleting patch section '%1'").arg(title));
+    emit patchModified();
 }
 
 void PatchSectionManager::moveIntoSection()
@@ -141,8 +166,8 @@ void PatchSectionManager::newSectionAfterCurrent()
     if (newname.isEmpty())
         return;
 
-    patch->insertSection(index, new PatchSection(newname));
-    patch->switchCurrentSection(index);
+    patch->insertSection(index + 1, new PatchSection(newname));
+    patch->switchCurrentSection(index + 1);
     patch->commit(tr("adding new patch section '%1'").arg(newname));
     emit patchModified();
 }

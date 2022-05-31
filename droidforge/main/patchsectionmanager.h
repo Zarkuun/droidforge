@@ -26,6 +26,7 @@ private:
     void switchBackward();
     void switchForward();
     void connectActions();
+    void popupSectionMenu(int index=-1);
 
 protected:
     void resizeEvent(QResizeEvent *);

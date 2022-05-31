@@ -67,7 +67,6 @@ public:
     void mergeSections(int indexa, int indexb);
     void removeSection(int index);
     void integratePatch(const Patch *snippet);
-    void deleteSection(int index);
     void reorderSections(int fromindex, int toindex);
     void swapControllersSmart(int fromindex, int toindex);
     void swapControllerNumbers(int fromindex, int toindex);

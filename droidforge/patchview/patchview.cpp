@@ -212,17 +212,6 @@ void PatchView::mergeSections(int indexa, int indexb)
     the_forge->patchHasChanged();
 }
 
-void PatchView::deleteSection()
-{
-    int index = currentIndex();
-    QString title = currentPatchSectionView()->getTitle();
-    QString actionTitle = tr("deleting patch section '%1'").arg(title);
-    the_forge->registerEdit(actionTitle);
-    patch->deleteSection(index);
-    removeTab(index); patch->switchCurrentSection(this->currentIndex());
-    the_forge->patchHasChanged();
-}
-
 void PatchView::pasteSmart()
 {
     Patch *patch = clipboard.getAsPatch();

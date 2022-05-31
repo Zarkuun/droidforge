@@ -22,8 +22,8 @@ typedef enum {
     ACTION_FOLLOW_INTERNAL_CABLE,
     ACTION_INTEGRATE_PATCH,
     ACTION_JUMP_TO_NEXT_PROBLEM,
-    ACTION_MERGE_WITH_LEFT_SECTION,
-    ACTION_MERGE_WITH_RIGHT_SECTION,
+    ACTION_MERGE_WITH_PREVIOUS_SECTION,
+    ACTION_MERGE_WITH_NEXT_SECTION,
     ACTION_MOVE_INTO_SECTION,
     ACTION_NEW,
     ACTION_NEW_CIRCUIT,
@@ -63,6 +63,7 @@ public:
 private slots:
     void changePatch(VersionedPatch *patch);
     void modifyPatch();
+    void switchSection();
     void changeClipboard();
     void changeSelection(const Selection *selection);
 
@@ -77,7 +78,9 @@ extern EditorActions *the_actions;
  * - The connect() is always be done by the class that receives
  *   the action signal, not by someone else.
 */
-#define CONNECT_ACTION(A, FUNC)  connect(the_actions->action(A), &QAction::triggered, this, FUNC)
-#define ADD_ACTION(A, TO)        TO->addAction(the_actions->action(A))
+#define CONNECT_ACTION(A, FUNC)      connect(the_actions->action(A), &QAction::triggered, this, FUNC)
+#define ADD_ACTION(A, TO)            TO->addAction(the_actions->action(A))
+#define ADD_ACTION_IF_ENABLED(A, TO) if (the_actions->action(A)->isEnabled()) TO->addAction(the_actions->action(A))
+
 
 #endif // EDITORACTIONS_H

@@ -13,7 +13,7 @@ EditorActions::EditorActions(QObject *parent)
     createActions();
 
     // Events that we are interested in
-    // connect(the_hub, &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
+    connect(the_hub, &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
     connect(the_hub, &UpdateHub::patchChanged, this, &EditorActions::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
     connect(the_hub, &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
@@ -45,6 +45,16 @@ void EditorActions::modifyPatch()
         actions[ACTION_REDO]->setText(tr("&Redo"));
         actions[ACTION_REDO]->setEnabled(false);
     }
+
+    switchSection();
+}
+
+void EditorActions::switchSection()
+{
+    int sectionIndex = patch->currentSectionIndex();
+    int numSections = patch->numSections();
+    actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(sectionIndex > 0);
+    actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(sectionIndex+1 < numSections);
 }
 
 void EditorActions::changeClipboard()
@@ -56,6 +66,7 @@ void EditorActions::changeClipboard()
 void EditorActions::changeSelection(const Selection *selection)
 {
     actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
+    actions[ACTION_MOVE_INTO_SECTION]->setEnabled(selection && selection->isCircuitSelection());
 }
 
 void EditorActions::createActions()
@@ -174,10 +185,15 @@ void EditorActions::createActions()
     actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("Duplicate section..."), this);
 
     actions[ACTION_RENAME_PATCH_SECTION] = new QAction(tr("Rename section..."), this);
+
     actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("Delete section"), this);
+
     actions[ACTION_MOVE_INTO_SECTION] = new QAction(tr("Move selection into new section"), this);
-    actions[ACTION_MERGE_WITH_LEFT_SECTION] = new QAction(tr("Merge with left section"));
-    actions[ACTION_MERGE_WITH_RIGHT_SECTION] = new QAction(tr("Merge with left section"));
+    actions[ACTION_MOVE_INTO_SECTION]->setEnabled(false);
+
+    actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("Merge with previous section"));
+
+    actions[ACTION_MERGE_WITH_NEXT_SECTION] = new QAction(tr("Merge with next section"));
 
     actions[ACTION_RESET_ZOOM] = new QAction(icon("zoom_in"), tr("Normal font size"), this);
     actions[ACTION_RESET_ZOOM]->setShortcut(QKeySequence(tr("Ctrl+0")));
