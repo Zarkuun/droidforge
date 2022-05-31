@@ -83,8 +83,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, &PatchSectionView::createSectionFromSelection);
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
-    // CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
-
+    CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
     CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchSectionView::zoomOut);
@@ -1157,11 +1156,9 @@ void PatchSectionView::editCircuit(int key)
     QString newCircuit = CircuitChooseDialog::chooseCircuit(oldCircuit);
     if (!newCircuit.isEmpty() && oldCircuit != newCircuit)
     {
-        QString actionTitle = QString("changing circuit type to '") + newCircuit + "'";
-        the_forge->registerEdit(actionTitle);
         currentCircuit()->changeCircuit(newCircuit);
-        patchHasChanged();
-        rebuildPatchSection();
+        patch->commit(tr("changing circuit type to '%s'").arg(newCircuit));
+        emit patchModified();
     }
 }
 
