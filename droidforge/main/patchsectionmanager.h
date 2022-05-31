@@ -30,10 +30,10 @@ protected:
 
 public slots:
     void setNewPatch(VersionedPatch *patch);
-    void switchSection(int i);
+    void switchSection();
 
 signals:
-    void sectionSwitched(int i);
+    void sectionSwitched();
 };
 
 #endif // PATCHSECTIONMANAGER_H

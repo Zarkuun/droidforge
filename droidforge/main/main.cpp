@@ -4,6 +4,7 @@
 
 #include "unistd.h"
 #include "cablecolorizer.h"
+#include "updatehub.h"
 
 #include <QApplication>
 #include <QDir>
@@ -20,28 +21,25 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Der Mann mit der Maschine");
     app.setOrganizationDomain("dmmdm.de");
 
+    UpdateHub updateHub; // signal hub, to avoid n:m connections
+
     QString initialFilename;
     if (argc > 1)
         initialFilename = argv[1];
 
     CableColorizer cableColorizer;
-    the_cable_colorizer = &cableColorizer;
+    the_cable_colorizer = &cableColorizer; // TODO: move to class
 
-    if (1) {
-        qDebug("Hier");
-        MainWindow mainWindow(initialFilename);
-        qDebug("sEPP");
-        mainWindow.show();
-        qDebug("DEPP");
-        QDir::setCurrent(mainWindow.userPatchDirectory().absolutePath());
+    MainWindow mainWindow(initialFilename);
+    mainWindow.show();
+    QDir::setCurrent(mainWindow.userPatchDirectory().absolutePath());
 
-        QSettings settings;
-        if (settings.contains("mainwindow/size"))
-            mainWindow.resize(settings.value("mainwindow/size").toSize());
+    QSettings settings;
+    if (settings.contains("mainwindow/size"))
+        mainWindow.resize(settings.value("mainwindow/size").toSize());
 
-        if (settings.contains("mainwindow/position"))
-            mainWindow.move(settings.value("mainwindow/position").toPoint());
+    if (settings.contains("mainwindow/position"))
+        mainWindow.move(settings.value("mainwindow/position").toPoint());
 
-        return app.exec();
-    }
+    return app.exec();
 }

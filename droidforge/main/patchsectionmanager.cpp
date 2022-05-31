@@ -1,5 +1,6 @@
 #include "patchsectionmanager.h"
 #include "tuning.h"
+#include "updatehub.h"
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -20,6 +21,9 @@ PatchSectionManager::PatchSectionManager(QWidget *parent)
     scene()->setBackgroundBrush(QColor(PSM_COLOR_BACKGROUND));
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setMouseTracking(true);
+
+    connect(this, &PatchSectionManager::sectionSwitched, the_hub, &UpdateHub::switchSection);
+    connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
 }
 
 void PatchSectionManager::resizeEvent(QResizeEvent *)
@@ -30,7 +34,6 @@ void PatchSectionManager::resizeEvent(QResizeEvent *)
 
 void PatchSectionManager::mousePressEvent(QMouseEvent *event)
 {
-    PatchSectionTitleView *tv = 0;
     for (auto item: items(event->pos())) {
         if (item->data(DATA_INDEX_SECTION_INDEX).isValid()) {
             switchToSection(item->data(DATA_INDEX_SECTION_INDEX).toInt());
@@ -47,7 +50,7 @@ void PatchSectionManager::setNewPatch(VersionedPatch *newPatch)
     // reconstruct sections, etc.
 }
 
-void PatchSectionManager::switchSection(int i)
+void PatchSectionManager::switchSection()
 {
     updateCursor();
 }
@@ -88,5 +91,5 @@ void PatchSectionManager::switchToSection(int i)
 {
     qDebug() << "switche to " << i;
     patch->switchCurrentSection(i);
-    emit sectionSwitched(i);
+    emit sectionSwitched();
 }
