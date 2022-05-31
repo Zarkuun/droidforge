@@ -44,6 +44,8 @@ QtApplication {
         "patchview/cablecolorizer.h",
         "patchview/clipboard.cpp",
         "patchview/clipboard.h",
+        "patchview/clipboardindicator.cpp",
+        "patchview/clipboardindicator.h",
         "patchview/framecursor.cpp",
         "patchview/framecursor.h",
         "patchview/problemmarker.cpp",

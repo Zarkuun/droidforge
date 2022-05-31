@@ -1,6 +1,7 @@
 #ifndef EDITORACTIONS_H
 #define EDITORACTIONS_H
 
+#include "selection.h"
 #include "versionedpatch.h"
 
 #include <QObject>
@@ -63,6 +64,7 @@ private slots:
     void changePatch(VersionedPatch *patch);
     void modifyPatch();
     void changeClipboard();
+    void changeSelection(const Selection *selection);
 
 private:
     void createActions();

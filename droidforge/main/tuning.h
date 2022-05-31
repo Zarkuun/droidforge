@@ -37,6 +37,7 @@
 #define COLOR_JACK_OUTPUT                    QColor(245, 60, 50)
 #define COLOR_JACK_UNKNOWN                   COLOR_TEXT_UNKNOWN
 #define COLOR_STANDARD_BACKGROUND            QColor(30, 30, 30)
+#define COLOR_STATUSBAR_BACKGROUND           QColor(60, 60, 60)
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
 #define ASSUMED_SCROLLBAR_WIDTH              40
 
@@ -44,14 +45,20 @@
 #define PPI_WIDTH                            130
 #define PPI_SIDE_PADDING                     STANDARD_SPACING
 #define PPI_IMAGE_MARGIN                     3
-#define PPI_BACKGROUND_COLOR                 QColor(70, 70, 70)
+#define PPI_BACKGROUND_COLOR                 COLOR_STATUSBAR_BACKGROUND
+
+// Clipboard indicator
+#define CI_WIDTH                            130
+#define CI_SIDE_PADDING                     STANDARD_SPACING
+#define CI_IMAGE_MARGIN                     3
+#define CI_BACKGROUND_COLOR                 COLOR_STATUSBAR_BACKGROUND
 
 // Cable status indicator in status bar
 #define CSI_IMAGE_MARGIN                     3
 #define CSI_WIDTH                            350
 #define CSI_MAX_NAME_WIDTH                   150
 #define CSI_SIDE_PADDING                     STANDARD_SPACING
-#define CSI_BACKGROUND_COLOR                 QColor(70, 70, 70)
+#define CSI_BACKGROUND_COLOR                 COLOR_STATUSBAR_BACKGROUND
 #define CSI_CABLE_THICKNESS                  0.4
 #define CSI_CABLE_COLOR                      QColor(30, 30, 30)
 #define CSI_CABLE_HILITE_COLOR               QColor(80, 80, 80)
@@ -102,7 +109,6 @@
 #define CSEL_CURSOR_WIDTH                    8
 #define CSEL_CURSOR_HEIGHT                   2300
 
-
 // Patch section manager
 #define PSM_COLOR_BACKGROUND                 COLOR_STANDARD_BACKGROUND
 #define PSM_SIDE_PADDING                     STANDARD_SPACING
@@ -111,7 +117,6 @@
 #define PSM_SECTION_HEIGHT                   20
 #define PSM_COLOR_SECTION_BACKGROUND         QColor(80, 80, 80)
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
-
 
 // Circuit view (in patch view)
 #define CIRV_TOP_PADDING                     (2 * STANDARD_SPACING)

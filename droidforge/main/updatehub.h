@@ -4,6 +4,7 @@
 #include <QObject>
 
 class VersionedPatch;
+class Selection;
 
 class UpdateHub : public QObject
 {
@@ -16,6 +17,7 @@ public slots:
     void modifyPatch();
     void switchSection();
     void changeClipboard();
+    void changeSelection(const Selection *selection);
     // TODO: Esc -> Abort all actions
 
 signals:
@@ -23,6 +25,7 @@ signals:
     void patchModified();
     void sectionSwitched();
     void clipboardChanged();
+    void selectionChanged(const Selection *selecdtion);
 };
 
 extern UpdateHub *the_hub;

@@ -1,9 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "cablestatusindicator.h"
 #include "editoractions.h"
-#include "patchproblemindicator.h"
 #include "droidfirmware.h"
 #include "patchsectionmanager.h"
 #include "patchsectionview.h"
@@ -44,8 +42,6 @@ class MainWindow : public QMainWindow
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
-    CableStatusIndicator *cableStatusIndicator;
-    PatchProblemIndicator *patchProblemIndicator;
     unsigned currentProblem;
     PatchParser parser;
     QString initialFilename;
@@ -63,12 +59,10 @@ public:
     Patch *getPatch() { return patch; }; // TODO????
     void registerEdit(QString name);
     void patchHasChanged();
-    void updateClipboardInfo(QString info);
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
     QDir userPatchDirectory() const;
-    CableStatusIndicator *cableIndicator() { return cableStatusIndicator; };
 
 protected:
     void keyPressEvent(QKeyEvent *event);

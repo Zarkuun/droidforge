@@ -56,11 +56,13 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
     // Events that we create
     connect(this, &PatchSectionView::patchModified, the_hub, &UpdateHub::modifyPatch);
     connect(this, &PatchSectionView::clipboardChanged, the_hub, &UpdateHub::changeClipboard);
+    connect(this, &PatchSectionView::selectionChanged, the_hub, &UpdateHub::changeSelection);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
     connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionView::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionView::modifyPatch);
+    connect(the_hub, &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
 }
 
 PatchSectionView::~PatchSectionView()
@@ -272,9 +274,15 @@ void PatchSectionView::changePatch(VersionedPatch *newPatch)
     modifyPatch();
 }
 
+void PatchSectionView::changeSelection(const Selection *)
+{
+    rebuildPatchSection();
+}
+
 void PatchSectionView::modifyPatch()
 {
-    qDebug() << Q_FUNC_INFO;
+    // We are responsible for the unique and complete color decision
+    // of all internal cables.
     the_cable_colorizer->colorizeAllCables(patch->allCables());
     rebuildPatchSection();
 }
@@ -841,18 +849,18 @@ void PatchSectionView::updateCursor()
 void PatchSectionView::updateCableIndicator()
 {
     // TODO: Das hier sollte mit einem Signal geregelt werden.
-    const Atom *atom = currentAtom();
-    if (atom && atom->isCable()) {
-        AtomCable *ac = (AtomCable *)atom;
-        QString name = ac->getCable();
-        int numAsOutput = 0;
-        int numAsInput = 0;
-        // TODO: Das hier mit Signalen lösen
-        patch->findCableConnections(name, numAsInput, numAsOutput);
-        the_forge->cableIndicator()->set(name, numAsInput, numAsOutput);
-    }
-    else
-        the_forge->cableIndicator()->clear();
+    //const Atom *atom = currentAtom();
+    //if (atom && atom->isCable()) {
+    //    AtomCable *ac = (AtomCable *)atom;
+    //    QString name = ac->getCable();
+    //    int numAsOutput = 0;
+    //    int numAsInput = 0;
+    //    // TODO: Das hier mit Signalen lösen
+    //    patch->findCableConnections(name, numAsInput, numAsOutput);
+    //    the_forge->cableIndicator()->set(name, numAsInput, numAsOutput);
+    //}
+    //else
+    //    the_forge->cableIndicator()->clear();
 }
 
 void PatchSectionView::setMouseSelection(const CursorPosition &to)
@@ -860,7 +868,7 @@ void PatchSectionView::setMouseSelection(const CursorPosition &to)
     if (selection)
         delete selection;
     selection = new Selection(section()->cursorPosition(), to);
-    updateCircuits();
+    emit selectionChanged(selection);
 }
 
 void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
@@ -880,6 +888,7 @@ void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, con
     }
     else
         selection = new Selection(before, after);
+    emit selectionChanged(selection);
 }
 
 void PatchSectionView::clearSelection()
@@ -887,7 +896,7 @@ void PatchSectionView::clearSelection()
     if (selection) {
         delete selection;
         selection = 0;
-        updateCircuits();
+        emit selectionChanged(selection);
     }
 }
 

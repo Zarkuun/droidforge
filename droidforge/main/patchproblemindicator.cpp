@@ -18,7 +18,6 @@ PatchProblemIndicator::PatchProblemIndicator(QWidget *parent)
 void PatchProblemIndicator::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-
     painter.fillRect(rect(), PPI_BACKGROUND_COLOR);
 
     unsigned imgHeight = height() - 2 * PPI_IMAGE_MARGIN;

@@ -1,10 +1,12 @@
 #include "mainwindow.h"
+#include "clipboardindicator.h"
+#include "cablestatusindicator.h"
+#include "patchproblemindicator.h"
 #include "parseexception.h"
 #include "patch.h"
 #include "rackview.h"
 #include "modulebuilder.h"
 #include "patchparser.h"
-// #include "patchview.h"
 #include "patchpropertiesdialog.h"
 #include "tuning.h"
 #include "os.h"
@@ -77,13 +79,9 @@ void MainWindow::createStatusBar()
     statusbar = new QStatusBar(this);
     setStatusBar(statusbar);
 
-    cableStatusIndicator = new CableStatusIndicator;
-    statusbar->addPermanentWidget(cableStatusIndicator);
-
-    patchProblemIndicator = new PatchProblemIndicator;
-    statusbar->addPermanentWidget(patchProblemIndicator);
-    connect(this, &MainWindow::problemsChanged, patchProblemIndicator, &PatchProblemIndicator::problemsChanged);
-    connect(patchProblemIndicator, &PatchProblemIndicator::clicked, the_actions->action(ACTION_JUMP_TO_NEXT_PROBLEM), &QAction::trigger);
+    statusbar->addPermanentWidget(new CableStatusIndicator);
+    statusbar->addPermanentWidget(new PatchProblemIndicator);
+    statusbar->addPermanentWidget(new ClipboardIndicator);
 }
 
 MainWindow::~MainWindow()
@@ -185,11 +183,6 @@ void MainWindow::hiliteRegisters(const RegisterList &registers)
 void MainWindow::clickOnRegister(AtomRegister ar)
 {
     patchSectionView.clickOnRegister(ar);
-}
-
-void MainWindow::updateClipboardInfo(QString)
-{
-    // statusbar->showMessage(info); // TODO: brauchen wir das?
 }
 
 void MainWindow::updateWindowTitle()

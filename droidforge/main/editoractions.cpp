@@ -17,6 +17,7 @@ EditorActions::EditorActions(QObject *parent)
     connect(the_hub, &UpdateHub::patchChanged, this, &EditorActions::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
     connect(the_hub, &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
+    connect(the_hub, &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
 }
 
 void EditorActions::changePatch(VersionedPatch *newPatch)
@@ -52,6 +53,11 @@ void EditorActions::changeClipboard()
     actions[ACTION_PASTE_SMART]->setEnabled(the_clipboard->numCircuits());
 }
 
+void EditorActions::changeSelection(const Selection *selection)
+{
+    actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
+}
+
 void EditorActions::createActions()
 {
     actions[ACTION_NEW] = new QAction(icon("settings_input_composite"), tr("&New..."), this);
@@ -72,6 +78,7 @@ void EditorActions::createActions()
 
     actions[ACTION_EXPORT_SELECTION] = new QAction(tr("E&xport selection as patch..."), this);
     actions[ACTION_EXPORT_SELECTION]->setStatusTip(tr("Save the currently selected circuits into a new patch file"));
+    actions[ACTION_EXPORT_SELECTION]->setEnabled(false);
 
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS
@@ -199,7 +206,6 @@ QIcon EditorActions::icon(QString what) const
 {
     // File menu
     actionSave->setEnabled(patch->isModified());
-    actionExportSelection->setEnabled(patchView.circuitsSelected());
     actionOpenEnclosingFolder->setEnabled(!filePath.isEmpty());
 
     // Edit menu

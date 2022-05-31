@@ -116,6 +116,7 @@ private:
 
 public slots:
     void changePatch(VersionedPatch *patch);
+    void changeSelection(const Selection *);
     void modifyPatch();
     void switchSection();
     void newCircuit();
@@ -130,6 +131,7 @@ signals:
     void patchModified();
     void cursorMoved(const CursorPosition &pos);
     void clipboardChanged();
+    void selectionChanged(const Selection *selection);
 };
 
 #endif // PATCHSECTIONVIEW_H

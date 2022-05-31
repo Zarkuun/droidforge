@@ -435,16 +435,6 @@ PatchSection *PatchView::addNewSection(QString name, int index)
     return section;
 }
 
-QString PatchView::sectionName(int index)
-{
-    return patch->section(index)->getNonemptyTitle();
-}
-
-void PatchView::patchHasChanged()
-{
-    the_forge->patchHasChanged();
-    currentPatchSectionView()->patchHasChanged();
-}
 
 void PatchView::pasteSmart()
 {
@@ -519,19 +509,6 @@ void PatchView::copyToClipboard(Clipboard *cb)
 {
     currentPatchSectionView()->copyToClipboard(cb ? *cb : clipboard);
 
-    QString info;
-    if (clipboard.isEmpty())
-        info = "";
-    else if (clipboard.numCircuits())
-        info = tr("Clipboard: %1 circuits").arg(clipboard.numCircuits());
-    else if (clipboard.numJacks())
-        info = tr("Clipboard: %1 jack assignments").arg(clipboard.numJacks());
-    else if (clipboard.numAtoms())
-        info = tr("Clipboard: %1 parameters").arg(clipboard.numAtoms());
-    else if (clipboard.isComment())
-        info = tr("Clipboard: comment");
-
-    the_forge->updateClipboardInfo(info);
 }
 
 #endif
