@@ -1,7 +1,7 @@
 #ifndef PATCHPROPERTIESDIALOG_H
 #define PATCHPROPERTIESDIALOG_H
 
-#include "patch.h"
+#include "versionedpatch.h"
 #include "dialog.h"
 
 #include <QLineEdit>
@@ -17,7 +17,7 @@ class PatchPropertiesDialog : public Dialog
     QTextEdit *textEditDescription;
 
 public:
-    static void editPatchProperties(Patch *patch);
+    static bool editPatchProperties(VersionedPatch *patch);
 
 private:
     PatchPropertiesDialog(QWidget *parent = nullptr);

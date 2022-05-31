@@ -4,7 +4,6 @@
 #include "patch.h"
 #include "patchsectionview.h"
 #include "jackchoosedialog.h"
-#include "patchpropertiesdialog.h"
 #include "clipboard.h"
 #include "versionedpatch.h"
 
@@ -15,7 +14,6 @@ class PatchView : public QTabWidget
     Q_OBJECT
 
     VersionedPatch *patch;
-    PatchPropertiesDialog *patchPropertiesDialog;
     CircuitChooseDialog *circuitChooseDialog;
     int zoomLevel;
     Clipboard clipboard;
@@ -55,7 +53,6 @@ private:
     void zoom(int how);
 
 public slots:
-    void editProperties();
     void addJack();
     void editValue();
     void startPatching();

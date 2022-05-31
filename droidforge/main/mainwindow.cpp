@@ -5,6 +5,7 @@
 #include "modulebuilder.h"
 #include "patchparser.h"
 // #include "patchview.h"
+#include "patchpropertiesdialog.h"
 #include "tuning.h"
 #include "os.h"
 #include "updatehub.h"
@@ -55,8 +56,6 @@ MainWindow::MainWindow(const QString &initialFilename)
         rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
-    qDebug("MAIN WINDOW HIER NOCH");
-
     createMenus();
     createToolbar();
     createStatusBar();
@@ -67,6 +66,7 @@ MainWindow::MainWindow(const QString &initialFilename)
 
     // Events that we create
     connect(this, &MainWindow::patchChanged, the_hub, &UpdateHub::changePatch);
+    connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Events that we are interested in
 }
@@ -372,6 +372,8 @@ void MainWindow::connectActions()
     CONNECT_ACTION(ACTION_UNDO, &MainWindow::undo);
     CONNECT_ACTION(ACTION_REDO, &MainWindow::redo);
 
+    CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &MainWindow::editProperties);
+
 }
 
 void MainWindow::loadPatch(const QString &aFilePath)
@@ -444,6 +446,12 @@ void MainWindow::saveAs()
         patchHasChanged();
         addToRecentFiles(newFilePath);
     }
+}
+
+void MainWindow::editProperties()
+{
+    if (PatchPropertiesDialog::editPatchProperties(patch))
+        emit patchModified();
 }
 
 void MainWindow::exportSelection()

@@ -21,7 +21,6 @@
 PatchView::PatchView()
     : QTabWidget()
     , patch(0)
-    , patchPropertiesDialog{}
     , circuitChooseDialog{}
     , zoomLevel(0)
     , patching(false)
@@ -41,8 +40,6 @@ PatchView::~PatchView()
 {
     if (circuitChooseDialog)
         delete circuitChooseDialog;
-    if (patchPropertiesDialog)
-        delete patchPropertiesDialog;
 }
 
 void PatchView::setPatch(VersionedPatch *newPatch)
@@ -264,7 +261,6 @@ void PatchView::connectActions()
     CONNECT_ACTION(ACTION_MERGE_WITH_LEFT_SECTION, &PatchView::mergeWithLeftSection);
     CONNECT_ACTION(ACTION_MERGE_WITH_RIGHT_SECTION, &PatchView::mergeWithRightSection);
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchView::deleteSection);
-    CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &PatchView::editProperties);
 
     CONNECT_ACTION(ACTION_FOLLOW_INTERNAL_CABLE, &PatchView::followInternalCable);
     CONNECT_ACTION(ACTION_RENAME_INTERNAL_CABLE, &PatchView::renameInternalCable);
@@ -296,11 +292,6 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
 Patch *PatchView::getSelectionAsPatch() const
 {
     return currentPatchSectionView()->getSelectionAsPatch();
-}
-
-void PatchView::editProperties()
-{
-    PatchPropertiesDialog::editPatchProperties(patch);
 }
 
 void PatchView::addJack()

@@ -25,11 +25,11 @@ PatchPropertiesDialog::PatchPropertiesDialog(QWidget *parent)
     layout->addWidget(buttonBox, 2, 0, 1, 2);
 }
 
-void PatchPropertiesDialog::editPatchProperties(Patch *patch)
+bool PatchPropertiesDialog::editPatchProperties(VersionedPatch *patch)
 {
-     static PatchPropertiesDialog *dialog = 0;
-     if (!dialog)
-         dialog = new PatchPropertiesDialog();
+    static PatchPropertiesDialog *dialog = 0;
+    if (!dialog)
+        dialog = new PatchPropertiesDialog();
 
     QString oldTitle = patch->getTitle();
     dialog->lineEditTitle->setText(oldTitle);
@@ -44,13 +44,15 @@ void PatchPropertiesDialog::editPatchProperties(Patch *patch)
                 QString newTitle = dialog->lineEditTitle->text().trimmed();
                 QString newDescription = dialog->textEditDescription->toPlainText();
                 if (newTitle != oldTitle ||
-                    newDescription != oldDescription)
+                        newDescription != oldDescription)
                 {
-                    the_forge->registerEdit(tr("editing patch properties"));
                     patch->setTitle(newTitle);
                     patch->setDescription(newDescription);
+                    patch->commit(tr("editing patch properties"));
+                    return true;
                 }
-                return;
+                else
+                    return false;
             }
             catch (InputValidationException &e) {
                 QMessageBox box(

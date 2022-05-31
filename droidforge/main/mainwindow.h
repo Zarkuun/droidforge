@@ -106,12 +106,12 @@ private slots:
     void jumpToNextProblem();
     void splitterMoved();
     void cursorMoved(int section, const CursorPosition &pos);
-
-public slots:
+    void editProperties();
 
 
 signals:
     void patchChanged(VersionedPatch *); // all pointers are invalid
+    void patchModified();
 
     void sigStarted();
     void problemsChanged(unsigned);
