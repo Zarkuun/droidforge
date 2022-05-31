@@ -22,20 +22,6 @@ void PatchView::connectActions()
 
 }
 
-
-void PatchView::addJack()
-{
-    if (currentPatchSectionView()->isEmpty())
-        return;
-
-    QString circuit = currentPatchSectionView()->currentCircuitName();
-    QStringList usedJacks = currentPatchSectionView()->usedJacks();
-
-    QString name = JackChooseDialog::chooseJack(circuit, "", usedJacks);
-    if (!name.isEmpty())
-        currentPatchSectionView()->addNewJack(name);
-}
-
 void PatchView::startPatching()
 {
     patching = true;

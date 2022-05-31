@@ -82,7 +82,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
     CONNECT_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, &PatchSectionView::createSectionFromSelection);
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
-    // CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
+    CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
     // CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
 
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
@@ -303,6 +303,27 @@ void PatchSectionView::newCircuit()
         patch->commit(tr("adding new '%1' circuit").arg(name));
         emit patchModified();
     }
+}
+
+void PatchSectionView::addJack()
+{
+    if (section()->isEmpty())
+        return;
+
+    QString name = JackChooseDialog::chooseJack(currentCircuitName(), "", usedJacks());
+    if (name == "")
+        return;
+
+    int row = section()->cursorPosition().row;
+    int index = row + 1;
+    if (index < 0)
+        index = 0;
+
+    currentCircuit()->insertJackAssignment(buildJackAssignment(name), index);
+    section()->setCursorRow(index);
+    section()->setCursorColumn(1);
+    patch->commit(tr("adding new jack '%1'").arg(name));
+    emit patchModified();
 }
 
 void PatchSectionView::cut()
@@ -553,24 +574,6 @@ PatchView *PatchSectionView::patchView()
 {
     // TODO: Das hier ist der Megahack.
     return (PatchView *)parent()->parent();
-}
-
-void PatchSectionView::addNewJack(QString name)
-{
-    QString actionTitle = QString("adding new jack '") + name + "' to circuit";
-    the_forge->registerEdit(actionTitle);
-
-    int row = section()->cursorPosition().row;
-    int index = row + 1;
-    if (index < 0)
-        index = 0;
-
-    currentCircuit()->insertJackAssignment(buildJackAssignment(name), index);
-    section()->setCursorRow(index);
-    section()->setCursorColumn(1);
-    rebuildPatchSection();
-    updateCursor();
-    patchHasChanged();
 }
 
 

@@ -35,7 +35,6 @@ public:
     ~PatchSectionView();
     bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
-    void addNewJack(QString name);
     QString currentCircuitName() const;
     QString getTitle() const { return "KEIN TITLE"; }; // ; { return section->getNonemptyTitle(); };
     QStringList usedJacks() const;
@@ -120,6 +119,7 @@ public slots:
     void modifyPatch();
     void switchSection();
     void newCircuit();
+    void addJack();
     void zoomReset();
     void zoomIn();
     void zoomOut();
