@@ -200,20 +200,6 @@ void PatchView::pasteSmart()
     the_forge->patchHasChanged();
 }
 
-void PatchView::renameSection()
-{
-    int index = currentIndex();
-    QString oldname = patch->section(index)->getTitle();
-    QString newname = NameChooseDialog::getName(tr("Rename patch section"), tr("New name:"), oldname);
-    if (oldname != newname) {
-        QString actionTitle = QString("renaming patch section to '") + newname + "'";
-        the_forge->registerEdit(actionTitle);
-        patch->section(index)->setTitle(newname);
-        this->setTabText(index, newname);
-        the_forge->patchHasChanged();
-    }
-}
-
 void PatchView::reorderSections(int fromindex, int toindex)
 {
     the_forge->registerEdit("reordering sections");

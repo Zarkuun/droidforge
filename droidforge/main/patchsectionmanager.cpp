@@ -78,16 +78,33 @@ void PatchSectionManager::resizeEvent(QResizeEvent *)
 
 void PatchSectionManager::mousePressEvent(QMouseEvent *event)
 {
+    int index = clickedSectionIndex(event);
+    if (index >= 0) {
+        switchToSection(index);
+        if (event->button() == Qt::RightButton)
+            popupSectionMenu(index);
+    }
+    else
+        popupSectionMenu();
+}
+
+void PatchSectionManager::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    int index = clickedSectionIndex(event);
+    if (index >= 0) {
+        switchToSection(index);
+        renameSection();
+    }
+}
+
+int PatchSectionManager::clickedSectionIndex(QMouseEvent *event)
+{
     for (auto item: items(event->pos())) {
         if (item->data(DATA_INDEX_SECTION_INDEX).isValid()) {
-            int index = item->data(DATA_INDEX_SECTION_INDEX).toInt();
-            switchToSection(index);
-            if (event->button() == Qt::RightButton)
-                popupSectionMenu(index);
-            return;
+            return  item->data(DATA_INDEX_SECTION_INDEX).toInt();
         }
     }
-    popupSectionMenu();
+    return -1;
 }
 
 void PatchSectionManager::changePatch(VersionedPatch *newPatch)
@@ -108,7 +125,14 @@ void PatchSectionManager::switchSection()
 
 void PatchSectionManager::renameSection()
 {
-
+    PatchSection *section = patch->currentSection();
+    QString oldname = section->getTitle();
+    QString newname = NameChooseDialog::getName(tr("Rename patch section"), tr("New name:"), oldname);
+    if (newname != "" && oldname != newname) {
+        section->setTitle(newname);
+        patch->commit(tr("renaming patch section to '%1'").arg(newname));
+        emit patchModified();
+    }
 }
 
 void PatchSectionManager::deleteSection()

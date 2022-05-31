@@ -28,10 +28,12 @@ private:
     void connectActions();
     void popupSectionMenu(int index=-1);
     void mergeSections(int indexa, int indexb);
+    int clickedSectionIndex(QMouseEvent *event);
 
 protected:
     void resizeEvent(QResizeEvent *);
     void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
 
 public slots:
     void changePatch(VersionedPatch *patch);
