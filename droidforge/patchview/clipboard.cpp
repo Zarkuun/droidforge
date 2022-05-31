@@ -1,8 +1,11 @@
 #include "clipboard.h"
 #include "patch.h"
 
+Clipboard *the_clipboard = 0;
+
 Clipboard::Clipboard()
 {
+    the_clipboard = this;
 }
 
 Clipboard::Clipboard(const QList<Circuit *>cs)

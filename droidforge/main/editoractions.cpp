@@ -1,5 +1,6 @@
 #include "editoractions.h"
 #include "updatehub.h"
+#include "clipboard.h"
 
 EditorActions *the_actions = 0;
 
@@ -15,6 +16,7 @@ EditorActions::EditorActions(QObject *parent)
     // connect(the_hub, &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
     connect(the_hub, &UpdateHub::patchChanged, this, &EditorActions::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
+    connect(the_hub, &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
 }
 
 void EditorActions::changePatch(VersionedPatch *newPatch)
@@ -44,6 +46,11 @@ void EditorActions::modifyPatch()
     }
 }
 
+void EditorActions::changeClipboard()
+{
+    actions[ACTION_PASTE]->setEnabled(!the_clipboard->isEmpty());
+    actions[ACTION_PASTE_SMART]->setEnabled(the_clipboard->numCircuits());
+}
 
 void EditorActions::createActions()
 {
@@ -113,11 +120,14 @@ void EditorActions::createActions()
     actions[ACTION_PASTE] = new QAction(icon("paste"), tr("&Paste"), this);
     actions[ACTION_PASTE]->setShortcuts(QKeySequence::Paste);
     actions[ACTION_PASTE]->setStatusTip(tr("Paste contents from clipboard"));
+    actions[ACTION_PASTE]->setEnabled(false); // enabled by clipboard
 
     actions[ACTION_PASTE_SMART] = new QAction(tr("&Paste smart"), this);
     actions[ACTION_PASTE_SMART]->setShortcut(QKeySequence(tr("Shift+Ctrl+V")));
     actions[ACTION_PASTE_SMART]->setStatusTip(tr("Paste circuits from clipboard but remap registers and internal connections "
                                  "in order to avoid conflicts."));
+    actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
+
     actions[ACTION_NEW_CIRCUIT] = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
 

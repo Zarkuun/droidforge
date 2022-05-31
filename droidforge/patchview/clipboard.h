@@ -37,4 +37,6 @@ private:
     void clear();
 };
 
+extern Clipboard *the_clipboard;
+
 #endif // CLIPBOARD_H

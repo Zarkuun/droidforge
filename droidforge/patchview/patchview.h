@@ -1,4 +1,4 @@
-#ifndef PATCHVIEW_H
+#ifdef HIRNIPATCHVIEW_H
 #define PATCHVIEW_H
 
 #include "patch.h"
@@ -14,7 +14,6 @@ class PatchView : public QTabWidget
     Q_OBJECT
 
     VersionedPatch *patch;
-    CircuitChooseDialog *circuitChooseDialog;
     Clipboard clipboard;
     bool patching;
     unsigned patchingStartSection;
@@ -23,18 +22,9 @@ class PatchView : public QTabWidget
     PatchView();
     ~PatchView();
 public:
-    void setPatch(VersionedPatch *patch);
-    bool handleKeyPress(QKeyEvent *event);
-    const PatchSectionView *currentPatchSectionView() const;
-    PatchSectionView *currentPatchSectionView();
     bool clipboardFilled() const;
     bool circuitsInClipboard() const;
-    bool circuitsSelected() const;
-    int numSections() const;
-    void updateRegisterHilites() const;
-    void clickOnRegister(AtomRegister ar);
     Patch *integratePatch(Patch *otherpatch);
-    Patch *getSelectionAsPatch() const;
     bool interactivelyRemapRegisters(Patch *otherpatch);
     bool isPatching() const { return patching; };
     void abortAllActions();

@@ -62,6 +62,7 @@ public:
 private slots:
     void changePatch(VersionedPatch *patch);
     void modifyPatch();
+    void changeClipboard();
 
 private:
     void createActions();

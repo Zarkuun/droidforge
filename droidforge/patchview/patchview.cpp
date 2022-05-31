@@ -1,6 +1,6 @@
+#ifdef NIXDA
 #include "patchview.h"
 #include "atomcable.h"
-#include "cablecolorizer.h"
 #include "mainwindow.h"
 #include "tuning.h"
 #include "patch.h"
@@ -21,59 +21,8 @@
 PatchView::PatchView()
     : QTabWidget()
     , patch(0)
-    , circuitChooseDialog{}
     , patching(false)
 {
-    setMovable(true);
-    // connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
-    connect(this, &QTabWidget::tabBarClicked, this, &PatchView::tabContextMenu);
-    connect(tabBar(), &QTabBar::tabMoved, this, &PatchView::reorderSections);
-    connectActions();
-
-}
-
-PatchView::~PatchView()
-{
-    if (circuitChooseDialog)
-        delete circuitChooseDialog;
-}
-
-void PatchView::setPatch(VersionedPatch *newPatch)
-{
-    patch = newPatch;
-
-    while (tabBar()->count())
-        removeTab(0);
-
-    for (qsizetype i=0; i<patch->numSections(); i++) {
-        PatchSection *section = patch->section(i);
-        PatchSectionView *psv = new PatchSectionView(patch); // KOMMT EH WEGpatch, section, zoomLevel);
-        connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
-        QString title = section->getNonemptyTitle();
-        addTab(psv, title);
-    }
-
-    if (patch->numSections() > 0)
-        setCurrentIndex(patch->currentSectionIndex());
-
-    QStringList allCables = patch->allCables();
-    the_cable_colorizer->colorizeAllCables(allCables);
-}
-
-bool PatchView::handleKeyPress(QKeyEvent *event)
-{
-    bool handled = currentPatchSectionView()->handleKeyPress(event);
-    return handled;
-}
-
-const PatchSectionView *PatchView::currentPatchSectionView() const
-{
-    return (const PatchSectionView *)currentWidget();
-}
-
-PatchSectionView *PatchView::currentPatchSectionView()
-{
-    return (PatchSectionView *)currentWidget();
 }
 
 bool PatchView::clipboardFilled() const
@@ -86,33 +35,6 @@ bool PatchView::circuitsInClipboard() const
     return clipboard.numCircuits();
 }
 
-bool PatchView::circuitsSelected() const
-{
-    if (!currentPatchSectionView())
-        return false;
-    else
-        return currentPatchSectionView()->circuitsSelected();
-}
-
-int PatchView::numSections() const
-{
-    if (patch)
-        return patch->numSections();
-    else
-        return 0;
-}
-
-void PatchView::updateRegisterHilites() const
-{
-    if (currentPatchSectionView())
-        currentPatchSectionView()->updateRegisterHilites();
-}
-
-void PatchView::clickOnRegister(AtomRegister ar)
-{
-    if (currentPatchSectionView())
-        currentPatchSectionView()->clickOnRegister(ar);
-}
 
 bool PatchView::interactivelyRemapRegisters(Patch *otherpatch)
 {
@@ -227,16 +149,6 @@ bool PatchView::interactivelyRemapRegisters(Patch *otherpatch)
     return true;
 }
 
-void PatchView::abortAllActions()
-{
-    if (patching)
-        abortPatching();
-    for (qsizetype i=0; i<patch->numSections(); i++) {
-        PatchSectionView *psv = (PatchSectionView *)widget(i);
-        psv->clearSelection();
-    }
-}
-
 void PatchView::jumpTo(int section, const CursorPosition &curPos)
 {
     setCurrentIndex(section);
@@ -283,10 +195,6 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
         return 0;
 }
 
-Patch *PatchView::getSelectionAsPatch() const
-{
-    return currentPatchSectionView()->getSelectionAsPatch();
-}
 
 void PatchView::addJack()
 {
@@ -538,23 +446,6 @@ void PatchView::patchHasChanged()
     currentPatchSectionView()->patchHasChanged();
 }
 
-void PatchView::cut()
-{
-    qDebug("CUT");
-    copyToClipboard();
-    currentPatchSectionView()->deleteCursorOrSelection();
-}
-
-void PatchView::copy()
-{
-    copyToClipboard();
-}
-
-void PatchView::paste()
-{
-    currentPatchSectionView()->pasteFromClipboard(clipboard);
-}
-
 void PatchView::pasteSmart()
 {
     Patch *patch = clipboard.getAsPatch();
@@ -642,3 +533,5 @@ void PatchView::copyToClipboard(Clipboard *cb)
 
     the_forge->updateClipboardInfo(info);
 }
+
+#endif

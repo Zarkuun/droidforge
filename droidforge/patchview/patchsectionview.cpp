@@ -4,6 +4,7 @@
 #include "atomoneliner.h"
 #include "atomregister.h"
 #include "circuitview.h"
+#include "cablecolorizer.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
@@ -16,6 +17,7 @@
 #include "problemmarker.h"
 #include "circuitchoosedialog.h"
 #include "updatehub.h"
+#include "jackchoosedialog.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -30,10 +32,11 @@
 
 PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
     : patch(initialPatch) // patch is never ever 0!
+    , zoomLevel(0)
+    , zoomFactor(1.0)
     , atomSelectorDialog{}
     , selection(0)
     , frameCursor(0)
-    , zoomFactor(1.0)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -52,6 +55,7 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
 
     // Events that we create
     connect(this, &PatchSectionView::patchModified, the_hub, &UpdateHub::modifyPatch);
+    connect(this, &PatchSectionView::clipboardChanged, the_hub, &UpdateHub::changeClipboard);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
@@ -69,9 +73,9 @@ PatchSectionView::~PatchSectionView()
 
 void PatchSectionView::connectActions()
 {
-    // CONNECT_ACTION(ACTION_CUT, &PatchSectionView::cut);
-    // CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
-    // CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
+    CONNECT_ACTION(ACTION_CUT, &PatchSectionView::cut);
+    CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
+    CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
     // CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     // CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
@@ -265,12 +269,13 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
 void PatchSectionView::changePatch(VersionedPatch *newPatch)
 {
     patch = newPatch;
-    rebuildPatchSection();
+    modifyPatch();
 }
 
 void PatchSectionView::modifyPatch()
 {
     qDebug() << Q_FUNC_INFO;
+    the_cable_colorizer->colorizeAllCables(patch->allCables());
     rebuildPatchSection();
 }
 
@@ -288,6 +293,112 @@ void PatchSectionView::newCircuit()
         patch->commit(tr("adding new '%1' circuit").arg(name));
         emit patchModified();
     }
+}
+
+void PatchSectionView::cut()
+{
+    copyToClipboard();
+    deleteCursorOrSelection();
+}
+
+void PatchSectionView::copy()
+{
+    copyToClipboard();
+}
+
+void PatchSectionView::paste()
+{
+    if (the_clipboard->numCircuits()) {
+        pasteCircuitsFromClipboard();
+        qDebug() << "TODO: Hier Dialog wegen anpassen der Register!";
+    }
+    else if (isEmpty()) {
+        // TODO: updateActions in mainwindow soll paste deaktivieren, wenn
+        // dieser Fall da ist.
+        return;
+    }
+    else if (the_clipboard->isComment())
+        pasteCommentFromClipboard();
+    else if (the_clipboard->numJacks())
+        pasteJacksFromClipboard();
+    else if (the_clipboard->numAtoms())
+        pasteAtomsFromClipboard();
+    else {
+        // Should never happen
+    }
+}
+
+void PatchSectionView::pasteCircuitsFromClipboard()
+{
+    for (auto circuit: the_clipboard->getCircuits()) {
+        Circuit *newCircuit = circuit->clone();
+        int position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr;
+        section()->addCircuit(position, newCircuit);
+        section()->moveCursorToNextCircuit();
+    }
+    patch->commit(tr("pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
+    emit patchModified();
+}
+
+void PatchSectionView::pasteCommentFromClipboard()
+{
+    QString comment = the_clipboard->getComment();
+    if (comment != currentCircuit()->getComment()) {
+        currentCircuit()->setComment(comment);
+        patch->commit(tr("pasting circuit comment"));
+        emit patchModified();
+    }
+}
+
+void PatchSectionView::pasteJacksFromClipboard()
+{
+    const QList<JackAssignment *> &jas = the_clipboard->getJackAssignment();
+    Circuit *circuit = currentCircuit();
+    int index = qMin(circuit->numJackAssignments(), qMax(0, section()->cursorPosition().row + 1));
+    for (auto ja: jas) {
+        // We need to reparse the jack assignment, because the circuit we
+        // paste into is maybe another circuit and e.g. "clock" might have
+        // to change from an input to an output.
+        QString asString = ja->toString();
+        JackAssignment *jaReparsed = JackAssignment::parseJackLine(circuit->getName(), asString);
+        circuit->insertJackAssignment(jaReparsed, index);
+        section()->setCursorRow(index);
+        index++;
+    }
+    patch->commit(tr("pasting %1 jack assignments").arg(jas.count()));
+    emit patchModified();
+}
+
+void PatchSectionView::pasteAtomsFromClipboard()
+{
+    JackAssignment *ja = currentJackAssignment();
+    Q_ASSERT(ja);
+
+    int column = section()->cursorPosition().column;
+    Q_ASSERT(column >= 1 && column <= 3);
+
+    const QList<Atom *> &atoms = the_clipboard->getAtoms();
+    for (auto atom: atoms) {
+        // We need to reparse, as people might copy an input
+        // value like "17.4" to an output parameter.
+        Atom *newAtom = 0;
+        if (atom) {
+            QString asString = atom->toString();
+            if (ja->isOutput())
+                newAtom = JackAssignmentOutput::parseOutputAtom(asString);
+            else if (ja->isInput())
+                newAtom = JackAssignmentInput::parseInputAtom(asString);
+            else
+                newAtom = new AtomInvalid(asString);
+        }
+        ja->replaceAtom(column, newAtom);
+        section()->setCursorColumn(column);
+        column ++;
+        if (column > 3)
+            break;
+    }
+    patch->commit(tr("pasting parameters"));
+    emit patchModified();
 }
 
 void PatchSectionView::zoomReset()
@@ -405,7 +516,6 @@ PatchSection *PatchSectionView::section()
 
 const PatchSection *PatchSectionView::section() const
 {
-    qDebug() << "PATCH IST " << patch;
     return patch->currentSection(); // patch never 0, section never 0
 }
 
@@ -454,15 +564,16 @@ QChar PatchSectionView::keyToChar(int key)
         return ' ';
 }
 
-void PatchSectionView::copyToClipboard(Clipboard &clipboard)
+void PatchSectionView::copyToClipboard()
 {
     if (selection) {
-        clipboard.copyFromSelection(selection, section());
+        the_clipboard->copyFromSelection(selection, section());
     }
     else {
         Selection sel(section()->cursorPosition());
-        clipboard.copyFromSelection(&sel, section());
+        the_clipboard->copyFromSelection(&sel, section());
     }
+    emit clipboardChanged();
 }
 
 Patch *PatchSectionView::getSelectionAsPatch() const
@@ -544,10 +655,10 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 
 void PatchSectionView::editAtom(int key)
 {
-    if (key == 0 && patchView()->isPatching())  {
-        patchView()->finishPatching();
-        return;
-    }
+    // if (key == 0 && patchView()->isPatching())  {
+    //     patchView()->finishPatching();
+    //     return;
+    // }
 
     Circuit *circuit = currentCircuit();
     JackAssignment *ja = circuit->jackAssignment(section()->cursorPosition().row);
@@ -857,28 +968,6 @@ void PatchSectionView::deleteCursorOrSelection()
     clearSelection();
 }
 
-void PatchSectionView::pasteFromClipboard(Clipboard &clipboard)
-{
-    if (clipboard.numCircuits()) {
-        pasteCircuitsFromClipboard(clipboard);
-        qDebug() << "TODO: Hier Dialog wegen anpassen der Register!";
-    }
-    else if (isEmpty()) {
-        // TODO: updateActions in mainwindow soll paste deaktivieren, wenn
-        // dieser Fall da ist.
-        return;
-    }
-    else if (clipboard.isComment())
-        pasteCommentFromClipboard(clipboard);
-    else if (clipboard.numJacks())
-        pasteJacksFromClipboard(clipboard);
-    else if (clipboard.numAtoms())
-        pasteAtomsFromClipboard(clipboard);
-    else {
-        // Should never happen
-    }
-
-}
 
 void PatchSectionView::deleteCurrentRow()
 {
@@ -898,53 +987,41 @@ void PatchSectionView::deleteCurrentRow()
 
 void PatchSectionView::deleteCurrentCircuit()
 {
-    QString actionTitle = QString("deleting circuit ") + currentCircuit()->getName().toUpper();
-    the_forge->registerEdit(actionTitle);
     section()->deleteCurrentCircuit();
-    rebuildPatchSection();
-    patchHasChanged();
+    patch->commit(tr("deleting circuit ") + currentCircuit()->getName().toUpper());
+    emit patchModified();
 }
 
 void PatchSectionView::deleteMultipleCircuits(int from, int to)
 {
-    QString actionTitle = QString("deleting %1 circuits").arg(to - from + 1);
-    the_forge->registerEdit(actionTitle);
     for (int i=to; i>=from; i--)
         section()->deleteCircuit(i);
-    rebuildPatchSection();
-    patchHasChanged();
+    patch->commit(tr("deleting %1 circuits").arg(to - from + 1));
+    emit patchModified();
 }
 
 void PatchSectionView::deleteCurrentComment()
 {
-    QString actionTitle = QString("deleting comment");
-    the_forge->registerEdit(actionTitle);
     section()->deleteCurrentComment();
-    rebuildPatchSection();
-    updateCursor();
-    patchHasChanged();
+    patch->commit(tr("deleting comment"));
+    emit patchModified();
 }
 
 void PatchSectionView::deleteCurrentJack()
 {
-    QString actionTitle = QString("deleting jack ")
-            + currentJackAssignment()->jackName() + " assignment";
-    the_forge->registerEdit(actionTitle);
+    QString jackName = currentJackAssignment()->jackName();
     section()->deleteCurrentJackAssignment();
-    rebuildPatchSection();
-    updateCursor();
-    patchHasChanged();
+    patch->commit(tr("deleting assignment of jack '%1'").arg(jackName));
+    emit patchModified();
 }
 
 void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
 {
-    QString actionTitle = QString("deleting %1 jack assignments").arg(to - from + 1);
-    the_forge->registerEdit(actionTitle);
     for (int i=to; i>=from; i--)
         section()->circuit(circuitNr)->deleteJackAssignment(i);
-    section()->sanitizeCursor();
-    rebuildPatchSection();
-    patchHasChanged();
+    section()->sanitizeCursor(); // TODO: Das soll die Section selbst machen
+    patch->commit(tr("deleting %1 jack assignments").arg(to - from + 1));
+    emit patchModified();
 }
 
 const Atom *PatchSectionView::currentAtom() const
@@ -1016,85 +1093,6 @@ void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int
             ja->replaceAtom(i, 0);
         patchHasChanged();
     }
-    rebuildPatchSection();
-}
-
-void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
-{
-    the_forge->registerEdit(tr("pasting %1 circuits").arg(clipboard.getCircuits().count()));
-    for (auto circuit: clipboard.getCircuits()) {
-        Circuit *newCircuit = circuit->clone();
-        int position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr;
-        section()->addCircuit(position, newCircuit);
-        section()->moveCursorToNextCircuit();
-    }
-    // TODO: Hier klappt das nicht mit der Cursorsichtbarkeit.
-    // Das ensureVisible macht irgendwie nix
-    patchHasChanged();
-    rebuildPatchSection();
-}
-
-void PatchSectionView::pasteCommentFromClipboard(const Clipboard &clipboard)
-{
-    QString comment = clipboard.getComment();
-    if (comment != currentCircuit()->getComment()) {
-        the_forge->registerEdit(tr("pasting circuit comment"));
-        currentCircuit()->setComment(comment);
-        patchHasChanged();
-        rebuildPatchSection();
-    }
-}
-
-void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
-{
-    const QList<JackAssignment *> &jas = clipboard.getJackAssignment();
-    the_forge->registerEdit(tr("pasting %1 jack assignments").arg(jas.count()));
-    Circuit *circuit = currentCircuit();
-    int index = qMin(circuit->numJackAssignments(), qMax(0, section()->cursorPosition().row + 1));
-    for (auto ja: jas) {
-        // We need to reparse the jack assignment, because the circuit we
-        // paste into is maybe another circuit and e.g. "clock" might have
-        // to change from an input to an output.
-        QString asString = ja->toString();
-        JackAssignment *jaReparsed = JackAssignment::parseJackLine(circuit->getName(), asString);
-        circuit->insertJackAssignment(jaReparsed, index);
-        section()->setCursorRow(index);
-        index++;
-    }
-    patchHasChanged();
-    rebuildPatchSection();
-}
-
-void PatchSectionView::pasteAtomsFromClipboard(const Clipboard &clipboard)
-{
-    JackAssignment *ja = currentJackAssignment();
-    Q_ASSERT(ja);
-
-    int column = section()->cursorPosition().column;
-    Q_ASSERT(column >= 1 && column <= 3);
-
-    const QList<Atom *> &atoms = clipboard.getAtoms();
-    the_forge->registerEdit(tr("pasting parameters"));
-    for (auto atom: atoms) {
-        // We need to reparse, as people might copy an input
-        // value like "17.4" to an output parameter.
-        Atom *newAtom = 0;
-        if (atom) {
-            QString asString = atom->toString();
-            if (ja->isOutput())
-                newAtom = JackAssignmentOutput::parseOutputAtom(asString);
-            else if (ja->isInput())
-                newAtom = JackAssignmentInput::parseInputAtom(asString);
-            else
-                newAtom = new AtomInvalid(asString);
-        }
-        ja->replaceAtom(column, newAtom);
-        section()->setCursorColumn(column);
-        column ++;
-        if (column > 3)
-            break;
-    }
-    patchHasChanged();
     rebuildPatchSection();
 }
 

@@ -1,10 +1,10 @@
 #include "parseexception.h"
 #include "mainwindow.h"
 #include "patch.h"
-
 #include "unistd.h"
 #include "cablecolorizer.h"
 #include "updatehub.h"
+#include "clipboard.h"
 
 #include <QApplication>
 #include <QDir>
@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("dmmdm.de");
 
     UpdateHub updateHub; // signal hub, to avoid n:m connections
+    Clipboard clipboard; // must be global to all windows
 
     QString initialFilename;
     if (argc > 1)

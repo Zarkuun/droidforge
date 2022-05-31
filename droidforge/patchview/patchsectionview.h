@@ -40,8 +40,6 @@ public:
     QString getTitle() const { return "KEIN TITLE"; }; // ; { return section->getNonemptyTitle(); };
     QStringList usedJacks() const;
     void deleteCursorOrSelection();
-    void pasteFromClipboard(Clipboard &clipboard);
-    void pasteCircuitsFromClipboard(const Clipboard &clipboard);
     void editValue(int key);
     void editCircuitComment(int key);
     void renameCable();
@@ -51,7 +49,6 @@ public:
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
     void setCursorMode(cursor_mode_t mode);
-    void copyToClipboard(Clipboard &clipboard);
     Patch *getSelectionAsPatch() const;
     void clearSelection();
     void rebuildPatchSection();
@@ -89,17 +86,6 @@ private:
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
     void moveCursorPageUpDown(int whence);
-    void deleteCurrentRow();
-    void deleteCurrentCircuit();
-    void deleteMultipleCircuits(int from, int to);
-    void deleteCurrentComment();
-    void deleteCurrentJack();
-    void deleteMultipleJacks(int circuitNr, int from, int to);
-    void deleteCurrentAtom();
-    void deleteMultipleAtoms(int circuitNr, int row, int from, int to);
-    void pasteCommentFromClipboard(const Clipboard &clipboard);
-    void pasteJacksFromClipboard(const Clipboard &clipboard);
-    void pasteAtomsFromClipboard(const Clipboard &clipboard);
     void editCircuit(int key);
     void editJack(int key);
     void editValueByMouse(CursorPosition &pos);
@@ -112,6 +98,22 @@ private:
     void setZoom(int zoom);
     void changeZoom(int how);
 
+    // Delete, Cut, Copy & Paste
+    void deleteCurrentRow();
+    void deleteCurrentCircuit();
+    void deleteMultipleCircuits(int from, int to);
+    void deleteCurrentComment();
+    void deleteCurrentJack();
+    void deleteMultipleJacks(int circuitNr, int from, int to);
+    void deleteCurrentAtom();
+    void deleteMultipleAtoms(int circuitNr, int row, int from, int to);
+    void copyToClipboard();
+    void pasteCommentFromClipboard();
+    void pasteJacksFromClipboard();
+    void pasteAtomsFromClipboard();
+    void pasteFromClipboard();
+    void pasteCircuitsFromClipboard();
+
 public slots:
     void changePatch(VersionedPatch *patch);
     void modifyPatch();
@@ -120,10 +122,14 @@ public slots:
     void zoomReset();
     void zoomIn();
     void zoomOut();
+    void cut();
+    void copy();
+    void paste();
 
 signals:
     void patchModified();
     void cursorMoved(const CursorPosition &pos);
+    void clipboardChanged();
 };
 
 #endif // PATCHSECTIONVIEW_H

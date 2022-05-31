@@ -15,11 +15,14 @@ public slots:
     void changePatch(VersionedPatch *patch);
     void modifyPatch();
     void switchSection();
+    void changeClipboard();
+    // TODO: Esc -> Abort all actions
 
 signals:
     void patchChanged(VersionedPatch *patch);
     void patchModified();
     void sectionSwitched();
+    void clipboardChanged();
 };
 
 extern UpdateHub *the_hub;

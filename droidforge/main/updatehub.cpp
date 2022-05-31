@@ -35,3 +35,10 @@ void UpdateHub::switchSection()
     qDebug() << "HUB: switchSection()";
     emit sectionSwitched();
 }
+
+void UpdateHub::changeClipboard()
+{
+    // Called when the contents of the clipboard change
+    qDebug() << "HUB: changeClipboard()";
+    emit clipboardChanged();
+}
