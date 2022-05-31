@@ -49,6 +49,7 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchSectionManager::renameSection);
     CONNECT_ACTION(ACTION_MERGE_WITH_PREVIOUS_SECTION, &PatchSectionManager::mergeWithPreviousSection);
     CONNECT_ACTION(ACTION_MERGE_WITH_NEXT_SECTION, &PatchSectionManager::mergeWithNextSection);
+    CONNECT_ACTION(ACTION_MERGE_ALL_SECTIONS, &PatchSectionManager::mergeAllSections);
     CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchSectionManager::moveIntoSection);
 }
 
@@ -63,6 +64,7 @@ void PatchSectionManager::popupSectionMenu(int index)
         ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_PREVIOUS_SECTION, menu);
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_NEXT_SECTION, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_MERGE_ALL_SECTIONS, menu);
     }
     ADD_ACTION_IF_ENABLED(ACTION_MOVE_INTO_SECTION, menu);
     menu->popup(QCursor::pos());
@@ -181,6 +183,14 @@ void PatchSectionManager::newSectionAfterCurrent()
     patch->insertSection(index + 1, new PatchSection(newname));
     patch->switchCurrentSection(index + 1);
     patch->commit(tr("adding new patch section '%1'").arg(newname));
+    emit patchModified();
+}
+
+void PatchSectionManager::mergeAllSections()
+{
+    while (patch->numSections() > 1)
+        patch->mergeSections(0, 1);
+    patch->commit(tr("merging all patch sections"));
     emit patchModified();
 }
 

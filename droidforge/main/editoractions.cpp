@@ -48,6 +48,7 @@ void EditorActions::modifyPatch()
 
     // There alwas *must* be at least one section
     actions[ACTION_DELETE_PATCH_SECTION]->setEnabled(patch->numSections() >= 2);
+    actions[ACTION_MERGE_ALL_SECTIONS]->setEnabled(patch->numSections() >= 2);
     switchSection();
 }
 
@@ -184,6 +185,8 @@ void EditorActions::createActions()
     actions[ACTION_NEXT_SECTION]->setStatusTip(tr("Switch to the next section"));
 
     actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("New section..."), this);
+    actions[ACTION_NEW_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+N")));
+
     actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("Duplicate section..."), this);
 
     actions[ACTION_RENAME_PATCH_SECTION] = new QAction(tr("Rename section..."), this);
@@ -196,6 +199,8 @@ void EditorActions::createActions()
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("Merge with previous section"));
 
     actions[ACTION_MERGE_WITH_NEXT_SECTION] = new QAction(tr("Merge with next section"));
+
+    actions[ACTION_MERGE_ALL_SECTIONS] = new QAction(tr("Merge all sections into one"));
 
     actions[ACTION_RESET_ZOOM] = new QAction(icon("zoom_in"), tr("Normal font size"), this);
     actions[ACTION_RESET_ZOOM]->setShortcut(QKeySequence(tr("Ctrl+0")));

@@ -45,7 +45,7 @@ public slots:
     void mergeWithPreviousSection();
     void mergeWithNextSection();
     void newSectionAfterCurrent();
-    // void newSectionAt(int index);
+    void mergeAllSections();
 
 signals:
     void patchModified();
