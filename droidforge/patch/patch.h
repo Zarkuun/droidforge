@@ -38,10 +38,12 @@ public:
     bool isEmpty() const { return numSections() == 0; };
     qsizetype numSections() const { return sections.size(); };
     qsizetype currentSectionIndex() const { return sectionIndex; };
-    PatchSection *currentSection() { return sections[sectionIndex]; };
     const PatchSection *currentSection() const { return sections[sectionIndex]; };
     PatchSection *section(qsizetype i) { return sections[i]; };
     const QList<PatchSection *> &getSections() const { return sections; };
+    PatchSection *currentSection() { return sections[sectionIndex]; }; // never 0
+    const Circuit *currentCircuit() const; // can be 0
+    const Atom *currentAtom() const; // can be 0
 
     // More complex analysis
     QStringList allCables() const;

@@ -48,12 +48,18 @@ void Circuit::deleteJackAssignment(unsigned i)
 
 const Atom *Circuit::atomAt(int row, int column) const
 {
-    return jackAssignments[row]->atomAt(column);
+    if (row < 0 || row >= jackAssignments.count())
+        return 0;
+    else
+        return jackAssignments[row]->atomAt(column);
 }
 
 Atom *Circuit::atomAt(int row, int column)
 {
-    return jackAssignments[row]->atomAt(column);
+    if (row < 0 || row >= jackAssignments.count())
+        return 0;
+    else
+        return jackAssignments[row]->atomAt(column);
 }
 
 void Circuit::setAtomAt(int row, int column, Atom *atom)

@@ -178,12 +178,6 @@ void MainWindow::createMenus()
 }
 
 
-void MainWindow::patchHasChanged()
-{
-    qDebug() << Q_FUNC_INFO;
-    Q_ASSERT(false);
-}
-
 void MainWindow::hiliteRegisters(const RegisterList &registers)
 {
     rackView.hiliteRegisters(registers);

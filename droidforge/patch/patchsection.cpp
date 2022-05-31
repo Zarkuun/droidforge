@@ -268,6 +268,15 @@ const Circuit *PatchSection::currentCircuit() const
         return 0;
 }
 
+const Atom *PatchSection::currentAtom() const
+{
+    const Circuit *circuit = currentCircuit();
+    if (circuit)
+        return circuit->atomAt(cursor.row, cursor.column);
+    else
+        return 0;
+}
+
 const Atom *PatchSection::atomAt(const CursorPosition &pos)
 {
     return circuits[pos.circuitNr]->atomAt(pos.row, pos.column);

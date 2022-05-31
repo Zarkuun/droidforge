@@ -882,23 +882,6 @@ void PatchSectionView::updateCursor()
         frameCursor.setVisible(false);
 }
 
-void PatchSectionView::updateCableIndicator()
-{
-    // TODO: Das hier sollte mit einem Signal geregelt werden.
-    //const Atom *atom = currentAtom();
-    //if (atom && atom->isCable()) {
-    //    AtomCable *ac = (AtomCable *)atom;
-    //    QString name = ac->getCable();
-    //    int numAsOutput = 0;
-    //    int numAsInput = 0;
-    //    // TODO: Das hier mit Signalen lösen
-    //    patch->findCableConnections(name, numAsInput, numAsOutput);
-    //    the_forge->cableIndicator()->set(name, numAsInput, numAsOutput);
-    //}
-    //else
-    //    the_forge->cableIndicator()->clear();
-}
-
 void PatchSectionView::setMouseSelection(const CursorPosition &to)
 {
     if (selection)

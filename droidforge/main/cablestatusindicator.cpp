@@ -1,4 +1,5 @@
 #include "cablestatusindicator.h"
+#include "atomcable.h"
 #include "cablecolorizer.h"
 #include "tuning.h"
 #include "updatehub.h"
@@ -230,7 +231,17 @@ void CableStatusIndicator::setanimationPhase(float newanimationPhase)
 
 void CableStatusIndicator::updateStatus()
 {
-    qDebug() << Q_FUNC_INFO;
+    const Atom *atom = patch->currentAtom();
+    if (atom && atom->isCable()) {
+        AtomCable *ac = (AtomCable *)atom;
+        QString name = ac->getCable();
+        int numAsOutput = 0;
+        int numAsInput = 0;
+        patch->findCableConnections(name, numAsInput, numAsOutput);
+        set(name, numAsInput, numAsOutput);
+    }
+    else
+        clear();
 }
 
 

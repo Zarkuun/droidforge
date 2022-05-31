@@ -58,7 +58,6 @@ public:
     void integratePatch(const QString &aFilePath);
     Patch *getPatch() { return patch; }; // TODO????
     void registerEdit(QString name);
-    void patchHasChanged();
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;

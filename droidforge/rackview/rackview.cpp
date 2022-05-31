@@ -273,7 +273,7 @@ void RackView::moveController(int fromindex, int toindex)
 {
     the_forge->registerEdit(tr("changing order of controllers"));
     patch->swapControllersSmart(fromindex, toindex);
-    the_forge->patchHasChanged();
+    // the_forge->patchHasChanged();
 }
 
 void RackView::updateGraphics()
@@ -366,7 +366,7 @@ void RackView::removeController(
     patch->removeController(controllerIndex);
     removeModule(controllerIndex);
     updateSize();
-    the_forge->patchHasChanged();
+    // the_forge->patchHasChanged();
 }
 
 
@@ -394,5 +394,5 @@ void RackView::remapControls(
                     this);
         box.exec();
     }
-    the_forge->patchHasChanged();
+    // the_forge->patchHasChanged();
 }

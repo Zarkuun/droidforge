@@ -51,6 +51,7 @@ public:
     void setCursor(const CursorPosition &pos) { cursor = pos; };
     Circuit *currentCircuit();
     const Circuit *currentCircuit() const;
+    const Atom *currentAtom() const;
     const Atom *atomAt(const CursorPosition &pos);
     void setAtomAt(const CursorPosition &pos, Atom *atom);
     bool isEmpty() const { return circuits.size() == 0; };

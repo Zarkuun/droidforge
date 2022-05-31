@@ -164,6 +164,16 @@ QString Patch::getDescription() const
         return description.join("\n") + "\n";
 }
 
+const Circuit *Patch::currentCircuit() const
+{
+    return currentSection()->currentCircuit();
+}
+
+const Atom *Patch::currentAtom() const
+{
+    return currentSection()->currentAtom();
+}
+
 void Patch::setTitle(const QString &newTitle)
 {
     title = newTitle;
