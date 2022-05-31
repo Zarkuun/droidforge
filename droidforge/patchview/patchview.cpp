@@ -185,33 +185,6 @@ void PatchView::moveIntoSection()
     the_forge->patchHasChanged();
 }
 
-void PatchView::mergeWithLeftSection()
-{
-    mergeSections(currentIndex(), currentIndex() - 1);
-}
-
-void PatchView::mergeWithRightSection()
-{
-    mergeSections(currentIndex(), currentIndex() + 1);
-}
-
-void PatchView::mergeSections(int indexa, int indexb)
-{
-    // Make sure indexa < indexb
-    if (indexa > indexb) {
-        int x = indexb;
-        indexb = indexa;
-        indexa = x;
-    }
-    the_forge->registerEdit(tr("merging sections '%1' and '%2'")
-                .arg(sectionName(indexa), sectionName(indexb)));
-    patch->mergeSections(indexa, indexb);
-    removeTab(indexb);
-    setCurrentIndex(patch->currentSectionIndex());
-    currentPatchSectionView()->rebuildPatchSection();
-    the_forge->patchHasChanged();
-}
-
 void PatchView::pasteSmart()
 {
     Patch *patch = clipboard.getAsPatch();

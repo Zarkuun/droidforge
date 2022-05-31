@@ -47,8 +47,8 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchSectionManager::duplicateSection);
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchSectionManager::deleteSection);
     CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchSectionManager::renameSection);
-    CONNECT_ACTION(ACTION_MERGE_WITH_PREVIOUS_SECTION, &PatchSectionManager::mergeWithLeftSection);
-    CONNECT_ACTION(ACTION_MERGE_WITH_NEXT_SECTION, &PatchSectionManager::mergeWithRightSection);
+    CONNECT_ACTION(ACTION_MERGE_WITH_PREVIOUS_SECTION, &PatchSectionManager::mergeWithPreviousSection);
+    CONNECT_ACTION(ACTION_MERGE_WITH_NEXT_SECTION, &PatchSectionManager::mergeWithNextSection);
     CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchSectionManager::moveIntoSection);
 }
 
@@ -148,15 +148,27 @@ void PatchSectionManager::duplicateSection()
     emit patchModified(); // implies sectionSwitched
 }
 
-
-void PatchSectionManager::mergeWithLeftSection()
+void PatchSectionManager::mergeWithPreviousSection()
 {
-
+    mergeSections(patch->currentSectionIndex(), patch->currentSectionIndex() - 1);
 }
 
-void PatchSectionManager::mergeWithRightSection()
+void PatchSectionManager::mergeWithNextSection()
 {
+    mergeSections(patch->currentSectionIndex(), patch->currentSectionIndex() + 1);
+}
 
+void PatchSectionManager::mergeSections(int indexa, int indexb)
+{
+    // Make sure indexa < indexb
+    if (indexa > indexb) {
+        int x = indexb;
+        indexb = indexa;
+        indexa = x;
+    }
+    patch->mergeSections(indexa, indexb);
+    patch->commit(tr("merging patch sections"));
+    emit patchModified();
 }
 
 void PatchSectionManager::newSectionAfterCurrent()

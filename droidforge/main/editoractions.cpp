@@ -46,6 +46,8 @@ void EditorActions::modifyPatch()
         actions[ACTION_REDO]->setEnabled(false);
     }
 
+    // There alwas *must* be at least one section
+    actions[ACTION_DELETE_PATCH_SECTION]->setEnabled(patch->numSections() >= 2);
     switchSection();
 }
 

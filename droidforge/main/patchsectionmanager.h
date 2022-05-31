@@ -27,6 +27,7 @@ private:
     void switchForward();
     void connectActions();
     void popupSectionMenu(int index=-1);
+    void mergeSections(int indexa, int indexb);
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -41,8 +42,8 @@ public slots:
     void deleteSection();
     void moveIntoSection();
     void duplicateSection();
-    void mergeWithLeftSection();
-    void mergeWithRightSection();
+    void mergeWithPreviousSection();
+    void mergeWithNextSection();
     void newSectionAfterCurrent();
     // void newSectionAt(int index);
 
