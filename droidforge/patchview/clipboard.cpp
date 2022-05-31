@@ -16,7 +16,7 @@ Clipboard::~Clipboard()
     clear();
 }
 
-void Clipboard::copyFromSelection(Selection *sel, PatchSection *section)
+void Clipboard::copyFromSelection(Selection *sel, const PatchSection *section)
 {
     const CursorPosition &from = sel->fromPos();
     const CursorPosition &to = sel->toPos();

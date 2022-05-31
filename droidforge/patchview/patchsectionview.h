@@ -22,7 +22,6 @@ class PatchSectionView : public QGraphicsView
     Q_OBJECT
 
     VersionedPatch *patch;
-    PatchSection *section;
     float zoomFactor;
 
     QList<CircuitView *>circuitViews;
@@ -31,13 +30,13 @@ class PatchSectionView : public QGraphicsView
     FrameCursor *frameCursor;
 
 public:
-    PatchSectionView(VersionedPatch *patch, PatchSection *section, int zoom);
+    PatchSectionView(VersionedPatch *initialPatch);
     ~PatchSectionView();
     bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
     void addNewJack(QString name);
     QString currentCircuitName() const;
-    QString getTitle() const { return section->getNonemptyTitle(); };
+    QString getTitle() const { return "KEIN TITLE"; }; // ; { return section->getNonemptyTitle(); };
     QStringList usedJacks() const;
     void deleteCursorOrSelection();
     void pasteFromClipboard(Clipboard &clipboard);
@@ -72,6 +71,8 @@ protected:
     void showEvent(QShowEvent *event);
 
 private:
+    PatchSection *section();
+    const PatchSection *section() const;
     PatchView *patchView();
     void updateCableIndicator();
     void setMouseSelection(const CursorPosition &to);
@@ -106,6 +107,10 @@ private:
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key); // TODO: was soll das hier?
     void mouseClick(QPoint pos, int button, bool doubleClock);
+
+public slots:
+    void changePatch(VersionedPatch *patch);
+    void switchSection();
 
 signals:
     void cursorMoved(const CursorPosition &pos);

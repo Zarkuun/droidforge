@@ -14,6 +14,7 @@ class VersionedPatch : public Patch
 
 public:
     VersionedPatch(const Patch *patch);
+    VersionedPatch(); // minimal patch
     ~VersionedPatch();
     bool isModified() const;
     bool saveToFile(QString filename);

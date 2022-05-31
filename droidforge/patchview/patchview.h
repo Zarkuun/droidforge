@@ -24,9 +24,9 @@ class PatchView : public QTabWidget
     unsigned patchingStartSection;
     CursorPosition patchingStartPosition;
 
-public:
     PatchView();
     ~PatchView();
+public:
     void setPatch(VersionedPatch *patch);
     bool handleKeyPress(QKeyEvent *event);
     const PatchSectionView *currentPatchSectionView() const;

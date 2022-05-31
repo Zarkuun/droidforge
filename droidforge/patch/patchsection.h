@@ -47,15 +47,18 @@ public:
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
-    const CursorPosition &cursorPosition() { return cursor; };
+    const CursorPosition &cursorPosition() const { return cursor; };
     void setCursor(const CursorPosition &pos) { cursor = pos; };
     Circuit *currentCircuit();
+    const Circuit *currentCircuit() const;
     const Atom *atomAt(const CursorPosition &pos);
     void setAtomAt(const CursorPosition &pos, Atom *atom);
     bool isEmpty() const { return circuits.size() == 0; };
     Circuit *circuit(int n) { return circuits[n]; };
+    const Circuit *circuit(int n) const { return circuits[n]; };
     const QList<Circuit *> &getCircuits() const { return circuits; };
     JackAssignment *currentJackAssignment();
+    const JackAssignment *currentJackAssignment() const;
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromNumber, int toNumber);

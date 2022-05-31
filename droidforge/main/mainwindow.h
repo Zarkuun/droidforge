@@ -6,7 +6,7 @@
 #include "patchproblemindicator.h"
 #include "droidfirmware.h"
 #include "patchsectionmanager.h"
-#include "patchview.h"
+#include "patchsectionview.h"
 #include "rackview.h"
 #include "versionedpatch.h"
 #include "patchparser.h"
@@ -32,11 +32,12 @@ extern DroidFirmware *the_firmware;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    VersionedPatch *patch; // is never 0!!!
     EditorActions editorActions;
     DroidFirmware firmware;
     QStatusBar *statusbar;
     RackView rackView;
-    PatchView patchView;
+    PatchSectionView patchSectionView;
     PatchSectionManager patchSectionManager;
 
     QWidget *centralwidget;
@@ -48,7 +49,6 @@ class MainWindow : public QMainWindow
     unsigned currentProblem;
     PatchParser parser;
     QString initialFilename;
-    VersionedPatch *patch;
     QString filePath; // of loaded patch
     QSplitter *rackSplitter;
     QSplitter *sectionSplitter;
@@ -75,7 +75,6 @@ protected:
     void closeEvent(QCloseEvent* event);
 
 private:
-    void debug();
     void createFileMenu();
     void createRecentFileActions(QMenu *);
     void createEditMenu();

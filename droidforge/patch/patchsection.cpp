@@ -251,6 +251,14 @@ Circuit *PatchSection::currentCircuit()
         return 0;
 }
 
+const Circuit *PatchSection::currentCircuit() const
+{
+    if (circuits.size())
+        return circuits[cursor.circuitNr];
+    else
+        return 0;
+}
+
 const Atom *PatchSection::atomAt(const CursorPosition &pos)
 {
     return circuits[pos.circuitNr]->atomAt(pos.row, pos.column);
@@ -265,6 +273,18 @@ void PatchSection::setAtomAt(const CursorPosition &pos, Atom *atom)
 JackAssignment *PatchSection::currentJackAssignment()
 {
     Circuit *c = currentCircuit();
+    if (!c)
+        return 0;
+
+    if (cursor.row < 0)
+        return 0;
+    else
+        return c->jackAssignment(cursor.row);
+}
+
+const JackAssignment *PatchSection::currentJackAssignment() const
+{
+    const Circuit *c = currentCircuit();
     if (!c)
         return 0;
 

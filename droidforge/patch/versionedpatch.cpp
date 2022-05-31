@@ -12,6 +12,11 @@ VersionedPatch::VersionedPatch(const Patch *patch)
     commit(); // initial commit, so we always have version 0
 }
 
+VersionedPatch::VersionedPatch()
+{
+    addSection(new PatchSection()); // there always must be one section
+}
+
 VersionedPatch::~VersionedPatch()
 {
     for (auto version: versions)

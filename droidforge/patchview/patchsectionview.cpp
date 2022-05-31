@@ -14,6 +14,7 @@
 #include "patchview.h"
 #include "namechoosedialog.h"
 #include "problemmarker.h"
+#include "updatehub.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -25,13 +26,13 @@
 #define DATA_INDEX_PROBLEM 1
 
 
-PatchSectionView::PatchSectionView(VersionedPatch *patch, PatchSection *section, int zoom)
-    : patch(patch)
-    , section(section)
+PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
+    : patch(initialPatch) // patch is never ever 0!
     , atomSelectorDialog{}
     , selection(0)
     , frameCursor(0)
 {
+    qDebug() << "INIT" << patch;
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -39,7 +40,12 @@ PatchSectionView::PatchSectionView(VersionedPatch *patch, PatchSection *section,
     buildPatchSection();
     QPixmap background(":images/background.png");
     setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
+    int zoom = 1; // TODO
     setZoom(zoom);
+
+    // Events that we are interested in
+    connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
+    connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionView::changePatch);
 }
 
 PatchSectionView::~PatchSectionView()
@@ -51,15 +57,18 @@ PatchSectionView::~PatchSectionView()
 
 void PatchSectionView::buildPatchSection()
 {
+    if (!section())
+        return;
+
     unsigned circuitWidth = viewport()->width() / zoomFactor;
     QGraphicsScene *scene = new QGraphicsScene();
     setScene(scene);
 
     int y = 0;
-    for (qsizetype i=0; i<section->circuits.size(); i++)
+    for (qsizetype i=0; i<section()->circuits.size(); i++)
     {
-        bool isLast = i == section->circuits.size() - 1;
-        Circuit *circuit = section->circuits[i];
+        bool isLast = i == section()->circuits.size() - 1;
+        Circuit *circuit = section()->circuits[i];
         CircuitView *cv = new CircuitView(
                     circuit,
                     i,
@@ -74,7 +83,7 @@ void PatchSectionView::buildPatchSection()
         y += cv->boundingRect().height();
     }
 
-    if (section->circuits.size() > 0) {
+    if (section()->circuits.size() > 0) {
         frameCursor = new FrameCursor();
         scene->addItem(frameCursor);
         updateCursor();
@@ -136,7 +145,7 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
     int key = event->key();
     bool shiftHeld = event->modifiers() & Qt::ShiftModifier;
 
-    CursorPosition posBefore = section->cursorPosition();
+    CursorPosition posBefore = section()->cursorPosition();
     bool moved = false;
 
     switch (key) {
@@ -151,7 +160,7 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 
     if (moved) {
         if (shiftHeld)
-            updateKeyboardSelection(posBefore, section->cursorPosition());
+            updateKeyboardSelection(posBefore, section()->cursorPosition());
         else
             clearSelection();
         return true;
@@ -227,6 +236,16 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
         handleRightMousePress(0, CursorPosition());
 }
 
+void PatchSectionView::changePatch(VersionedPatch *newPatch)
+{
+    patch = newPatch;
+    rebuildPatchSection();
+}
+
+void PatchSectionView::switchSection()
+{
+    rebuildPatchSection();
+}
 
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 {
@@ -234,7 +253,7 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
         setMouseSelection(curPos);
     else {
         clearSelection();
-        section->setCursor(curPos);
+        section()->setCursor(curPos);
     }
     updateCursor();
 }
@@ -251,7 +270,7 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
     // working with. Otherwise all actions would address the
     // wrong cell.
     if (cv) {
-        section->setCursor(curPos);
+        section()->setCursor(curPos);
         updateCursor();
     }
 
@@ -296,7 +315,18 @@ void PatchSectionView::resizeEvent(QResizeEvent *)
 
 void PatchSectionView::showEvent(QShowEvent *)
 {
-    updateCableIndicator();
+    // updateCableIndicator(); Was macht das Hier/??
+}
+
+PatchSection *PatchSectionView::section()
+{
+    return patch->currentSection(); // patch never 0, section never 0
+}
+
+const PatchSection *PatchSectionView::section() const
+{
+    qDebug() << "PATCH IST " << patch;
+    return patch->currentSection(); // patch never 0, section never 0
 }
 
 PatchView *PatchSectionView::patchView()
@@ -312,14 +342,14 @@ void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection
 
     int newPosition;
     if (!isEmpty()) {
-        newPosition = section->cursorPosition().circuitNr;
-        if (section->cursorPosition().row != -2)
+        newPosition = section()->cursorPosition().circuitNr;
+        if (section()->cursorPosition().row != -2)
             newPosition ++;
     }
     else
         newPosition = 0;
 
-    section->addNewCircuit(newPosition, name, jackSelection);
+    section()->addNewCircuit(newPosition, name, jackSelection);
     rebuildPatchSection();
     updateCursor();
     patchHasChanged();
@@ -331,14 +361,14 @@ void PatchSectionView::addNewJack(QString name)
     QString actionTitle = QString("adding new jack '") + name + "' to circuit";
     the_forge->registerEdit(actionTitle);
 
-    int row = section->cursorPosition().row;
+    int row = section()->cursorPosition().row;
     int index = row + 1;
     if (index < 0)
         index = 0;
 
     currentCircuit()->insertJackAssignment(buildJackAssignment(name), index);
-    section->setCursorRow(index);
-    section->setCursorColumn(1);
+    section()->setCursorRow(index);
+    section()->setCursorColumn(1);
     rebuildPatchSection();
     updateCursor();
     patchHasChanged();
@@ -368,18 +398,18 @@ QChar PatchSectionView::keyToChar(int key)
 void PatchSectionView::copyToClipboard(Clipboard &clipboard)
 {
     if (selection) {
-        clipboard.copyFromSelection(selection, section);
+        clipboard.copyFromSelection(selection, section());
     }
     else {
-        Selection sel(section->cursorPosition());
-        clipboard.copyFromSelection(&sel, section);
+        Selection sel(section()->cursorPosition());
+        clipboard.copyFromSelection(&sel, section());
     }
 }
 
 Patch *PatchSectionView::getSelectionAsPatch() const
 {
     Clipboard cb;
-    cb.copyFromSelection(selection, section);
+    cb.copyFromSelection(selection, section());
     return cb.getAsPatch();
 }
 
@@ -404,8 +434,8 @@ void PatchSectionView::editJack(int key)
         if (ja->jackType() == JACKTYPE_UNKNOWN) {
             JackAssignment *newJa = buildJackAssignment(name);
             newJa->parseExpression(ja->valueToString());
-            section->deleteCurrentJackAssignment();
-            currentCircuit()->insertJackAssignment(newJa, section->cursorPosition().row);
+            section()->deleteCurrentJackAssignment();
+            currentCircuit()->insertJackAssignment(newJa, section()->cursorPosition().row);
         }
         else
             currentJackAssignment()->changeJack(name);
@@ -431,8 +461,8 @@ void PatchSectionView::editValue(int key)
     if (isEmpty())
         return;
 
-    int row = section->cursorPosition().row;
-    int column = section->cursorPosition().column;
+    int row = section()->cursorPosition().row;
+    int column = section()->cursorPosition().column;
 
     if (row == -2)
         editCircuit(key);
@@ -447,7 +477,7 @@ void PatchSectionView::editValue(int key)
 
 void PatchSectionView::editValueByMouse(CursorPosition &pos)
 {
-    section->setCursor(pos);
+    section()->setCursor(pos);
     updateCursor();
     editValue(0);
 }
@@ -461,11 +491,11 @@ void PatchSectionView::editAtom(int key)
     }
 
     Circuit *circuit = currentCircuit();
-    JackAssignment *ja = circuit->jackAssignment(section->cursorPosition().row);
+    JackAssignment *ja = circuit->jackAssignment(section()->cursorPosition().row);
     if (ja->jackType() == JACKTYPE_UNKNOWN)
         return; // TODO: Edit unknown data anyway?
 
-    CursorPosition curPos = section->cursorPosition();
+    CursorPosition curPos = section()->cursorPosition();
     const Atom *atom = ja->atomAt(curPos.column);
     Atom *newAtom;
 
@@ -482,7 +512,7 @@ void PatchSectionView::editAtom(int key)
         newAtom = AtomSelectorDialog::editAtom(patch, ja->jackType(), curPos.column == 2, atom);
 
     if (newAtom != 0 && newAtom != atom) {
-        ja->replaceAtom(section->cursorPosition().column, newAtom);
+        ja->replaceAtom(section()->cursorPosition().column, newAtom);
         patch->commit(tr("changing parameter '%1'").arg(ja->jackName()));
         patchHasChanged();
         updateCursor();
@@ -551,7 +581,7 @@ void PatchSectionView::renameCable()
 
 bool PatchSectionView::isEmpty() const
 {
-    return section->circuits.empty();
+    return section()->circuits.empty();
 }
 
 bool PatchSectionView::circuitsSelected() const
@@ -571,7 +601,7 @@ void PatchSectionView::updateRegisterHilites() const
     if (!currentCircuit()) // 0 for empty section
         return;
 
-    CursorPosition cursor = section->cursorPosition();
+    CursorPosition cursor = section()->cursorPosition();
     RegisterList registers;
     if (cursor.row == -2 || cursor.row == -1) // Circuit selected
         circuit->collectRegisterAtoms(registers);
@@ -592,7 +622,7 @@ void PatchSectionView::updateRegisterHilites() const
 
 void PatchSectionView::clickOnRegister(AtomRegister ar)
 {
-    CursorPosition cursor = section->cursorPosition();
+    CursorPosition cursor = section()->cursorPosition();
     if (cursor.row < 0 || cursor.column == 0) return;
     JackAssignment *ja = currentCircuit()->jackAssignment(cursor.row);
 
@@ -632,7 +662,7 @@ void PatchSectionView::setCursorMode(cursor_mode_t mode)
 
 void PatchSectionView::updateCursor()
 {
-    const CursorPosition &pos = section->cursorPosition();
+    const CursorPosition &pos = section()->cursorPosition();
 
     if (currentCircuitView()) {
         QRectF br = currentCircuitView()->boundingRect();
@@ -670,7 +700,7 @@ void PatchSectionView::setMouseSelection(const CursorPosition &to)
 {
     if (selection)
         delete selection;
-    selection = new Selection(section->cursorPosition(), to);
+    selection = new Selection(section()->cursorPosition(), to);
     updateCircuits();
 }
 
@@ -707,7 +737,7 @@ CircuitView *PatchSectionView::currentCircuitView()
     if (circuitViews.isEmpty())
         return 0;
     else
-        return circuitViews[section->cursorPosition().circuitNr];
+        return circuitViews[section()->cursorPosition().circuitNr];
 }
 
 const CircuitView *PatchSectionView::currentCircuitView() const
@@ -715,33 +745,33 @@ const CircuitView *PatchSectionView::currentCircuitView() const
     if (circuitViews.isEmpty())
         return 0;
     else
-        return circuitViews[section->cursorPosition().circuitNr];
+        return circuitViews[section()->cursorPosition().circuitNr];
 }
 
 
 Circuit *PatchSectionView::currentCircuit()
 {
-    return section->currentCircuit();
+    return section() ? section()->currentCircuit() : 0;
 
 }
 
 const Circuit *PatchSectionView::currentCircuit() const
 {
-    return section->currentCircuit();
+    return section() ? section()->currentCircuit() : 0;
 }
 
 
 JackAssignment *PatchSectionView::currentJackAssignment()
 {
-    return section->currentJackAssignment();
+    return section()->currentJackAssignment();
 }
 
 void PatchSectionView::moveCursorPageUpDown(int whence)
 {
     if (whence == -1)
-        section->moveCursorToPreviousCircuit();
+        section()->moveCursorToPreviousCircuit();
     else
-        section->moveCursorToNextCircuit();
+        section()->moveCursorToNextCircuit();
     updateCursor();
 }
 
@@ -807,7 +837,7 @@ void PatchSectionView::deleteCurrentRow()
     if (isEmpty())
         return;
 
-    const CursorPosition &pos = section->cursorPosition();
+    const CursorPosition &pos = section()->cursorPosition();
     if (pos.row == -2)
         deleteCurrentCircuit();
     else if (pos.row == -1)
@@ -822,7 +852,7 @@ void PatchSectionView::deleteCurrentCircuit()
 {
     QString actionTitle = QString("deleting circuit ") + currentCircuit()->getName().toUpper();
     the_forge->registerEdit(actionTitle);
-    section->deleteCurrentCircuit();
+    section()->deleteCurrentCircuit();
     rebuildPatchSection();
     patchHasChanged();
 }
@@ -832,7 +862,7 @@ void PatchSectionView::deleteMultipleCircuits(int from, int to)
     QString actionTitle = QString("deleting %1 circuits").arg(to - from + 1);
     the_forge->registerEdit(actionTitle);
     for (int i=to; i>=from; i--)
-        section->deleteCircuit(i);
+        section()->deleteCircuit(i);
     rebuildPatchSection();
     patchHasChanged();
 }
@@ -841,7 +871,7 @@ void PatchSectionView::deleteCurrentComment()
 {
     QString actionTitle = QString("deleting comment");
     the_forge->registerEdit(actionTitle);
-    section->deleteCurrentComment();
+    section()->deleteCurrentComment();
     rebuildPatchSection();
     updateCursor();
     patchHasChanged();
@@ -852,7 +882,7 @@ void PatchSectionView::deleteCurrentJack()
     QString actionTitle = QString("deleting jack ")
             + currentJackAssignment()->jackName() + " assignment";
     the_forge->registerEdit(actionTitle);
-    section->deleteCurrentJackAssignment();
+    section()->deleteCurrentJackAssignment();
     rebuildPatchSection();
     updateCursor();
     patchHasChanged();
@@ -863,19 +893,19 @@ void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
     QString actionTitle = QString("deleting %1 jack assignments").arg(to - from + 1);
     the_forge->registerEdit(actionTitle);
     for (int i=to; i>=from; i--)
-        section->circuit(circuitNr)->deleteJackAssignment(i);
-    section->sanitizeCursor();
+        section()->circuit(circuitNr)->deleteJackAssignment(i);
+    section()->sanitizeCursor();
     rebuildPatchSection();
     patchHasChanged();
 }
 
 const Atom *PatchSectionView::currentAtom() const
 {
-    JackAssignment *ja = section->currentJackAssignment();
+    const JackAssignment *ja = section()->currentJackAssignment();
     if (!ja)
         return 0;
     else {
-        int column = section->cursorPosition().column;
+        int column = section()->cursorPosition().column;
         return ja->atomAt(column);
     }
 }
@@ -883,36 +913,36 @@ const Atom *PatchSectionView::currentAtom() const
 Atom *PatchSectionView::currentAtom()
 {
     // TODO: Kann man hier nicht Copy & Paste vermeiden?
-    JackAssignment *ja = section->currentJackAssignment();
+    JackAssignment *ja = section()->currentJackAssignment();
     if (!ja)
         return 0;
     else {
-        int column = section->cursorPosition().column;
+        int column = section()->cursorPosition().column;
         return ja->atomAt(column);
     }
 }
 
 bool PatchSectionView::atomCellSelected() const
 {
-    const CursorPosition &cp = section->cursorPosition();
+    const CursorPosition &cp = section()->cursorPosition();
     return (cp.row >= 0 && cp.column > 0);
 }
 
 void PatchSectionView::setCursorPosition(const CursorPosition &pos)
 {
-    section->setCursor(pos);
+    section()->setCursor(pos);
     updateCursor();
 }
 
 const CursorPosition &PatchSectionView::getCursorPosition() const
 {
-    return section->cursorPosition();
+    return section()->cursorPosition();
 }
 
 void PatchSectionView::deleteCurrentAtom()
 {
-    JackAssignment *ja = section->currentJackAssignment();
-    int column = section->cursorPosition().column;
+    JackAssignment *ja = section()->currentJackAssignment();
+    int column = section()->cursorPosition().column;
     if (ja->atomAt(column)) {
         QString actionTitle = QString("deleting value of '") + ja->jackName() + "'";
         the_forge->registerEdit(actionTitle);
@@ -924,7 +954,7 @@ void PatchSectionView::deleteCurrentAtom()
 
 void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int to)
 {
-    Circuit *circuit = section->circuit(circuitNr);
+    Circuit *circuit = section()->circuit(circuitNr);
     JackAssignment *ja = circuit->jackAssignment(row);
     bool something = false;
     for (int i=from; i<=to; i++)
@@ -946,9 +976,9 @@ void PatchSectionView::pasteCircuitsFromClipboard(const Clipboard &clipboard)
     the_forge->registerEdit(tr("pasting %1 circuits").arg(clipboard.getCircuits().count()));
     for (auto circuit: clipboard.getCircuits()) {
         Circuit *newCircuit = circuit->clone();
-        int position = section->isEmpty() ? 0 : section->cursorPosition().circuitNr;
-        section->addCircuit(position, newCircuit);
-        section->moveCursorToNextCircuit();
+        int position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr;
+        section()->addCircuit(position, newCircuit);
+        section()->moveCursorToNextCircuit();
     }
     // TODO: Hier klappt das nicht mit der Cursorsichtbarkeit.
     // Das ensureVisible macht irgendwie nix
@@ -972,7 +1002,7 @@ void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
     const QList<JackAssignment *> &jas = clipboard.getJackAssignment();
     the_forge->registerEdit(tr("pasting %1 jack assignments").arg(jas.count()));
     Circuit *circuit = currentCircuit();
-    int index = qMin(circuit->numJackAssignments(), qMax(0, section->cursorPosition().row + 1));
+    int index = qMin(circuit->numJackAssignments(), qMax(0, section()->cursorPosition().row + 1));
     for (auto ja: jas) {
         // We need to reparse the jack assignment, because the circuit we
         // paste into is maybe another circuit and e.g. "clock" might have
@@ -980,7 +1010,7 @@ void PatchSectionView::pasteJacksFromClipboard(const Clipboard &clipboard)
         QString asString = ja->toString();
         JackAssignment *jaReparsed = JackAssignment::parseJackLine(circuit->getName(), asString);
         circuit->insertJackAssignment(jaReparsed, index);
-        section->setCursorRow(index);
+        section()->setCursorRow(index);
         index++;
     }
     patchHasChanged();
@@ -992,7 +1022,7 @@ void PatchSectionView::pasteAtomsFromClipboard(const Clipboard &clipboard)
     JackAssignment *ja = currentJackAssignment();
     Q_ASSERT(ja);
 
-    int column = section->cursorPosition().column;
+    int column = section()->cursorPosition().column;
     Q_ASSERT(column >= 1 && column <= 3);
 
     const QList<Atom *> &atoms = clipboard.getAtoms();
@@ -1011,7 +1041,7 @@ void PatchSectionView::pasteAtomsFromClipboard(const Clipboard &clipboard)
                 newAtom = new AtomInvalid(asString);
         }
         ja->replaceAtom(column, newAtom);
-        section->setCursorColumn(column);
+        section()->setCursorColumn(column);
         column ++;
         if (column > 3)
             break;
@@ -1043,9 +1073,9 @@ void PatchSectionView::moveCursorLeftRight(int whence)
         return;
 
     if (whence == -1)
-        section->moveCursorLeft();
+        section()->moveCursorLeft();
     else
-        section->moveCursorRight();
+        section()->moveCursorRight();
 
     updateCursor();
 }
@@ -1056,8 +1086,8 @@ void PatchSectionView::moveCursorUpDown(int whence)
         return;
 
     if (whence == 1) // dowldiln
-        section->moveCursorDown();
+        section()->moveCursorDown();
     else // up
-        section->moveCursorUp();
+        section()->moveCursorUp();
     updateCursor();
 }

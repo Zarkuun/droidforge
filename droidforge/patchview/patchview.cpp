@@ -54,7 +54,7 @@ void PatchView::setPatch(VersionedPatch *newPatch)
 
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSection *section = patch->section(i);
-        PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
+        PatchSectionView *psv = new PatchSectionView(patch); // KOMMT EH WEGpatch, section, zoomLevel);
         connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
         QString title = section->getNonemptyTitle();
         addTab(psv, title);
@@ -483,7 +483,7 @@ void PatchView::duplicateSection()
 
     the_forge->registerEdit(tr("duplicating section '%1'").arg(oldSection->getTitle()));
     PatchSection *newsection = newpatch->section(0)->clone();
-    PatchSectionView *psv = new PatchSectionView(patch, newsection, zoomLevel);
+    PatchSectionView *psv = new PatchSectionView(patch); // TODO patch, newsection, zoomLevel);
     connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
     patch->insertSection(index + 1, newsection);
     patch->switchCurrentSection(index + 1);
@@ -568,7 +568,7 @@ void PatchView::zoomOut()
 PatchSection *PatchView::addNewSection(QString name, int index)
 {
     PatchSection *section = new PatchSection(name);
-    PatchSectionView *psv = new PatchSectionView(patch, section, zoomLevel);
+    PatchSectionView *psv = new PatchSectionView(patch); // TODO patch, section, zoomLevel);
     connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
     patch->insertSection(index, section);
     patch->switchCurrentSection(index);

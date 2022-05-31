@@ -4,10 +4,11 @@
 #include "rackview.h"
 #include "modulebuilder.h"
 #include "patchparser.h"
-#include "patchview.h"
+// #include "patchview.h"
 #include "tuning.h"
 #include "os.h"
 #include "updatehub.h"
+#include "patchsectionview.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -22,8 +23,9 @@ MainWindow *the_forge;
 
 MainWindow::MainWindow(const QString &initialFilename)
     : QMainWindow()
+    , patch(new VersionedPatch())
+    , patchSectionView(patch)
     , initialFilename(initialFilename)
-    , patch(0)
 {
     the_forge = this;
 
@@ -40,13 +42,10 @@ MainWindow::MainWindow(const QString &initialFilename)
     sectionSplitter = new QSplitter(rackSplitter);
     sectionSplitter->setOrientation(Qt::Horizontal);
     sectionSplitter->addWidget(&patchSectionManager);
-    sectionSplitter->addWidget(&patchView);
+    sectionSplitter->addWidget(&patchSectionView);
 
     rackSplitter->addWidget(&rackView);
     rackSplitter->addWidget(sectionSplitter);
-
-
-    connect(&patchView, &PatchView::cursorMoved, this, &MainWindow::cursorMoved);
 
     resize(800, 600);
     QSettings settings;
@@ -85,25 +84,20 @@ void MainWindow::createStatusBar()
     connect(patchProblemIndicator, &PatchProblemIndicator::clicked, the_actions->action(ACTION_JUMP_TO_NEXT_PROBLEM), &QAction::trigger);
 }
 
-void MainWindow::debug()
-{
-}
-
 MainWindow::~MainWindow()
 {
-    if (patch)
-        delete patch;
+    delete patch;
 }
 
-void MainWindow::integratePatch(const QString &aFilePath)
+void MainWindow::integratePatch(const QString &)
 {
-    Patch otherpatch;
+    /* Patch otherpatch;
     parser.parse(aFilePath, &otherpatch);
     Patch *newPatch = patchView.integratePatch(&otherpatch); // TODO: Move actual action to PV
     if (newPatch) {
         registerEdit(tr("integrating other patch '%1'").arg(otherpatch.getTitle()));
         patchHasChanged();
-    }
+    }*/
 }
 
 void MainWindow::registerEdit(QString name)
@@ -114,10 +108,10 @@ void MainWindow::registerEdit(QString name)
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) {
-        patchView.abortAllActions();
+        // patchView.abortAllActions(); // TODO
         // rackView.abortAllAction();
     }
-    else  if (!patchView.handleKeyPress(event)) {
+    else  if (!patchSectionView.handleKeyPress(event)) {
         event->ignore();
     }
 }
@@ -195,9 +189,8 @@ void MainWindow::hiliteRegisters(const RegisterList &registers)
 
 void MainWindow::clickOnRegister(AtomRegister ar)
 {
-    patchView.clickOnRegister(ar);
+    patchSectionView.clickOnRegister(ar);
 }
-
 
 void MainWindow::updateClipboardInfo(QString)
 {
@@ -220,14 +213,12 @@ void MainWindow::updateWindowTitle()
 void MainWindow::updateRackView()
 {
     rackView.setPatch(patch);
-    patchView.updateRegisterHilites();
+    patchSectionView.updateRegisterHilites();
 }
 
 void MainWindow::repaintPatchView()
 {
-    PatchSectionView *psv = patchView.currentPatchSectionView();
-    if (psv)
-        psv->updateCircuits();
+    patchSectionView.updateCircuits(); // TODO: ?Signale
 }
 
 QDir MainWindow::userPatchDirectory() const
@@ -383,14 +374,12 @@ void MainWindow::connectActions()
 
 void MainWindow::loadPatch(const QString &aFilePath)
 {
-    if (patch)
-        delete patch;
+    qDebug() << "ICH DELETE 1" << patch;
+    delete patch;
     Patch newPatch;
     parser.parse(aFilePath, &newPatch);
     patch = new VersionedPatch(&newPatch);
     filePath = aFilePath;
-    rackView.setPatch(patch); // TODO: replace with signal
-    patchView.setPatch(patch); // TODO: replace with signal
     emit patchChanged(patch);
     patchHasChanged(); // TODO: replace with signal
 }
@@ -400,8 +389,8 @@ void MainWindow::newPatch()
     if (!checkModified())
         return;
 
-    if (patch)
-        delete patch;
+    qDebug() << "ICH DELETE" << patch;
+    delete patch;
 
     Patch newPatch;
     newPatch.addSection(new PatchSection(SECTION_DEFAULT_NAME));
@@ -409,8 +398,6 @@ void MainWindow::newPatch()
     patch = new VersionedPatch(&newPatch);
     emit patchChanged(patch);
     filePath = "";
-    rackView.setPatch(patch); // TODO
-    patchView.setPatch(patch); // TODO
     patchHasChanged(); // TODO
 }
 
@@ -465,7 +452,7 @@ void MainWindow::exportSelection()
                 "",
                 tr("DROID patch files (*.ini)"));
     if (!filePath.isEmpty()) {
-        Patch *patch = patchView.getSelectionAsPatch();
+        Patch *patch = patchSectionView.getSelectionAsPatch();
         VersionedPatch vp(patch);
         vp.saveToFile(filePath);
         delete patch;
@@ -497,10 +484,11 @@ void MainWindow::redo()
 
 void MainWindow::jumpToNextProblem()
 {
-    const PatchProblem *problem = patch->problem(currentProblem++);
-    if (currentProblem >= patch->numProblems())
-        currentProblem = 0;
-    patchView.jumpTo(problem->getSection(), problem->getCursorPosition());
+    // const PatchProblem *problem = patch->problem(currentProblem++);
+    // if (currentProblem >= patch->numProblems())
+    //     currentProblem = 0;
+    // TODO
+    // patchView.jumpTo(problem->getSection(), problem->getCursorPosition());
 }
 
 
