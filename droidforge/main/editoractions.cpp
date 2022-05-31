@@ -161,8 +161,8 @@ void EditorActions::createActions()
     actions[ACTION_FOLLOW_INTERNAL_CABLE] = new QAction(icon("youtube_searched_for"), tr("&Follow internal cable"), this);
     actions[ACTION_FOLLOW_INTERNAL_CABLE]->setShortcut(QKeySequence(tr("?")));
 
-    actions[ACTION_RENAME_INTERNAL_CABLE] = new QAction(tr("&Rename internal cable"), this);
-    actions[ACTION_RENAME_INTERNAL_CABLE]->setShortcut(QKeySequence(tr("Ctrl+R")));
+    actions[ACTION_RENAME_CABLE] = new QAction(tr("&Rename internal cable"), this);
+    actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Ctrl+R")));
 
     actions[ACTION_START_PATCHING] = new QAction(icon("swap_horiz"), tr("Start creating internal cable"), this);
     actions[ACTION_START_PATCHING]->setShortcut(QKeySequence(tr("=")));

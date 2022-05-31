@@ -85,6 +85,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchSectionView::editCircuitComment);
+    CONNECT_ACTION(ACTION_RENAME_CABLE, &PatchSectionView::renameCable);
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
     CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchSectionView::zoomOut);
@@ -536,7 +537,7 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
                 const Atom *atom = currentAtom();
                 if (atom && atom->isCable()) {
                     ADD_ACTION(ACTION_FOLLOW_INTERNAL_CABLE, menu);
-                    ADD_ACTION(ACTION_RENAME_INTERNAL_CABLE, menu);
+                    ADD_ACTION(ACTION_RENAME_CABLE, menu);
                 }
                 ADD_ACTION(ACTION_START_PATCHING, menu);
                 ADD_ACTION(ACTION_FINISH_PATCHING, menu);
@@ -790,10 +791,9 @@ void PatchSectionView::renameCable()
             return;
     }
 
-    the_forge->registerEdit(tr("renaming cable '%1' to '%2'").arg(oldName).arg(newName));
     patch->renameCable(oldName, newName);
-    rebuildPatchSection();
-    patchHasChanged();
+    patch->commit(tr("renaming cable '%1' to '%2'").arg(oldName).arg(newName));
+    emit patchModified();
 }
 
 bool PatchSectionView::isEmpty() const
