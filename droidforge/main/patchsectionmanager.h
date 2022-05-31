@@ -25,6 +25,7 @@ private:
     void switchToSection(int i);
     void switchBackward();
     void switchForward();
+    void connectActions();
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -35,7 +36,17 @@ public slots:
     void modifyPatch();
     void switchSection();
 
+    void renameSection();
+    void deleteSection();
+    void moveIntoSection();
+    void duplicateSection();
+    void mergeWithLeftSection();
+    void mergeWithRightSection();
+    void newSectionAfterCurrent();
+    // void newSectionAt(int index);
+
 signals:
+    void patchModified();
     void sectionSwitched();
 };
 

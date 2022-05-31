@@ -2,6 +2,7 @@
 #include "tuning.h"
 #include "updatehub.h"
 #include "editoractions.h"
+#include "namechoosedialog.h"
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -24,16 +25,29 @@ PatchSectionManager::PatchSectionManager(QWidget *parent)
     setMouseTracking(true);
 
     // Actions we handle
-    CONNECT_ACTION(ACTION_PREVIOUS_SECTION, &PatchSectionManager::switchBackward);
-    CONNECT_ACTION(ACTION_NEXT_SECTION, &PatchSectionManager::switchForward);
+    connectActions();
 
-    // Events that we create
+    // Events we create
+    connect(this, &PatchSectionManager::patchModified, the_hub, &UpdateHub::modifyPatch);
     connect(this, &PatchSectionManager::sectionSwitched, the_hub, &UpdateHub::switchSection);
 
-    // Events that we are interested in
+    // Events we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
     connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionManager::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionManager::modifyPatch);
+}
+
+void PatchSectionManager::connectActions()
+{
+    CONNECT_ACTION(ACTION_PREVIOUS_SECTION, &PatchSectionManager::switchBackward);
+    CONNECT_ACTION(ACTION_NEXT_SECTION, &PatchSectionManager::switchForward);
+    CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchSectionManager::newSectionAfterCurrent);
+    CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchSectionManager::duplicateSection);
+    CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchSectionManager::deleteSection);
+    CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchSectionManager::renameSection);
+    CONNECT_ACTION(ACTION_MERGE_WITH_LEFT_SECTION, &PatchSectionManager::mergeWithLeftSection);
+    CONNECT_ACTION(ACTION_MERGE_WITH_RIGHT_SECTION, &PatchSectionManager::mergeWithRightSection);
+    CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchSectionManager::moveIntoSection);
 }
 
 void PatchSectionManager::resizeEvent(QResizeEvent *)
@@ -66,6 +80,50 @@ void PatchSectionManager::modifyPatch()
 void PatchSectionManager::switchSection()
 {
     updateCursor();
+}
+
+void PatchSectionManager::renameSection()
+{
+
+}
+
+void PatchSectionManager::deleteSection()
+{
+
+}
+
+void PatchSectionManager::moveIntoSection()
+{
+
+}
+
+void PatchSectionManager::duplicateSection()
+{
+
+}
+
+void PatchSectionManager::mergeWithLeftSection()
+{
+
+}
+
+void PatchSectionManager::mergeWithRightSection()
+{
+
+}
+
+void PatchSectionManager::newSectionAfterCurrent()
+{
+    int index = patch->currentSectionIndex();
+    QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_NAME);
+    if (newname.isEmpty())
+        return;
+
+    patch->insertSection(index, new PatchSection(newname));
+    patch->switchCurrentSection(index);
+    patch->commit(tr("adding new patch section '%1'").arg(newname));
+    emit patchModified();
+    emit sectionSwitched();
 }
 
 void PatchSectionManager::rebuildGraphics()

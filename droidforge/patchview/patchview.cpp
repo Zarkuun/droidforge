@@ -40,23 +40,12 @@ void PatchView::connectActions()
     connect(the_actions->action(ACTION_CUT), &QAction::triggered, this, &PatchView::cut);
     qDebug() << "ACTION" << the_actions->action(ACTION_CUT);
 
-    CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchView::newSectionAfterCurrent);
-    CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchView::duplicateSection);
-    CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchView::moveIntoSection);
-    CONNECT_ACTION(ACTION_MERGE_WITH_LEFT_SECTION, &PatchView::mergeWithLeftSection);
-    CONNECT_ACTION(ACTION_MERGE_WITH_RIGHT_SECTION, &PatchView::mergeWithRightSection);
-    CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchView::deleteSection);
-
     CONNECT_ACTION(ACTION_FOLLOW_INTERNAL_CABLE, &PatchView::followInternalCable);
     CONNECT_ACTION(ACTION_RENAME_INTERNAL_CABLE, &PatchView::renameInternalCable);
     CONNECT_ACTION(ACTION_START_PATCHING, &PatchView::startPatching);
     CONNECT_ACTION(ACTION_FINISH_PATCHING, &PatchView::finishPatching);
     CONNECT_ACTION(ACTION_ABORT_PATCHING, &PatchView::abortPatching);
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchView::editCircuitComment);
-    CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchView::newSectionAfterCurrent);
-    CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchView::deleteSection);
-    CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchView::renameSection);
-    CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchView::moveIntoSection);
 
 }
 
@@ -72,11 +61,6 @@ void PatchView::addJack()
     QString name = JackChooseDialog::chooseJack(circuit, "", usedJacks);
     if (!name.isEmpty())
         currentPatchSectionView()->addNewJack(name);
-}
-
-void PatchView::editValue()
-{
-    currentPatchSectionView()->editValue(0);
 }
 
 void PatchView::startPatching()
@@ -268,38 +252,6 @@ void PatchView::deleteSection()
     removeTab(index); patch->switchCurrentSection(this->currentIndex());
     the_forge->patchHasChanged();
 }
-
-void PatchView::newSectionAfterCurrent()
-{
-    newSectionAt(currentIndex() + 1);
-}
-
-
-void PatchView::newSectionAt(int index)
-{
-    QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_NAME);
-
-    if (newname.isEmpty())
-        return;
-
-    QString actionTitle = QString("adding new patch section '") + newname + "'";
-    the_forge->registerEdit(actionTitle);
-    addNewSection(newname, index);
-    the_forge->patchHasChanged();
-}
-
-PatchSection *PatchView::addNewSection(QString name, int index)
-{
-    PatchSection *section = new PatchSection(name);
-    PatchSectionView *psv = new PatchSectionView(patch); // TODO patch, section, zoomLevel);
-    connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
-    patch->insertSection(index, section);
-    patch->switchCurrentSection(index);
-    insertTab(index, psv, name);
-    setCurrentIndex(index);
-    return section;
-}
-
 
 void PatchView::pasteSmart()
 {

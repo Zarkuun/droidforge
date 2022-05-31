@@ -71,11 +71,12 @@ protected:
 private:
     void createFileMenu();
     void createRecentFileActions(QMenu *);
+    void createMenus();
     void createEditMenu();
+    void createSectionMenu();
     void createViewMenu();
     void createRackMenu();
     void createToolbar();
-    void createMenus();
     void connectActions();
     bool checkModified();
     QStringList getRecentFiles();

@@ -49,14 +49,7 @@ public slots:
     void followInternalCable();
     void renameInternalCable();
     void editCircuitComment();
-    void renameSection();
-    void deleteSection();
-    void moveIntoSection();
-    void duplicateSection();
-    void mergeWithLeftSection();
-    void mergeWithRightSection();
-    void newSectionAfterCurrent();
-    void newSectionAt(int index);
+
     void cut();
     void copy();
     void paste();

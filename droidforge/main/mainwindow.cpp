@@ -94,7 +94,6 @@ void MainWindow::integratePatch(const QString &aFilePath)
     Patch otherpatch;
     parser.parse(aFilePath, &otherpatch); // may throw exceptions
 
-    Patch *newPatch;
     if (interactivelyRemapRegisters(&otherpatch)) {
         patch->integratePatch(&otherpatch);
         patch->commit(tr("integrating other patch '%1'").arg(otherpatch.getTitle()));
@@ -276,6 +275,7 @@ void MainWindow::createMenus()
     createFileMenu();
     createRackMenu();
     createEditMenu();
+    createSectionMenu();
     createViewMenu();
 
     // TODO: looks strange to me
@@ -419,6 +419,18 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
     ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);
     ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_MOVE_INTO_SECTION, menu);
+}
+
+void MainWindow::createSectionMenu()
+{
+    QMenu *menu = menuBar()->addMenu(tr("Section"));
+    ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_MERGE_WITH_LEFT_SECTION, menu);
+    ADD_ACTION(ACTION_MERGE_WITH_RIGHT_SECTION, menu);
     ADD_ACTION(ACTION_MOVE_INTO_SECTION, menu);
 }
 
