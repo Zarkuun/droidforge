@@ -83,6 +83,9 @@ void PatchSectionView::buildPatchSection()
 
 void PatchSectionView::updateProblemMarkers()
 {
+    qDebug() << "WIEDER AKTIVIEREN";
+    return;
+
     for (auto item: scene()->items()) {
         if (item->data(DATA_INDEX_PROBLEM).isValid()) {
             scene()->removeItem(item);
@@ -619,7 +622,7 @@ void PatchSectionView::setZoom(int zoom)
     transform.scale(zoomFactor, zoomFactor);
     setTransform(transform);
     rebuildPatchSection();
-    setMinimumWidth(CircuitView::minimumWidth() * zoomFactor + CIRV_ASSUMED_SCROLLBAR_WIDTH);
+    setMinimumWidth(CircuitView::minimumWidth() * zoomFactor + ASSUMED_SCROLLBAR_WIDTH);
 }
 
 void PatchSectionView::setCursorMode(cursor_mode_t mode)

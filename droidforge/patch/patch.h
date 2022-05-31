@@ -39,6 +39,7 @@ public:
     qsizetype numSections() const { return sections.size(); };
     qsizetype currentSectionIndex() const { return sectionIndex; };
     PatchSection *section(qsizetype i) { return sections[i]; };
+    const QList<PatchSection *> &getSections() const { return sections; };
 
     // More complex analysis
     QStringList allCables() const;

@@ -36,7 +36,9 @@
 #define COLOR_JACK_INPUT                     QColor(0, 200, 255)
 #define COLOR_JACK_OUTPUT                    QColor(245, 60, 50)
 #define COLOR_JACK_UNKNOWN                   COLOR_TEXT_UNKNOWN
+#define COLOR_STANDARD_BACKGROUND            QColor(30, 30, 30)
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
+#define ASSUMED_SCROLLBAR_WIDTH              40
 
 // Patch problem indicator
 #define PPI_WIDTH                            130
@@ -100,6 +102,17 @@
 #define CSEL_CURSOR_WIDTH                    8
 #define CSEL_CURSOR_HEIGHT                   2300
 
+
+// Patch section manager
+#define PSM_COLOR_BACKGROUND                 COLOR_STANDARD_BACKGROUND
+#define PSM_SIDE_PADDING                     STANDARD_SPACING
+#define PSM_TOP_PADDING                      STANDARD_SPACING
+#define PSM_VERTICAL_DISATNCE                (STANDARD_SPACING / 2)
+#define PSM_SECTION_HEIGHT                   20
+#define PSM_COLOR_SECTION_BACKGROUND         QColor(80, 80, 80)
+#define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
+
+
 // Circuit view (in patch view)
 #define CIRV_TOP_PADDING                     (2 * STANDARD_SPACING)
 #define CIRV_BOTTOM_PADDING                  CIRV_TOP_PADDING
@@ -113,7 +126,6 @@
 #define CIRV_HEADER_HEIGHT                   22
 #define CIRV_COLUMN_JACK_MINIMUM_WIDTH       110
 #define CIRV_COLUMN_ATOM_MINIMUM_WIDTH       80
-#define CIRV_ASSUMED_SCROLLBAR_WIDTH         40
 #define CIRV_COLUMN_OPERATOR_WIDTH           20
 #define CIRV_COLOR_LINE                      QColor(0, 0, 0, 96)
 #define CIRV_COLOR_OPERATOR                  QColor(255, 255, 255)

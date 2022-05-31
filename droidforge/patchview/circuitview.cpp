@@ -168,7 +168,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, Atom *atom, b
     if (atom) {
         QString text(tr(atom->toDisplay().toLatin1()));
         if (atom->isInvalid()) {
-            const int offset = (CIRV_JACK_HEIGHT - CIRV_ICON_WIDTH) / 2;
+            // const int offset = (CIRV_JACK_HEIGHT - CIRV_ICON_WIDTH) / 2;
             QRectF textRect(
                         rect.x(),
                         rect.y(),

@@ -5,6 +5,7 @@
 #include "editoractions.h"
 #include "patchproblemindicator.h"
 #include "droidfirmware.h"
+#include "patchsectionmanager.h"
 #include "patchview.h"
 #include "rackview.h"
 #include "versionedpatch.h"
@@ -32,22 +33,25 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     EditorActions editorActions;
+    DroidFirmware firmware;
+    QStatusBar *statusbar;
+    RackView rackView;
+    PatchView patchView;
+    PatchSectionManager patchSectionManager;
+
     QWidget *centralwidget;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
-    QStatusBar *statusbar;
     CableStatusIndicator *cableStatusIndicator;
     PatchProblemIndicator *patchProblemIndicator;
     unsigned currentProblem;
-    DroidFirmware firmware;
     PatchParser parser;
     QString initialFilename;
     VersionedPatch *patch;
     QString filePath; // of loaded patch
-    RackView rackView;
-    PatchView patchView;
-    QSplitter *splitter;
+    QSplitter *rackSplitter;
+    QSplitter *sectionSplitter;
 
     QToolBar *toolbar;
 
@@ -105,8 +109,9 @@ private slots:
     void cursorMoved(int section, const CursorPosition &pos);
 
 signals:
+    void patchChanged(VersionedPatch *); // all pointers are invalid
+
     void sigStarted();
-    void patchChanged();
     void problemsChanged(unsigned);
 
 };

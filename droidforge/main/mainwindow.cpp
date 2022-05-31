@@ -35,19 +35,27 @@ MainWindow::MainWindow(const QString &initialFilename)
     menubar = new QMenuBar(this);
     setMenuBar(menubar);
 
-    splitter = new QSplitter(this);
-    splitter->setOrientation(Qt::Vertical);
-    setCentralWidget(splitter);
-    splitter->addWidget(&rackView);
-    splitter->addWidget(&patchView);
-    splitter->setHandleWidth(RACV_SPLITTER_HANDLE_WIDTH);
+    rackSplitter = new QSplitter(this);
+    setCentralWidget(rackSplitter);
+    rackSplitter->setOrientation(Qt::Vertical);
+    rackSplitter->setHandleWidth(RACV_SPLITTER_HANDLE_WIDTH);
+
+    sectionSplitter = new QSplitter(rackSplitter);
+    sectionSplitter->setOrientation(Qt::Horizontal);
+    sectionSplitter->addWidget(&patchSectionManager);
+    sectionSplitter->addWidget(&patchView);
+
+    rackSplitter->addWidget(&rackView);
+    rackSplitter->addWidget(sectionSplitter);
+
+
     connect(&patchView, &PatchView::cursorMoved, this, &MainWindow::cursorMoved);
 
     resize(800, 600);
     QSettings settings;
     if (settings.contains("mainwindow/splitposition"))
-        splitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
-    connect(splitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
+        rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
+    connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
     qDebug("MAIN WINDOW HIER NOCH");
 
@@ -58,6 +66,10 @@ MainWindow::MainWindow(const QString &initialFilename)
 
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename, FILE_MODE_LOAD);});
+
+    // Setup all interconnected updating between our elements. (TODO: mvoe to function)
+    connect(this, &MainWindow::patchChanged, &patchSectionManager, &PatchSectionManager::setNewPatch);
+    connect(&patchSectionManager, &PatchSectionManager::sectionSwitched, &patchSectionManager, &PatchSectionManager::switchSection);
 }
 
 
@@ -175,7 +187,7 @@ void MainWindow::patchHasChanged()
     updateWindowTitle();
     updateRackView();
     repaintPatchView();
-    emit patchChanged();
+    // emit patchChanged();
 }
 
 void MainWindow::hiliteRegisters(const RegisterList &registers)
@@ -379,9 +391,10 @@ void MainWindow::loadPatch(const QString &aFilePath)
     parser.parse(aFilePath, &newPatch);
     patch = new VersionedPatch(&newPatch);
     filePath = aFilePath;
-    rackView.setPatch(patch);
-    patchView.setPatch(patch);
-    patchHasChanged();
+    rackView.setPatch(patch); // TODO: replace with signal
+    patchView.setPatch(patch); // TODO: replace with signal
+    emit patchChanged(patch);
+    patchHasChanged(); // TODO: replace with signal
 }
 
 void MainWindow::newPatch()
@@ -396,10 +409,11 @@ void MainWindow::newPatch()
     newPatch.addSection(new PatchSection(SECTION_DEFAULT_NAME));
 
     patch = new VersionedPatch(&newPatch);
+    emit patchChanged(patch);
     filePath = "";
-    rackView.setPatch(patch);
-    patchView.setPatch(patch);
-    patchHasChanged();
+    rackView.setPatch(patch); // TODO
+    patchView.setPatch(patch); // TODO
+    patchHasChanged(); // TODO
 }
 
 void MainWindow::open()
@@ -495,7 +509,7 @@ void MainWindow::jumpToNextProblem()
 void MainWindow::splitterMoved()
 {
     QSettings settings;
-    settings.setValue("mainwindow/splitposition", splitter->saveState());
+    settings.setValue("mainwindow/splitposition", rackSplitter->saveState());
 }
 
 void MainWindow::cursorMoved(int section, const CursorPosition &pos)
