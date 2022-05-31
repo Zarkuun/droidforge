@@ -223,10 +223,16 @@ void PatchSectionManager::rebuildGraphics()
     scene()->clear();
     titleViews.clear();
 
-    // Add strut for paddinbg
+    // Add strut for padding
     scene()->addRect(QRectF(0, 0, viewport()->width(), 0));
 
-    int y = PSM_TOP_PADDING;
+    // Add title
+    QGraphicsTextItem *text = scene()->addText(tr("Sections"));
+    int textWidth = text->boundingRect().width();
+    text->setPos((viewport()->width() - textWidth) / 2, 0);
+    text->setDefaultTextColor(PSM_COLOR_TITLE);
+
+    int y = text->boundingRect().bottom() + PSM_TOP_PADDING;
     int width = viewport()->width() - 2 * PSM_SIDE_PADDING;
 
     for (qsizetype i=0; i<patch->numSections(); i++) {

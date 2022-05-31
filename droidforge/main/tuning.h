@@ -111,11 +111,12 @@
 
 // Patch section manager
 #define PSM_COLOR_BACKGROUND                 COLOR_STANDARD_BACKGROUND
+#define PSM_COLOR_TITLE                      QColor(80, 80, 80)
 #define PSM_SIDE_PADDING                     STANDARD_SPACING
-#define PSM_TOP_PADDING                      STANDARD_SPACING
+#define PSM_TOP_PADDING                      (STANDARD_SPACING / 2)
 #define PSM_VERTICAL_DISATNCE                (STANDARD_SPACING / 2)
 #define PSM_SECTION_HEIGHT                   20
-#define PSM_COLOR_SECTION_BACKGROUND         QColor(80, 80, 80)
+#define PSM_COLOR_SECTION_BACKGROUND         QColor(50, 50, 50)
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
 
 // Circuit view (in patch view)
