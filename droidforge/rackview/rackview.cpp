@@ -4,6 +4,7 @@
 #include "tuning.h"
 #include "controllerchoosedialog.h"
 #include "controllerremovaldialog.h"
+#include "editoractions.h"
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
@@ -26,7 +27,15 @@ RackView::RackView()
     QBrush brush(background.scaledToHeight(RACV_BACKGROUND_HEIGHT)); //kheight() * 50));
     scene()->setBackgroundBrush(brush);
     setMouseTracking(true);
+
+    connectActions();
 }
+
+void RackView::connectActions()
+{
+    CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
+}
+
 
 void RackView::resizeEvent(QResizeEvent *)
 {
@@ -164,9 +173,9 @@ void RackView::hideRegisterMarker()
 
 void RackView::popupControllerContextMenu(int controllerIndex, QString name)
 {
-   QMenu *menu=new QMenu(this);
+   QMenu *menu = new QMenu(this);
    if (controllerIndex >= 0) {
-      menu->addAction(the_forge->action(ACTION_ADD_CONTROLLER));
+       ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
        menu->addAction(the_forge->icon("delete"), tr("Remove this controller"), this,
                        [this,controllerIndex,name] () {this->askRemoveController(controllerIndex, name); });
        if (controllerIndex > 0)
@@ -190,7 +199,7 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString name)
 void RackView::popupBackgroundContextMenu()
 {
    QMenu *menu = new QMenu(this);
-   menu->addAction(the_forge->action(ACTION_ADD_CONTROLLER));
+   ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
    menu->popup(QCursor::pos());
 }
 

@@ -27,16 +27,21 @@ int main(int argc, char *argv[])
     CableColorizer cableColorizer;
     the_cable_colorizer = &cableColorizer;
 
-    MainWindow mainWindow(initialFilename);
-    mainWindow.show();
-    QDir::setCurrent(mainWindow.userPatchDirectory().absolutePath());
+    if (1) {
+        qDebug("Hier");
+        MainWindow mainWindow(initialFilename);
+        qDebug("sEPP");
+        mainWindow.show();
+        qDebug("DEPP");
+        QDir::setCurrent(mainWindow.userPatchDirectory().absolutePath());
 
-    QSettings settings;
-    if (settings.contains("mainwindow/size"))
-        mainWindow.resize(settings.value("mainwindow/size").toSize());
+        QSettings settings;
+        if (settings.contains("mainwindow/size"))
+            mainWindow.resize(settings.value("mainwindow/size").toSize());
 
-    if (settings.contains("mainwindow/position"))
-        mainWindow.move(settings.value("mainwindow/position").toPoint());
+        if (settings.contains("mainwindow/position"))
+            mainWindow.move(settings.value("mainwindow/position").toPoint());
 
-    return app.exec();
+        return app.exec();
+    }
 }

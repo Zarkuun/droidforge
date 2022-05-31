@@ -51,6 +51,7 @@ private:
             ControllerRemovalDialog::OutputHandling outputHandling);
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
+    void connectActions();
 
 public slots:
     void addController();

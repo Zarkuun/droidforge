@@ -9,6 +9,7 @@
 #include "circuitchoosedialog.h"
 #include "atomselectordialog.h"
 #include "clipboard.h"
+#include "versionedpatch.h"
 
 #include <QGraphicsView>
 #include <QResizeEvent>
@@ -20,7 +21,7 @@ class PatchSectionView : public QGraphicsView
 {
     Q_OBJECT
 
-    Patch *patch;
+    VersionedPatch *patch;
     PatchSection *section;
     float zoomFactor;
 
@@ -30,7 +31,7 @@ class PatchSectionView : public QGraphicsView
     FrameCursor *frameCursor;
 
 public:
-    PatchSectionView(Patch *patch, PatchSection *section, int zoom);
+    PatchSectionView(VersionedPatch *patch, PatchSection *section, int zoom);
     ~PatchSectionView();
     bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);

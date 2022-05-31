@@ -7,6 +7,7 @@
 #include "jackchoosedialog.h"
 #include "patchpropertiesdialog.h"
 #include "clipboard.h"
+#include "versionedpatch.h"
 
 #include <QTabWidget>
 
@@ -14,7 +15,7 @@ class PatchView : public QTabWidget
 {
     Q_OBJECT
 
-    Patch *patch;
+    VersionedPatch *patch;
     PatchPropertiesDialog *patchPropertiesDialog;
     CircuitChooseDialog *circuitChooseDialog;
     int zoomLevel;
@@ -26,7 +27,7 @@ class PatchView : public QTabWidget
 public:
     PatchView();
     ~PatchView();
-    void setPatch(Patch *patch);
+    void setPatch(VersionedPatch *patch);
     bool handleKeyPress(QKeyEvent *event);
     const PatchSectionView *currentPatchSectionView() const;
     PatchSectionView *currentPatchSectionView();
@@ -46,10 +47,13 @@ public:
     // hat. Am besten per Signal oder so.
 
 private:
+    void connectActions();
     void copyToClipboard(Clipboard *cb = 0);
     PatchSection *addNewSection(QString name, int index=-1);
     QString sectionName(int index);
     void patchHasChanged();
+    void mergeSections(int indexa, int indexb);
+    void zoom(int how);
 
 public slots:
     void nextSection();
@@ -64,22 +68,23 @@ public slots:
     void followInternalCable();
     void renameInternalCable();
     void editCircuitComment();
-    void renameCurrentSection();
-    void deleteCurrentSection();
+    void renameSection();
+    void deleteSection();
     void moveIntoSection();
-    void duplicateSection(int index);
-    void mergeSections(int indexa, int indexb);
-    void deleteSection(int index);
+    void duplicateSection();
+    void mergeWithLeftSection();
+    void mergeWithRightSection();
     void newSectionAfterCurrent();
     void newSectionAt(int index);
-    void zoom(int how);
+    void zoomReset();
+    void zoomIn();
+    void zoomOut();
     void cut();
     void copy();
     void paste();
     void pasteSmart();
 
 private slots:
-    void renameSection(int index);
     void reorderSections(int fromindex, int toindex);
     void tabContextMenu(int index);
     void sectionCursorMoved(const CursorPosition &pos);

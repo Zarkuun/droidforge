@@ -27,9 +27,10 @@ PatchView::PatchView()
     , patching(false)
 {
     setMovable(true);
-    connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
+    // connect(this, &QTabWidget::tabBarDoubleClicked, this, &PatchView::renameSection);
     connect(this, &QTabWidget::tabBarClicked, this, &PatchView::tabContextMenu);
     connect(tabBar(), &QTabBar::tabMoved, this, &PatchView::reorderSections);
+    connectActions();
 
     QSettings settings;
     if (settings.contains("patchwindow/zoom"))
@@ -44,7 +45,7 @@ PatchView::~PatchView()
         delete patchPropertiesDialog;
 }
 
-void PatchView::setPatch(Patch *newPatch)
+void PatchView::setPatch(VersionedPatch *newPatch)
 {
     patch = newPatch;
 
@@ -250,6 +251,44 @@ void PatchView::jumpTo(int section, const CursorPosition &curPos)
     patch->switchCurrentSection(section);
 }
 
+void PatchView::connectActions()
+{
+    qDebug() << "ICH CONNECTED";
+    qDebug() << "RETURNS:" <<
+    connect(the_actions->action(ACTION_CUT), &QAction::triggered, this, &PatchView::cut);
+    qDebug() << "ACTION" << the_actions->action(ACTION_CUT);
+
+    CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchView::newSectionAfterCurrent);
+    CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchView::duplicateSection);
+    CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchView::moveIntoSection);
+    CONNECT_ACTION(ACTION_MERGE_WITH_LEFT_SECTION, &PatchView::mergeWithLeftSection);
+    CONNECT_ACTION(ACTION_MERGE_WITH_RIGHT_SECTION, &PatchView::mergeWithRightSection);
+    CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchView::deleteSection);
+    CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &PatchView::editProperties);
+    CONNECT_ACTION(ACTION_CUT, &PatchView::cut);
+    CONNECT_ACTION(ACTION_COPY, &PatchView::copy);
+    CONNECT_ACTION(ACTION_PASTE, &PatchView::paste);
+    CONNECT_ACTION(ACTION_PASTE_SMART, &PatchView::pasteSmart);
+    CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchView::newCircuit);
+    CONNECT_ACTION(ACTION_ADD_JACK, &PatchView::addJack);
+    CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchView::editValue);
+    CONNECT_ACTION(ACTION_FOLLOW_INTERNAL_CABLE, &PatchView::followInternalCable);
+    CONNECT_ACTION(ACTION_RENAME_INTERNAL_CABLE, &PatchView::renameInternalCable);
+    CONNECT_ACTION(ACTION_START_PATCHING, &PatchView::startPatching);
+    CONNECT_ACTION(ACTION_FINISH_PATCHING, &PatchView::finishPatching);
+    CONNECT_ACTION(ACTION_ABORT_PATCHING, &PatchView::abortPatching);
+    CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchView::editCircuitComment);
+    CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchView::newSectionAfterCurrent);
+    CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchView::deleteSection);
+    CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchView::renameSection);
+    CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchView::moveIntoSection);
+    // connect(prevSectionAct, &QAction::triggered, &patchView, &PatchView::previousSection);
+    // connect(nextSectionAct, &QAction::triggered, &patchView, &PatchView::nextSection);
+    CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchView::zoomReset);
+    CONNECT_ACTION(ACTION_ZOOM_IN, &PatchView::zoomIn);
+    CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchView::zoomOut);
+}
+
 
 Patch *PatchView::integratePatch(Patch *otherpatch)
 {
@@ -323,7 +362,6 @@ void PatchView::startPatching()
     patching = true;
     patchingStartSection = currentIndex();
     patchingStartPosition = currentPatchSectionView()->getCursorPosition();
-    the_forge->updateActions();
     the_forge->cableIndicator()->setPatchingState(true);
     currentPatchSectionView()->updateCursor(); // TODO: This seems to be hack
 }
@@ -354,7 +392,6 @@ void PatchView::finishPatching()
     else {
         cableName = NameChooseDialog::getName(tr("Create new internal patch cable"), tr("Cable name:"));
         if (cableName == "") {
-            the_forge->updateActions();
             return;
         }
         cableName = cableName.toUpper();
@@ -372,7 +409,6 @@ void PatchView::finishPatching()
 void PatchView::abortPatching()
 {
     patching = false;
-    the_forge->updateActions();
     the_forge->cableIndicator()->setPatchingState(false);
 }
 
@@ -429,16 +465,6 @@ void PatchView::editCircuitComment()
     currentPatchSectionView()->editCircuitComment(0);
 }
 
-void PatchView::renameCurrentSection()
-{
-    renameSection(currentIndex());
-}
-
-void PatchView::deleteCurrentSection()
-{
-    deleteSection(currentIndex());
-}
-
 void PatchView::moveIntoSection()
 {
     QString newname = NameChooseDialog::getName(tr("Move into new section"), tr("New name:"));
@@ -453,8 +479,9 @@ void PatchView::moveIntoSection()
     the_forge->patchHasChanged();
 }
 
-void PatchView::duplicateSection(int index)
+void PatchView::duplicateSection()
 {
+    int index = currentIndex();
     PatchSection *oldSection = patch->section(index);
     QString newname = NameChooseDialog::getName(
                 tr("Duplicate section"),
@@ -482,6 +509,16 @@ void PatchView::duplicateSection(int index)
     the_forge->patchHasChanged();
 }
 
+void PatchView::mergeWithLeftSection()
+{
+    mergeSections(currentIndex(), currentIndex() - 1);
+}
+
+void PatchView::mergeWithRightSection()
+{
+    mergeSections(currentIndex(), currentIndex() + 1);
+}
+
 void PatchView::mergeSections(int indexa, int indexb)
 {
     // Make sure indexa < indexb
@@ -499,8 +536,9 @@ void PatchView::mergeSections(int indexa, int indexb)
     the_forge->patchHasChanged();
 }
 
-void PatchView::deleteSection(int index)
+void PatchView::deleteSection()
 {
+    int index = currentIndex();
     QString title = currentPatchSectionView()->getTitle();
     QString actionTitle = tr("deleting patch section '%1'").arg(title);
     the_forge->registerEdit(actionTitle);
@@ -526,6 +564,21 @@ void PatchView::newSectionAt(int index)
     the_forge->registerEdit(actionTitle);
     addNewSection(newname, index);
     the_forge->patchHasChanged();
+}
+
+void PatchView::zoomReset()
+{
+    zoom(0);
+}
+
+void PatchView::zoomIn()
+{
+    zoom(1);
+}
+
+void PatchView::zoomOut()
+{
+    zoom(-1);
 }
 
 PatchSection *PatchView::addNewSection(QString name, int index)
@@ -566,6 +619,7 @@ void PatchView::zoom(int how)
 
 void PatchView::cut()
 {
+    qDebug("CUT");
     copyToClipboard();
     currentPatchSectionView()->deleteCursorOrSelection();
 }
@@ -573,7 +627,6 @@ void PatchView::cut()
 void PatchView::copy()
 {
     copyToClipboard();
-    the_forge->updateActions();
 }
 
 void PatchView::paste()
@@ -596,8 +649,9 @@ void PatchView::pasteSmart()
     the_forge->patchHasChanged();
 }
 
-void PatchView::renameSection(int index)
+void PatchView::renameSection()
 {
+    int index = currentIndex();
     QString oldname = patch->section(index)->getTitle();
     QString newname = NameChooseDialog::getName(tr("Rename patch section"), tr("New name:"), oldname);
     if (oldname != newname) {
@@ -619,47 +673,18 @@ void PatchView::reorderSections(int fromindex, int toindex)
 void PatchView::tabContextMenu(int index)
 {
     if (QApplication::mouseButtons() == Qt::RightButton) {
+        // TODO: Damit sich das Menü auf die richtige Sektion bezieht,
+        // muss ich sie selektieren, bevor ich das Menü aufmachen kann!
+        // Sonst brauch ich alle Slots doppelt und auch die Aktionen.
+        setCurrentIndex(index);
+
         QMenu *menu = new QMenu(this);
-        // TODO: Für was war das?
-        // QString title = patch->section(index)->getNonemptyTitle();
-
-        // New
-        QAction *actionNew = new QAction(tr("New section"));
-        menu->addAction(actionNew);
-        connect(actionNew, &QAction::triggered, this, [this,index]() {
-            this->newSectionAt(index+1); });
-
-        // Duplicate
-        QAction *actionDuplicate = new QAction(tr("Duplicate section, adapt registers"));
-        menu->addAction(actionDuplicate);
-        connect(actionDuplicate, &QAction::triggered, this, [this,index]() {
-            this->duplicateSection(index); });
-
-        // Move selection
-        menu->addAction(the_forge->action(ACTION_MOVE_INTO_SECTION));
-
-        // Merge with left
-        if (index > 0) {
-            QAction *actionMergeWithLeft = new QAction(tr("Merge with left section"));
-            menu->addAction(actionMergeWithLeft);
-            connect(actionMergeWithLeft, &QAction::triggered, this, [this,index]() {
-                this->mergeSections(index, index-1); });
-        }
-
-        // Merge with right
-        if (index < numSections() - 1) {
-            QAction *actionMergeWithRight = new QAction(tr("Merge with right section"));
-            menu->addAction(actionMergeWithRight);
-            connect(actionMergeWithRight, &QAction::triggered, this, [this,index]() {
-                this->mergeSections(index, index+1); });
-        }
-
-        // Delete
-        QAction *actionDelete = new QAction(tr("Delete section"));
-        menu->addAction(actionDelete);
-        connect(actionDelete, &QAction::triggered, this, [this,index]() {
-            this->deleteSection(index); });
-
+        ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
+        ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
+        ADD_ACTION(ACTION_MOVE_INTO_SECTION, menu);
+        ADD_ACTION(ACTION_MERGE_WITH_LEFT_SECTION, menu);
+        ADD_ACTION(ACTION_MERGE_WITH_RIGHT_SECTION, menu);
+        ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
         menu->popup(QCursor::pos());
     }
 }

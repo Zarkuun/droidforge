@@ -25,7 +25,7 @@
 #define DATA_INDEX_PROBLEM 1
 
 
-PatchSectionView::PatchSectionView(Patch *patch, PatchSection *section, int zoom)
+PatchSectionView::PatchSectionView(VersionedPatch *patch, PatchSection *section, int zoom)
     : patch(patch)
     , section(section)
     , atomSelectorDialog{}
@@ -34,7 +34,6 @@ PatchSectionView::PatchSectionView(Patch *patch, PatchSection *section, int zoom
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
-     // setMinimumWidth(CircuitView::minimumWidth() + CIRV_ASSUMED_SCROLLBAR_WIDTH);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     buildPatchSection();
@@ -254,10 +253,11 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
     }
 
     QMenu *menu = new QMenu(this);
-    menu->addAction(the_forge->action(ACTION_NEW_CIRCUIT));
+    ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
+    //menu->addAction(the_forge->action(ACTION_NEW_CIRCUIT));
     if (cv) {
-        menu->addAction(the_forge->action(ACTION_EDIT_VALUE));
-        menu->addAction(the_forge->action(ACTION_ADD_JACK));
+        ADD_ACTION(ACTION_EDIT_VALUE, menu);
+        ADD_ACTION(ACTION_ADD_JACK, menu);
         // TOOD:
         // - remove circut
         // - remove comment
@@ -271,12 +271,12 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
                 menu->addSeparator();
                 const Atom *atom = currentAtom();
                 if (atom && atom->isCable()) {
-                    menu->addAction(the_forge->action(ACTION_FOLLOW_INTERNAL_CABLE));
-                    menu->addAction(the_forge->action(ACTION_RENAME_INTERNAL_CABLE));
+                    ADD_ACTION(ACTION_FOLLOW_INTERNAL_CABLE, menu);
+                    ADD_ACTION(ACTION_RENAME_INTERNAL_CABLE, menu);
                 }
-                menu->addAction(the_forge->action(ACTION_START_PATCHING));
-                menu->addAction(the_forge->action(ACTION_FINISH_PATCHING));
-                menu->addAction(the_forge->action(ACTION_ABORT_PATCHING));
+                ADD_ACTION(ACTION_START_PATCHING, menu);
+                ADD_ACTION(ACTION_FINISH_PATCHING, menu);
+                ADD_ACTION(ACTION_ABORT_PATCHING, menu);
             }
         }
     }
@@ -479,9 +479,8 @@ void PatchSectionView::editAtom(int key)
         newAtom = AtomSelectorDialog::editAtom(patch, ja->jackType(), curPos.column == 2, atom);
 
     if (newAtom != 0 && newAtom != atom) {
-        QString actionTitle = QString("changing '") + ja->jackName() + "' to " + newAtom->toString();
-        the_forge->registerEdit(actionTitle);
         ja->replaceAtom(section->cursorPosition().column, newAtom);
+        patch->commit(tr("changing parameter '%1'").arg(ja->jackName()));
         patchHasChanged();
         updateCursor();
     }
@@ -645,7 +644,6 @@ void PatchSectionView::updateCursor()
     }
 
     updateRegisterHilites();
-    the_forge->updateActions(); // TODO: Sollte das nicht besser ein Signal sein?
 }
 
 void PatchSectionView::updateCableIndicator()
@@ -671,7 +669,6 @@ void PatchSectionView::setMouseSelection(const CursorPosition &to)
         delete selection;
     selection = new Selection(section->cursorPosition(), to);
     updateCircuits();
-    the_forge->updateActions();
 }
 
 void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
@@ -691,7 +688,6 @@ void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, con
     }
     else
         selection = new Selection(before, after);
-    the_forge->updateActions();
 }
 
 void PatchSectionView::clearSelection()
@@ -700,7 +696,6 @@ void PatchSectionView::clearSelection()
         delete selection;
         selection = 0;
         updateCircuits();
-        the_forge->updateActions();
     }
 }
 
