@@ -25,7 +25,7 @@ public:
     ~Patch();
     Patch *clone() const;
     void cloneInto(Patch *otherPatch) const;
-    QString toString();
+    QString toString() const;
 
     // Simple access functions
     const QString &getTitle() const;

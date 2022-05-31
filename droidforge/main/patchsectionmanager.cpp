@@ -33,6 +33,7 @@ PatchSectionManager::PatchSectionManager(QWidget *parent)
     // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
     connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionManager::changePatch);
+    connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionManager::modifyPatch);
 }
 
 void PatchSectionManager::resizeEvent(QResizeEvent *)
@@ -53,10 +54,13 @@ void PatchSectionManager::mousePressEvent(QMouseEvent *event)
 
 void PatchSectionManager::changePatch(VersionedPatch *newPatch)
 {
-    qDebug() << "NEUER PATCH" << Q_FUNC_INFO;
     patch = newPatch;
     rebuildGraphics();
-    // reconstruct sections, etc.
+}
+
+void PatchSectionManager::modifyPatch()
+{
+    rebuildGraphics();
 }
 
 void PatchSectionManager::switchSection()

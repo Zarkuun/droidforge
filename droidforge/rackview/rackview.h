@@ -2,7 +2,7 @@
 #define RACKVIEW_H
 
 #include "module.h"
-#include "patch.h"
+#include "versionedpatch.h"
 #include "registermarker.h"
 #include "controllerremovaldialog.h"
 
@@ -16,7 +16,7 @@ class RackView : public QGraphicsView
 {
     Q_OBJECT
 
-    Patch *patch;
+    VersionedPatch *patch;
     QList<Module *> modules;
     unsigned x;
     RegisterMarker *registerMarker;
@@ -25,7 +25,6 @@ class RackView : public QGraphicsView
 public:
     explicit RackView();
     void resizeEvent(QResizeEvent *event);
-    void setPatch(Patch *patch);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void hiliteRegisters(const RegisterList &registers);
@@ -54,6 +53,8 @@ private:
     void connectActions();
 
 public slots:
+    void changePatch(VersionedPatch *patch);
+    void modifyPatch();
     void addController();
 
 private slots:
@@ -61,6 +62,9 @@ private slots:
     void purchaseController(QString name);
     void moveController(int oldindex, int newindex);
     void remapControls(int controllerIndex, QString controllerName);
+
+signals:
+    void patchModified();
 };
 
 #endif // RACKVIEW_H

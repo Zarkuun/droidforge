@@ -5,6 +5,7 @@
 #include "controllerchoosedialog.h"
 #include "controllerremovaldialog.h"
 #include "editoractions.h"
+#include "updatehub.h"
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
@@ -29,6 +30,13 @@ RackView::RackView()
     setMouseTracking(true);
 
     connectActions();
+
+    // Events that we create
+    connect(this, &RackView::patchModified, the_hub, &UpdateHub::modifyPatch);
+
+    // Events that we are interested in
+    connect(the_hub, &UpdateHub::patchChanged, this, &RackView::changePatch);
+    connect(the_hub, &UpdateHub::patchModified, this, &RackView::modifyPatch);
 }
 
 void RackView::connectActions()
@@ -36,17 +44,23 @@ void RackView::connectActions()
     CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
 }
 
+void RackView::changePatch(VersionedPatch *newPatch)
+{
+    patch = newPatch;
+    updateGraphics();
+}
+
+void RackView::modifyPatch()
+{
+    qDebug() << Q_FUNC_INFO;
+    updateGraphics();
+}
 
 void RackView::resizeEvent(QResizeEvent *)
 {
     updateSize();
 }
 
-void RackView::setPatch(Patch *newPatch)
-{
-    patch = newPatch;
-    updateGraphics();
-}
 
 void RackView::mousePressEvent(QMouseEvent *event)
 {
@@ -326,12 +340,9 @@ void RackView::addController()
 {
     QString controller = ControllerChooseDialog::chooseController();
     if (!controller.isEmpty()) {
-        QString actionTitle = tr("adding %1 controller").arg(controller.toUpper());
-        the_forge->registerEdit(actionTitle);
         patch->addController(controller);
-        addModule(controller);
-        updateSize();
-        the_forge->patchHasChanged();
+        patch->commit(tr("adding %1 controller").arg(controller.toUpper()));
+        emit patchModified();
     }
 }
 

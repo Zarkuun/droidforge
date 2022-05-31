@@ -1,6 +1,8 @@
 #ifndef EDITORACTIONS_H
 #define EDITORACTIONS_H
 
+#include "versionedpatch.h"
+
 #include <QObject>
 #include <QAction>
 
@@ -51,10 +53,15 @@ class EditorActions : public QObject
 {
     Q_OBJECT
     QAction *actions[NUM_ACTIONS];
+    VersionedPatch *patch; // borrowed
 
 public:
     explicit EditorActions(QObject *parent = nullptr);
     QAction *action(action_t action) { return actions[action]; };
+
+private slots:
+    void changePatch(VersionedPatch *patch);
+    void modifyPatch();
 
 private:
     void createActions();

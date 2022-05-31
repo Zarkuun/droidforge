@@ -24,6 +24,7 @@ void Patch::clear()
 {
     for (auto section: sections)
         delete section;
+    sections.clear();
 }
 
 Patch *Patch::clone() const
@@ -307,7 +308,7 @@ void Patch::shiftControllerNumbers(int number, int by)
 
 }
 
-QString Patch::toString()
+QString Patch::toString() const
 {
     QString s;
     if (title.isEmpty())

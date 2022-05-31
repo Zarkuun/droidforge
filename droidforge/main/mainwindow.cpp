@@ -173,15 +173,8 @@ void MainWindow::createMenus()
 
 void MainWindow::patchHasChanged()
 {
-    // TODO: Woanders hin
-    // actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems());
-    currentProblem = 0;
-    // patchView.abortPatching(); // TODO
-    // updateActions();
-    updateWindowTitle();
-    updateRackView();
-    repaintPatchView();
-    // emit patchChanged();
+    qDebug() << Q_FUNC_INFO;
+    Q_ASSERT(false);
 }
 
 void MainWindow::hiliteRegisters(const RegisterList &registers)
@@ -212,11 +205,6 @@ void MainWindow::updateWindowTitle()
 }
 
 
-void MainWindow::updateRackView()
-{
-    rackView.setPatch(patch);
-    patchSectionView.updateRegisterHilites();
-}
 
 void MainWindow::repaintPatchView()
 {
@@ -378,14 +366,12 @@ void MainWindow::connectActions()
 
 void MainWindow::loadPatch(const QString &aFilePath)
 {
-    qDebug() << "ICH DELETE 1" << patch;
     delete patch;
     Patch newPatch;
     parser.parse(aFilePath, &newPatch);
     patch = new VersionedPatch(&newPatch);
     filePath = aFilePath;
     emit patchChanged(patch);
-    patchHasChanged(); // TODO: replace with signal
 }
 
 void MainWindow::newPatch()
@@ -393,21 +379,17 @@ void MainWindow::newPatch()
     if (!checkModified())
         return;
 
-    qDebug() << "ICH DELETE" << patch;
     delete patch;
+    filePath = "";
 
     Patch newPatch;
     newPatch.addSection(new PatchSection(SECTION_DEFAULT_NAME));
-
     patch = new VersionedPatch(&newPatch);
     emit patchChanged(patch);
-    filePath = "";
-    patchHasChanged(); // TODO
 }
 
 void MainWindow::open()
 {
-    qDebug() << "ACTION" << the_actions->action(ACTION_CUT);
     if (!checkModified())
         return;
 
@@ -429,7 +411,7 @@ void MainWindow::save()
         saveAs();
     else {
         patch->saveToFile(filePath);
-        patchHasChanged();
+        emit patchModified(); // mod flag
     }
 }
 
@@ -443,7 +425,7 @@ void MainWindow::saveAs()
     if (!newFilePath.isEmpty()) {
         patch->saveToFile(newFilePath);
         filePath = newFilePath;
-        patchHasChanged();
+        emit patchModified(); // mod flag
         addToRecentFiles(newFilePath);
     }
 }
@@ -480,7 +462,7 @@ void MainWindow::undo()
 {
     if (patch->undoPossible()) {
         patch->undo();
-        patchHasChanged();
+        emit patchModified();
     }
 }
 
@@ -488,7 +470,7 @@ void MainWindow::redo()
 {
     if (patch->redoPossible()) {
         patch->redo();
-        patchHasChanged();
+        emit patchModified();
     }
 }
 

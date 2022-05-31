@@ -1,12 +1,52 @@
 #include "editoractions.h"
+#include "updatehub.h"
 
 EditorActions *the_actions = 0;
 
 EditorActions::EditorActions(QObject *parent)
     : QObject{parent}
+    , patch(0)
 {
     Q_ASSERT(the_actions == 0);
     the_actions = this;
+    createActions();
+
+    // Events that we are interested in
+    // connect(the_hub, &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
+    connect(the_hub, &UpdateHub::patchChanged, this, &EditorActions::changePatch);
+    connect(the_hub, &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
+}
+
+void EditorActions::changePatch(VersionedPatch *newPatch)
+{
+    patch = newPatch;
+    modifyPatch();
+}
+
+void EditorActions::modifyPatch()
+{
+    if (patch->undoPossible()) {
+        actions[ACTION_UNDO]->setText(tr("&Undo ") + patch->nextUndoTitle());
+        actions[ACTION_UNDO]->setEnabled(true);
+    }
+    else {
+        actions[ACTION_UNDO]->setText(tr("&Undo"));
+        actions[ACTION_UNDO]->setEnabled(false);
+    }
+
+    if (patch->redoPossible()) {
+        actions[ACTION_REDO]->setText(tr("&Redo ") + patch->nextRedoTitle());
+        actions[ACTION_REDO]->setEnabled(true);
+    }
+    else {
+        actions[ACTION_REDO]->setText(tr("&Redo"));
+        actions[ACTION_REDO]->setEnabled(false);
+    }
+}
+
+
+void EditorActions::createActions()
+{
     actions[ACTION_NEW] = new QAction(icon("settings_input_composite"), tr("&New..."), this);
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
     actions[ACTION_NEW]->setStatusTip(tr("Create a new patch from scratch"));
@@ -26,15 +66,15 @@ EditorActions::EditorActions(QObject *parent)
     actions[ACTION_EXPORT_SELECTION] = new QAction(tr("E&xport selection as patch..."), this);
     actions[ACTION_EXPORT_SELECTION]->setStatusTip(tr("Save the currently selected circuits into a new patch file"));
 
-#if (defined Q_OS_MACOS || defined Q_OS_WIN)
-#ifdef Q_OS_MACOS
+    #if (defined Q_OS_MACOS || defined Q_OS_WIN)
+    #ifdef Q_OS_MACOS
     QString title = tr("Reveal in finder");
-#else
+    #else
     QString title = tr("Re&veal in explorer");
-#endif
+    #endif
     actions[ACTION_OPEN_ENCLOSING_FOLDER] = new QAction(title, this);
     actions[ACTION_OPEN_ENCLOSING_FOLDER]->setStatusTip(tr("Open the folder where the current patch is located."));
-#endif
+    #endif
     actions[ACTION_INTEGRATE_PATCH] = new QAction(icon("extension"), tr("&Integrate other patch as new section"), this);
     actions[ACTION_INTEGRATE_PATCH]->setShortcut(QKeySequence(tr("Ctrl+I")));
     actions[ACTION_INTEGRATE_PATCH]->setStatusTip(tr("Load another patch, add that as a new section after the currently selected section "
@@ -138,6 +178,7 @@ EditorActions::EditorActions(QObject *parent)
         action->setShortcutVisibleInContextMenu(true);
 }
 
+
 QIcon EditorActions::icon(QString what) const
 {
     return QIcon(":/images/icons/white/" + what + ".png");
@@ -152,24 +193,6 @@ QIcon EditorActions::icon(QString what) const
     actionOpenEnclosingFolder->setEnabled(!filePath.isEmpty());
 
     // Edit menu
-    if (patch->undoPossible()) {
-        actionUndo->setText(tr("&Undo ") + patch->nextUndoTitle());
-        actionUndo->setEnabled(true);
-    }
-    else {
-        actionUndo->setText(tr("&Undo"));
-        actionUndo->setEnabled(false);
-    }
-
-    if (patch->redoPossible()) {
-        actionRedo->setText(tr("&Redo ") + patch->nextRedoTitle());
-        actionRedo->setEnabled(true);
-    }
-    else {
-        actionRedo->setText(tr("&Redo"));
-        actionRedo->setEnabled(false);
-    }
-
     actionPaste->setEnabled(patchView.clipboardFilled());
     actionPasteSmart->setEnabled(patchView.circuitsInClipboard());
 

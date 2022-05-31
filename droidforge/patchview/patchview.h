@@ -15,7 +15,6 @@ class PatchView : public QTabWidget
 
     VersionedPatch *patch;
     CircuitChooseDialog *circuitChooseDialog;
-    int zoomLevel;
     Clipboard clipboard;
     bool patching;
     unsigned patchingStartSection;
@@ -50,7 +49,6 @@ private:
     QString sectionName(int index);
     void patchHasChanged();
     void mergeSections(int indexa, int indexb);
-    void zoom(int how);
 
 public slots:
     void addJack();
@@ -69,9 +67,6 @@ public slots:
     void mergeWithRightSection();
     void newSectionAfterCurrent();
     void newSectionAt(int index);
-    void zoomReset();
-    void zoomIn();
-    void zoomOut();
     void cut();
     void copy();
     void paste();

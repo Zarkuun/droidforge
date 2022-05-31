@@ -32,6 +32,7 @@ protected:
 
 public slots:
     void changePatch(VersionedPatch *patch);
+    void modifyPatch();
     void switchSection();
 
 signals:

@@ -88,7 +88,6 @@ private:
     void addToRecentFiles(const QString &path);
     void openDirInFinder(const QString &filename);
     void updateWindowTitle();
-    void updateRackView();
     void repaintPatchView();
     void createStatusBar();
 

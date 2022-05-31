@@ -22,6 +22,7 @@
 #include <QTransform>
 #include <QMenu>
 #include <QMessageBox>
+#include <QSettings>
 
 #define DATA_INDEX_CIRCUIT 0
 #define DATA_INDEX_PROBLEM 1
@@ -32,8 +33,8 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
     , atomSelectorDialog{}
     , selection(0)
     , frameCursor(0)
+    , zoomFactor(1.0)
 {
-    qDebug() << "INIT" << patch;
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -41,8 +42,11 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
     buildPatchSection();
     QPixmap background(":images/background.png");
     setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
-    int zoom = 1; // TODO
-    setZoom(zoom);
+
+    QSettings settings;
+    if (settings.contains("patchwindow/zoom"))
+        zoomLevel = settings.value("patchwindow/zoom").toInt();
+    setZoom(zoomLevel);
 
     connectActions();
 
@@ -72,13 +76,14 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     // CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
     // CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
+
+    CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
+    CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
+    CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchSectionView::zoomOut);
 }
 
 void PatchSectionView::buildPatchSection()
 {
-    if (!section())
-        return;
-
     unsigned circuitWidth = viewport()->width() / zoomFactor;
     QGraphicsScene *scene = new QGraphicsScene();
     setScene(scene);
@@ -138,8 +143,9 @@ void PatchSectionView::updateProblemMarkers()
 
 void PatchSectionView::patchHasChanged()
 {
-     the_forge->patchHasChanged();
-     updateProblemMarkers();
+    Q_ASSERT(false);
+    // the_forge->patchHasChanged();
+    // updateProblemMarkers();
 }
 
 void PatchSectionView::deletePatchSection()
@@ -264,6 +270,7 @@ void PatchSectionView::changePatch(VersionedPatch *newPatch)
 
 void PatchSectionView::modifyPatch()
 {
+    qDebug() << Q_FUNC_INFO;
     rebuildPatchSection();
 }
 
@@ -281,6 +288,43 @@ void PatchSectionView::newCircuit()
         patch->commit(tr("adding new '%1' circuit").arg(name));
         emit patchModified();
     }
+}
+
+void PatchSectionView::zoomReset()
+{
+    changeZoom(0);
+}
+
+void PatchSectionView::zoomIn()
+{
+    changeZoom(1);
+}
+
+void PatchSectionView::zoomOut()
+{
+    changeZoom(-1);
+}
+
+void PatchSectionView::changeZoom(int how)
+{
+    if (how == 0)
+        zoomLevel = 0;
+    else
+        zoomLevel += how;
+    zoomLevel = qMin(ZOOM_MAX, qMax(ZOOM_MIN, zoomLevel));
+    QSettings settings;
+    settings.setValue("patchwindow/zoom", zoomLevel);
+    setZoom(zoomLevel);
+}
+
+void PatchSectionView::setZoom(int zoom)
+{
+    zoomFactor = pow(ZOOM_STEP, double(zoom));
+    QTransform transform;
+    transform.scale(zoomFactor, zoomFactor);
+    setTransform(transform);
+    rebuildPatchSection();
+    setMinimumWidth(CircuitView::minimumWidth() * zoomFactor + ASSUMED_SCROLLBAR_WIDTH);
 }
 
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
@@ -370,8 +414,6 @@ PatchView *PatchSectionView::patchView()
     // TODO: Das hier ist der Megahack.
     return (PatchView *)parent()->parent();
 }
-
-
 
 void PatchSectionView::addNewJack(QString name)
 {
@@ -531,8 +573,7 @@ void PatchSectionView::editAtom(int key)
     if (newAtom != 0 && newAtom != atom) {
         ja->replaceAtom(section()->cursorPosition().column, newAtom);
         patch->commit(tr("changing parameter '%1'").arg(ja->jackName()));
-        patchHasChanged();
-        updateCursor();
+        emit patchModified();
     }
 }
 
@@ -662,16 +703,6 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     patchHasChanged();
 }
 
-void PatchSectionView::setZoom(int zoom)
-{
-    zoomFactor = pow(ZOOM_STEP, double(zoom));
-    QTransform transform;
-    transform.scale(zoomFactor, zoomFactor);
-    setTransform(transform);
-    rebuildPatchSection();
-    setMinimumWidth(CircuitView::minimumWidth() * zoomFactor + ASSUMED_SCROLLBAR_WIDTH);
-}
-
 void PatchSectionView::setCursorMode(cursor_mode_t mode)
 {
     frameCursor->setMode(mode);
@@ -680,7 +711,7 @@ void PatchSectionView::setCursorMode(cursor_mode_t mode)
 void PatchSectionView::updateCursor()
 {
     const CursorPosition &pos = section()->cursorPosition();
-
+    
     if (currentCircuitView()) {
         QRectF br = currentCircuitView()->boundingRect();
         QRectF tbr = br.translated(currentCircuitView()->pos());

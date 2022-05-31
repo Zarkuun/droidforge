@@ -22,7 +22,6 @@ PatchView::PatchView()
     : QTabWidget()
     , patch(0)
     , circuitChooseDialog{}
-    , zoomLevel(0)
     , patching(false)
 {
     setMovable(true);
@@ -31,9 +30,6 @@ PatchView::PatchView()
     connect(tabBar(), &QTabBar::tabMoved, this, &PatchView::reorderSections);
     connectActions();
 
-    QSettings settings;
-    if (settings.contains("patchwindow/zoom"))
-        zoomLevel = settings.value("patchwindow/zoom").toInt();
 }
 
 PatchView::~PatchView()
@@ -272,9 +268,7 @@ void PatchView::connectActions()
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchView::deleteSection);
     CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchView::renameSection);
     CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchView::moveIntoSection);
-    CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchView::zoomReset);
-    CONNECT_ACTION(ACTION_ZOOM_IN, &PatchView::zoomIn);
-    CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchView::zoomOut);
+
 }
 
 
@@ -521,21 +515,6 @@ void PatchView::newSectionAt(int index)
     the_forge->patchHasChanged();
 }
 
-void PatchView::zoomReset()
-{
-    zoom(0);
-}
-
-void PatchView::zoomIn()
-{
-    zoom(1);
-}
-
-void PatchView::zoomOut()
-{
-    zoom(-1);
-}
-
 PatchSection *PatchView::addNewSection(QString name, int index)
 {
     PatchSection *section = new PatchSection(name);
@@ -557,19 +536,6 @@ void PatchView::patchHasChanged()
 {
     the_forge->patchHasChanged();
     currentPatchSectionView()->patchHasChanged();
-}
-
-void PatchView::zoom(int how)
-{
-    QSettings settings;
-    if (how == 0)
-        zoomLevel = 0;
-    else
-        zoomLevel += how; // TODO: Impose some limits
-    zoomLevel = qMin(ZOOM_MAX, qMax(ZOOM_MIN, zoomLevel));
-    settings.setValue("patchwindow/zoom", zoomLevel);
-    if (currentPatchSectionView())
-        currentPatchSectionView()->setZoom(zoomLevel);
 }
 
 void PatchView::cut()

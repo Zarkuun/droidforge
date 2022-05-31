@@ -22,6 +22,7 @@ class PatchSectionView : public QGraphicsView
     Q_OBJECT
 
     VersionedPatch *patch;
+    int zoomLevel;
     float zoomFactor;
 
     QList<CircuitView *>circuitViews;
@@ -49,7 +50,6 @@ public:
     void updateCircuits();
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
-    void setZoom(int zoom);
     void setCursorMode(cursor_mode_t mode);
     void copyToClipboard(Clipboard &clipboard);
     Patch *getSelectionAsPatch() const;
@@ -109,12 +109,17 @@ private:
     void mouseClick(QPoint pos, int button, bool doubleClock);
 
     void connectActions();
+    void setZoom(int zoom);
+    void changeZoom(int how);
 
 public slots:
     void changePatch(VersionedPatch *patch);
     void modifyPatch();
     void switchSection();
     void newCircuit();
+    void zoomReset();
+    void zoomIn();
+    void zoomOut();
 
 signals:
     void patchModified();
