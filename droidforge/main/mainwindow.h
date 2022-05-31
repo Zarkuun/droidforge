@@ -6,7 +6,7 @@
 #include "droidfirmware.h"
 #include "patchview.h"
 #include "rackview.h"
-#include "undohistory.h"
+#include "patchwithhistory.h"
 #include "patchparser.h"
 
 #include <QMainWindow>
@@ -59,7 +59,7 @@ class MainWindow : public QMainWindow
 
 private:
     DroidFirmware firmware;
-    UndoHistory undoHistory;
+    PatchWithHistory undoHistory;
     PatchParser parser;
     QString initialFilename;
     Patch *patch;

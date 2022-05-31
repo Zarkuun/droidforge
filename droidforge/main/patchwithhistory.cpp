@@ -1,35 +1,35 @@
-#include "undohistory.h"
+#include "patchwithhistory.h"
 #include "tuning.h"
 
-UndoHistory::UndoHistory()
+PatchWithHistory::PatchWithHistory()
     : redoPointer(0)
     , versionOnDisk(0)
 {
 }
 
-UndoHistory::~UndoHistory()
+PatchWithHistory::~PatchWithHistory()
 {
     clear();
 }
 
-void UndoHistory::reset(const Patch *patch)
+void PatchWithHistory::reset(const Patch *patch)
 {
     clear();
     snapshot(patch);
     versionOnDisk = redoPointer;
 }
 
-bool UndoHistory::isModified() const
+bool PatchWithHistory::isModified() const
 {
     return versionOnDisk != redoPointer;
 }
 
-void UndoHistory::clearModified()
+void PatchWithHistory::clearModified()
 {
     versionOnDisk = redoPointer;
 }
 
-void UndoHistory::clear()
+void PatchWithHistory::clear()
 {
     for (qsizetype i=0; i<steps.size(); i++)
         delete steps[i];
@@ -37,7 +37,7 @@ void UndoHistory::clear()
     redoPointer = 0;
 }
 
-void UndoHistory::snapshot(const Patch *patch, QString name)
+void PatchWithHistory::snapshot(const Patch *patch, QString name)
 {
     // One new edit step erases all possible redos
     while (redoPointer < steps.size()) {
@@ -55,39 +55,39 @@ void UndoHistory::snapshot(const Patch *patch, QString name)
     }
 }
 
-Patch *UndoHistory::undo()
+Patch *PatchWithHistory::undo()
 {
     // assume undoPossible()
     return steps[--redoPointer]->getPatch()->clone();
 }
 
-Patch *UndoHistory::redo()
+Patch *PatchWithHistory::redo()
 {
     // assume redoPossible()
     return steps[redoPointer++]->getPatch()->clone();
 }
 
-QString UndoHistory::nextTitle() const
+QString PatchWithHistory::nextTitle() const
 {
     return steps.last()->getName();
 }
 
-bool UndoHistory::undoPossible() const
+bool PatchWithHistory::undoPossible() const
 {
     return redoPointer > 0;
 }
 
-bool UndoHistory::redoPossible() const
+bool PatchWithHistory::redoPossible() const
 {
     return redoPointer < steps.size();
 }
 
-QString UndoHistory::nextUndoTitle() const
+QString PatchWithHistory::nextUndoTitle() const
 {
     return steps[redoPointer-1]->getName();
 }
 
-QString UndoHistory::nextRedoTitle() const
+QString PatchWithHistory::nextRedoTitle() const
 {
     return steps[redoPointer]->getName();
 }

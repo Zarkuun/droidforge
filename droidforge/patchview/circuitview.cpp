@@ -29,7 +29,6 @@ CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selecti
     // Compute width of columns
 
     float sparePerColumn = (totalWidth - minimumWidth()) / NUM_COLUMNS;
-    qDebug() << "spare" << sparePerColumn;
     if (sparePerColumn < 0)
         sparePerColumn = 0;
     jackColumnWidth = CIRV_COLUMN_JACK_MINIMUM_WIDTH + sparePerColumn;

@@ -1,20 +1,20 @@
-#ifndef UNDOHISTORY_H
-#define UNDOHISTORY_H
+#ifndef PATCHWITHHISTORY_H
+#define PATCHWITHHISTORY_H
 
 #include "patch.h"
 #include "editorstate.h"
 
 #include <QList>
 
-class UndoHistory
+class PatchWithHistory
 {
     QList<EditorState *> steps;
     unsigned redoPointer;
     unsigned versionOnDisk;
 
 public:
-    UndoHistory();
-    ~UndoHistory();
+    PatchWithHistory();
+    ~PatchWithHistory();
     void reset(const Patch *patch);
     bool isModified() const;
     void clearModified();
@@ -32,4 +32,4 @@ private:
     void clear();
 };
 
-#endif // UNDOHISTORY_H
+#endif // PATCHWITHHISTORY_H
