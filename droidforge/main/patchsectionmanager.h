@@ -23,13 +23,15 @@ private:
     void rebuildGraphics();
     void updateCursor();
     void switchToSection(int i);
+    void switchBackward();
+    void switchForward();
 
 protected:
     void resizeEvent(QResizeEvent *);
     void mousePressEvent(QMouseEvent *event);
 
 public slots:
-    void setNewPatch(VersionedPatch *patch);
+    void changePatch(VersionedPatch *patch);
     void switchSection();
 
 signals:

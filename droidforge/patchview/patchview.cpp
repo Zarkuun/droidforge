@@ -282,8 +282,6 @@ void PatchView::connectActions()
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchView::deleteSection);
     CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchView::renameSection);
     CONNECT_ACTION(ACTION_MOVE_INTO_SECTION, &PatchView::moveIntoSection);
-    // connect(prevSectionAct, &QAction::triggered, &patchView, &PatchView::previousSection);
-    // connect(nextSectionAct, &QAction::triggered, &patchView, &PatchView::nextSection);
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchView::zoomIn);
     CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchView::zoomOut);
@@ -304,20 +302,6 @@ Patch *PatchView::integratePatch(Patch *otherpatch)
 Patch *PatchView::getSelectionAsPatch() const
 {
     return currentPatchSectionView()->getSelectionAsPatch();
-}
-
-void PatchView::nextSection()
-{
-    int i = (currentIndex() + 1) % count();
-    setCurrentIndex(i);
-    patch->switchCurrentSection(i);
-}
-
-void PatchView::previousSection()
-{
-    int i =(currentIndex() - 1 + count()) % count();
-    this->setCurrentIndex(i);
-    patch->switchCurrentSection(i);
 }
 
 void PatchView::editProperties()

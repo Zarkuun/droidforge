@@ -5,8 +5,12 @@
 #include <QFile>
 #include <QJsonArray>
 
+DroidFirmware *the_firmware = 0;
+
 DroidFirmware::DroidFirmware()
 {
+    the_firmware = this;
+
     QFile file;
     file.setFileName(":droidfirmware.json");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {

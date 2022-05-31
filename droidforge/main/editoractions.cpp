@@ -105,13 +105,13 @@ EditorActions::EditorActions(QObject *parent)
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcutVisibleInContextMenu(true);
 
-    actions[ACTION_NEXT_SECTION] = new QAction(tr("Next section"));
-    actions[ACTION_NEXT_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Right")));
-    actions[ACTION_NEXT_SECTION]->setStatusTip(tr("Switch to the next section"));
-
     actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Previous section"));
-    actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Left")));
+    actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Up")));
     actions[ACTION_PREVIOUS_SECTION]->setStatusTip(tr("Switch to the previous section"));
+
+    actions[ACTION_NEXT_SECTION] = new QAction(tr("Next section"));
+    actions[ACTION_NEXT_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Down")));
+    actions[ACTION_NEXT_SECTION]->setStatusTip(tr("Switch to the next section"));
 
     actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("New section..."), this);
     actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("Duplicate section"), this);

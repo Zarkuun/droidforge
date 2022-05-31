@@ -1,6 +1,7 @@
 #include "patchsectionmanager.h"
 #include "tuning.h"
 #include "updatehub.h"
+#include "editoractions.h"
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -22,8 +23,16 @@ PatchSectionManager::PatchSectionManager(QWidget *parent)
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setMouseTracking(true);
 
+    // Actions we handle
+    CONNECT_ACTION(ACTION_PREVIOUS_SECTION, &PatchSectionManager::switchBackward);
+    CONNECT_ACTION(ACTION_NEXT_SECTION, &PatchSectionManager::switchForward);
+
+    // Events that we create
     connect(this, &PatchSectionManager::sectionSwitched, the_hub, &UpdateHub::switchSection);
+
+    // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
+    connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionManager::changePatch);
 }
 
 void PatchSectionManager::resizeEvent(QResizeEvent *)
@@ -42,7 +51,7 @@ void PatchSectionManager::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void PatchSectionManager::setNewPatch(VersionedPatch *newPatch)
+void PatchSectionManager::changePatch(VersionedPatch *newPatch)
 {
     qDebug() << "NEUER PATCH" << Q_FUNC_INFO;
     patch = newPatch;
@@ -92,4 +101,14 @@ void PatchSectionManager::switchToSection(int i)
     qDebug() << "switche to " << i;
     patch->switchCurrentSection(i);
     emit sectionSwitched();
+}
+
+void PatchSectionManager::switchBackward()
+{
+    switchToSection((patch->currentSectionIndex() - 1 + patch->numSections()) % patch->numSections());
+}
+
+void PatchSectionManager::switchForward()
+{
+    switchToSection((patch->currentSectionIndex() + 1) % patch->numSections());
 }

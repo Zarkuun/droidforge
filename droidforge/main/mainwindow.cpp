@@ -7,7 +7,7 @@
 #include "patchview.h"
 #include "tuning.h"
 #include "os.h"
-
+#include "updatehub.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -19,16 +19,13 @@
 #include <QProcess>
 
 MainWindow *the_forge;
-DroidFirmware *the_firmware;
 
 MainWindow::MainWindow(const QString &initialFilename)
     : QMainWindow()
     , initialFilename(initialFilename)
     , patch(0)
 {
-    qDebug("MAIN WINDOW WIRD GEMACHT.");
     the_forge = this;
-    the_firmware = &firmware;
 
     setWindowTitle(APPLICATION_NAME);
 
@@ -67,9 +64,10 @@ MainWindow::MainWindow(const QString &initialFilename)
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename, FILE_MODE_LOAD);});
 
-    // Setup all interconnected updating between our elements. (TODO: mvoe to function)
-    connect(this, &MainWindow::patchChanged, &patchSectionManager, &PatchSectionManager::setNewPatch);
-    connect(&patchSectionManager, &PatchSectionManager::sectionSwitched, &patchSectionManager, &PatchSectionManager::switchSection);
+    // Events that we create
+    connect(this, &MainWindow::patchChanged, the_hub, &UpdateHub::changePatch);
+
+    // Events that we are interested in
 }
 
 

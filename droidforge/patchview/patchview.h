@@ -56,8 +56,6 @@ private:
     void zoom(int how);
 
 public slots:
-    void nextSection();
-    void previousSection();
     void editProperties();
     void newCircuit();
     void addJack();

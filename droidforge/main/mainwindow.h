@@ -60,7 +60,7 @@ public:
     ~MainWindow();
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);
-    Patch *getPatch() { return patch; };
+    Patch *getPatch() { return patch; }; // TODO????
     void registerEdit(QString name);
     void patchHasChanged();
     void updateClipboardInfo(QString info);
@@ -107,6 +107,9 @@ private slots:
     void jumpToNextProblem();
     void splitterMoved();
     void cursorMoved(int section, const CursorPosition &pos);
+
+public slots:
+
 
 signals:
     void patchChanged(VersionedPatch *); // all pointers are invalid
