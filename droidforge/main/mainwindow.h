@@ -84,6 +84,7 @@ private:
     void updateWindowTitle();
     void repaintPatchView();
     void createStatusBar();
+    bool interactivelyRemapRegisters(Patch *otherpatch);
 
 private slots:
     void loadFile(const QString &filename, int how);
