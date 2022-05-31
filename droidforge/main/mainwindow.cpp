@@ -72,6 +72,9 @@ MainWindow::MainWindow(const QString &initialFilename)
     connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Events that we are interested in
+
+    // Some special connections that do not deal with update events
+    connect(&rackView, &RackView::registerClicked, &patchSectionView, &PatchSectionView::clickOnRegister);
 }
 
 

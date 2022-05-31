@@ -73,7 +73,6 @@ PatchSectionView::~PatchSectionView()
         delete atomSelectorDialog;
 }
 
-
 void PatchSectionView::connectActions()
 {
     CONNECT_ACTION(ACTION_CUT, &PatchSectionView::cut);
@@ -857,9 +856,9 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             ar.setRegisterType(REGISTER_LED);
     }
 
-    the_forge->registerEdit(tr("inserting register %1").arg(ar.toString()));
     ja->replaceAtom(cursor.column, ar.clone());
-    patchHasChanged();
+    patch->commit(tr("inserting register %1").arg(ar.toString()));
+    emit patchModified();
 }
 
 void PatchSectionView::setCursorMode(cursor_mode_t mode)

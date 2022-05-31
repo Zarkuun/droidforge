@@ -79,7 +79,7 @@ void RackView::mousePressEvent(QMouseEvent *event)
         else if (event->button() == Qt::LeftButton) {
             QGraphicsItem *item = itemAt(event->pos());
             if (item == registerMarker)
-                the_forge->clickOnRegister(markedRegister);
+                emit registerClicked(markedRegister);
         }
     }
 }

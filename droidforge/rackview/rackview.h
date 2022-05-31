@@ -64,6 +64,7 @@ private slots:
     void remapControls(int controllerIndex, QString controllerName);
 
 signals:
+    void registerClicked(AtomRegister ar);
     void patchModified();
 };
 
