@@ -2,46 +2,48 @@
 #include "atomcable.h"
 #include "droidfirmware.h"
 #include "modulebuilder.h"
+#include "registercomments.h"
 
-#include <QFile>
-#include <QTextStream>
-#include <QElapsedTimer>
-
-
+#include <QFileInfo>
 
 // TODO: use index and number correctly
 // Controller number goes from 1 ... 16
 // Indices start at 0
 
 Patch::Patch()
-    : registerComments(new RegisterComments())
-    , sectionIndex(0)
+    : sectionIndex(0)
 {
 }
-
 
 Patch::~Patch()
 {
-    delete registerComments;
-    for (qsizetype i=0; i<sections.length(); i++)
-        delete sections[i];
+    clear();
 }
 
+void Patch::clear()
+{
+    for (auto section: sections)
+        delete section;
+}
 
 Patch *Patch::clone() const
 {
-    Patch *newpatch = new Patch();
-    newpatch->title = title;
-    newpatch->description = description;
-    newpatch->libraryMetaData = libraryMetaData;
-    delete newpatch->registerComments;
-    newpatch->registerComments = registerComments->clone();
-    newpatch->controllers = controllers;
-    for (unsigned i=0; i<sections.size(); i++) {
-        newpatch->sections.append(sections[i]->clone());
-    }
-    newpatch->sectionIndex = sectionIndex;
-    return newpatch;
+    Patch *newPatch = new Patch();
+    cloneInto(newPatch);
+    return newPatch;
+}
+
+void Patch::cloneInto(Patch *otherPatch) const
+{
+    otherPatch->clear();
+    otherPatch->title = title;
+    otherPatch->description = description;
+    otherPatch->libraryMetaData = libraryMetaData;
+    otherPatch->registerComments = registerComments;
+    otherPatch->controllers = controllers;
+    for (auto section: sections)
+        otherPatch->sections.append(section->clone());
+    otherPatch->sectionIndex = sectionIndex;
 }
 
 void Patch::addSection(PatchSection *section)
@@ -79,12 +81,15 @@ void Patch::integratePatch(const Patch *snippet)
         index = sectionIndex + 1;
     int startIndex = index;
 
-    for (auto section: snippet->sections) {
+    for (auto section: snippet->sections)
+    {
         PatchSection *clonedSection = section->clone();
         if (snippet->numSections() == 1 && clonedSection->getTitle().isEmpty()) {
             QString title = snippet->getTitle();
-            if (title.isEmpty())
-                title = snippet->getFileName();
+            if (title.isEmpty()) {
+                QFileInfo fi(snippet->getFilePath());
+                title = fi.baseName();
+            }
             clonedSection->setTitle(title);
         }
         insertSection(index++, clonedSection);
@@ -132,18 +137,6 @@ void Patch::removeController(int index)
     controllers.remove(index);
 }
 
-bool Patch::saveToFile(QString filename)
-{
-    QFile file(filename);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-          return false;
-    QTextStream stream(&file);
-    stream << toString();
-    stream.flush();
-    file.close();
-    return stream.status() == QTextStream::Ok;
-}
-
 void Patch::addDescriptionLine(const QString &line)
 {
     description.append(line);
@@ -158,9 +151,9 @@ void Patch::setDescription(const QString &d)
 
 void Patch::addRegisterComment(QChar registerName, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
 {
-    registerComments->addComment(
-                new AtomRegister(registerName, controller, number),
-                shorthand, comment);
+    AtomRegister atom(registerName, controller, number);
+    RegisterComment rc{atom, shorthand, comment};
+    registerComments.append(rc);
 }
 
 const QString &Patch::getTitle() const
@@ -336,7 +329,7 @@ QString Patch::toString()
         s += "\n";
     }
 
-    s += registerComments->toString();
+    s += registerComments.toString();
 
     for (qsizetype i=0; i<controllers.length(); i++)
         s += "[" + controllers[i] + "]\n";

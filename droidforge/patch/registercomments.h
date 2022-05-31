@@ -7,24 +7,19 @@
 #include <QList>
 
 struct RegisterComment {
-    AtomRegister *atom;
+    AtomRegister atom;
     QString shorthand;
     QString comment;
+    // RegisterComment(AtomRegister a, const QString &s, const QString &c) : atom(a), shorthand(s), comment(c) {};
 };
 
-class RegisterComments
+class RegisterComments : public QList<RegisterComment>
 {
-    QList <RegisterComment> comments;
-
 public:
-    RegisterComments() {};
-    ~RegisterComments();
-    RegisterComments *clone() const;
-    void addComment(AtomRegister *atom, QString shorthand, QString comment);
     QString toString() const;
 
 private:
-    QString toString(char reg, unsigned controller, const char *title=0) const;
+    QString toString(char reg, unsigned controller, const QString &title=0) const;
 };
 
 #endif // REGISTERCOMMENTS_H

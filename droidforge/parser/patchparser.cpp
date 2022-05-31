@@ -21,10 +21,11 @@ PatchParser::PatchParser()
 }
 
 
-void PatchParser::parse(QString fileName, Patch *patch)
+void PatchParser::parse(QString filePath, Patch *patch)
 {
-    QFileInfo fi(fileName);
-    patch->setFileName(fi.baseName());
+    QFileInfo fi(filePath);
+    // TODO: Für was braucht eigentlich der Patch den Filename?
+    patch->setFilePath(fi.baseName());
     errorMessage = "";
     errorLine = 0;
     section = 0;
@@ -34,7 +35,7 @@ void PatchParser::parse(QString fileName, Patch *patch)
 
     QString lineerrors;
 
-    QFile inputFile(fileName);
+    QFile inputFile(filePath);
     if (!inputFile.open(QIODevice::ReadOnly)) {
         throw ParseException("Cannot open file: " + inputFile.errorString());
     }

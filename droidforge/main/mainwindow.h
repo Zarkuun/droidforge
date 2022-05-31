@@ -6,7 +6,7 @@
 #include "droidfirmware.h"
 #include "patchview.h"
 #include "rackview.h"
-#include "patchwithhistory.h"
+#include "versionedpatch.h"
 #include "patchparser.h"
 
 #include <QMainWindow>
@@ -18,7 +18,7 @@
 #include <QStatusBar>
 #include <QVBoxLayout>
 
-class Patch;
+class VersionedPatch;
 
 class MainWindow;
 extern MainWindow *the_forge;
@@ -59,11 +59,10 @@ class MainWindow : public QMainWindow
 
 private:
     DroidFirmware firmware;
-    PatchWithHistory undoHistory;
     PatchParser parser;
     QString initialFilename;
-    Patch *patch;
-    QString filename; // of loaded patch
+    VersionedPatch *patch;
+    QString filePath; // of loaded patch
     RackView rackView;
     PatchView patchView;
     QSplitter *splitter;
@@ -99,14 +98,12 @@ private:
 public:
     MainWindow(const QString &initialFilename);
     ~MainWindow();
-    void setPatch(Patch *);
-    void loadPatch(const QString &filename);
-    void integratePatch(const QString &filename);
+    void loadPatch(const QString &aFilePath);
+    void integratePatch(const QString &aFilePath);
     Patch *getPatch() { return patch; };
     void registerEdit(QString name);
     void patchHasChanged();
     void updateActions();
-    void updateProblems();
     void updateClipboardInfo(QString info);
     void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);

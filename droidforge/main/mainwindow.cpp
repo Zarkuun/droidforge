@@ -85,43 +85,20 @@ MainWindow::~MainWindow()
         delete patch;
 }
 
-void MainWindow::loadPatch(const QString &aFilename)
-{
-    Patch newpatch;
-    parser.parse(aFilename, &newpatch);
-    setPatch(newpatch.clone());
-
-    filename = aFilename;
-    undoHistory.reset(&newpatch);
-    the_forge->patchHasChanged();
-}
-
-void MainWindow::integratePatch(const QString &aFilename)
+void MainWindow::integratePatch(const QString &aFilePath)
 {
     Patch otherpatch;
-    parser.parse(aFilename, &otherpatch);
+    parser.parse(aFilePath, &otherpatch);
     Patch *newPatch = patchView.integratePatch(&otherpatch);
     if (newPatch) {
         registerEdit(tr("integrating other patch '%1'").arg(otherpatch.getTitle()));
-        setPatch(newPatch);
-        the_forge->patchHasChanged();
+        patchHasChanged();
     }
 }
 
 void MainWindow::registerEdit(QString name)
 {
-    undoHistory.snapshot(patch, name);
-    the_forge->patchHasChanged();
-}
-
-void MainWindow::setPatch(Patch *newpatch)
-{
-    if (patch)
-        delete patch;
-    patch = newpatch;
-    patch->updateProblems();
-    rackView.setPatch(patch);
-    patchView.setPatch(patch);
+    qDebug() << "ACHTUNG! DEPRIZIER" << name;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -134,7 +111,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         event->ignore();
     }
 }
-
 
 void MainWindow::closeEvent(QCloseEvent *)
 {
@@ -156,11 +132,8 @@ void MainWindow::loadFile(const QString &filename, int how)
 
     try {
         addToRecentFiles(filename);
-        if (how == FILE_MODE_LOAD) {
+        if (how == FILE_MODE_LOAD)
             loadPatch(filename);
-            // integratePatch("/Users/mk/git/droidforge/hirn.ini");
-            // exit(0);
-        }
         else
             integratePatch(filename);
 
@@ -205,7 +178,9 @@ void MainWindow::createActions()
 
 void MainWindow::patchHasChanged()
 {
-    updateProblems();
+    // TODO: Woanders hin
+    actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems());
+    currentProblem = 0;
     patchView.abortPatching();
     updateActions();
     updateWindowTitle();
@@ -227,13 +202,13 @@ void MainWindow::clickOnRegister(AtomRegister ar)
 void MainWindow::updateActions()
 {
     // File menu
-    actionSave->setEnabled(undoHistory.isModified());
+    actionSave->setEnabled(patch->isModified());
     actionExportSelection->setEnabled(patchView.circuitsSelected());
-    actionOpenEnclosingFolder->setEnabled(!filename.isEmpty());
+    actionOpenEnclosingFolder->setEnabled(!filePath.isEmpty());
 
     // Edit menu
-    if (undoHistory.undoPossible()) {
-        actionUndo->setText(tr("&Undo ") + undoHistory.nextUndoTitle());
+    if (patch->undoPossible()) {
+        actionUndo->setText(tr("&Undo ") + patch->nextUndoTitle());
         actionUndo->setEnabled(true);
     }
     else {
@@ -241,8 +216,8 @@ void MainWindow::updateActions()
         actionUndo->setEnabled(false);
     }
 
-    if (undoHistory.redoPossible()) {
-        actionRedo->setText(tr("&Redo ") + undoHistory.nextRedoTitle());
+    if (patch->redoPossible()) {
+        actionRedo->setText(tr("&Redo ") + patch->nextRedoTitle());
         actionRedo->setEnabled(true);
     }
     else {
@@ -280,16 +255,6 @@ void MainWindow::updateActions()
     actions[ACTION_MOVE_INTO_SECTION]->setEnabled(patchView.circuitsSelected());
 }
 
-void MainWindow::updateProblems()
-{
-    if (patch) {
-        patch->updateProblems();
-        actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems());
-        currentProblem = 0;
-        emit problemsChanged(patch->numProblems());
-    }
-}
-
 void MainWindow::updateClipboardInfo(QString)
 {
     // statusbar->showMessage(info); // TODO: brauchen wir das?
@@ -298,11 +263,11 @@ void MainWindow::updateClipboardInfo(QString)
 void MainWindow::updateWindowTitle()
 {
     QString title;
-    if (filename.isEmpty())
+    if (filePath.isEmpty())
         title = tr("(untitled patch)") + " - " + tr("DROID Forge");
     else
-        title = filename + " - " + tr("DROID Forge");
-    if (undoHistory.isModified())
+        title = filePath + " - " + tr("DROID Forge");
+    if (patch->isModified())
         title += " (" + tr("modified") + ")";
     setWindowTitle(title);
 }
@@ -620,16 +585,35 @@ void MainWindow::createRackMenu()
     toolbar->addAction(actions[ACTION_ADD_CONTROLLER]);
 }
 
+void MainWindow::loadPatch(const QString &aFilePath)
+{
+    if (patch)
+        delete patch;
+    Patch newPatch;
+    parser.parse(aFilePath, &newPatch);
+    patch = new VersionedPatch(&newPatch);
+    filePath = aFilePath;
+    rackView.setPatch(patch);
+    patchView.setPatch(patch);
+    patchHasChanged();
+}
+
 void MainWindow::newPatch()
 {
     if (!checkModified())
         return;
-    Patch newpatch;
-    newpatch.addSection(new PatchSection(SECTION_DEFAULT_NAME));
-    setPatch(newpatch.clone());
-    undoHistory.reset(&newpatch);
-    filename = "";
-    the_forge->patchHasChanged();
+
+    if (patch)
+        delete patch;
+
+    Patch newPatch;
+    newPatch.addSection(new PatchSection(SECTION_DEFAULT_NAME));
+
+    patch = new VersionedPatch(&newPatch);
+    filePath = "";
+    rackView.setPatch(patch);
+    patchView.setPatch(patch);
+    patchHasChanged();
 }
 
 void MainWindow::open()
@@ -637,90 +621,78 @@ void MainWindow::open()
     if (!checkModified())
         return;
 
-    QString fileName = QFileDialog::getOpenFileName(this);
-    if (!fileName.isEmpty())
-        loadFile(fileName, FILE_MODE_LOAD);
+    QString filePath = QFileDialog::getOpenFileName(this);
+    if (!filePath.isEmpty())
+        loadFile(filePath, FILE_MODE_LOAD);
 }
 
 void MainWindow::integrate()
 {
-    QString fileName = QFileDialog::getOpenFileName(this);
-    if (!fileName.isEmpty())
-        loadFile(fileName, FILE_MODE_INTEGRATE);
+    QString filePath = QFileDialog::getOpenFileName(this);
+    if (!filePath.isEmpty())
+        loadFile(filePath, FILE_MODE_INTEGRATE);
 }
 
 void MainWindow::save()
 {
-    if (filename.isEmpty())
+    if (filePath.isEmpty())
         saveAs();
     else {
-        patch->saveToFile(filename);
-        undoHistory.clearModified();
-        the_forge->patchHasChanged();
+        patch->saveToFile(filePath);
+        patchHasChanged();
     }
 }
 
 void MainWindow::saveAs()
 {
-    QString newFilename = QFileDialog::getSaveFileName(
+    QString newFilePath = QFileDialog::getSaveFileName(
                 this,
                 tr("Save patch to new file"),
-                filename,
+                filePath,
                 tr("DROID patch files (*.ini)"));
-    if (!newFilename.isEmpty()) {
-        patch->saveToFile(newFilename);
-        filename = newFilename;
-        undoHistory.clearModified();
-        the_forge->patchHasChanged();
-        addToRecentFiles(newFilename);
+    if (!newFilePath.isEmpty()) {
+        patch->saveToFile(newFilePath);
+        filePath = newFilePath;
+        patchHasChanged();
+        addToRecentFiles(newFilePath);
     }
 }
 
 void MainWindow::exportSelection()
 {
-    QString newFilename = QFileDialog::getSaveFileName(
+    QString filePath = QFileDialog::getSaveFileName(
                 this,
                 tr("Export selection into new patch"),
                 "",
                 tr("DROID patch files (*.ini)"));
-    if (!newFilename.isEmpty()) {
+    if (!filePath.isEmpty()) {
         Patch *patch = patchView.getSelectionAsPatch();
-        patch->saveToFile(newFilename);
+        VersionedPatch vp(patch);
+        vp.saveToFile(filePath);
         delete patch;
-        addToRecentFiles(newFilename);
+        addToRecentFiles(filePath);
     }
 }
 
 void MainWindow::openEnclosingFolder()
 {
-    QFileInfo fileinfo(filename);
+    QFileInfo fileinfo(filePath);
     openDirInFinder(fileinfo.absoluteFilePath());
 }
 
 void MainWindow::undo()
 {
-    if (undoHistory.undoPossible()) {
-        if (patch)
-            delete patch;
-        patch = undoHistory.undo();
-        patch->updateProblems();
-        rackView.setPatch(patch);
-        patchView.setPatch(patch);
-        the_forge->patchHasChanged();
+    if (patch->undoPossible()) {
+        patch->undo();
+        patchHasChanged();
     }
 }
 
-
 void MainWindow::redo()
 {
-    if (undoHistory.redoPossible()) {
-        if (patch)
-            delete patch;
-        patch = undoHistory.redo();
-        patch->updateProblems();
-        rackView.setPatch(patch);
-        patchView.setPatch(patch);
-        the_forge->patchHasChanged();
+    if (patch->redoPossible()) {
+        patch->redo();
+        patchHasChanged();
     }
 }
 
@@ -751,7 +723,7 @@ void MainWindow::cursorMoved(int section, const CursorPosition &pos)
 bool MainWindow::checkModified()
 {
     // TODO rackview modified
-    if (undoHistory.isModified()) {
+    if (patch->isModified()) {
         QMessageBox box(
                     QMessageBox::Warning,
                     tr("Your patch is modified!"),

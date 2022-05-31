@@ -14,7 +14,7 @@ class Patch
     QString title;
     QStringList description;
     QString libraryMetaData; // break into structure later
-    RegisterComments *registerComments;
+    RegisterComments registerComments;
     QStringList controllers;
     QList<PatchSection *> sections;
     qsizetype sectionIndex; // part of cursor position
@@ -24,12 +24,12 @@ public:
     Patch();
     ~Patch();
     Patch *clone() const;
+    void cloneInto(Patch *otherPatch) const;
     QString toString();
-    bool saveToFile(QString filename);
 
     // Simple access functions
     const QString &getTitle() const;
-    const QString &getFileName() const { return fileName; };
+    const QString &getFilePath() const { return fileName; };
     QString getDescription() const;
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     qsizetype numControllers() const { return controllers.size(); };
@@ -47,7 +47,6 @@ public:
     bool needX7() const; // TODO: Do we need this?
     void collectUsedRegisterAtoms(RegisterList &) const;
     void collectAvailableRegisterAtoms(RegisterList &) const;
-    void updateProblems();
     unsigned numProblems() const { return problems.count(); };
     QString problemAt(int section, const CursorPosition &pos);
     const QList<PatchProblem *> &allProblems() const { return problems; };
@@ -56,7 +55,7 @@ public:
 
     // Modifications
     void addDescriptionLine(const QString &line);
-    void setFileName(const QString &f) { fileName = f; };
+    void setFilePath(const QString &f) { fileName = f; };
     void setTitle(const QString &newTitle);
     void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
     void switchCurrentSection(qsizetype i) { sectionIndex = i; };
@@ -83,8 +82,13 @@ public:
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);
     void renameCable(const QString &oldName, const QString &newName);
 
-public:
+protected:
+    void updateProblems(); // only done by VersionedPatch::commit()
 
+private:
+    void clear();
+
+public:
     // Iteration of all atoms in this patch
     // TODO: Move to own file?
     class iterator {
@@ -120,6 +124,7 @@ public:
 
     auto begin() { return iterator(this); }
     auto end() { return iterator(); }
+
 };
 
 #endif // PATCH_H

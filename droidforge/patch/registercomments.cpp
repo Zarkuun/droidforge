@@ -3,35 +3,6 @@
 #include "atomregister.h"
 
 
-RegisterComments::~RegisterComments()
-{
-    for (qsizetype i=0; i < comments.count(); i++)
-        delete comments[i].atom;
-}
-
-
-RegisterComments *RegisterComments::clone() const
-{
-    RegisterComments *newrc = new RegisterComments();
-    for (qsizetype i=0; i < comments.count(); i++) {
-        RegisterComment c = comments[i];
-        c.atom = comments[i].atom->clone();
-        newrc->comments.append(c);
-    }
-    return newrc;
-}
-
-
-void RegisterComments::addComment(AtomRegister *atom, QString shorthand, QString comment)
-{
-    RegisterComment c;
-    c.atom = atom;
-    c.shorthand = shorthand;
-    c.comment = comment;
-    comments.append(c);
-}
-
-
 QString RegisterComments::toString() const
 {
     QString s;
@@ -78,26 +49,25 @@ QString RegisterComments::toString() const
 }
 
 
-QString RegisterComments::toString(char reg, unsigned controller, const char *title) const
+QString RegisterComments::toString(char reg, unsigned controller, const QString &title) const
 {
     QString s;
     bool first = true;
-    for (qsizetype i=0; i < comments.count(); i++) {
-        const RegisterComment &c = comments[i];
-        if (c.atom->getRegisterType() == reg && c.atom->controller() == controller) {
+    for (auto &comment: *this) {
+        if (comment.atom.getRegisterType() == reg && comment.atom.controller() == controller) {
             if (first) {
                 first = false;
-                if (title)
+                if (title != "")
                     s += QString("# ") + title + ":\n";
             }
-            s += "#   " + c.atom->toString() + ": ";
-            if (!c.shorthand.isEmpty())
-                s += "[" + c.shorthand + "] ";
-            s += c.comment;
+            s += "#   " + comment.atom.toString() + ": ";
+            if (!comment.shorthand.isEmpty())
+                s += "[" + comment.shorthand + "] ";
+            s += comment.comment;
             s += "\n";
         }
     }
-    if (title && !s.isEmpty())
+    if (title != "" && s != "")
         s += "\n";
     return s;
 }
