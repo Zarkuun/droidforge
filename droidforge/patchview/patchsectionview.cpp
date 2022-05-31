@@ -37,7 +37,6 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
     , zoomFactor(1.0)
     , atomSelectorDialog{}
     , selection(0)
-    , frameCursor(0)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -58,12 +57,14 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
     connect(this, &PatchSectionView::patchModified, the_hub, &UpdateHub::modifyPatch);
     connect(this, &PatchSectionView::clipboardChanged, the_hub, &UpdateHub::changeClipboard);
     connect(this, &PatchSectionView::selectionChanged, the_hub, &UpdateHub::changeSelection);
+    connect(this, &PatchSectionView::cursorMoved, the_hub, &UpdateHub::moveCursor);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
     connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionView::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionView::modifyPatch);
     connect(the_hub, &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
+    connect(the_hub, &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
 }
 
 PatchSectionView::~PatchSectionView()
@@ -114,12 +115,8 @@ void PatchSectionView::buildPatchSection()
         cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
         y += cv->boundingRect().height();
     }
-
-    if (section()->circuits.size() > 0) {
-        frameCursor = new FrameCursor();
-        scene->addItem(frameCursor);
-        updateCursor();
-    }
+    scene->addItem(&frameCursor);
+    updateCursor();
 }
 
 void PatchSectionView::updateProblemMarkers()
@@ -147,11 +144,6 @@ void PatchSectionView::updateProblemMarkers()
             marker->setData(DATA_INDEX_PROBLEM, true);
         }
     }
-}
-
-void PatchSectionView::patchHasChanged()
-{
-    Q_ASSERT(false);
 }
 
 void PatchSectionView::deletePatchSection()
@@ -290,6 +282,11 @@ void PatchSectionView::modifyPatch()
 void PatchSectionView::switchSection()
 {
     rebuildPatchSection();
+}
+
+void PatchSectionView::moveCursor()
+{
+    updateCursor();
 }
 
 void PatchSectionView::newCircuit()
@@ -489,13 +486,15 @@ void PatchSectionView::setZoom(int zoom)
 
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 {
-    if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
+    if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier) {
         setMouseSelection(curPos);
+        emit selectionChanged(selection);
+    }
     else {
         clearSelection();
         section()->setCursor(curPos);
+        emit cursorMoved();
     }
-    updateCursor();
 }
 
 void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPosition &curPos)
@@ -511,7 +510,7 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
     // wrong cell.
     if (cv) {
         section()->setCursor(curPos);
-        updateCursor();
+        emit cursorMoved();
     }
 
     QMenu *menu = new QMenu(this);
@@ -696,7 +695,7 @@ void PatchSectionView::editValue(int key)
 void PatchSectionView::editValueByMouse(CursorPosition &pos)
 {
     section()->setCursor(pos);
-    updateCursor();
+    emit cursorMoved();
     editValue(0);
 }
 
@@ -861,26 +860,26 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
 
 void PatchSectionView::setCursorMode(cursor_mode_t mode)
 {
-    frameCursor->setMode(mode);
+    frameCursor.setMode(mode);
 }
 
+// Repositions the frameCursor so that it matches the current
+// cursor position in the current section
 void PatchSectionView::updateCursor()
 {
-    const CursorPosition &pos = section()->cursorPosition();
-    
     if (currentCircuitView()) {
+        const CursorPosition &pos = section()->cursorPosition();
         QRectF br = currentCircuitView()->boundingRect();
         QRectF tbr = br.translated(currentCircuitView()->pos());
-        ensureVisible(tbr);
-        updateCableIndicator();
-        emit cursorMoved(pos);
+        ensureVisible(tbr); // TODO: Das hier geht noch nicht so gut
 
         QRectF cr = currentCircuitView()->cellRect(pos.row, pos.column);
-        frameCursor->setRect(cr.translated(currentCircuitView()->pos()));
-        frameCursor->startAnimation();
+        frameCursor.setVisible(true);
+        frameCursor.setRect(cr.translated(currentCircuitView()->pos()));
+        frameCursor.startAnimation();
     }
-
-    updateRegisterHilites();
+    else
+        frameCursor.setVisible(false);
 }
 
 void PatchSectionView::updateCableIndicator()
@@ -977,7 +976,7 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
         section()->moveCursorToPreviousCircuit();
     else
         section()->moveCursorToNextCircuit();
-    updateCursor();
+    emit cursorMoved();
 }
 
 void PatchSectionView::deleteCursorOrSelection()
@@ -1163,8 +1162,7 @@ void PatchSectionView::moveCursorLeftRight(int whence)
         section()->moveCursorLeft();
     else
         section()->moveCursorRight();
-
-    updateCursor();
+    emit cursorMoved();
 }
 
 void PatchSectionView::moveCursorUpDown(int whence)
@@ -1176,5 +1174,5 @@ void PatchSectionView::moveCursorUpDown(int whence)
         section()->moveCursorDown();
     else // up
         section()->moveCursorUp();
-    updateCursor();
+    emit cursorMoved();
 }

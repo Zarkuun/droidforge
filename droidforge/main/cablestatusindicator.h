@@ -1,6 +1,8 @@
 #ifndef CABLESTATUSINDICATOR_H
 #define CABLESTATUSINDICATOR_H
 
+#include "versionedpatch.h"
+
 #include <QPropertyAnimation>
 #include <QWidget>
 #include <QPen>
@@ -9,6 +11,7 @@
 class CableStatusIndicator : public QWidget
 {
     Q_OBJECT
+    const VersionedPatch *patch;
     QPen cablePen;
     QPen cableHilitePen;
     QImage warningImage;
@@ -23,7 +26,7 @@ class CableStatusIndicator : public QWidget
     bool patching;
 
 public:
-    explicit CableStatusIndicator(QWidget *parent = nullptr);
+    explicit CableStatusIndicator(const VersionedPatch *patch, QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *);
 
     // TODO: Das set/clear besser mit Slot/Signal machen.
@@ -44,6 +47,10 @@ private:
 
 signals:
     void animationPhaseChanged();
+
+private slots:
+    void patchChanged(VersionedPatch *patch);
+    void updateStatus();
 
 private:
     Q_PROPERTY(float animationPhase READ getanimationPhase WRITE setanimationPhase NOTIFY animationPhaseChanged)

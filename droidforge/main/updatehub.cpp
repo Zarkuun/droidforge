@@ -50,3 +50,11 @@ void UpdateHub::changeSelection(const Selection *selection)
     qDebug() << "HUB: changeSelection()";
     emit selectionChanged(selection);
 }
+
+void UpdateHub::moveCursor()
+{
+    // Called, when the cursor within the current section moved but
+    // nothing else has changed.
+    qDebug() << "HUB: cursorMoved()";
+    emit cursorMoved();
+}

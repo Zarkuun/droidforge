@@ -28,7 +28,7 @@ class PatchSectionView : public QGraphicsView
     QList<CircuitView *>circuitViews;
     AtomSelectorDialog *atomSelectorDialog; // TODO: Jede Section hat nen eigenen Dialog
     Selection *selection;
-    FrameCursor *frameCursor;
+    FrameCursor frameCursor;
 
 public:
     PatchSectionView(VersionedPatch *initialPatch);
@@ -58,7 +58,6 @@ public:
     const CursorPosition &getCursorPosition() const;
     void updateCursor();
     void updateProblemMarkers();
-    void patchHasChanged();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -115,9 +114,11 @@ private:
 
 public slots:
     void changePatch(VersionedPatch *patch);
-    void changeSelection(const Selection *);
     void modifyPatch();
+    void changeSelection(const Selection *);
     void switchSection();
+    void moveCursor();
+
     void newCircuit();
     void addJack();
     void zoomReset();
@@ -131,7 +132,7 @@ public slots:
 
 signals:
     void patchModified();
-    void cursorMoved(const CursorPosition &pos);
+    void cursorMoved();
     void clipboardChanged();
     void selectionChanged(const Selection *selection);
 };

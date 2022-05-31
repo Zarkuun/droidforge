@@ -83,7 +83,7 @@ void MainWindow::createStatusBar()
     statusbar = new QStatusBar(this);
     setStatusBar(statusbar);
 
-    statusbar->addPermanentWidget(new CableStatusIndicator);
+    statusbar->addPermanentWidget(new CableStatusIndicator(patch));
     statusbar->addPermanentWidget(new PatchProblemIndicator);
     statusbar->addPermanentWidget(new ClipboardIndicator);
 }

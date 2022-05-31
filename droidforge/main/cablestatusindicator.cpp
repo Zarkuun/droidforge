@@ -1,12 +1,13 @@
-
 #include "cablestatusindicator.h"
 #include "cablecolorizer.h"
 #include "tuning.h"
+#include "updatehub.h"
 
 #include <QDebug>
 
-CableStatusIndicator::CableStatusIndicator(QWidget *parent)
+CableStatusIndicator::CableStatusIndicator(const VersionedPatch *patch, QWidget *parent)
     : QWidget{parent}
+    , patch(patch)
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
     , animation(this, "animationPhase")
     , patching(false)
@@ -18,6 +19,11 @@ CableStatusIndicator::CableStatusIndicator(QWidget *parent)
     cablePen.setColor(CSI_CABLE_COLOR);
     cableHilitePen.setColor(CSI_CABLE_HILITE_COLOR);
     cableHilitePen.setWidth(1);
+
+    // Events that we are interested in
+    connect(the_hub, &UpdateHub::patchChanged, this, &CableStatusIndicator::patchChanged);
+    connect(the_hub, &UpdateHub::patchModified, this, &CableStatusIndicator::updateStatus);
+    connect(the_hub, &UpdateHub::cursorMoved, this, &CableStatusIndicator::updateStatus);
 }
 
 void CableStatusIndicator::paintEvent(QPaintEvent *)
@@ -135,6 +141,13 @@ void CableStatusIndicator::paintLabel(QPainter &painter, int xpos, QString text)
 
 }
 
+void CableStatusIndicator::patchChanged(VersionedPatch *newPatch)
+{
+    patch = newPatch;
+    updateStatus();
+}
+
+
 void CableStatusIndicator::paintMarker(QPainter &painter, int xpos, QColor border, QColor fill, int number)
 {
     painter.save();
@@ -213,6 +226,11 @@ void CableStatusIndicator::setanimationPhase(float newanimationPhase)
     animationPhase = newanimationPhase;
     update();
     emit animationPhaseChanged(); // TODO: needed?
+}
+
+void CableStatusIndicator::updateStatus()
+{
+    qDebug() << Q_FUNC_INFO;
 }
 
 
