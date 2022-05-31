@@ -17,6 +17,7 @@
 PatchSectionManager::PatchSectionManager(QWidget *parent)
     : QGraphicsView{parent}
     , patch(0)
+    , lastIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -246,9 +247,13 @@ void PatchSectionManager::rebuildGraphics()
 
 void PatchSectionManager::updateCursor()
 {
-    PatchSectionTitleView *tv = titleViews[patch->currentSectionIndex()];
+    int newIndex = patch->currentSectionIndex();
+    PatchSectionTitleView *tv = titleViews[newIndex];
     frameCursor->setRect(tv->boundingRect().translated(tv->pos()));
-    frameCursor->startAnimation();
+    if (newIndex != lastIndex) {
+        frameCursor->startAnimation();
+        lastIndex = newIndex;
+    }
 }
 
 void PatchSectionManager::switchToSection(int i)

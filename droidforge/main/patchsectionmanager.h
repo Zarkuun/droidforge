@@ -15,6 +15,7 @@ class PatchSectionManager : public QGraphicsView
     VersionedPatch *patch; // borrowed
     QList<PatchSectionTitleView *> titleViews;
     FrameCursor *frameCursor;
+    int lastIndex;
 
 public:
     explicit PatchSectionManager(QWidget *parent = nullptr);

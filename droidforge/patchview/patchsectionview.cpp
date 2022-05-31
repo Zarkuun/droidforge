@@ -152,8 +152,6 @@ void PatchSectionView::updateProblemMarkers()
 void PatchSectionView::patchHasChanged()
 {
     Q_ASSERT(false);
-    // the_forge->patchHasChanged();
-    // updateProblemMarkers();
 }
 
 void PatchSectionView::deletePatchSection()
@@ -1117,12 +1115,11 @@ void PatchSectionView::deleteCurrentAtom()
     JackAssignment *ja = section()->currentJackAssignment();
     int column = section()->cursorPosition().column;
     if (ja->atomAt(column)) {
-        QString actionTitle = QString("deleting value of '") + ja->jackName() + "'";
-        the_forge->registerEdit(actionTitle);
+        QString action = tr("deleting value '%1'").arg(ja->atomAt(column)->toString());
         ja->replaceAtom(column, 0);
-        patchHasChanged();
+        patch->commit(action);
+        emit patchModified();
     }
-    rebuildPatchSection();
 }
 
 void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int to)
