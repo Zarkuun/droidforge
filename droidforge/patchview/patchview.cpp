@@ -265,13 +265,7 @@ void PatchView::connectActions()
     CONNECT_ACTION(ACTION_MERGE_WITH_RIGHT_SECTION, &PatchView::mergeWithRightSection);
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchView::deleteSection);
     CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &PatchView::editProperties);
-    CONNECT_ACTION(ACTION_CUT, &PatchView::cut);
-    CONNECT_ACTION(ACTION_COPY, &PatchView::copy);
-    CONNECT_ACTION(ACTION_PASTE, &PatchView::paste);
-    CONNECT_ACTION(ACTION_PASTE_SMART, &PatchView::pasteSmart);
-    CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchView::newCircuit);
-    CONNECT_ACTION(ACTION_ADD_JACK, &PatchView::addJack);
-    CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchView::editValue);
+
     CONNECT_ACTION(ACTION_FOLLOW_INTERNAL_CABLE, &PatchView::followInternalCable);
     CONNECT_ACTION(ACTION_RENAME_INTERNAL_CABLE, &PatchView::renameInternalCable);
     CONNECT_ACTION(ACTION_START_PATCHING, &PatchView::startPatching);
@@ -307,20 +301,6 @@ Patch *PatchView::getSelectionAsPatch() const
 void PatchView::editProperties()
 {
     PatchPropertiesDialog::editPatchProperties(patch);
-}
-
-void PatchView::newCircuit()
-{
-    // We reuse the circuit choose dialog because we want it to
-    // retain the current selection of cursor, category and stuff.
-    if (!circuitChooseDialog)
-        circuitChooseDialog = new CircuitChooseDialog(this);
-
-    if (circuitChooseDialog->exec() == QDialog::Accepted) {
-        QString name = circuitChooseDialog->getSelectedCircuit();
-        if (!name.isEmpty())
-            currentPatchSectionView()->addNewCircuit(name, circuitChooseDialog->getJackSelection());
-    }
 }
 
 void PatchView::addJack()

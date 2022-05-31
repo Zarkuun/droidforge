@@ -13,10 +13,12 @@ public:
 
 public slots:
     void changePatch(VersionedPatch *patch);
+    void modifyPatch();
     void switchSection();
 
 signals:
     void patchChanged(VersionedPatch *patch);
+    void patchModified();
     void sectionSwitched();
 };
 

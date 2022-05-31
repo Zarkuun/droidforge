@@ -43,6 +43,8 @@ MainWindow::MainWindow(const QString &initialFilename)
     sectionSplitter->setOrientation(Qt::Horizontal);
     sectionSplitter->addWidget(&patchSectionManager);
     sectionSplitter->addWidget(&patchSectionView);
+    sectionSplitter->setStretchFactor(0, 0);
+    sectionSplitter->setStretchFactor(1, 1);
 
     rackSplitter->addWidget(&rackView);
     rackSplitter->addWidget(sectionSplitter);

@@ -14,6 +14,7 @@
 #include "patchview.h"
 #include "namechoosedialog.h"
 #include "problemmarker.h"
+#include "circuitchoosedialog.h"
 #include "updatehub.h"
 
 #include <QMouseEvent>
@@ -43,9 +44,15 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
     int zoom = 1; // TODO
     setZoom(zoom);
 
+    connectActions();
+
+    // Events that we create
+    connect(this, &PatchSectionView::patchModified, the_hub, &UpdateHub::modifyPatch);
+
     // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
     connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionView::changePatch);
+    connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionView::modifyPatch);
 }
 
 PatchSectionView::~PatchSectionView()
@@ -53,6 +60,18 @@ PatchSectionView::~PatchSectionView()
     deletePatchSection();
     if (atomSelectorDialog)
         delete atomSelectorDialog;
+}
+
+
+void PatchSectionView::connectActions()
+{
+    // CONNECT_ACTION(ACTION_CUT, &PatchSectionView::cut);
+    // CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
+    // CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
+    // CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
+    // CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
+    // CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
 }
 
 void PatchSectionView::buildPatchSection()
@@ -142,6 +161,7 @@ void PatchSectionView::rebuildPatchSection()
 
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 {
+    qDebug() << "KEY" << event;
     int key = event->key();
     bool shiftHeld = event->modifiers() & Qt::ShiftModifier;
 
@@ -242,9 +262,25 @@ void PatchSectionView::changePatch(VersionedPatch *newPatch)
     rebuildPatchSection();
 }
 
+void PatchSectionView::modifyPatch()
+{
+    rebuildPatchSection();
+}
+
 void PatchSectionView::switchSection()
 {
     rebuildPatchSection();
+}
+
+void PatchSectionView::newCircuit()
+{
+    jackselection_t jackSelection;
+    QString name = CircuitChooseDialog::chooseCircuit(jackSelection);
+    if (name != "") {
+        section()->addNewCircuit(name, jackSelection);
+        patch->commit(tr("adding new '%1' circuit").arg(name));
+        emit patchModified();
+    }
 }
 
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
@@ -335,25 +371,6 @@ PatchView *PatchSectionView::patchView()
     return (PatchView *)parent()->parent();
 }
 
-void PatchSectionView::addNewCircuit(QString name, jackselection_t jackSelection)
-{
-    QString actionTitle = QString("adding new '") + name + "' circuit";
-    the_forge->registerEdit(actionTitle);
-
-    int newPosition;
-    if (!isEmpty()) {
-        newPosition = section()->cursorPosition().circuitNr;
-        if (section()->cursorPosition().row != -2)
-            newPosition ++;
-    }
-    else
-        newPosition = 0;
-
-    section()->addNewCircuit(newPosition, name, jackSelection);
-    rebuildPatchSection();
-    updateCursor();
-    patchHasChanged();
-}
 
 
 void PatchSectionView::addNewJack(QString name)

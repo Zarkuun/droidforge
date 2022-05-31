@@ -16,8 +16,8 @@ PatchSectionManager::PatchSectionManager(QWidget *parent)
 {
     setFocusPolicy(Qt::NoFocus);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setMinimumWidth(100);
-    setMaximumWidth(500);
+    setMinimumWidth(150);
+    setMaximumWidth(300);
     setScene(new QGraphicsScene());
     scene()->setBackgroundBrush(QColor(PSM_COLOR_BACKGROUND));
     setAlignment(Qt::AlignLeft | Qt::AlignTop);

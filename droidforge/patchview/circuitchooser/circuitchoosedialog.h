@@ -29,15 +29,20 @@ class CircuitChooseDialog : public Dialog
     QLineEdit *lineEditSearch;
     CircuitCollection *searchResults;
 
-public:
     CircuitChooseDialog(QWidget *parent = nullptr);
     QString getSelectedCircuit() const;
     jackselection_t getJackSelection() const;
-    void keyPressEvent(QKeyEvent *event);
-    void accept();
+
+public:
+    static QString chooseCircuit(jackselection_t &jsel);
     static QString chooseCircuit(QString oldCircuit);
 
+protected:
+    void keyPressEvent(QKeyEvent *event);
+    void accept();
+
 private:
+    static QString chooseCircuit(jackselection_t &jsel, QString oldCircuit);
     void addCategoryTab(QString category, QString title);
     void setCurrentCircuit(QString name);
 

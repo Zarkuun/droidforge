@@ -108,11 +108,16 @@ private:
     QChar keyToChar(int key); // TODO: was soll das hier?
     void mouseClick(QPoint pos, int button, bool doubleClock);
 
+    void connectActions();
+
 public slots:
     void changePatch(VersionedPatch *patch);
+    void modifyPatch();
     void switchSection();
+    void newCircuit();
 
 signals:
+    void patchModified();
     void cursorMoved(const CursorPosition &pos);
 };
 

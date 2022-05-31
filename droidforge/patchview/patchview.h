@@ -3,7 +3,6 @@
 
 #include "patch.h"
 #include "patchsectionview.h"
-#include "circuitchoosedialog.h"
 #include "jackchoosedialog.h"
 #include "patchpropertiesdialog.h"
 #include "clipboard.h"
@@ -57,7 +56,6 @@ private:
 
 public slots:
     void editProperties();
-    void newCircuit();
     void addJack();
     void editValue();
     void startPatching();

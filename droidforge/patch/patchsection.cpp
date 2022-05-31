@@ -188,8 +188,17 @@ void PatchSection::moveCursorToPreviousCircuit()
         cursor.circuitNr --;
 }
 
-void PatchSection::addNewCircuit(int pos, QString name, jackselection_t jackSelection)
+void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
 {
+    int newPosition;
+    if (!circuits.isEmpty()) {
+        newPosition = cursorPosition().circuitNr;
+        if (cursorPosition().row != -2)
+            newPosition ++;
+    }
+    else
+        newPosition = 0;
+
     QStringList emptyComment;
     Circuit *circuit = new Circuit(name, emptyComment);
 
@@ -201,9 +210,9 @@ void PatchSection::addNewCircuit(int pos, QString name, jackselection_t jackSele
     for (qsizetype o=0; o<eo.count(); o++) {;
         circuit->addJackAssignment(new JackAssignmentOutput(eo[o]));
     }
-    circuits.insert(pos, circuit);
+    circuits.insert(newPosition, circuit);
     cursor.row = -2;
-    cursor.circuitNr = pos;
+    cursor.circuitNr = newPosition;
 }
 
 void PatchSection::addCircuit(int pos, Circuit *circuit)

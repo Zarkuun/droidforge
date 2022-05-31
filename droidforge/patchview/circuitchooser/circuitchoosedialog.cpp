@@ -84,7 +84,6 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     connect(previousCategoryAct, &QAction::triggered, this, &CircuitChooseDialog::previousCategory);
 }
 
-
 QString CircuitChooseDialog::getSelectedCircuit() const
 {
     CircuitCollection *collection = (CircuitCollection *)tabWidget->currentWidget();
@@ -112,7 +111,18 @@ void CircuitChooseDialog::accept()
     QDialog::accept();
 }
 
+QString CircuitChooseDialog::chooseCircuit(jackselection_t &jsel)
+{
+    return chooseCircuit(jsel, "");
+}
+
 QString CircuitChooseDialog::chooseCircuit(QString oldCircuit)
+{
+    jackselection_t jsel;
+    return chooseCircuit(jsel, oldCircuit);
+}
+
+QString CircuitChooseDialog::chooseCircuit(jackselection_t &jsel, QString oldCircuit)
 {
     static CircuitChooseDialog *dialog = 0;
     if (!dialog)
@@ -120,12 +130,13 @@ QString CircuitChooseDialog::chooseCircuit(QString oldCircuit)
 
     if (!oldCircuit.isEmpty())
         dialog->setCurrentCircuit(oldCircuit);
-    if (dialog->exec() == QDialog::Accepted)
+    if (dialog->exec() == QDialog::Accepted) {
+        jsel = dialog->getJackSelection();
         return dialog->getSelectedCircuit();
+    }
     else
         return "";
 }
-
 
 void CircuitChooseDialog::addCategoryTab(QString category, QString title)
 {

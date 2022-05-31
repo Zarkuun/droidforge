@@ -39,7 +39,7 @@ public:
     void sanitizeCursor();
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
-    void addNewCircuit(int pos, QString name, jackselection_t jackSelection);
+    void addNewCircuit(QString name, jackselection_t jackSelection);
     void addCircuit(int pos, Circuit *circuit);
     void addCircuit(Circuit *circuit);
 
