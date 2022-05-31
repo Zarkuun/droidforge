@@ -84,6 +84,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
+    CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchSectionView::editCircuitComment);
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
     CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchSectionView::zoomOut);
@@ -750,14 +751,13 @@ void PatchSectionView::editCircuitComment(int key)
         oldComment = circuit->getComment();
     QString newComment = CommentDialog::editComment(oldComment);
     if (newComment != oldComment) {
-        QString actionTitle = QString("changing comment for circuit '") + circuit->getName() + "'";
-        the_forge->registerEdit(actionTitle);
         if (newComment != "")
             circuit->setComment(newComment);
         else
             circuit->removeComment();
-        rebuildPatchSection();
-        patchHasChanged();
+        section()->setCursorRow(-1);
+        patch->commit(tr("changing comment for circuit '%1'").arg(circuit->getName()));
+        emit patchModified();
     }
 }
 
