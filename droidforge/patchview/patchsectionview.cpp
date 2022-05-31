@@ -648,8 +648,6 @@ void PatchSectionView::editJack(int key)
                 ja->jackType());
 
     if (!name.isEmpty()) {
-        QString actionTitle = QString("replacing jack with '") + name + "'";
-        the_forge->registerEdit(actionTitle);
         // When we convert formerly unknown jacks to known jacks,
         // we need to reparse the still unparsed value expression
         if (ja->jackType() == JACKTYPE_UNKNOWN) {
@@ -660,7 +658,8 @@ void PatchSectionView::editJack(int key)
         }
         else
             currentJackAssignment()->changeJack(name);
-        patchHasChanged();
+        patch->commit(tr("replacing jack with '%s'").arg(name));
+        emit patchModified();
     }
 }
 
@@ -738,7 +737,6 @@ void PatchSectionView::editAtom(int key)
         emit patchModified();
     }
 }
-
 
 void PatchSectionView::editCircuitComment(int key)
 {
