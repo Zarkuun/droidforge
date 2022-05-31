@@ -3,6 +3,7 @@
 #include "updatehub.h"
 #include "editoractions.h"
 #include "namechoosedialog.h"
+#include "interactivepatchoperation.h"
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -99,8 +100,29 @@ void PatchSectionManager::moveIntoSection()
 
 void PatchSectionManager::duplicateSection()
 {
+    int index = patch->currentSectionIndex();
+    PatchSection *oldSection = patch->section(index);
+    QString newname = NameChooseDialog::getName(
+                tr("Duplicate section"),
+                tr("New name:"),
+                oldSection->getTitle());
+    if (newname.isEmpty())
+        return;
 
+    Patch *newpatch = new Patch();
+    newpatch->addSection(oldSection->clone());
+    if (!InteractivePatchOperation::interactivelyRemapRegisters(patch, newpatch)) {
+        delete newpatch;
+        return;
+    }
+
+    PatchSection *newsection = newpatch->section(0)->clone();
+    patch->insertSection(index + 1, newsection);
+    patch->switchCurrentSection(index + 1);
+    delete newpatch;
+    emit patchModified(); // implies sectionSwitched
 }
+
 
 void PatchSectionManager::mergeWithLeftSection()
 {
@@ -123,7 +145,6 @@ void PatchSectionManager::newSectionAfterCurrent()
     patch->switchCurrentSection(index);
     patch->commit(tr("adding new patch section '%1'").arg(newname));
     emit patchModified();
-    emit sectionSwitched();
 }
 
 void PatchSectionManager::rebuildGraphics()

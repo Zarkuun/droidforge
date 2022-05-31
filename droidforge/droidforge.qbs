@@ -28,6 +28,8 @@ QtApplication {
         "main/cablestatusindicator.h",
         "main/editoractions.cpp",
         "main/editoractions.h",
+        "main/interactivepatchoperation.cpp",
+        "main/interactivepatchoperation.h",
         "main/patchproblemindicator.cpp",
         "main/patchproblemindicator.h",
         "main/patchsectionmanager.cpp",

@@ -185,36 +185,6 @@ void PatchView::moveIntoSection()
     the_forge->patchHasChanged();
 }
 
-void PatchView::duplicateSection()
-{
-    int index = currentIndex();
-    PatchSection *oldSection = patch->section(index);
-    QString newname = NameChooseDialog::getName(
-                tr("Duplicate section"),
-                tr("New name:"),
-                oldSection->getTitle());
-    if (newname.isEmpty())
-        return;
-
-    Patch *newpatch = new Patch();
-    newpatch->addSection(oldSection->clone());
-    if (!interactivelyRemapRegisters(newpatch)) {
-        delete newpatch;
-        return;
-    }
-
-    the_forge->registerEdit(tr("duplicating section '%1'").arg(oldSection->getTitle()));
-    PatchSection *newsection = newpatch->section(0)->clone();
-    PatchSectionView *psv = new PatchSectionView(patch); // TODO patch, newsection, zoomLevel);
-    connect(psv, &PatchSectionView::cursorMoved, this, &PatchView::sectionCursorMoved);
-    patch->insertSection(index + 1, newsection);
-    patch->switchCurrentSection(index + 1);
-    insertTab(index + 1, psv, newname);
-    setCurrentIndex(patch->currentSectionIndex());
-    delete newpatch;
-    the_forge->patchHasChanged();
-}
-
 void PatchView::mergeWithLeftSection()
 {
     mergeSections(currentIndex(), currentIndex() - 1);

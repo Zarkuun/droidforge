@@ -171,7 +171,7 @@ void EditorActions::createActions()
     actions[ACTION_NEXT_SECTION]->setStatusTip(tr("Switch to the next section"));
 
     actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("New section..."), this);
-    actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("Duplicate section"), this);
+    actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("Duplicate section..."), this);
 
     actions[ACTION_RENAME_PATCH_SECTION] = new QAction(tr("Rename section..."), this);
     actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("Delete section"), this);
