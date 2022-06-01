@@ -32,6 +32,7 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     setLayout(mainLayout);
 
     connect(jackSelector, &JackSelector::cursorMoved, this, &JackChooseDialog::cursorMoved);
+    connect(jackSelector, &JackSelector::accepted, this, &JackChooseDialog::accept);
 }
 
 

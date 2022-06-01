@@ -26,6 +26,7 @@ public:
     QString getComment() const;
     bool isDisabled() const { return disabled; };
     void setDisabledWithJacks(bool d);
+    void setEnabled() { disabled = false; };
     void setComment(QString c);
     bool hasComment() const { return !comment.empty(); };
     void removeComment();

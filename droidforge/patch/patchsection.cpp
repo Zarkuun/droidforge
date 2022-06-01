@@ -410,8 +410,10 @@ void PatchSection::shiftControllerNumbers(int number, int by)
 
 void PatchSection::collectRegisterAtoms(RegisterList &sl) const
 {
-    for (auto circuit: circuits)
-        circuit->collectRegisterAtoms(sl);
+    for (auto circuit: circuits) {
+        if (!circuit->isDisabled())
+            circuit->collectRegisterAtoms(sl);
+    }
 }
 
 void PatchSection::remapRegister(AtomRegister from, AtomRegister to)

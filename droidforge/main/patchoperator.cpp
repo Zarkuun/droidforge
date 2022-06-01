@@ -22,6 +22,13 @@ const PatchSection *PatchOperator::section() const
 
 bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch)
 {
+    // ontoPatch is that patch that the "otherPatch" want's to get integrated
+    // to. In situations where the otherPatch does not have controllers, that
+    // would be added to the target patch, ontoPatch is 0 and we can simply
+    // use the "live" patch, since it will not be changed.
+    if (ontoPatch == 0)
+        ontoPatch = patch;
+
     // Phase 1: If the other patch defines controllers, we can add these
     // controllers to our patch (and shift all references, of course)
     const QStringList &controllers = otherPatch->allControllers();

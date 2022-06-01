@@ -165,8 +165,10 @@ void Circuit::shiftControllerNumbers(int number, int by)
 
 void Circuit::collectRegisterAtoms(RegisterList &sl) const
 {
-    for (auto ja: jackAssignments)
-        ja->collectRegisterAtoms(sl);
+    for (auto ja: jackAssignments) {
+        if (!ja->isDisabled())
+            ja->collectRegisterAtoms(sl);
+    }
 }
 
 void Circuit::remapRegister(AtomRegister from, AtomRegister to)

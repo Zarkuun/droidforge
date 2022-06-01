@@ -17,7 +17,6 @@ JackSelector::JackSelector(QWidget *parent)
     initScene();
 }
 
-
 void JackSelector::setCircuit(const QString &c, const QString &current, const QStringList &uj, jacktype_t onlyType, QString search)
 {
     circuit = c;
@@ -43,17 +42,14 @@ void JackSelector::keyPressEvent(QKeyEvent *event)
 
 void JackSelector::mousePressEvent(QMouseEvent *event)
 {
-    if (event->type() == QMouseEvent::MouseButtonPress) {
-        if (!handleMousePress(event->pos())) {
-            // TODO
-        }
-    }
-
+    if (event->button() == Qt::LeftButton)
+        handleMousePress(event->pos());
 }
 
-void JackSelector::mouseDoubleClickEvent(QMouseEvent *)
+void JackSelector::mouseDoubleClickEvent(QMouseEvent *event)
 {
-
+    handleMousePress(event->pos());
+    emit accepted();
 }
 
 QString JackSelector::getSelectedJack() const
@@ -63,7 +59,6 @@ QString JackSelector::getSelectedJack() const
         jack += QString::number(currentSubjack+1);
     return jack;
 }
-
 
 void JackSelector::initScene()
 {
@@ -108,7 +103,6 @@ void JackSelector::loadJacks(QString circuit, QString search)
     jcv->setPos(x, y);
 }
 
-
 void JackSelector::setCursor(QString current)
 {
     if (!current.isEmpty()) {
@@ -132,7 +126,6 @@ void JackSelector::setCursor(QString current)
     selectCurrentJack(true);
 }
 
-
 unsigned JackSelector::createJacks(const QStringList &jacks, int column)
 {
     unsigned height = 0;
@@ -145,7 +138,6 @@ unsigned JackSelector::createJacks(const QStringList &jacks, int column)
     }
     return height;
 }
-
 
 void JackSelector::placeJacks(int totalHeight, float space, int column)
 {
@@ -193,7 +185,6 @@ void JackSelector::placeJacks(int totalHeight, float space, int column)
     }
 }
 
-
 void JackSelector::moveCursorUpDown(int whence)
 {
     int rows = jackViews[currentColumn].count();
@@ -230,7 +221,6 @@ void JackSelector::moveCursorUpDown(int whence)
     selectCurrentJack(true);
     ensureVisible(currentJack(), JSEL_SCROLL_MARGIN, JSEL_SCROLL_MARGIN);
 }
-
 
 void JackSelector::moveCursorLeftRight(int whence)
 {

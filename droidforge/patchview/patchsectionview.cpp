@@ -446,18 +446,18 @@ void PatchSectionView::pasteSmart()
 
 void PatchSectionView::disableObjects()
 {
-    qDebug("DIS");
     enableDisableObjects(false);
 }
 
 void PatchSectionView::enableObjects()
 {
-    qDebug("ENA");
     enableDisableObjects(true);
 }
 
 void PatchSectionView::enableDisableObjects(bool enable)
 {
+    // Important: There *never* must be an enabled jack on
+    // a disable circuit!
     QString what = enable ? tr("enabling") : tr("disabling");
     const Selection *selection = section()->getSelection();
     if (selection) {
@@ -475,6 +475,8 @@ void PatchSectionView::enableDisableObjects(bool enable)
         else if (selection->isJackSelection())
         {
             Circuit *circuit = section()->circuit(fromPos.circuitNr);
+            if (enable && circuit->isDisabled())
+                circuit->setEnabled(); // circuit must be enabled if a jack is enabled
             for (int i=fromPos.row; i<=toPos.row; i++) {
                 if (i < 0)
                     continue;
@@ -489,6 +491,8 @@ void PatchSectionView::enableDisableObjects(bool enable)
         JackAssignment *ja = currentJackAssignment();
         if (ja) {
             ja->setDisabled(!enable);
+            if (enable && currentCircuit()->isDisabled())
+                currentCircuit()->setEnabled();
             patch->commit(tr("%1 assignment of jack").arg(what));
             emit patchModified();
             return;
@@ -655,12 +659,10 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
     ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
     //menu->addAction(the_forge->action(ACTION_NEW_CIRCUIT));
     if (cv) {
-        // TODO: Copy, Paste, cut....
-        ADD_ACTION(ACTION_DISABLE, menu);
-        ADD_ACTION(ACTION_ENABLE, menu);
-        ADD_ACTION(ACTION_EDIT_VALUE, menu);
         ADD_ACTION(ACTION_ADD_JACK, menu);
+        ADD_ACTION(ACTION_EDIT_VALUE, menu);
         ADD_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, menu);
+
         // TOOD:
         // - remove circut
         // - remove comment
@@ -683,6 +685,12 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
                 ADD_ACTION(ACTION_ABORT_PATCHING, menu);
             }
         }
+
+        menu->addSeparator();
+
+        // TODO: Copy, Paste, cut....
+        ADD_ACTION(ACTION_DISABLE, menu);
+        ADD_ACTION(ACTION_ENABLE, menu);
     }
 
     menu->setAttribute(Qt::WA_DeleteOnClose);

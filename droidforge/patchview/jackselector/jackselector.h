@@ -42,6 +42,7 @@ private:
 
 signals:
     void cursorMoved(bool onActive);
+    void accepted();
 
 public slots:
     void searchChanged(QString text);

@@ -22,6 +22,7 @@ void PatchEditEngine::clearVersions()
 {
     for (auto version: versions)
         delete version;
+    versions.clear();
 }
 
 void PatchEditEngine::startFromScratch()
