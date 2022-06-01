@@ -223,7 +223,9 @@ void PatchSectionManager::rebuildGraphics()
     int width = viewport()->width() - 2 * PSM_SIDE_PADDING;
 
     for (qsizetype i=0; i<patch->numSections(); i++) {
-        PatchSectionTitleView *item = new PatchSectionTitleView(patch->section(i)->getNonemptyTitle(), width);
+        PatchSection *section = patch->section(i);
+        unsigned numProblems = patch->numProblemsInSection(i);
+        PatchSectionTitleView *item = new PatchSectionTitleView(section->getNonemptyTitle(), width, numProblems);
         titleViews.append(item);
         item->setData(DATA_INDEX_SECTION_INDEX, i);
         scene()->addItem(item);
@@ -249,7 +251,6 @@ void PatchSectionManager::updateCursor()
 
 void PatchSectionManager::switchToSection(int i)
 {
-    qDebug() << "switche to " << i;
     patch->switchCurrentSection(i);
     emit sectionSwitched();
 }

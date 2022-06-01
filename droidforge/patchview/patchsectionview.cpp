@@ -126,9 +126,6 @@ void PatchSectionView::buildPatchSection()
 
 void PatchSectionView::updateProblemMarkers()
 {
-    qDebug() << "WIEDER AKTIVIEREN";
-    return;
-
     for (auto item: scene()->items()) {
         if (item->data(DATA_INDEX_PROBLEM).isValid()) {
             scene()->removeItem(item);
@@ -942,11 +939,6 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     emit patchModified();
 }
 
-void PatchSectionView::setCursorMode(cursor_mode_t mode)
-{
-    frameCursor.setMode(mode);
-}
-
 // Repositions the frameCursor so that it matches the current
 // cursor position in the current section
 void PatchSectionView::updateCursor()
@@ -958,6 +950,13 @@ void PatchSectionView::updateCursor()
         ensureVisible(tbr); // TODO: Das hier geht noch nicht so gut
 
         QRectF cr = currentCircuitView()->cellRect(pos.row, pos.column);
+        if (patch->isPatching())
+            frameCursor.setMode(CURSOR_PATCHING);
+        else if (patch->problemAt(patch->currentSectionIndex(), pos) != "")
+            frameCursor.setMode(CURSOR_PROBLEM);
+        else
+            frameCursor.setMode(CURSOR_NORMAL);
+
         frameCursor.setVisible(true);
         frameCursor.setRect(cr.translated(currentCircuitView()->pos()));
         frameCursor.startAnimation();

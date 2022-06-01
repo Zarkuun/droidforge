@@ -47,7 +47,6 @@ public:
     void updateCircuits();
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
-    void setCursorMode(cursor_mode_t mode);
     Patch *getSelectionAsPatch() const;
     void clearSelection();
     void rebuildPatchSection();

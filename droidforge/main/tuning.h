@@ -116,8 +116,9 @@
 #define PSM_TOP_PADDING                      (STANDARD_SPACING / 2)
 #define PSM_VERTICAL_DISATNCE                (STANDARD_SPACING / 2)
 #define PSM_SECTION_HEIGHT                   20
-#define PSM_COLOR_SECTION_BACKGROUND         QColor(50, 50, 50)
+#define PSM_COLOR_SECTION_BACKGROUND         QColor(40, 40, 40)
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
+#define PSM_IMAGE_MARGIN                     4
 
 // Circuit view (in patch view)
 #define CIRV_TOP_PADDING                     (2 * STANDARD_SPACING)

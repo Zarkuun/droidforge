@@ -83,7 +83,7 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *> allProblems;
     // TODO: Account for RAM usage in DROID
-    if (the_firmware->circuitExists(name)) {
+    if (!the_firmware->circuitExists(name)) {
         allProblems.append(
             new PatchProblem(-2, 0, tr("There is no such circuit with the name '%1'").arg(name)));
     }

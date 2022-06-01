@@ -10,5 +10,6 @@ KLEINERE FEATURE:
 - Jackzeilen oder Circuits disablen (auskommentieren)
 - View source code (oder open source code in text editor)
 - %a -> Alles auswählen
+- Sektinen mit Problemen sollen ein Warnsymbol bekommen
 
 BUGS:

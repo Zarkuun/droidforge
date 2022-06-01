@@ -261,9 +261,18 @@ void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
     }
 }
 
+unsigned Patch::numProblemsInSection(int i) const
+{
+    unsigned count = 0;
+    for (auto problem: problems) {
+        if (problem->getSection() == i)
+            count ++;
+    }
+    return count;
+}
+
 void Patch::updateProblems()
 {
-    qDebug() << Q_FUNC_INFO;
     for (auto problem: problems)
         delete problem;
     problems.clear();

@@ -78,7 +78,6 @@ void PatchProblemIndicator::jumpToNextProblem()
     const PatchProblem *problem = patch->problem(currentProblem++);
     if (currentProblem >= patch->numProblems())
         currentProblem = 0;
-    qDebug() << "JUMP TO" << currentProblem;
     int oldSection = patch->currentSectionIndex();
     patch->setCursorTo(problem->getSection(), problem->getCursorPosition());
     if (patch->currentSectionIndex() != oldSection)

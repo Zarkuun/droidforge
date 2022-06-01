@@ -59,6 +59,7 @@ public:
     void collectUsedRegisterAtoms(RegisterList &) const;
     void collectAvailableRegisterAtoms(RegisterList &) const;
     unsigned numProblems() const { return problems.count(); };
+    unsigned numProblemsInSection(int i) const;
     QString problemAt(int section, const CursorPosition &pos);
     const QList<PatchProblem *> &allProblems() const { return problems; };
     const PatchProblem *problem(unsigned nr) { return problems[nr]; };

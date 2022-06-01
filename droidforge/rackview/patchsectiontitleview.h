@@ -7,9 +7,11 @@ class PatchSectionTitleView : public QGraphicsItem
 {
     QString title;
     int width;
+    unsigned problems;
+    QImage warningImage;
 
 public:
-    PatchSectionTitleView(const QString title, int width);
+    PatchSectionTitleView(const QString &title, int width, unsigned problems);
     QRectF boundingRect() const override;
 
 protected:
