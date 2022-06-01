@@ -48,6 +48,7 @@ public:
     PatchSection *currentSection() { return sections[sectionIndex]; }; // never 0
     const Circuit *currentCircuit() const; // can be 0
     const Atom *currentAtom() const; // can be 0
+    void setCursorTo(int section, const CursorPosition &pos);
 
     // More complex analysis
     QStringList allCables() const;

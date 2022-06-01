@@ -20,7 +20,7 @@ typedef enum {
     ACTION_EDIT_VALUE,
     ACTION_EXPORT_SELECTION,
     ACTION_FINISH_PATCHING,
-    ACTION_FOLLOW_INTERNAL_CABLE,
+    ACTION_FOLLOW_CABLE,
     ACTION_INTEGRATE_PATCH,
     ACTION_JUMP_TO_NEXT_PROBLEM,
     ACTION_MERGE_WITH_PREVIOUS_SECTION,
@@ -66,6 +66,7 @@ private slots:
     void switchSection();
     void changeClipboard();
     void changeSelection(const Selection *selection);
+    void moveCursor();
     void changePatching();
 
 private:

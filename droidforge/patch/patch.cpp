@@ -185,6 +185,12 @@ const Atom *Patch::currentAtom() const
     return currentSection()->currentAtom();
 }
 
+void Patch::setCursorTo(int section, const CursorPosition &pos)
+{
+    sectionIndex = section;
+    currentSection()->setCursor(pos);
+}
+
 void Patch::setTitle(const QString &newTitle)
 {
     title = newTitle;

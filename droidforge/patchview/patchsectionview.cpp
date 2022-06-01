@@ -57,6 +57,7 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     connect(this, &PatchSectionView::patchModified, the_hub, &UpdateHub::modifyPatch);
     connect(this, &PatchSectionView::clipboardChanged, the_hub, &UpdateHub::changeClipboard);
     connect(this, &PatchSectionView::selectionChanged, the_hub, &UpdateHub::changeSelection);
+    connect(this, &PatchSectionView::sectionSwitched, the_hub, &UpdateHub::switchSection);
     connect(this, &PatchSectionView::cursorMoved, the_hub, &UpdateHub::moveCursor);
     connect(this, &PatchSectionView::patchingChanged, the_hub, &UpdateHub::changePatching);
 
@@ -93,6 +94,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_START_PATCHING, &PatchSectionView::startPatching);
     CONNECT_ACTION(ACTION_FINISH_PATCHING, &PatchSectionView::finishPatching);
     CONNECT_ACTION(ACTION_ABORT_PATCHING, &PatchSectionView::abortPatching);
+    CONNECT_ACTION(ACTION_FOLLOW_CABLE, &PatchSectionView::followCable);
 }
 
 void PatchSectionView::buildPatchSection()
@@ -537,7 +539,7 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
                 menu->addSeparator();
                 const Atom *atom = currentAtom();
                 if (atom && atom->isCable()) {
-                    ADD_ACTION(ACTION_FOLLOW_INTERNAL_CABLE, menu);
+                    ADD_ACTION(ACTION_FOLLOW_CABLE, menu);
                     ADD_ACTION(ACTION_RENAME_CABLE, menu);
                 }
                 ADD_ACTION(ACTION_START_PATCHING, menu);
@@ -666,9 +668,52 @@ void PatchSectionView::finishPatching()
 
 void PatchSectionView::abortPatching()
 {
-    qDebug() << Q_FUNC_INFO;
     patch->stopPatching();
     emit patchingChanged();
+}
+
+void PatchSectionView::followCable()
+{
+    const Atom *currentAtom = patch->currentAtom();
+    Q_ASSERT(currentAtom && currentAtom->isCable()); // sonst wär die Aktion disabled
+
+    QString name = ((AtomCable *)currentAtom)->getCable();
+
+    bool waitForNext = false;
+    bool found = false;
+
+    // First try to find the next atom *after* the current
+    Patch::iterator it = patch->begin();
+    while (*it) {
+        Atom *atom = *it;
+        if (atom == currentAtom)
+            waitForNext = true;
+        else if (waitForNext && atom->isCable() && ((AtomCable *)atom)->getCable() == name) {
+            found = true;
+            break;
+        }
+        ++it;
+    }
+
+    // Now try from the start of the patch
+    if (!found) {
+        it = patch->begin();
+        while (*it && *it != currentAtom) {
+            Atom *atom = *it;
+            if (atom->isCable() && ((AtomCable *)atom)->getCable() == name) {
+                found = true;
+                break;
+            }
+            ++it;
+        }
+    }
+
+    if (!found)
+        return;
+
+    patch->setCursorTo(it.sectionIndex(), it.cursorPosition());
+    emit sectionSwitched();
+    emit cursorMoved();
 }
 
 void PatchSectionView::editJack(int key)
@@ -1121,11 +1166,11 @@ bool PatchSectionView::atomCellSelected() const
     return (cp.row >= 0 && cp.column > 0);
 }
 
-void PatchSectionView::setCursorPosition(const CursorPosition &pos)
-{
-    section()->setCursor(pos);
-    updateCursor();
-}
+// void PatchSectionView::setCursorPosition(const CursorPosition &pos)
+// {
+//     section()->setCursor(pos);
+//     updateCursor();
+// }
 
 const CursorPosition &PatchSectionView::getCursorPosition() const
 {

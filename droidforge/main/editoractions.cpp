@@ -17,6 +17,7 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
     connect(the_hub, &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
     connect(the_hub, &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
     connect(the_hub, &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
+    connect(the_hub, &UpdateHub::cursorMoved, this, &EditorActions::moveCursor);
     connect(the_hub, &UpdateHub::patchingChanged, this, &EditorActions::changePatching);
 }
 
@@ -40,9 +41,10 @@ void EditorActions::modifyPatch()
         actions[ACTION_REDO]->setEnabled(false);
     }
 
-    // There alwas *must* be at least one section
     actions[ACTION_DELETE_PATCH_SECTION]->setEnabled(patch->numSections() >= 2);
     actions[ACTION_MERGE_ALL_SECTIONS]->setEnabled(patch->numSections() >= 2);
+
+    moveCursor();
     switchSection();
 }
 
@@ -64,6 +66,13 @@ void EditorActions::changeSelection(const Selection *selection)
 {
     actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
     actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
+}
+
+void EditorActions::moveCursor()
+{
+    const Atom *atom = patch->currentAtom();
+    actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
+    actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
 }
 
 void EditorActions::changePatching()
@@ -159,8 +168,8 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_VALUE] = new QAction(icon("edit"), tr("&Edit element under cursor..."), this);
     actions[ACTION_EDIT_VALUE]->setShortcuts({ QKeySequence(tr("Enter")),
                                     QKeySequence(tr("Return"))});
-    actions[ACTION_FOLLOW_INTERNAL_CABLE] = new QAction(icon("youtube_searched_for"), tr("&Follow internal cable"), this);
-    actions[ACTION_FOLLOW_INTERNAL_CABLE]->setShortcut(QKeySequence(tr("?")));
+    actions[ACTION_FOLLOW_CABLE] = new QAction(icon("youtube_searched_for"), tr("&Follow internal cable"), this);
+    actions[ACTION_FOLLOW_CABLE]->setShortcut(QKeySequence(tr("?")));
 
     actions[ACTION_RENAME_CABLE] = new QAction(tr("&Rename internal cable"), this);
     actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Ctrl+R")));
@@ -247,12 +256,6 @@ QIcon EditorActions::icon(QString what) const
     if (psv)
         atom = psv->currentAtom();
     bool isAtAtom = psv && psv->getCursorPosition().isAtAtom();
-
-    actions[ACTION_FOLLOW_INTERNAL_CABLE]->setEnabled(atom && atom->isCable());
-    actions[ACTION_RENAME_INTERNAL_CABLE]->setEnabled(atom && atom->isCable());
-    actions[ACTION_START_PATCHING]->setVisible(isAtAtom && !patchView.isPatching());
-    actions[ACTION_FINISH_PATCHING]->setVisible(isAtAtom && patchView.isPatching());
-    actions[ACTION_ABORT_PATCHING]->setVisible(patchView.isPatching());
 
     if (psv && patchView.numSections() > 1) {
         actionDeletePatchSection->setText(tr("Delete section '%1'").arg(psv->getTitle()));

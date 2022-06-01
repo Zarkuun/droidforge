@@ -54,7 +54,7 @@ public:
     const Atom *currentAtom() const;
     Atom *currentAtom();
     bool atomCellSelected() const;
-    void setCursorPosition(const CursorPosition &pos);
+    // void setCursorPosition(const CursorPosition &pos);
     const CursorPosition &getCursorPosition() const;
     void updateCursor();
     void updateProblemMarkers();
@@ -130,9 +130,11 @@ public slots:
     void startPatching();
     void finishPatching();
     void abortPatching();
+    void followCable();
 
 signals:
     void patchModified();
+    void sectionSwitched();
     void cursorMoved();
     void clipboardChanged();
     void selectionChanged(const Selection *selection);
