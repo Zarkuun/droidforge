@@ -5,6 +5,7 @@
 #include "circuitchoosedialog.h"
 #include "cursorposition.h"
 #include "patchproblem.h"
+#include "selection.h"
 
 #include <QList>
 
@@ -14,12 +15,13 @@ class PatchSection
 {
     CursorPosition cursor;
     QString title;
+    Selection *selection;
 
 public:
     QList<Circuit *> circuits; // TODO: Make this private
 
-    PatchSection() {}; // no title
-    PatchSection(QString t) : title(t) {};
+    PatchSection(); // no title
+    PatchSection(QString t);;
     ~PatchSection();
     PatchSection *clone() const;
     QString toString() const;
@@ -42,6 +44,13 @@ public:
     void addNewCircuit(QString name, jackselection_t jackSelection);
     void addCircuit(int pos, Circuit *circuit);
     void addCircuit(Circuit *circuit);
+
+    const Selection *getSelection() const { return selection; };
+    const Selection * const *getSelectionPointer() const { return &selection; };
+    Patch *getSelectionAsPatch() const;
+    void clearSelection();
+    void setMouseSelection(const CursorPosition &to);
+    void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
 
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
@@ -72,5 +81,7 @@ public:
 
 protected:
 };
+
+
 
 #endif // PATCHSECTION_H

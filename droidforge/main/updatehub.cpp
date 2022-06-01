@@ -34,12 +34,12 @@ void UpdateHub::changeClipboard()
     emit clipboardChanged();
 }
 
-void UpdateHub::changeSelection(const Selection *selection)
+void UpdateHub::changeSelection()
 {
     // Called when the range of the selection in the PatchSectionView
     // has changed.
     qDebug() << "HUB: changeSelection()";
-    emit selectionChanged(selection);
+    emit selectionChanged();
 }
 
 void UpdateHub::moveCursor()

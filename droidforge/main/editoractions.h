@@ -68,7 +68,7 @@ private slots:
     void modifyPatch();
     void switchSection();
     void changeClipboard();
-    void changeSelection(const Selection *selection);
+    void changeSelection();
     void moveCursor();
     void changePatching();
 

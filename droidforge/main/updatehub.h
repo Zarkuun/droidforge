@@ -16,7 +16,7 @@ public slots:
     void modifyPatch();
     void switchSection();
     void changeClipboard();
-    void changeSelection(const Selection *selection);
+    void changeSelection();
     void moveCursor();
     void changePatching();
     // TODO: Esc -> Abort all actions
@@ -25,7 +25,7 @@ signals:
     void patchModified();
     void sectionSwitched();
     void clipboardChanged();
-    void selectionChanged(const Selection *selection);
+    void selectionChanged();
     void patchingChanged();
     void cursorMoved();
 };

@@ -29,7 +29,6 @@ class PatchSectionView : public QGraphicsView, PatchOperator
 
     QList<CircuitView *>circuitViews;
     AtomSelectorDialog *atomSelectorDialog; // TODO: Jede Section hat nen eigenen Dialog
-    Selection *selection;
     FrameCursor frameCursor;
 
 public:
@@ -45,12 +44,9 @@ public:
     void editCircuitComment(int key);
     void renameCable();
     bool isEmpty() const;
-    bool circuitsSelected() const;
     void updateCircuits();
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
-    Patch *getSelectionAsPatch() const;
-    void clearSelection();
     void rebuildPatchSection();
     const Atom *currentAtom() const;
     Atom *currentAtom();
@@ -115,10 +111,11 @@ private:
     void pasteCircuitsFromClipboard();
     void clickOnInfoMarker(const InfoMarker *info);
     void editJackCommentAt(const CursorPosition &pos);
+    void clearSelection();
 
 public slots:
     void modifyPatch();
-    void changeSelection(const Selection *);
+    void changeSelection();
     void switchSection();
     void moveCursor();
     void changePatching();
@@ -146,7 +143,7 @@ signals:
     void sectionSwitched();
     void cursorMoved();
     void clipboardChanged();
-    void selectionChanged(const Selection *selection);
+    void selectionChanged();
     void patchingChanged();
 };
 

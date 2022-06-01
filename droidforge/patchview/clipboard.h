@@ -21,7 +21,7 @@ public:
     Clipboard();
     Clipboard(const QList<Circuit *>);
     ~Clipboard();
-    void copyFromSelection(Selection *sel, const PatchSection *section);
+    void copyFromSelection(const Selection *sel, const PatchSection *section);
     bool isEmpty() const;
     unsigned numCircuits() const;
     unsigned numJacks() const;

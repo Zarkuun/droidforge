@@ -62,8 +62,9 @@ void EditorActions::changeClipboard()
     actions[ACTION_PASTE_SMART]->setEnabled(the_clipboard->numCircuits());
 }
 
-void EditorActions::changeSelection(const Selection *selection)
+void EditorActions::changeSelection()
 {
+    const Selection *selection = section()->getSelection();
     actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
     actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
     updateDisablingActions();

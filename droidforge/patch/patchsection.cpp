@@ -1,4 +1,5 @@
 #include "patchsection.h"
+#include "clipboard.h"
 #include "droidfirmware.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
@@ -6,11 +7,21 @@
 #include "globals.h"
 
 
+PatchSection::PatchSection()
+    : selection(0)
+{
+}
+
+PatchSection::PatchSection(QString t)
+    : title(t)
+    , selection(0)
+{
+}
+
 PatchSection::~PatchSection()
 {
     for (qsizetype i=0; i<circuits.length(); i++)
         delete circuits[i];
-
 }
 
 PatchSection *PatchSection::clone() const
@@ -224,6 +235,47 @@ void PatchSection::addCircuit(int pos, Circuit *circuit)
 void PatchSection::addCircuit(Circuit *circuit)
 {
     circuits.append(circuit);
+}
+
+Patch *PatchSection::getSelectionAsPatch() const
+{
+    Clipboard cb;
+    cb.copyFromSelection(selection, this);
+    return cb.getAsPatch();
+}
+
+void PatchSection::clearSelection()
+{
+    if (selection) {
+        delete selection;
+        selection = 0;
+    }
+}
+
+void PatchSection::setMouseSelection(const CursorPosition &to)
+{
+    if (selection)
+        delete selection;
+    selection = new Selection(cursor, to);
+}
+
+void PatchSection::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
+{
+    if (selection) {
+        CursorPosition from, to;
+        if (selection->fromPos() == before) {
+            from = after;
+            to = selection->toPos();
+        }
+        else {
+            from = selection->fromPos();
+            to = after;
+        }
+        delete selection;
+        selection = new Selection(from, to);
+    }
+    else
+        selection = new Selection(before, after);
 }
 
 void PatchSection::collectCables(QStringList &cables) const

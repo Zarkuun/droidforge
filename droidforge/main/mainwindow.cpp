@@ -447,7 +447,7 @@ void MainWindow::exportSelection()
                 "",
                 tr("DROID patch files (*.ini)"));
     if (!filePath.isEmpty()) {
-        Patch *patch = patchSectionView.getSelectionAsPatch();
+        Patch *patch = section()->getSelectionAsPatch();
         // TODO: Error if it failed
         patch->saveToFile(filePath);
         delete patch;

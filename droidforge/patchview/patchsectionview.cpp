@@ -37,7 +37,6 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     , zoomLevel(0)
     , zoomFactor(1.0)
     , atomSelectorDialog{}
-    , selection(0)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -115,7 +114,7 @@ void PatchSectionView::buildPatchSection()
         CircuitView *cv = new CircuitView(
                     circuit,
                     i,
-                    &selection,
+                    section()->getSelectionPointer(),
                     circuitWidth,
                     fontMetrics().lineSpacing(),
                     isLast ? CIRV_TOP_PADDING : 0);
@@ -331,7 +330,7 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
         handleRightMousePress(0, CursorPosition());
 }
 
-void PatchSectionView::changeSelection(const Selection *)
+void PatchSectionView::changeSelection()
 {
     rebuildPatchSection();
 }
@@ -578,10 +577,9 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 {
     if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier) {
         setMouseSelection(curPos);
-        emit selectionChanged(selection);
     }
     else {
-        clearSelection();
+        section()->clearSelection();
         section()->setCursor(curPos);
         emit cursorMoved();
     }
@@ -591,7 +589,7 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
 {
     // TODO: Show a different menu when a selection is active and
     // a cell from the selection is being hit?
-    if (selection) {
+    if (section()->getSelection()) {
         return;
     }
 
@@ -680,6 +678,7 @@ QChar PatchSectionView::keyToChar(int key)
 
 void PatchSectionView::copyToClipboard()
 {
+    const Selection *selection = section()->getSelection();
     if (selection) {
         the_clipboard->copyFromSelection(selection, section());
     }
@@ -690,20 +689,13 @@ void PatchSectionView::copyToClipboard()
     emit clipboardChanged();
 }
 
-Patch *PatchSectionView::getSelectionAsPatch() const
-{
-    Clipboard cb;
-    cb.copyFromSelection(selection, section());
-    return cb.getAsPatch();
-}
-
 void PatchSectionView::createSectionFromSelection()
 {
     QString newname = NameChooseDialog::getName(tr("Create new section from selection"), tr("New name:"));
     if (newname.isEmpty())
         return;
     Clipboard cb;
-    cb.copyFromSelection(selection, patch->currentSection());
+    cb.copyFromSelection(section()->getSelection(), section());
     deleteCursorOrSelection();
     PatchSection *newSection = new PatchSection(newname);
     for (auto circuit: cb.getCircuits())
@@ -968,11 +960,6 @@ bool PatchSectionView::isEmpty() const
     return section()->circuits.empty();
 }
 
-bool PatchSectionView::circuitsSelected() const
-{
-    return selection && selection->isCircuitSelection();
-}
-
 void PatchSectionView::updateCircuits()
 {
     for (unsigned i=0; i<circuitViews.size(); i++)
@@ -1035,39 +1022,20 @@ void PatchSectionView::updateCursor()
 
 void PatchSectionView::setMouseSelection(const CursorPosition &to)
 {
-    if (selection)
-        delete selection;
-    selection = new Selection(section()->cursorPosition(), to);
-    emit selectionChanged(selection);
+    section()->setMouseSelection(to);
+    emit selectionChanged();
 }
 
 void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
 {
-    if (selection) {
-        CursorPosition from, to;
-        if (selection->fromPos() == before) {
-            from = after;
-            to = selection->toPos();
-        }
-        else {
-            from = selection->fromPos();
-            to = after;
-        }
-        delete selection;
-        selection = new Selection(from, to);
-    }
-    else
-        selection = new Selection(before, after);
-    emit selectionChanged(selection);
+    section()->updateKeyboardSelection(before, after);
+    emit selectionChanged();
 }
 
 void PatchSectionView::clearSelection()
 {
-    if (selection) {
-        delete selection;
-        selection = 0;
-        emit selectionChanged(selection);
-    }
+    section()->clearSelection();
+    emit selectionChanged();
 }
 
 CircuitView *PatchSectionView::currentCircuitView()
@@ -1115,6 +1083,7 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
 
 void PatchSectionView::deleteCursorOrSelection()
 {
+    const Selection *selection = section()->getSelection();
     if (selection) {
         // When just a single object is selected, we can use
         // the existing functions for deleting at the cursor position
