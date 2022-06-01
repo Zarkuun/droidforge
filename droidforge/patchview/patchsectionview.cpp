@@ -12,7 +12,6 @@
 #include "tuning.h"
 #include "commentdialog.h"
 #include "circuitchoosedialog.h"
-#include "patchview.h"
 #include "namechoosedialog.h"
 #include "problemmarker.h"
 #include "circuitchoosedialog.h"

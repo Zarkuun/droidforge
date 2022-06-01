@@ -378,6 +378,7 @@ void MainWindow::loadPatch(const QString &aFilePath)
     patch->startFromScratch();
     parser.parse(aFilePath, patch);
     filePath = aFilePath;
+    patch->commit(tr("loading patch"));
     emit patchModified();
 }
 
@@ -388,6 +389,7 @@ void MainWindow::newPatch()
 
     patch->startFromScratch();
     patch->addSection(new PatchSection());
+    patch->commit(tr("creating new patch"));
     filePath = "";
     emit patchModified();
 }
@@ -414,7 +416,7 @@ void MainWindow::save()
     if (filePath.isEmpty())
         saveAs();
     else {
-        patch->saveToFile(filePath);
+        patch->save(filePath);
         emit patchModified(); // mod flag
     }
 }
@@ -427,7 +429,7 @@ void MainWindow::saveAs()
                 filePath,
                 tr("DROID patch files (*.ini)"));
     if (!newFilePath.isEmpty()) {
-        patch->saveToFile(newFilePath);
+        patch->save(newFilePath);
         filePath = newFilePath;
         emit patchModified(); // mod flag
         addToRecentFiles(newFilePath);
@@ -449,8 +451,8 @@ void MainWindow::exportSelection()
                 tr("DROID patch files (*.ini)"));
     if (!filePath.isEmpty()) {
         Patch *patch = patchSectionView.getSelectionAsPatch();
-        PatchEditEngine vp(patch);
-        vp.saveToFile(filePath);
+        // TODO: Error if it failed
+        patch->saveToFile(filePath);
         delete patch;
         addToRecentFiles(filePath);
     }

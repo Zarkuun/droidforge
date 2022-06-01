@@ -18,7 +18,7 @@ public:
     void mousePressEvent(QMouseEvent *);
 
 public slots:
-    void problemsChanged(unsigned count);
+    void updateStatus();
 
 signals:
     void clicked();

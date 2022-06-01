@@ -4,16 +4,11 @@
 #include <QTextStream>
 #include <QFile>
 
-PatchEditEngine::PatchEditEngine(const Patch *patch)
-    : redoPointer(-1)
-    , versionOnDisk(0)
-    , patching(false)
-{
-    patch->cloneInto(this);
-    commit(); // initial commit, so we always have version 0
-}
-
+// Does *not* do a commit()!
 PatchEditEngine::PatchEditEngine()
+    : redoPointer(-1)
+    , versionOnDisk(-1)
+    , patching(false)
 {
     addSection(new PatchSection()); // there always must be one section
 }
@@ -31,10 +26,11 @@ void PatchEditEngine::clearVersions()
 
 void PatchEditEngine::startFromScratch()
 {
+    patching = false;
+    redoPointer = -1;
+    versionOnDisk = -1;
     clear();
     clearVersions();
-    redoPointer = -1;
-    versionOnDisk = 0;
 }
 
 bool PatchEditEngine::isModified() const
@@ -42,17 +38,9 @@ bool PatchEditEngine::isModified() const
     return versionOnDisk != redoPointer;
 }
 
-bool PatchEditEngine::saveToFile(QString filePath)
+bool PatchEditEngine::save(QString filePath)
 {
-    QFile file(filePath);
-    // TODO: filename
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-          return false;
-    QTextStream stream(&file);
-    stream << toString();
-    stream.flush();
-    file.close();
-    if (stream.status() == QTextStream::Ok) {
+    if (saveToFile(filePath)) {
         versionOnDisk = redoPointer;
         setFilePath(filePath);
         return true;
@@ -63,7 +51,6 @@ bool PatchEditEngine::saveToFile(QString filePath)
 
 void PatchEditEngine::commit(QString message)
 {
-    qDebug() << "COMMIT" << message;
     // One new edit step erases all possible redos
     while (redoPointer + 1 < versions.size()) {
         delete versions.last();

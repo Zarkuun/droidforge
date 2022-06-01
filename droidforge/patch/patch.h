@@ -30,6 +30,7 @@ public:
     Patch *clone() const;
     void cloneInto(Patch *otherPatch) const;
     QString toString() const;
+    bool saveToFile(const QString filePath) const;
 
     // Simple access functions
     const QString &getTitle() const;
@@ -92,7 +93,7 @@ public:
     void renameCable(const QString &oldName, const QString &newName);
 
 protected:
-    void updateProblems(); // only done by VersionedPatch::commit()
+    void updateProblems();
     void clear();
 
 private:

@@ -263,6 +263,7 @@ void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
 
 void Patch::updateProblems()
 {
+    qDebug() << Q_FUNC_INFO;
     for (auto problem: problems)
         delete problem;
     problems.clear();
@@ -366,6 +367,19 @@ QString Patch::toString() const
         s.chop(1);
     return s;
 
+}
+
+bool Patch::saveToFile(const QString filePath) const
+{
+    QFile file(filePath);
+    // TODO: filename
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+          return false;
+    QTextStream stream(&file);
+    stream << toString();
+    stream.flush();
+    file.close();
+    return stream.status() == QTextStream::Ok;
 }
 
 void Patch::iterator::moveToFirstAtom()

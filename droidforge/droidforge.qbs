@@ -139,8 +139,6 @@ QtApplication {
         "patchview/patchintegrationdialog.h",
         "patchview/patchsectionview.cpp",
         "patchview/patchsectionview.h",
-        "patchview/patchview.cpp",
-        "patchview/patchview.h",
         "patchview/registerselector.cpp",
         "patchview/registerselector.h",
         "patchview/circuitchooser/circuitchoosedialog.cpp",

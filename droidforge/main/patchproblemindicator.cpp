@@ -1,5 +1,6 @@
 #include "patchproblemindicator.h"
 #include "tuning.h"
+#include "updatehub.h"
 
 #include <QPainter>
 #include <QDebug>
@@ -14,6 +15,9 @@ PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *pa
 {
     setMinimumWidth(PPI_WIDTH);
     setMaximumWidth(PPI_WIDTH);
+
+    // Events that we are interested in
+    connect(the_hub, &UpdateHub::patchModified, this, &PatchProblemIndicator::updateStatus);
 }
 
 void PatchProblemIndicator::paintEvent(QPaintEvent *)
@@ -42,13 +46,14 @@ void PatchProblemIndicator::mousePressEvent(QMouseEvent *event)
         emit clicked();
 }
 
-void PatchProblemIndicator::problemsChanged(unsigned count)
+void PatchProblemIndicator::updateStatus()
 {
-    numProblems = count;
-    if (count) {
+    qDebug() << Q_FUNC_INFO;
+    numProblems = patch->numProblems();
+    if (numProblems) {
         setToolTip(tr("Your patch has %1 problems. You need to fix then "
                       "before you can load it to your master. Click here "
-                      "to jump to the first problem.").arg(count));
+                      "to jump to the first problem.").arg(numProblems));
         setCursor(Qt::PointingHandCursor);
     }
     else {

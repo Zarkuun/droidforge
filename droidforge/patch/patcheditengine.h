@@ -21,12 +21,11 @@ class PatchEditEngine : public Patch
     CursorPosition patchingStartPosition; // invalid if patching == false
 
 public:
-    PatchEditEngine(const Patch *patch);
     PatchEditEngine(); // empty
     ~PatchEditEngine();
     void startFromScratch();
     bool isModified() const;
-    bool saveToFile(QString filename);
+    bool save(QString filename);
     void commit(QString message="");
     qsizetype size() const { return versions.size(); };
     void undo();
