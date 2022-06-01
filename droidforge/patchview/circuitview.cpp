@@ -172,6 +172,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
     int imageTop = 4;
 
     painter->setPen(textcolor);
+    painter->setPen(QColor(240, 240, 240));
 
     if (atom) {
         QString text(tr(atom->toDisplay().toLatin1()));
