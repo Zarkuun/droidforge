@@ -244,6 +244,10 @@ QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
 
     int circuitNr=0;
     for (auto circuit: circuits) {
+        if (circuit->isDisabled()) {
+            circuitNr++;
+            continue; // does not count
+        }
         for (auto problem: circuit->collectProblems(patch)) {
             problem->setCircuit(circuitNr);
             allProblems.append(problem);

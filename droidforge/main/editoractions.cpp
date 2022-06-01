@@ -66,6 +66,7 @@ void EditorActions::changeSelection(const Selection *selection)
 {
     actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
     actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
+    updateDisablingActions();
 }
 
 void EditorActions::moveCursor()
@@ -75,6 +76,12 @@ void EditorActions::moveCursor()
     actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(section()->currentCircuit());
     actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
+    updateDisablingActions();
+}
+
+void EditorActions::updateDisablingActions()
+{
+    // Selection *selection = section()->getSelection();
 }
 
 void EditorActions::changePatching()
@@ -160,6 +167,12 @@ void EditorActions::createActions()
     actions[ACTION_PASTE_SMART]->setStatusTip(tr("Paste circuits from clipboard but remap registers and internal connections "
                                  "in order to avoid conflicts."));
     actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
+
+    actions[ACTION_DISABLE] = new QAction(tr("&Disable"), this);
+    actions[ACTION_DISABLE]->setShortcut(QKeySequence(tr("#")));
+
+    actions[ACTION_ENABLE] = new QAction(tr("&Enable"), this);
+    actions[ACTION_ENABLE]->setShortcut(QKeySequence(tr("#")));
 
     actions[ACTION_NEW_CIRCUIT] = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));

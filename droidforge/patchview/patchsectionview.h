@@ -114,8 +114,8 @@ private:
     void pasteFromClipboard();
     void pasteCircuitsFromClipboard();
     void clickOnInfoMarker(const InfoMarker *info);
-
     void editJackCommentAt(const CursorPosition &pos);
+
 public slots:
     void modifyPatch();
     void changeSelection(const Selection *);
@@ -132,6 +132,8 @@ public slots:
     void copy();
     void paste();
     void pasteSmart();
+    void disableObjects();
+    void enableObjects();
     void createSectionFromSelection();
     void startPatching();
     void finishPatching();

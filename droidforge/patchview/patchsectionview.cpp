@@ -83,6 +83,8 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
     CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_DISABLE, &PatchSectionView::disableObjects);
+    CONNECT_ACTION(ACTION_ENABLE, &PatchSectionView::enableObjects);
     CONNECT_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, &PatchSectionView::createSectionFromSelection);
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
@@ -443,6 +445,16 @@ void PatchSectionView::pasteSmart()
     emit patchModified();
 }
 
+void PatchSectionView::disableObjects()
+{
+    qDebug("DIS");
+}
+
+void PatchSectionView::enableObjects()
+{
+    qDebug("ENA");
+}
+
 void PatchSectionView::pasteCircuitsFromClipboard()
 {
     int position = 0;
@@ -474,9 +486,17 @@ void PatchSectionView::pasteJacksFromClipboard()
     for (auto ja: jas) {
         // We need to reparse the jack assignment, because the circuit we
         // paste into is maybe another circuit and e.g. "clock" might have
-        // to change from an input to an output.
-        QString asString = ja->toString();
+        // to change from an input to an output. And we need to deal with
+        // disabled jack lines correctly here.
+        JackAssignment *clone = ja->clone();
+        bool jackDisabled = clone->isDisabled();
+        clone->setDisabled(false);
+        QString asString = clone->toString();
+        delete clone;
         JackAssignment *jaReparsed = JackAssignment::parseJackLine(circuit->getName(), asString);
+        if (circuit->isDisabled() || jackDisabled)
+            jaReparsed->setDisabled(true); // not allowed to paste enabled jacks into disabled circuit
+
         circuit->insertJackAssignment(jaReparsed, index);
         section()->setCursorRow(index);
         index++;
@@ -587,6 +607,9 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
     ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
     //menu->addAction(the_forge->action(ACTION_NEW_CIRCUIT));
     if (cv) {
+        // TODO: Copy, Paste, cut....
+        ADD_ACTION(ACTION_DISABLE, menu);
+        ADD_ACTION(ACTION_ENABLE, menu);
         ADD_ACTION(ACTION_EDIT_VALUE, menu);
         ADD_ACTION(ACTION_ADD_JACK, menu);
         ADD_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, menu);

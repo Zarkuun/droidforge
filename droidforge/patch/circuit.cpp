@@ -93,6 +93,11 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 
     int row=0;
     for (auto ja: jackAssignments) {
+        if (ja->isDisabled()) {
+            row++;
+            continue; // not interested in problems of disabled jacks
+        }
+
         QString name = ja->jackName();
         if (usedJacks.contains(name)) {
             allProblems.append(

@@ -15,6 +15,8 @@ typedef enum {
     ACTION_COPY,
     ACTION_CUT,
     ACTION_DELETE_PATCH_SECTION,
+    ACTION_DISABLE,
+    ACTION_ENABLE,
     ACTION_DUPLICATE_PATCH_SECTION,
     ACTION_EDIT_CIRCUIT_COMMENT,
     ACTION_EDIT_JACK_COMMENT,
@@ -73,6 +75,7 @@ private slots:
 private:
     void createActions();
     QIcon icon(QString what) const; // TODO: Move to new IconBuilder class
+    void updateDisablingActions();
 };
 
 extern EditorActions *the_actions;
