@@ -274,6 +274,8 @@ void PatchSectionView::modifyPatch()
     // We are responsible for the unique and complete color decision
     // of all internal cables.
     the_cable_colorizer->colorizeAllCables(patch->allCables());
+    if (patch->isPatching())
+        abortPatching();
     rebuildPatchSection();
 }
 
@@ -632,9 +634,34 @@ void PatchSectionView::startPatching()
 
 void PatchSectionView::finishPatching()
 {
-    qDebug() << Q_FUNC_INFO;
-    patch->stopPatching();
+    Q_ASSERT(patch->isPatching());
+
+    PatchSection *startSection = patch->getPatchingStartSection();
+    CursorPosition startPos = patch->getPatchingStartPosition();
+    const Atom *startAtom = startSection->atomAt(startPos);
+
+    PatchSection *endSection = patch->currentSection();
+    CursorPosition endPos = endSection->cursorPosition();
+    const Atom *endAtom = endSection->atomAt(endPos);
+
+    QString cableName;
+    if (startAtom && startAtom->isCable())
+        cableName = ((AtomCable *)startAtom)->getCable();
+    else if (endAtom && endAtom->isCable())
+        cableName = ((AtomCable *)endAtom)->getCable();
+    else {
+        cableName = NameChooseDialog::getName(tr("Create new internal patch cable"), tr("Cable name:"));
+        if (cableName == "") {
+            return;
+        }
+        cableName = cableName.toUpper();
+    }
+
+    startSection->setAtomAt(startPos, new AtomCable(cableName));
+    endSection->setAtomAt(endPos, new AtomCable(cableName));
+    patch->commit(tr("creating internal cable '%1'").arg(cableName));
     emit patchingChanged();
+    emit patchModified();
 }
 
 void PatchSectionView::abortPatching()
@@ -715,10 +742,10 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 
 void PatchSectionView::editAtom(int key)
 {
-    // if (key == 0 && patchView()->isPatching())  {
-    //     patchView()->finishPatching();
-    //     return;
-    // }
+    if (key == 0 && patch->isPatching()) {
+        finishPatching();
+        return;
+    }
 
     Circuit *circuit = currentCircuit();
     JackAssignment *ja = circuit->jackAssignment(section()->cursorPosition().row);

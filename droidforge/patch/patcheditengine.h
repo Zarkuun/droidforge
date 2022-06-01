@@ -40,6 +40,9 @@ public:
     bool isPatching() const { return patching; };
     void startPatching();
     void stopPatching();
+    PatchSection *getPatchingStartSection();
+    const CursorPosition &getPatchingStartPosition() { return patchingStartPosition; };
+
 
 private:
     void clearVersions();

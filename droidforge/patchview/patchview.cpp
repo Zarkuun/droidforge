@@ -22,61 +22,6 @@ void PatchView::connectActions()
 
 }
 
-void PatchView::startPatching()
-{
-    patching = true;
-    patchingStartSection = currentIndex();
-    patchingStartPosition = currentPatchSectionView()->getCursorPosition();
-    the_forge->cableIndicator()->setPatchingState(true);
-    currentPatchSectionView()->updateCursor(); // TODO: This seems to be hack
-}
-
-void PatchView::finishPatching()
-{
-    Q_ASSERT(patching);
-    patching = false;
-    the_forge->cableIndicator()->setPatchingState(false);
-
-    Q_ASSERT((int)patchingStartSection < count());
-
-    PatchSectionView *startView = (PatchSectionView *)widget(patchingStartSection);
-    PatchSection *startSection = patch->section(patchingStartSection);
-    CursorPosition startPos = patchingStartPosition;
-    const Atom *startAtom = startSection->atomAt(startPos);
-
-    PatchSectionView *endView = currentPatchSectionView();
-    PatchSection *endSection = patch->section(currentIndex());
-    CursorPosition endPos = currentPatchSectionView()->getCursorPosition();
-    const Atom *endAtom = endSection->atomAt(endPos);
-
-    QString cableName;
-    if (startAtom && startAtom->isCable())
-        cableName = ((AtomCable *)startAtom)->getCable();
-    else if (endAtom && endAtom->isCable())
-        cableName = ((AtomCable *)endAtom)->getCable();
-    else {
-        cableName = NameChooseDialog::getName(tr("Create new internal patch cable"), tr("Cable name:"));
-        if (cableName == "") {
-            return;
-        }
-        cableName = cableName.toUpper();
-    }
-
-    the_forge->registerEdit(tr("creating internal cable '%1'").arg(cableName));
-    startSection->setAtomAt(startPos, new AtomCable(cableName));
-    endSection->setAtomAt(endPos, new AtomCable(cableName));
-    if (startView != endView)
-        startView->rebuildPatchSection();
-    endView->rebuildPatchSection();
-    the_forge->patchHasChanged();
-}
-
-void PatchView::abortPatching()
-{
-    patching = false;
-    the_forge->cableIndicator()->setPatchingState(false);
-}
-
 void PatchView::followInternalCable()
 {
     const Atom *currentAtom = currentPatchSectionView()->currentAtom();

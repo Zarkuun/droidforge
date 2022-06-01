@@ -125,3 +125,8 @@ void PatchEditEngine::stopPatching()
 {
     patching = false;
 }
+
+PatchSection *PatchEditEngine::getPatchingStartSection()
+{
+    return section(patchingStartSection);
+}
