@@ -2,7 +2,7 @@
 #define RACKVIEW_H
 
 #include "module.h"
-#include "versionedpatch.h"
+#include "patcheditengine.h"
 #include "registermarker.h"
 #include "controllerremovaldialog.h"
 #include "patchoperator.h"
@@ -23,7 +23,7 @@ class RackView : public QGraphicsView, PatchOperator
     AtomRegister markedRegister;
 
 public:
-    explicit RackView(VersionedPatch *patch);
+    explicit RackView(PatchEditEngine *patch);
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

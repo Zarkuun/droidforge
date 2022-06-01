@@ -1,7 +1,7 @@
 #ifndef CABLESTATUSINDICATOR_H
 #define CABLESTATUSINDICATOR_H
 
-#include "versionedpatch.h"
+#include "patcheditengine.h"
 #include "patchoperator.h"
 
 #include <QPropertyAnimation>
@@ -23,10 +23,9 @@ class CableStatusIndicator : public QWidget, PatchOperator
     QString cableName;
     int numAsInput;
     int numAsOutput;
-    bool patching;
 
 public:
-    explicit CableStatusIndicator(VersionedPatch *patch, QWidget *parent = nullptr);
+    explicit CableStatusIndicator(PatchEditEngine *patch, QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
 
@@ -35,7 +34,7 @@ public:
     // Das hier verbinden
     void set(QString name, int numAsInput, int numAsOutput);
     void clear();
-    void setPatchingState(bool);
+    void updatePatchingAnimation();
     float getanimationPhase() const { return animationPhase; };
     void setanimationPhase(float newanimationPhase);
 
@@ -52,6 +51,7 @@ signals:
 
 private slots:
     void updateStatus();
+    void changePatching();
 
 private:
     Q_PROPERTY(float animationPhase READ getanimationPhase WRITE setanimationPhase NOTIFY animationPhaseChanged)

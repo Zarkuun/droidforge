@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-PatchProblemIndicator::PatchProblemIndicator(VersionedPatch *patch, QWidget *parent)
+PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *parent)
     : QWidget{parent}
     , PatchOperator(patch)
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?

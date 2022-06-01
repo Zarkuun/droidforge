@@ -2,7 +2,7 @@
 #define EDITORACTIONS_H
 
 #include "selection.h"
-#include "versionedpatch.h"
+#include "patcheditengine.h"
 #include "patchoperator.h"
 
 #include <QObject>
@@ -58,7 +58,7 @@ class EditorActions : public QObject, PatchOperator
     QAction *actions[NUM_ACTIONS];
 
 public:
-    explicit EditorActions(VersionedPatch *patch, QObject *parent = nullptr);
+    explicit EditorActions(PatchEditEngine *patch, QObject *parent = nullptr);
     QAction *action(action_t action) { return actions[action]; };
 
 private slots:
@@ -66,6 +66,7 @@ private slots:
     void switchSection();
     void changeClipboard();
     void changeSelection(const Selection *selection);
+    void changePatching();
 
 private:
     void createActions();

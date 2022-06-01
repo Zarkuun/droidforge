@@ -2,7 +2,7 @@
 #define PATCHOPERATOR_H
 
 #include "patch.h"
-#include "versionedpatch.h"
+#include "patcheditengine.h"
 
 /* Helper parent class for all objects that interactively operate
  * on the patch. Contains a pointer to the current
@@ -12,12 +12,12 @@
 class PatchOperator
 {
 protected:
-    VersionedPatch *patch; // borrowed
+    PatchEditEngine *patch; // borrowed
     PatchSection *section();
     const PatchSection *section() const;
 
 public:
-    PatchOperator(VersionedPatch *patch);
+    PatchOperator(PatchEditEngine *patch);
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
 };
 

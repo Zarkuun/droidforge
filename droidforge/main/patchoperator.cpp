@@ -5,7 +5,7 @@
 
 #include <QMessageBox>
 
-PatchOperator::PatchOperator(VersionedPatch *patch)
+PatchOperator::PatchOperator(PatchEditEngine *patch)
     : patch(patch)
 {
 }

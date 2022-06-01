@@ -8,12 +8,11 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-CableStatusIndicator::CableStatusIndicator(VersionedPatch *patch, QWidget *parent)
+CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *parent)
     : QWidget{parent}
     , PatchOperator(patch)
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
     , animation(this, "animationPhase")
-    , patching(false)
 {
     resize(400, 100); // TODO: Was ist hiermit?
     setMinimumWidth(CSI_WIDTH);
@@ -31,13 +30,14 @@ CableStatusIndicator::CableStatusIndicator(VersionedPatch *patch, QWidget *paren
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &CableStatusIndicator::updateStatus);
     connect(the_hub, &UpdateHub::cursorMoved, this, &CableStatusIndicator::updateStatus);
+    connect(the_hub, &UpdateHub::patchingChanged, this, &CableStatusIndicator::changePatching);
 }
 
 void CableStatusIndicator::paintEvent(QPaintEvent *)
 {
     setToolTip("");
     QPainter painter(this);
-    if (patching)
+    if (patch->isPatching())
         paintPatching(painter);
     else
         paintCableInfo(painter);
@@ -210,9 +210,9 @@ void CableStatusIndicator::clear()
     update();
 }
 
-void CableStatusIndicator::setPatchingState(bool p)
+void CableStatusIndicator::updatePatchingAnimation()
 {
-    if (p) {
+    if (patch->isPatching()) {
         animation.setDuration(CSI_ANIMATION_DURATION);
         animation.setKeyValueAt(0, 0.0);
         animation.setKeyValueAt(0.8, 1.0);
@@ -223,8 +223,6 @@ void CableStatusIndicator::setPatchingState(bool p)
     }
     else
         animation.stop();
-
-    patching = p;
     update();
 }
 
@@ -251,6 +249,12 @@ void CableStatusIndicator::updateStatus()
         clear();
         unsetCursor();
     }
+}
+
+void CableStatusIndicator::changePatching()
+{
+    updateStatus();
+    updatePatchingAnimation();
 }
 
 // Status, ob ich grad verkable

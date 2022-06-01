@@ -14,7 +14,7 @@
 #include <QMessageBox>
 #include <algorithm>
 
-RackView::RackView(VersionedPatch *patch)
+RackView::RackView(PatchEditEngine *patch)
     : QGraphicsView()
     , PatchOperator(patch)
 {

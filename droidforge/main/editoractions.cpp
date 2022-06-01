@@ -4,7 +4,7 @@
 
 EditorActions *the_actions = 0;
 
-EditorActions::EditorActions(VersionedPatch *patch, QObject *parent)
+EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
     : QObject{parent}
     , PatchOperator(patch)
 {
@@ -17,6 +17,7 @@ EditorActions::EditorActions(VersionedPatch *patch, QObject *parent)
     connect(the_hub, &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
     connect(the_hub, &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
     connect(the_hub, &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
+    connect(the_hub, &UpdateHub::patchingChanged, this, &EditorActions::changePatching);
 }
 
 void EditorActions::modifyPatch()
@@ -63,6 +64,13 @@ void EditorActions::changeSelection(const Selection *selection)
 {
     actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
     actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
+}
+
+void EditorActions::changePatching()
+{
+    actions[ACTION_START_PATCHING]->setEnabled(!patch->isPatching());
+    actions[ACTION_FINISH_PATCHING]->setEnabled(patch->isPatching());
+    actions[ACTION_ABORT_PATCHING]->setEnabled(patch->isPatching());
 }
 
 void EditorActions::createActions()
@@ -162,8 +170,10 @@ void EditorActions::createActions()
 
     actions[ACTION_FINISH_PATCHING] = new QAction(icon("swap_horiz"), tr("Finish creating internal cable"), this);
     actions[ACTION_FINISH_PATCHING]->setShortcut(QKeySequence(tr("=")));
+    actions[ACTION_FINISH_PATCHING]->setEnabled(false);
 
     actions[ACTION_ABORT_PATCHING] = new QAction(icon("swap_horiz"), tr("Abort creating internal cable"), this);
+    actions[ACTION_ABORT_PATCHING]->setEnabled(false);
 
     actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));

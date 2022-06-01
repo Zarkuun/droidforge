@@ -9,7 +9,7 @@
 #include "circuitchoosedialog.h"
 #include "atomselectordialog.h"
 #include "clipboard.h"
-#include "versionedpatch.h"
+#include "patcheditengine.h"
 #include "patchoperator.h"
 
 #include <QGraphicsView>
@@ -31,7 +31,7 @@ class PatchSectionView : public QGraphicsView, PatchOperator
     FrameCursor frameCursor;
 
 public:
-    PatchSectionView(VersionedPatch *initialPatch);
+    PatchSectionView(PatchEditEngine *initialPatch);
     ~PatchSectionView();
     bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
@@ -115,6 +115,7 @@ public slots:
     void changeSelection(const Selection *);
     void switchSection();
     void moveCursor();
+    void changePatching();
 
     void newCircuit();
     void addJack();
@@ -126,12 +127,16 @@ public slots:
     void paste();
     void pasteSmart();
     void createSectionFromSelection();
+    void startPatching();
+    void finishPatching();
+    void abortPatching();
 
 signals:
     void patchModified();
     void cursorMoved();
     void clipboardChanged();
     void selectionChanged(const Selection *selection);
+    void patchingChanged();
 };
 
 #endif // PATCHSECTIONVIEW_H

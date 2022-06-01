@@ -6,7 +6,7 @@
 #include <QList>
 
 #include "framecursor.h"
-#include "versionedpatch.h"
+#include "patcheditengine.h"
 #include "patchsectiontitleview.h"
 #include "patchoperator.h"
 
@@ -18,7 +18,7 @@ class PatchSectionManager : public QGraphicsView, PatchOperator
     int lastIndex;
 
 public:
-    explicit PatchSectionManager(VersionedPatch *patch, QWidget *parent = nullptr);
+    explicit PatchSectionManager(PatchEditEngine *patch, QWidget *parent = nullptr);
 
 private:
     void rebuildGraphics();

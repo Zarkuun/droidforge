@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-class VersionedPatch;
+class PatchEditEngine;
 class Selection;
 
 class UpdateHub : public QObject
@@ -18,13 +18,15 @@ public slots:
     void changeClipboard();
     void changeSelection(const Selection *selection);
     void moveCursor();
+    void changePatching();
     // TODO: Esc -> Abort all actions
 
 signals:
     void patchModified();
     void sectionSwitched();
     void clipboardChanged();
-    void selectionChanged(const Selection *selecdtion);
+    void selectionChanged(const Selection *selection);
+    void patchingChanged();
     void cursorMoved();
 };
 

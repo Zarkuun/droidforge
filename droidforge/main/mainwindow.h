@@ -6,7 +6,7 @@
 #include "patchsectionmanager.h"
 #include "patchsectionview.h"
 #include "rackview.h"
-#include "versionedpatch.h"
+#include "patcheditengine.h"
 #include "patchparser.h"
 #include "patchoperator.h"
 #include "clipboardindicator.h"
@@ -22,7 +22,7 @@
 #include <QStatusBar>
 #include <QVBoxLayout>
 
-class VersionedPatch;
+class PatchEditEngine;
 
 class MainWindow;
 extern MainWindow *the_forge;
@@ -61,7 +61,7 @@ class MainWindow : public QMainWindow, PatchOperator
     QToolBar *toolbar;
 
 public:
-    MainWindow(VersionedPatch *patch, const QString &initialFilename);
+    MainWindow(PatchEditEngine *patch, const QString &initialFilename);
     ~MainWindow();
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);

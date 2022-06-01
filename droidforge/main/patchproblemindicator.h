@@ -13,7 +13,7 @@ class PatchProblemIndicator : public QWidget, PatchOperator
     unsigned numProblems;
 
 public:
-    PatchProblemIndicator(VersionedPatch *patch, QWidget *parent = nullptr);
+    PatchProblemIndicator(PatchEditEngine *patch, QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
 

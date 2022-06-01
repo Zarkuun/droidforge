@@ -25,7 +25,7 @@ PatchPropertiesDialog::PatchPropertiesDialog(QWidget *parent)
     layout->addWidget(buttonBox, 2, 0, 1, 2);
 }
 
-bool PatchPropertiesDialog::editPatchProperties(VersionedPatch *patch)
+bool PatchPropertiesDialog::editPatchProperties(PatchEditEngine *patch)
 {
     static PatchPropertiesDialog *dialog = 0;
     if (!dialog)

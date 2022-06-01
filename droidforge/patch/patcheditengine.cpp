@@ -1,34 +1,35 @@
-#include "versionedpatch.h"
+#include "patcheditengine.h"
 #include "tuning.h"
 
 #include <QTextStream>
 #include <QFile>
 
-VersionedPatch::VersionedPatch(const Patch *patch)
+PatchEditEngine::PatchEditEngine(const Patch *patch)
     : redoPointer(-1)
     , versionOnDisk(0)
+    , patching(false)
 {
     patch->cloneInto(this);
     commit(); // initial commit, so we always have version 0
 }
 
-VersionedPatch::VersionedPatch()
+PatchEditEngine::PatchEditEngine()
 {
     addSection(new PatchSection()); // there always must be one section
 }
 
-VersionedPatch::~VersionedPatch()
+PatchEditEngine::~PatchEditEngine()
 {
     clearVersions();
 }
 
-void VersionedPatch::clearVersions()
+void PatchEditEngine::clearVersions()
 {
     for (auto version: versions)
         delete version;
 }
 
-void VersionedPatch::startFromScratch()
+void PatchEditEngine::startFromScratch()
 {
     clear();
     clearVersions();
@@ -36,12 +37,12 @@ void VersionedPatch::startFromScratch()
     versionOnDisk = 0;
 }
 
-bool VersionedPatch::isModified() const
+bool PatchEditEngine::isModified() const
 {
     return versionOnDisk != redoPointer;
 }
 
-bool VersionedPatch::saveToFile(QString filePath)
+bool PatchEditEngine::saveToFile(QString filePath)
 {
     QFile file(filePath);
     // TODO: filename
@@ -60,7 +61,7 @@ bool VersionedPatch::saveToFile(QString filePath)
         return false;
 }
 
-void VersionedPatch::commit(QString message)
+void PatchEditEngine::commit(QString message)
 {
     qDebug() << "COMMIT" << message;
     // One new edit step erases all possible redos
@@ -81,34 +82,46 @@ void VersionedPatch::commit(QString message)
     updateProblems(); // This is the one and only place where we do this!
 }
 
-void VersionedPatch::undo()
+void PatchEditEngine::undo()
 {
     Q_ASSERT(undoPossible());
     versions[redoPointer--]->getPatch()->cloneInto(this);
 }
 
-void VersionedPatch::redo()
+void PatchEditEngine::redo()
 {
     Q_ASSERT(redoPossible());
     versions[++redoPointer]->getPatch()->cloneInto(this);
 }
 
-bool VersionedPatch::undoPossible() const
+bool PatchEditEngine::undoPossible() const
 {
     return redoPointer > 0;
 }
 
-bool VersionedPatch::redoPossible() const
+bool PatchEditEngine::redoPossible() const
 {
     return redoPointer + 1 < versions.size();
 }
 
-QString VersionedPatch::nextUndoTitle() const
+QString PatchEditEngine::nextUndoTitle() const
 {
     return versions[redoPointer]->getName();
 }
 
-QString VersionedPatch::nextRedoTitle() const
+QString PatchEditEngine::nextRedoTitle() const
 {
     return versions[redoPointer+1]->getName();
+}
+
+void PatchEditEngine::startPatching()
+{
+    patching = true;
+    patchingStartSection = currentSectionIndex();
+    patchingStartPosition = currentSection()->cursorPosition();
+}
+
+void PatchEditEngine::stopPatching()
+{
+    patching = false;
 }

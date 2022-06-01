@@ -22,7 +22,7 @@
 
 MainWindow *the_forge;
 
-MainWindow::MainWindow(VersionedPatch *patch, const QString &initialFilename)
+MainWindow::MainWindow(PatchEditEngine *patch, const QString &initialFilename)
     : QMainWindow()
     , PatchOperator(patch)
     , editorActions(patch)
@@ -449,7 +449,7 @@ void MainWindow::exportSelection()
                 tr("DROID patch files (*.ini)"));
     if (!filePath.isEmpty()) {
         Patch *patch = patchSectionView.getSelectionAsPatch();
-        VersionedPatch vp(patch);
+        PatchEditEngine vp(patch);
         vp.saveToFile(filePath);
         delete patch;
         addToRecentFiles(filePath);

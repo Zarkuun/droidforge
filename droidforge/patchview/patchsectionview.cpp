@@ -31,7 +31,7 @@
 #define DATA_INDEX_PROBLEM 1
 
 
-PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
+PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     : PatchOperator(initialPatch) // patch is never ever 0!
     , zoomLevel(0)
     , zoomFactor(1.0)
@@ -58,12 +58,14 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
     connect(this, &PatchSectionView::clipboardChanged, the_hub, &UpdateHub::changeClipboard);
     connect(this, &PatchSectionView::selectionChanged, the_hub, &UpdateHub::changeSelection);
     connect(this, &PatchSectionView::cursorMoved, the_hub, &UpdateHub::moveCursor);
+    connect(this, &PatchSectionView::patchingChanged, the_hub, &UpdateHub::changePatching);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
     connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionView::modifyPatch);
     connect(the_hub, &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
     connect(the_hub, &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
+    connect(the_hub, &UpdateHub::patchingChanged, this, &PatchSectionView::changePatching);
 }
 
 PatchSectionView::~PatchSectionView()
@@ -88,6 +90,9 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
     CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchSectionView::zoomOut);
+    CONNECT_ACTION(ACTION_START_PATCHING, &PatchSectionView::startPatching);
+    CONNECT_ACTION(ACTION_FINISH_PATCHING, &PatchSectionView::finishPatching);
+    CONNECT_ACTION(ACTION_ABORT_PATCHING, &PatchSectionView::abortPatching);
 }
 
 void PatchSectionView::buildPatchSection()
@@ -278,6 +283,11 @@ void PatchSectionView::switchSection()
 }
 
 void PatchSectionView::moveCursor()
+{
+    updateCursor();
+}
+
+void PatchSectionView::changePatching()
 {
     updateCursor();
 }
@@ -611,6 +621,27 @@ void PatchSectionView::createSectionFromSelection()
     patch->switchCurrentSection(index);
     patch->commit(tr("moving circuits into new section"));
     emit patchModified();
+}
+
+void PatchSectionView::startPatching()
+{
+    qDebug() << Q_FUNC_INFO;
+    patch->startPatching();
+    emit patchingChanged();
+}
+
+void PatchSectionView::finishPatching()
+{
+    qDebug() << Q_FUNC_INFO;
+    patch->stopPatching();
+    emit patchingChanged();
+}
+
+void PatchSectionView::abortPatching()
+{
+    qDebug() << Q_FUNC_INFO;
+    patch->stopPatching();
+    emit patchingChanged();
 }
 
 void PatchSectionView::editJack(int key)

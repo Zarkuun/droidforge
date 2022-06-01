@@ -49,3 +49,10 @@ void UpdateHub::moveCursor()
     qDebug() << "HUB: cursorMoved()";
     emit cursorMoved();
 }
+
+void UpdateHub::changePatching()
+{
+    // Called when the editor state "patching" has changed
+    qDebug() << "HUB: patchingChanged()";
+    emit patchingChanged();
+}

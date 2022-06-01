@@ -14,7 +14,7 @@
 
 #define DATA_INDEX_SECTION_INDEX 0
 
-PatchSectionManager::PatchSectionManager(VersionedPatch *patch, QWidget *parent)
+PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent)
     : QGraphicsView{parent}
     , PatchOperator(patch)
     , lastIndex(-1)

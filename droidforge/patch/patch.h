@@ -10,6 +10,7 @@
 
 class Patch
 {
+    // Contents tha are saved to disk
     QString fileName;
     QString title;
     QStringList description;
@@ -17,8 +18,11 @@ class Patch
     RegisterComments registerComments;
     QStringList controllers;
     QList<PatchSection *> sections;
+
+    // Part of the versioned state for user convenience
     qsizetype sectionIndex; // part of cursor position
-    QList<PatchProblem *> problems;
+
+    QList<PatchProblem *> problems; // This is just a cache
 
 public:
     Patch();
