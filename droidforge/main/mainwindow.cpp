@@ -503,6 +503,13 @@ void MainWindow::cursorMoved()
         statusbar->showMessage(message);
     else
         statusbar->clearMessage();
+
+    // Make sure that after an undo the cursor is at the correct
+    // position - that is the last position before the actual
+    // edit was done. We do that by tracking all non-editing
+    // cursor moves and update the last patch version in the
+    // commit history.
+    patch->commitCursorPosition();
 }
 
 bool MainWindow::checkModified()

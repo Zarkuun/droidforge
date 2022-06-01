@@ -145,11 +145,12 @@ void CircuitChooseDialog::addCategoryTab(QString category, QString title)
     connect(cc, &CircuitCollection::selectCircuit, this, &CircuitChooseDialog::accept);
 }
 
-
 void CircuitChooseDialog::setCurrentCircuit(QString name)
 {
     for (qsizetype i=0; i<tabWidget->count(); i++) {
         CircuitCollection *cc = (CircuitCollection *)tabWidget->widget(i);
+        // TODO: Hier knallts manchmal ganz am Anfang. Da muss ne race-condition sei.
+        qDebug() << "ICH HAB" << cc->getNumCircuits();
         if (cc->preselectCircuit(name)) {
             tabWidget->setCurrentIndex(i);
             break;
@@ -157,14 +158,12 @@ void CircuitChooseDialog::setCurrentCircuit(QString name)
     }
 }
 
-
 void CircuitChooseDialog::nextCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() + 1) % tabWidget->count());
     if (tabWidget->currentIndex() == TAB_INDEX_SEARCH && lineEditSearch->text().isEmpty())
         nextCategory();
 }
-
 
 void CircuitChooseDialog::previousCategory()
 {

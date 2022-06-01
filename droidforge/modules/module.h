@@ -53,7 +53,4 @@ private:
     QRectF registerRect(QChar type, unsigned number) const;
 };
 
-
-
-
 #endif // MODULE_H

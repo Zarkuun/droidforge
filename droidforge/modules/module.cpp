@@ -59,9 +59,10 @@ void Module::hiliteRegisters(bool on, QChar type, unsigned number)
 void Module::paintHiliteRegister(QPainter *painter, QChar type, unsigned number)
 {
     QRectF r = registerRect(type, number);
-    QPen pen(QColor(255, 255, 0));
+    QPen pen(RACV_REGHILITES_PEN_COLOR);
     pen.setWidth(10);
     painter->setPen(pen);
+    painter->setBrush(RACV_REGHILITES_BACKGROUND);
     if (type == REGISTER_RGB_LED || type == REGISTER_EXTRA)
         painter->drawRect(r);
     else

@@ -35,9 +35,9 @@ private:
     void parseEmptyLine();
     void parseCommentLine(QString line);
     void parseLibraryMetaData(QString data);
-    void parseCircuitLine(QString line);
-    void parseJackLine(Circuit *circuit, QString line);
-    void parseCircuit(QString name);
+    void parseCircuitLine(QString line, bool disabled);
+    void parseJackLine(Circuit *circuit, QString line, bool disabled);
+    void parseCircuit(QString name, bool disabled);
     void stripEmptyCommentLines();
     void startNewSection(QString name);
     bool maybeParseMetaComment(QString comment);

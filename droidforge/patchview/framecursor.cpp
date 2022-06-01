@@ -23,7 +23,9 @@ FrameCursor::~FrameCursor()
 
 void FrameCursor::setMode(cursor_mode_t m)
 {
-   if (m == CURSOR_PATCHING)
+   if (m == CURSOR_DISABLED)
+       setPen(COLOR_CURSOR_DISABLED);
+   else if (m == CURSOR_PATCHING)
        setPen(COLOR_CURSOR_PATCHING);
    else if (m == CURSOR_PROBLEM)
        setPen(COLOR_CURSOR_PROBLEM);

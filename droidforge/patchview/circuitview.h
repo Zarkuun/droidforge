@@ -43,7 +43,7 @@ private:
     QRectF jackLineRect(int row) const;
     QRectF jackRect(int row) const;
     QRectF atomRect(int row, int column) const;
-    void paintAtom(QPainter *painter, const QRectF &rect, Atom *atom, bool isInput);
+    void paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput);
     // geometry helpers
     QRectF contentRect() const;
     float contentHeight() const;

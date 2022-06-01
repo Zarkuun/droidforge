@@ -28,6 +28,8 @@ protected:
 
 public:
     JackAssignment(QString jack, QString comment = "");
+    void setDisabled(bool d) { disabled = d; };
+    bool isDisabled() const { return disabled; };
     QString toString() const;
     QString jackName() const { return jack; };
     QString getComment() const { return comment; };

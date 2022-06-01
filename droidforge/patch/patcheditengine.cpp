@@ -72,7 +72,9 @@ void PatchEditEngine::commit(QString message)
 void PatchEditEngine::undo()
 {
     Q_ASSERT(undoPossible());
-    versions[redoPointer--]->getPatch()->cloneInto(this);
+    qDebug() << "Situation: redo: " << redoPointer << "versions:" << versions.count() << "title:" << versions.last()->getName();
+    qDebug() << "Cursor" << versions[redoPointer]->getPatch()->section(0)->cursorPosition();
+    versions[--redoPointer]->getPatch()->cloneInto(this);
 }
 
 void PatchEditEngine::redo()
@@ -99,6 +101,13 @@ QString PatchEditEngine::nextUndoTitle() const
 QString PatchEditEngine::nextRedoTitle() const
 {
     return versions[redoPointer+1]->getName();
+}
+
+void PatchEditEngine::commitCursorPosition()
+{
+    Patch *lastPatch = versions.last()->getPatch();
+    lastPatch->switchCurrentSection(currentSectionIndex());
+    lastPatch->currentSection()->setCursor(currentSection()->cursorPosition());
 }
 
 void PatchEditEngine::startPatching()

@@ -48,7 +48,6 @@ void PatchParser::parse(QString filePath, Patch *patch)
             parseLine(line);
         }
         catch (ParseException &e) {
-            qDebug() << "Da kam ne Exceptin:" << e.toString();
             QString error = QString("Line ") + QString::number(errorLine) + ": " + e.toString() + "\n";
             lineerrors += error;
         }
@@ -67,12 +66,12 @@ void PatchParser::parseLine(QString line)
     else if (line[0] == '#')
         parseCommentLine(line);
     else if (line[0] == '[')
-        parseCircuitLine(line);
+        parseCircuitLine(line, false /* disabled */);
     else if (line[0].isLetter() && line.contains('=')) {
         if (!circuit)
             throw ParseException("Jack assignment before any circuit was declared.");
         else
-            parseJackLine(circuit, line);
+            parseJackLine(circuit, line, false /* disabled */);
     }
     else
         throw ParseException("Garbled line");
@@ -89,6 +88,19 @@ void PatchParser::parseEmptyLine()
 void PatchParser::parseCommentLine(QString line)
 {
     QString comment = line.mid(1).trimmed();
+    static QRegularExpression disabledJackLine("^[a-zA-z]+([1-9][0-9]*)?[[:space:]]*=");
+
+    if (comment.startsWith("[")) {
+        parseCircuitLine(comment, true);
+        return;
+    }
+
+    QRegularExpressionMatch m = disabledJackLine.match(comment);
+    if (m.hasMatch()) {
+        parseJackLine(circuit, comment, true /* disabled */);
+        return;
+    }
+
     if (comment.startsWith("---")) {
         if (commentState == SECTION_HEADER_ACTIVE) {
             commentState = CIRCUIT_HEADER;
@@ -184,7 +196,7 @@ void PatchParser::parseLibraryMetaData(QString data)
     patch->setLibraryMetaData(data);
 }
 
-void PatchParser::parseCircuitLine(QString line)
+void PatchParser::parseCircuitLine(QString line, bool disabled)
 {
     static QRegularExpression withComment("^\\[([a-zA-Z0-9]+)\\][[:space:]]*#(.*)$");
     static QRegularExpression withoutComment("^\\[([a-zA-Z0-9]+)\\]$");
@@ -207,20 +219,22 @@ void PatchParser::parseCircuitLine(QString line)
         }
     }
 
-    commentState = CIRCUIT_HEADER;
 
     if (ModuleBuilder::controllerExists(circuitName.toLower())) {
-        patch->addController(circuitName.toLower());
-        currentComment.clear();
+        if (!disabled) { // disabling controller is not supported
+            patch->addController(circuitName.toLower());
+            currentComment.clear();
+        }
     }
     else {
+        commentState = CIRCUIT_HEADER;
         if (comment != "")
             currentComment.append(comment);
-        parseCircuit(circuitName);
+        parseCircuit(circuitName, disabled);
     }
 }
 
-void PatchParser::parseCircuit(QString name)
+void PatchParser::parseCircuit(QString name, bool disabled)
 {
     // TODO: Hier die JSON-Datei verwenden?
     QString namel = name.toLower();
@@ -233,7 +247,7 @@ void PatchParser::parseCircuit(QString name)
         startNewSection("");
 
     stripEmptyCommentLines();
-    circuit = new Circuit(name, currentComment);
+    circuit = new Circuit(name, currentComment, disabled);
     section->circuits.append(circuit);
     currentComment.clear();
 }
@@ -253,8 +267,9 @@ void PatchParser::startNewSection(QString name)
     patch->addSection(section);
 }
 
-void PatchParser::parseJackLine(Circuit *circuit, QString line)
+void PatchParser::parseJackLine(Circuit *circuit, QString line, bool disabled)
 {
     JackAssignment *ja = JackAssignment::parseJackLine(circuit->getName(), line);
+    ja->setDisabled(disabled);
     circuit->addJackAssignment(ja);
 }

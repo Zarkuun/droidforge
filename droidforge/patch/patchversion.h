@@ -18,6 +18,7 @@ public:
     ~PatchVersion();
     QString getName() const { return name; };
     const Patch *getPatch() const { return patch; };
+    Patch *getPatch() { return patch; };
 };
 
 #endif // EDITORSTATE_H

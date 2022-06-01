@@ -20,6 +20,7 @@ public:
     CircuitCollection(QString category, QWidget *parent);
     CircuitCollection(QWidget *parent);
     ~CircuitCollection();
+    unsigned getNumCircuits() const { return numCircuits; };
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);

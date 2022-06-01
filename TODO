@@ -2,13 +2,14 @@ GROSSE THEMEN:
 
 - Deploy (MIDI, SD-Karte)
 - Labels von Controls
-- Patch library
-- Mehrere Dateien gleichzeitig auf haben
 
 KLEINERE FEATURE:
 - Jackzeilen oder Circuits disablen (auskommentieren)
 - View source code (oder open source code in text editor)
 - %a -> Alles auswählen
-- Sektinen mit Problemen sollen ein Warnsymbol bekommen
 
 BUGS:
+
+Version 2:
+- Mehrere Dateien gleichzeitig auf haben
+- Patch library

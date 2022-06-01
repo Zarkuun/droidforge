@@ -201,7 +201,7 @@ void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
         newPosition = 0;
 
     QStringList emptyComment;
-    Circuit *circuit = new Circuit(name, emptyComment);
+    Circuit *circuit = new Circuit(name, emptyComment, false /* disabled */);
 
     QStringList ei = the_firmware->inputsOfCircuit(name, jackSelection);
     for (qsizetype i=0; i<ei.count(); i++) {

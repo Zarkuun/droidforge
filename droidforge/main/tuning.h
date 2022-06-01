@@ -30,9 +30,11 @@
 #define COLOR_CURSOR_NORMAL                  QColor(255, 255, 255)
 #define COLOR_CURSOR_PROBLEM                 QColor(255, 0, 0)
 #define COLOR_CURSOR_PATCHING                QColor(50, 100, 255)
-#define COLOR_CURSOR_INACTIVE                QColor(180, 180, 180)
+#define COLOR_CURSOR_DISABLED                QColor(160, 160, 160, 128)
+#define COLOR_CURSOR_INACTIVE                QColor(180, 180, 180) // JackSelector
 #define COLOR_TEXT                           QColor(255, 255, 255)
 #define COLOR_TEXT_UNKNOWN                   QColor(255, 255, 0)
+#define COLOR_TEXT_DISABLED                  QColor(128, 128, 128)
 #define COLOR_JACK_INPUT                     QColor(0, 200, 255)
 #define COLOR_JACK_OUTPUT                    QColor(245, 60, 50)
 #define COLOR_JACK_UNKNOWN                   COLOR_TEXT_UNKNOWN
@@ -89,15 +91,17 @@
 #define RACV_REGMARKER_PEN_COLOR             QColor(255, 255, 255)
 #define RACV_REGMARKER_PEN_WIDTH             10
 #define RACV_REGMARKER_PEN_STYLE             Qt::DotLine
+#define RACV_REGHILITES_PEN_COLOR            QColor(255, 128, 0)
+#define RACV_REGHILITES_BACKGROUND           QColor(255, 128, 0, 128)
 
 #define CONTROL_LARGE_POT_SIZE               4.1
 #define CONTROL_SMALL_POT_SIZE               1.4
-#define CONTROL_BUTTON_SIZE                  2.0
-#define CONTROL_SMALL_SWITCH_SIZE            1.5
+#define CONTROL_BUTTON_SIZE                  2.7
+#define CONTROL_SMALL_SWITCH_SIZE            2.0
 #define CONTROL_M4_FADER_SIZE                3.0
 #define CONTROL_M4_TOUCH_SIZE                2.2
 #define CONTROL_RGBLED_SIZE                  1.6
-#define CONTROL_JACK_SIZE                    1.8
+#define CONTROL_JACK_SIZE                    2.5
 #define CONTROL_EXTRA_SIZE                   7.8
 
 // Controller Selector
@@ -137,7 +141,7 @@
 #define CIRV_COLOR_LINE                      QColor(0, 0, 0, 96)
 #define CIRV_COLOR_OPERATOR                  QColor(255, 255, 255)
 #define CIRV_COLOR_OPERATOR_BACKGROUND       QColor(60, 60, 60)
-#define CIRV_COLOR_CIRCUIT_BACKGROUND        QColor(30, 37, 45, 128)
+#define CIRV_COLOR_BACKGROUND                QColor(40, 40, 40, 160)
 #define CIRV_COLOR_CIRCUIT_NAME              QColor(250, 250, 250)
 #define CIRV_COLOR_CIRCUIT_NAME_BACKGROUND   QColor(60, 60, 60, 128)
 #define CIRV_COLOR_COMMENT                   QColor(200, 200, 200)

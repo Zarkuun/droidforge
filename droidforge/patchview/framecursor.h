@@ -9,6 +9,7 @@ typedef enum {
     CURSOR_NORMAL,
     CURSOR_PROBLEM,
     CURSOR_PATCHING,
+    CURSOR_DISABLED,
 } cursor_mode_t;
 
 

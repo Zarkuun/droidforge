@@ -76,13 +76,15 @@ unsigned CircuitView::minimumWidth()
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     QRectF cr = contentRect();
-    painter->fillRect(cr, CIRV_COLOR_CIRCUIT_BACKGROUND);
+    painter->fillRect(cr, CIRV_COLOR_BACKGROUND);
 
     // Icon and circuit name
     painter->fillRect(headerRect(), CIRV_COLOR_CIRCUIT_NAME_BACKGROUND);
     QRectF imageRect(headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
     painter->drawPixmap(imageRect.toRect(), icon);
-    painter->setPen(CIRV_COLOR_CIRCUIT_NAME);
+    if (circuit->isDisabled())
+        painter->fillRect(imageRect, QColor(80, 80, 80, 160));
+    painter->setPen(circuit->isDisabled() ? COLOR_TEXT_DISABLED : CIRV_COLOR_CIRCUIT_NAME);
     painter->drawText(
                 QRectF(headerRect().left() + CIRV_HEADER_HEIGHT + CIRV_ICON_MARGIN,
                       headerRect().top(),
@@ -146,10 +148,14 @@ void CircuitView::paintJacks(QPainter *painter)
     for (qsizetype row=0; row<circuit->numJackAssignments(); row++) {
         JackAssignment *ja = circuit->jackAssignment(row);
         QColor textcolor;
-        switch (ja->jackType()) {
-        case JACKTYPE_INPUT: textcolor = COLOR_JACK_INPUT; break;
-        case JACKTYPE_OUTPUT: textcolor = COLOR_JACK_OUTPUT; break;
-        default: textcolor = COLOR_JACK_UNKNOWN; break;
+        if (ja->isDisabled())
+            textcolor = COLOR_TEXT_DISABLED;
+        else {
+            switch (ja->jackType()) {
+            case JACKTYPE_INPUT: textcolor = COLOR_JACK_INPUT; break;
+            case JACKTYPE_OUTPUT: textcolor = COLOR_JACK_OUTPUT; break;
+            default: textcolor = COLOR_JACK_UNKNOWN; break;
+            }
         }
         paintJack(painter, ja, textcolor, row);
     }
@@ -157,13 +163,15 @@ void CircuitView::paintJacks(QPainter *painter)
 }
 
 
-void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, Atom *atom, bool isInput)
+void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput)
 {
     // TODO: Das hier aufraumen
     float aspect = the_cable_colorizer->imageAspect();
     int imageHeight = 15;
     int imageWidth = imageHeight * aspect;
     int imageTop = 4;
+
+    painter->setPen(textcolor);
 
     if (atom) {
         QString text(tr(atom->toDisplay().toLatin1()));
@@ -174,7 +182,8 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, Atom *atom, b
                         rect.y(),
                         rect.width() - CIRV_JACK_HEIGHT - CIRV_TEXT_SIDE_PADDING,
                         rect.height());
-            painter->setPen(COLOR_TEXT_UNKNOWN);
+            if (textcolor != COLOR_TEXT_DISABLED)
+                painter->setPen(COLOR_TEXT_UNKNOWN);
             painter->drawText(textRect, Qt::AlignVCenter, text);
         }
         else {
@@ -189,7 +198,6 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, Atom *atom, b
                     painter->drawImage(imageRect, (*image).mirrored(true, false));
                 r = r.translated(imageWidth + STANDARD_SPACING, 0);
             }
-            painter->setPen(COLOR_TEXT);
             painter->drawText(r, Qt::AlignVCenter, text);
         }
     }
@@ -257,6 +265,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
                           ar.top(),
                           ar.width() - 2 * CIRV_TEXT_SIDE_PADDING,
                           ar.height()),
+                      textcolor,
                       jai->getAtom(a),
                       true);
             if (*selection && (*selection)->atomSelected(circuitNumber, row, a+1))
@@ -284,7 +293,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         if (ja->jackType() == JACKTYPE_OUTPUT)
         {
             JackAssignmentOutput *jao = (JackAssignmentOutput *)ja;
-            paintAtom(painter, rect, jao->getAtom(), false);
+            paintAtom(painter, rect, textcolor, jao->getAtom(), false);
         }
         else  // UNKNOWN
         {

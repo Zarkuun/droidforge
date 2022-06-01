@@ -149,6 +149,8 @@ void PatchSectionView::updateInfoMarkers()
             const JackAssignment *ja = circuit->jackAssignment(j);
             QString comment = ja->getComment();
             if (comment != "") {
+                // TODO: If both problem and info marker are present, they overlay
+                // each other quite uglyly.
                 placeMarker(CursorPosition(i, j, 0), DATA_INDEX_INFO, comment);
             }
         }
@@ -990,7 +992,10 @@ void PatchSectionView::updateCursor()
         ensureVisible(tbr); // TODO: Das hier geht noch nicht so gut
 
         QRectF cr = currentCircuitView()->cellRect(pos.row, pos.column);
-        if (patch->isPatching())
+        if (currentCircuit()->isDisabled() ||
+                (currentJackAssignment() && currentJackAssignment()->isDisabled()))
+            frameCursor.setMode(CURSOR_DISABLED);
+        else if (patch->isPatching())
             frameCursor.setMode(CURSOR_PATCHING);
         else if (patch->problemAt(patch->currentSectionIndex(), pos) != "")
             frameCursor.setMode(CURSOR_PROBLEM);

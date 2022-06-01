@@ -35,6 +35,7 @@ public:
     bool redoPossible() const;
     QString nextUndoTitle() const;
     QString nextRedoTitle() const;
+    void commitCursorPosition();
 
     bool isPatching() const { return patching; };
     void startPatching();

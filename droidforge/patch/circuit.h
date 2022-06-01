@@ -15,14 +15,16 @@ class Circuit
     QString name;
     QStringList comment;
     QList<JackAssignment *> jackAssignments;
+    bool disabled;
 
 public:
-    Circuit(QString name, const QStringList &comment);
+    Circuit(QString name, const QStringList &comment, bool disabled);
     ~Circuit();
     Circuit *clone() const;
     QString toString();
     QString getName() const { return name; };
     QString getComment() const;
+    bool isDisabled() const { return disabled; };
     void setComment(QString c);
     bool hasComment() const { return !comment.empty(); };
     void removeComment();
