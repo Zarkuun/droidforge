@@ -82,7 +82,29 @@ void EditorActions::moveCursor()
 
 void EditorActions::updateDisablingActions()
 {
-    // Selection *selection = section()->getSelection();
+    const Selection *selection = section()->getSelection();
+    bool somethingEnabled = false;
+    bool somethingDisabled = false;
+    if (selection) {
+    }
+    else {
+        const JackAssignment *ja = section()->currentJackAssignment();
+        if (ja) {
+            somethingEnabled = !ja->isDisabled();
+            somethingDisabled = ja->isDisabled();
+        }
+        else {
+            const Circuit *circuit = section()->currentCircuit();
+            if (circuit) {
+                somethingEnabled = !circuit->isDisabled();
+                somethingDisabled = circuit->isDisabled();
+            }
+        }
+    }
+    // Never enable both, our shortcut '#' would be ambigous otherwise
+    actions[ACTION_DISABLE]->setEnabled(somethingEnabled);
+    actions[ACTION_ENABLE]->setEnabled(somethingDisabled && !somethingEnabled);
+
 }
 
 void EditorActions::changePatching()

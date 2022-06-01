@@ -212,6 +212,13 @@ QString Circuit::getComment() const
         return comment.join('\n') + "\n";
 }
 
+void Circuit::setDisabledWithJacks(bool d)
+{
+    disabled = d;
+    for (auto ja: jackAssignments)
+        ja->setDisabled(d);
+}
+
 void Circuit::setComment(QString c)
 {
     comment = c.trimmed().split("\n");

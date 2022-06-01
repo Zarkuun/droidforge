@@ -113,6 +113,7 @@ private:
     void editJackCommentAt(const CursorPosition &pos);
     void clearSelection();
 
+    void enableDisableObjects(bool enable);
 public slots:
     void modifyPatch();
     void changeSelection();

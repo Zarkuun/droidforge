@@ -447,11 +447,39 @@ void PatchSectionView::pasteSmart()
 void PatchSectionView::disableObjects()
 {
     qDebug("DIS");
+    enableDisableObjects(false);
 }
 
 void PatchSectionView::enableObjects()
 {
     qDebug("ENA");
+    enableDisableObjects(true);
+}
+
+void PatchSectionView::enableDisableObjects(bool enable)
+{
+    QString what = enable ? tr("enabling") : tr("disabling");
+    const Selection *selection = section()->getSelection();
+    if (selection) {
+        qDebug() << "TODO: SELECTIN";
+    }
+    else {
+        JackAssignment *ja = currentJackAssignment();
+        if (ja) {
+            ja->setDisabled(!enable);
+            patch->commit(tr("%1 assignment of jack").arg(what));
+            emit patchModified();
+            return;
+        }
+
+        Circuit *circuit = currentCircuit();
+        if (circuit) {
+            circuit->setDisabledWithJacks(!enable);
+            patch->commit(tr("%1 assignment of circuit").arg(what));
+            emit patchModified();
+            return;
+        }
+    }
 }
 
 void PatchSectionView::pasteCircuitsFromClipboard()
@@ -1135,8 +1163,9 @@ void PatchSectionView::deleteCurrentRow()
 
 void PatchSectionView::deleteCurrentCircuit()
 {
+    QString name = currentCircuit()->getName().toUpper();
     section()->deleteCurrentCircuit();
-    patch->commit(tr("deleting circuit ") + currentCircuit()->getName().toUpper());
+    patch->commit(tr("deleting circuit '%1'").arg(name));
     emit patchModified();
 }
 
