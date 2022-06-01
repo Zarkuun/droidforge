@@ -7,8 +7,17 @@ KLEINERE FEATURE:
 - Jackzeilen oder Circuits disablen (auskommentieren)
 - View source code (oder open source code in text editor)
 - %a -> Alles auswählen
+- %d -> Duplicate. Diese Reihe von Buttons, LEDs
+- Tasten, mit eer man die LEDs an die Buttons angleichen kann.
+- Eine Wwarnung oder irgendwas, wenn man buttons aber keine
+  LEDs hat. Mit Klicken, dass es automatisch repariert wird.
+  Nur was machen wir für den seltenen Fall,l dass man es so will?
+- Kabelkonflikte (externe, interne?) beim Einfügen von Sachen
+  noch programmieren. Interne->automatisch umbenennen.
 
 BUGS:
+- Die disableten Zeilen darf man bei der berechnung der
+belegten Regisgter wohl nicht mitzählen.
 
 Version 2:
 - Mehrere Dateien gleichzeitig auf haben
