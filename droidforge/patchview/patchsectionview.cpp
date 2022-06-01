@@ -461,7 +461,29 @@ void PatchSectionView::enableDisableObjects(bool enable)
     QString what = enable ? tr("enabling") : tr("disabling");
     const Selection *selection = section()->getSelection();
     if (selection) {
-        qDebug() << "TODO: SELECTIN";
+        const CursorPosition &fromPos = selection->fromPos();
+        const CursorPosition &toPos = selection->toPos();
+        if (selection->isCircuitSelection())
+        {
+            for (int i=fromPos.circuitNr; i<=toPos.circuitNr; i++) {
+                Circuit *circuit = section()->circuit(i);
+                circuit->setDisabledWithJacks(!enable);
+            }
+            patch->commit(tr("%1 circuits").arg(what));
+            emit patchModified();
+        }
+        else if (selection->isJackSelection())
+        {
+            Circuit *circuit = section()->circuit(fromPos.circuitNr);
+            for (int i=fromPos.row; i<=toPos.row; i++) {
+                if (i < 0)
+                    continue;
+                JackAssignment *ja = circuit->jackAssignment(i);
+                ja->setDisabled(!enable);
+            }
+            patch->commit(tr("%1 jack assignments").arg(what));
+            emit patchModified();
+        }
     }
     else {
         JackAssignment *ja = currentJackAssignment();

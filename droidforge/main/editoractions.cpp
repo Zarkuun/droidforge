@@ -86,6 +86,27 @@ void EditorActions::updateDisablingActions()
     bool somethingEnabled = false;
     bool somethingDisabled = false;
     if (selection) {
+        const CursorPosition &fromPos = selection->fromPos();
+        const CursorPosition &toPos = selection->toPos();
+        if (selection->isCircuitSelection())
+        {
+            for (int i=fromPos.circuitNr; i<=toPos.circuitNr; i++) {
+                const Circuit *circuit = section()->circuit(i);
+                somethingEnabled |= !circuit->isDisabled();
+                somethingDisabled |= circuit->isDisabled();
+            }
+        }
+        else if (selection->isJackSelection())
+        {
+            const Circuit *circuit = section()->circuit(fromPos.circuitNr);
+            for (int i=fromPos.row; i<=toPos.row; i++) {
+                if (i < 0)
+                    continue;
+                const JackAssignment *ja = circuit->jackAssignment(i);
+                somethingEnabled |= !ja->isDisabled();
+                somethingDisabled |= ja->isDisabled();
+            }
+        }
     }
     else {
         const JackAssignment *ja = section()->currentJackAssignment();
