@@ -954,31 +954,6 @@ void PatchSectionView::updateCircuits()
         circuitViews[i]->update();
 }
 
-void PatchSectionView::updateRegisterHilites() const
-{
-    const Circuit *circuit = currentCircuit();
-    if (!currentCircuit()) // 0 for empty section
-        return;
-
-    CursorPosition cursor = section()->cursorPosition();
-    RegisterList registers;
-    if (cursor.row == -2 || cursor.row == -1) // Circuit selected
-        circuit->collectRegisterAtoms(registers);
-    else {
-        const JackAssignment *ja = circuit->jackAssignment(cursor.row);
-        if (cursor.column == 0)
-            ja->collectRegisterAtoms(registers);
-        else {
-            const Atom *atom = ja->atomAt(cursor.column);
-            if (atom && atom->isRegister())
-                registers.append(*(AtomRegister *)atom);
-        }
-    }
-    // TODO:
-    // registers.removeDuplicates();
-    the_forge->hiliteRegisters(registers);
-}
-
 void PatchSectionView::clickOnRegister(AtomRegister ar)
 {
     CursorPosition cursor = section()->cursorPosition();

@@ -176,18 +176,15 @@ void MainWindow::createMenus()
 }
 
 
-void MainWindow::hiliteRegisters(const RegisterList &registers)
-{
-    rackView.hiliteRegisters(registers);
-}
-
 void MainWindow::clickOnRegister(AtomRegister ar)
 {
+    // TODO: Weg damit
     patchSectionView.clickOnRegister(ar);
 }
 
 void MainWindow::updateWindowTitle()
 {
+    // TODO: Mit signal ansetuern
     QString title;
     if (filePath.isEmpty())
         title = tr("(untitled patch)") + " - " + tr("DROID Forge");

@@ -64,8 +64,6 @@ public:
     ~MainWindow();
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);
-    Patch *getPatch() { return patch; }; // TODO????
-    void hiliteRegisters(const RegisterList &registers);
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
     QDir userPatchDirectory() const;

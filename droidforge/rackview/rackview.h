@@ -27,7 +27,6 @@ public:
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    void hiliteRegisters(const RegisterList &registers);
     void hideRegisterMarker();
     void updateGraphics();
 
@@ -35,6 +34,7 @@ private:
     void addModule(const QString &name, int controllerIndex=-1);
     unsigned numControllers() const;
     void removeModule(int controllerIndex);
+    RegisterList findCurrentRegisters() const;
     void updateSize();
     void popupControllerContextMenu(int controller, QString name);
     void popupBackgroundContextMenu();
@@ -50,10 +50,10 @@ private:
             ControllerRemovalDialog::OutputHandling outputHandling);
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
-    void connectActions();
 
 public slots:
     void modifyPatch();
+    void updateRegisterMarkers();
     void addController();
 
 private slots:

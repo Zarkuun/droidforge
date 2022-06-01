@@ -37,15 +37,14 @@ RackView::RackView(PatchEditEngine *patch)
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &RackView::modifyPatch);
-}
-
-void RackView::connectActions()
-{
+    connect(the_hub, &UpdateHub::sectionSwitched, this, &RackView::updateRegisterMarkers);
+    connect(the_hub, &UpdateHub::cursorMoved, this, &RackView::updateRegisterMarkers);
 }
 
 void RackView::modifyPatch()
 {
     updateGraphics();
+    updateRegisterMarkers();
 }
 
 void RackView::resizeEvent(QResizeEvent *)
@@ -93,25 +92,6 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
         }
         else
             hideRegisterMarker();
-    }
-}
-
-void RackView::hiliteRegisters(const RegisterList &registers)
-{
-    for (auto module: modules) {
-        unsigned controller = 0;
-        if (module->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
-            controller = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
-
-        module->clearHilites();
-        for (qsizetype r=0; r<registers.count(); r++)
-        {
-            AtomRegister ar = registers[r];
-            if (ar.controller() == controller)
-                module->hiliteRegisters(true, ar.getRegisterType(), ar.number());
-            // TODO: Hilite inputs/ouputs
-        }
-        module->update();
     }
 }
 
@@ -323,6 +303,44 @@ void RackView::removeModule(int controllerIndex)
     Module *module = modules[controllerIndex];
     scene()->removeItem(module);
     modules.remove(controllerIndex);
+}
+
+void RackView::updateRegisterMarkers()
+{
+    const Circuit *circuit = section()->currentCircuit();
+    if (!circuit)
+        return;
+
+    RegisterList registers;
+    CursorPosition cursor = section()->cursorPosition();
+    if (cursor.row == -2 || cursor.row == -1) // Circuit selected
+        circuit->collectRegisterAtoms(registers);
+    else {
+        const JackAssignment *ja = circuit->jackAssignment(cursor.row);
+        if (cursor.column == 0)
+            ja->collectRegisterAtoms(registers);
+        else {
+            const Atom *atom = ja->atomAt(cursor.column);
+            if (atom && atom->isRegister())
+                registers.append(*(AtomRegister *)atom);
+        }
+    }
+
+    for (auto module: modules) {
+        unsigned controller = 0;
+        if (module->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+            controller = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
+
+        module->clearHilites();
+        for (qsizetype r=0; r<registers.count(); r++)
+        {
+            AtomRegister ar = registers[r];
+            if (ar.controller() == controller)
+                module->hiliteRegisters(true, ar.getRegisterType(), ar.number());
+            // TODO: Hilite inputs/ouputs
+        }
+        module->update();
+    }
 }
 
 void RackView::addController()
