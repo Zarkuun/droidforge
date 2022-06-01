@@ -360,7 +360,6 @@ void MainWindow::connectActions()
     CONNECT_ACTION(ACTION_SAVE_AS, &MainWindow::saveAs);
     CONNECT_ACTION(ACTION_EXPORT_SELECTION, &MainWindow::exportSelection);
     CONNECT_ACTION(ACTION_INTEGRATE_PATCH, &MainWindow::integrate);
-    CONNECT_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, &MainWindow::jumpToNextProblem);
     CONNECT_ACTION(ACTION_QUIT, &MainWindow::close);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &MainWindow::openEnclosingFolder);
@@ -479,16 +478,6 @@ void MainWindow::redo()
         emit patchModified();
     }
 }
-
-void MainWindow::jumpToNextProblem()
-{
-    // const PatchProblem *problem = patch->problem(currentProblem++);
-    // if (currentProblem >= patch->numProblems())
-    //     currentProblem = 0;
-    // TODO
-    // patchView.jumpTo(problem->getSection(), problem->getCursorPosition());
-}
-
 
 void MainWindow::splitterMoved()
 {

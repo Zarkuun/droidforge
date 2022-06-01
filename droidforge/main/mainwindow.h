@@ -51,7 +51,6 @@ class MainWindow : public QMainWindow, PatchOperator
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
-    unsigned currentProblem;
     PatchParser parser;
     QString initialFilename;
     QString filePath; // of loaded patch
@@ -105,11 +104,9 @@ private slots:
     void openEnclosingFolder();
     void undo();
     void redo();
-    void jumpToNextProblem();
     void splitterMoved();
     void cursorMoved(int section, const CursorPosition &pos);
     void editProperties();
-
 
 signals:
     void patchModified();

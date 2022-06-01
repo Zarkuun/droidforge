@@ -1,4 +1,5 @@
 #include "patchproblemindicator.h"
+#include "editoractions.h"
 #include "tuning.h"
 #include "updatehub.h"
 
@@ -12,9 +13,17 @@ PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *pa
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
     , okImage(":images/icons/white/sentiment_very_satisfied.png") // TODO: Hilfsfunktion
     , numProblems(0)
+    , currentProblem(0)
 {
     setMinimumWidth(PPI_WIDTH);
     setMaximumWidth(PPI_WIDTH);
+
+    CONNECT_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::jumpToNextProblem);
+    TRIGGER_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::clicked);
+
+    // Events that we create
+    connect(this, &PatchProblemIndicator::sectionSwitched, the_hub, &UpdateHub::switchSection);
+    connect(this, &PatchProblemIndicator::cursorMoved, the_hub, &UpdateHub::moveCursor);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &PatchProblemIndicator::updateStatus);
@@ -62,4 +71,17 @@ void PatchProblemIndicator::updateStatus()
         unsetCursor();
     }
     update();
+}
+
+void PatchProblemIndicator::jumpToNextProblem()
+{
+    const PatchProblem *problem = patch->problem(currentProblem++);
+    if (currentProblem >= patch->numProblems())
+        currentProblem = 0;
+    qDebug() << "JUMP TO" << currentProblem;
+    int oldSection = patch->currentSectionIndex();
+    patch->setCursorTo(problem->getSection(), problem->getCursorPosition());
+    if (patch->currentSectionIndex() != oldSection)
+        emit sectionSwitched();
+    emit cursorMoved();
 }

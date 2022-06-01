@@ -11,6 +11,7 @@ class PatchProblemIndicator : public QWidget, PatchOperator
     QImage warningImage;
     QImage okImage;
     unsigned numProblems;
+    unsigned currentProblem;
 
 public:
     PatchProblemIndicator(PatchEditEngine *patch, QWidget *parent = nullptr);
@@ -19,8 +20,11 @@ public:
 
 public slots:
     void updateStatus();
+    void jumpToNextProblem();
 
 signals:
+    void sectionSwitched();
+    void cursorMoved();
     void clicked();
 };
 
