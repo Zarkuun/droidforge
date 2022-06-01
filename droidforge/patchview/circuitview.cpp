@@ -273,7 +273,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         }
 
         QRectF ar = atomRect(row, 1);
-        painter->setPen(CIRV_COLOR_LINE);
+        painter->setPen(textcolor);
         paintOperator(painter, operatorPosition(0), ar.top(), "✱");
         paintOperator(painter, operatorPosition(1), ar.top(), "+");
         painter->setPen(CIRV_COLOR_LINE);
@@ -319,11 +319,9 @@ void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QStri
 {
     QRectF r(x, y, CIRV_COLUMN_OPERATOR_WIDTH, CIRV_JACK_HEIGHT);
     painter->fillRect(r, CIRV_COLOR_OPERATOR_BACKGROUND);
-    painter->setPen(CIRV_COLOR_OPERATOR);
     painter->save();
     const QFont &font = painter->font();
     painter->setFont(QFont(font.family(), font.pointSize() * 1.2));
-    painter->setPen(COLOR_TEXT);
     painter->drawText(r, o, Qt::AlignVCenter | Qt::AlignCenter);
     painter->restore();
 }

@@ -187,16 +187,12 @@ QString Circuit::toString()
              s += "# " + comment[i] + "\n"; // TODO Multiline
 
     if (disabled)
-        s + "# ";
+        s += "# ";
     s += "[" + name + "]\n";
 
     for (qsizetype i=0; i<jackAssignments.length(); i++)
     {
         QString jackLine = jackAssignments[i]->toString() + "\n";
-        // A disabled circuit should not have any non-disabled jack lines.
-        // This is just a safety measure.
-        if (disabled && !jackLine.startsWith("#"))
-            s += "# ";
         s += jackLine;
     }
     s += "\n";

@@ -24,10 +24,10 @@ JackAssignment::~JackAssignment()
 
 QString JackAssignment::toString() const
 {
-    QString s;
+    QString s = "    ";
     if (disabled)
         s += "# ";
-    s = "    " + jack + " = " + valueToString();
+    s += jack + " = " + valueToString();
     if (!comment.isEmpty())
         s += " # " + comment;
     return s;

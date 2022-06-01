@@ -53,5 +53,7 @@ QList<PatchProblem *> JackAssignmentUnknown::collectProblems(const Patch *) cons
 
 JackAssignment *JackAssignmentUnknown::clone() const
 {
-    return new JackAssignmentUnknown(jack, comment, atom ? atom->toString() : "");
+    JackAssignment *ja = new JackAssignmentUnknown(jack, comment, atom ? atom->toString() : "");
+    ja->setDisabled(isDisabled());
+    return ja;
 }
