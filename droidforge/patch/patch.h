@@ -88,9 +88,9 @@ public:
 
 protected:
     void updateProblems(); // only done by VersionedPatch::commit()
+    void clear();
 
 private:
-    void clear();
 
 public:
     // Iteration of all atoms in this patch

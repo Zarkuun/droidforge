@@ -5,6 +5,7 @@
 #include "versionedpatch.h"
 #include "registermarker.h"
 #include "controllerremovaldialog.h"
+#include "patchoperator.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -12,18 +13,17 @@
 #include <QGraphicsEllipseItem>
 
 
-class RackView : public QGraphicsView
+class RackView : public QGraphicsView, PatchOperator
 {
     Q_OBJECT
 
-    VersionedPatch *patch;
     QList<Module *> modules;
     unsigned x;
     RegisterMarker *registerMarker;
     AtomRegister markedRegister;
 
 public:
-    explicit RackView();
+    explicit RackView(VersionedPatch *patch);
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -53,7 +53,6 @@ private:
     void connectActions();
 
 public slots:
-    void changePatch(VersionedPatch *patch);
     void modifyPatch();
     void addController();
 

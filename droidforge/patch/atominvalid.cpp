@@ -1,9 +1,6 @@
 #include "atominvalid.h"
+#include "globals.h"
 #include "patchproblem.h"
-
-#include <QCoreApplication>
-
-#define tr(s) QCoreApplication::translate("Patch", s)
 
 
 AtomInvalid *AtomInvalid::clone() const
@@ -11,12 +8,12 @@ AtomInvalid *AtomInvalid::clone() const
     return new AtomInvalid(rawtext);
 }
 
-QString AtomInvalid::problemAsInput(const Patch *patch) const
+QString AtomInvalid::problemAsInput(const Patch *) const
 {
-    return tr("Invalid (garbled) value");
+    return TR("Invalid (garbled) value");
 }
 
-QString AtomInvalid::problemAsOutput(const Patch *patch) const
+QString AtomInvalid::problemAsOutput(const Patch *) const
 {
-    return tr("Invalid value or value that cannot be used as output");
+    return TR("Invalid value or value that cannot be used as output");
 }

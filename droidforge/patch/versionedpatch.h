@@ -12,10 +12,12 @@ class VersionedPatch : public Patch
     int redoPointer;
     int versionOnDisk;
 
+
 public:
     VersionedPatch(const Patch *patch);
-    VersionedPatch(); // minimal patch
+    VersionedPatch(); // empty
     ~VersionedPatch();
+    void startFromScratch();
     bool isModified() const;
     bool saveToFile(QString filename);
     void commit(QString message="");
@@ -29,7 +31,7 @@ public:
     QString nextRedoTitle() const;
 
 private:
-    void clear();
+    void clearVersions();
 };
 
 #endif // VERSIONEDPATCH_H

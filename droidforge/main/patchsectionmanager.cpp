@@ -4,7 +4,7 @@
 #include "updatehub.h"
 #include "editoractions.h"
 #include "namechoosedialog.h"
-#include "interactivepatchoperation.h"
+#include "patchoperator.h"
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -14,9 +14,9 @@
 
 #define DATA_INDEX_SECTION_INDEX 0
 
-PatchSectionManager::PatchSectionManager(QWidget *parent)
+PatchSectionManager::PatchSectionManager(VersionedPatch *patch, QWidget *parent)
     : QGraphicsView{parent}
-    , patch(0)
+    , PatchOperator(patch)
     , lastIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
@@ -37,7 +37,6 @@ PatchSectionManager::PatchSectionManager(QWidget *parent)
 
     // Events we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
-    connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionManager::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionManager::modifyPatch);
 }
 
@@ -108,12 +107,6 @@ int PatchSectionManager::clickedSectionIndex(QMouseEvent *event)
     return -1;
 }
 
-void PatchSectionManager::changePatch(VersionedPatch *newPatch)
-{
-    patch = newPatch;
-    rebuildGraphics();
-}
-
 void PatchSectionManager::modifyPatch()
 {
     rebuildGraphics();
@@ -158,14 +151,13 @@ void PatchSectionManager::duplicateSection()
 
     Patch *newpatch = new Patch();
     newpatch->addSection(oldSection->clone());
-    if (!InteractivePatchOperation::interactivelyRemapRegisters(patch, newpatch)) {
+    if (!interactivelyRemapRegisters(newpatch)) {
         delete newpatch;
         return;
     }
 
     PatchSection *newsection = newpatch->section(0)->clone();
     patch->insertSection(index + 1, newsection);
-    patch->switchCurrentSection(index + 1);
     delete newpatch;
     emit patchModified(); // implies sectionSwitched
 }
@@ -196,12 +188,11 @@ void PatchSectionManager::mergeSections(int indexa, int indexb)
 void PatchSectionManager::newSectionAfterCurrent()
 {
     int index = patch->currentSectionIndex();
-    QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"), SECTION_DEFAULT_NAME);
+    QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"));
     if (newname.isEmpty())
         return;
 
     patch->insertSection(index + 1, new PatchSection(newname));
-    patch->switchCurrentSection(index + 1);
     patch->commit(tr("adding new patch section '%1'").arg(newname));
     emit patchModified();
 }

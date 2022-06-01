@@ -8,17 +8,17 @@
 #include "framecursor.h"
 #include "versionedpatch.h"
 #include "patchsectiontitleview.h"
+#include "patchoperator.h"
 
-class PatchSectionManager : public QGraphicsView
+class PatchSectionManager : public QGraphicsView, PatchOperator
 {
     Q_OBJECT
-    VersionedPatch *patch; // borrowed
     QList<PatchSectionTitleView *> titleViews;
     FrameCursor *frameCursor;
     int lastIndex;
 
 public:
-    explicit PatchSectionManager(QWidget *parent = nullptr);
+    explicit PatchSectionManager(VersionedPatch *patch, QWidget *parent = nullptr);
 
 private:
     void rebuildGraphics();
@@ -37,7 +37,6 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
 
 public slots:
-    void changePatch(VersionedPatch *patch);
     void modifyPatch();
     void switchSection();
 

@@ -3,12 +3,14 @@
 #include "cablecolorizer.h"
 #include "tuning.h"
 #include "updatehub.h"
+#include "editoractions.h"
 
 #include <QDebug>
+#include <QMouseEvent>
 
-CableStatusIndicator::CableStatusIndicator(const VersionedPatch *patch, QWidget *parent)
+CableStatusIndicator::CableStatusIndicator(VersionedPatch *patch, QWidget *parent)
     : QWidget{parent}
-    , patch(patch)
+    , PatchOperator(patch)
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
     , animation(this, "animationPhase")
     , patching(false)
@@ -21,8 +23,12 @@ CableStatusIndicator::CableStatusIndicator(const VersionedPatch *patch, QWidget 
     cableHilitePen.setColor(CSI_CABLE_HILITE_COLOR);
     cableHilitePen.setWidth(1);
 
+    // TODO: mouse click soll signal machen bzw. direkt
+    // eine Aktion triggern (follow cable). Und eine Hand will ich
+    // sehen.
+    TRIGGER_ACTION(ACTION_ADD_JACK, &CableStatusIndicator::clicked);
+
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::patchChanged, this, &CableStatusIndicator::patchChanged);
     connect(the_hub, &UpdateHub::patchModified, this, &CableStatusIndicator::updateStatus);
     connect(the_hub, &UpdateHub::cursorMoved, this, &CableStatusIndicator::updateStatus);
 }
@@ -35,6 +41,13 @@ void CableStatusIndicator::paintEvent(QPaintEvent *)
         paintPatching(painter);
     else
         paintCableInfo(painter);
+}
+
+void CableStatusIndicator::mousePressEvent(QMouseEvent *event)
+{
+    // TODO: Vom Status abhängig machen
+    if (event->button() == Qt::LeftButton)
+        emit clicked();
 }
 
 void CableStatusIndicator::paintPatching(QPainter &painter)
@@ -142,13 +155,6 @@ void CableStatusIndicator::paintLabel(QPainter &painter, int xpos, QString text)
 
 }
 
-void CableStatusIndicator::patchChanged(VersionedPatch *newPatch)
-{
-    patch = newPatch;
-    updateStatus();
-}
-
-
 void CableStatusIndicator::paintMarker(QPainter &painter, int xpos, QColor border, QColor fill, int number)
 {
     painter.save();
@@ -239,15 +245,12 @@ void CableStatusIndicator::updateStatus()
         int numAsInput = 0;
         patch->findCableConnections(name, numAsInput, numAsOutput);
         set(name, numAsInput, numAsOutput);
+        setCursor(Qt::PointingHandCursor);
     }
-    else
+    else {
         clear();
+        unsetCursor();
+    }
 }
 
-
-// Infos, die ich brauche
-
-// Kabelname
-// Anzahl Ouptuts
-// Anzahl Inputs
 // Status, ob ich grad verkable

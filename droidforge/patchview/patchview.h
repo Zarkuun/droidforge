@@ -13,7 +13,6 @@ class PatchView : public QTabWidget
 {
     Q_OBJECT
 
-    VersionedPatch *patch;
     Clipboard clipboard;
     bool patching;
     unsigned patchingStartSection;
@@ -25,7 +24,6 @@ public:
     bool clipboardFilled() const;
     bool circuitsInClipboard() const;
     Patch *integratePatch(Patch *otherpatch);
-    bool interactivelyRemapRegisters(Patch *otherpatch);
     bool isPatching() const { return patching; };
     void abortAllActions();
     void jumpTo(int section, const CursorPosition &curPos);

@@ -1,10 +1,7 @@
 #include "atomcable.h"
+#include "globals.h"
 #include "patchproblem.h"
 #include "patch.h"
-
-#include <QCoreApplication>
-
-#define tr(s) QCoreApplication::translate("Patch", s)
 
 AtomCable *AtomCable::clone() const
 {
@@ -22,11 +19,10 @@ QString AtomCable::problemAsInput(const Patch *patch) const
     int numAsInput = 0;
     patch->findCableConnections(name, numAsInput, numAsOutput);
     if (numAsOutput == 0)
-        return tr("There is no output connected to this cable");
-    else if (numAsInput == 0)
-        return tr("There is no input connected to this cable");
+        return TR("There is no output connected to this cable"); else if (numAsInput == 0)
+        return TR("There is no input connected to this cable");
     else if (numAsOutput > 1)
-        return tr("There is more than one output connected to this cable");
+        return TR("There is more than one output connected to this cable");
     else
         return "";
 }

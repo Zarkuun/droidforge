@@ -5,8 +5,9 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-PatchProblemIndicator::PatchProblemIndicator(QWidget *parent)
+PatchProblemIndicator::PatchProblemIndicator(VersionedPatch *patch, QWidget *parent)
     : QWidget{parent}
+    , PatchOperator(patch)
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
     , okImage(":images/icons/white/sentiment_very_satisfied.png") // TODO: Hilfsfunktion
     , numProblems(0)

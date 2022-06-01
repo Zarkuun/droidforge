@@ -11,15 +11,6 @@ UpdateHub::UpdateHub(QObject *parent)
     the_hub = this;
 }
 
-void UpdateHub::changePatch(VersionedPatch *patch)
-{
-    // Called, when the central pointer MainWindow::patch has changed.
-    // This is the case, when a new patch is loaded are "New..." is
-    // selected.
-    qDebug() << "HUB: changePatch()";
-    emit patchChanged(patch);
-}
-
 void UpdateHub::modifyPatch()
 {
     // Called, when the current patch is modified in any possible way -

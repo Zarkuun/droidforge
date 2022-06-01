@@ -2,8 +2,9 @@
 #define PATCHPROBLEMINDICATOR_H
 
 #include <QWidget>
+#include "patchoperator.h"
 
-class PatchProblemIndicator : public QWidget
+class PatchProblemIndicator : public QWidget, PatchOperator
 {
     Q_OBJECT
 
@@ -12,7 +13,7 @@ class PatchProblemIndicator : public QWidget
     unsigned numProblems;
 
 public:
-    PatchProblemIndicator(QWidget *parent = nullptr);
+    PatchProblemIndicator(VersionedPatch *patch, QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
 

@@ -14,8 +14,9 @@
 #include <QMessageBox>
 #include <algorithm>
 
-RackView::RackView()
+RackView::RackView(VersionedPatch *patch)
     : QGraphicsView()
+    , PatchOperator(patch)
 {
     setFocusPolicy(Qt::NoFocus);
     setMinimumHeight(RACV_MIN_HEIGHT);
@@ -35,19 +36,12 @@ RackView::RackView()
     connect(this, &RackView::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::patchChanged, this, &RackView::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &RackView::modifyPatch);
 }
 
 void RackView::connectActions()
 {
     CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
-}
-
-void RackView::changePatch(VersionedPatch *newPatch)
-{
-    patch = newPatch;
-    updateGraphics();
 }
 
 void RackView::modifyPatch()

@@ -18,7 +18,7 @@
 #include "circuitchoosedialog.h"
 #include "updatehub.h"
 #include "jackchoosedialog.h"
-#include "interactivepatchoperation.h"
+#include "patchoperator.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -32,7 +32,7 @@
 
 
 PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
-    : patch(initialPatch) // patch is never ever 0!
+    : PatchOperator(initialPatch) // patch is never ever 0!
     , zoomLevel(0)
     , zoomFactor(1.0)
     , atomSelectorDialog{}
@@ -61,7 +61,6 @@ PatchSectionView::PatchSectionView(VersionedPatch *initialPatch)
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
-    connect(the_hub, &UpdateHub::patchChanged, this, &PatchSectionView::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionView::modifyPatch);
     connect(the_hub, &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
     connect(the_hub, &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
@@ -260,12 +259,6 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
         handleRightMousePress(0, CursorPosition());
 }
 
-void PatchSectionView::changePatch(VersionedPatch *newPatch)
-{
-    patch = newPatch;
-    modifyPatch();
-}
-
 void PatchSectionView::changeSelection(const Selection *)
 {
     rebuildPatchSection();
@@ -357,7 +350,7 @@ void PatchSectionView::paste()
 void PatchSectionView::pasteSmart()
 {
     Patch *pastedPatch = the_clipboard->getAsPatch();
-    if (!InteractivePatchOperation::interactivelyRemapRegisters(patch, pastedPatch)) {
+    if (!interactivelyRemapRegisters(pastedPatch)) {
         delete pastedPatch;
         return;
     }
@@ -557,22 +550,11 @@ void PatchSectionView::showEvent(QShowEvent *)
     // updateCableIndicator(); Was macht das Hier/??
 }
 
-PatchSection *PatchSectionView::section()
-{
-    return patch->currentSection(); // patch never 0, section never 0
-}
-
-const PatchSection *PatchSectionView::section() const
-{
-    return patch->currentSection(); // patch never 0, section never 0
-}
-
 PatchView *PatchSectionView::patchView()
 {
     // TODO: Das hier ist der Megahack.
     return (PatchView *)parent()->parent();
 }
-
 
 JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
 {

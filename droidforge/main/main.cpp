@@ -31,7 +31,8 @@ int main(int argc, char *argv[])
     CableColorizer cableColorizer;
     the_cable_colorizer = &cableColorizer; // TODO: move to class
 
-    MainWindow mainWindow(initialFilename);
+    VersionedPatch emptyPatch;
+    MainWindow mainWindow(&emptyPatch, initialFilename);
     mainWindow.show();
     QDir::setCurrent(mainWindow.userPatchDirectory().absolutePath());
 

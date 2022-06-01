@@ -3,6 +3,7 @@
 
 #include "selection.h"
 #include "versionedpatch.h"
+#include "patchoperator.h"
 
 #include <QObject>
 #include <QAction>
@@ -51,18 +52,16 @@ typedef enum {
     NUM_ACTIONS,
 } action_t;
 
-class EditorActions : public QObject
+class EditorActions : public QObject, PatchOperator
 {
     Q_OBJECT
     QAction *actions[NUM_ACTIONS];
-    VersionedPatch *patch; // borrowed
 
 public:
-    explicit EditorActions(QObject *parent = nullptr);
+    explicit EditorActions(VersionedPatch *patch, QObject *parent = nullptr);
     QAction *action(action_t action) { return actions[action]; };
 
 private slots:
-    void changePatch(VersionedPatch *patch);
     void modifyPatch();
     void switchSection();
     void changeClipboard();
@@ -80,6 +79,7 @@ extern EditorActions *the_actions;
  *   the action signal, not by someone else.
 */
 #define CONNECT_ACTION(A, FUNC)      connect(the_actions->action(A), &QAction::triggered, this, FUNC)
+#define TRIGGER_ACTION(A, FUNC)      connect(this, FUNC, the_actions->action(A), &QAction::trigger)
 #define ADD_ACTION(A, TO)            TO->addAction(the_actions->action(A))
 #define ADD_ACTION_IF_ENABLED(A, TO) if (the_actions->action(A)->isEnabled()) TO->addAction(the_actions->action(A))
 

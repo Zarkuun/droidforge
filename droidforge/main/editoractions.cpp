@@ -4,9 +4,9 @@
 
 EditorActions *the_actions = 0;
 
-EditorActions::EditorActions(QObject *parent)
+EditorActions::EditorActions(VersionedPatch *patch, QObject *parent)
     : QObject{parent}
-    , patch(0)
+    , PatchOperator(patch)
 {
     Q_ASSERT(the_actions == 0);
     the_actions = this;
@@ -14,16 +14,9 @@ EditorActions::EditorActions(QObject *parent)
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
-    connect(the_hub, &UpdateHub::patchChanged, this, &EditorActions::changePatch);
     connect(the_hub, &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
     connect(the_hub, &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
     connect(the_hub, &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
-}
-
-void EditorActions::changePatch(VersionedPatch *newPatch)
-{
-    patch = newPatch;
-    modifyPatch();
 }
 
 void EditorActions::modifyPatch()

@@ -22,9 +22,19 @@ Patch::~Patch()
 
 void Patch::clear()
 {
+    fileName = "";
+    title = "";
+    description.clear();
+    libraryMetaData = "";
+    registerComments.clear();
+    controllers.clear();
     for (auto section: sections)
         delete section;
     sections.clear();
+    sectionIndex = 0;
+    for (auto problem: problems)
+        delete problem;
+    problems.clear();
 }
 
 Patch *Patch::clone() const
@@ -55,6 +65,7 @@ void Patch::addSection(PatchSection *section)
 void Patch::insertSection(int index, PatchSection *section)
 {
     sections.insert(index, section);
+    sectionIndex = index;
 }
 
 void Patch::mergeSections(int indexa, int indexb)

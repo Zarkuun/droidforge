@@ -19,8 +19,21 @@ VersionedPatch::VersionedPatch()
 
 VersionedPatch::~VersionedPatch()
 {
+    clearVersions();
+}
+
+void VersionedPatch::clearVersions()
+{
     for (auto version: versions)
         delete version;
+}
+
+void VersionedPatch::startFromScratch()
+{
+    clear();
+    clearVersions();
+    redoPointer = -1;
+    versionOnDisk = 0;
 }
 
 bool VersionedPatch::isModified() const

@@ -8,6 +8,10 @@
 #include "rackview.h"
 #include "versionedpatch.h"
 #include "patchparser.h"
+#include "patchoperator.h"
+#include "clipboardindicator.h"
+#include "cablestatusindicator.h"
+#include "patchproblemindicator.h"
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -27,17 +31,22 @@ extern DroidFirmware *the_firmware;
 #define FILE_MODE_LOAD 0
 #define FILE_MODE_INTEGRATE 1
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, PatchOperator
 {
     Q_OBJECT
-    VersionedPatch *patch; // is never 0!!!
-    EditorActions editorActions;
+
     DroidFirmware firmware;
-    QStatusBar *statusbar;
+
+    // all PatchOperators
+    EditorActions editorActions;
     RackView rackView;
     PatchSectionView patchSectionView;
     PatchSectionManager patchSectionManager;
+    CableStatusIndicator cableStatusIndicator;
+    PatchProblemIndicator patchProblemIndicator;
+    ClipboardIndicator clipboardIndicator;
 
+    QStatusBar *statusbar;
     QWidget *centralwidget;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
@@ -52,7 +61,7 @@ class MainWindow : public QMainWindow
     QToolBar *toolbar;
 
 public:
-    MainWindow(const QString &initialFilename);
+    MainWindow(VersionedPatch *patch, const QString &initialFilename);
     ~MainWindow();
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);
@@ -84,7 +93,6 @@ private:
     void updateWindowTitle();
     void repaintPatchView();
     void createStatusBar();
-    bool interactivelyRemapRegisters(Patch *otherpatch);
 
 private slots:
     void loadFile(const QString &filename, int how);
@@ -104,7 +112,6 @@ private slots:
 
 
 signals:
-    void patchChanged(VersionedPatch *); // all pointers are invalid
     void patchModified();
 
     void sigStarted();

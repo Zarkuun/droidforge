@@ -10,6 +10,7 @@
 #include "atomselectordialog.h"
 #include "clipboard.h"
 #include "versionedpatch.h"
+#include "patchoperator.h"
 
 #include <QGraphicsView>
 #include <QResizeEvent>
@@ -17,11 +18,10 @@
 
 class PatchView;
 
-class PatchSectionView : public QGraphicsView
+class PatchSectionView : public QGraphicsView, PatchOperator
 {
     Q_OBJECT
 
-    VersionedPatch *patch;
     int zoomLevel;
     float zoomFactor;
 
@@ -66,8 +66,6 @@ protected:
     void showEvent(QShowEvent *event);
 
 private:
-    PatchSection *section();
-    const PatchSection *section() const;
     PatchView *patchView();
     void updateCableIndicator();
     void setMouseSelection(const CursorPosition &to);
@@ -113,7 +111,6 @@ private:
     void pasteCircuitsFromClipboard();
 
 public slots:
-    void changePatch(VersionedPatch *patch);
     void modifyPatch();
     void changeSelection(const Selection *);
     void switchSection();

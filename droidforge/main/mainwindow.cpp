@@ -1,7 +1,4 @@
 #include "mainwindow.h"
-#include "clipboardindicator.h"
-#include "cablestatusindicator.h"
-#include "patchproblemindicator.h"
 #include "parseexception.h"
 #include "patch.h"
 #include "rackview.h"
@@ -12,7 +9,7 @@
 #include "os.h"
 #include "updatehub.h"
 #include "patchsectionview.h"
-#include "interactivepatchoperation.h"
+#include "patchoperator.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -25,10 +22,15 @@
 
 MainWindow *the_forge;
 
-MainWindow::MainWindow(const QString &initialFilename)
+MainWindow::MainWindow(VersionedPatch *patch, const QString &initialFilename)
     : QMainWindow()
-    , patch(new VersionedPatch())
+    , PatchOperator(patch)
+    , editorActions(patch)
+    , rackView(patch)
     , patchSectionView(patch)
+    , patchSectionManager(patch)
+    , cableStatusIndicator(patch)
+    , patchProblemIndicator(patch)
     , initialFilename(initialFilename)
 {
     the_forge = this;
@@ -68,7 +70,6 @@ MainWindow::MainWindow(const QString &initialFilename)
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename, FILE_MODE_LOAD);});
 
     // Events that we create
-    connect(this, &MainWindow::patchChanged, the_hub, &UpdateHub::changePatch);
     connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Events that we are interested in
@@ -82,10 +83,9 @@ void MainWindow::createStatusBar()
 {
     statusbar = new QStatusBar(this);
     setStatusBar(statusbar);
-
-    statusbar->addPermanentWidget(new CableStatusIndicator(patch));
-    statusbar->addPermanentWidget(new PatchProblemIndicator);
-    statusbar->addPermanentWidget(new ClipboardIndicator);
+    statusbar->addPermanentWidget(&cableStatusIndicator);
+    statusbar->addPermanentWidget(&patchProblemIndicator);
+    statusbar->addPermanentWidget(&clipboardIndicator);
 }
 
 MainWindow::~MainWindow()
@@ -99,7 +99,7 @@ void MainWindow::integratePatch(const QString &aFilePath)
     parser.parse(aFilePath, &otherpatch); // may throw exceptions
 
     Patch *newPatch = patch->clone();
-    if (InteractivePatchOperation::interactivelyRemapRegisters(newPatch, &otherpatch)) {
+    if (interactivelyRemapRegisters(&otherpatch, newPatch)) {
         newPatch->integratePatch(&otherpatch);
         newPatch->cloneInto(patch);
         patch->commit(tr("integrating other patch '%1'").arg(otherpatch.getTitle()));
@@ -375,12 +375,10 @@ void MainWindow::connectActions()
 
 void MainWindow::loadPatch(const QString &aFilePath)
 {
-    delete patch;
-    Patch newPatch;
-    parser.parse(aFilePath, &newPatch);
-    patch = new VersionedPatch(&newPatch);
+    patch->startFromScratch();
+    parser.parse(aFilePath, patch);
     filePath = aFilePath;
-    emit patchChanged(patch);
+    emit patchModified();
 }
 
 void MainWindow::newPatch()
@@ -388,13 +386,10 @@ void MainWindow::newPatch()
     if (!checkModified())
         return;
 
-    delete patch;
+    patch->startFromScratch();
+    patch->addSection(new PatchSection());
     filePath = "";
-
-    Patch newPatch;
-    newPatch.addSection(new PatchSection(SECTION_DEFAULT_NAME));
-    patch = new VersionedPatch(&newPatch);
-    emit patchChanged(patch);
+    emit patchModified();
 }
 
 void MainWindow::open()

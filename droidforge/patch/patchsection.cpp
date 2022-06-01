@@ -3,6 +3,7 @@
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "tuning.h"
+#include "globals.h"
 
 
 PatchSection::~PatchSection()
