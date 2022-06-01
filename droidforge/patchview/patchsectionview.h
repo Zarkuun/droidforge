@@ -115,6 +115,7 @@ private:
     void pasteCircuitsFromClipboard();
     void clickOnInfoMarker(const InfoMarker *info);
 
+    void editJackCommentAt(const CursorPosition &pos);
 public slots:
     void modifyPatch();
     void changeSelection(const Selection *);
@@ -136,6 +137,7 @@ public slots:
     void finishPatching();
     void abortPatching();
     void followCable();
+    void editJackComment();
 
 signals:
     void patchModified();

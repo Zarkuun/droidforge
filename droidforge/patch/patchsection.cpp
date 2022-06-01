@@ -315,7 +315,7 @@ const JackAssignment *PatchSection::currentJackAssignment() const
 
 JackAssignment *PatchSection::jackAssignmentAt(const CursorPosition &pos)
 {
-    if (pos.row >= 0 && pos.column == 0)
+    if (pos.row >= 0)
     {
         Circuit *circuit = circuits[pos.circuitNr];
         return circuit->jackAssignment(pos.row);

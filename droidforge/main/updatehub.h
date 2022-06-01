@@ -42,7 +42,7 @@ signals:
 // patch *and* the cursor moved, just patchModified must be
 // sent.
 
-// patchModified > (cursorMoved | sectionSwitched)
+// patchModified > sectionSwitched > cursorMoved
 
 extern UpdateHub *the_hub;
 

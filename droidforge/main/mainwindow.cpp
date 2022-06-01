@@ -73,8 +73,9 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &initialFilename)
     connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::cursorMoved, this, &MainWindow::cursorMoved);
+    connect(the_hub, &UpdateHub::patchModified, this, &MainWindow::cursorMoved);
     connect(the_hub, &UpdateHub::sectionSwitched, this, &MainWindow::cursorMoved);
+    connect(the_hub, &UpdateHub::cursorMoved, this, &MainWindow::cursorMoved);
 
     // Some special connections that do not deal with update events
     connect(&rackView, &RackView::registerClicked, &patchSectionView, &PatchSectionView::clickOnRegister);
@@ -303,6 +304,7 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_FINISH_PATCHING, menu);
     ADD_ACTION(ACTION_ABORT_PATCHING, menu);
     ADD_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, menu);
+    ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
 
     menu->addSeparator();
 

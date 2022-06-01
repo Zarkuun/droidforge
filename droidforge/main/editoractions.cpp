@@ -44,7 +44,6 @@ void EditorActions::modifyPatch()
     actions[ACTION_DELETE_PATCH_SECTION]->setEnabled(patch->numSections() >= 2);
     actions[ACTION_MERGE_ALL_SECTIONS]->setEnabled(patch->numSections() >= 2);
 
-    moveCursor();
     switchSection();
 }
 
@@ -54,6 +53,7 @@ void EditorActions::switchSection()
     int numSections = patch->numSections();
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(sectionIndex > 0);
     actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(sectionIndex+1 < numSections);
+    moveCursor();
 }
 
 void EditorActions::changeClipboard()
@@ -73,6 +73,8 @@ void EditorActions::moveCursor()
     const Atom *atom = patch->currentAtom();
     actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
+    actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(section()->currentCircuit());
+    actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
 }
 
 void EditorActions::changePatching()
@@ -187,6 +189,10 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcutVisibleInContextMenu(true);
+
+    actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit jack info..."), this);
+    actions[ACTION_EDIT_JACK_COMMENT]->setShortcut(QKeySequence(tr("Alt+C")));
+    actions[ACTION_EDIT_JACK_COMMENT]->setShortcutVisibleInContextMenu(true);
 
     actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Previous section"));
     actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Up")));

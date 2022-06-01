@@ -88,6 +88,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchSectionView::editCircuitComment);
+    CONNECT_ACTION(ACTION_EDIT_JACK_COMMENT, &PatchSectionView::editJackComment);
     CONNECT_ACTION(ACTION_RENAME_CABLE, &PatchSectionView::renameCable);
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
@@ -157,18 +158,29 @@ void PatchSectionView::updateInfoMarkers()
 void PatchSectionView::clickOnInfoMarker(const InfoMarker *info)
 {
     const CursorPosition &pos = info->cursorPosition();
+    editJackCommentAt(pos);
+}
+
+void PatchSectionView::editJackCommentAt(const CursorPosition &pos)
+{
     JackAssignment *ja = section()->jackAssignmentAt(pos);
     if (!ja)
         return;
 
     QString oldComment = ja->getComment();
     QString newComment = NameChooseDialog::getName(tr("Edit info of this jack"), tr("Info:"), oldComment);
-    if (newComment != "" && newComment != oldComment) {
+    if (newComment != oldComment) {
         ja->setComment(newComment);
         patch->commit(tr("changing info of jack '%1'").arg(ja->jackName()));
         emit patchModified();
     }
 }
+
+void PatchSectionView::editJackComment()
+{
+    editJackCommentAt(section()->cursorPosition());
+}
+
 
 void PatchSectionView::placeMarker(const CursorPosition &pos, int which, const QString &toolTip)
 {
@@ -575,11 +587,13 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
     if (cv) {
         ADD_ACTION(ACTION_EDIT_VALUE, menu);
         ADD_ACTION(ACTION_ADD_JACK, menu);
+        ADD_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, menu);
         // TOOD:
         // - remove circut
         // - remove comment
         // ..
         if (curPos.row >= 0) {
+            ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
             if (curPos.column == 0) {
                 // TODO:
                 // - delete jack assignment
@@ -761,7 +775,6 @@ void PatchSectionView::followCable()
 
     patch->setCursorTo(it.sectionIndex(), it.cursorPosition());
     emit sectionSwitched();
-    emit cursorMoved();
 }
 
 void PatchSectionView::editJack(int key)
