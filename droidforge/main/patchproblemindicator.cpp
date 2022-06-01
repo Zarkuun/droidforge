@@ -57,7 +57,6 @@ void PatchProblemIndicator::mousePressEvent(QMouseEvent *event)
 
 void PatchProblemIndicator::updateStatus()
 {
-    qDebug() << Q_FUNC_INFO;
     numProblems = patch->numProblems();
     if (numProblems) {
         setToolTip(tr("Your patch has %1 problems. You need to fix then "

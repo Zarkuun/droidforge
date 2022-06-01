@@ -3,6 +3,8 @@
 
 #include "circuitview.h"
 #include "framecursor.h"
+#include "iconmarker.h"
+#include "infomarker.h"
 #include "patchsection.h"
 #include "selection.h"
 #include "tuning.h"
@@ -56,7 +58,6 @@ public:
     // void setCursorPosition(const CursorPosition &pos);
     const CursorPosition &getCursorPosition() const;
     void updateCursor();
-    void updateProblemMarkers();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -88,6 +89,10 @@ private:
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key); // TODO: was soll das hier?
     void mouseClick(QPoint pos, int button, bool doubleClock);
+    void updateProblemMarkers();
+    void updateInfoMarkers();
+    void clearMarkers(int which);
+    void placeMarker(const CursorPosition &pos, int which, const QString &toolTip);
 
     void connectActions();
     void setZoom(int zoom);
@@ -108,6 +113,7 @@ private:
     void pasteAtomsFromClipboard();
     void pasteFromClipboard();
     void pasteCircuitsFromClipboard();
+    void clickOnInfoMarker(const InfoMarker *info);
 
 public slots:
     void modifyPatch();

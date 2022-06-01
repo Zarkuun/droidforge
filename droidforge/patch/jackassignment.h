@@ -30,6 +30,8 @@ public:
     JackAssignment(QString jack, QString comment = "");
     QString toString() const;
     QString jackName() const { return jack; };
+    QString getComment() const { return comment; };
+    void setComment(const QString &c) { comment = c; };
     void changeJack(QString j) { jack = j; };
     bool needG8() const;
     bool needX7() const;

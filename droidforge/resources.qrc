@@ -1319,5 +1319,6 @@
         <file>images/cables/ghost.png</file>
         <file>images/circuits/math.png</file>
         <file>images/circuits/logic.png</file>
+        <file>images/icons/info.png</file>
     </qresource>
 </RCC>

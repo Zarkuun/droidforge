@@ -313,6 +313,17 @@ const JackAssignment *PatchSection::currentJackAssignment() const
         return c->jackAssignment(cursor.row);
 }
 
+JackAssignment *PatchSection::jackAssignmentAt(const CursorPosition &pos)
+{
+    if (pos.row >= 0 && pos.column == 0)
+    {
+        Circuit *circuit = circuits[pos.circuitNr];
+        return circuit->jackAssignment(pos.row);
+    }
+    else
+        return 0;
+}
+
 bool PatchSection::needG8() const
 {
     for (qsizetype i=0; i<circuits.length(); i++)

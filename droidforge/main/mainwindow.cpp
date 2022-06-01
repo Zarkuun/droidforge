@@ -73,6 +73,8 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &initialFilename)
     connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Events that we are interested in
+    connect(the_hub, &UpdateHub::cursorMoved, this, &MainWindow::cursorMoved);
+    connect(the_hub, &UpdateHub::sectionSwitched, this, &MainWindow::cursorMoved);
 
     // Some special connections that do not deal with update events
     connect(&rackView, &RackView::registerClicked, &patchSectionView, &PatchSectionView::clickOnRegister);
@@ -485,11 +487,26 @@ void MainWindow::splitterMoved()
     settings.setValue("mainwindow/splitposition", rackSplitter->saveState());
 }
 
-void MainWindow::cursorMoved(int section, const CursorPosition &pos)
+void MainWindow::cursorMoved()
 {
-    QString problem = patch->problemAt(section, pos);
-    if (problem != "")
-        statusbar->showMessage(problem);
+    QString message;
+
+    int sectionNr = patch->currentSectionIndex();
+    auto pos = section()->cursorPosition();
+    message = patch->problemAt(sectionNr, pos);
+
+    if (pos.column == 0) // Information
+    {
+        auto ja = section()->currentJackAssignment();
+        if (ja && ja->getComment() != "") {
+            if (message != "")
+                message += ", ";
+            message += ja->getComment();
+        }
+    }
+
+    if (message != "")
+        statusbar->showMessage(message);
     else
         statusbar->clearMessage();
 }
@@ -525,7 +542,6 @@ bool MainWindow::checkModified()
 
 QIcon MainWindow::icon(QString what) const
 {
-    qDebug() << Q_FUNC_INFO << what << "loswerden!";
     return QIcon(":/images/icons/white/" + what + ".png");
 }
 

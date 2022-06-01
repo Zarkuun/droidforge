@@ -5,6 +5,7 @@
 #include "atomregister.h"
 #include "circuitview.h"
 #include "cablecolorizer.h"
+#include "infomarker.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
@@ -28,6 +29,7 @@
 
 #define DATA_INDEX_CIRCUIT 0
 #define DATA_INDEX_PROBLEM 1
+#define DATA_INDEX_INFO 2
 
 
 PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
@@ -126,24 +128,71 @@ void PatchSectionView::buildPatchSection()
 
 void PatchSectionView::updateProblemMarkers()
 {
-    for (auto item: scene()->items()) {
-        if (item->data(DATA_INDEX_PROBLEM).isValid()) {
-            scene()->removeItem(item);
-        }
-    }
-
+    clearMarkers(DATA_INDEX_PROBLEM);
     for (auto problem: patch->allProblems())
     {
         if (problem->getSection() == patch->currentSectionIndex()) { // TODO: HACK!!
             const CursorPosition &pos = problem->getCursorPosition();
-            CircuitView *cv = circuitViews[pos.circuitNr];
-            QRectF rect = cv->cellRect(pos.row, pos.column);
-            ProblemMarker *marker = new ProblemMarker(rect.height(), problem->getReason());
-            scene()->addItem(marker);
-            QPointF p(cv->pos().x() + rect.right() - rect.height(),
-                      cv->pos().y() + rect.top());
-            marker->setPos(p);
-            marker->setData(DATA_INDEX_PROBLEM, true);
+            placeMarker(pos, DATA_INDEX_PROBLEM, problem->getReason());
+        }
+    }
+}
+
+void PatchSectionView::updateInfoMarkers()
+{
+    clearMarkers(DATA_INDEX_INFO);
+    for (unsigned i=0; i<section()->numCircuits(); i++)
+    {
+        const Circuit *circuit = section()->circuit(i);
+        for (unsigned j=0; j<circuit->numJackAssignments(); j++) {
+            const JackAssignment *ja = circuit->jackAssignment(j);
+            QString comment = ja->getComment();
+            if (comment != "") {
+                placeMarker(CursorPosition(i, j, 0), DATA_INDEX_INFO, comment);
+            }
+        }
+    }
+}
+
+void PatchSectionView::clickOnInfoMarker(const InfoMarker *info)
+{
+    const CursorPosition &pos = info->cursorPosition();
+    JackAssignment *ja = section()->jackAssignmentAt(pos);
+    if (!ja)
+        return;
+
+    QString oldComment = ja->getComment();
+    QString newComment = NameChooseDialog::getName(tr("Edit info of this jack"), tr("Info:"), oldComment);
+    if (newComment != "" && newComment != oldComment) {
+        ja->setComment(newComment);
+        patch->commit(tr("changing info of jack '%1'").arg(ja->jackName()));
+        emit patchModified();
+    }
+}
+
+void PatchSectionView::placeMarker(const CursorPosition &pos, int which, const QString &toolTip)
+{
+    CircuitView *cv = circuitViews[pos.circuitNr];
+    QRectF rect = cv->cellRect(pos.row, pos.column);
+    int height = rect.height();
+
+    IconMarker *marker;
+    if (which == DATA_INDEX_PROBLEM)
+        marker = new ProblemMarker(height, toolTip);
+    else
+        marker = new InfoMarker(pos, height, toolTip);
+    marker->setData(which, true);
+    scene()->addItem(marker);
+    QPointF p(cv->pos().x() + rect.right() - rect.height(),
+              cv->pos().y() + rect.top());
+    marker->setPos(p);
+}
+
+void PatchSectionView::clearMarkers(int which)
+{
+    for (auto item: scene()->items()) {
+        if (item->data(which).isValid()) {
+            scene()->removeItem(item);
         }
     }
 }
@@ -160,6 +209,7 @@ void PatchSectionView::rebuildPatchSection()
     deletePatchSection();
     buildPatchSection();
     updateProblemMarkers();
+    updateInfoMarkers();
     // TODO: Scheinbar springt der Viewport hier immer nach oben.
     // Und das ensureVisible bewirkt erstmal nix bis man den Cursor
     // bewegt
@@ -226,6 +276,9 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
         if (item->data(DATA_INDEX_CIRCUIT).isValid()) {
             cv = (CircuitView *)item;
             break;
+        }
+        else if (item->data(DATA_INDEX_INFO).isValid()) {
+            clickOnInfoMarker((InfoMarker *)item);
         }
     }
 
@@ -625,7 +678,6 @@ void PatchSectionView::createSectionFromSelection()
 
 void PatchSectionView::startPatching()
 {
-    qDebug() << Q_FUNC_INFO;
     patch->startPatching();
     emit patchingChanged();
 }

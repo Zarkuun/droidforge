@@ -94,6 +94,7 @@ private:
     void createStatusBar();
 
 private slots:
+    void cursorMoved();
     void loadFile(const QString &filename, int how);
     void newPatch();
     void open();
@@ -105,7 +106,6 @@ private slots:
     void undo();
     void redo();
     void splitterMoved();
-    void cursorMoved(int section, const CursorPosition &pos);
     void editProperties();
 
 signals:

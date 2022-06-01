@@ -46,7 +46,6 @@ void RackView::connectActions()
 
 void RackView::modifyPatch()
 {
-    qDebug() << Q_FUNC_INFO;
     updateGraphics();
 }
 
@@ -54,7 +53,6 @@ void RackView::resizeEvent(QResizeEvent *)
 {
     updateSize();
 }
-
 
 void RackView::mousePressEvent(QMouseEvent *event)
 {
