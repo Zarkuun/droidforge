@@ -111,11 +111,6 @@ void MainWindow::integratePatch(const QString &aFilePath)
     }
 }
 
-void MainWindow::registerEdit(QString name)
-{
-    qDebug() << "ACHTUNG! DEPRIZIER" << name;
-}
-
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) {

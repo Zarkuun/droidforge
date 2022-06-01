@@ -30,7 +30,7 @@ RackView::RackView(PatchEditEngine *patch)
     scene()->setBackgroundBrush(brush);
     setMouseTracking(true);
 
-    connectActions();
+    CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
 
     // Events that we create
     connect(this, &RackView::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -41,7 +41,6 @@ RackView::RackView(PatchEditEngine *patch)
 
 void RackView::connectActions()
 {
-    CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
 }
 
 void RackView::modifyPatch()
@@ -235,7 +234,6 @@ void RackView::askRemoveController(int controllerIndex, const QString name)
     }
 }
 
-
 void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
 {
     RegisterList allUsedRegisters;
@@ -247,7 +245,6 @@ void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
             used.append(atom);
     }
 }
-
 
 bool RackView::controllersRegistersUsed(int controllerIndex)
 {
@@ -263,9 +260,9 @@ void RackView::purchaseController(QString name)
 
 void RackView::moveController(int fromindex, int toindex)
 {
-    the_forge->registerEdit(tr("changing order of controllers"));
     patch->swapControllersSmart(fromindex, toindex);
-    // the_forge->patchHasChanged();
+    patch->commit(tr("changing controller order"));
+    emit patchModified();
 }
 
 void RackView::updateGraphics()
@@ -345,7 +342,6 @@ void RackView::removeController(
         ControllerRemovalDialog::InputHandling inputHandling,
         ControllerRemovalDialog::OutputHandling  outputHandling)
 {
-    the_forge->registerEdit(tr("removing %1 controller").arg(controllerName.toUpper()));
     remapRegisters(controllerIndex, atomsToRemap, inputHandling, outputHandling);
 
     if (!atomsToRemap.isEmpty()) {
@@ -356,18 +352,13 @@ void RackView::removeController(
     }
 
     patch->removeController(controllerIndex);
-    removeModule(controllerIndex);
-    updateSize();
-    // the_forge->patchHasChanged();
+    patch->commit(tr("removing %1 controller").arg(controllerName.toUpper()));
+    emit patchModified();
 }
 
 
-void RackView::remapControls(
-        int controllerIndex,
-        QString controllerName)
+void RackView::remapControls(int controllerIndex, QString controllerName)
 {
-    the_forge->registerEdit(tr("moving used controls of %1").arg(controllerName.toUpper()));
-
     RegisterList atomsToRemap;
     collectUsedRegisters(controllerIndex, atomsToRemap);
     remapRegisters(controllerIndex, atomsToRemap, ControllerRemovalDialog::INPUT_LEAVE, ControllerRemovalDialog::OUTPUT_LEAVE);
@@ -386,5 +377,6 @@ void RackView::remapControls(
                     this);
         box.exec();
     }
-    // the_forge->patchHasChanged();
+    patch->commit(tr("moving used controls of %1").arg(controllerName.toUpper()));
+    emit patchModified();
 }
