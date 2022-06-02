@@ -1,4 +1,5 @@
 #include "circuitinfoview.h"
+#include "colorscheme.h"
 #include "droidfirmware.h"
 #include "tuning.h"
 
@@ -57,7 +58,7 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     // Cursor
     if (selected)
     {
-        painter->setPen(COLOR_CURSOR_NORMAL);
+        painter->setPen(COLOR(COLOR_CURSOR_NORMAL));
         painter->setBrush(Qt::NoBrush);
         painter->drawRect(boundingRect());
     }

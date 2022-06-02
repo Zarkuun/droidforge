@@ -1,4 +1,5 @@
 #include "controllerselector.h"
+#include "colorscheme.h"
 #include "modulebuilder.h"
 #include "tuning.h"
 
@@ -25,7 +26,7 @@ ControllerSelector::ControllerSelector(QWidget *parent)
         x += CSEL_CONTROLLER_DISTANCE;
     }
 
-    QPen pen(COLOR_CURSOR_NORMAL);
+    QPen pen(COLOR(COLOR_CURSOR_NORMAL));
     pen.setWidth(CSEL_CURSOR_WIDTH);
     cursor = scene->addRect(0, 0, 0, 0, pen);
     cursor->setZValue(20);

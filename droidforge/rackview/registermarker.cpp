@@ -1,4 +1,5 @@
 #include "registermarker.h"
+#include "colorscheme.h"
 #include "tuning.h"
 
 #include <QPen>
@@ -9,9 +10,9 @@ RegisterMarker::RegisterMarker()
     QPen pen;
     pen.setWidth(RACV_REGMARKER_PEN_WIDTH);
     // pen.setStyle(RACV_REGMARKER_PEN_STYLE);
-    pen.setColor(RACV_REGMARKER_PEN_COLOR);
+    pen.setColor(COLOR(RACV_REGMARKER_PEN_COLOR));
     setPen(pen);
-    setBrush(RACV_REGMARKER_BACKGROUND);
+    setBrush(COLOR(RACV_REGMARKER_BACKGROUND));
     setZValue(50);
 
     animation.setDuration(1000);
@@ -38,7 +39,7 @@ void RegisterMarker::setanimationPhase(float newAnimationPhase)
 
     QPen p = pen();
     p.setWidth(RACV_REGMARKER_PEN_WIDTH * (1 + animationPhase));
-    QColor c = RACV_REGMARKER_PEN_COLOR;
+    QColor c = COLOR(RACV_REGMARKER_PEN_COLOR);
     c.setAlphaF(animationPhase * 0.3 + 0.7);
     p.setColor(c);
 

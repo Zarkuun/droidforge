@@ -141,6 +141,9 @@ void EditorActions::createActions()
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
     actions[ACTION_NEW]->setStatusTip(tr("Create a new patch from scratch"));
 
+    actions[ACTION_CONFIGURE_COLORS] = new QAction(tr("Edit colors"), this);
+    actions[ACTION_CONFIGURE_COLORS]->setShortcut(QKeySequence(tr("F7")));
+
     actions[ACTION_OPEN] = new QAction(icon("open_in_browser"), tr("&Open..."), this);
     actions[ACTION_OPEN]->setShortcuts(QKeySequence::Open);
     actions[ACTION_OPEN]->setStatusTip(tr("Open an existing patch"));

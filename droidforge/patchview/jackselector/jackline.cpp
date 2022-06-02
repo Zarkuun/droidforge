@@ -1,4 +1,5 @@
 #include "jackline.h"
+#include "colorscheme.h"
 #include "tuning.h"
 
 #include <QPainter>
@@ -26,9 +27,9 @@ void JackLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     if (!isSelected)
         color = JSEL_COLOR_JACK_LINE;
     else if (!active)
-        color = COLOR_CURSOR_INACTIVE;
+        color = COLOR(COLOR_CURSOR_INACTIVE);
     else
-        color = COLOR_CURSOR_NORMAL;
+        color = COLOR(COLOR_CURSOR_NORMAL);
     painter->setPen(color);
     float np = 1.0 - phase;
 

@@ -1,5 +1,6 @@
 #include "framecursor.h"
 #include "tuning.h"
+#include "colorscheme.h"
 
 #include <QPen>
 
@@ -24,13 +25,13 @@ FrameCursor::~FrameCursor()
 void FrameCursor::setMode(cursor_mode_t m)
 {
    if (m == CURSOR_DISABLED)
-       setPen(COLOR_CURSOR_DISABLED);
+       setPen(COLOR(COLOR_CURSOR_DISABLED));
    else if (m == CURSOR_PATCHING)
-       setPen(COLOR_CURSOR_PATCHING);
+       setPen(COLOR(COLOR_CURSOR_PATCHING));
    else if (m == CURSOR_PROBLEM)
-       setPen(COLOR_CURSOR_PROBLEM);
+       setPen(COLOR(COLOR_CURSOR_PROBLEM));
    else
-       setPen(COLOR_CURSOR_NORMAL);
+       setPen(COLOR(COLOR_CURSOR_NORMAL));
 }
 
 float FrameCursor::getanimationPhase() const

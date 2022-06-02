@@ -1,4 +1,5 @@
 #include "jackview.h"
+#include "colorscheme.h"
 #include "tuning.h"
 #include "droidfirmware.h"
 
@@ -81,7 +82,7 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     }
 
     if (isSelected) {
-        painter->setPen(isActive(subjack) ? COLOR_CURSOR_NORMAL : COLOR_CURSOR_INACTIVE);
+        painter->setPen(isActive(subjack) ? COLOR(COLOR_CURSOR_NORMAL) : COLOR(COLOR_CURSOR_INACTIVE));
         if (isArray()) {
             QRectF r((subjack%4) * JSEL_JACK_WIDTH /4, (1 + subjack/4) * JSEL_JACK_HEIGHT, JSEL_JACK_WIDTH/4, JSEL_JACK_HEIGHT);
             painter->drawRect(r);

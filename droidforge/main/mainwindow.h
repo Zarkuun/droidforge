@@ -104,6 +104,7 @@ private slots:
     void redo();
     void splitterMoved();
     void editProperties();
+    void configureColors();
 
 signals:
     void patchModified();

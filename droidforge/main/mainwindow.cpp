@@ -10,6 +10,7 @@
 #include "updatehub.h"
 #include "patchsectionview.h"
 #include "patchoperator.h"
+#include "colorscheme.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -68,6 +69,9 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &initialFilename)
 
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename, FILE_MODE_LOAD);});
+
+    // Hack
+    connect(the_colorscheme, &ColorScheme::changed, the_hub, &UpdateHub::patchModified);
 
     // Events that we create
     connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -236,6 +240,11 @@ void MainWindow::createFileMenu()
     menu->addSeparator();
 
     ADD_ACTION(ACTION_PATCH_PROPERTIES, menu);
+
+    menu->addSeparator();
+
+    ADD_ACTION(ACTION_CONFIGURE_COLORS, menu);
+
 }
 
 void MainWindow::createRecentFileActions(QMenu *fileMenu)
@@ -367,6 +376,7 @@ void MainWindow::connectActions()
     CONNECT_ACTION(ACTION_REDO, &MainWindow::redo);
 
     CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &MainWindow::editProperties);
+    CONNECT_ACTION(ACTION_CONFIGURE_COLORS, &MainWindow::configureColors);
 
 }
 
@@ -435,8 +445,18 @@ void MainWindow::saveAs()
 
 void MainWindow::editProperties()
 {
-    if (PatchPropertiesDialog::editPatchProperties(patch))
+    if (PatchPropertiesDialog::editPatchProperties(patch)) {
+        patch->commit(tr("editing patch properties"));
         emit patchModified();
+    }
+}
+
+void MainWindow::configureColors()
+{
+    if (the_colorscheme->isVisible())
+        the_colorscheme->hide();
+    else
+        the_colorscheme->show();
 }
 
 void MainWindow::exportSelection()

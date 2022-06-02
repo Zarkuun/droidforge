@@ -1,4 +1,5 @@
 #include "circuitview.h"
+#include "colorscheme.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
@@ -76,7 +77,7 @@ unsigned CircuitView::minimumWidth()
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     QRectF cr = contentRect();
-    painter->fillRect(cr, CIRV_COLOR_BACKGROUND);
+    painter->fillRect(cr, COLOR(CIRV_COLOR_BACKGROUND));
 
     // Icon and circuit name
     painter->fillRect(headerRect(), CIRV_COLOR_CIRCUIT_NAME_BACKGROUND);
@@ -108,7 +109,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     paintJacks(painter);
 
     // Lines
-    painter->setPen(CIRV_COLOR_LINE);
+    painter->setPen(COLOR(CIRV_COLOR_LINE));
     painter->drawRect(cr); // borders
     painter->drawLine(
                 columnPosition(1),
@@ -152,8 +153,8 @@ void CircuitView::paintJacks(QPainter *painter)
             textcolor = COLOR_TEXT_DISABLED;
         else {
             switch (ja->jackType()) {
-            case JACKTYPE_INPUT: textcolor = COLOR_JACK_INPUT; break;
-            case JACKTYPE_OUTPUT: textcolor = COLOR_JACK_OUTPUT; break;
+            case JACKTYPE_INPUT: textcolor = COLOR(COLOR_JACK_INPUT); break;
+            case JACKTYPE_OUTPUT: textcolor = COLOR(COLOR_JACK_OUTPUT); break;
             default: textcolor = COLOR_JACK_UNKNOWN; break;
             }
         }
@@ -277,7 +278,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         painter->setPen(textcolor);
         paintOperator(painter, operatorPosition(0), ar.top(), "✱");
         paintOperator(painter, operatorPosition(1), ar.top(), "+");
-        painter->setPen(CIRV_COLOR_LINE);
+        painter->setPen(COLOR(CIRV_COLOR_LINE));
         painter->drawLine(columnPosition(2),   ar.top(), columnPosition(2),   ar.top() + CIRV_JACK_HEIGHT);
         painter->drawLine(columnPosition(3),   ar.top(), columnPosition(3),   ar.top() + CIRV_JACK_HEIGHT);
         painter->drawLine(operatorPosition(0), ar.top(), operatorPosition(0), ar.top() + CIRV_JACK_HEIGHT);
@@ -311,7 +312,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         painter->fillRect(jackLineRect(row), CIRV_COLOR_SELECTION);
 
     // horizontal line
-    painter->setPen(CIRV_COLOR_LINE);
+    painter->setPen(COLOR(CIRV_COLOR_LINE));
     painter->drawLine(jr.left(), jr.top(), jr.left() + contentWidth(), jr.top());
 }
 

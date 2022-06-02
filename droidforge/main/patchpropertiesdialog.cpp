@@ -48,7 +48,6 @@ bool PatchPropertiesDialog::editPatchProperties(PatchEditEngine *patch)
                 {
                     patch->setTitle(newTitle);
                     patch->setDescription(newDescription);
-                    patch->commit(tr("editing patch properties"));
                     return true;
                 }
                 else
@@ -65,6 +64,8 @@ bool PatchPropertiesDialog::editPatchProperties(PatchEditEngine *patch)
                 e.getWidget()->setFocus();
             }
         }
+        else
+            return false;
     }
 }
 
