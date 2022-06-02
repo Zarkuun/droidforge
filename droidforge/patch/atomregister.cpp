@@ -139,6 +139,11 @@ bool operator==(const AtomRegister &a, const AtomRegister &b)
             && a.num == b.num;
 }
 
+bool operator!=(const AtomRegister &a, const AtomRegister &b)
+{
+    return !(a == b);
+}
+
 bool operator<(const AtomRegister &a, const AtomRegister &b)
 {
     return a.cont < b.cont

@@ -6,6 +6,7 @@
 #include "registermarker.h"
 #include "controllerremovaldialog.h"
 #include "patchoperator.h"
+#include "dragregisterindicator.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -21,11 +22,18 @@ class RackView : public QGraphicsView, PatchOperator
     unsigned x;
     RegisterMarker *registerMarker;
     AtomRegister markedRegister;
+    DragRegisterIndicator *dragRegisterIndicator;
+
+    bool dragging;
+    bool draggedAtRegister;
+    AtomRegister draggingStartRegister;
+    QPointF draggingStartPosition;
 
 public:
     explicit RackView(PatchEditEngine *patch);
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void hideRegisterMarker();
@@ -39,7 +47,7 @@ private:
     void updateSize();
     void popupControllerContextMenu(int controller, QString name);
     void popupBackgroundContextMenu();
-    void updateRegisterMarker(AtomRegister *markedAtom, QPointF, float);
+    void updateRegisterMarker(QPointF, float);
     void removeController(int controllerIndex, QString controllerName,
             RegisterList &atomsToRemap,
             ControllerRemovalDialog::InputHandling ih = ControllerRemovalDialog::INPUT_LEAVE,
@@ -51,7 +59,10 @@ private:
             ControllerRemovalDialog::OutputHandling outputHandling);
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
+    void updateDragIndicator(QPointF endPos, bool hits, bool suitable);
 
+    bool registersSuitableForSwapping(AtomRegister a, AtomRegister b);
+    void swapRegisters(AtomRegister regA, AtomRegister regB);
 public slots:
     void modifyPatch();
     void updateRegisterHilites();

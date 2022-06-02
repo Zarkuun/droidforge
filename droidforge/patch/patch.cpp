@@ -324,8 +324,22 @@ bool Patch::registerAvailable(AtomRegister ar) const
 
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
 {
+    // TODO: Ohne rekursion mit iterator!
     for (auto section: sections)
         section->remapRegister(from, to);
+}
+
+void Patch::swapRegisters(AtomRegister regA, AtomRegister regB)
+{
+    for (auto &atom: *this) {
+        if (atom->isRegister()) {
+            AtomRegister *reg = (AtomRegister *)atom;
+            if (*reg == regA)
+                *reg = regB;
+            else if (*reg == regB)
+                *reg = regA;
+        }
+    }
 }
 
 void Patch::removeRegisterReferences(RegisterList &rl, int ih, int oh)

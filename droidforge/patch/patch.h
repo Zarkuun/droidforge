@@ -94,6 +94,7 @@ public:
             const QString &shorthand,
             const QString &atomcomment);
     void remapRegister(AtomRegister from, AtomRegister to);
+    void swapRegisters(AtomRegister regA, AtomRegister regB);
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);
     void renameCable(const QString &oldName, const QString &newName);
 

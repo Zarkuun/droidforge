@@ -48,6 +48,7 @@ private:
 };
 
 QDebug &operator<<(QDebug &out, const AtomRegister &ar);
+bool operator!=(const AtomRegister &a, const AtomRegister &b);
 bool operator==(const AtomRegister &a, const AtomRegister &b);
 bool operator<(const AtomRegister &a, const AtomRegister &b);
 

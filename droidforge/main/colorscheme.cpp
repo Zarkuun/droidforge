@@ -64,6 +64,15 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Rackview: register hilites border"), list);
     item->setData(1, RACV_REGHILITES_PEN_COLOR);
 
+    item = new QListWidgetItem(tr("Rackview: drag arrow"), list);
+    item->setData(1, RACV_COLOR_DRAGARROW);
+
+    item = new QListWidgetItem(tr("Rackview: drag arrow, not locked at target"), list);
+    item->setData(1, RACV_COLOR_DRAGARROW_UNLOCKED);
+
+    item = new QListWidgetItem(tr("Rackview: drag arrow, not suitable"), list);
+    item->setData(1, RACV_COLOR_DRAGARROW_UNSUITABLE);
+
     colorDialog = new QColorDialog(this);
     colorDialog->setOption(QColorDialog::ShowAlphaChannel);
     colorDialog->setOption(QColorDialog::NoButtons);

@@ -11,7 +11,6 @@ class RegisterMarker : public QObject, public QGraphicsEllipseItem
 
     float animationPhase; // TODO: Do I need this?
     QPropertyAnimation animation;
-    QPointF center;
     float diameter;
 
 public:
@@ -19,7 +18,6 @@ public:
     float getanimationPhase() const;
     void setanimationPhase(float newanimationPhase);
     void startAnimation();
-    void setCenter(QPointF c) { center = c; };
     void setDiameter(float d) { diameter = d; };
 
 signals:

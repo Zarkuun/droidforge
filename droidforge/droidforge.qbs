@@ -65,6 +65,8 @@ QtApplication {
         "patchview/selection.h",
         "rackview/controllerlabellingdialog.cpp",
         "rackview/controllerlabellingdialog.h",
+        "rackview/dragregisterindicator.cpp",
+        "rackview/dragregisterindicator.h",
         "rackview/patchsectiontitleview.cpp",
         "rackview/patchsectiontitleview.h",
         "rackview/registerlabelwidget.cpp",

@@ -21,6 +21,9 @@ KLEINERE FEATURE:
 BUGS:
 - Die disableten Zeilen darf man bei der berechnung der
 belegten Regisgter wohl nicht mitzählen.
+- Registerremapping: Wenn ich I remappe, muss ich auch für N
+  sorgen. Kann man das geordnet irgendwie machen?
+
 
 Version 2:
 - Mehrere Dateien gleichzeitig auf haben

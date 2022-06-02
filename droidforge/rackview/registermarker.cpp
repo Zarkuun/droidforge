@@ -7,6 +7,7 @@
 RegisterMarker::RegisterMarker()
      : animation(this, "animationPhase")
 {
+    // TODO: Nicht ovn ellipse ableiten. SElbst malen. die ist kaputt
     QPen pen;
     pen.setWidth(RACV_REGMARKER_PEN_WIDTH);
     // pen.setStyle(RACV_REGMARKER_PEN_STYLE);
@@ -34,7 +35,7 @@ void RegisterMarker::setanimationPhase(float newAnimationPhase)
     animationPhase = newAnimationPhase;
 
     float d = diameter * (animationPhase * 0.2 + 1);
-    QPointF pos = QPointF(center.x() - d/2, center.y() - d/2);
+    QPointF pos = QPointF(- d/2, - d/2);
     setRect(QRectF(pos, QSize(d, d)));
 
     QPen p = pen();

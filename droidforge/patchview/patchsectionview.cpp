@@ -184,7 +184,6 @@ void PatchSectionView::editJackComment()
     editJackCommentAt(section()->cursorPosition());
 }
 
-
 void PatchSectionView::placeMarker(const CursorPosition &pos, int which, const QString &toolTip)
 {
     CircuitView *cv = circuitViews[pos.circuitNr];

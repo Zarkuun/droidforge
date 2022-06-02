@@ -18,6 +18,8 @@
 RackView::RackView(PatchEditEngine *patch)
     : QGraphicsView()
     , PatchOperator(patch)
+    , dragging(false)
+    , draggedAtRegister(false)
 {
     setFocusPolicy(Qt::NoFocus);
     setMinimumHeight(RACV_MIN_HEIGHT);
@@ -67,12 +69,34 @@ void RackView::mousePressEvent(QMouseEvent *event)
                 }
                 onModule = true;
             }
-            else if (item == registerMarker)
+            else if (item == registerMarker) {
                 emit registerClicked(markedRegister);
+                dragging = true;
+                draggedAtRegister = false;
+                draggingStartRegister = markedRegister;
+                draggingStartPosition = registerMarker->pos();
+                updateDragIndicator(draggingStartPosition, false, false);
+                registerMarker->setVisible(false);
+            }
         }
         if (!onModule && event->button() == Qt::RightButton)
             popupBackgroundContextMenu();
     }
+}
+
+void RackView::mouseReleaseEvent(QMouseEvent *)
+{
+     if (dragging) {
+         AtomRegister draggingEndRegister = markedRegister;
+         if (registersSuitableForSwapping(draggingStartRegister, draggingEndRegister))
+             swapRegisters(draggingStartRegister, draggingEndRegister);
+         else
+             dragRegisterIndicator->setVisible(false);
+
+         dragging = false;
+         registerMarker->setVisible(true);
+         scene()->update();
+     }
 }
 
 void RackView::mouseDoubleClickEvent(QMouseEvent *event)
@@ -89,33 +113,87 @@ void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
-    QGraphicsItem *item = itemAt(mousePos);
-    if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
-        Module *module = (Module *)item;
-        QPointF relPos = mapToScene(mousePos) - module->pos();
-        AtomRegister *ar = module->registerAt(relPos.toPoint());
-        if (ar) {
-            QChar t = ar->getRegisterType();
-            unsigned n = ar->number() - module->numberOffset(t);
-            float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
-            QPointF pos = module->registerPosition(t, n) * RACV_PIXEL_PER_HP;
-            updateRegisterMarker(ar, pos + module->pos(), diameter);
-            delete ar;
+
+    bool foundRegister = false;
+    for (auto item: items(mousePos))
+    {
+        if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
+            Module *module = (Module *)item;
+            QPointF relPos = mapToScene(mousePos) - module->pos();
+            AtomRegister *ar = module->registerAt(relPos.toPoint());
+            if (ar != 0)
+            {
+                foundRegister = true;
+                QChar t = ar->getRegisterType();
+                unsigned n = ar->number() - module->numberOffset(t);
+                QPointF pos = module->registerPosition(t, n) * RACV_PIXEL_PER_HP;
+                float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
+                if (dragging && (!draggedAtRegister || markedRegister != *ar))
+                {
+                    QPointF center = pos + module->pos();
+                    bool suitable = registersSuitableForSwapping(*ar, draggingStartRegister);
+                    updateDragIndicator(center, true, suitable);
+                    draggedAtRegister = true;
+                    diameter = RACV_PIXEL_PER_HP;
+                }
+                if  (markedRegister != *ar)
+                {
+                    markedRegister = *ar;
+                    if (!dragging)
+                        updateRegisterMarker(pos + module->pos(), diameter);
+                }
+                delete ar;
+            }
+            else if (!ar) {
+                markedRegister = AtomRegister(0, 0, 0);
+                registerMarker->setVisible(false);
+            }
+            break;
         }
-        else
-            hideRegisterMarker();
+    }
+
+    if (dragging && !foundRegister) {
+        draggedAtRegister = false;
+        QPointF end = mapToScene(event->pos());
+        updateDragIndicator(end, false, false);
     }
 }
 
-void RackView::updateRegisterMarker(AtomRegister *ar, QPointF p, float diameter)
+bool RackView::registersSuitableForSwapping(AtomRegister a, AtomRegister b)
 {
-    markedRegister = *ar;
-    diameter += RACV_REGMARKER_EXTRA_DIAMETER;
+    if (a == b)
+        return false;
+    else if (a.getRegisterType() == b.getRegisterType())
+        return true;
+    else
+        return false;
+}
 
-    registerMarker->setCenter(p);
+void RackView::updateRegisterMarker(QPointF p, float diameter)
+{
+    diameter += RACV_REGMARKER_EXTRA_DIAMETER;
+    registerMarker->setPos(p);
     registerMarker->setDiameter(diameter);
     registerMarker->setVisible(true);
     registerMarker->startAnimation();
+}
+
+void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
+{
+    patch->swapRegisters(regA, regB);
+    // Also swap connected registers: Input normalization, LED in Button
+    if (regA.getRegisterType() == 'I') {
+        AtomRegister nA('N', regA.controller(), regA.number());
+        AtomRegister nB('N', regB.controller(), regB.number());
+        swapRegisters(nA, nB);
+    }
+    else if (regA.getRegisterType() == 'B') {
+        AtomRegister lA('L', regA.controller(), regA.number());
+        AtomRegister lB('L', regB.controller(), regB.number());
+        swapRegisters(lA, lB);
+    }
+    patch->commit(tr("Exchanging registers '%1' and '%2'").arg(regA.toString()).arg(regB.toString()));
+    emit patchModified();
 }
 
 void RackView::remapRegisters(
@@ -165,7 +243,6 @@ void RackView::remapRegisters(
 
 void RackView::hideRegisterMarker()
 {
-    registerMarker->setVisible(false);
 }
 
 void RackView::popupControllerContextMenu(int controllerIndex, QString moduleType)
@@ -251,6 +328,16 @@ bool RackView::controllersRegistersUsed(int controllerIndex)
     return !used.isEmpty();
 }
 
+void RackView::updateDragIndicator(QPointF endPos, bool hits, bool suitable)
+{
+    qDebug() << "START" << draggingStartPosition;
+    dragRegisterIndicator->setPos(draggingStartPosition);
+    dragRegisterIndicator->setEnd(endPos - draggingStartPosition, hits, suitable);
+    dragRegisterIndicator->setVisible(dragging);
+    dragRegisterIndicator->update();
+    scene()->update();
+}
+
 void RackView::purchaseController(QString name)
 {
     QDesktopServices::openUrl(QUrl(SHOP_PRODUCTS_URL + name));
@@ -267,8 +354,11 @@ void RackView::updateGraphics()
 {
     scene()->clear();
     modules.clear();
-    registerMarker = new RegisterMarker();
+    registerMarker = new RegisterMarker;
     scene()->addItem(registerMarker);
+    dragRegisterIndicator = new DragRegisterIndicator;
+    dragRegisterIndicator->setVisible(false);
+    scene()->addItem(dragRegisterIndicator);
 
     if (!patch)
         return;
