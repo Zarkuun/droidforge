@@ -1,10 +1,11 @@
 GROSSE THEMEN:
 
 - Deploy (MIDI, SD-Karte)
-- Labels von Controls
 
 KLEINERE FEATURE:
-- Jackzeilen oder Circuits disablen (auskommentieren)
+- Controlls mit der Maus rumschieben, um sie zu vertauschen
+- Sektionen per Drag-Drop vertauschen
+- Module per Drag-Drop vertauschen
 - View source code (oder open source code in text editor)
 - %a -> Alles auswählen
 - %d -> Duplicate. Diese Reihe von Buttons, LEDs
