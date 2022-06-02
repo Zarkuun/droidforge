@@ -65,6 +65,8 @@ void NumberSelector::setAtom(const Patch *, const Atom *atom)
     if (atom->isInvalid()) {
         setNumberType(ATOM_NUMBER_NUMBER);
         lineEdit->setText("1");
+        buttonFraction->setChecked(false);
+        labelFraction->setVisible(false);
     }
 
     else {
@@ -99,6 +101,8 @@ void NumberSelector::clearAtom()
     setNumberType(ATOM_NUMBER_NUMBER);
     number = 0;
     lineEdit->setText("");
+    buttonFraction->setChecked(false);
+    labelFraction->setVisible(false);
 }
 
 void NumberSelector::setNumberType(atom_number_t t)
@@ -271,6 +275,7 @@ void NumberSelector::toggleFraction(bool checked)
 {
     if (number == 0.0) {
         buttonFraction->setChecked(false);
+        labelFraction->setVisible(false);
         checked = false;
     }
     else {

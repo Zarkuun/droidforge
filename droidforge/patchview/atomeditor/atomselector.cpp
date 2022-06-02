@@ -54,6 +54,8 @@ void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
 {
     if (!atom) {
         switchToSelector(0);
+        for (auto ss: subSelectors)
+            ss->clearAtom();
         return;
     }
 

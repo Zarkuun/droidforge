@@ -23,6 +23,9 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
 
 void EditorActions::modifyPatch()
 {
+    actions[ACTION_SAVE]->setEnabled(patch->isModified());
+    actions[ACTION_OPEN_ENCLOSING_FOLDER]->setEnabled(patch->getFilePath() != "");
+
     if (patch->undoPossible()) {
         actions[ACTION_UNDO]->setText(tr("&Undo ") + patch->nextUndoTitle());
         actions[ACTION_UNDO]->setEnabled(true);
@@ -306,8 +309,6 @@ QIcon EditorActions::icon(QString what) const
  * void MainWindow::updateActions()
 {
     // File menu
-    actionSave->setEnabled(patch->isModified());
-    actionOpenEnclosingFolder->setEnabled(!filePath.isEmpty());
 
     // Edit menu
     actionPaste->setEnabled(patchView.clipboardFilled());
