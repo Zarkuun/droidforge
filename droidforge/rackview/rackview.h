@@ -54,7 +54,7 @@ private:
 
 public slots:
     void modifyPatch();
-    void updateRegisterMarkers();
+    void updateRegisterHilites();
     void addController();
 
 private slots:

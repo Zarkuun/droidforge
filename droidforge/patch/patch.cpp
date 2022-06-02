@@ -175,6 +175,14 @@ QString Patch::getDescription() const
         return description.join("\n") + "\n";
 }
 
+RegisterLabel Patch::registerLabel(AtomRegister atom) const
+{
+    if (registerLabels.contains(atom))
+        return registerLabels[atom];
+    else
+        return RegisterLabel();
+}
+
 const Circuit *Patch::currentCircuit() const
 {
     return currentSection()->currentCircuit();

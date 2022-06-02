@@ -6,7 +6,7 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 
-ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QString controllerType, unsigned controllerNumber, QWidget *parent)
+ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent)
     : Dialog("controllerlabelling/" + controllerType, parent)
     , labels(labels)
     , controllerType(controllerType)
@@ -24,6 +24,11 @@ ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QSt
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     mainLayout->setRowStretch(currentRow, 1000000000);
     mainLayout->addWidget(buttonBox, currentRow + 1, 0, 1, -1);
+
+    for (auto rlw: labelWidgets) {
+        if (rlw->getAtom() == jumpTo)
+            rlw->select();
+    }
 }
 
 void ControllerLabellingDialog::accept()

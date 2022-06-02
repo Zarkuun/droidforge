@@ -90,6 +90,7 @@ private:
     void repaintPatchView();
     void createStatusBar();
 
+    void updateStatusbarMessage();
 private slots:
     void modifyPatch();
     void cursorMoved();

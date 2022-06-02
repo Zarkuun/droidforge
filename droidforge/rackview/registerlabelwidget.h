@@ -19,7 +19,9 @@ public:
             const QString shortLabel,
             const QString longLabel,
             QWidget *parent);
+    AtomRegister getAtom() const { return atom; };
     void updateLabels(RegisterLabels &labels);
+    void select();
 };
 
 #endif // REGISTERLABELWIDGET_H

@@ -516,28 +516,49 @@ void MainWindow::splitterMoved()
     settings.setValue("mainwindow/splitposition", rackSplitter->saveState());
 }
 
-void MainWindow::cursorMoved()
+
+void MainWindow::updateStatusbarMessage()
 {
-    QString message;
+    QStringList infos;
 
     int sectionNr = patch->currentSectionIndex();
     auto pos = section()->cursorPosition();
-    message = patch->problemAt(sectionNr, pos);
 
+    // Problems
+    QString problem = patch->problemAt(sectionNr, pos);
+    if (problem != "")
+        infos.append(problem);
+
+    // Jack comments
     if (pos.column == 0) // Information
     {
         auto ja = section()->currentJackAssignment();
         if (ja && ja->getComment() != "") {
-            if (message != "")
-                message += ", ";
-            message += ja->getComment();
+            infos.append(ja->getComment());
         }
     }
 
+    // Labels of registers
+    const Atom *atom = patch->currentAtom();
+    if (atom && atom->isRegister()) {
+        AtomRegister *ar = (AtomRegister *)atom;
+        RegisterLabel label = patch->registerLabel(*ar);
+        if (label.shorthand != "")
+            infos.append(label.shorthand);
+        if (label.description != "")
+            infos.append(label.description);
+    }
+
+    QString message = infos.join(", ");
     if (message != "")
         statusbar->showMessage(message);
     else
         statusbar->clearMessage();
+}
+
+void MainWindow::cursorMoved()
+{
+    updateStatusbarMessage();
 
     // Make sure that after an undo the cursor is at the correct
     // position - that is the last position before the actual

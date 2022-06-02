@@ -19,7 +19,7 @@ class ControllerLabellingDialog : public Dialog
     QList<RegisterLabelWidget *> labelWidgets;
 
 public:
-    ControllerLabellingDialog(RegisterLabels &labels, QString controller, unsigned controllerNumber, QWidget *parent = nullptr);
+    ControllerLabellingDialog(RegisterLabels &labels, QString controller, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent = nullptr);
     void accept();
 
 private:

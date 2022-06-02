@@ -42,3 +42,9 @@ void RegisterLabelWidget::updateLabels(RegisterLabels &labels)
     else
         labels.remove(atom);
 }
+
+void RegisterLabelWidget::select()
+{
+    setFocus();
+    lineEditShort->selectAll();
+}

@@ -38,14 +38,14 @@ RackView::RackView(PatchEditEngine *patch)
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &RackView::modifyPatch);
-    connect(the_hub, &UpdateHub::sectionSwitched, this, &RackView::updateRegisterMarkers);
-    connect(the_hub, &UpdateHub::cursorMoved, this, &RackView::updateRegisterMarkers);
+    connect(the_hub, &UpdateHub::sectionSwitched, this, &RackView::updateRegisterHilites);
+    connect(the_hub, &UpdateHub::cursorMoved, this, &RackView::updateRegisterHilites);
 }
 
 void RackView::modifyPatch()
 {
     updateGraphics();
-    updateRegisterMarkers();
+    updateRegisterHilites();
 }
 
 void RackView::resizeEvent(QResizeEvent *)
@@ -323,7 +323,7 @@ void RackView::removeModule(int controllerIndex)
     modules.remove(controllerIndex);
 }
 
-void RackView::updateRegisterMarkers()
+void RackView::updateRegisterHilites()
 {
     const Circuit *circuit = section()->currentCircuit();
     if (!circuit)
@@ -419,8 +419,10 @@ void RackView::remapControls(QString controllerName, int controllerIndex)
 
 void RackView::editLabelling(QString moduleType, int controllerIndex)
 {
+    // Get current position of register marker
+
     RegisterLabels &labels = patch->getRegisterLabels();
-    ControllerLabellingDialog dialog(labels, moduleType, controllerIndex + 1, this);
+    ControllerLabellingDialog dialog(labels, moduleType, controllerIndex + 1, markedRegister, this);
     int ret = dialog.exec();
     if (ret == QDialog::Accepted) {
         patch->commit(tr("editing labelling of '%1'").arg(moduleType));
