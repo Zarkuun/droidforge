@@ -3,7 +3,7 @@
 
 #include "patchproblem.h"
 #include "patchsection.h"
-#include "registercomments.h"
+#include "registerlabels.h"
 #include "patchproblem.h"
 
 #include <QStringList>
@@ -15,7 +15,7 @@ class Patch
     QString title;
     QStringList description;
     QString libraryMetaData; // break into structure later
-    RegisterComments registerComments;
+    RegisterLabels registerLabels;
     QStringList controllers;
     QList<PatchSection *> sections;
 
@@ -37,6 +37,7 @@ public:
     const QString &getFilePath() const { return fileName; };
     QString getDescription() const;
     const QString &getLibraryMetaData() const { return libraryMetaData; }
+    RegisterLabels &getRegisterLabels() { return registerLabels; };
     qsizetype numControllers() const { return controllers.size(); };
     QString controller(qsizetype i) const { return controllers[i]; };
     const QStringList &allControllers() const { return controllers; };

@@ -1,4 +1,5 @@
 #include "rackview.h"
+#include "controllerlabellingdialog.h"
 #include "mainwindow.h"
 #include "modulebuilder.h"
 #include "tuning.h"
@@ -57,11 +58,11 @@ void RackView::mousePressEvent(QMouseEvent *event)
     if (event->type() == QMouseEvent::MouseButtonPress) {
         bool onModule = false;
         for (auto item: items(event->pos())) {
-            if (item->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+            if (item->data(DATA_INDEX_MODULE_NAME).isValid())
             {
                 if (event->button() == Qt::RightButton) {
-                    int index = -1;
-                    index = item->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
+                    QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
+                    int index = v.isValid() ? v.toInt() : -1;
                     popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
                 }
                 onModule = true;
@@ -71,6 +72,17 @@ void RackView::mousePressEvent(QMouseEvent *event)
         }
         if (!onModule && event->button() == Qt::RightButton)
             popupBackgroundContextMenu();
+    }
+}
+
+void RackView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    for (auto item: items(event->pos())) {
+        if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
+            QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
+            int index = v.isValid() ? v.toInt() : -1;
+            editLabelling(item->data(DATA_INDEX_MODULE_NAME).toString(), index);
+        }
     }
 }
 
@@ -156,13 +168,13 @@ void RackView::hideRegisterMarker()
     registerMarker->setVisible(false);
 }
 
-void RackView::popupControllerContextMenu(int controllerIndex, QString name)
+void RackView::popupControllerContextMenu(int controllerIndex, QString moduleType)
 {
    QMenu *menu = new QMenu(this);
    if (controllerIndex >= 0) {
        ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
        menu->addAction(the_forge->icon("delete"), tr("Remove this controller"), this,
-                       [this,controllerIndex,name] () {this->askRemoveController(controllerIndex, name); });
+                       [this,controllerIndex,moduleType] () {this->askRemoveController(moduleType, controllerIndex); });
        if (controllerIndex > 0)
            menu->addAction(the_forge->icon("keyboard_arrow_left"), tr("Move by one position to the left"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex-1); });
@@ -171,18 +183,18 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString name)
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex+1); });
        if (controllersRegistersUsed(controllerIndex) && numControllers() >= 2)
            menu->addAction(tr("Move used controls and LEDs to other controllers"),
-                           this, [this,controllerIndex,name] () {this->remapControls(controllerIndex, name); });
+                           this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
    }
    if (!menu->isEmpty())
        menu->addSeparator();
 
    menu->addAction(the_forge->icon("assignment"), tr("Edit labelling of controls"), this,
-                   [this,controllerIndex] () {this->editLabelling(controllerIndex); });
+                   [this,controllerIndex,moduleType] () {this->editLabelling(moduleType, controllerIndex); });
 
    menu->addSeparator();
 
    menu->addAction(the_forge->icon("purchase"), tr("Lookup this module in the shop"), this,
-                   [this,name] () {this->purchaseController(name); });
+                   [this,moduleType] () {this->purchaseController(moduleType); });
    menu->setAttribute(Qt::WA_DeleteOnClose);
    menu->popup(QCursor::pos());
 }
@@ -194,13 +206,13 @@ void RackView::popupBackgroundContextMenu()
    menu->popup(QCursor::pos());
 }
 
-void RackView::askRemoveController(int controllerIndex, const QString name)
+void RackView::askRemoveController(const QString moduleType, int controllerIndex)
 {
     // Get a list of all registers that are in use
     RegisterList atomsToRemap;
     collectUsedRegisters(controllerIndex, atomsToRemap);
     if (atomsToRemap.empty())
-        removeController(controllerIndex, name, atomsToRemap);
+        removeController(controllerIndex, moduleType, atomsToRemap);
 
     else {
         std::sort(atomsToRemap.begin(), atomsToRemap.end());
@@ -215,7 +227,7 @@ void RackView::askRemoveController(int controllerIndex, const QString name)
                 atomsToRemap.clear();
             auto ih = dialog->inputHandling();
             auto oh = dialog->outputHandling();
-            removeController(controllerIndex, name, atomsToRemap, ih, oh);
+            removeController(controllerIndex, moduleType, atomsToRemap, ih, oh);
         }
     }
 }
@@ -381,7 +393,7 @@ void RackView::removeController(
 }
 
 
-void RackView::remapControls(int controllerIndex, QString controllerName)
+void RackView::remapControls(QString controllerName, int controllerIndex)
 {
     RegisterList atomsToRemap;
     collectUsedRegisters(controllerIndex, atomsToRemap);
@@ -405,7 +417,13 @@ void RackView::remapControls(int controllerIndex, QString controllerName)
     emit patchModified();
 }
 
-void RackView::editLabelling(int controllerIndex)
+void RackView::editLabelling(QString moduleType, int controllerIndex)
 {
-   qDebug() << "EDIT" << controllerIndex;
+    RegisterLabels &labels = patch->getRegisterLabels();
+    ControllerLabellingDialog dialog(labels, moduleType, controllerIndex + 1, this);
+    int ret = dialog.exec();
+    if (ret == QDialog::Accepted) {
+        patch->commit(tr("editing labelling of '%1'").arg(moduleType));
+        emit patchModified();
+    }
 }

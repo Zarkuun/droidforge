@@ -5,7 +5,7 @@
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
 #include "parseexception.h"
-#include "registercomments.h"
+#include "registerlabels.h"
 
 #include <QTextStream>
 #include <QRegularExpression>

@@ -26,6 +26,7 @@ public:
     explicit RackView(PatchEditEngine *patch);
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void hideRegisterMarker();
     void updateGraphics();
@@ -57,11 +58,11 @@ public slots:
     void addController();
 
 private slots:
-    void askRemoveController(int controller, const QString name);
+    void askRemoveController(const QString moduleType, int controller);
     void purchaseController(QString name);
     void moveController(int oldindex, int newindex);
-    void remapControls(int controllerIndex, QString controllerName);
-    void editLabelling(int controllerIndex);
+    void remapControls(QString moduleType, int controllerIndex);
+    void editLabelling(QString moduleType, int controllerIndex);
 
 signals:
     void registerClicked(AtomRegister ar);

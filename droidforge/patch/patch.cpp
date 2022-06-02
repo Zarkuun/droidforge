@@ -2,7 +2,7 @@
 #include "atomcable.h"
 #include "droidfirmware.h"
 #include "modulebuilder.h"
-#include "registercomments.h"
+#include "registerlabels.h"
 
 #include <QFileInfo>
 
@@ -26,7 +26,7 @@ void Patch::clear()
     title = "";
     description.clear();
     libraryMetaData = "";
-    registerComments.clear();
+    registerLabels.clear();
     controllers.clear();
     for (auto section: sections)
         delete section;
@@ -50,7 +50,7 @@ void Patch::cloneInto(Patch *otherPatch) const
     otherPatch->title = title;
     otherPatch->description = description;
     otherPatch->libraryMetaData = libraryMetaData;
-    otherPatch->registerComments = registerComments;
+    otherPatch->registerLabels = registerLabels;
     otherPatch->controllers = controllers;
     for (auto section: sections)
         otherPatch->sections.append(section->clone());
@@ -158,8 +158,8 @@ void Patch::setDescription(const QString &d)
 void Patch::addRegisterComment(QChar registerName, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
 {
     AtomRegister atom(registerName, controller, number);
-    RegisterComment rc{atom, shorthand, comment};
-    registerComments.append(rc);
+    RegisterLabel rc{atom, shorthand, comment};
+    registerLabels[atom] = rc;
 }
 
 const QString &Patch::getTitle() const
@@ -361,7 +361,7 @@ QString Patch::toString() const
         s += "\n";
     }
 
-    s += registerComments.toString();
+    s += registerLabels.toString();
 
     for (qsizetype i=0; i<controllers.length(); i++)
         s += "[" + controllers[i] + "]\n";

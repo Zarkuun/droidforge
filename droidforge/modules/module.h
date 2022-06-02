@@ -31,6 +31,7 @@ public:
     virtual QString name() const = 0;
     virtual QString title() const = 0;
     virtual float hp() const = 0;
+    // TODO: QChar loswerden und durch register_t ersetzen. Überall!
     virtual unsigned numRegisters(QChar) const { return 0; };
     virtual unsigned numberOffset(QChar) const { return 0; };
     virtual QPointF registerPosition(QChar, unsigned) const = 0; // in HP

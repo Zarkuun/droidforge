@@ -1,9 +1,9 @@
-#include "registercomments.h"
+#include "registerlabels.h"
 #include "tuning.h"
 #include "atomregister.h"
 
 
-QString RegisterComments::toString() const
+QString RegisterLabels::toString() const
 {
     QString s;
 
@@ -24,7 +24,6 @@ QString RegisterComments::toString() const
 
     for (unsigned i=0; i<sizeof(globalRegtypes) / sizeof(regtitle_t); i++)
         s += toString(globalRegtypes[i].reg, 0, globalRegtypes[i].title);
-
 
     // And now the registers on the controllers
     static regtitle_t controllerRegtypes[] =  {
@@ -49,21 +48,21 @@ QString RegisterComments::toString() const
 }
 
 
-QString RegisterComments::toString(char reg, unsigned controller, const QString &title) const
+QString RegisterLabels::toString(char reg, unsigned controller, const QString &title) const
 {
     QString s;
     bool first = true;
-    for (auto &comment: *this) {
-        if (comment.atom.getRegisterType() == reg && comment.atom.controller() == controller) {
+    for (auto &label: *this) {
+        if (label.atom.getRegisterType() == reg && label.atom.controller() == controller) {
             if (first) {
                 first = false;
                 if (title != "")
                     s += QString("# ") + title + ":\n";
             }
-            s += "#   " + comment.atom.toString() + ": ";
-            if (!comment.shorthand.isEmpty())
-                s += "[" + comment.shorthand + "] ";
-            s += comment.comment;
+            s += "#   " + label.atom.toString() + ": ";
+            if (!label.shorthand.isEmpty())
+                s += "[" + label.shorthand + "] ";
+            s += label.description;
             s += "\n";
         }
     }

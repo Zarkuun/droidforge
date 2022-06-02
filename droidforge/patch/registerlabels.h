@@ -1,19 +1,20 @@
-#ifndef REGISTERCOMMENTS_H
-#define REGISTERCOMMENTS_H
+#ifndef REGISTERLABELS_H
+#define REGISTERLABELS_H
 
 #include "atomregister.h"
 
 #include <QString>
 #include <QList>
+#include <QMap>
 
-struct RegisterComment {
+struct RegisterLabel {
     AtomRegister atom;
     QString shorthand;
-    QString comment;
+    QString description;
     // RegisterComment(AtomRegister a, const QString &s, const QString &c) : atom(a), shorthand(s), comment(c) {};
 };
 
-class RegisterComments : public QList<RegisterComment>
+class RegisterLabels : public QMap<AtomRegister, RegisterLabel>
 {
 public:
     QString toString() const;
@@ -22,4 +23,4 @@ private:
     QString toString(char reg, unsigned controller, const QString &title=0) const;
 };
 
-#endif // REGISTERCOMMENTS_H
+#endif // REGISTERLABELS_H
