@@ -37,8 +37,10 @@ void RegisterLabelWidget::updateLabels(RegisterLabels &labels)
     // TODO: validator instead of this [ and ] hack
     QString shorthand = lineEditShort->text().trimmed().replace(']', ' ').replace('[', ' ');
     QString description = lineEditDescription->text().trimmed();
-    if (shorthand != "" || description != "")
+    if (shorthand != "" || description != "") {
+        qDebug() << "SETTING" << atom.toString() << "to" << shorthand << description;
         labels[atom] = RegisterLabel{atom, shorthand, description};
+    }
     else
         labels.remove(atom);
 }

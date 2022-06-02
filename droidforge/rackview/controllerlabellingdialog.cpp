@@ -91,7 +91,6 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
         }
 
         AtomRegister atom(regType, controllerNumber, num);
-        QString regName = atom.toString();
         QString shorthand;
         QString description;
         if (labels.contains(atom)) {
@@ -99,6 +98,12 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
             shorthand = rl.shorthand;
             description = rl.description;
         }
+        else {
+            qDebug() << "NIX FUER" << atom.toString();
+            for (auto &l: labels)
+                qDebug() << "LAB:" << l.atom;
+        }
+
 
         RegisterLabelWidget *rlw = new RegisterLabelWidget(atom, shorthand, description, this);
         labelWidgets.append(rlw);

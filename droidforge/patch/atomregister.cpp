@@ -16,10 +16,10 @@ AtomRegister::AtomRegister()
 
 AtomRegister::AtomRegister(QChar t, unsigned c, unsigned n)
 {
+    data.raw = 0;
     data.r.registerType = t.toLatin1();
     data.r.controller = c;
     data.r.number = n;
-    data.r.reserved = 0;
 }
 
 AtomRegister::AtomRegister(uint32_t raw)
