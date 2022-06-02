@@ -55,22 +55,22 @@ void RackView::resizeEvent(QResizeEvent *)
 void RackView::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
-        QGraphicsItem *item = itemAt(event->pos());
-        if (event->button() == Qt::RightButton) {
-            if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
-                int index = -1;
-                if (item->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+        bool onModule = false;
+        for (auto item: items(event->pos())) {
+            if (item->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+            {
+                if (event->button() == Qt::RightButton) {
+                    int index = -1;
                     index = item->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
-                popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
+                    popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
+                }
+                onModule = true;
             }
-            else if (!item)
-                popupBackgroundContextMenu();
-        }
-        else if (event->button() == Qt::LeftButton) {
-            QGraphicsItem *item = itemAt(event->pos());
-            if (item == registerMarker)
+            else if (item == registerMarker)
                 emit registerClicked(markedRegister);
         }
+        if (!onModule && event->button() == Qt::RightButton)
+            popupBackgroundContextMenu();
     }
 }
 
