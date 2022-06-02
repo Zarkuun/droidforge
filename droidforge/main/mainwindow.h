@@ -91,6 +91,7 @@ private:
     void createStatusBar();
 
 private slots:
+    void modifyPatch();
     void cursorMoved();
     void loadFile(const QString &filename, int how);
     void newPatch();

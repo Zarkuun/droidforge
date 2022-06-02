@@ -36,6 +36,7 @@ void PatchEditEngine::startFromScratch()
 
 bool PatchEditEngine::isModified() const
 {
+    qDebug() << versionOnDisk << redoPointer;
     return versionOnDisk != redoPointer;
 }
 
@@ -60,6 +61,8 @@ void PatchEditEngine::commit(QString message)
 
     versions.append(new PatchVersion(message, this)); // is cloned here
     redoPointer++; // is always at the end now
+    if (versionOnDisk == -1)
+        versionOnDisk = redoPointer; // initial commit
 
     while (versions.size() > UNDO_HISTORY_SIZE) {
         delete versions[0];

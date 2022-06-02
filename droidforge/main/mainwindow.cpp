@@ -77,7 +77,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &initialFilename)
     connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::patchModified, this, &MainWindow::cursorMoved);
+    connect(the_hub, &UpdateHub::patchModified, this, &MainWindow::modifyPatch);
     connect(the_hub, &UpdateHub::sectionSwitched, this, &MainWindow::cursorMoved);
     connect(the_hub, &UpdateHub::cursorMoved, this, &MainWindow::cursorMoved);
 
@@ -93,6 +93,19 @@ void MainWindow::createStatusBar()
     statusbar->addPermanentWidget(&cableStatusIndicator);
     statusbar->addPermanentWidget(&patchProblemIndicator);
     statusbar->addPermanentWidget(&clipboardIndicator);
+}
+
+void MainWindow::modifyPatch()
+{
+    QFileInfo fi(patch->getFilePath());
+    QString patchName = fi.baseName();
+    if (patchName == "")
+        patchName = tr("(untitled)");
+    QString title = patchName + " - " + APPLICATION_NAME;
+    if (patch->isModified())
+        title += tr(" (modified)");
+    setWindowTitle(title);
+    cursorMoved();
 }
 
 MainWindow::~MainWindow()
