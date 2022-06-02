@@ -175,6 +175,12 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString name)
    }
    if (!menu->isEmpty())
        menu->addSeparator();
+
+   menu->addAction(the_forge->icon("assignment"), tr("Edit labelling of controls"), this,
+                   [this,controllerIndex] () {this->editLabelling(controllerIndex); });
+
+   menu->addSeparator();
+
    menu->addAction(the_forge->icon("purchase"), tr("Lookup this module in the shop"), this,
                    [this,name] () {this->purchaseController(name); });
    menu->setAttribute(Qt::WA_DeleteOnClose);
@@ -397,4 +403,9 @@ void RackView::remapControls(int controllerIndex, QString controllerName)
     }
     patch->commit(tr("moving used controls of %1").arg(controllerName.toUpper()));
     emit patchModified();
+}
+
+void RackView::editLabelling(int controllerIndex)
+{
+   qDebug() << "EDIT" << controllerIndex;
 }

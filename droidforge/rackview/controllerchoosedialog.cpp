@@ -1,8 +1,10 @@
 #include "controllerchoosedialog.h"
 #include "mainwindow.h"
+#include "rackview.h"
 
 #include <QVBoxLayout>
 #include <QKeyEvent>
+#include <QDesktopServices>
 
 ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
     : Dialog("controllerchooser", parent)
@@ -19,6 +21,9 @@ ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
 
     // OK, Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    QPushButton *purchaseButton = new QPushButton(tr("Purchse"));
+    connect(purchaseButton, &QPushButton::clicked, this, &ControllerChooseDialog::purchase);
+    buttonBox->addButton(purchaseButton, QDialogButtonBox::ActionRole);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     mainLayout->addWidget(buttonBox);
@@ -30,7 +35,7 @@ QString ControllerChooseDialog::chooseController()
 {
     static ControllerChooseDialog *dialog = 0;
     if (!dialog)
-        dialog = new ControllerChooseDialog(the_forge);
+        dialog = new ControllerChooseDialog();
 
     dialog->setFocus();
     if (dialog->exec() == QDialog::Accepted)
@@ -52,4 +57,11 @@ void ControllerChooseDialog::keyPressEvent(QKeyEvent *event)
        controllerSelector->moveCursor(1);
     else
         Dialog::keyPressEvent(event);
+}
+
+void ControllerChooseDialog::purchase()
+{
+    QString name = controllerSelector->getSelectedController();
+    if (name != "")
+        QDesktopServices::openUrl(QUrl(SHOP_PRODUCTS_URL + name));
 }

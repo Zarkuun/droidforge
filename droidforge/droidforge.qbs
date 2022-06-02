@@ -61,6 +61,8 @@ QtApplication {
         "patchview/problemmarker.h",
         "patchview/selection.cpp",
         "patchview/selection.h",
+        "rackview/controllerlabellingdialog.cpp",
+        "rackview/controllerlabellingdialog.h",
         "rackview/patchsectiontitleview.cpp",
         "rackview/patchsectiontitleview.h",
         "resources.qrc",

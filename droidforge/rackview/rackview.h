@@ -61,6 +61,7 @@ private slots:
     void purchaseController(QString name);
     void moveController(int oldindex, int newindex);
     void remapControls(int controllerIndex, QString controllerName);
+    void editLabelling(int controllerIndex);
 
 signals:
     void registerClicked(AtomRegister ar);

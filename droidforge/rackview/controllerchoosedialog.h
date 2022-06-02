@@ -21,6 +21,9 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+
+private slots:
+    void purchase();
 };
 
 #endif // CONTROLLERCHOOSEDIALOG_H

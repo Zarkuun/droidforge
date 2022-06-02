@@ -14,6 +14,8 @@ KLEINERE FEATURE:
   Nur was machen wir für den seltenen Fall,l dass man es so will?
 - Kabelkonflikte (externe, interne?) beim Einfügen von Sachen
   noch programmieren. Interne->automatisch umbenennen.
+- Rackview: ich brauch hier auch noch nen Cursor. Dann kann
+  ich das auch ins Hauptmenü übernehmen. Oder ist das Schmarrn?
 
 BUGS:
 - Die disableten Zeilen darf man bei der berechnung der
