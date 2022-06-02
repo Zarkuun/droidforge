@@ -232,7 +232,6 @@ void PatchSectionView::rebuildPatchSection()
 
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 {
-    qDebug() << "KEY" << event;
     int key = event->key();
     bool shiftHeld = event->modifiers() & Qt::ShiftModifier;
 

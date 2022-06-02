@@ -36,7 +36,6 @@ void PatchEditEngine::startFromScratch()
 
 bool PatchEditEngine::isModified() const
 {
-    qDebug() << versionOnDisk << redoPointer;
     return versionOnDisk != redoPointer;
 }
 
@@ -76,8 +75,6 @@ void PatchEditEngine::commit(QString message)
 void PatchEditEngine::undo()
 {
     Q_ASSERT(undoPossible());
-    qDebug() << "Situation: redo: " << redoPointer << "versions:" << versions.count() << "title:" << versions.last()->getName();
-    qDebug() << "Cursor" << versions[redoPointer]->getPatch()->section(0)->cursorPosition();
     versions[--redoPointer]->getPatch()->cloneInto(this);
 }
 
