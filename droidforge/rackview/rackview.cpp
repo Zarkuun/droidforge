@@ -139,7 +139,7 @@ void RackView::remapRegisters(
     {
         // Loop through all candidate registers
         for (auto &candidate: allRegisters) {
-            if (candidate.controller() == controller)
+            if (candidate.getController() == controller)
                 continue; // Don't remap to ourselves
             // TODO: Fehlt da nicht ein check, ob das schon belegt ist?
             if (toRemap.getRegisterType() == candidate.getRegisterType())
@@ -239,7 +239,7 @@ void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
 
     unsigned controller = controllerIndex + 1;
     for (auto& atom: allUsedRegisters) {
-        if (atom.controller() == controller && !used.contains(atom))
+        if (atom.getController() == controller && !used.contains(atom))
             used.append(atom);
     }
 }
@@ -353,8 +353,8 @@ void RackView::updateRegisterHilites()
         for (qsizetype r=0; r<registers.count(); r++)
         {
             AtomRegister ar = registers[r];
-            if (ar.controller() == controller)
-                module->hiliteRegisters(true, ar.getRegisterType(), ar.number());
+            if (ar.getController() == controller)
+                module->hiliteRegisters(true, ar.getRegisterType(), ar.getNumber());
             // TODO: Hilite inputs/ouputs
         }
         module->update();

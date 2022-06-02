@@ -10,31 +10,39 @@
 #define tr(s) QCoreApplication::translate("Patch", s)
 
 AtomRegister::AtomRegister()
+    : registerType(0)
+    , cont(0)
+    , num(0)
 {
-    data.raw = 0;
+}
+
+AtomRegister::AtomRegister(char t, unsigned c, unsigned n)
+    : registerType(t)
+    , cont(c)
+    , num(n)
+{
 }
 
 AtomRegister::AtomRegister(QChar t, unsigned c, unsigned n)
+    : registerType(t.toLatin1())
+    , cont(c)
+    , num(n)
 {
-    data.raw = 0;
-    data.r.registerType = t.toLatin1();
-    data.r.controller = c;
-    data.r.number = n;
 }
 
-AtomRegister::AtomRegister(uint32_t raw)
-{
-    data.raw = raw;
-}
 
 AtomRegister::AtomRegister(const AtomRegister &ar)
 {
-    data.raw = ar.data.raw;
+    registerType = ar.registerType;
+    cont = ar.cont;
+    num = ar.num;
 }
 
 AtomRegister AtomRegister::operator=(const AtomRegister &ar)
 {
-    data.raw = ar.data.raw;
+    registerType = ar.registerType;
+    cont = ar.cont;
+    num = ar.num;
     return *this;
 }
 
@@ -45,45 +53,45 @@ AtomRegister *AtomRegister::clone() const
 
 QString AtomRegister::toString() const
 {
-    if (data.r.controller)
-        return data.r.registerType + QString::number(data.r.controller) + "." + QString::number(data.r.number);
+    if (cont)
+        return registerType + QString::number(cont) + "." + QString::number(num);
     else
-        return data.r.registerType + QString::number(data.r.number);
+        return registerType + QString::number(num);
 }
 
 QString AtomRegister::toDisplay() const
 {
-    return QString(registerName(data.r.registerType)) + " " + toString();
+    return QString(registerName(registerType)) + " " + toString();
 }
 
 bool AtomRegister::needG8() const
 {
-    return data.r.registerType == REGISTER_GATE
-           && data.r.controller == 0
-           && data.r.number >= 1
-           && data.r.number <= 8;
+    return registerType == REGISTER_GATE
+           && cont == 0
+           && num >= 1
+           && num <= 8;
 }
 
 bool AtomRegister::needX7() const
 {
-    return data.r.registerType == REGISTER_GATE
-           && data.r.controller == 0
-           && data.r.number >= 9
-            && data.r.number <= 12;
+    return registerType == REGISTER_GATE
+           && cont == 0
+           && num >= 9
+            && num <= 12;
 }
 
 void AtomRegister::swapControllerNumbers(int fromController, int toController)
 {
-    if ((int)data.r.controller == fromController)
-        data.r.controller = toController;
-    else if ((int)data.r.controller == toController)
-        data.r.controller = fromController;
+    if ((int)cont == fromController)
+        cont = toController;
+    else if ((int)cont == toController)
+        cont = fromController;
 }
 
 void AtomRegister::shiftControllerNumbers(int controller, int by)
 {
-    if ((int)data.r.controller > controller)
-        data.r.controller += by;
+    if ((int)controller > controller)
+        controller += by;
 }
 
 QString AtomRegister::problemAsInput(const Patch *patch) const
@@ -93,7 +101,7 @@ QString AtomRegister::problemAsInput(const Patch *patch) const
 
 QString AtomRegister::problemAsOutput(const Patch *patch) const
 {
-    switch (data.r.registerType) {
+    switch (registerType) {
         case REGISTER_INPUT:
                 return tr("You cannot use an input of the master as output");
         case REGISTER_POT:
@@ -108,11 +116,11 @@ QString AtomRegister::problemAsOutput(const Patch *patch) const
 
 QString AtomRegister::generalProblem(const Patch *patch) const
 {
-    if (data.r.number <= 0)
+    if (num <= 0)
         return tr("The number of the register may not be less than 1");
-    else if (data.r.controller > patch->numControllers())
+    else if (cont > patch->numControllers())
         return tr("Invalid controller number %1. You have just %2 controllers")
-                .arg(data.r.controller).arg(patch->numControllers());
+                .arg(cont).arg(patch->numControllers());
     else if (!patch->registerAvailable(*this))
         return tr("This jack / control is not available");
 
@@ -126,12 +134,14 @@ QDebug &operator<<(QDebug &out, const AtomRegister &ar) {
 
 bool operator==(const AtomRegister &a, const AtomRegister &b)
 {
-    return a.data.raw == b.data.raw;
+    return a.registerType == b.registerType
+            && a.cont == b.cont
+            && a.num == b.num;
 }
 
 bool operator<(const AtomRegister &a, const AtomRegister &b)
 {
-    return a.data.r.controller < b.data.r.controller
-            || a.data.r.registerType < b.data.r.registerType
-            || a.data.r.number < b.data.r.number;
+    return a.cont < b.cont
+            || a.registerType < b.registerType
+            || a.num < b.num;
 }

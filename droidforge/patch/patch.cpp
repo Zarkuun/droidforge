@@ -319,7 +319,7 @@ bool Patch::registerAvailable(AtomRegister ar) const
     else
         max = the_firmware->numGlobalRegisters(regType);
 
-    return ar.number() >= 1 && ar.number() <= max;
+    return ar.getNumber() >= 1 && ar.getNumber() <= max;
 }
 
 void Patch::remapRegister(AtomRegister from, AtomRegister to)

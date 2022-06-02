@@ -86,8 +86,8 @@ void RegisterSelector::setAtom(const Patch *, const Atom *atom)
     else {
         const AtomRegister *areg = (const AtomRegister *)atom;
         setRegisterType(areg->getRegisterType());
-        setRegisterNumber(areg->number());
-        setControllerNumber(areg->controller());
+        setRegisterNumber(areg->getNumber());
+        setControllerNumber(areg->getController());
     }
 }
 
