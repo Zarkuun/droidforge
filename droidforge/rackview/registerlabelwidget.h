@@ -22,6 +22,7 @@ public:
     AtomRegister getAtom() const { return atom; };
     void updateLabels(RegisterLabels &labels);
     void select();
+    void clear();
 };
 
 #endif // REGISTERLABELWIDGET_H

@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QPushButton>
 
 ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent)
     : Dialog("controllerlabelling/" + controllerType, parent)
@@ -20,6 +21,9 @@ ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QSt
 
     // Buttons with OK/Cancel
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
+    QPushButton *clearButton = new QPushButton(tr("Clear"));
+    connect(clearButton, &QPushButton::clicked, this, &ControllerLabellingDialog::clear);
+    buttonBox->addButton(clearButton, QDialogButtonBox::ActionRole);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     mainLayout->setRowStretch(currentRow, 1000000000);
@@ -111,4 +115,10 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
         column ++;
     }
     currentRow++;
+}
+
+void ControllerLabellingDialog::clear()
+{
+    for (auto rlw: labelWidgets)
+        rlw->clear();
 }

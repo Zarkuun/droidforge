@@ -7,6 +7,7 @@
 Module::Module(const QString &faceplate)
     : faceplateImage(":images/faceplates/" + faceplate)
     , registerIsHilited{{0}}
+    , registerLabels(0)
 {
 }
 
@@ -17,6 +18,14 @@ Module::~Module()
 bool Module::isController() const
 {
     return data(DATA_INDEX_CONTROLLER_INDEX).isValid();
+}
+
+unsigned Module::controllerNumber() const
+{
+    unsigned controller = 0;
+    if (data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+        controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
+    return controller;
 }
 
 void Module::clearHilites()
@@ -34,24 +43,17 @@ void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
     QRect r = boundingRect().toRect();
     painter->drawPixmap(r, faceplateImage);
 
+    paintRegisterHilites(painter);
+    paintRegisterLabels(painter);
+}
+
+void Module::paintRegisterHilites(QPainter *painter)
+{
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         QChar type = register_types[i];
         for (unsigned j=0; j<numRegisters(type); j++) {
             if (registerIsHilited[i][j]) {
                 paintHiliteRegister(painter, type, j+1);
-            }
-        }
-    }
-}
-
-void Module::hiliteRegisters(bool on, QChar type, unsigned number)
-{
-    for (int i=0; i<NUM_REGISTER_TYPES; i++) {
-        if (type == register_types[i] || type == 0) {
-            for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
-                if (number == j+1+numberOffset(type) || number == 0) {
-                    registerIsHilited[i][j] = on;
-                }
             }
         }
     }
@@ -70,6 +72,70 @@ void Module::paintHiliteRegister(QPainter *painter, QChar type, unsigned number)
         painter->drawEllipse(r);
 }
 
+void Module::paintRegisterLabels(QPainter *painter)
+{
+    if (!registerLabels)
+        return;
+
+    painter->setPen(QColor(0, 0, 0));
+
+    unsigned controller = controllerNumber();
+    for (auto &label: *registerLabels) {
+        if (label.atom.controller() != controller)
+            continue;
+        if (!haveRegister(label.atom))
+            continue;
+        paintRegisterLabel(painter, label);
+    }
+}
+
+void Module::paintRegisterLabel(QPainter *painter, const RegisterLabel &label)
+{
+    // TODO: move to tuning.h
+    static const float fontSizes[MAX_LENGTH_SHORTHAND + 1] = { 99.9, 1.5, 1.1, 0.8, 0.7, 0.55 };
+
+    AtomRegister atom = label.atom;
+    QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()));
+
+    if (labelNeedsBackground(atom.getRegisterType(), atom.getNumber())) {
+        painter->save();
+        painter->setBrush(QColor(255, 255, 255, 128));
+        painter->setPen(Qt::NoPen);
+        painter->drawEllipse(r);
+        painter->restore();
+    }
+
+    QString text = label.shorthand;
+    if (text == "")
+        text = label.description.mid(0, MAX_LENGTH_SHORTHAND);
+
+    QFont font;
+    font.setPixelSize(RACV_PIXEL_PER_HP * fontSizes[text.size()]);
+    painter->setFont(font);
+
+    painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
+}
+
+bool Module::haveRegister(AtomRegister atom)
+{
+    unsigned count = numRegisters(atom.getRegisterType());
+    unsigned offset = numberOffset(atom.getRegisterType());
+    bool have = atom.number() >= 1 + offset && atom.number() <= count + offset;
+    return have;
+}
+
+void Module::hiliteRegisters(bool on, QChar type, unsigned number)
+{
+    for (int i=0; i<NUM_REGISTER_TYPES; i++) {
+        if (type == register_types[i] || type == 0) {
+            for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
+                if (number == j+1+numberOffset(type) || number == 0) {
+                    registerIsHilited[i][j] = on;
+                }
+            }
+        }
+    }
+}
 
 QRectF Module::registerRect(QChar type, unsigned number) const
 {
@@ -98,12 +164,7 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
 
 AtomRegister Module::registerAtom(QChar type, unsigned number) const
 {
-    // TODO: This sucks somehow. Too much graphics and logic entanglement.
-    unsigned controller = 0;
-    if (data(DATA_INDEX_CONTROLLER_INDEX).isValid())
-        controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
-
-    return AtomRegister(type, controller, number + numberOffset(type));
+    return AtomRegister(type, controllerNumber(), number + numberOffset(type));
 }
 
 // TODO: Hier fehlt die Controllernummer!!!!!

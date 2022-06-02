@@ -25,6 +25,9 @@ public:
 private:
     void populate();
     void populateRegisters(Module *module, char regType, const QString &title);
+
+private slots:
+    void clear();
 };
 
 #endif // CONTROLLERLABELLINGDIALOG_H

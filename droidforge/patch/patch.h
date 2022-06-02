@@ -38,6 +38,7 @@ public:
     QString getDescription() const;
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     RegisterLabels &getRegisterLabels() { return registerLabels; };
+    const RegisterLabels *getRegisterLabelsPointer() const { return &registerLabels; };
     RegisterLabel registerLabel(AtomRegister atom) const;
     qsizetype numControllers() const { return controllers.size(); };
     QString controller(qsizetype i) const { return controllers[i]; };

@@ -50,3 +50,9 @@ void RegisterLabelWidget::select()
     setFocus();
     lineEditShort->selectAll();
 }
+
+void RegisterLabelWidget::clear()
+{
+    lineEditShort->clear();
+    lineEditDescription->clear();
+}

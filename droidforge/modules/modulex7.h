@@ -20,6 +20,7 @@ public:
 protected:
     QPointF registerPosition(QChar type, unsigned number) const;
     float registerSize(QChar type, unsigned number) const;
+    bool labelNeedsBackground(QChar, unsigned n) const { return true; };
 };
 
 #endif // MODULEX7_H

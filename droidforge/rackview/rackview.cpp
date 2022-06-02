@@ -297,7 +297,7 @@ void RackView::updateSize()
 
 void RackView::addModule(const QString &name, int controllerIndex)
 {
-    Module *module = ModuleBuilder::buildModule(name);
+    Module *module = ModuleBuilder::buildModule(name, patch->getRegisterLabelsPointer());
     module->setData(DATA_INDEX_MODULE_NAME, name);
     scene()->addItem(module);
     modules.append(module);

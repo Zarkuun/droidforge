@@ -2,6 +2,7 @@
 #define MODULE_H
 
 #include "atomregister.h"
+#include "registerlabels.h"
 #include "registerlist.h"
 
 #include <QString>
@@ -24,9 +25,11 @@ class Module : public QGraphicsItem
 {
     QPixmap faceplateImage;
     bool registerIsHilited[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE];
+    const RegisterLabels *registerLabels; // points into current patch
 
 public:
     Module(const QString &faceplate);
+    void setLabels(const RegisterLabels *labels) { registerLabels = labels; };
     virtual ~Module();
     virtual QString name() const = 0;
     virtual QString title() const = 0;
@@ -36,6 +39,7 @@ public:
     virtual unsigned numberOffset(QChar) const { return 0; };
     virtual QPointF registerPosition(QChar, unsigned) const = 0; // in HP
     virtual float registerSize(QChar, unsigned) const = 0; // in HP
+    virtual bool labelNeedsBackground(QChar, unsigned) const { return false; };
 
     bool isController() const;
     void clearHilites();
@@ -45,6 +49,7 @@ public:
     AtomRegister registerAtom(QChar type, unsigned number) const;
     void collectAllRegisters(RegisterList &rl, int number=-1) const;
 
+    unsigned controllerNumber() const;
 protected:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
@@ -52,6 +57,10 @@ protected:
 private:
     void paintHiliteRegister(QPainter *painter, QChar type, unsigned number);
     QRectF registerRect(QChar type, unsigned number) const;
+    void paintRegisterLabels(QPainter *painter);
+    void paintRegisterHilites(QPainter *painter);
+    bool haveRegister(AtomRegister atom);
+    void paintRegisterLabel(QPainter *painter, const RegisterLabel &label);
 };
 
 #endif // MODULE_H

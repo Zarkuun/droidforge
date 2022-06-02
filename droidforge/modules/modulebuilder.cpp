@@ -19,28 +19,32 @@ const QStringList &ModuleBuilder::allControllers()
     return controllers;
 }
 
-Module *ModuleBuilder::buildModule(QString name)
+Module *ModuleBuilder::buildModule(QString name, const RegisterLabels *labels)
 {
+    Module *module;
     if (name == "master")
-        return new ModuleMaster();
+        module = new ModuleMaster();
     else if (name == "g8")
-        return new ModuleG8();
+        module = new ModuleG8();
     else if (name == "x7")
-        return new ModuleX7();
+        module = new ModuleX7();
     else if (name == "p4b2")
-        return new ModuleP4B2();
+        module = new ModuleP4B2();
     else if (name == "p2b8")
-        return new ModuleP2B8();
+        module = new ModuleP2B8();
     else if (name == "p10")
-        return new ModuleP10();
+        module = new ModuleP10();
     else if (name == "s10")
-        return new ModuleS10();
+        module = new ModuleS10();
     else if (name == "m4")
-        return new ModuleM4();
+        module = new ModuleM4();
     else if (name == "b32")
-        return new ModuleB32();
+        module = new ModuleB32();
     else
-        return new ModuleInvalid();
+        module = new ModuleInvalid();
+    if (labels)
+        module->setLabels(labels);
+    return module;
 }
 
 bool ModuleBuilder::controllerExists(QString name)
