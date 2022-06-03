@@ -637,7 +637,7 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
         setMouseSelection(curPos);
     }
     else {
-        section()->clearSelection();
+        clearSelection();
         section()->setCursor(curPos);
         emit cursorMoved();
     }
