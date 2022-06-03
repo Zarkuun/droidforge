@@ -161,3 +161,46 @@ Atom *JackAssignment::parseRegister(QString s)
     else
         return new AtomInvalid(s);
 }
+
+bool numericStringLess(const QString &a, const QString &b)
+{
+    if (b == "")
+        return false;
+    else if (a == "")
+        return true;
+    else if (a[0] == b[0])
+        return numericStringLess(a.mid(1), b.mid(1));
+
+    if (a[0].isDigit() && !b[0].isDigit())
+        return false;
+    else if (!a[0].isDigit() && b[0].isDigit())
+        return true;
+    else if (!a[0].isDigit() && !b[0].isDigit())
+        return numericStringLess(a.mid(1), b.mid(1));
+
+    // OK. Now we have two digits. We do not compare the digits
+    // but the number that is constructed by all following digits
+
+    auto na = a.toULongLong();
+    auto nb = b.toULongLong();
+    if (na < nb)
+        return true;
+    else if (nb < na)
+        return false;
+
+    // Identical numbers. Skip.
+    int i = 0;
+    while (a[i].isDigit() && i<a.size())
+        i++;
+    return numericStringLess(a.mid(i), b.mid(i));
+}
+
+bool operator<(const JackAssignment &a, const JackAssignment &b)
+{
+    if (a.jackType() < b.jackType())
+        return true;
+    else if (a.jackType() > b.jackType())
+        return false;
+
+    return numericStringLess(a.jack, b.jack); // TODO: button2 < button16
+}

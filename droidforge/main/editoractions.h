@@ -53,6 +53,7 @@ typedef enum {
     ACTION_UNDO,
     ACTION_ZOOM_IN,
     ACTION_ZOOM_OUT,
+    ACTION_SORT_JACKS,
 
     NUM_ACTIONS,
 } action_t;

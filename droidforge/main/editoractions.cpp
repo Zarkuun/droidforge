@@ -81,6 +81,7 @@ void EditorActions::moveCursor()
     actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(section()->currentCircuit());
     actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
+    actions[ACTION_SORT_JACKS]->setEnabled(section()->currentCircuit());
     updateDisablingActions();
 }
 
@@ -229,6 +230,9 @@ void EditorActions::createActions()
     actions[ACTION_ENABLE] = new QAction(tr("&Enable"), this);
     actions[ACTION_ENABLE]->setShortcut(QKeySequence(tr("#")));
 
+    actions[ACTION_SORT_JACKS] = new QAction(icon("filter_list"), tr("Sort jack assignments"), this);
+    actions[ACTION_SORT_JACKS]->setShortcut(QKeySequence(tr("Meta+S")));
+
     actions[ACTION_NEW_CIRCUIT] = new QAction(icon("open_in_new"), tr("&New circuit..."), this);
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
 
@@ -256,11 +260,9 @@ void EditorActions::createActions()
 
     actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
-    actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcutVisibleInContextMenu(true);
 
     actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit jack info..."), this);
     actions[ACTION_EDIT_JACK_COMMENT]->setShortcut(QKeySequence(tr("Alt+C")));
-    actions[ACTION_EDIT_JACK_COMMENT]->setShortcutVisibleInContextMenu(true);
 
     actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Previous section"));
     actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Up")));

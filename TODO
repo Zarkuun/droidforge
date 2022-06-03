@@ -18,12 +18,12 @@ KLEINERE FEATURES:
   ich das auch ins Hauptmenü übernehmen. Oder ist das Schmarrn?
 - Bessere Grafiken für die Rackview (Skizzen?)
 - Rackview: Platz über und unter der Rackschienen weg.
-- Zeilen in einem Circuit automatisch sortieren in/out a-z array: step2 < step16
 - Tasten um an den Anfang und ans Ende zu springen.
 
 BUGS:
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen?
+  - add jack: klick auf subjacks geht nicht.
 
 Version 2:
 - Mehrere Dateien gleichzeitig auf haben

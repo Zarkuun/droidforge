@@ -310,6 +310,7 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_PASTE, menu);
     ADD_ACTION(ACTION_PASTE_SMART, menu);
     ADD_ACTION(ACTION_SELECT_ALL, menu);
+    ADD_ACTION(ACTION_SORT_JACKS, menu);
     ADD_ACTION(ACTION_DISABLE, menu);
     ADD_ACTION(ACTION_ENABLE, menu);
 

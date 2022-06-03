@@ -133,6 +133,7 @@ public slots:
     void copy();
     void paste();
     void pasteSmart();
+    void sortJacks();
     void selectAll();
     void disableObjects();
     void enableObjects();

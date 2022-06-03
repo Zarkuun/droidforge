@@ -37,6 +37,8 @@ public:
     const JackAssignment *jackAssignment(unsigned i) const { return jackAssignments[i]; };
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     void deleteJackAssignment(unsigned i);
+    void sortJacks();
+    void sortJacksFromTo(int fromRow, int toRow);
     const Atom *atomAt(int row, int column) const;
     Atom *atomAt(int row, int column);
     void setAtomAt(int row, int column, Atom *atom);

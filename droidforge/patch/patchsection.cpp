@@ -260,7 +260,7 @@ void PatchSection::selectAll()
         return;
 
     CursorPosition start(0, 0, 0);
-    CursorPosition end(circuits.count()-1, 0, 0);
+    CursorPosition end(circuits.count()-1, circuits[circuits.count()-1]->numJackAssignments()-1, 0);
     selection = new Selection(start, end);
 }
 

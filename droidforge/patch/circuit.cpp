@@ -1,5 +1,6 @@
 #include "circuit.h"
 #include "droidfirmware.h"
+#include "globals.h"
 
 #include <QCoreApplication>
 
@@ -45,6 +46,27 @@ void Circuit::deleteJackAssignment(unsigned i)
 {
     delete jackAssignments[i];
     jackAssignments.remove(i);
+}
+
+void Circuit::sortJacks()
+{
+    sortJacksFromTo(0, jackAssignments.count() - 1);
+}
+
+void Circuit::sortJacksFromTo(int fromRow, int toRow)
+{
+    shout << "sortiere" << name << "from" << fromRow << "to" << toRow;
+    // Bubble sort rulez
+    bool sorted = false;
+    while (!sorted) {
+        sorted = true;
+        for (int i=fromRow; i<toRow; i++) {
+            if (*jackAssignments[i+1] < *jackAssignments[i]) {
+                jackAssignments.swapItemsAt(i, i+1);
+                sorted = false;
+            }
+        }
+    }
 }
 
 const Atom *Circuit::atomAt(int row, int column) const

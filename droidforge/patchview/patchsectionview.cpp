@@ -90,6 +90,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
     CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
     CONNECT_ACTION(ACTION_SELECT_ALL, &PatchSectionView::selectAll);
+    CONNECT_ACTION(ACTION_SORT_JACKS, &PatchSectionView::sortJacks);
     CONNECT_ACTION(ACTION_DISABLE, &PatchSectionView::disableObjects);
     CONNECT_ACTION(ACTION_ENABLE, &PatchSectionView::enableObjects);
     CONNECT_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, &PatchSectionView::createSectionFromSelection);
@@ -457,6 +458,31 @@ void PatchSectionView::pasteSmart()
     emit patchModified();
 }
 
+void PatchSectionView::sortJacks()
+{
+    const Selection *selection = section()->getSelection();
+    if (selection) {
+        if (selection->isCircuitSelection()) {
+            for (int i=selection->fromPos().circuitNr;
+                 i <= selection->toPos().circuitNr;
+                 i++)
+            {
+                section()->circuit(i)->sortJacks();
+            }
+        }
+        else if (!selection->isCommentSelection())
+        {
+            section()->circuit(selection->fromPos().circuitNr)
+                    ->sortJacksFromTo(selection->fromPos().row, selection->toPos().row);
+        }
+    }
+    else if (currentCircuit()) {
+        currentCircuit()->sortJacks();
+    }
+    patch->commit(tr("sorting jacks"));
+    emit patchModified();
+}
+
 void PatchSectionView::selectAll()
 {
     section()->selectAll();
@@ -662,9 +688,11 @@ void PatchSectionView::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton) {
         const CursorPosition *curPos = cursorAtMousePosition(event->pos());
-        if (*curPos != section()->cursorPosition())
-            setMouseSelection(*curPos);
-        delete curPos;
+        if (curPos) {
+            if (*curPos != section()->cursorPosition())
+                setMouseSelection(*curPos);
+            delete curPos;
+        }
     }
 }
 
@@ -677,6 +705,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_COPY, menu);
         ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
         ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
+        ADD_ACTION(ACTION_SORT_JACKS, menu);
     }
 
     else {
@@ -692,6 +721,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_COPY, menu);
         ADD_ACTION(ACTION_PASTE, menu);
         ADD_ACTION(ACTION_PASTE_SMART, menu);
+        ADD_ACTION(ACTION_SORT_JACKS, menu);
         ADD_ACTION(ACTION_DISABLE, menu);
         ADD_ACTION(ACTION_ENABLE, menu);
 
