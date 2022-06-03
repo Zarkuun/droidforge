@@ -38,7 +38,7 @@ void RegisterLabelWidget::updateLabels(RegisterLabels &labels)
     QString shorthand = lineEditShort->text().trimmed().replace(']', ' ').replace('[', ' ');
     QString description = lineEditDescription->text().trimmed();
     if (shorthand != "" || description != "")
-        labels[atom] = RegisterLabel{atom, shorthand, description};
+        labels[atom] = RegisterLabel{shorthand, description};
     else
         labels.remove(atom);
 }

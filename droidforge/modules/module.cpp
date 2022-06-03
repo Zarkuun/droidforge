@@ -78,23 +78,25 @@ void Module::paintRegisterLabels(QPainter *painter)
         return;
 
     painter->setPen(QColor(0, 0, 0));
-
     unsigned controller = controllerNumber();
-    for (auto &label: *registerLabels) {
-        if (label.atom.controller() != controller)
+
+    QMapIterator<AtomRegister, RegisterLabel> it(*registerLabels);
+    while (it.hasNext()) {
+        it.next();
+        AtomRegister atom = it.key();
+        if (atom.controller() != controller)
             continue;
-        if (!haveRegister(label.atom))
+        if (!haveRegister(atom))
             continue;
-        paintRegisterLabel(painter, label);
+        paintRegisterLabel(painter, atom, it.value());
     }
 }
 
-void Module::paintRegisterLabel(QPainter *painter, const RegisterLabel &label)
+void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const RegisterLabel &label)
 {
     // TODO: move to tuning.h
     static const float fontSizes[MAX_LENGTH_SHORTHAND + 1] = { 99.9, 1.5, 1.1, 0.8, 0.7, 0.55 };
 
-    AtomRegister atom = label.atom;
     QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()));
 
     if (labelNeedsBackground(atom.getRegisterType(), atom.getNumber())) {

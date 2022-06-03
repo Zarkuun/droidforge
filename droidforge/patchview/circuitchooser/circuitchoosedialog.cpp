@@ -150,7 +150,6 @@ void CircuitChooseDialog::setCurrentCircuit(QString name)
     for (qsizetype i=0; i<tabWidget->count(); i++) {
         CircuitCollection *cc = (CircuitCollection *)tabWidget->widget(i);
         // TODO: Hier knallts manchmal ganz am Anfang. Da muss ne race-condition sei.
-        qDebug() << "ICH HAB" << cc->getNumCircuits();
         if (cc->preselectCircuit(name)) {
             tabWidget->setCurrentIndex(i);
             break;

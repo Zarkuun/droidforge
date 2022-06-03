@@ -8,7 +8,6 @@
 #include <QMap>
 
 struct RegisterLabel {
-    AtomRegister atom;
     QString shorthand;
     QString description;
     // RegisterComment(AtomRegister a, const QString &s, const QString &c) : atom(a), shorthand(s), comment(c) {};
@@ -18,6 +17,7 @@ class RegisterLabels : public QMap<AtomRegister, RegisterLabel>
 {
 public:
     QString toString() const;
+    void swapRegisters(AtomRegister regA, AtomRegister regB);
 
 private:
     QString toString(char reg, unsigned controller, const QString &title=0) const;

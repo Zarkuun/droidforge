@@ -4,7 +4,6 @@
 #include "updatehub.h"
 
 #include <QPainter>
-#include <QDebug>
 #include <QMouseEvent>
 
 PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *parent)

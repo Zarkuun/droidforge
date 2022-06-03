@@ -5,6 +5,7 @@
 #include "atomregister.h"
 #include "circuitview.h"
 #include "cablecolorizer.h"
+#include "globals.h"
 #include "infomarker.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
@@ -403,10 +404,8 @@ void PatchSectionView::copy()
 
 void PatchSectionView::paste()
 {
-    if (the_clipboard->numCircuits()) {
+    if (the_clipboard->numCircuits())
         pasteCircuitsFromClipboard();
-        qDebug() << "TODO: Hier Dialog wegen anpassen der Register!";
-    }
     else if (isEmpty()) {
         // TODO: updateActions in mainwindow soll paste deaktivieren, wenn
         // dieser Fall da ist.

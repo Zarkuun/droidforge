@@ -32,6 +32,7 @@ RackView::RackView(PatchEditEngine *patch)
     QBrush brush(background.scaledToHeight(RACV_BACKGROUND_HEIGHT)); //kheight() * 50));
     scene()->setBackgroundBrush(brush);
     setMouseTracking(true);
+    initScene();
 
     CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
 
@@ -46,7 +47,7 @@ RackView::RackView(PatchEditEngine *patch)
 
 void RackView::modifyPatch()
 {
-    updateGraphics();
+    refreshModules();
     updateRegisterHilites();
 }
 
@@ -88,13 +89,16 @@ void RackView::mouseReleaseEvent(QMouseEvent *)
 {
      if (dragging) {
          AtomRegister draggingEndRegister = markedRegister;
-         if (registersSuitableForSwapping(draggingStartRegister, draggingEndRegister))
+         if (registersSuitableForSwapping(draggingStartRegister, draggingEndRegister)) {
              swapRegisters(draggingStartRegister, draggingEndRegister);
+             dragRegisterIndicator->doSuccessAnimation();
+         }
          else
              dragRegisterIndicator->setVisible(false);
 
-         dragging = false;
          registerMarker->setVisible(true);
+         dragging = false;
+         markedRegister = AtomRegister(0, 0, 0);
          scene()->update();
      }
 }
@@ -185,12 +189,12 @@ void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
     if (regA.getRegisterType() == 'I') {
         AtomRegister nA('N', regA.controller(), regA.number());
         AtomRegister nB('N', regB.controller(), regB.number());
-        swapRegisters(nA, nB);
+        patch->swapRegisters(nA, nB);
     }
     else if (regA.getRegisterType() == 'B') {
         AtomRegister lA('L', regA.controller(), regA.number());
         AtomRegister lB('L', regB.controller(), regB.number());
-        swapRegisters(lA, lB);
+        patch->swapRegisters(lA, lB);
     }
     patch->commit(tr("Exchanging registers '%1' and '%2'").arg(regA.toString()).arg(regB.toString()));
     emit patchModified();
@@ -330,10 +334,10 @@ bool RackView::controllersRegistersUsed(int controllerIndex)
 
 void RackView::updateDragIndicator(QPointF endPos, bool hits, bool suitable)
 {
-    qDebug() << "START" << draggingStartPosition;
+    dragRegisterIndicator->abortAnimation();
     dragRegisterIndicator->setPos(draggingStartPosition);
     dragRegisterIndicator->setEnd(endPos - draggingStartPosition, hits, suitable);
-    dragRegisterIndicator->setVisible(dragging);
+    dragRegisterIndicator->setVisible(true);
     dragRegisterIndicator->update();
     scene()->update();
 }
@@ -350,22 +354,14 @@ void RackView::moveController(int fromindex, int toindex)
     emit patchModified();
 }
 
-void RackView::updateGraphics()
+void RackView::refreshModules()
 {
-    scene()->clear();
     modules.clear();
-    registerMarker = new RegisterMarker;
-    scene()->addItem(registerMarker);
-    dragRegisterIndicator = new DragRegisterIndicator;
-    dragRegisterIndicator->setVisible(false);
-    scene()->addItem(dragRegisterIndicator);
-
-    if (!patch)
-        return;
-
-    // Add strut, so space above and below the modules is visible
-    scene()->addLine(0, 0, 0, RACV_BACKGROUND_HEIGHT, QPen(QColor(0, 0, 0, 0)));
-
+    for (auto item: scene()->items())
+    {
+        if (item->data(DATA_INDEX_MODULE_NAME).isValid())
+            scene()->removeItem(item);
+    }
     x = 0;
     addModule("master");
     // if (patch->needG8())
@@ -377,6 +373,19 @@ void RackView::updateGraphics()
 
     for (qsizetype i=0; i<patch->numControllers(); i++)
         addModule(patch->controller(i), i);
+}
+
+void RackView::initScene()
+{
+    registerMarker = new RegisterMarker;
+    scene()->addItem(registerMarker);
+    dragRegisterIndicator = new DragRegisterIndicator;
+    dragRegisterIndicator->setVisible(false);
+    scene()->addItem(dragRegisterIndicator);
+
+    // Add strut, so space above and below the modules is visible
+    scene()->addLine(0, 0, 0, RACV_BACKGROUND_HEIGHT, QPen(QColor(0, 0, 0, 0)));
+    refreshModules();
     updateSize();
 }
 
@@ -481,7 +490,6 @@ void RackView::removeController(
     patch->commit(tr("removing %1 controller").arg(controllerName.toUpper()));
     emit patchModified();
 }
-
 
 void RackView::remapControls(QString controllerName, int controllerIndex)
 {

@@ -16,7 +16,7 @@ class RegisterMarker : public QObject, public QGraphicsEllipseItem
 public:
     RegisterMarker();
     float getanimationPhase() const;
-    void setanimationPhase(float newanimationPhase);
+    void setanimationPhase(float newAnimationPhase);
     void startAnimation();
     void setDiameter(float d) { diameter = d; };
 

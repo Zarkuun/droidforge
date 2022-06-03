@@ -37,7 +37,7 @@ public:
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void hideRegisterMarker();
-    void updateGraphics();
+    void initScene();
 
 private:
     void addModule(const QString &name, int controllerIndex=-1);
@@ -63,6 +63,7 @@ private:
 
     bool registersSuitableForSwapping(AtomRegister a, AtomRegister b);
     void swapRegisters(AtomRegister regA, AtomRegister regB);
+    void refreshModules();
 public slots:
     void modifyPatch();
     void updateRegisterHilites();

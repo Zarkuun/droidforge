@@ -5,7 +5,6 @@
 #include "updatehub.h"
 #include "editoractions.h"
 
-#include <QDebug>
 #include <QMouseEvent>
 
 CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *parent)

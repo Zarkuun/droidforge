@@ -60,7 +60,7 @@ private:
     void paintRegisterLabels(QPainter *painter);
     void paintRegisterHilites(QPainter *painter);
     bool haveRegister(AtomRegister atom);
-    void paintRegisterLabel(QPainter *painter, const RegisterLabel &label);
+    void paintRegisterLabel(QPainter *painter, AtomRegister atom, const RegisterLabel &label);
 };
 
 #endif // MODULE_H

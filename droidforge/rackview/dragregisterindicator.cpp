@@ -4,22 +4,40 @@
 
 #include <QPainter>
 
+// TODO: tuning.h
+const int DRI_CIRCLE_SIZE = 2.5 * RACV_PIXEL_PER_HP;
+
 DragRegisterIndicator::DragRegisterIndicator()
+     : animation(this, "animationPhase")
 {
     setZValue(100);
+    animation.setDuration(300);
+    animation.setKeyValueAt(0, 0.0);
+    animation.setKeyValueAt(1, 1.0);
+    connect(&animation, &QPropertyAnimation::finished, this, &DragRegisterIndicator::endOfAnimation);
+}
+
+float DragRegisterIndicator::getanimationPhase() const
+{
+    return animationPhase;
+}
+
+void DragRegisterIndicator::setanimationPhase(float newAnimationPhase)
+{
+    int c = newAnimationPhase * 5;
+    setVisible(c % 2);
+    update();
 }
 
 QRectF DragRegisterIndicator::boundingRect() const
 {
-    return QRectF(0, 0, 0, 0);
-    QPoint safety(100, 100);
+    QPoint safety(DRI_CIRCLE_SIZE, DRI_CIRCLE_SIZE);
     QRectF box = QRectF(QPoint(0, 0), endPos).normalized();
     return QRectF(box.topLeft() - safety, box.bottomRight() + safety);
 }
 
 void DragRegisterIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    const int DRI_CIRCLE_SIZE = 2.5 * RACV_PIXEL_PER_HP;
 
     QPen pen;
     pen.setWidth(4);
@@ -93,9 +111,26 @@ void DragRegisterIndicator::paintArrowHead(QPainter *painter, float size)
     painter->drawPolygon(poly);
 }
 
+void DragRegisterIndicator::endOfAnimation()
+{
+    setVisible(false);
+}
+
 void DragRegisterIndicator::setEnd(QPointF pos, bool h, bool s)
 {
     endPos = pos;
     hits = h;
     suitable = s;
+}
+
+void DragRegisterIndicator::doSuccessAnimation()
+{
+    setanimationPhase(0.0);
+    animation.setCurrentTime(0);
+    animation.start();
+}
+
+void DragRegisterIndicator::abortAnimation()
+{
+    animation.stop();
 }

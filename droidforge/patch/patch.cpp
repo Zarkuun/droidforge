@@ -51,6 +51,7 @@ void Patch::cloneInto(Patch *otherPatch) const
     otherPatch->description = description;
     otherPatch->libraryMetaData = libraryMetaData;
     otherPatch->registerLabels = registerLabels;
+    otherPatch->registerLabels.detach();
     otherPatch->controllers = controllers;
     for (auto section: sections)
         otherPatch->sections.append(section->clone());
@@ -158,7 +159,7 @@ void Patch::setDescription(const QString &d)
 void Patch::addRegisterComment(QChar registerName, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
 {
     AtomRegister atom(registerName, controller, number);
-    RegisterLabel rc{atom, shorthand, comment};
+    RegisterLabel rc{shorthand, comment};
     registerLabels[atom] = rc;
 }
 
@@ -340,6 +341,7 @@ void Patch::swapRegisters(AtomRegister regA, AtomRegister regB)
                 *reg = regA;
         }
     }
+    registerLabels.swapRegisters(regA, regB);
 }
 
 void Patch::removeRegisterReferences(RegisterList &rl, int ih, int oh)

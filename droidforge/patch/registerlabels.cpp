@@ -1,6 +1,9 @@
 #include "registerlabels.h"
+#include "globals.h"
 #include "tuning.h"
 #include "atomregister.h"
+
+#include <QDebug>
 
 
 QString RegisterLabels::toString() const
@@ -47,19 +50,47 @@ QString RegisterLabels::toString() const
     return s;
 }
 
+void RegisterLabels::swapRegisters(AtomRegister regA, AtomRegister regB)
+{
+    RegisterLabel labA, labB;
+    bool hadA = false;
+    bool hadB = false;
+
+    if (contains(regA)) {
+        hadA = true;
+        labA = value(regA);
+        remove(regA);
+    }
+    if (contains(regB)) {
+        hadB = true;
+        labB = value(regB);
+        remove(regB);
+    }
+
+    if (hadA)
+        insert(regB, labA);
+    if (hadB)
+        insert(regA, labB);
+}
+
 
 QString RegisterLabels::toString(char reg, unsigned controller, const QString &title) const
 {
     QString s;
     bool first = true;
-    for (auto &label: *this) {
-        if (label.atom.getRegisterType() == reg && label.atom.controller() == controller) {
+
+    QMapIterator<AtomRegister, RegisterLabel> it(*this);
+    while (it.hasNext()) {
+        it.next();
+        AtomRegister atom = it.key();
+        const RegisterLabel &label = it.value();
+        if (atom.getRegisterType() == reg && atom.controller() == controller) {
             if (first) {
                 first = false;
                 if (title != "")
                     s += QString("# ") + title + ":\n";
             }
-            s += "#   " + label.atom.toString() + ": ";
+            s += "#   " + atom.toString() + ": ";
             if (!label.shorthand.isEmpty())
                 s += "[" + label.shorthand + "] ";
             s += label.description;
