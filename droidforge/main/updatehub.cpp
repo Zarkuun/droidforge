@@ -1,4 +1,5 @@
 #include "updatehub.h"
+#include "globals.h"
 
 UpdateHub *the_hub = 0;
 
@@ -10,6 +11,7 @@ UpdateHub::UpdateHub(QObject *parent)
 
 void UpdateHub::modifyPatch()
 {
+    shoutfunc << "HUB";
     // Called, when the current patch is modified in any possible way -
     // except for (only) cursor movements. This is always done directly
     // after a patch->commit() from one of our subsystems.
@@ -30,6 +32,7 @@ void UpdateHub::changeClipboard()
 
 void UpdateHub::changeSelection()
 {
+    shoutfunc << "HUB";
     // Called when the range of the selection in the PatchSectionView
     // has changed.
     emit selectionChanged();
@@ -37,6 +40,7 @@ void UpdateHub::changeSelection()
 
 void UpdateHub::moveCursor()
 {
+    shoutfunc << "HUB";
     // Called, when the cursor within the current section moved but
     // nothing else has changed.
     emit cursorMoved();

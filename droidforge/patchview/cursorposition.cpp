@@ -25,3 +25,9 @@ bool operator==(const CursorPosition &a, const CursorPosition &b)
             && a.row == b.row
             && a.column == b.column;
 }
+
+
+bool operator!=(const CursorPosition &a, const CursorPosition &b)
+{
+    return !(a == b);
+}

@@ -27,6 +27,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSettings>
+#include <QScrollBar>
 
 #define DATA_INDEX_CIRCUIT 0
 #define DATA_INDEX_PROBLEM 1
@@ -106,7 +107,6 @@ void PatchSectionView::buildPatchSection()
 {
     unsigned circuitWidth = viewport()->width() / zoomFactor;
     QGraphicsScene *scene = new QGraphicsScene();
-    setScene(scene);
 
     int y = 0;
     for (qsizetype i=0; i<section()->circuits.size(); i++)
@@ -128,6 +128,7 @@ void PatchSectionView::buildPatchSection()
     }
     scene->addItem(&frameCursor);
     updateCursor();
+    setScene(scene);
 }
 
 void PatchSectionView::updateProblemMarkers()
@@ -226,9 +227,7 @@ void PatchSectionView::rebuildPatchSection()
     buildPatchSection();
     updateProblemMarkers();
     updateInfoMarkers();
-    // TODO: Scheinbar springt der Viewport hier immer nach oben.
-    // Und das ensureVisible bewirkt erstmal nix bis man den Cursor
-    // bewegt
+    updateCursor();
 }
 
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
@@ -253,7 +252,8 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
         if (shiftHeld)
             updateKeyboardSelection(posBefore, section()->cursorPosition());
         else
-            clearSelection();
+            if (section()->getSelection())
+                clearSelection();
         return true;
     }
 
@@ -351,6 +351,7 @@ void PatchSectionView::modifyPatch()
     the_cable_colorizer->colorizeAllCables(patch->allCables());
     if (patch->isPatching())
         abortPatching();
+    buildPatchSection();
     rebuildPatchSection();
 }
 
@@ -655,11 +656,11 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 void PatchSectionView::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton) {
-        CursorPosition *curPos = cursorAtMousePosition(event->pos());
-        setMouseSelection(*curPos);
+        const CursorPosition *curPos = cursorAtMousePosition(event->pos());
+        if (*curPos != section()->cursorPosition())
+            setMouseSelection(*curPos);
         delete curPos;
     }
-
 }
 
 void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
@@ -716,7 +717,6 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 void PatchSectionView::resizeEvent(QResizeEvent *)
 {
     rebuildPatchSection();
-    updateCursor();
 }
 
 void PatchSectionView::showEvent(QShowEvent *)
@@ -1071,11 +1071,7 @@ void PatchSectionView::updateCursor()
 {
     if (currentCircuitView()) {
         const CursorPosition &pos = section()->cursorPosition();
-        QRectF br = currentCircuitView()->boundingRect();
-        QRectF tbr = br.translated(currentCircuitView()->pos());
-        ensureVisible(tbr); // TODO: Das hier geht noch nicht so gut
 
-        QRectF cr = currentCircuitView()->cellRect(pos.row, pos.column);
         if (currentCircuit()->isDisabled() ||
                 (currentJackAssignment() && currentJackAssignment()->isDisabled()))
             frameCursor.setMode(CURSOR_DISABLED);
@@ -1087,8 +1083,10 @@ void PatchSectionView::updateCursor()
             frameCursor.setMode(CURSOR_NORMAL);
 
         frameCursor.setVisible(true);
-        frameCursor.setRect(cr.translated(currentCircuitView()->pos()));
+        QRectF cellRect = currentCircuitView()->cellRect(pos.row, pos.column);
+        frameCursor.setRect(cellRect.translated(currentCircuitView()->pos()));
         frameCursor.startAnimation();
+        ensureVisible(&frameCursor, 0, 3 * STANDARD_SPACING);
     }
     else
         frameCursor.setVisible(false);

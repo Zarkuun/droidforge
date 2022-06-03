@@ -185,7 +185,7 @@ void CircuitCollection::moveCursorUpDown(int whence)
     currentCircuit()->deselect();
     selectedCircuit = qMax(0, qMin(numCircuits-1, selectedCircuit + whence));
     currentCircuit()->select();
-    ensureVisible(currentCircuit(), 0, 0);
+    ensureVisible(currentCircuit(), 0, STANDARD_SPACING);
 }
 
 CircuitInfoView *CircuitCollection::currentCircuit()
