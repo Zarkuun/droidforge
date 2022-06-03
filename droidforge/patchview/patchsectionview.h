@@ -64,10 +64,11 @@ protected:
 private:
     PatchView *patchView();
     void updateCableIndicator();
+    CursorPosition *cursorAtMousePosition(QPoint pos) const;
     void setMouseSelection(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
     void handleLeftMousePress(const CursorPosition &curPos);
-    void handleRightMousePress(CircuitView *cv, const CursorPosition &curPos);
+    void mouseMoveEvent(QMouseEvent *event);
     void buildPatchSection();
     void deletePatchSection();
     CircuitView *currentCircuitView();
@@ -113,6 +114,7 @@ private:
     void editJackCommentAt(const CursorPosition &pos);
     void clearSelection();
     void enableDisableObjects(bool enable);
+    void handleRightMousePress(const CursorPosition *curPos);
 
 public slots:
     void modifyPatch();

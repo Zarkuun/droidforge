@@ -7,6 +7,7 @@ IconMarker::IconMarker(const QImage &image, unsigned size, QString toolTip)
     , image(image)
 {
     setToolTip(toolTip);
+    setZValue(60);
 }
 
 QRectF IconMarker::boundingRect() const

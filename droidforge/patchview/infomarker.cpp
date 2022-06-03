@@ -11,5 +11,5 @@ InfoMarker::InfoMarker(const CursorPosition &curPos, unsigned size, QString tool
     : IconMarker(infoImage, size, toolTip)
     , curPos(curPos)
 {
-    setCursor(Qt::PointingHandCursor);
+    setCursor(Qt::PointingHandCursor); // TODO: Warum geht das hier nicht?
 }

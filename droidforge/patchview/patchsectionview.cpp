@@ -281,7 +281,7 @@ void PatchSectionView::mouseDoubleClickEvent(QMouseEvent *event)
     mouseClick(event->pos(), event->button(), true);
 }
 
-void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
+CursorPosition *PatchSectionView::cursorAtMousePosition(QPoint pos) const
 {
     // itemAt() applies the transformation of the graphics
     // view such as the scroll bar and the alignment.
@@ -291,9 +291,6 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
         if (item->data(DATA_INDEX_CIRCUIT).isValid()) {
             cv = (CircuitView *)item;
             break;
-        }
-        else if (item->data(DATA_INDEX_INFO).isValid()) {
-            clickOnInfoMarker((InfoMarker *)item);
         }
     }
 
@@ -307,27 +304,39 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
         for (unsigned i=0; i<circuitViews.size(); i++)
         {
             if (circuitViews[i] == cv) {
-                CursorPosition curPos;
-                curPos.circuitNr = i;
-                curPos.row = cv->jackAt(posInCircuit.y());
-                curPos.column = cv->columnAt(posInCircuit.x());
+                return new CursorPosition( i,
+                                           cv->jackAt(posInCircuit.y()),
+                                           cv->columnAt(posInCircuit.x()));
+            }
+        }
+    }
+    return 0;
+}
 
-                if (doubleClick)
-                    editValueByMouse(curPos);
-                else if (button == Qt::LeftButton)
-                    handleLeftMousePress(curPos);
-                else
-                    handleRightMousePress(cv, curPos);
+void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
+{
+    // Click on little "info" icon
+    if (button == Qt::LeftButton) {
+        for (auto item: items(pos)) {
+            if (item->data(DATA_INDEX_INFO).isValid()) {
+                clickOnInfoMarker((InfoMarker *)item);
                 return;
             }
         }
     }
 
-    // click on background
-    // TODO: The new circuit should appear at the end of the
-    // section, not where the cursor is.
-    if (button == Qt::RightButton)
-        handleRightMousePress(0, CursorPosition());
+    CursorPosition *curPos = cursorAtMousePosition(pos);
+    if (curPos) {
+        if (doubleClick)
+            editValueByMouse(*curPos);
+        else if (button == Qt::LeftButton)
+            handleLeftMousePress(*curPos);
+        else
+            handleRightMousePress(curPos);
+    }
+    else  if (button == Qt::RightButton)
+        handleRightMousePress(0);
+    delete curPos;
 }
 
 void PatchSectionView::changeSelection()
@@ -643,7 +652,17 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
     }
 }
 
-void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPosition &curPos)
+void PatchSectionView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() & Qt::LeftButton) {
+        CursorPosition *curPos = cursorAtMousePosition(event->pos());
+        setMouseSelection(*curPos);
+        delete curPos;
+    }
+
+}
+
+void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 {
     QMenu *menu = new QMenu(this);
 
@@ -658,8 +677,8 @@ void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPositi
         // Make sure that cursor is set to the cell the menu is
         // working with. Otherwise all actions would address the
         // wrong cell.
-        if (cv) {
-            section()->setCursor(curPos);
+        if (curPos) {
+            section()->setCursor(*curPos);
             emit cursorMoved();
         }
 
