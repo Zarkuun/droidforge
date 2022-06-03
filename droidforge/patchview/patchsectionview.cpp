@@ -645,56 +645,49 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 
 void PatchSectionView::handleRightMousePress(CircuitView *cv, const CursorPosition &curPos)
 {
-    // TODO: Show a different menu when a selection is active and
-    // a cell from the selection is being hit?
-    if (section()->getSelection()) {
-        return;
-    }
-
-    // Make sure that cursor is set to the cell the menu is
-    // working with. Otherwise all actions would address the
-    // wrong cell.
-    if (cv) {
-        section()->setCursor(curPos);
-        emit cursorMoved();
-    }
-
     QMenu *menu = new QMenu(this);
-    ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
-    //menu->addAction(the_forge->action(ACTION_NEW_CIRCUIT));
-    if (cv) {
-        ADD_ACTION(ACTION_ADD_JACK, menu);
-        ADD_ACTION(ACTION_EDIT_VALUE, menu);
-        ADD_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, menu);
 
-        // TOOD:
-        // - remove circut
-        // - remove comment
-        // ..
-        if (curPos.row >= 0) {
-            ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
-            if (curPos.column == 0) {
-                // TODO:
-                // - delete jack assignment
-            }
-            else {
-                menu->addSeparator();
-                const Atom *atom = currentAtom();
-                if (atom && atom->isCable()) {
-                    ADD_ACTION(ACTION_FOLLOW_CABLE, menu);
-                    ADD_ACTION(ACTION_RENAME_CABLE, menu);
-                }
-                ADD_ACTION(ACTION_START_PATCHING, menu);
-                ADD_ACTION(ACTION_FINISH_PATCHING, menu);
-                ADD_ACTION(ACTION_ABORT_PATCHING, menu);
-            }
+    if (section()->getSelection()) {
+        ADD_ACTION(ACTION_CUT, menu);
+        ADD_ACTION(ACTION_COPY, menu);
+        ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
+        ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
+    }
+
+    else {
+        // Make sure that cursor is set to the cell the menu is
+        // working with. Otherwise all actions would address the
+        // wrong cell.
+        if (cv) {
+            section()->setCursor(curPos);
+            emit cursorMoved();
         }
+
+        ADD_ACTION(ACTION_CUT, menu);
+        ADD_ACTION(ACTION_COPY, menu);
+        ADD_ACTION(ACTION_PASTE, menu);
+        ADD_ACTION(ACTION_PASTE_SMART, menu);
+        ADD_ACTION(ACTION_DISABLE, menu);
+        ADD_ACTION(ACTION_ENABLE, menu);
 
         menu->addSeparator();
 
-        // TODO: Copy, Paste, cut....
-        ADD_ACTION(ACTION_DISABLE, menu);
-        ADD_ACTION(ACTION_ENABLE, menu);
+        ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
+        ADD_ACTION(ACTION_ADD_JACK, menu);
+
+        menu->addSeparator();
+
+        ADD_ACTION_IF_ENABLED(ACTION_EDIT_VALUE, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_EDIT_CIRCUIT_COMMENT, menu);
+        ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
+
+        menu->addSeparator();
+
+        ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_CABLE, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_RENAME_CABLE, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_START_PATCHING, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_FINISH_PATCHING, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_ABORT_PATCHING, menu);
     }
 
     menu->setAttribute(Qt::WA_DeleteOnClose);

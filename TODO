@@ -1,9 +1,10 @@
 GROSSE THEMEN:
 
-- Deploy (MIDI, SD-Karte)
+- Expand Jack Array
+- Button -> LED Warnung oder sowas
+--> Finally: Deploy (MIDI, SD-Karte)
 
-KLEINERE FEATURE:
-- %d -> Duplicate. Diese Reihe von Buttons, LEDs
+KLEINERE FEATURES:
 - Sektionen per Drag-Drop vertauschen
 - Module per Drag-Drop vertauschen
 - View source code (oder open source code in text editor)
@@ -15,13 +16,13 @@ KLEINERE FEATURE:
   noch programmieren. Interne->automatisch umbenennen.
 - Rackview: ich brauch hier auch noch nen Cursor. Dann kann
   ich das auch ins Hauptmenü übernehmen. Oder ist das Schmarrn?
+- Bessere Grafiken für die Rackview (Skizzen?)
+- Rackview: Platz über und unter der Rackschienen weg.
+- Zeilen in einem Circuit automatisch sortieren in/out a-z array: step2 < step16
 
 BUGS:
-- Die disableten Zeilen darf man bei der berechnung der
-belegten Regisgter wohl nicht mitzählen.
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen?
-
 
 Version 2:
 - Mehrere Dateien gleichzeitig auf haben

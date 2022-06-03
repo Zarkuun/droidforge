@@ -75,7 +75,8 @@ void EditorActions::changeSelection()
 
 void EditorActions::moveCursor()
 {
-    const Atom *atom = patch->currentAtom();
+    const Atom *atom = section()->currentAtom();
+    actions[ACTION_ADD_JACK]->setEnabled(section()->currentCircuit());
     actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(section()->currentCircuit());
@@ -199,15 +200,15 @@ void EditorActions::createActions()
     actions[ACTION_REDO]->setShortcuts(QKeySequence::Redo);
     actions[ACTION_REDO]->setStatusTip(tr("Redo last edit action"));
 
-    actions[ACTION_CUT] = new QAction(icon("cut"), tr("C&ut"), this);
+    actions[ACTION_CUT] = new QAction(icon("content_cut"), tr("C&ut"), this);
     actions[ACTION_CUT]->setShortcuts(QKeySequence::Cut);
     actions[ACTION_CUT]->setStatusTip(tr("Cut selection to clipboard"));
 
-    actions[ACTION_COPY] = new QAction(icon("copy"), tr("&Copy"), this);
+    actions[ACTION_COPY] = new QAction(icon("content_copy"), tr("&Copy"), this);
     actions[ACTION_COPY]->setShortcuts(QKeySequence::Copy);
     actions[ACTION_COPY]->setStatusTip(tr("Copy selected stuff to clipboard"));
 
-    actions[ACTION_PASTE] = new QAction(icon("paste"), tr("&Paste"), this);
+    actions[ACTION_PASTE] = new QAction(icon("content_paste"), tr("&Paste"), this);
     actions[ACTION_PASTE]->setShortcuts(QKeySequence::Paste);
     actions[ACTION_PASTE]->setStatusTip(tr("Paste contents from clipboard"));
     actions[ACTION_PASTE]->setEnabled(false); // enabled by clipboard
