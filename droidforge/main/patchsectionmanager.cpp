@@ -212,6 +212,7 @@ void PatchSectionManager::rebuildGraphics()
 
     // Add strut for padding
     scene()->addRect(QRectF(0, 0, viewport()->width(), 0));
+    // TODO: kann man das nicht mit setSceneRect() besser machen?
 
     // Add title
     QGraphicsTextItem *text = scene()->addText(tr("Sections"));

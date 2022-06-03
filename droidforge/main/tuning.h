@@ -125,7 +125,9 @@
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
 #define PSM_IMAGE_MARGIN                     4
 
-// Circuit view (in patch view)
+// Patch section view
+#define CURSOR_VISIBILITY_MARGIN             30
+// Circuit view (in section view)
 #define CIRV_TOP_PADDING                     (2 * STANDARD_SPACING)
 #define CIRV_BOTTOM_PADDING                  CIRV_TOP_PADDING
 #define CIRV_SIDE_PADDING                    (2 * STANDARD_SPACING)

@@ -64,6 +64,7 @@ private:
     bool registersSuitableForSwapping(AtomRegister a, AtomRegister b);
     void swapRegisters(AtomRegister regA, AtomRegister regB);
     void refreshModules();
+
 public slots:
     void modifyPatch();
     void updateRegisterHilites();

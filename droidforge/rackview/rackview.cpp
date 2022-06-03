@@ -7,6 +7,7 @@
 #include "controllerremovaldialog.h"
 #include "editoractions.h"
 #include "updatehub.h"
+#include "globals.h"
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
@@ -385,6 +386,7 @@ void RackView::initScene()
 
     // Add strut, so space above and below the modules is visible
     scene()->addLine(0, 0, 0, RACV_BACKGROUND_HEIGHT, QPen(QColor(0, 0, 0, 0)));
+    // TODO: kann man das nicht mit setSceneRect() besser machen?
     refreshModules();
     updateSize();
 }

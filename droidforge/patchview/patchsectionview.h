@@ -26,6 +26,7 @@ class PatchSectionView : public QGraphicsView, PatchOperator
 
     int zoomLevel;
     float zoomFactor;
+    bool needScrollbarAdaption;
 
     QList<CircuitView *>circuitViews;
     AtomSelectorDialog *atomSelectorDialog; // TODO: Jede Section hat nen eigenen Dialog
@@ -141,6 +142,9 @@ public slots:
     void abortPatching();
     void followCable();
     void editJackComment();
+
+private slots:
+    void clockTick();
 
 signals:
     void patchModified();

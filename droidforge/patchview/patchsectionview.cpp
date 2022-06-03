@@ -27,6 +27,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSettings>
+#include <QTimer>
 #include <QScrollBar>
 
 #define DATA_INDEX_CIRCUIT 0
@@ -69,6 +70,10 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     connect(the_hub, &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
     connect(the_hub, &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
     connect(the_hub, &UpdateHub::patchingChanged, this, &PatchSectionView::changePatching);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &PatchSectionView::clockTick);
+    timer->start(10);
 }
 
 PatchSectionView::~PatchSectionView()
@@ -1065,6 +1070,58 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     emit patchModified();
 }
 
+void PatchSectionView::clockTick()
+{
+    if (needScrollbarAdaption) {
+        QRectF c = frameCursor.boundingRect();
+        QRectF cursorRect(c.left(), c.top() - CURSOR_VISIBILITY_MARGIN,
+                          c.width(), c.height() + 2 * CURSOR_VISIBILITY_MARGIN);
+        QRectF portRect = viewport()->contentsRect();
+
+        QRectF sceneRect = mapToScene(portRect.toRect()).boundingRect();
+
+        int visibleTop = sceneRect.top();
+        int visibleBottom = sceneRect.bottom();
+
+        int cursorTop = c.top() - CURSOR_VISIBILITY_MARGIN;
+        int cursorBottom = c.bottom() + CURSOR_VISIBILITY_MARGIN;
+
+        int dir;
+
+        if (cursorTop < visibleTop) {
+            dir = cursorTop - visibleTop;
+            shout << "muss hoch" << dir << zoomFactor;
+        }
+        else if (cursorBottom > visibleBottom) {
+            dir = cursorBottom - visibleBottom;
+            shout << "muss runter" << dir << zoomFactor;
+        }
+        else {
+            dir = 0;
+            shout << "alles OK";
+            needScrollbarAdaption = false;
+        }
+
+        int pos = verticalScrollBar()->value();
+        if (pos == 0 && dir < 0)
+            needScrollbarAdaption = false;
+        else if (pos == verticalScrollBar()->maximum() && dir > 0)
+            needScrollbarAdaption = false;
+        else if (dir) {
+            float moveBy = dir * zoomFactor * 0.2;
+            if (moveBy > 0 && moveBy < 1)
+                moveBy = 1;
+            else if (moveBy < 0 && moveBy > -1)
+                moveBy = -1;
+
+            pos += moveBy;
+            verticalScrollBar()->setValue(pos);
+            scene()->update();
+            return;
+        }
+    }
+}
+
 // Repositions the frameCursor so that it matches the current
 // cursor position in the current section
 void PatchSectionView::updateCursor()
@@ -1082,11 +1139,11 @@ void PatchSectionView::updateCursor()
         else
             frameCursor.setMode(CURSOR_NORMAL);
 
-        frameCursor.setVisible(true);
         QRectF cellRect = currentCircuitView()->cellRect(pos.row, pos.column);
         frameCursor.setRect(cellRect.translated(currentCircuitView()->pos()));
         frameCursor.startAnimation();
-        ensureVisible(&frameCursor, 0, 3 * STANDARD_SPACING);
+        frameCursor.setVisible(true);
+        needScrollbarAdaption = true;
     }
     else
         frameCursor.setVisible(false);
@@ -1274,12 +1331,6 @@ bool PatchSectionView::atomCellSelected() const
     const CursorPosition &cp = section()->cursorPosition();
     return (cp.row >= 0 && cp.column > 0);
 }
-
-// void PatchSectionView::setCursorPosition(const CursorPosition &pos)
-// {
-//     section()->setCursor(pos);
-//     updateCursor();
-// }
 
 const CursorPosition &PatchSectionView::getCursorPosition() const
 {
