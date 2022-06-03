@@ -23,6 +23,7 @@ public:
     AtomRegister *clone() const;
     QString toString() const;
     QString toDisplay() const;
+    bool isNull() const;
     bool isRegister() const { return true; };
     bool isControl() { return cont > 0; };
     bool isOnMasterG8X7() { return cont == 0; };

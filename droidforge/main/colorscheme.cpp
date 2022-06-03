@@ -64,6 +64,9 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Circuits: + and * background"), list);
     item->setData(1, CIRV_COLOR_OPERATOR_BG);
 
+    item = new QListWidgetItem(tr("Circuits: Selection"), list);
+    item->setData(1, CIRV_COLOR_SELECTION);
+
     item = new QListWidgetItem(tr("Normal cursor"), list);
     item->setData(1, COLOR_CURSOR_NORMAL);
 
@@ -99,6 +102,9 @@ ColorScheme::ColorScheme(QWidget *parent)
 
     item = new QListWidgetItem(tr("Rackview: drag arrow, not suitable"), list);
     item->setData(1, RACV_COLOR_DRAGARROW_UNSUITABLE);
+
+    item = new QListWidgetItem(tr("Jack selector: frame color"), list);
+    item->setData(1, JSEL_COLOR_LINE);
 
     colorDialog = new QColorDialog(this);
     colorDialog->setOption(QColorDialog::ShowAlphaChannel);

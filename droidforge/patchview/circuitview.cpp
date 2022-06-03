@@ -103,7 +103,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
                       commentHeight()),
                       Qt::AlignLeft | Qt::AlignJustify | Qt::AlignTop, circuit->getComment());
     if (*selection && (*selection)->commentSelected(circuitNumber))
-        painter->fillRect(commentRect(), CIRV_COLOR_SELECTION);
+        painter->fillRect(commentRect(), COLOR(CIRV_COLOR_SELECTION));
 
     // Jacks
     paintJacks(painter);
@@ -118,7 +118,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
                 cr.bottom()); // line after jack column
 
     if (*selection && (*selection)->circuitSelected(circuitNumber))
-        painter->fillRect(cr, CIRV_COLOR_SELECTION);
+        painter->fillRect(cr, COLOR(CIRV_COLOR_SELECTION));
 }
 
 QRectF CircuitView::cellRect(int row, int column) const
@@ -265,7 +265,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
             QRectF ar = atomRect(row, a+1);
             paintAtom(painter, ar,  textcolor, jai->getAtom(a), true);
             if (*selection && (*selection)->atomSelected(circuitNumber, row, a+1))
-                painter->fillRect(ar, CIRV_COLOR_SELECTION);
+                painter->fillRect(ar, COLOR(CIRV_COLOR_SELECTION));
         }
 
         QRectF ar = atomRect(row, 1);
@@ -293,11 +293,11 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
             paintAtom(painter, ar, COLOR_TEXT_UNKNOWN, &atom, false);
         }
         if (*selection && (*selection)->atomSelected(circuitNumber, row, 1))
-            painter->fillRect(ar, CIRV_COLOR_SELECTION);
+            painter->fillRect(ar, COLOR(CIRV_COLOR_SELECTION));
     }
 
     if (*selection && (*selection)->jackSelected(circuitNumber, row))
-        painter->fillRect(jackLineRect(row), CIRV_COLOR_SELECTION);
+        painter->fillRect(jackLineRect(row), COLOR(CIRV_COLOR_SELECTION));
 
     // horizontal line
     painter->setPen(COLOR(CIRV_COLOR_LINE));

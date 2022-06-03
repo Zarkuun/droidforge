@@ -64,6 +64,11 @@ QString AtomRegister::toDisplay() const
     return QString(registerName(registerType)) + " " + toString();
 }
 
+bool AtomRegister::isNull() const
+{
+    return registerType == 0;
+}
+
 bool AtomRegister::needG8() const
 {
     return registerType == REGISTER_GATE

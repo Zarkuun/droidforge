@@ -39,6 +39,7 @@ RackView::RackView(PatchEditEngine *patch)
 
     // Events that we create
     connect(this, &RackView::patchModified, the_hub, &UpdateHub::modifyPatch);
+    connect(this, &RackView::sectionSwitched, the_hub, &UpdateHub::sectionSwitched);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &RackView::modifyPatch);
@@ -71,7 +72,7 @@ void RackView::mousePressEvent(QMouseEvent *event)
                 }
                 onModule = true;
             }
-            else if (item == registerMarker) {
+            else if (item == registerMarker && event->button() == Qt::LeftButton) {
                 emit registerClicked(markedRegister);
                 dragging = true;
                 draggedAtRegister = false;
@@ -99,7 +100,7 @@ void RackView::mouseReleaseEvent(QMouseEvent *)
 
          registerMarker->setVisible(true);
          dragging = false;
-         markedRegister = AtomRegister(0, 0, 0);
+         markedRegister = AtomRegister();
          scene()->update();
      }
 }
@@ -273,6 +274,12 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
    menu->addAction(the_forge->icon("assignment"), tr("Edit labelling of controls"), this,
                    [this,controllerIndex,moduleType] () {this->editLabelling(moduleType, controllerIndex); });
 
+   AtomRegister reg = markedRegister;
+   if (!markedRegister.isNull() && patch->registerUsed(markedRegister)) {
+       menu->addAction(the_forge->icon("search"), tr("Find this register in your patch"), this,
+                       [this,reg] () {this->findRegister(reg); });
+   }
+
    menu->addSeparator();
 
    menu->addAction(the_forge->icon("purchase"), tr("Lookup this module in the shop"), this,
@@ -346,6 +353,47 @@ void RackView::updateDragIndicator(QPointF endPos, bool hits, bool suitable)
 void RackView::purchaseController(QString name)
 {
     QDesktopServices::openUrl(QUrl(SHOP_PRODUCTS_URL + name));
+}
+
+void RackView::findRegister(AtomRegister reg)
+{
+    const Atom *currentAtom = patch->currentAtom();
+
+    bool waitForNext = false;
+    bool found = false;
+
+    // TODO: Vereinheitlichen mit followCable()
+    // First try to find the next atom *after* the current
+    Patch::iterator it = patch->begin();
+    while (*it) {
+        Atom *atom = *it;
+        if (atom == currentAtom)
+            waitForNext = true;
+        else if (waitForNext && atom->isRegister() && *((AtomRegister *)atom) == reg) {
+            found = true;
+            break;
+        }
+        ++it;
+    }
+
+    // Now try from the start of the patch
+    if (!found) {
+        it = patch->begin();
+        while (*it && *it != currentAtom) {
+            Atom *atom = *it;
+            if (atom->isRegister() && *((AtomRegister *)atom) == reg) {
+                found = true;
+                break;
+            }
+            ++it;
+        }
+    }
+
+    if (!found)
+        return;
+
+    patch->setCursorTo(it.sectionIndex(), it.cursorPosition());
+    emit sectionSwitched();
 }
 
 void RackView::moveController(int fromindex, int toindex)

@@ -3,6 +3,7 @@
 #include "droidfirmware.h"
 #include "modulebuilder.h"
 #include "registerlabels.h"
+#include "globals.h"
 
 #include <QFileInfo>
 
@@ -252,8 +253,21 @@ bool Patch::needX7() const
 
 void Patch::collectUsedRegisterAtoms(RegisterList &sl) const
 {
+    // TODO: Mit iterator
     for (auto section: sections)
         section->collectRegisterAtoms(sl);
+}
+
+bool Patch::registerUsed(AtomRegister reg)
+{
+    for (auto &atom: *this) {
+        if (atom->isRegister()) {
+            AtomRegister *areg = (AtomRegister *)atom;
+            if (*areg == reg)
+                return true;
+        }
+    }
+    return false;
 }
 
 void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const

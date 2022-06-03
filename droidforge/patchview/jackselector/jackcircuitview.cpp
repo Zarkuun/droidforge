@@ -20,7 +20,7 @@ void JackCircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 {
     QRectF textrect(0, 0, JSEL_CIRCUIT_WIDTH, JSEL_CIRCUIT_TEXT_HEIGHT);
     painter->fillRect(boundingRect(), JSEL_COLOR_CIRCUIT_BACKGROUND);
-    painter->setPen(COLOR(COLOR_LINE));
+    painter->setPen(COLOR(JSEL_COLOR_LINE));
     painter->drawRect(boundingRect());
     painter->drawRect(textrect);
 

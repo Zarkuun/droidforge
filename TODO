@@ -19,6 +19,7 @@ KLEINERE FEATURES:
 - Bessere Grafiken für die Rackview (Skizzen?)
 - Rackview: Platz über und unter der Rackschienen weg.
 - Tasten um an den Anfang und ans Ende zu springen.
+- Esc soll das dragging jeder Art abbrechen
 
 BUGS:
 - Registerremapping: Wenn ich I remappe, muss ich auch für N

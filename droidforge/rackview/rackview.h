@@ -73,6 +73,7 @@ public slots:
 private slots:
     void askRemoveController(const QString moduleType, int controller);
     void purchaseController(QString name);
+    void findRegister(AtomRegister reg);
     void moveController(int oldindex, int newindex);
     void remapControls(QString moduleType, int controllerIndex);
     void editLabelling(QString moduleType, int controllerIndex);
@@ -80,6 +81,7 @@ private slots:
 signals:
     void registerClicked(AtomRegister ar);
     void patchModified();
+    void sectionSwitched();
 };
 
 #endif // RACKVIEW_H

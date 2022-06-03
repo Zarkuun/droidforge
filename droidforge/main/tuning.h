@@ -150,7 +150,7 @@
 #define CIRV_COLOR_CIRCUIT_NAME              QColor(250, 250, 250)
 #define CIRV_COLOR_COMMENT                   QColor(200, 200, 200)
 #define CIRV_COLOR_COMMENT_BACKGROUND        QColor(40, 40, 40)
-#define CIRV_COLOR_SELECTION                 QColor(255, 200, 50, 90)
+// #define CIRV_COLOR_SELECTION                 QColor(255, 200, 50, 90)
 
 // Circuit chooser (CICH)
 #define CICH_DIALOG_WIDTH                    890

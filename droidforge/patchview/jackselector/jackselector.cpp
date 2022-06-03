@@ -220,6 +220,7 @@ void JackSelector::moveCursorUpDown(int whence)
 
     selectCurrentJack(true);
     ensureVisible(currentJack(), JSEL_SCROLL_MARGIN, JSEL_SCROLL_MARGIN);
+    scene()->update();
 }
 
 void JackSelector::moveCursorLeftRight(int whence)

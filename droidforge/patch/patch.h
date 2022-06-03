@@ -61,6 +61,7 @@ public:
     bool needG8() const; // TODO: Do we need this?
     bool needX7() const; // TODO: Do we need this?
     void collectUsedRegisterAtoms(RegisterList &) const;
+    bool registerUsed(AtomRegister reg);
     void collectAvailableRegisterAtoms(RegisterList &) const;
     unsigned numProblems() const { return problems.count(); };
     unsigned numProblemsInSection(int i) const;
