@@ -25,11 +25,44 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Lines in general?"), list);
     item->setData(1, COLOR_LINE);
 
+    item = new QListWidgetItem(tr("Circuits: text"), list);
+    item->setData(1, CIRV_COLOR_TEXT);
+
     item = new QListWidgetItem(tr("Circuits: lines"), list);
     item->setData(1, CIRV_COLOR_LINE);
 
-    item = new QListWidgetItem(tr("Circuits: background"), list);
-    item->setData(1, CIRV_COLOR_BACKGROUND);
+    item = new QListWidgetItem(tr("Circuits: circuit name background"), list);
+    item->setData(1, CIRV_COLOR_CIRCUIT_NAME_BG);
+
+    item = new QListWidgetItem(tr("Circuits: atom background"), list);
+    item->setData(1, COLOR_CIRV_ATOM_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Circuits: input jack"), list);
+    item->setData(1, CIRV_COLOR_INPUT_JACK);
+
+    item = new QListWidgetItem(tr("Circuits: output jack"), list);
+    item->setData(1, CIRV_COLOR_OUTPUT_JACK);
+
+    item = new QListWidgetItem(tr("Circuits: unknown jack"), list);
+    item->setData(1, CIRV_COLOR_UNKNOWN_JACK);
+
+    item = new QListWidgetItem(tr("Circuits: input jack background"), list);
+    item->setData(1, CIRV_COLOR_INPUT_JACK_BG);
+
+    item = new QListWidgetItem(tr("Circuits: output jack background"), list);
+    item->setData(1, CIRV_COLOR_OUTPUT_JACK_BG);
+
+    item = new QListWidgetItem(tr("Circuits: unknown jack background"), list);
+    item->setData(1, CIRV_COLOR_UNKNOWN_JACK_BG);
+
+    item = new QListWidgetItem(tr("Circuits: disabled jack background"), list);
+    item->setData(1, CIRV_COLOR_DISABLED_JACK_BG);
+
+    item = new QListWidgetItem(tr("Circuits: + and *"), list);
+    item->setData(1, CIRV_COLOR_OPERATOR);
+
+    item = new QListWidgetItem(tr("Circuits: + and * background"), list);
+    item->setData(1, CIRV_COLOR_OPERATOR_BG);
 
     item = new QListWidgetItem(tr("Normal cursor"), list);
     item->setData(1, COLOR_CURSOR_NORMAL);
@@ -45,12 +78,6 @@ ColorScheme::ColorScheme(QWidget *parent)
 
     item = new QListWidgetItem(tr("Inactive cursor"), list);
     item->setData(1, COLOR_CURSOR_INACTIVE);
-
-    item = new QListWidgetItem(tr("Input jacks"), list);
-    item->setData(1, COLOR_JACK_INPUT);
-
-    item = new QListWidgetItem(tr("Output jacks"), list);
-    item->setData(1, COLOR_JACK_OUTPUT);
 
     item = new QListWidgetItem(tr("Rackview: register marker BG"), list);
     item->setData(1, RACV_REGMARKER_BACKGROUND);
@@ -95,6 +122,11 @@ void ColorScheme::setColor(int index, const QColor &color)
 {
     QString key = "color/" + QString::number(index);
     settings.setValue(key, color);
+}
+
+void ColorScheme::hideEvent(QHideEvent *)
+{
+    colorDialog->hide();
 }
 
 void ColorScheme::itemSelected(QListWidgetItem *item)

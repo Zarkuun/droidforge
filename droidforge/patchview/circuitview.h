@@ -36,7 +36,7 @@ public:
 
 private:
     void paintJacks(QPainter *painter);
-    void paintJack(QPainter *painter, JackAssignment *ja, const QColor color, unsigned row);
+    void paintJack(QPainter *painter, JackAssignment *ja, unsigned row);
     void paintOperator(QPainter *painter, unsigned x, unsigned y, QString o);
     QRectF headerRect() const;
     QRectF commentRect() const;

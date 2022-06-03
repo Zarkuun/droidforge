@@ -77,10 +77,10 @@ unsigned CircuitView::minimumWidth()
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     QRectF cr = contentRect();
-    painter->fillRect(cr, COLOR(CIRV_COLOR_BACKGROUND));
+    // painter->fillRect(cr, COLOR(CIRV_COLOR_BACKGROUND));
 
     // Icon and circuit name
-    painter->fillRect(headerRect(), CIRV_COLOR_CIRCUIT_NAME_BACKGROUND);
+    painter->fillRect(headerRect(), COLOR(CIRV_COLOR_CIRCUIT_NAME_BG));
     QRectF imageRect(headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
     painter->drawPixmap(imageRect.toRect(), icon);
     if (circuit->isDisabled())
@@ -145,22 +145,8 @@ QStringList CircuitView::usedJacks() const
 
 void CircuitView::paintJacks(QPainter *painter)
 {
-    painter->save();
-    for (qsizetype row=0; row<circuit->numJackAssignments(); row++) {
-        JackAssignment *ja = circuit->jackAssignment(row);
-        QColor textcolor;
-        if (ja->isDisabled())
-            textcolor = COLOR_TEXT_DISABLED;
-        else {
-            switch (ja->jackType()) {
-            case JACKTYPE_INPUT: textcolor = COLOR(COLOR_JACK_INPUT); break;
-            case JACKTYPE_OUTPUT: textcolor = COLOR(COLOR_JACK_OUTPUT); break;
-            default: textcolor = COLOR_JACK_UNKNOWN; break;
-            }
-        }
-        paintJack(painter, ja, textcolor, row);
-    }
-    painter->restore();
+    for (qsizetype row=0; row<circuit->numJackAssignments(); row++)
+        paintJack(painter, circuit->jackAssignment(row), row);
 }
 
 
@@ -172,36 +158,30 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
     int imageWidth = imageHeight * aspect;
     int imageTop = 4;
 
+    QRectF textRect(
+                rect.left() + CIRV_TEXT_SIDE_PADDING,
+                rect.y(),
+                rect.width() - 2 * CIRV_TEXT_SIDE_PADDING,
+                rect.height());
+
+    painter->fillRect(rect, COLOR(COLOR_CIRV_ATOM_BACKGROUND));
     painter->setPen(textcolor);
     painter->setPen(QColor(240, 240, 240));
 
     if (atom) {
         QString text(tr(atom->toDisplay().toLatin1()));
-        if (atom->isInvalid()) {
-            // const int offset = (CIRV_JACK_HEIGHT - CIRV_ICON_WIDTH) / 2;
-            QRectF textRect(
-                        rect.x(),
-                        rect.y(),
-                        rect.width() - CIRV_JACK_HEIGHT - CIRV_TEXT_SIDE_PADDING,
-                        rect.height());
-            if (textcolor != COLOR_TEXT_DISABLED)
-                painter->setPen(COLOR_TEXT_UNKNOWN);
-            painter->drawText(textRect, Qt::AlignVCenter, text);
+        QRectF r = textRect;
+        if (atom->isCable()) {
+            text = text.mid(1);
+            QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
+            const QImage *image = the_cable_colorizer->imageForCable(text);
+            if (isInput)
+                painter->drawImage(imageRect, *image);
+            else
+                painter->drawImage(imageRect, (*image).mirrored(true, false));
+            r = r.translated(imageWidth + STANDARD_SPACING, 0);
         }
-        else {
-            QRectF r = rect;
-            if (atom->isCable()) {
-                text = text.mid(1);
-                QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
-                const QImage *image = the_cable_colorizer->imageForCable(text);
-                if (isInput)
-                    painter->drawImage(imageRect, *image);
-                else
-                    painter->drawImage(imageRect, (*image).mirrored(true, false));
-                r = r.translated(imageWidth + STANDARD_SPACING, 0);
-            }
-            painter->drawText(r, Qt::AlignVCenter, text);
-        }
+        painter->drawText(r, Qt::AlignVCenter, text);
     }
 }
 
@@ -245,11 +225,32 @@ float CircuitView::operatorPosition(int o) const
     return columnPosition(1 + o) + columnWidth(1 + o);
 }
 
-void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor textcolor, unsigned row)
+void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
 {
     // CIRV_COLUMN 0: Name of the jack.
     QRectF jr = jackRect(row);
-    painter->setPen(textcolor);
+    QColor fgcolor, bgcolor;
+    if (ja->isDisabled()) {
+        fgcolor = COLOR_TEXT_DISABLED;
+        bgcolor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
+    }
+    if (ja->jackType() == JACKTYPE_INPUT) {
+        fgcolor = COLOR(CIRV_COLOR_INPUT_JACK);
+        bgcolor = COLOR(CIRV_COLOR_INPUT_JACK_BG);
+    }
+    else if (ja->jackType() == JACKTYPE_OUTPUT) {
+        fgcolor = COLOR(CIRV_COLOR_OUTPUT_JACK);
+        bgcolor = COLOR(CIRV_COLOR_OUTPUT_JACK_BG);
+    }
+    else {
+        fgcolor = COLOR(CIRV_COLOR_UNKNOWN_JACK);
+        bgcolor = COLOR(CIRV_COLOR_UNKNOWN_JACK_BG);
+    }
+
+    QColor textcolor = COLOR(CIRV_COLOR_TEXT);
+
+    painter->fillRect(jr, bgcolor);
+    painter->setPen(fgcolor);
     painter->drawText(
                 QRectF(jr.left() + CIRV_TEXT_SIDE_PADDING,
                       jr.top(),
@@ -262,14 +263,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
         JackAssignmentInput *jai = (JackAssignmentInput *)ja;
         for (int a=0; a<3; a++) {
             QRectF ar = atomRect(row, a+1);
-            paintAtom(painter,
-                      QRectF(ar.left() + CIRV_TEXT_SIDE_PADDING,
-                          ar.top(),
-                          ar.width() - 2 * CIRV_TEXT_SIDE_PADDING,
-                          ar.height()),
-                      textcolor,
-                      jai->getAtom(a),
-                      true);
+            paintAtom(painter, ar,  textcolor, jai->getAtom(a), true);
             if (*selection && (*selection)->atomSelected(circuitNumber, row, a+1))
                 painter->fillRect(ar, CIRV_COLOR_SELECTION);
         }
@@ -287,22 +281,16 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
 
     else { // JACKTYPE_OUTPUT
         QRectF ar = atomRect(row, 1);
-        QString text;
-        QRectF rect(columnPosition(1) + CIRV_TEXT_SIDE_PADDING,
-                   ar.top(),
-                   column123Width() - CIRV_TEXT_SIDE_PADDING,
-                   CIRV_JACK_HEIGHT);
         if (ja->jackType() == JACKTYPE_OUTPUT)
         {
             JackAssignmentOutput *jao = (JackAssignmentOutput *)ja;
-            paintAtom(painter, rect, textcolor, jao->getAtom(), false);
+            paintAtom(painter, ar, textcolor, jao->getAtom(), false);
         }
         else  // UNKNOWN
         {
             JackAssignmentUnknown *jau = (JackAssignmentUnknown *)ja;
-            text = jau->valueToString();
-            painter->setPen(COLOR_TEXT_UNKNOWN);
-            painter->drawText(rect, Qt::AlignVCenter, text);
+            AtomInvalid atom(jau->valueToString());
+            paintAtom(painter, ar, COLOR_TEXT_UNKNOWN, &atom, false);
         }
         if (*selection && (*selection)->atomSelected(circuitNumber, row, 1))
             painter->fillRect(ar, CIRV_COLOR_SELECTION);
@@ -320,10 +308,11 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, const QColor 
 void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QString o)
 {
     QRectF r(x, y, CIRV_COLUMN_OPERATOR_WIDTH, CIRV_JACK_HEIGHT);
-    painter->fillRect(r, CIRV_COLOR_OPERATOR_BACKGROUND);
+    painter->fillRect(r, COLOR(CIRV_COLOR_OPERATOR_BG));
     painter->save();
     const QFont &font = painter->font();
     painter->setFont(QFont(font.family(), font.pointSize() * 1.2));
+    painter->setPen(COLOR(CIRV_COLOR_OPERATOR));
     painter->drawText(r, o, Qt::AlignVCenter | Qt::AlignCenter);
     painter->restore();
 }

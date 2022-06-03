@@ -1088,17 +1088,12 @@ void PatchSectionView::clockTick()
 
         int dir;
 
-        if (cursorTop < visibleTop) {
+        if (cursorTop < visibleTop)
             dir = cursorTop - visibleTop;
-            shout << "muss hoch" << dir << zoomFactor;
-        }
-        else if (cursorBottom > visibleBottom) {
+        else if (cursorBottom > visibleBottom)
             dir = cursorBottom - visibleBottom;
-            shout << "muss runter" << dir << zoomFactor;
-        }
         else {
             dir = 0;
-            shout << "alles OK";
             needScrollbarAdaption = false;
         }
 
@@ -1108,7 +1103,7 @@ void PatchSectionView::clockTick()
         else if (pos == verticalScrollBar()->maximum() && dir > 0)
             needScrollbarAdaption = false;
         else if (dir) {
-            float moveBy = dir * zoomFactor * 0.2;
+            float moveBy = dir * zoomFactor * PSV_SCROLL_SPEED;
             if (moveBy > 0 && moveBy < 1)
                 moveBy = 1;
             else if (moveBy < 0 && moveBy > -1)
@@ -1117,7 +1112,6 @@ void PatchSectionView::clockTick()
             pos += moveBy;
             verticalScrollBar()->setValue(pos);
             scene()->update();
-            return;
         }
     }
 }
@@ -1126,7 +1120,7 @@ void PatchSectionView::clockTick()
 // cursor position in the current section
 void PatchSectionView::updateCursor()
 {
-    if (currentCircuitView()) {
+    if (currentCircuit()) {
         const CursorPosition &pos = section()->cursorPosition();
 
         if (currentCircuit()->isDisabled() ||

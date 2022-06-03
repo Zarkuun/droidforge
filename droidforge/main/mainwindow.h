@@ -89,8 +89,9 @@ private:
     void updateWindowTitle();
     void repaintPatchView();
     void createStatusBar();
-
     void updateStatusbarMessage();
+    void setLastFilePath(const QString &path);
+
 private slots:
     void modifyPatch();
     void cursorMoved();

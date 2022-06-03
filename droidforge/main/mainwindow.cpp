@@ -23,7 +23,7 @@
 
 MainWindow *the_forge;
 
-MainWindow::MainWindow(PatchEditEngine *patch, const QString &initialFilename)
+MainWindow::MainWindow(PatchEditEngine *patch, const QString &iniFileName)
     : QMainWindow()
     , PatchOperator(patch)
     , editorActions(patch)
@@ -32,7 +32,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &initialFilename)
     , patchSectionManager(patch)
     , cableStatusIndicator(patch)
     , patchProblemIndicator(patch)
-    , initialFilename(initialFilename)
+    , initialFilename(iniFileName) // from argv
 {
     the_forge = this;
 
@@ -66,6 +66,9 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &initialFilename)
     createToolbar();
     createStatusBar();
     connectActions();
+
+    if (initialFilename == "" && settings.contains("lastfile"))
+        initialFilename = settings.value("lastfile").toString();
 
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [&] () {loadFile(initialFilename, FILE_MODE_LOAD);});
@@ -421,8 +424,10 @@ void MainWindow::open()
         return;
 
     QString filePath = QFileDialog::getOpenFileName(this);
-    if (!filePath.isEmpty())
+    if (!filePath.isEmpty()) {
         loadFile(filePath, FILE_MODE_LOAD);
+        setLastFilePath(filePath);
+    }
 }
 
 void MainWindow::integrate()
@@ -454,6 +459,7 @@ void MainWindow::saveAs()
         filePath = newFilePath;
         emit patchModified(); // mod flag
         addToRecentFiles(newFilePath);
+        setLastFilePath(newFilePath);
     }
 }
 
@@ -555,6 +561,12 @@ void MainWindow::updateStatusbarMessage()
         statusbar->showMessage(message);
     else
         statusbar->clearMessage();
+}
+
+void MainWindow::setLastFilePath(const QString &path)
+{
+    QSettings settings;
+    settings.setValue("lastfile", path);
 }
 
 void MainWindow::cursorMoved()

@@ -127,6 +127,8 @@
 
 // Patch section view
 #define CURSOR_VISIBILITY_MARGIN             30
+#define PSV_SCROLL_SPEED                     0.2
+
 // Circuit view (in section view)
 #define CIRV_TOP_PADDING                     (2 * STANDARD_SPACING)
 #define CIRV_BOTTOM_PADDING                  CIRV_TOP_PADDING
@@ -142,11 +144,10 @@
 #define CIRV_COLUMN_ATOM_MINIMUM_WIDTH       80
 #define CIRV_COLUMN_OPERATOR_WIDTH           20
 // #define CIRV_COLOR_LINE                      QColor(0, 0, 0, 96)
-#define CIRV_COLOR_OPERATOR                  QColor(255, 255, 255)
-#define CIRV_COLOR_OPERATOR_BACKGROUND       QColor(60, 60, 60)
+// #define CIRV_COLOR_OPERATOR                  QColor(255, 255, 255)
+// #define CIRV_COLOR_OPERATOR_BACKGROUND       QColor(60, 60, 60)
 // #define CIRV_COLOR_BACKGROUND                QColor(40, 40, 40, 160)
 #define CIRV_COLOR_CIRCUIT_NAME              QColor(250, 250, 250)
-#define CIRV_COLOR_CIRCUIT_NAME_BACKGROUND   QColor(60, 60, 60, 128)
 #define CIRV_COLOR_COMMENT                   QColor(200, 200, 200)
 #define CIRV_COLOR_COMMENT_BACKGROUND        QColor(40, 40, 40)
 #define CIRV_COLOR_SELECTION                 QColor(255, 200, 50, 90)
