@@ -3,12 +3,10 @@ GROSSE THEMEN:
 - Deploy (MIDI, SD-Karte)
 
 KLEINERE FEATURE:
-- Controlls mit der Maus rumschieben, um sie zu vertauschen
+- %d -> Duplicate. Diese Reihe von Buttons, LEDs
 - Sektionen per Drag-Drop vertauschen
 - Module per Drag-Drop vertauschen
 - View source code (oder open source code in text editor)
-- %a -> Alles auswählen
-- %d -> Duplicate. Diese Reihe von Buttons, LEDs
 - Tasten, mit eer man die LEDs an die Buttons angleichen kann.
 - Eine Wwarnung oder irgendwas, wenn man buttons aber keine
   LEDs hat. Mit Klicken, dass es automatisch repariert wird.

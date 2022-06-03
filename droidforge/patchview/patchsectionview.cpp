@@ -83,6 +83,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
     CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_SELECT_ALL, &PatchSectionView::selectAll);
     CONNECT_ACTION(ACTION_DISABLE, &PatchSectionView::disableObjects);
     CONNECT_ACTION(ACTION_ENABLE, &PatchSectionView::enableObjects);
     CONNECT_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, &PatchSectionView::createSectionFromSelection);
@@ -439,6 +440,12 @@ void PatchSectionView::pasteSmart()
     section()->setCursor(CursorPosition(position, -2, 0));
     patch->commit(tr("smart pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
+}
+
+void PatchSectionView::selectAll()
+{
+    section()->selectAll();
+    emit selectionChanged();
 }
 
 void PatchSectionView::disableObjects()
@@ -1138,37 +1145,38 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
 
 void PatchSectionView::deleteCursorOrSelection()
 {
-    const Selection *selection = section()->getSelection();
-    if (selection) {
+    if (section()->getSelection()) {
+        Selection selection = *section()->getSelection();
+        clearSelection();
+
         // When just a single object is selected, we can use
         // the existing functions for deleting at the cursor position
-        if (selection->isCommentSelection())
+        if (selection.isCommentSelection())
             deleteCurrentComment(); // cursor must be in selection
-        else if (selection->isSingleCircuitSelection())
+        else if (selection.isSingleCircuitSelection())
             deleteCurrentCircuit();
-        else if (selection->isSingleJackSelection())
+        else if (selection.isSingleJackSelection())
             deleteCurrentJack();
-        else if (selection->isSingleAtomSelection())
+        else if (selection.isSingleAtomSelection())
             deleteCurrentAtom();
 
         // Multiple selection
-        else if (selection->isCircuitSelection())
-            deleteMultipleCircuits(selection->fromPos().circuitNr,
-                           selection->toPos().circuitNr);
-        else if (selection->isJackSelection())
-            deleteMultipleJacks(selection->fromPos().circuitNr,
-                                selection->fromPos().row,
-                                selection->toPos().row);
-        else if (selection->isAtomSelection())
-            deleteMultipleAtoms(selection->fromPos().circuitNr,
-                                selection->fromPos().row,
-                                selection->fromPos().column,
-                                selection->toPos().column);
+        else if (selection.isCircuitSelection())
+            deleteMultipleCircuits(selection.fromPos().circuitNr,
+                           selection.toPos().circuitNr);
+        else if (selection.isJackSelection())
+            deleteMultipleJacks(selection.fromPos().circuitNr,
+                                selection.fromPos().row,
+                                selection.toPos().row);
+        else if (selection.isAtomSelection())
+            deleteMultipleAtoms(selection.fromPos().circuitNr,
+                                selection.fromPos().row,
+                                selection.fromPos().column,
+                                selection.toPos().column);
     }
     else {
         deleteCurrentRow();
     }
-    clearSelection();
 }
 
 

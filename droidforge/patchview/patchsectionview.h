@@ -112,8 +112,8 @@ private:
     void clickOnInfoMarker(const InfoMarker *info);
     void editJackCommentAt(const CursorPosition &pos);
     void clearSelection();
-
     void enableDisableObjects(bool enable);
+
 public slots:
     void modifyPatch();
     void changeSelection();
@@ -130,6 +130,7 @@ public slots:
     void copy();
     void paste();
     void pasteSmart();
+    void selectAll();
     void disableObjects();
     void enableObjects();
     void createSectionFromSelection();

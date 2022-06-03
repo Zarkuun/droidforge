@@ -252,6 +252,18 @@ void PatchSection::clearSelection()
     }
 }
 
+void PatchSection::selectAll()
+{
+    if (selection)
+        delete selection;
+    if (isEmpty())
+        return;
+
+    CursorPosition start(0, 0, 0);
+    CursorPosition end(circuits.count()-1, 0, 0);
+    selection = new Selection(start, end);
+}
+
 void PatchSection::setMouseSelection(const CursorPosition &to)
 {
     if (selection)

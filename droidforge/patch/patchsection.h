@@ -49,6 +49,7 @@ public:
     const Selection * const *getSelectionPointer() const { return &selection; };
     Patch *getSelectionAsPatch() const;
     void clearSelection();
+    void selectAll();
     void setMouseSelection(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
 

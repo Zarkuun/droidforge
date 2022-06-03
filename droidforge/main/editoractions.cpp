@@ -218,6 +218,10 @@ void EditorActions::createActions()
                                  "in order to avoid conflicts."));
     actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
 
+    actions[ACTION_SELECT_ALL] = new QAction(tr("Select all"), this);
+    actions[ACTION_SELECT_ALL]->setShortcut(QKeySequence(tr("Ctrl+A")));
+    actions[ACTION_SELECT_ALL]->setStatusTip(tr("Select all circuits in the current section"));
+
     actions[ACTION_DISABLE] = new QAction(tr("&Disable"), this);
     actions[ACTION_DISABLE]->setShortcut(QKeySequence(tr("#")));
 
