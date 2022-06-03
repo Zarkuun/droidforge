@@ -6,6 +6,6 @@
 
 // Variant of tr for contexts without an QObject
 #define TR(s) QCoreApplication::translate("Patch", s)
-#define SHOUT qDebug()
+#define shout qDebug()
 
 #endif // GLOBALS_H

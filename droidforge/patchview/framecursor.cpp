@@ -1,6 +1,7 @@
 #include "framecursor.h"
 #include "tuning.h"
 #include "colorscheme.h"
+#include "globals.h"
 
 #include <QPen>
 
@@ -15,7 +16,6 @@ FrameCursor::FrameCursor()
     animation.setKeyValueAt(0.1, 1.0);
     animation.setKeyValueAt(1, 0.0);
     animation.setEasingCurve(QEasingCurve::OutQuad);
-    // animation->setTargetObject(this);
 }
 
 FrameCursor::~FrameCursor()
@@ -55,7 +55,10 @@ void FrameCursor::setanimationPhase(float newAnimationPhase)
 
 void FrameCursor::startAnimation()
 {
-    setanimationPhase(0.0);
-    animation.setCurrentTime(0);
-    animation.start();
+    if (lastRect != boundingRect()) {
+        setanimationPhase(0.0);
+        animation.setCurrentTime(0);
+        animation.start();
+        lastRect = boundingRect();
+    }
 }

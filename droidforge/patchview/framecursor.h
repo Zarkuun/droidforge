@@ -20,6 +20,7 @@ class FrameCursor : public QObject, public QGraphicsRectItem
     float animationPhase; // TODO: Do I need this?
     QPropertyAnimation animation;
     cursor_mode_t mode;
+    QRectF lastRect;
 
 public:
     FrameCursor();
