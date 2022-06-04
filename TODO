@@ -4,6 +4,7 @@ GROSSE THEMEN:
 - Button -> LED Warnung oder sowas
 --> Finally: Deploy (MIDI, SD-Karte)
 
+
 KLEINERE FEATURES:
 - Find register in patch: Doppeldinger anzeigen: Bei B auch L, Bei I auch N.
 - Sektionen per Drag-Drop vertauschen
@@ -18,6 +19,9 @@ KLEINERE FEATURES:
 - Bessere Grafiken für die Rackview (Skizzen?)
 - Tasten um an den Anfang und ans Ende zu springen.
 - Esc soll das dragging jeder Art abbrechen
+- Jacks mit Lookuptabellen. z.B. Tonarten 1-12. Dazu macht man in der
+  Doku eine Tabelle. Und im AtomSelector kann man dann beim Numberdingens
+  diese direkt auswählen.
 
 BUGS:
 - Registerremapping: Wenn ich I remappe, muss ich auch für N

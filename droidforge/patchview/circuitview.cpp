@@ -1,5 +1,6 @@
 #include "circuitview.h"
 #include "colorscheme.h"
+#include "globals.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
@@ -84,7 +85,7 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     QRectF imageRect(headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
     painter->drawPixmap(imageRect.toRect(), icon);
     if (circuit->isDisabled())
-        painter->fillRect(imageRect, QColor(80, 80, 80, 160));
+        painter->fillRect(imageRect, QColor(80, 80, 80, 160)); // TODO: COLOR MAKRO
     painter->setPen(circuit->isDisabled() ? COLOR_TEXT_DISABLED : CIRV_COLOR_CIRCUIT_NAME);
     painter->drawText(
                 QRectF(headerRect().left() + CIRV_HEADER_HEIGHT + CIRV_ICON_MARGIN,
@@ -166,7 +167,6 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
 
     painter->fillRect(rect, COLOR(COLOR_CIRV_ATOM_BACKGROUND));
     painter->setPen(textcolor);
-    painter->setPen(QColor(240, 240, 240));
 
     if (atom) {
         QString text(tr(atom->toDisplay().toLatin1()));
@@ -229,28 +229,30 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
 {
     // CIRV_COLUMN 0: Name of the jack.
     QRectF jr = jackRect(row);
-    QColor fgcolor, bgcolor;
+    QColor jackFgColor, jackBgColor, atomColor;
+    atomColor = COLOR(CIRV_COLOR_TEXT);
+
     if (ja->isDisabled()) {
-        fgcolor = COLOR_TEXT_DISABLED;
-        bgcolor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
+        jackFgColor = COLOR(CIRV_COLOR_DISABLED_TEXT);
+        atomColor = jackFgColor;
+        jackBgColor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
     }
-    if (ja->jackType() == JACKTYPE_INPUT) {
-        fgcolor = COLOR(CIRV_COLOR_INPUT_JACK);
-        bgcolor = COLOR(CIRV_COLOR_INPUT_JACK_BG);
+    else if (ja->jackType() == JACKTYPE_INPUT) {
+        jackFgColor = COLOR(CIRV_COLOR_INPUT_JACK);
+        jackBgColor = COLOR(CIRV_COLOR_INPUT_JACK_BG);
     }
     else if (ja->jackType() == JACKTYPE_OUTPUT) {
-        fgcolor = COLOR(CIRV_COLOR_OUTPUT_JACK);
-        bgcolor = COLOR(CIRV_COLOR_OUTPUT_JACK_BG);
+        jackFgColor = COLOR(CIRV_COLOR_OUTPUT_JACK);
+        jackBgColor = COLOR(CIRV_COLOR_OUTPUT_JACK_BG);
     }
     else {
-        fgcolor = COLOR(CIRV_COLOR_UNKNOWN_JACK);
-        bgcolor = COLOR(CIRV_COLOR_UNKNOWN_JACK_BG);
+        atomColor = COLOR(CIRV_COLOR_DISABLED_TEXT);
+        jackFgColor = COLOR(CIRV_COLOR_UNKNOWN_JACK);
+        jackBgColor = COLOR(CIRV_COLOR_UNKNOWN_JACK_BG);
     }
 
-    QColor textcolor = COLOR(CIRV_COLOR_TEXT);
-
-    painter->fillRect(jr, bgcolor);
-    painter->setPen(fgcolor);
+    painter->fillRect(jr, jackBgColor);
+    painter->setPen(jackFgColor);
     painter->drawText(
                 QRectF(jr.left() + CIRV_TEXT_SIDE_PADDING,
                       jr.top(),
@@ -263,13 +265,13 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
         JackAssignmentInput *jai = (JackAssignmentInput *)ja;
         for (int a=0; a<3; a++) {
             QRectF ar = atomRect(row, a+1);
-            paintAtom(painter, ar,  textcolor, jai->getAtom(a), true);
+            paintAtom(painter, ar,  atomColor, jai->getAtom(a), true);
             if (*selection && (*selection)->atomSelected(circuitNumber, row, a+1))
                 painter->fillRect(ar, COLOR(CIRV_COLOR_SELECTION));
         }
 
         QRectF ar = atomRect(row, 1);
-        painter->setPen(textcolor);
+        painter->setPen(jackFgColor);
         paintOperator(painter, operatorPosition(0), ar.top(), "✱");
         paintOperator(painter, operatorPosition(1), ar.top(), "+");
         painter->setPen(COLOR(CIRV_COLOR_LINE));
@@ -284,13 +286,13 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
         if (ja->jackType() == JACKTYPE_OUTPUT)
         {
             JackAssignmentOutput *jao = (JackAssignmentOutput *)ja;
-            paintAtom(painter, ar, textcolor, jao->getAtom(), false);
+            paintAtom(painter, ar, atomColor, jao->getAtom(), false);
         }
         else  // UNKNOWN
         {
             JackAssignmentUnknown *jau = (JackAssignmentUnknown *)ja;
             AtomInvalid atom(jau->valueToString());
-            paintAtom(painter, ar, COLOR_TEXT_UNKNOWN, &atom, false);
+            paintAtom(painter, ar, atomColor, &atom, false);
         }
         if (*selection && (*selection)->atomSelected(circuitNumber, row, 1))
             painter->fillRect(ar, COLOR(CIRV_COLOR_SELECTION));

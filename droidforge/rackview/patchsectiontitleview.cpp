@@ -1,4 +1,5 @@
 #include "patchsectiontitleview.h"
+#include "colorscheme.h"
 #include "tuning.h"
 #include "globals.h"
 
@@ -23,7 +24,7 @@ QRectF PatchSectionTitleView::boundingRect() const
 
 void PatchSectionTitleView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    painter->fillRect(boundingRect(), PSM_COLOR_SECTION_BACKGROUND);
+    painter->fillRect(boundingRect(), COLOR(PSM_COLOR_SECTION_BACKGROUND));
     QRectF textRect(PSM_TEXT_PADDING, 0, width - 2 * PSM_TEXT_PADDING, PSM_SECTION_HEIGHT);
     painter->drawText(textRect, Qt::AlignVCenter, title);
     if (problems) {

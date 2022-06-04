@@ -126,7 +126,7 @@
 #define PSM_TOP_PADDING                      (STANDARD_SPACING / 2)
 #define PSM_VERTICAL_DISATNCE                (STANDARD_SPACING / 2)
 #define PSM_SECTION_HEIGHT                   20
-#define PSM_COLOR_SECTION_BACKGROUND         QColor(40, 40, 40)
+// #define PSM_COLOR_SECTION_BACKGROUND         QColor(40, 40, 40)
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
 #define PSM_IMAGE_MARGIN                     4
 

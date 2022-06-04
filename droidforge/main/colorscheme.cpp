@@ -35,6 +35,9 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Circuits: text"), list);
     item->setData(1, CIRV_COLOR_TEXT);
 
+    item = new QListWidgetItem(tr("Circuits: text (disabled)"), list);
+    item->setData(1, CIRV_COLOR_DISABLED_TEXT);
+
     item = new QListWidgetItem(tr("Circuits: lines"), list);
     item->setData(1, CIRV_COLOR_LINE);
 
@@ -112,6 +115,9 @@ ColorScheme::ColorScheme(QWidget *parent)
 
     item = new QListWidgetItem(tr("Jack selector: frame color"), list);
     item->setData(1, JSEL_COLOR_LINE);
+
+    item = new QListWidgetItem(tr("Section manager: title background"), list);
+    item->setData(1, PSM_COLOR_SECTION_BACKGROUND);
 
     colorDialog = new QColorDialog(this);
     colorDialog->setOption(QColorDialog::ShowAlphaChannel);

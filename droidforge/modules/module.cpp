@@ -94,10 +94,24 @@ void Module::paintRegisterLabels(QPainter *painter)
 
 void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const RegisterLabel &label)
 {
+    QString text = label.shorthand;
+    if (text == "")
+        text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
+    text = text.toUpper();
+
     // TODO: move to tuning.h
     static const float fontSizes[MAX_LENGTH_SHORTHAND + 1] = { 99.9, 1.5, 1.1, 0.8, 0.64, 0.50 };
 
     QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()), 1);
+    QFont font;
+    font.setPixelSize(100);
+    QFontMetrics fm(font);
+    QString testText = text;
+    if (text.size() == 1)
+        testText = "XX";
+    int refWidth = fm.horizontalAdvance(testText);
+    float scale = r.width() / refWidth;
+    font.setPixelSize(100 * scale);
 
     if (labelNeedsBackground(atom.getRegisterType(), atom.getNumber())) {
         painter->save();
@@ -107,12 +121,7 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
         painter->restore();
     }
 
-    QString text = label.shorthand;
-    if (text == "")
-        text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
-
-    QFont font;
-    font.setPixelSize(RACV_PIXEL_PER_HP * fontSizes[text.size()] * r.width() / 130 );
+    // font.setPixelSize(RACV_PIXEL_PER_HP * fontSizes[text.size()] * r.width() / 130 );
     painter->setFont(font);
 
     painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
