@@ -87,7 +87,6 @@ void PatchParser::parseCommentLine(QString line)
 {
     QString comment = line.mid(1).trimmed();
     static QRegularExpression disabledJackLine("^[a-zA-z]+([1-9][0-9]*)?[[:space:]]*=.*");
-    shout << line;
 
     if (comment.startsWith("[")) {
         parseCircuitLine(comment, true);
@@ -96,7 +95,6 @@ void PatchParser::parseCommentLine(QString line)
 
     QRegularExpressionMatch m = disabledJackLine.match(comment);
     if (m.hasMatch()) {
-        shout << "DAS IST DISABLED" << comment;
         parseJackLine(circuit, comment, true /* disabled */);
         return;
     }
@@ -136,7 +134,6 @@ void PatchParser::parseCommentLine(QString line)
 
 bool PatchParser::maybeParseRegisterComment(QString comment)
 {
-    shout << "Probiere" << comment;
     // Examples:
     // I1: [CLK] optional external clock
     // P2.4: This is a comment without short

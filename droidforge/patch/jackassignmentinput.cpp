@@ -192,10 +192,15 @@ void JackAssignmentInput::findCableConnections(const QString &cable, int &asInpu
 }
 
 
+// TODO: Kann man da nicht saubere REGEXe für die drei verschiedenen Arten
+// von Atom machen? Zahlen, Register, Kabel. Und dann das hier sauber verschachteln.
+// das mit dem [^*/+-] scheint mir ein ziemlich wackliger hack zu sein.
 #define RATOMA "[^*/+-]+"
 #define RATOMB "-[0-9][^*/+-]+"
 #define RATOM "(" RATOMA "|" RATOMB ")"
 #define RNUMBER "(-?([0-9]+[.])?[0-9]+)"
+
+// TODO: -1*_postfader_input_tb+1 geht nicht
 
 void JackAssignmentInput::parseInputExpression(QString, QString valueString)
 {
@@ -244,8 +249,9 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
         c = "-" + m.captured(3);
     }
     else if ((m = form6.match(value)).hasMatch()) {
-        a = m.captured(1);
-        c = "-" + m.captured(2);
+        a = "-1";
+        b = m.captured(2);
+        c = m.captured(1);
     }
     else {
         // Forms with A / B are special, because B must be
