@@ -1,4 +1,5 @@
 #include "rackview.h"
+#include "colorscheme.h"
 #include "controllerlabellingdialog.h"
 #include "mainwindow.h"
 #include "modulebuilder.h"
@@ -29,9 +30,9 @@ RackView::RackView(PatchEditEngine *patch)
     QGraphicsScene *thescene = new QGraphicsScene();
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(thescene);
-    QPixmap background(":images/rackbackground.png");
-    QBrush brush(background.scaledToHeight(RACV_BACKGROUND_HEIGHT)); //kheight() * 50));
-    scene()->setBackgroundBrush(brush);
+    // QPixmap background(":images/background.png");
+    // QBrush brush(background.scaledToHeight(1200));
+    scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
     setMouseTracking(true);
     initScene();
 
@@ -49,6 +50,7 @@ RackView::RackView(PatchEditEngine *patch)
 
 void RackView::modifyPatch()
 {
+    scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
     refreshModules();
     updateRegisterHilites();
 }
@@ -268,8 +270,6 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
            menu->addAction(tr("Move used controls and LEDs to other controllers"),
                            this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
    }
-   if (!menu->isEmpty())
-       menu->addSeparator();
 
    menu->addAction(the_forge->icon("assignment"), tr("Edit labelling of controls"), this,
                    [this,controllerIndex,moduleType] () {this->editLabelling(moduleType, controllerIndex); });
@@ -418,10 +418,17 @@ void RackView::refreshModules()
     // if (patch->needX7())
         addModule("x7");
     // addModule("blind");
-    x += 200;
+    x += RACV_CONTROLLER_GAP;
 
     for (qsizetype i=0; i<patch->numControllers(); i++)
         addModule(patch->controller(i), i);
+
+    QPointF margin(RACV_MAIN_MARGIN, RACV_MAIN_MARGIN);
+    QRectF bounding(
+                modules.first()->boundingRect().topLeft() - margin,
+                modules.last()->boundingRect().bottomRight());
+    scene()->setSceneRect(bounding);
+    ensureVisible(bounding);
 }
 
 void RackView::initScene()
@@ -433,7 +440,7 @@ void RackView::initScene()
     scene()->addItem(dragRegisterIndicator);
 
     // Add strut, so space above and below the modules is visible
-    scene()->addLine(0, 0, 0, RACV_BACKGROUND_HEIGHT, QPen(QColor(0, 0, 0, 0)));
+    // scene()->addLine(0, 0, 0, RACV_BACKGROUND_HEIGHT, QPen(QColor(0, 0, 0, 0)));
     // TODO: kann man das nicht mit setSceneRect() besser machen?
     refreshModules();
     updateSize();
@@ -452,7 +459,7 @@ void RackView::addModule(const QString &name, int controllerIndex)
     modules.append(module);
     if (controllerIndex >= 0)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
-    module->setPos(x, RACV_TOP_MARGIN);
+    module->setPos(x, 0); //RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;
 }
 
@@ -478,20 +485,23 @@ void RackView::updateRegisterHilites()
     if (!circuit)
         return;
 
-    RegisterList registers;
+    RegisterList currentRegisters;
     CursorPosition cursor = section()->cursorPosition();
     if (cursor.row == -2 || cursor.row == -1) // Circuit selected
-        circuit->collectRegisterAtoms(registers);
+        circuit->collectRegisterAtoms(currentRegisters);
     else {
         const JackAssignment *ja = circuit->jackAssignment(cursor.row);
         if (cursor.column == 0)
-            ja->collectRegisterAtoms(registers);
+            ja->collectRegisterAtoms(currentRegisters);
         else {
             const Atom *atom = ja->atomAt(cursor.column);
             if (atom && atom->isRegister())
-                registers.append(*(AtomRegister *)atom);
+                currentRegisters.append(*(AtomRegister *)atom);
         }
     }
+
+    RegisterList usedRegisters;
+    patch->collectUsedRegisterAtoms(usedRegisters);
 
     for (auto module: modules) {
         unsigned controller = 0;
@@ -499,12 +509,15 @@ void RackView::updateRegisterHilites()
             controller = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
 
         module->clearHilites();
-        for (qsizetype r=0; r<registers.count(); r++)
+        for (auto ar: usedRegisters)
         {
-            AtomRegister ar = registers[r];
             if (ar.getController() == controller)
-                module->hiliteRegisters(true, ar.getRegisterType(), ar.getNumber());
-            // TODO: Hilite inputs/ouputs
+                module->hiliteRegisters(1, ar.getRegisterType(), ar.getNumber());
+        }
+        for (auto ar: currentRegisters)
+        {
+            if (ar.getController() == controller)
+                module->hiliteRegisters(2, ar.getRegisterType(), ar.getNumber());
         }
         module->update();
     }

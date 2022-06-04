@@ -15,6 +15,7 @@ class ControllerLabellingDialog : public Dialog
     QString controllerType;
     unsigned controllerNumber; // e.g. 2 for B2.4
     int currentRow;
+    unsigned numColumns;
     QGridLayout *mainLayout;
     QList<RegisterLabelWidget *> labelWidgets;
 

@@ -103,6 +103,7 @@ void CircuitCollection::updateSearch(QString text)
     circuits.clear();
     backgroundRect = 0;
     loadCircuitCategory("", text);
+    selectedCircuit = qMin(selectedCircuit, circuits.size() - 1);
     initBackgroundRect(numCircuits);
     update();
 }
@@ -193,7 +194,7 @@ CircuitInfoView *CircuitCollection::currentCircuit()
     if (circuits.empty())
         return 0;
     else
-        return circuits[selectedCircuit];
+        return circuits[qMax(0, qMin(selectedCircuit, circuits.size()-1))];
 }
 
 void CircuitCollection::chooseCurrentCircuit()

@@ -153,6 +153,8 @@ void MainWindow::closeEvent(QCloseEvent *)
     QSettings settings;
     settings.setValue("mainwindow/position", pos());
     settings.setValue("mainwindow/size", size());
+
+    QApplication::exit(0);
 }
 
 void MainWindow::loadFile(const QString &filePath, int how)

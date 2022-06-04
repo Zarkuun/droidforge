@@ -1,5 +1,6 @@
 #include "droidfirmware.h"
 #include "circuitchoosedialog.h"
+#include "globals.h"
 #include "registertypes.h"
 
 #include <QFile>
@@ -33,6 +34,9 @@ bool DroidFirmware::circuitExists(QString circuit) const
 
 bool DroidFirmware::jackIsInput(QString circuit, QString jack) const
 {
+    // TODO: Wenn ein jack als input und output vorkommt,
+    // aber in einem als array, dann klappt die Erkennung
+    // hier nicht gut genug!
     QJsonValue jackinfo = findJack(circuit, "inputs", jack);
     return !jackinfo.isNull();
 }
@@ -45,10 +49,13 @@ bool DroidFirmware::jackIsOutput(QString circuit, QString jack) const
 }
 
 
-unsigned DroidFirmware::jackArraySize(QString circuit, QString jack) const
+unsigned DroidFirmware::jackArraySize(QString circuit, QString jack, bool isInput) const
 {
-    QJsonValue jackinfo = findJackArray(circuit, "inputs", jack);
-    if (jackinfo.isNull())
+    QJsonValue jackinfo;
+
+    if (isInput)
+        jackinfo = findJackArray(circuit, "inputs", jack);
+    else
         jackinfo = findJackArray(circuit, "outputs", jack);
     if (jackinfo.isNull())
         return 0;

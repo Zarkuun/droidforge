@@ -1,5 +1,6 @@
 #include "jackview.h"
 #include "colorscheme.h"
+#include "globals.h"
 #include "tuning.h"
 #include "droidfirmware.h"
 
@@ -16,7 +17,7 @@ JackView::JackView(QString circuit, QString jack, const QStringList *usedJacks, 
     else if (onlyType == JACKTYPE_OUTPUT && isInput)
         allowedByOnlyType = false;
 
-    arraySize = the_firmware->jackArraySize(circuit, jack);
+    arraySize = the_firmware->jackArraySize(circuit, jack, isInput);
     if (isArray()) {
         active = false;
         for (qsizetype i=0; i<arraySize; i++) {

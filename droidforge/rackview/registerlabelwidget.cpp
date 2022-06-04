@@ -30,6 +30,8 @@ RegisterLabelWidget::RegisterLabelWidget(AtomRegister atom, const QString shortL
     lineEditDescription->setText(longLabel);
     lineEditDescription->setPlaceholderText(tr("full description"));
     layout->addWidget(lineEditDescription, 1, 0, 1, 2);
+
+    setMinimumWidth(RLD_MINIMUM_LABEL_WIDTH);
 }
 
 void RegisterLabelWidget::updateLabels(RegisterLabels &labels)

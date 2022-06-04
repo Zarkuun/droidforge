@@ -103,7 +103,11 @@ void CircuitChooseDialog::keyPressEvent(QKeyEvent *event)
         lineEditSearch->backspace();
     else
         QDialog::keyPressEvent(event);
+}
 
+void CircuitChooseDialog::showEvent(QShowEvent *)
+{
+    lineEditSearch->selectAll();
 }
 
 void CircuitChooseDialog::accept()

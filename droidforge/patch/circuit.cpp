@@ -55,7 +55,6 @@ void Circuit::sortJacks()
 
 void Circuit::sortJacksFromTo(int fromRow, int toRow)
 {
-    shout << "sortiere" << name << "from" << fromRow << "to" << toRow;
     // Bubble sort rulez
     bool sorted = false;
     while (!sorted) {

@@ -7,6 +7,7 @@ ColorScheme *the_colorscheme = 0;
 #include <QSettings>
 #include <QColorDialog>
 
+
 ColorScheme::ColorScheme(QWidget *parent)
     : Dialog{"colorscheme", parent}
 {
@@ -22,6 +23,12 @@ ColorScheme::ColorScheme(QWidget *parent)
     QListWidget *list = new QListWidget(this);
     mainLayout->addWidget(list, 0, 0);
     QListWidgetItem *item;
+    item = new QListWidgetItem(tr("Patch background"), list);
+    item->setData(1, COLOR_PATCH_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Rack background"), list);
+    item->setData(1, COLOR_RACK_BACKGROUND);
+
     item = new QListWidgetItem(tr("Lines in general?"), list);
     item->setData(1, COLOR_LINE);
 

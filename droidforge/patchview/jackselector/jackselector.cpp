@@ -1,4 +1,5 @@
 #include "jackselector.h"
+#include "globals.h"
 #include "jackcircuitview.h"
 #include "tuning.h"
 #include "jackview.h"

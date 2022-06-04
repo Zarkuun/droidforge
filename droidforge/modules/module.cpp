@@ -6,7 +6,7 @@
 
 Module::Module(const QString &faceplate)
     : faceplateImage(":images/faceplates/" + faceplate)
-    , registerIsHilited{{0}}
+    , registerHilite{{0}}
     , registerLabels(0)
 {
 }
@@ -30,7 +30,7 @@ unsigned Module::controllerNumber() const
 
 void Module::clearHilites()
 {
-    memset(&registerIsHilited, 0, sizeof(registerIsHilited));
+    memset(&registerHilite, 0, sizeof(registerHilite));
 }
 
 QRectF Module::boundingRect() const
@@ -52,20 +52,20 @@ void Module::paintRegisterHilites(QPainter *painter)
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         QChar type = register_types[i];
         for (unsigned j=0; j<numRegisters(type); j++) {
-            if (registerIsHilited[i][j]) {
-                paintHiliteRegister(painter, type, j+1);
+            if (registerHilite[i][j]) {
+                paintHiliteRegister(painter, registerHilite[i][j], type, j+1);
             }
         }
     }
 }
 
-void Module::paintHiliteRegister(QPainter *painter, QChar type, unsigned number)
+void Module::paintHiliteRegister(QPainter *painter, int usage, QChar type, unsigned number)
 {
     QRectF r = registerRect(type, number);
-    QPen pen(COLOR(RACV_REGHILITES_PEN_COLOR));
+    QPen pen(usage == 2 ? COLOR(RACV_REGHILITES_PEN_COLOR) : QColor(128, 128, 128));
     pen.setWidth(10);
     painter->setPen(pen);
-    painter->setBrush(COLOR(RACV_REGHILITES_BACKGROUND));
+    painter->setBrush(usage == 2 ? COLOR(RACV_REGHILITES_BACKGROUND) : QColor(128, 128, 128, 128));
     if (type == REGISTER_RGB_LED || type == REGISTER_EXTRA)
         painter->drawRect(r);
     else
@@ -126,13 +126,13 @@ bool Module::haveRegister(AtomRegister atom)
     return have;
 }
 
-void Module::hiliteRegisters(bool on, QChar type, unsigned number)
+void Module::hiliteRegisters(int usage, QChar type, unsigned number)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         if (type == register_types[i] || type == 0) {
             for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
                 if (number == j+1+numberOffset(type) || number == 0) {
-                    registerIsHilited[i][j] = on;
+                    registerHilite[i][j] = usage;
                 }
             }
         }

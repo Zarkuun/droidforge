@@ -60,7 +60,6 @@ private:
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
     void updateDragIndicator(QPointF endPos, bool hits, bool suitable);
-
     bool registersSuitableForSwapping(AtomRegister a, AtomRegister b);
     void swapRegisters(AtomRegister regA, AtomRegister regB);
     void refreshModules();

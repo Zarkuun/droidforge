@@ -84,8 +84,9 @@
 #define RACV_MIN_HEIGHT                      100
 #define RACV_MAX_HEIGHT                      400
 #define RACV_PIXEL_PER_HP                    87
-#define RACV_BACKGROUND_HEIGHT               2510
-#define RACV_TOP_MARGIN                      170
+#define RACV_CONTROLLER_GAP                  (2 * RACV_PIXEL_PER_HP)
+// #define RACV_BACKGROUND_HEIGHT               2510
+#define RACV_MAIN_MARGIN                     30
 #define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)
 #define RACV_REGMARKER_EXTRA_DIAMETER        30
 #define RACV_REGMARKER_PEN_WIDTH             10
@@ -104,6 +105,9 @@
 #define CONTROL_RGBLED_SIZE                  1.6
 #define CONTROL_JACK_SIZE                    2.5
 #define CONTROL_EXTRA_SIZE                   7.8
+
+// Rack label dialog
+#define RLD_MINIMUM_LABEL_WIDTH              150
 
 // Controller Selector
 #define CSEL_HEIGHT                          2600

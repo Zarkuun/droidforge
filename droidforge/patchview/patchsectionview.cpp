@@ -5,6 +5,7 @@
 #include "atomregister.h"
 #include "circuitview.h"
 #include "cablecolorizer.h"
+#include "colorscheme.h"
 #include "globals.h"
 #include "infomarker.h"
 #include "jackassignmentinput.h"
@@ -46,8 +47,9 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     buildPatchSection();
-    QPixmap background(":images/background.png");
-    setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
+    // QPixmap background(":images/background.png");
+    // setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
+    setBackgroundBrush(COLOR(COLOR_PATCH_BACKGROUND));
 
     QSettings settings;
     if (settings.contains("patchwindow/zoom"))
@@ -352,6 +354,8 @@ void PatchSectionView::changeSelection()
 
 void PatchSectionView::modifyPatch()
 {
+    setBackgroundBrush(COLOR(COLOR_PATCH_BACKGROUND));
+
     // We are responsible for the unique and complete color decision
     // of all internal cables.
     the_cable_colorizer->colorizeAllCables(patch->allCables());

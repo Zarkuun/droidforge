@@ -62,7 +62,6 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
     mainLayout->addWidget(new QLabel(title, this), currentRow, 0, 1, -1);
     currentRow ++;
 
-    unsigned numColumns;
     if (regType == REGISTER_INPUT || regType == REGISTER_OUTPUT)
         numColumns = 4;
     else if (regType == REGISTER_GATE)

@@ -24,7 +24,7 @@ QT_END_NAMESPACE
 class Module : public QGraphicsItem
 {
     QPixmap faceplateImage;
-    bool registerIsHilited[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE];
+    int registerHilite[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE]; // 0: off, 1: used, 2: current
     const RegisterLabels *registerLabels; // points into current patch
 
 public:
@@ -40,22 +40,22 @@ public:
     virtual QPointF registerPosition(QChar, unsigned) const = 0; // in HP
     virtual float registerSize(QChar, unsigned) const = 0; // in HP
     virtual bool labelNeedsBackground(QChar, unsigned) const { return false; };
+    QRectF boundingRect() const override;
 
     bool isController() const;
     void clearHilites();
-    void hiliteRegisters(bool on=true, QChar type='\0', unsigned number=0);
+    void hiliteRegisters(int usage, QChar type='\0', unsigned number=0);
     const QPixmap *getFaceplateImage() const { return &faceplateImage; };
     AtomRegister *registerAt(const QPoint &pos) const;
     AtomRegister registerAtom(QChar type, unsigned number) const;
     void collectAllRegisters(RegisterList &rl, int number=-1) const;
-
     unsigned controllerNumber() const;
+
 protected:
-    QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
-    void paintHiliteRegister(QPainter *painter, QChar type, unsigned number);
+    void paintHiliteRegister(QPainter *painter, int usage, QChar type, unsigned number);
     QRectF registerRect(QChar type, unsigned number) const;
     void paintRegisterLabels(QPainter *painter);
     void paintRegisterHilites(QPainter *painter);
