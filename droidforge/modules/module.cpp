@@ -61,7 +61,7 @@ void Module::paintRegisterHilites(QPainter *painter)
 
 void Module::paintHiliteRegister(QPainter *painter, int usage, QChar type, unsigned number)
 {
-    QRectF r = registerRect(type, number);
+    QRectF r = registerRect(type, number, usage);
     QPen pen(usage == 2 ? COLOR(RACV_REGHILITES_PEN_COLOR) : QColor(128, 128, 128));
     pen.setWidth(10);
     painter->setPen(pen);
@@ -95,9 +95,9 @@ void Module::paintRegisterLabels(QPainter *painter)
 void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const RegisterLabel &label)
 {
     // TODO: move to tuning.h
-    static const float fontSizes[MAX_LENGTH_SHORTHAND + 1] = { 99.9, 1.5, 1.1, 0.8, 0.7, 0.55 };
+    static const float fontSizes[MAX_LENGTH_SHORTHAND + 1] = { 99.9, 1.5, 1.1, 0.8, 0.64, 0.50 };
 
-    QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()));
+    QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()), 1);
 
     if (labelNeedsBackground(atom.getRegisterType(), atom.getNumber())) {
         painter->save();
@@ -109,10 +109,10 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
 
     QString text = label.shorthand;
     if (text == "")
-        text = label.description.mid(0, MAX_LENGTH_SHORTHAND);
+        text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
 
     QFont font;
-    font.setPixelSize(RACV_PIXEL_PER_HP * fontSizes[text.size()]);
+    font.setPixelSize(RACV_PIXEL_PER_HP * fontSizes[text.size()] * r.width() / 130 );
     painter->setFont(font);
 
     painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
@@ -139,10 +139,12 @@ void Module::hiliteRegisters(int usage, QChar type, unsigned number)
     }
 }
 
-QRectF Module::registerRect(QChar type, unsigned number) const
+QRectF Module::registerRect(QChar type, unsigned number, int usage) const
 {
     QPointF posHP = registerPosition(type, number); // in HP, mid
     float size = registerSize(type, number) * RACV_PIXEL_PER_HP;
+    if (usage == 1)
+        size = size * 2 / 3;
     QPointF pos(posHP.x() * RACV_PIXEL_PER_HP - size/2,
                 posHP.y() * RACV_PIXEL_PER_HP - size/2);
     return QRectF(pos, QSize(size, size));
@@ -155,7 +157,7 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
         if (type == REGISTER_EXTRA)
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
-            QRectF r = registerRect(type, j+1);
+            QRectF r = registerRect(type, j+1, 1);
             if (r.contains(pos)) {
                 return registerAtom(type, j+1).clone();
             }

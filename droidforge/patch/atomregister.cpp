@@ -151,7 +151,13 @@ bool operator!=(const AtomRegister &a, const AtomRegister &b)
 
 bool operator<(const AtomRegister &a, const AtomRegister &b)
 {
-    return a.cont < b.cont
-            || a.registerType < b.registerType
-            || a.num < b.num;
+    if (a.cont < b.cont)
+        return true;
+    else if (a.cont > b.cont)
+        return false;
+    else if (a.registerType < b.registerType)
+        return true;
+    else if (a.registerType > b.registerType)
+        return false;
+    else return a.num < b.num;
 }

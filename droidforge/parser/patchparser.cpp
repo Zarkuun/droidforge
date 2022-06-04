@@ -1,3 +1,4 @@
+#include "globals.h"
 #include "mainwindow.h"
 #include "patchparser.h"
 #include "modulebuilder.h"
@@ -16,13 +17,13 @@ PatchParser::PatchParser()
     : patch(0)
     , section(0)
     , circuit(0)
-    , commentState(AWAITING_TITLE_COMMENT)
 {
 }
 
 
 void PatchParser::parse(QString filePath, Patch *patch)
 {
+    commentState = AWAITING_TITLE_COMMENT;
     errorMessage = "";
     errorLine = 0;
     section = 0;
@@ -133,6 +134,7 @@ void PatchParser::parseCommentLine(QString line)
 
 bool PatchParser::maybeParseRegisterComment(QString comment)
 {
+    shout << "Probiere" << comment;
     // Examples:
     // I1: [CLK] optional external clock
     // P2.4: This is a comment without short

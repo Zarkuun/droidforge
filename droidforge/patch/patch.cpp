@@ -50,8 +50,11 @@ void Patch::cloneInto(Patch *otherPatch) const
     otherPatch->title = title;
     otherPatch->description = description;
     otherPatch->libraryMetaData = libraryMetaData;
+    shout << "rl" << otherPatch->registerLabels.count();
     otherPatch->registerLabels = registerLabels;
     otherPatch->registerLabels.detach();
+    shout << "rl danach" << otherPatch->registerLabels.count();
+    shout << "MEINE" << registerLabels.count();
     otherPatch->controllers = controllers;
     for (auto section: sections)
         otherPatch->sections.append(section->clone());

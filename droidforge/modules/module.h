@@ -56,7 +56,7 @@ protected:
 
 private:
     void paintHiliteRegister(QPainter *painter, int usage, QChar type, unsigned number);
-    QRectF registerRect(QChar type, unsigned number) const;
+    QRectF registerRect(QChar type, unsigned number, int usage) const;
     void paintRegisterLabels(QPainter *painter);
     void paintRegisterHilites(QPainter *painter);
     bool haveRegister(AtomRegister atom);
