@@ -1,6 +1,7 @@
 #include "rackview.h"
 #include "colorscheme.h"
 #include "controllerlabellingdialog.h"
+#include "iconbase.h"
 #include "mainwindow.h"
 #include "modulebuilder.h"
 #include "tuning.h"
@@ -9,6 +10,7 @@
 #include "editoractions.h"
 #include "updatehub.h"
 #include "globals.h"
+
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
@@ -258,31 +260,31 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
    QMenu *menu = new QMenu(this);
    if (controllerIndex >= 0) {
        ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
-       menu->addAction(the_forge->icon("delete"), tr("Remove this controller"), this,
+       menu->addAction(ICON("delete"), tr("Remove this controller"), this,
                        [this,controllerIndex,moduleType] () {this->askRemoveController(moduleType, controllerIndex); });
        if (controllerIndex > 0)
-           menu->addAction(the_forge->icon("keyboard_arrow_left"), tr("Move by one position to the left"), this,
+           menu->addAction(ICON("keyboard_arrow_left"), tr("Move by one position to the left"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex-1); });
        if (controllerIndex+1 < patch->numControllers())
-           menu->addAction(the_forge->icon("keyboard_arrow_right"), tr("Move by one position to the right"), this,
+           menu->addAction(ICON("keyboard_arrow_right"), tr("Move by one position to the right"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex+1); });
        if (controllersRegistersUsed(controllerIndex) && numControllers() >= 2)
            menu->addAction(tr("Move used controls and LEDs to other controllers"),
                            this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
    }
 
-   menu->addAction(the_forge->icon("assignment"), tr("Edit labelling of controls"), this,
+   menu->addAction(ICON("assignment"), tr("Edit labelling of controls"), this,
                    [this,controllerIndex,moduleType] () {this->editLabelling(moduleType, controllerIndex); });
 
    AtomRegister reg = markedRegister;
    if (!markedRegister.isNull() && patch->registerUsed(markedRegister)) {
-       menu->addAction(the_forge->icon("search"), tr("Find this register in your patch"), this,
+       menu->addAction(ICON("search"), tr("Find this register in your patch"), this,
                        [this,reg] () {this->findRegister(reg); });
    }
 
    menu->addSeparator();
 
-   menu->addAction(the_forge->icon("purchase"), tr("Lookup this module in the shop"), this,
+   menu->addAction(ICON("purchase"), tr("Lookup this module in the shop"), this,
                    [this,moduleType] () {this->purchaseController(moduleType); });
    menu->setAttribute(Qt::WA_DeleteOnClose);
    menu->popup(QCursor::pos());

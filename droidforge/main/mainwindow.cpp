@@ -310,7 +310,3 @@ void MainWindow::cursorMoved()
     // commit history.
     patch->commitCursorPosition();
 }
-QIcon MainWindow::icon(QString what) const
-{
-    return QIcon(":/images/icons/white/" + what + ".png");
-}

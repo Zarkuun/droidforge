@@ -30,6 +30,8 @@ QtApplication {
         "main/colorscheme.h",
         "main/editoractions.cpp",
         "main/editoractions.h",
+        "main/iconbase.cpp",
+        "main/iconbase.h",
         "main/patchoperator.cpp",
         "main/patchoperator.h",
         "main/patchproblemindicator.cpp",

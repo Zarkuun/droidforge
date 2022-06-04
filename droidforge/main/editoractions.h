@@ -77,7 +77,6 @@ private slots:
 
 private:
     void createActions();
-    QIcon icon(QString what) const; // TODO: Move to new IconBuilder class
     void updateDisablingActions();
 };
 

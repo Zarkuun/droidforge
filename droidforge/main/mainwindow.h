@@ -62,7 +62,6 @@ class MainWindow : public QMainWindow, PatchView
 public:
     MainWindow(PatchEditEngine *patch, QString initialFilename);
     ~MainWindow();
-    QIcon icon(QString what) const;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
