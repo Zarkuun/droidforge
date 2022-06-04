@@ -15,10 +15,10 @@ class PatchOperator : public QObject
     PatchParser parser;
 
 public:
-    explicit PatchOperator(PatchEditEngine *patch);
+    explicit PatchOperator(PatchEditEngine *patch, QString initialFilename);
     void createRecentFileActions(QMenu *);
     void loadFile(const QString &filename, int how);
-    bool checkModified();
+    void quit();
 
 protected:
     PatchSection *section() { return patch->currentSection(); };
@@ -31,12 +31,16 @@ private slots:
     void exportSelection();
     void save();
     void saveAs();
+    void openEnclosingFolder();
     void editProperties();
     void undo();
     void redo();
+    void configureColors();
 
 private:
+    bool checkModified();
     void setLastFilePath(const QString &path);
+    void openDirInFinder(const QString &filename);
     void addToRecentFiles(const QString &path);
     QStringList getRecentFiles();
     void loadPatch(const QString &aFilePath);

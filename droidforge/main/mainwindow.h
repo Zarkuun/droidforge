@@ -60,44 +60,31 @@ class MainWindow : public QMainWindow, PatchView
     QToolBar *toolbar;
 
 public:
-    MainWindow(PatchEditEngine *patch, const QString &initialFilename);
+    MainWindow(PatchEditEngine *patch, QString initialFilename);
     ~MainWindow();
-    void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
-    QDir userPatchDirectory() const;
-    // TODO: Warum hier? Soll irgendwie weg
 
 protected:
     void keyPressEvent(QKeyEvent *event);
     void closeEvent(QCloseEvent* event);
     void resizeEvent(QResizeEvent *);
+    void moveEvent(QMoveEvent *);
 
 private:
-    void createFileMenu();
     void createMenus();
+    void createFileMenu();
     void createEditMenu();
     void createSectionMenu();
     void createViewMenu();
     void createRackMenu();
     void createToolbar();
-    void connectActions();
-    void openDirInFinder(const QString &filename);
-    void updateWindowTitle();
-    void repaintPatchView();
     void createStatusBar();
+    void updateWindowTitle();
     void updateStatusbarMessage();
 
 private slots:
     void modifyPatch();
     void cursorMoved();
-    void openEnclosingFolder();
     void splitterMoved();
-    void configureColors();
-
-signals:
-
-    void sigStarted();
-    void problemsChanged(unsigned);
-
 };
 #endif // MAINWINDOW_H

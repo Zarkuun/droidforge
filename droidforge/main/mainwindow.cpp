@@ -16,25 +16,21 @@
 #include <QTextEdit>
 #include <QKeyEvent>
 #include <QMessageBox>
-#include <QTimer>
-#include <QFileDialog>
 #include <QSettings>
 #include <QtGlobal>
-#include <QProcess>
 
 MainWindow *the_forge;
 
-MainWindow::MainWindow(PatchEditEngine *patch, const QString &iniFileName)
+MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     : QMainWindow()
     , PatchView(patch)
     , editorActions(patch)
-    , patchOperator(patch)
+    , patchOperator(patch, initialFilename)
     , rackView(patch)
     , patchSectionView(patch)
     , patchSectionManager(patch)
     , cableStatusIndicator(patch)
     , patchProblemIndicator(patch)
-    , initialFilename(iniFileName) // from argv
 {
     the_forge = this;
 
@@ -60,6 +56,10 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &iniFileName)
 
     resize(800, 600);
     QSettings settings;
+    if (settings.contains("mainwindow/position")) {
+        move(settings.value("mainwindow/position").toPoint());
+        resize(settings.value("mainwindow/size").toSize());
+    }
     if (settings.contains("mainwindow/splitposition"))
         rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
@@ -67,17 +67,6 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &iniFileName)
     createMenus();
     createToolbar();
     createStatusBar();
-    connectActions();
-
-    if (initialFilename == "" && settings.contains("lastfile"))
-        initialFilename = settings.value("lastfile").toString();
-
-    // TODO: Load initial file???
-    if (!initialFilename.isEmpty())
-        QTimer::singleShot(0, this, [&] () { patchOperator.loadFile(initialFilename, FILE_MODE_LOAD);});
-
-    // Hack
-    connect(the_colorscheme, &ColorScheme::changed, the_hub, &UpdateHub::patchModified);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &MainWindow::modifyPatch);
@@ -86,18 +75,13 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &iniFileName)
 
     // Some special connections that do not deal with update events
     connect(&rackView, &RackView::registerClicked, &patchSectionView, &PatchSectionView::clickOnRegister);
+    connect(the_colorscheme, &ColorScheme::changed, the_hub, &UpdateHub::patchModified);
 }
 
-
-void MainWindow::createStatusBar()
+MainWindow::~MainWindow()
 {
-    statusbar = new QStatusBar(this);
-    setStatusBar(statusbar);
-    statusbar->addPermanentWidget(&cableStatusIndicator);
-    statusbar->addPermanentWidget(&patchProblemIndicator);
-    statusbar->addPermanentWidget(&clipboardIndicator);
+    delete patch;
 }
-
 void MainWindow::modifyPatch()
 {
     QFileInfo fi(patch->getFilePath());
@@ -110,12 +94,6 @@ void MainWindow::modifyPatch()
     setWindowTitle(title);
     cursorMoved();
 }
-
-MainWindow::~MainWindow()
-{
-    delete patch;
-}
-
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) {
@@ -126,22 +104,21 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         event->ignore();
     }
 }
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (patchOperator.checkModified())
-        exit(0);
-    else
-        event->ignore();
+    patchOperator.quit();
+    event->ignore();
 }
-
 void MainWindow::resizeEvent(QResizeEvent *)
 {
     QSettings settings;
-    settings.setValue("mainwindow/position", pos());
     settings.setValue("mainwindow/size", size());
 }
-
+void MainWindow::moveEvent(QMoveEvent *)
+{
+    QSettings settings;
+    settings.setValue("mainwindow/position", pos());
+}
 void MainWindow::createMenus()
 {
     createFileMenu();
@@ -151,45 +128,9 @@ void MainWindow::createMenus()
     createViewMenu();
 
     // TODO: looks strange to me
-    ADD_ACTION(ACTION_NEXT_SECTION, this); // make shortcuts works
-    ADD_ACTION(ACTION_PREVIOUS_SECTION, this); // make shortcuts works
+    ADD_ACTION(ACTION_NEXT_SECTION, this); // make shortcuts work
+    ADD_ACTION(ACTION_PREVIOUS_SECTION, this); // make shortcuts work
 }
-
-void MainWindow::clickOnRegister(AtomRegister ar)
-{
-    // TODO: Weg damit
-    patchSectionView.clickOnRegister(ar);
-}
-
-void MainWindow::updateWindowTitle()
-{
-    // TODO: Mit signal ansetuern
-    QString title;
-    if (filePath.isEmpty())
-        title = tr("(untitled patch)") + " - " + tr("DROID Forge");
-    else
-        title = filePath + " - " + tr("DROID Forge");
-    if (patch->isModified())
-        title += " (" + tr("modified") + ")";
-    setWindowTitle(title);
-}
-
-void MainWindow::repaintPatchView()
-{
-    patchSectionView.updateCircuits(); // TODO: ?Signale
-}
-
-QDir MainWindow::userPatchDirectory() const
-{
-    // TODO: Make patch directory configurable
-    QDir dir = QDir::homePath();
-    if (!dir.cd(PATCH_DIRECTORY_NAME)) {
-        dir.mkdir(PATCH_DIRECTORY_NAME);
-        dir.cd(PATCH_DIRECTORY_NAME);
-    }
-    return dir;
-}
-
 void MainWindow::createFileMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&File"));
@@ -219,7 +160,6 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_CONFIGURE_COLORS, menu);
 
 }
-
 void MainWindow::createEditMenu()
 {
     QMenu *menu = menuBar()->addMenu(ZERO_WIDTH_SPACE + tr("&Edit"));
@@ -258,7 +198,6 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
     ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
 }
-
 void MainWindow::createSectionMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("Section"));
@@ -271,7 +210,6 @@ void MainWindow::createSectionMenu()
     ADD_ACTION(ACTION_MERGE_ALL_SECTIONS, menu);
     ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
 }
-
 void MainWindow::createViewMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&View"));
@@ -279,13 +217,19 @@ void MainWindow::createViewMenu()
     ADD_ACTION(ACTION_ZOOM_IN, menu);
     ADD_ACTION(ACTION_ZOOM_OUT, menu);
 }
-
 void MainWindow::createRackMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&Rack"));
     ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
 }
-
+void MainWindow::createStatusBar()
+{
+    statusbar = new QStatusBar(this);
+    setStatusBar(statusbar);
+    statusbar->addPermanentWidget(&cableStatusIndicator);
+    statusbar->addPermanentWidget(&patchProblemIndicator);
+    statusbar->addPermanentWidget(&clipboardIndicator);
+}
 void MainWindow::createToolbar()
 {
     toolbar = new QToolBar(this);
@@ -300,38 +244,23 @@ void MainWindow::createToolbar()
     ADD_ACTION(ACTION_ADD_JACK, toolbar);
     ADD_ACTION(ACTION_ADD_CONTROLLER, toolbar);
 }
-
-void MainWindow::connectActions()
-{
-    CONNECT_ACTION(ACTION_QUIT, &MainWindow::close);
-    #if (defined Q_OS_MACOS || defined Q_OS_WIN)
-    CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &MainWindow::openEnclosingFolder);
-    #endif
-
-    CONNECT_ACTION(ACTION_CONFIGURE_COLORS, &MainWindow::configureColors);
-
-}
-
-void MainWindow::configureColors()
-{
-    if (the_colorscheme->isVisible())
-        the_colorscheme->hide();
-    else
-        the_colorscheme->show();
-}
-
-void MainWindow::openEnclosingFolder()
-{
-    QFileInfo fileinfo(filePath);
-    openDirInFinder(fileinfo.absoluteFilePath());
-}
-
 void MainWindow::splitterMoved()
 {
     QSettings settings;
     settings.setValue("mainwindow/splitposition", rackSplitter->saveState());
 }
-
+void MainWindow::updateWindowTitle()
+{
+    // TODO: Mit signal ansetuern
+    QString title;
+    if (filePath.isEmpty())
+        title = tr("(untitled patch)") + " - " + tr(APPLICATION_NAME);
+    else
+        title = filePath + " - " + tr(APPLICATION_NAME);
+    if (patch->isModified())
+        title += " (" + tr("modified") + ")";
+    setWindowTitle(title);
+}
 void MainWindow::updateStatusbarMessage()
 {
     QStringList infos;
@@ -370,7 +299,6 @@ void MainWindow::updateStatusbarMessage()
     else
         statusbar->clearMessage();
 }
-
 void MainWindow::cursorMoved()
 {
     updateStatusbarMessage();
@@ -382,31 +310,7 @@ void MainWindow::cursorMoved()
     // commit history.
     patch->commitCursorPosition();
 }
-
-
 QIcon MainWindow::icon(QString what) const
 {
     return QIcon(":/images/icons/white/" + what + ".png");
-}
-
-void MainWindow::openDirInFinder(const QString &filename)
-{
-#ifdef Q_OS_MACOS
-    QStringList args;
-    args << "-e";
-    args << "tell application \"Finder\"";
-    args << "-e";
-    args << "activate";
-    args << "-e";
-    args << "select POSIX file \""+filename+"\"";
-    args << "-e";
-    args << "end tell";
-    QProcess::startDetached("osascript", args);
-
-#endif
-#ifdef Q_OS_WIN
-    QStringList args;
-    args << "/select," << QDir::toNativeSeparators(filename);
-    QProcess::startDetached("explorer", args);
-#endif
 }

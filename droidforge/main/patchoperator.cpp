@@ -1,4 +1,5 @@
 #include "patchoperator.h"
+#include "colorscheme.h"
 #include "globals.h"
 #include "mainwindow.h"
 #include "parseexception.h"
@@ -8,29 +9,31 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
+#include <QProcess>
+#include <QTimer>
 
 PatchOperator *the_operator = 0;
 
-PatchOperator::PatchOperator(PatchEditEngine *patch)
+PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     : patch(patch)
 {
     Q_ASSERT(the_operator == 0);
     the_operator = this;
 
-    // WINDOWS: On Mac command-Q always closes the main window.
-    // So we must noch connect the close action, otherwise it
-    // will be called twice. Is that on Windows the same? If no,
-    // activate the following line with an #idef...
-    // CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quitAction);
+    CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_OPEN, &PatchOperator::open);
     CONNECT_ACTION(ACTION_SAVE, &PatchOperator::save);
     CONNECT_ACTION(ACTION_SAVE_AS, &PatchOperator::saveAs);
+    #if (defined Q_OS_MACOS || defined Q_OS_WIN)
+    CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &PatchOperator::openEnclosingFolder);
+    #endif
     CONNECT_ACTION(ACTION_EXPORT_SELECTION, &PatchOperator::exportSelection);
     CONNECT_ACTION(ACTION_INTEGRATE_PATCH, &PatchOperator::integrate);
     CONNECT_ACTION(ACTION_UNDO, &PatchOperator::undo);
     CONNECT_ACTION(ACTION_REDO, &PatchOperator::redo);
     CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &PatchOperator::editProperties);
+    CONNECT_ACTION(ACTION_CONFIGURE_COLORS, &PatchOperator::configureColors);
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -39,6 +42,12 @@ PatchOperator::PatchOperator(PatchEditEngine *patch)
     connect(this, &PatchOperator::sectionSwitched, the_hub, &UpdateHub::switchSection);
     connect(this, &PatchOperator::cursorMoved, the_hub, &UpdateHub::moveCursor);
     connect(this, &PatchOperator::patchingChanged, the_hub, &UpdateHub::changePatching);
+
+    QSettings settings;
+    if (initialFilename == "" && settings.contains("lastfile"))
+        initialFilename = settings.value("lastfile").toString();
+    if (!initialFilename.isEmpty())
+        QTimer::singleShot(0, this, [this,initialFilename] () { this->loadFile(initialFilename, FILE_MODE_LOAD);});
 }
 
 void PatchOperator::newPatch()
@@ -51,8 +60,6 @@ void PatchOperator::newPatch()
     patch->commit(tr("creating new patch"));
     emit patchModified();
 }
-
-
 void PatchOperator::createRecentFileActions(QMenu *fileMenu)
 {
     QMenu *menu = fileMenu->addMenu(tr("Open recent file"));
@@ -67,7 +74,6 @@ void PatchOperator::createRecentFileActions(QMenu *fileMenu)
         menu->addAction(action);
     }
 }
-
 bool PatchOperator::checkModified()
 {
     // TODO rackview modified
@@ -95,7 +101,11 @@ bool PatchOperator::checkModified()
     else
         return true;
 }
-
+void PatchOperator::quit()
+{
+    if (checkModified())
+        exit(0);
+}
 void PatchOperator::loadFile(const QString &filePath, int how)
 {
     if (FILE_MODE_LOAD && !checkModified())
@@ -119,10 +129,8 @@ void PatchOperator::loadFile(const QString &filePath, int how)
         // TODO: Size of message box?
         // box.setBaseSize(QSize(600, 220));
         box.exec();
-        QApplication::quit(); // TODO: Don't quit, rather abort!
     }
 }
-
 void PatchOperator::open()
 {
     if (!checkModified())
@@ -134,14 +142,12 @@ void PatchOperator::open()
         setLastFilePath(filePath);
     }
 }
-
 void PatchOperator::integrate()
 {
     QString filePath = QFileDialog::getOpenFileName(the_forge);
     if (!filePath.isEmpty())
         loadFile(filePath, FILE_MODE_INTEGRATE);
 }
-
 void PatchOperator::exportSelection()
 {
     QString filePath = QFileDialog::getSaveFileName(
@@ -157,8 +163,6 @@ void PatchOperator::exportSelection()
         addToRecentFiles(filePath);
     }
 }
-
-
 void PatchOperator::save()
 {
     if (patch->getFilePath().isEmpty())
@@ -168,7 +172,6 @@ void PatchOperator::save()
         emit patchModified(); // mod flag
     }
 }
-
 void PatchOperator::saveAs()
 {
     QString newFilePath = QFileDialog::getSaveFileName(
@@ -184,7 +187,32 @@ void PatchOperator::saveAs()
         setLastFilePath(newFilePath);
     }
 }
+void PatchOperator::openEnclosingFolder()
+{
+    QFileInfo fileinfo(patch->getFilePath());
+    openDirInFinder(fileinfo.absoluteFilePath());
+}
+void PatchOperator::openDirInFinder(const QString &filename)
+{
+#ifdef Q_OS_MACOS
+    QStringList args;
+    args << "-e";
+    args << "tell application \"Finder\"";
+    args << "-e";
+    args << "activate";
+    args << "-e";
+    args << "select POSIX file \""+filename+"\"";
+    args << "-e";
+    args << "end tell";
+    QProcess::startDetached("osascript", args);
 
+#endif
+#ifdef Q_OS_WIN
+    QStringList args;
+    args << "/select," << QDir::toNativeSeparators(filename);
+    QProcess::startDetached("explorer", args);
+#endif
+}
 void PatchOperator::editProperties()
 {
     if (PatchPropertiesDialog::editPatchProperties(patch)) {
@@ -192,7 +220,6 @@ void PatchOperator::editProperties()
         emit patchModified();
     }
 }
-
 void PatchOperator::undo()
 {
     qDebug("ICH UNDOE");
@@ -201,7 +228,6 @@ void PatchOperator::undo()
         emit patchModified();
     }
 }
-
 void PatchOperator::redo()
 {
     if (patch->redoPossible()) {
@@ -209,19 +235,16 @@ void PatchOperator::redo()
         emit patchModified();
     }
 }
-
 void PatchOperator::setLastFilePath(const QString &path)
 {
     QSettings settings;
     settings.setValue("lastfile", path);
 }
-
 QStringList PatchOperator::getRecentFiles()
 {
     QSettings settings;
     return settings.value("recentfiles").toStringList();
 }
-
 void PatchOperator::addToRecentFiles(const QString &path)
 {
     QFileInfo fi(path);
@@ -233,16 +256,17 @@ void PatchOperator::addToRecentFiles(const QString &path)
     QSettings settings;
     settings.setValue("recentfiles", files);
 }
-
 void PatchOperator::loadPatch(const QString &aFilePath)
 {
+    Patch newPatch;
+    parser.parse(aFilePath, &newPatch); // throws exception
+    // reached if parsing was successfull
     patch->startFromScratch();
-    parser.parse(aFilePath, patch);
     patch->setFilePath(aFilePath);
+    newPatch.cloneInto(patch);
     patch->commit(tr("loading patch"));
     emit patchModified();
 }
-
 void PatchOperator::integratePatch(const QString &aFilePath)
 {
     Patch otherpatch;
@@ -257,7 +281,6 @@ void PatchOperator::integratePatch(const QString &aFilePath)
         emit patchModified();
     }
 }
-
 bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch)
 {
     // ontoPatch is that patch that the "otherPatch" want's to get integrated
@@ -382,4 +405,10 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
     return true;
 }
 
-
+void PatchOperator::configureColors()
+{
+    if (the_colorscheme->isVisible())
+        the_colorscheme->hide();
+    else
+        the_colorscheme->show();
+}

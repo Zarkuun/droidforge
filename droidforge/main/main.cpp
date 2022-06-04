@@ -17,9 +17,17 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     app.setApplicationName("droidforge");
-    app.setApplicationDisplayName("DROID Forge");
+    app.setApplicationDisplayName(APPLICATION_NAME);
     app.setOrganizationName("Der Mann mit der Maschine");
     app.setOrganizationDomain("dmmdm.de");
+
+    // Create and change to user's patch directory
+    QDir dir = QDir::homePath();
+    if (!dir.cd(PATCH_DIRECTORY_NAME)) {
+        dir.mkdir(PATCH_DIRECTORY_NAME);
+        dir.cd(PATCH_DIRECTORY_NAME);
+        QDir::setCurrent(dir.absolutePath());
+    }
 
     UpdateHub updateHub; // signal hub, to avoid n:m connections
     Clipboard clipboard; // must be global to all windows
@@ -35,8 +43,6 @@ int main(int argc, char *argv[])
     PatchEditEngine thePatch;
     MainWindow mainWindow(&thePatch, initialFilename);
     mainWindow.show();
-
-    QDir::setCurrent(mainWindow.userPatchDirectory().absolutePath());
 
     QSettings settings;
     if (settings.contains("mainwindow/size"))
