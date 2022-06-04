@@ -31,6 +31,21 @@ bool DroidFirmware::circuitExists(QString circuit) const
     return circuits.keys().contains(circuit);
 }
 
+QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
+{
+    // Some circuits have array like pitch1...pitch16. In the DROID patch,
+    // however, the user may write "pitch" as a shorthand for pitch1. In
+    // Order to avoid problems we always use the full names in the DROID forge.
+    if (jackIsInput(circuit, jack) || jackIsOutput(circuit, jack))
+        return jack;
+
+    QString withone = jack + "1";
+    if (jackIsInput(circuit, withone) || jackIsOutput(circuit, withone))
+        return withone;
+
+    return jack;
+}
+
 
 bool DroidFirmware::jackIsInput(QString circuit, QString jack) const
 {

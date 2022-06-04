@@ -51,6 +51,7 @@ JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString li
     QString valueString = parts[1].trimmed();
 
     JackAssignment *ja;
+    jack = the_firmware->canonizeJackName(circuit, jack); // e.g. pitch -> pitch1
     if (the_firmware->jackIsInput(circuit, jack))
         ja = new JackAssignmentInput(jack, comment, valueString);
     else if (the_firmware->jackIsOutput(circuit, jack))
