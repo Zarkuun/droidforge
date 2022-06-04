@@ -283,7 +283,7 @@ bool JackSelector::handleMousePress(const QPointF &pos)
     if (!item)
         return false;
 
-    // Find jack view. We have other (usedless) items as well
+    // Find jack view. We have other (useless) items as well
     for (int column = 0; column < 2; column++) {
         auto jvs = &jackViews[column];
         for (int i=0; i<jvs->count(); i++) {
@@ -292,6 +292,19 @@ bool JackSelector::handleMousePress(const QPointF &pos)
                 selectCurrentJack(false);
                 currentColumn = column;
                 currentRow = i;
+                if (jv->isArray()) {
+                    QPointF mousePosInScene = mapToScene(pos.toPoint());
+                    QPointF relPos = mousePosInScene - jv->pos();
+                    currentSubjack = 0;
+                    if (relPos.y() >= JSEL_JACK_HEIGHT) {
+                        int y = (relPos.y() - JSEL_JACK_HEIGHT) / JSEL_JACK_HEIGHT;
+                        int x = relPos.x() / (JSEL_JACK_WIDTH / 4.0);
+                        currentSubjack = qMin((int)jv->getArraySize(), qMax(0, y * 4 + x));
+                    }
+                }
+                else
+                    currentSubjack = 0;
+
                 selectCurrentJack(true);
                 return true;
             }
