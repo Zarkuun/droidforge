@@ -5,7 +5,7 @@
 #include "patcheditengine.h"
 #include "registermarker.h"
 #include "controllerremovaldialog.h"
-#include "patchoperator.h"
+#include "patchview.h"
 #include "dragregisterindicator.h"
 
 #include <QWidget>
@@ -14,7 +14,7 @@
 #include <QGraphicsEllipseItem>
 
 
-class RackView : public QGraphicsView, PatchOperator
+class RackView : public QGraphicsView, PatchView
 {
     Q_OBJECT
 

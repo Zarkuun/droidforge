@@ -1,7 +1,6 @@
 #include "parseexception.h"
 #include "mainwindow.h"
 #include "patch.h"
-#include "unistd.h"
 #include "cablecolorizer.h"
 #include "updatehub.h"
 #include "clipboard.h"
@@ -33,8 +32,8 @@ int main(int argc, char *argv[])
     CableColorizer cableColorizer;
     the_cable_colorizer = &cableColorizer; // TODO: move to class
 
-    PatchEditEngine emptyPatch;
-    MainWindow mainWindow(&emptyPatch, initialFilename);
+    PatchEditEngine thePatch;
+    MainWindow mainWindow(&thePatch, initialFilename);
     mainWindow.show();
 
     QDir::setCurrent(mainWindow.userPatchDirectory().absolutePath());

@@ -2,14 +2,14 @@
 #define CABLESTATUSINDICATOR_H
 
 #include "patcheditengine.h"
-#include "patchoperator.h"
+#include "patchview.h"
 
 #include <QPropertyAnimation>
 #include <QWidget>
 #include <QPen>
 #include <QPainter>
 
-class CableStatusIndicator : public QWidget, PatchOperator
+class CableStatusIndicator : public QWidget, PatchView
 {
     Q_OBJECT
     QPen cablePen;

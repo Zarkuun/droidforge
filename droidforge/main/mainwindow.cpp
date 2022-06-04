@@ -9,8 +9,9 @@
 #include "os.h"
 #include "updatehub.h"
 #include "patchsectionview.h"
-#include "patchoperator.h"
+#include "patchview.h"
 #include "colorscheme.h"
+#include "patchoperator.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -25,8 +26,9 @@ MainWindow *the_forge;
 
 MainWindow::MainWindow(PatchEditEngine *patch, const QString &iniFileName)
     : QMainWindow()
-    , PatchOperator(patch)
+    , PatchView(patch)
     , editorActions(patch)
+    , patchOperator(patch)
     , rackView(patch)
     , patchSectionView(patch)
     , patchSectionManager(patch)
@@ -197,7 +199,6 @@ void MainWindow::createMenus()
     ADD_ACTION(ACTION_PREVIOUS_SECTION, this); // make shortcuts works
 }
 
-
 void MainWindow::clickOnRegister(AtomRegister ar)
 {
     // TODO: Weg damit
@@ -216,8 +217,6 @@ void MainWindow::updateWindowTitle()
         title += " (" + tr("modified") + ")";
     setWindowTitle(title);
 }
-
-
 
 void MainWindow::repaintPatchView()
 {
@@ -392,9 +391,6 @@ void MainWindow::connectActions()
     CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &MainWindow::openEnclosingFolder);
     #endif
 
-    CONNECT_ACTION(ACTION_UNDO, &MainWindow::undo);
-    CONNECT_ACTION(ACTION_REDO, &MainWindow::redo);
-
     CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &MainWindow::editProperties);
     CONNECT_ACTION(ACTION_CONFIGURE_COLORS, &MainWindow::configureColors);
 
@@ -504,28 +500,11 @@ void MainWindow::openEnclosingFolder()
     openDirInFinder(fileinfo.absoluteFilePath());
 }
 
-void MainWindow::undo()
-{
-    if (patch->undoPossible()) {
-        patch->undo();
-        emit patchModified();
-    }
-}
-
-void MainWindow::redo()
-{
-    if (patch->redoPossible()) {
-        patch->redo();
-        emit patchModified();
-    }
-}
-
 void MainWindow::splitterMoved()
 {
     QSettings settings;
     settings.setValue("mainwindow/splitposition", rackSplitter->saveState());
 }
-
 
 void MainWindow::updateStatusbarMessage()
 {
@@ -611,7 +590,6 @@ bool MainWindow::checkModified()
     else
         return true;
 }
-
 
 QIcon MainWindow::icon(QString what) const
 {

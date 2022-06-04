@@ -3,7 +3,7 @@
 
 #include "selection.h"
 #include "patcheditengine.h"
-#include "patchoperator.h"
+#include "patchview.h"
 
 #include <QObject>
 #include <QAction>
@@ -58,7 +58,7 @@ typedef enum {
     NUM_ACTIONS,
 } action_t;
 
-class EditorActions : public QObject, PatchOperator
+class EditorActions : public QObject, PatchView
 {
     Q_OBJECT
     QAction *actions[NUM_ACTIONS];

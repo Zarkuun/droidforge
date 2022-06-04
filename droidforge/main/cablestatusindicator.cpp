@@ -9,7 +9,7 @@
 
 CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *parent)
     : QWidget{parent}
-    , PatchOperator(patch)
+    , PatchView(patch)
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
     , animation(this, "animationPhase")
 {

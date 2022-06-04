@@ -12,7 +12,7 @@
 #include "atomselectordialog.h"
 #include "clipboard.h"
 #include "patcheditengine.h"
-#include "patchoperator.h"
+#include "patchview.h"
 
 #include <QGraphicsView>
 #include <QResizeEvent>
@@ -20,7 +20,7 @@
 
 class PatchView;
 
-class PatchSectionView : public QGraphicsView, PatchOperator
+class PatchSectionView : public QGraphicsView, PatchView
 {
     Q_OBJECT
 

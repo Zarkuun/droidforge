@@ -36,6 +36,8 @@ QtApplication {
         "main/patchproblemindicator.h",
         "main/patchsectionmanager.cpp",
         "main/patchsectionmanager.h",
+        "main/patchview.cpp",
+        "main/patchview.h",
         "main/updatehub.cpp",
         "main/updatehub.h",
         "patch/globals.h",

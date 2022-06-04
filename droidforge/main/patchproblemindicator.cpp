@@ -8,7 +8,7 @@
 
 PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *parent)
     : QWidget{parent}
-    , PatchOperator(patch)
+    , PatchView(patch)
     , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
     , okImage(":images/icons/white/sentiment_very_satisfied.png") // TODO: Hilfsfunktion
     , numProblems(0)

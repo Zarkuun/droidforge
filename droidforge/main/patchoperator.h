@@ -1,24 +1,33 @@
 #ifndef PATCHOPERATOR_H
 #define PATCHOPERATOR_H
 
-#include "patch.h"
 #include "patcheditengine.h"
+#include "editoractions.h"
 
-/* Helper parent class for all objects that interactively operate
- * on the patch. Contains a pointer to the current
- * patch and all sorts of conveniant access functions
- * to that patch as well as generic operations. */
+#include <QObject>
 
-class PatchOperator
+
+class PatchOperator : public QObject
 {
-protected:
-    PatchEditEngine *patch; // borrowed
-    PatchSection *section();
-    const PatchSection *section() const;
+    Q_OBJECT
+    PatchEditEngine *patch;
 
 public:
-    PatchOperator(PatchEditEngine *patch);
-    bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
+    explicit PatchOperator(PatchEditEngine *patch);
+
+private slots:
+    void undo();
+    void redo();
+
+signals:
+    void patchModified();
+    void clipboardChanged();
+    void selectionChanged();
+    void sectionSwitched();
+    void cursorMoved();
+    void patchingChanged();
 };
+
+extern PatchOperator *the_operator;
 
 #endif // PATCHOPERATOR_H

@@ -3,12 +3,13 @@
 
 #include "editoractions.h"
 #include "droidfirmware.h"
+#include "patchoperator.h"
 #include "patchsectionmanager.h"
 #include "patchsectionview.h"
 #include "rackview.h"
 #include "patcheditengine.h"
 #include "patchparser.h"
-#include "patchoperator.h"
+#include "patchview.h"
 #include "clipboardindicator.h"
 #include "cablestatusindicator.h"
 #include "patchproblemindicator.h"
@@ -31,14 +32,15 @@ extern DroidFirmware *the_firmware;
 #define FILE_MODE_LOAD 0
 #define FILE_MODE_INTEGRATE 1
 
-class MainWindow : public QMainWindow, PatchOperator
+class MainWindow : public QMainWindow, PatchView
 {
     Q_OBJECT
 
     DroidFirmware firmware;
 
-    // all PatchOperators
+    // all PatchViews
     EditorActions editorActions;
+    PatchOperator patchOperator;
     RackView rackView;
     PatchSectionView patchSectionView;
     PatchSectionManager patchSectionManager;
@@ -103,8 +105,6 @@ private slots:
     void saveAs();
     void exportSelection();
     void openEnclosingFolder();
-    void undo();
-    void redo();
     void splitterMoved();
     void editProperties();
     void configureColors();

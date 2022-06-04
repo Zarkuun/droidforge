@@ -8,9 +8,9 @@
 #include "framecursor.h"
 #include "patcheditengine.h"
 #include "patchsectiontitleview.h"
-#include "patchoperator.h"
+#include "patchview.h"
 
-class PatchSectionManager : public QGraphicsView, PatchOperator
+class PatchSectionManager : public QGraphicsView, PatchView
 {
     Q_OBJECT
     QList<PatchSectionTitleView *> titleViews;

@@ -6,7 +6,7 @@ EditorActions *the_actions = 0;
 
 EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
     : QObject{parent}
-    , PatchOperator(patch)
+    , PatchView(patch)
 {
     Q_ASSERT(the_actions == 0);
     the_actions = this;

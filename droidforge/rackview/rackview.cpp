@@ -19,7 +19,7 @@
 
 RackView::RackView(PatchEditEngine *patch)
     : QGraphicsView()
-    , PatchOperator(patch)
+    , PatchView(patch)
     , dragging(false)
     , draggedAtRegister(false)
 {

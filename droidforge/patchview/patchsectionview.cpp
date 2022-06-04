@@ -20,7 +20,7 @@
 #include "circuitchoosedialog.h"
 #include "updatehub.h"
 #include "jackchoosedialog.h"
-#include "patchoperator.h"
+#include "patchview.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -37,7 +37,7 @@
 
 
 PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
-    : PatchOperator(initialPatch) // patch is never ever 0!
+    : PatchView(initialPatch) // patch is never ever 0!
     , zoomLevel(0)
     , zoomFactor(1.0)
     , atomSelectorDialog{}

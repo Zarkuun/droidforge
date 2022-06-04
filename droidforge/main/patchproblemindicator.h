@@ -2,9 +2,9 @@
 #define PATCHPROBLEMINDICATOR_H
 
 #include <QWidget>
-#include "patchoperator.h"
+#include "patchview.h"
 
-class PatchProblemIndicator : public QWidget, PatchOperator
+class PatchProblemIndicator : public QWidget, PatchView
 {
     Q_OBJECT
 

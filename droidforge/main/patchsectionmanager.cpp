@@ -4,7 +4,7 @@
 #include "updatehub.h"
 #include "editoractions.h"
 #include "namechoosedialog.h"
-#include "patchoperator.h"
+#include "patchview.h"
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -16,7 +16,7 @@
 
 PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent)
     : QGraphicsView{parent}
-    , PatchOperator(patch)
+    , PatchView(patch)
     , lastIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
