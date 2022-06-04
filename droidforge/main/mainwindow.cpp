@@ -243,6 +243,8 @@ void MainWindow::createToolbar()
     ADD_ACTION(ACTION_NEW_CIRCUIT, toolbar);
     ADD_ACTION(ACTION_ADD_JACK, toolbar);
     ADD_ACTION(ACTION_ADD_CONTROLLER, toolbar);
+    toolbar->addSeparator();
+    ADD_ACTION(ACTION_PROBLEMS, toolbar);
 }
 void MainWindow::splitterMoved()
 {

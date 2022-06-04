@@ -48,6 +48,9 @@ void EditorActions::modifyPatch()
     actions[ACTION_DELETE_PATCH_SECTION]->setEnabled(patch->numSections() >= 2);
     actions[ACTION_MERGE_ALL_SECTIONS]->setEnabled(patch->numSections() >= 2);
 
+    actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems() > 0);
+    actions[ACTION_PROBLEMS]->setVisible(patch->numProblems() > 0);
+
     switchSection();
 }
 void EditorActions::switchSection()
@@ -177,6 +180,11 @@ void EditorActions::createActions()
     actions[ACTION_JUMP_TO_NEXT_PROBLEM] = new QAction(ICON("warning"), tr("&Jump to next problem"), this);
     actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setShortcut(QKeySequence(tr("F6")));
     actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setStatusTip(tr("Jump to the next problem in your patch. You "
+                                             "need to fix all these problems before you can load "
+                                             "the patch to your master."));
+
+    actions[ACTION_PROBLEMS] = new QAction(ICON("warning"), tr("Problems"), this);
+    actions[ACTION_PROBLEMS]->setStatusTip(tr("You have problems in your patch. You "
                                              "need to fix all these problems before you can load "
                                              "the patch to your master."));
 

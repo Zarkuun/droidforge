@@ -17,6 +17,7 @@ PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *pa
     setMinimumWidth(PPI_WIDTH);
     setMaximumWidth(PPI_WIDTH);
 
+    CONNECT_ACTION(ACTION_PROBLEMS, &PatchProblemIndicator::jumpToNextProblem);
     CONNECT_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::jumpToNextProblem);
     TRIGGER_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::clicked);
 
@@ -73,6 +74,9 @@ void PatchProblemIndicator::updateStatus()
 
 void PatchProblemIndicator::jumpToNextProblem()
 {
+    if (patch->numProblems() == 0)
+        return;
+
     const PatchProblem *problem = patch->problem(currentProblem++);
     if (currentProblem >= patch->numProblems())
         currentProblem = 0;
