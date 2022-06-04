@@ -8,7 +8,6 @@
 #include "patchsectionview.h"
 #include "rackview.h"
 #include "patcheditengine.h"
-#include "patchparser.h"
 #include "patchview.h"
 #include "clipboardindicator.h"
 #include "cablestatusindicator.h"
@@ -53,7 +52,6 @@ class MainWindow : public QMainWindow, PatchView
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
-    PatchParser parser;
     QString initialFilename;
     QString filePath; // of loaded patch
     QSplitter *rackSplitter;
@@ -64,19 +62,18 @@ class MainWindow : public QMainWindow, PatchView
 public:
     MainWindow(PatchEditEngine *patch, const QString &initialFilename);
     ~MainWindow();
-    void loadPatch(const QString &aFilePath);
-    void integratePatch(const QString &aFilePath);
     void clickOnRegister(AtomRegister);
     QIcon icon(QString what) const;
     QDir userPatchDirectory() const;
+    // TODO: Warum hier? Soll irgendwie weg
 
 protected:
     void keyPressEvent(QKeyEvent *event);
     void closeEvent(QCloseEvent* event);
+    void resizeEvent(QResizeEvent *);
 
 private:
     void createFileMenu();
-    void createRecentFileActions(QMenu *);
     void createMenus();
     void createEditMenu();
     void createSectionMenu();
@@ -84,33 +81,20 @@ private:
     void createRackMenu();
     void createToolbar();
     void connectActions();
-    bool checkModified();
-    QStringList getRecentFiles();
-    void addToRecentFiles(const QString &path);
     void openDirInFinder(const QString &filename);
     void updateWindowTitle();
     void repaintPatchView();
     void createStatusBar();
     void updateStatusbarMessage();
-    void setLastFilePath(const QString &path);
 
 private slots:
     void modifyPatch();
     void cursorMoved();
-    void loadFile(const QString &filename, int how);
-    void newPatch();
-    void open();
-    void integrate();
-    void save();
-    void saveAs();
-    void exportSelection();
     void openEnclosingFolder();
     void splitterMoved();
-    void editProperties();
     void configureColors();
 
 signals:
-    void patchModified();
 
     void sigStarted();
     void problemsChanged(unsigned);

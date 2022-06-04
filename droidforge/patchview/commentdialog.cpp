@@ -2,7 +2,6 @@
 #include "tuning.h"
 
 #include <QVBoxLayout>
-#include <QKeyEvent>
 
 CommentDialog::CommentDialog(QWidget *parent)
     : Dialog{"comment", parent}
@@ -36,12 +35,4 @@ QString CommentDialog::editComment(QString c)
         return dialog->textEdit->toPlainText().trimmed();
     else
         return c;
-}
-
-void CommentDialog::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Return && event->modifiers() | Qt::ControlModifier)
-        accept();
-    else
-        QDialog::keyPressEvent(event);
 }

@@ -1,6 +1,7 @@
 #include "dialog.h"
 
 #include <QSettings>
+#include <QKeyEvent>
 
 Dialog::Dialog(QString id, QWidget *parent)
     : QDialog(parent)
@@ -23,4 +24,12 @@ void Dialog::moveEvent(QMoveEvent *)
 {
     QSettings settings;
     settings.setValue(id + "/position", pos());
+}
+
+void Dialog::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Return && event->modifiers() | Qt::ControlModifier)
+        accept();
+    else
+        QDialog::keyPressEvent(event);
 }

@@ -20,6 +20,9 @@ const PatchSection *PatchView::section() const
     return patch->currentSection(); // patch never 0, section never 0
 }
 
+
+// TODO: Das hier ist doppelt. Rauswerfen. Das Original ist
+// in PatchOperator
 bool PatchView::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch)
 {
     // ontoPatch is that patch that the "otherPatch" want's to get integrated
@@ -143,3 +146,4 @@ bool PatchView::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch)
     // - abbrechen
     return true;
 }
+

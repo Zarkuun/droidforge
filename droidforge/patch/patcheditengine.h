@@ -15,6 +15,7 @@ class PatchEditEngine : public Patch
     QList<PatchVersion *> versions;
     int redoPointer;
     int versionOnDisk;
+    QString filePath;
 
     bool patching;
     unsigned patchingStartSection; // invalid if patching == false
@@ -23,8 +24,11 @@ class PatchEditEngine : public Patch
 public:
     PatchEditEngine(); // empty
     ~PatchEditEngine();
+    const QString &getFilePath() const { return filePath; };
+    void setFilePath(const QString &f) { filePath = f; };
     void startFromScratch();
     bool isModified() const;
+    void clearModified();
     bool save(QString filename);
     void commit(QString message="");
     qsizetype size() const { return versions.size(); };

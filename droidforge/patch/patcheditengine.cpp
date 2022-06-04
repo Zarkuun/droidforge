@@ -32,11 +32,17 @@ void PatchEditEngine::startFromScratch()
     versionOnDisk = -1;
     clear();
     clearVersions();
+    filePath = "";
 }
 
 bool PatchEditEngine::isModified() const
 {
     return versionOnDisk != redoPointer;
+}
+
+void PatchEditEngine::clearModified()
+{
+    versionOnDisk = redoPointer;
 }
 
 bool PatchEditEngine::save(QString filePath)

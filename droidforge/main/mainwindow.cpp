@@ -1,10 +1,10 @@
 #include "mainwindow.h"
+#include "globals.h"
 #include "parseexception.h"
 #include "patch.h"
 #include "rackview.h"
 #include "modulebuilder.h"
 #include "patchparser.h"
-#include "patchpropertiesdialog.h"
 #include "tuning.h"
 #include "os.h"
 #include "updatehub.h"
@@ -72,14 +72,12 @@ MainWindow::MainWindow(PatchEditEngine *patch, const QString &iniFileName)
     if (initialFilename == "" && settings.contains("lastfile"))
         initialFilename = settings.value("lastfile").toString();
 
+    // TODO: Load initial file???
     if (!initialFilename.isEmpty())
-        QTimer::singleShot(0, this, [&] () {loadFile(initialFilename, FILE_MODE_LOAD);});
+        QTimer::singleShot(0, this, [&] () { patchOperator.loadFile(initialFilename, FILE_MODE_LOAD);});
 
     // Hack
     connect(the_colorscheme, &ColorScheme::changed, the_hub, &UpdateHub::patchModified);
-
-    // Events that we create
-    connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &MainWindow::modifyPatch);
@@ -118,21 +116,6 @@ MainWindow::~MainWindow()
     delete patch;
 }
 
-void MainWindow::integratePatch(const QString &aFilePath)
-{
-    Patch otherpatch;
-    parser.parse(aFilePath, &otherpatch); // may throw exceptions
-
-    Patch *newPatch = patch->clone();
-    if (interactivelyRemapRegisters(&otherpatch, newPatch)) {
-        newPatch->integratePatch(&otherpatch);
-        newPatch->cloneInto(patch);
-        patch->commit(tr("integrating other patch '%1'").arg(otherpatch.getTitle()));
-        delete newPatch;
-        emit patchModified();
-    }
-}
-
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) {
@@ -144,46 +127,19 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void MainWindow::closeEvent(QCloseEvent *)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    // TODO: Das hier wieder aktivieren
-    // if (!checkModified()) {
-    //     event->ignore();
-    //     return;
-    // }
+    if (patchOperator.checkModified())
+        exit(0);
+    else
+        event->ignore();
+}
 
+void MainWindow::resizeEvent(QResizeEvent *)
+{
     QSettings settings;
     settings.setValue("mainwindow/position", pos());
     settings.setValue("mainwindow/size", size());
-
-    QApplication::exit(0);
-}
-
-void MainWindow::loadFile(const QString &filePath, int how)
-{
-    if (FILE_MODE_LOAD && !checkModified())
-        return;
-
-    try {
-        addToRecentFiles(filePath);
-        if (how == FILE_MODE_LOAD)
-            loadPatch(filePath);
-        else
-            integratePatch(filePath);
-
-    }
-    catch (ParseException &e) {
-        QMessageBox box;
-        box.setText(MainWindow::tr("Cannot load ") + filePath);
-        box.setInformativeText(e.toString());
-        box.setStandardButtons(QMessageBox::Cancel);
-        box.setDefaultButton(QMessageBox::Cancel);
-        box.setIcon(QMessageBox::Critical);
-        // TODO: Size of message box?
-        // box.setBaseSize(QSize(600, 220));
-        box.exec();
-        QApplication::quit();
-    }
 }
 
 void MainWindow::createMenus()
@@ -248,7 +204,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, menu);
     #endif
 
-    createRecentFileActions(menu);
+    patchOperator.createRecentFileActions(menu);
 
     ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
     ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, menu);
@@ -262,39 +218,6 @@ void MainWindow::createFileMenu()
 
     ADD_ACTION(ACTION_CONFIGURE_COLORS, menu);
 
-}
-
-void MainWindow::createRecentFileActions(QMenu *fileMenu)
-{
-    QMenu *menu = fileMenu->addMenu(tr("Open recent file"));
-    QStringList recentFiles = getRecentFiles();
-    for (qsizetype i=0; i<recentFiles.count(); i++) {
-        QFileInfo fi(recentFiles[i]);
-        if (!fi.exists())
-            continue;
-        QAction *action = new QAction(fi.baseName(), this);
-        QString path = fi.absoluteFilePath();
-        connect(action, &QAction::triggered, this, [this, path]() { this->loadFile(path, FILE_MODE_LOAD); });
-        menu->addAction(action);
-    }
-}
-
-QStringList MainWindow::getRecentFiles()
-{
-    QSettings settings;
-    return settings.value("recentfiles").toStringList();
-}
-
-void MainWindow::addToRecentFiles(const QString &path)
-{
-    QFileInfo fi(path);
-    QStringList files = getRecentFiles();
-    files.removeAll(fi.absoluteFilePath());
-    files.prepend(fi.absoluteFilePath());
-    while (files.size() > MAX_RECENT_FILES)
-        files.removeLast();
-    QSettings settings;
-    settings.setValue("recentfiles", files);
 }
 
 void MainWindow::createEditMenu()
@@ -380,94 +303,13 @@ void MainWindow::createToolbar()
 
 void MainWindow::connectActions()
 {
-    CONNECT_ACTION(ACTION_NEW, &MainWindow::newPatch);
-    CONNECT_ACTION(ACTION_OPEN, &MainWindow::open);
-    CONNECT_ACTION(ACTION_SAVE, &MainWindow::save);
-    CONNECT_ACTION(ACTION_SAVE_AS, &MainWindow::saveAs);
-    CONNECT_ACTION(ACTION_EXPORT_SELECTION, &MainWindow::exportSelection);
-    CONNECT_ACTION(ACTION_INTEGRATE_PATCH, &MainWindow::integrate);
     CONNECT_ACTION(ACTION_QUIT, &MainWindow::close);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &MainWindow::openEnclosingFolder);
     #endif
 
-    CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &MainWindow::editProperties);
     CONNECT_ACTION(ACTION_CONFIGURE_COLORS, &MainWindow::configureColors);
 
-}
-
-void MainWindow::loadPatch(const QString &aFilePath)
-{
-    patch->startFromScratch();
-    parser.parse(aFilePath, patch);
-    filePath = aFilePath;
-    patch->commit(tr("loading patch"));
-    emit patchModified();
-}
-
-void MainWindow::newPatch()
-{
-    if (!checkModified())
-        return;
-
-    patch->startFromScratch();
-    patch->addSection(new PatchSection());
-    patch->commit(tr("creating new patch"));
-    filePath = "";
-    emit patchModified();
-}
-
-void MainWindow::open()
-{
-    if (!checkModified())
-        return;
-
-    QString filePath = QFileDialog::getOpenFileName(this);
-    if (!filePath.isEmpty()) {
-        loadFile(filePath, FILE_MODE_LOAD);
-        setLastFilePath(filePath);
-    }
-}
-
-void MainWindow::integrate()
-{
-    QString filePath = QFileDialog::getOpenFileName(this);
-    if (!filePath.isEmpty())
-        loadFile(filePath, FILE_MODE_INTEGRATE);
-}
-
-void MainWindow::save()
-{
-    if (filePath.isEmpty())
-        saveAs();
-    else {
-        patch->save(filePath);
-        emit patchModified(); // mod flag
-    }
-}
-
-void MainWindow::saveAs()
-{
-    QString newFilePath = QFileDialog::getSaveFileName(
-                this,
-                tr("Save patch to new file"),
-                filePath,
-                tr("DROID patch files (*.ini)"));
-    if (!newFilePath.isEmpty()) {
-        patch->save(newFilePath);
-        filePath = newFilePath;
-        emit patchModified(); // mod flag
-        addToRecentFiles(newFilePath);
-        setLastFilePath(newFilePath);
-    }
-}
-
-void MainWindow::editProperties()
-{
-    if (PatchPropertiesDialog::editPatchProperties(patch)) {
-        patch->commit(tr("editing patch properties"));
-        emit patchModified();
-    }
 }
 
 void MainWindow::configureColors()
@@ -476,22 +318,6 @@ void MainWindow::configureColors()
         the_colorscheme->hide();
     else
         the_colorscheme->show();
-}
-
-void MainWindow::exportSelection()
-{
-    QString filePath = QFileDialog::getSaveFileName(
-                this,
-                tr("Export selection into new patch"),
-                "",
-                tr("DROID patch files (*.ini)"));
-    if (!filePath.isEmpty()) {
-        Patch *patch = section()->getSelectionAsPatch();
-        // TODO: Error if it failed
-        patch->saveToFile(filePath);
-        delete patch;
-        addToRecentFiles(filePath);
-    }
 }
 
 void MainWindow::openEnclosingFolder()
@@ -545,12 +371,6 @@ void MainWindow::updateStatusbarMessage()
         statusbar->clearMessage();
 }
 
-void MainWindow::setLastFilePath(const QString &path)
-{
-    QSettings settings;
-    settings.setValue("lastfile", path);
-}
-
 void MainWindow::cursorMoved()
 {
     updateStatusbarMessage();
@@ -563,33 +383,6 @@ void MainWindow::cursorMoved()
     patch->commitCursorPosition();
 }
 
-bool MainWindow::checkModified()
-{
-    // TODO rackview modified
-    if (patch->isModified()) {
-        QMessageBox box(
-                    QMessageBox::Warning,
-                    tr("Your patch is modified!"),
-                    tr("Do you want to save your changes before you proceed?"),
-                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
-                    this);
-        int ret = box.exec();
-        switch (ret) {
-        case QMessageBox::Save:
-            // TODO: Check success of saving!
-            save();
-            return true;
-
-        case QMessageBox::Discard:
-            return true;
-
-        default: // QMessageBox::Cancel:
-            return false;
-        }
-    }
-    else
-        return true;
-}
 
 QIcon MainWindow::icon(QString what) const
 {

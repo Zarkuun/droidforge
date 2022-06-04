@@ -11,7 +11,6 @@
 class Patch
 {
     // Contents tha are saved to disk
-    QString fileName;
     QString title;
     QStringList description;
     QString libraryMetaData; // break into structure later
@@ -34,7 +33,6 @@ public:
 
     // Simple access functions
     const QString &getTitle() const;
-    const QString &getFilePath() const { return fileName; };
     QString getDescription() const;
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     RegisterLabels &getRegisterLabels() { return registerLabels; };
@@ -72,7 +70,6 @@ public:
 
     // Modifications
     void addDescriptionLine(const QString &line);
-    void setFilePath(const QString &f) { fileName = f; };
     void setTitle(const QString &newTitle);
     void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
     void switchCurrentSection(qsizetype i) { sectionIndex = i; };

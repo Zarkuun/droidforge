@@ -23,7 +23,6 @@ Patch::~Patch()
 
 void Patch::clear()
 {
-    fileName = "";
     title = "";
     description.clear();
     libraryMetaData = "";
@@ -100,12 +99,7 @@ void Patch::integratePatch(const Patch *snippet)
     {
         PatchSection *clonedSection = section->clone();
         if (snippet->numSections() == 1 && clonedSection->getTitle().isEmpty()) {
-            QString title = snippet->getTitle();
-            if (title.isEmpty()) {
-                QFileInfo fi(snippet->getFilePath());
-                title = fi.baseName();
-            }
-            clonedSection->setTitle(title);
+            clonedSection->setTitle(snippet->getTitle());
         }
         insertSection(index++, clonedSection);
     }

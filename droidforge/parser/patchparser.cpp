@@ -25,7 +25,6 @@ void PatchParser::parse(QString filePath, Patch *patch)
 {
     QFileInfo fi(filePath);
     // TODO: Für was braucht eigentlich der Patch den Filename?
-    patch->setFilePath(fi.baseName());
     errorMessage = "";
     errorLine = 0;
     section = 0;

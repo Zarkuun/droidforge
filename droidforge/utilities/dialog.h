@@ -13,6 +13,7 @@ public:
 protected:
     void resizeEvent(QResizeEvent *);
     void moveEvent(QMoveEvent *);
+    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // DIALOG_H
