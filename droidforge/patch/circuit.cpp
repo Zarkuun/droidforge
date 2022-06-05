@@ -180,6 +180,23 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
     return allProblems;
 }
 
+
+QStringList Circuit::missingJacks(jacktype_t jackType) const
+{
+    QStringList jacks = jackType == JACKTYPE_INPUT
+            ? the_firmware->inputsOfCircuit(name, JACKSELECTION_FULL)
+            : the_firmware->outputsOfCircuit(name, JACKSELECTION_FULL);
+    for (auto ja: jackAssignments)
+        jacks.removeAll(ja->jackName());
+    return jacks;
+}
+
+bool Circuit::hasMissingJacks() const
+{
+    return missingJacks(JACKTYPE_INPUT).count() > 0
+          || missingJacks(JACKTYPE_OUTPUT).count() > 0;
+}
+
 void Circuit::changeCircuit(QString newCircuit)
 {
     name = newCircuit;

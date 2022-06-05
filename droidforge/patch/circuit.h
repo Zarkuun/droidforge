@@ -8,6 +8,14 @@
 #include <QString>
 #include <QStringList>
 
+typedef enum {
+    JACKSELECTION_FULL = 0,
+    JACKSELECTION_TYPICAL = 1,
+    JACKSELECTION_ESSENTIAL = 2,
+    JACKSELECTION_NONE = 3,
+} jackselection_t;
+
+
 class Patch;
 
 class Circuit
@@ -38,6 +46,8 @@ public:
     const JackAssignment *findJack(const QString name) const;
     bool hasUndefinedJacks() const;
     void removeUndefinedJacks();
+    QStringList missingJacks(jacktype_t jackType) const;
+    bool hasMissingJacks() const;
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     QString nextJackArrayName(const QString &jackName, bool isInput);
     void deleteJackAssignment(unsigned i);

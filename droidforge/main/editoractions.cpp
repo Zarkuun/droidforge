@@ -90,6 +90,7 @@ void EditorActions::moveCursor()
                     ja->jackName(), ja->jackType() == JACKTYPE_INPUT) != "";
     actions[ACTION_EXPAND_ARRAY]->setEnabled(expandPossible);
     actions[ACTION_EXPAND_ARRAY_MAX]->setEnabled(expandPossible);
+    actions[ACTION_ADD_MISSING_JACKS]->setEnabled(circuit && circuit->hasMissingJacks());
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setEnabled(circuit && circuit->hasUndefinedJacks());
     updateDisablingActions();
 }

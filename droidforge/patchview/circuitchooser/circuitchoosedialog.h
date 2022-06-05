@@ -3,20 +3,13 @@
 
 #include "circuitcollection.h"
 #include "dialog.h"
+#include "circuit.h"
 
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QTabWidget>
 #include <QLineEdit>
-
-
-typedef enum {
-    JACKSELECTION_FULL = 0,
-    JACKSELECTION_TYPICAL = 1,
-    JACKSELECTION_ESSENTIAL = 2,
-    JACKSELECTION_NONE = 3,
-} jackselection_t;
 
 
 class CircuitChooseDialog : public Dialog

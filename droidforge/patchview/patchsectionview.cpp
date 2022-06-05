@@ -499,13 +499,20 @@ void PatchSectionView::expandArrayMax()
 
 void PatchSectionView::addMissingJacks()
 {
-shoutfunc;
+    Circuit *circuit = currentCircuit();
+    for (auto name: circuit->missingJacks(JACKTYPE_INPUT))
+        circuit->addJackAssignment(new JackAssignmentInput(name));
+    for (auto name: circuit->missingJacks(JACKTYPE_OUTPUT))
+        circuit->addJackAssignment(new JackAssignmentOutput(name));
+    patch->commit(tr("adding missing jacks"));
+    emit patchModified();
 }
 
 void PatchSectionView::removeUndefinedJacks()
 {
     currentCircuit()->removeUndefinedJacks();
     patch->commit(tr("removing undefined jacks"));
+    section()->sanitizeCursor();
     emit patchModified();
 }
 
