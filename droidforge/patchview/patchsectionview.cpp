@@ -91,6 +91,8 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
     CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_EXPAND_ARRAY, &PatchSectionView::expandArray);
+    CONNECT_ACTION(ACTION_EXPAND_ARRAY_MAX, &PatchSectionView::expandArrayMax);
     CONNECT_ACTION(ACTION_SELECT_ALL, &PatchSectionView::selectAll);
     CONNECT_ACTION(ACTION_SORT_JACKS, &PatchSectionView::sortJacks);
     CONNECT_ACTION(ACTION_DISABLE, &PatchSectionView::disableObjects);
@@ -462,6 +464,36 @@ void PatchSectionView::pasteSmart()
     emit patchModified();
 }
 
+void PatchSectionView::expandArray(bool max)
+{
+    Circuit *circuit = section()->currentCircuit();
+    JackAssignment *ja = section()->currentJackAssignment();
+    CursorPosition curPos = section()->cursorPosition();
+    Q_ASSERT(ja);
+
+    while (true) {
+        QString next = circuit->nextJackArrayName(ja->jackName(), ja->jackType() == JACKTYPE_INPUT);
+        if (next == "")
+            break;
+
+        JackAssignment *newJa = ja->clone();
+        newJa->setJackName(next);
+
+        curPos.row++;
+        circuit->insertJackAssignment(newJa, curPos.row);
+        section()->setCursor(curPos);
+        if (!max)
+            break;
+    }
+    patch->commit(tr("expanding jack array"));
+    emit patchModified();
+}
+
+void PatchSectionView::expandArrayMax()
+{
+    expandArray(true);
+}
+
 void PatchSectionView::sortJacks()
 {
     const Selection *selection = section()->getSelection();
@@ -725,6 +757,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_COPY, menu);
         ADD_ACTION(ACTION_PASTE, menu);
         ADD_ACTION(ACTION_PASTE_SMART, menu);
+        ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
         ADD_ACTION(ACTION_SORT_JACKS, menu);
         ADD_ACTION(ACTION_DISABLE, menu);
         ADD_ACTION(ACTION_ENABLE, menu);

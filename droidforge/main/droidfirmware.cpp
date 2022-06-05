@@ -64,14 +64,14 @@ bool DroidFirmware::jackIsOutput(QString circuit, QString jack) const
 }
 
 
-unsigned DroidFirmware::jackArraySize(QString circuit, QString jack, bool isInput) const
+unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isInput) const
 {
     QJsonValue jackinfo;
 
     if (isInput)
-        jackinfo = findJackArray(circuit, "inputs", jack);
+        jackinfo = findJackArray(circuit, "inputs", prefix);
     else
-        jackinfo = findJackArray(circuit, "outputs", jack);
+        jackinfo = findJackArray(circuit, "outputs", prefix);
     if (jackinfo.isNull())
         return 0;
 

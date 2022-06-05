@@ -35,7 +35,9 @@ public:
     void insertJackAssignment(JackAssignment *, int index);
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
     const JackAssignment *jackAssignment(unsigned i) const { return jackAssignments[i]; };
+    const JackAssignment *findJack(const QString name) const;
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
+    QString nextJackArrayName(const QString &jackName, bool isInput);
     void deleteJackAssignment(unsigned i);
     void sortJacks();
     void sortJacksFromTo(int fromRow, int toRow);

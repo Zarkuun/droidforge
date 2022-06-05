@@ -82,6 +82,14 @@ void EditorActions::moveCursor()
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(section()->currentCircuit());
     actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
     actions[ACTION_SORT_JACKS]->setEnabled(section()->currentCircuit());
+
+    Circuit *circuit = section()->currentCircuit();
+    JackAssignment *ja = section()->currentJackAssignment();
+    bool expandPossible =
+                ja && circuit->nextJackArrayName(
+                    ja->jackName(), ja->jackType() == JACKTYPE_INPUT) != "";
+    actions[ACTION_EXPAND_ARRAY]->setEnabled(expandPossible);
+    actions[ACTION_EXPAND_ARRAY_MAX]->setEnabled(expandPossible);
     updateDisablingActions();
 }
 void EditorActions::updateDisablingActions()
@@ -221,6 +229,18 @@ void EditorActions::createActions()
     actions[ACTION_PASTE_SMART]->setStatusTip(tr("Paste circuits from clipboard but remap registers and internal connections "
                                  "in order to avoid conflicts."));
     actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
+
+    actions[ACTION_EXPAND_ARRAY] = new QAction(tr("Expand jack array by one"), this);
+    actions[ACTION_EXPAND_ARRAY]->setShortcut(QKeySequence(tr("Ctrl+E")));
+    actions[ACTION_EXPAND_ARRAY]->setStatusTip(tr("Works only for parameter lines with arrays like pitch1...16. "
+                                                     "Grows that array by creating one more line of that type with "
+                                                     "increasing number."));
+
+    actions[ACTION_EXPAND_ARRAY_MAX] = new QAction(tr("Expand jack array to max"), this);
+    actions[ACTION_EXPAND_ARRAY_MAX]->setShortcut(QKeySequence(tr("Shift+Ctrl+D")));
+    actions[ACTION_EXPAND_ARRAY_MAX]->setStatusTip(tr("Works only for parameter lines with arrays like pitch1...16. "
+                                                  "Grows that array to its maximum size by creating all remaining "
+                                                  "parameter lines."));
 
     actions[ACTION_SELECT_ALL] = new QAction(tr("Select all"), this);
     actions[ACTION_SELECT_ALL]->setShortcut(QKeySequence(tr("Ctrl+A")));

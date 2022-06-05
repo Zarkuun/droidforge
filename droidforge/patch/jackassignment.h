@@ -10,6 +10,7 @@
 #include <QSet>
 
 class Patch;
+class Circuit;
 
 typedef enum {
     JACKTYPE_INPUT = 0,
@@ -32,6 +33,7 @@ public:
     bool isDisabled() const { return disabled; };
     QString toString() const;
     QString jackName() const { return jack; };
+    void setJackName(const QString &name) { jack = name; };
     QString getComment() const { return comment; };
     void setComment(const QString &c) { comment = c; };
     void changeJack(QString j) { jack = j; };
@@ -56,7 +58,6 @@ public:
     virtual void parseExpression(const QString &expression) = 0;
     virtual void removeRegisterReferences(RegisterList &rl, int ih, int oh) = 0;
     virtual QList<PatchProblem *> collectProblems(const Patch *patch) const = 0;
-
     static JackAssignment *parseJackLine(const QString &circuit, QString line);
 
 protected:

@@ -41,6 +41,32 @@ void Circuit::insertJackAssignment(JackAssignment *ja, int index)
     jackAssignments.insert(index, ja);
 }
 
+const JackAssignment *Circuit::findJack(const QString name) const
+{
+    for (auto ja: jackAssignments)
+        if (ja->jackName() == name)
+            return ja;
+    return 0;
+}
+
+QString Circuit::nextJackArrayName(const QString &jackName, bool isInput)
+{
+    QString prefix = jackName;
+    while (prefix != "" && prefix.back().isDigit())
+        prefix.chop(1);;
+    unsigned size = the_firmware->jackArraySize(name, prefix, isInput);
+    if (size == 0)
+        return "";
+
+    QString next;
+    for (unsigned i=1; i<=size; i++) {
+        next = prefix + QString::number(i);
+        if (!findJack(next))
+            return next;
+    }
+    return "";
+}
+
 
 void Circuit::deleteJackAssignment(unsigned i)
 {
