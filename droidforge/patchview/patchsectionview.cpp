@@ -1133,6 +1133,11 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     }
 
     ja->replaceAtom(cursor.column, ar.clone());
+    if (currentCircuit()->numJackAssignments() > cursor.row+1) {
+        cursor.row++;
+        section()->setCursor(cursor);
+    }
+    cursor.row++;
     patch->commit(tr("inserting register %1").arg(ar.toString()));
     emit patchModified();
 }
