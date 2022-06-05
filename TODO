@@ -1,7 +1,7 @@
 GROSSE THEMEN:
 
-- Expand Jack Array
 - Button -> LED Warnung oder sowas
+- Button -> make LEDs match buttons
 --> Finally: Deploy (MIDI, SD-Karte)
 
 
@@ -24,17 +24,11 @@ KLEINERE FEATURES:
   diese direkt auswählen.
 
 BUGS:
+- Namensgebung: Soll nicht "Jack" lieber "Parameter" heißen?
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen?
-- add jack: klick auf subjacks geht nicht.
 - "pitch" als input und "pitch1" als output: Erkennung
-   von Jacktyp geht nicht
-- "pitch" und "pitch1": dieses Synonyme. wie kann ich
-  das in den Griff bekommen? Beides erlauben? Ist das
-  nicht verwirrend? oder beim Laden einfach aus "pitch"
-  automatisdch ein "pitch1" machen? Ist wahrscheinlich
-  sauberer. Bei den buttons fällt das ja jetzt eh weg.
-  das war der Hauptgrund, warum ich das erlaubt hab.
+   von Jacktyp geht nicht? Testen
 
 Version 2:
 - Mehrere Dateien gleichzeitig auf haben
