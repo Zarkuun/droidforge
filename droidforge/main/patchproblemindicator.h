@@ -23,6 +23,7 @@ public slots:
     void jumpToNextProblem();
 
 signals:
+    void patchModified();
     void sectionSwitched();
     void cursorMoved();
     void clicked();

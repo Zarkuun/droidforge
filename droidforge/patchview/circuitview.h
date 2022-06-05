@@ -16,14 +16,13 @@ class CircuitView : public QObject, public QGraphicsItem
     const Selection * const *selection;
     float totalWidth;
     float lineHeight;
-    float bottomPadding;
     float jackColumnWidth;
     float atomColumnWidth;
     QGraphicsDropShadowEffect effect;
     QPixmap icon;
 
 public:
-    CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const *selection, float width, unsigned lineHeight, unsigned bottomPadding);
+    CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const *selection, float width, unsigned lineHeight);
     QRectF boundingRect() const override;
     static unsigned minimumWidth();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,

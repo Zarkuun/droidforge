@@ -1,5 +1,6 @@
 #include "patchproblemindicator.h"
 #include "editoractions.h"
+#include "patchoperator.h"
 #include "tuning.h"
 #include "updatehub.h"
 
@@ -22,6 +23,7 @@ PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *pa
     TRIGGER_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::clicked);
 
     // Events that we create
+    connect(this, &PatchProblemIndicator::patchModified, the_hub, &UpdateHub::modifyPatch);
     connect(this, &PatchProblemIndicator::sectionSwitched, the_hub, &UpdateHub::switchSection);
     connect(this, &PatchProblemIndicator::cursorMoved, the_hub, &UpdateHub::moveCursor);
 
@@ -80,9 +82,5 @@ void PatchProblemIndicator::jumpToNextProblem()
     const PatchProblem *problem = patch->problem(currentProblem++);
     if (currentProblem >= patch->numProblems())
         currentProblem = 0;
-    int oldSection = patch->currentSectionIndex();
-    patch->setCursorTo(problem->getSection(), problem->getCursorPosition());
-    if (patch->currentSectionIndex() != oldSection)
-        emit sectionSwitched();
-    emit cursorMoved();
+    the_operator->jumpTo(problem->getSection(), problem->getCursorPosition());
 }

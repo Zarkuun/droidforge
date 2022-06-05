@@ -19,6 +19,7 @@ public:
     void createRecentFileActions(QMenu *);
     void loadFile(const QString &filename, int how);
     void quit();
+    void jumpTo(int sectionIndex, const CursorPosition &pos);
 
 protected:
     PatchSection *section() { return patch->currentSection(); };

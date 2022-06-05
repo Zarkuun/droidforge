@@ -137,6 +137,7 @@
 // Circuit view (in section view)
 #define CIRV_TOP_PADDING                     (2 * STANDARD_SPACING)
 #define CIRV_BOTTOM_PADDING                  CIRV_TOP_PADDING
+#define CIRV_FOLDED_PADDING                  (STANDARD_SPACING / 2)
 #define CIRV_SIDE_PADDING                    (2 * STANDARD_SPACING)
 #define CIRV_COMMENT_PADDING                 (0.5 * STANDARD_SPACING)
 #define CIRV_TEXT_SIDE_PADDING               7

@@ -109,6 +109,19 @@ void PatchOperator::quit()
     if (checkModified())
         exit(0);
 }
+void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
+{
+    int oldSection = patch->currentSectionIndex();
+    patch->setCursorTo(sectionIndex, pos);
+    if (section()->currentCircuit()->isFolded()) {
+        section()->currentCircuit()->setFold(false);
+        emit patchModified();
+    }
+    else if (patch->currentSectionIndex() != oldSection)
+        emit sectionSwitched();
+    else
+        emit cursorMoved();
+}
 void PatchOperator::loadFile(const QString &filePath, int how)
 {
     if (FILE_MODE_LOAD && !checkModified())

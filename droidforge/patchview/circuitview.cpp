@@ -13,13 +13,12 @@
 #define NUM_COLUMNS 4
 
 
-CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const*selection, float width, unsigned lineHeight, unsigned bottomPadding)
+CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const*selection, float width, unsigned lineHeight)
     : circuit(circuit)
     , circuitNumber(circuitNumber)
     , selection(selection)
     , totalWidth(width)
     , lineHeight(lineHeight)
-    , bottomPadding(bottomPadding)
     , icon(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
 {
     effect.setBlurRadius(15);
@@ -58,13 +57,7 @@ float CircuitView::contentHeight() const
 }
 QRectF CircuitView::boundingRect() const
 {
-    // unsigned height = contentHeight() + PATV_CIRCUIT_VERTICAL_MARGIN;
-    return QRectF(
-                0,
-                0,
-                totalWidth,
-                contentHeight() + CIRV_TOP_PADDING + bottomPadding);
-    // TODO: Das Padding nicht hier machen, sondern in PatchSectionView!!
+    return QRectF(0, 0, totalWidth, contentHeight());
 }
 unsigned CircuitView::minimumWidth()
 {

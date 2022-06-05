@@ -122,23 +122,27 @@ void PatchSectionView::buildPatchSection()
     QGraphicsScene *scene = new QGraphicsScene();
 
     int y = 0;
+    bool lastWasFolded = false;
     for (qsizetype i=0; i<section()->circuits.size(); i++)
     {
-        bool isLast = i == section()->circuits.size() - 1;
         Circuit *circuit = section()->circuits[i];
+        // collapse folded circuits nearer together
+        if (circuit->isFolded() && lastWasFolded)
+            y = y - CIRV_BOTTOM_PADDING + CIRV_FOLDED_PADDING;
         CircuitView *cv = new CircuitView(
                     circuit,
                     i,
                     section()->getSelectionPointer(),
                     circuitWidth,
-                    fontMetrics().lineSpacing(),
-                    isLast ? CIRV_TOP_PADDING : 0);
+                    fontMetrics().lineSpacing());
         cv->setData(DATA_INDEX_CIRCUIT, true);
         circuitViews.append(cv);
         scene->addItem(cv);
-        cv->setPos(0, y); // TODO: der erste parameter wirkt nicht
-        y += cv->boundingRect().height();
+        cv->setPos(0, y);
+        lastWasFolded = circuit->isFolded();
+        y += cv->boundingRect().height() + CIRV_BOTTOM_PADDING;
     }
+    scene->addRect(0, y, 10, CIRV_BOTTOM_PADDING, QPen(QColor(0, 0, 0, 0))); // add strut
     scene->addItem(&frameCursor);
     updateCursor();
     setScene(scene);
@@ -338,7 +342,9 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
 
     CursorPosition *curPos = cursorAtMousePosition(pos);
     if (curPos) {
-        if (doubleClick)
+        if (doubleClick && curPos->row == -2)
+            foldUnfold();
+        else if (doubleClick)
             editValueByMouse(*curPos);
         else if (button == Qt::LeftButton)
             handleLeftMousePress(*curPos);
@@ -937,8 +943,7 @@ void PatchSectionView::followCable()
     if (!found)
         return;
 
-    patch->setCursorTo(it.sectionIndex(), it.cursorPosition());
-    emit sectionSwitched();
+    the_operator->jumpTo(it.sectionIndex(), it.cursorPosition());
 }
 void PatchSectionView::editJack(int key)
 {
