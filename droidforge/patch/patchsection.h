@@ -37,6 +37,7 @@ public:
     void moveCursorLeft();
     void moveCursorRight();
     void setCursorRow(int row);
+    void setCursorRowColumn(int row, int column);
     void setCursorColumn(int column);
     void sanitizeCursor();
     void moveCursorToNextCircuit();
@@ -44,6 +45,8 @@ public:
     void addNewCircuit(QString name, jackselection_t jackSelection);
     void addCircuit(int pos, Circuit *circuit);
     void addCircuit(Circuit *circuit);
+    bool allCircuitsFolded() const;
+    void toggleFold();
 
     const Selection *getSelection() const { return selection; };
     const Selection * const *getSelectionPointer() const { return &selection; };

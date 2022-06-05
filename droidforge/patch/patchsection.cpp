@@ -7,23 +7,17 @@
 #include "globals.h"
 
 
-PatchSection::PatchSection()
-    : selection(0)
+PatchSection::PatchSection() : selection(0)
 {
 }
-
-PatchSection::PatchSection(QString t)
-    : title(t)
-    , selection(0)
+PatchSection::PatchSection(QString t) : title(t) , selection(0)
 {
 }
-
 PatchSection::~PatchSection()
 {
     for (qsizetype i=0; i<circuits.length(); i++)
         delete circuits[i];
 }
-
 PatchSection *PatchSection::clone() const
 {
     PatchSection *newsection = new PatchSection(title);
@@ -32,8 +26,6 @@ PatchSection *PatchSection::clone() const
         newsection->circuits.append(circuits[i]->clone());
     return newsection;
 }
-
-
 QString PatchSection::toString() const
 {
     QString s;
@@ -49,7 +41,6 @@ QString PatchSection::toString() const
 
     return s;
 }
-
 QString PatchSection::getNonemptyTitle() const
 {
     if (title.isEmpty())
@@ -57,13 +48,10 @@ QString PatchSection::getNonemptyTitle() const
     else
         return title;
 }
-
-
 void PatchSection::deleteCurrentCircuit()
 {
     deleteCircuit(cursor.circuitNr);
 }
-
 void PatchSection::deleteCircuit(int circuitNumber)
 {
     Circuit *c = circuits[circuitNumber];
@@ -71,33 +59,34 @@ void PatchSection::deleteCircuit(int circuitNumber)
     delete c;
     sanitizeCursor();
 }
-
 void PatchSection::deleteCurrentJackAssignment()
 {
     Circuit *circuit = currentCircuit();
     circuit->deleteJackAssignment(cursor.row);
     sanitizeCursor();
 }
-
 void PatchSection::deleteCurrentComment()
 {
     Circuit *circuit = currentCircuit();
     circuit->removeComment();
     sanitizeCursor();
 }
-
-
 void PatchSection::moveCursorUp()
 {
-    cursor.row --;
+    cursor.row --; // 1 -3 0
     if (cursor.row == -1 && !currentCircuit()->hasComment())
         cursor.row --;
-    if (cursor.row < -2) {
-        cursor.circuitNr--;
-        if (cursor.circuitNr < 0) {
+
+    if (cursor.row < -2) { // move up to previous circuit
+        cursor.circuitNr--; // 0 -3 0
+        if (cursor.circuitNr < 0) { // first circuit
             cursor.circuitNr = 0;
             cursor.row = -2;
         }
+
+        else if (currentCircuit()->isFolded())
+            cursor.row = -2;
+
         else {
             cursor.row = currentCircuit()->numJackAssignments() - 1;
             if (cursor.row == -1 && !currentCircuit()->hasComment())
@@ -105,10 +94,13 @@ void PatchSection::moveCursorUp()
         }
     }
 }
-
-
 void PatchSection::moveCursorDown()
 {
+    if (currentCircuit()->isFolded()) {
+        cursor.circuitNr = qMin(circuits.count() - 1, cursor.circuitNr+1);
+        return;
+    }
+
     int n = currentCircuit()->numJackAssignments();
 
     cursor.row ++;
@@ -126,8 +118,6 @@ void PatchSection::moveCursorDown()
             cursor.row = -2;
     }
 }
-
-
 void PatchSection::moveCursorLeft()
 {
     // In rows with output jacks, always move the cursor
@@ -146,24 +136,27 @@ void PatchSection::moveCursorLeft()
         }
     }
 }
-
 void PatchSection::moveCursorRight()
 {
     cursor.column ++;
     if (cursor.column > 3)
         cursor.column = 3;
 }
-
 void PatchSection::setCursorRow(int row)
 {
     cursor.row = row;
+}
+
+void PatchSection::setCursorRowColumn(int row, int column)
+{
+    cursor.row = row;
+    cursor.column = column;
 }
 
 void PatchSection::setCursorColumn(int column)
 {
     cursor.column = column;
 }
-
 void PatchSection::sanitizeCursor()
 {
     if (cursor.circuitNr >= circuits.size()) {
@@ -182,7 +175,6 @@ void PatchSection::sanitizeCursor()
         cursor.row = -2;
 
 }
-
 void PatchSection::moveCursorToNextCircuit()
 {
     if (cursor.circuitNr < circuits.size()-1) {
@@ -190,8 +182,6 @@ void PatchSection::moveCursorToNextCircuit()
         cursor.row = -2;
     }
 }
-
-
 void PatchSection::moveCursorToPreviousCircuit()
 {
     if (cursor.row > -2)
@@ -199,7 +189,6 @@ void PatchSection::moveCursorToPreviousCircuit()
     else if (cursor.circuitNr > 0)
         cursor.circuitNr --;
 }
-
 void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
 {
     int newPosition;
@@ -226,24 +215,36 @@ void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
     cursor.row = -2;
     cursor.circuitNr = newPosition;
 }
-
 void PatchSection::addCircuit(int pos, Circuit *circuit)
 {
     circuits.insert(pos, circuit);
 }
-
 void PatchSection::addCircuit(Circuit *circuit)
 {
     circuits.append(circuit);
 }
-
+bool PatchSection::allCircuitsFolded() const
+{
+    for (auto circuit: circuits) {
+        if (!circuit->isFolded())
+            return false;
+    }
+    return true;
+}
+void PatchSection::toggleFold()
+{
+    bool fold = !allCircuitsFolded();
+    for (auto circuit: circuits)
+        circuit->setFold(fold);
+    if (currentCircuit()->isFolded())
+        setCursorRowColumn(-2, 0);
+}
 Patch *PatchSection::getSelectionAsPatch() const
 {
     Clipboard cb;
     cb.copyFromSelection(selection, this);
     return cb.getAsPatch();
 }
-
 void PatchSection::clearSelection()
 {
     if (selection) {
@@ -251,7 +252,6 @@ void PatchSection::clearSelection()
         selection = 0;
     }
 }
-
 void PatchSection::selectAll()
 {
     if (selection)
@@ -263,14 +263,12 @@ void PatchSection::selectAll()
     CursorPosition end(circuits.count()-1, circuits[circuits.count()-1]->numJackAssignments()-1, 0);
     selection = new Selection(start, end);
 }
-
 void PatchSection::setMouseSelection(const CursorPosition &to)
 {
     if (selection)
         delete selection;
     selection = new Selection(cursor, to);
 }
-
 void PatchSection::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
 {
     if (selection) {
@@ -289,19 +287,16 @@ void PatchSection::updateKeyboardSelection(const CursorPosition &before, const C
     else
         selection = new Selection(before, after);
 }
-
 void PatchSection::collectCables(QStringList &cables) const
 {
     for (auto circuit: circuits)
         circuit->collectCables(cables);
 }
-
 void PatchSection::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
 {
     for (auto circuit: circuits)
         circuit->findCableConnections(cable, asInput, asOutput);
 }
-
 QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *> allProblems;
@@ -320,7 +315,6 @@ QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
     }
     return allProblems;
 }
-
 Circuit *PatchSection::currentCircuit()
 {
     if (circuits.size())
@@ -328,7 +322,6 @@ Circuit *PatchSection::currentCircuit()
     else
         return 0;
 }
-
 const Circuit *PatchSection::currentCircuit() const
 {
     if (circuits.size())
@@ -336,7 +329,6 @@ const Circuit *PatchSection::currentCircuit() const
     else
         return 0;
 }
-
 const Atom *PatchSection::currentAtom() const
 {
     const Circuit *circuit = currentCircuit();
@@ -345,18 +337,15 @@ const Atom *PatchSection::currentAtom() const
     else
         return 0;
 }
-
 const Atom *PatchSection::atomAt(const CursorPosition &pos)
 {
     return circuits[pos.circuitNr]->atomAt(pos.row, pos.column);
 }
-
 void PatchSection::setAtomAt(const CursorPosition &pos, Atom *atom)
 {
     circuits[pos.circuitNr]->setAtomAt(pos.row, pos.column, atom);
 
 }
-
 JackAssignment *PatchSection::currentJackAssignment()
 {
     Circuit *c = currentCircuit();
@@ -368,7 +357,6 @@ JackAssignment *PatchSection::currentJackAssignment()
     else
         return c->jackAssignment(cursor.row);
 }
-
 const JackAssignment *PatchSection::currentJackAssignment() const
 {
     const Circuit *c = currentCircuit();
@@ -380,7 +368,6 @@ const JackAssignment *PatchSection::currentJackAssignment() const
     else
         return c->jackAssignment(cursor.row);
 }
-
 JackAssignment *PatchSection::jackAssignmentAt(const CursorPosition &pos)
 {
     if (pos.row >= 0)
@@ -391,7 +378,6 @@ JackAssignment *PatchSection::jackAssignmentAt(const CursorPosition &pos)
     else
         return 0;
 }
-
 bool PatchSection::needG8() const
 {
     for (qsizetype i=0; i<circuits.length(); i++)
@@ -399,7 +385,6 @@ bool PatchSection::needG8() const
             return true;
     return false;
 }
-
 bool PatchSection::needX7() const
 {
     for (auto circuit: circuits)
@@ -407,19 +392,16 @@ bool PatchSection::needX7() const
             return true;
     return false;
 }
-
 void PatchSection::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto circuit: circuits)
         circuit->swapControllerNumbers(fromNumber, toNumber);
 }
-
 void PatchSection::shiftControllerNumbers(int number, int by)
 {
     for (auto circuit: circuits)
         circuit->shiftControllerNumbers(number, by);
 }
-
 void PatchSection::collectRegisterAtoms(RegisterList &sl) const
 {
     for (auto circuit: circuits) {
@@ -427,13 +409,11 @@ void PatchSection::collectRegisterAtoms(RegisterList &sl) const
             circuit->collectRegisterAtoms(sl);
     }
 }
-
 void PatchSection::remapRegister(AtomRegister from, AtomRegister to)
 {
     for (auto circuit: circuits)
         circuit->remapRegister(from, to);
 }
-
 void PatchSection::removeRegisterReferences(RegisterList &rl, int ih, int oh)
 {
     for (auto circuit: circuits)

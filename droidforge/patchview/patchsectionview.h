@@ -129,6 +129,8 @@ public slots:
     void zoomReset();
     void zoomIn();
     void zoomOut();
+    void foldUnfold();
+    void foldUnfoldAll();
     void cut();
     void copy();
     void paste();

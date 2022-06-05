@@ -223,6 +223,13 @@ void MainWindow::createViewMenu()
     ADD_ACTION(ACTION_RESET_ZOOM, menu);
     ADD_ACTION(ACTION_ZOOM_IN, menu);
     ADD_ACTION(ACTION_ZOOM_OUT, menu);
+
+    menu->addSeparator();
+
+    ADD_ACTION(ACTION_FOLD_UNFOLD, menu);
+    ADD_ACTION(ACTION_FOLD_UNFOLD_ALL, menu);
+
+    menu->addSeparator(); // separates "Enter full screen" on Mac
 }
 void MainWindow::createRackMenu()
 {

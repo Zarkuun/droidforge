@@ -10,37 +10,31 @@ Circuit::Circuit(QString name, const QStringList &comment, bool disabled)
     : name(name)
     , comment(comment)
     , disabled(disabled)
+    , folded(false)
 {
 }
-
-
 Circuit::~Circuit()
 {
     for (qsizetype i=0; i<jackAssignments.length(); i++)
         delete jackAssignments[i];
 }
-
-
 Circuit *Circuit::clone() const
 {
     Circuit *newcircuit = new Circuit(name, comment, disabled);
     for (unsigned i=0; i<jackAssignments.size(); i++)
         newcircuit->jackAssignments.append(jackAssignments[i]->clone());
+    newcircuit->folded = folded;
     return newcircuit;
 }
-
-
 void Circuit::addJackAssignment(JackAssignment *ja)
 {
     jackAssignments.append(ja);
 
 }
-
 void Circuit::insertJackAssignment(JackAssignment *ja, int index)
 {
     jackAssignments.insert(index, ja);
 }
-
 const JackAssignment *Circuit::findJack(const QString name) const
 {
     for (auto ja: jackAssignments)
@@ -48,7 +42,6 @@ const JackAssignment *Circuit::findJack(const QString name) const
             return ja;
     return 0;
 }
-
 bool Circuit::hasUndefinedJacks() const
 {
     for (auto ja: jackAssignments)
@@ -56,7 +49,6 @@ bool Circuit::hasUndefinedJacks() const
             return true;
     return false;
 }
-
 void Circuit::removeUndefinedJacks()
 {
     for (qsizetype i=0; i<jackAssignments.count(); i++) {
@@ -66,7 +58,6 @@ void Circuit::removeUndefinedJacks()
         }
     }
 }
-
 QString Circuit::nextJackArrayName(const QString &jackName, bool isInput)
 {
     QString prefix = jackName;
@@ -84,19 +75,15 @@ QString Circuit::nextJackArrayName(const QString &jackName, bool isInput)
     }
     return "";
 }
-
-
 void Circuit::deleteJackAssignment(unsigned i)
 {
     delete jackAssignments[i];
     jackAssignments.remove(i);
 }
-
 void Circuit::sortJacks()
 {
     sortJacksFromTo(0, jackAssignments.count() - 1);
 }
-
 void Circuit::sortJacksFromTo(int fromRow, int toRow)
 {
     // Bubble sort rulez
@@ -111,7 +98,6 @@ void Circuit::sortJacksFromTo(int fromRow, int toRow)
         }
     }
 }
-
 const Atom *Circuit::atomAt(int row, int column) const
 {
     if (row < 0 || row >= jackAssignments.count())
@@ -119,7 +105,6 @@ const Atom *Circuit::atomAt(int row, int column) const
     else
         return jackAssignments[row]->atomAt(column);
 }
-
 Atom *Circuit::atomAt(int row, int column)
 {
     if (row < 0 || row >= jackAssignments.count())
@@ -127,24 +112,20 @@ Atom *Circuit::atomAt(int row, int column)
     else
         return jackAssignments[row]->atomAt(column);
 }
-
 void Circuit::setAtomAt(int row, int column, Atom *atom)
 {
     jackAssignments[row]->replaceAtom(column, atom);
 }
-
 void Circuit::collectCables(QStringList &cables) const
 {
     for (auto ja: jackAssignments)
         ja->collectCables(cables);
 }
-
 void Circuit::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
 {
     for (auto ja: jackAssignments)
         ja->findCableConnections(cable, asInput, asOutput);
 }
-
 QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *> allProblems;
@@ -179,8 +160,6 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
     }
     return allProblems;
 }
-
-
 QStringList Circuit::missingJacks(jacktype_t jackType) const
 {
     QStringList jacks = jackType == JACKTYPE_INPUT
@@ -190,13 +169,11 @@ QStringList Circuit::missingJacks(jacktype_t jackType) const
         jacks.removeAll(ja->jackName());
     return jacks;
 }
-
 bool Circuit::hasMissingJacks() const
 {
     return missingJacks(JACKTYPE_INPUT).count() > 0
           || missingJacks(JACKTYPE_OUTPUT).count() > 0;
 }
-
 void Circuit::changeCircuit(QString newCircuit)
 {
     name = newCircuit;
@@ -210,7 +187,6 @@ void Circuit::changeCircuit(QString newCircuit)
     jackAssignments.clear();
     jackAssignments = newJacks;
 }
-
 bool Circuit::needG8() const
 {
     // TODO: Toplevel lösen mit atom-iterator
@@ -220,7 +196,6 @@ bool Circuit::needG8() const
     }
     return false;
 }
-
 bool Circuit::needX7() const
 {
     // TODO: This seems somewhat hacky...
@@ -232,19 +207,16 @@ bool Circuit::needX7() const
     }
     return false;
 }
-
 void Circuit::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto ja: jackAssignments)
         ja->swapControllerNumbers(fromNumber, toNumber);
 }
-
 void Circuit::shiftControllerNumbers(int number, int by)
 {
     for (auto ja: jackAssignments)
         ja->shiftControllerNumbers(number, by);
 }
-
 void Circuit::collectRegisterAtoms(RegisterList &sl) const
 {
     for (auto ja: jackAssignments) {
@@ -252,20 +224,17 @@ void Circuit::collectRegisterAtoms(RegisterList &sl) const
             ja->collectRegisterAtoms(sl);
     }
 }
-
 void Circuit::remapRegister(AtomRegister from, AtomRegister to)
 {
     for (auto ja: jackAssignments)
         ja->remapRegister(from, to);
 }
-
 void Circuit::removeRegisterReferences(RegisterList &rl, int ih, int oh)
 {
     for (auto ja: jackAssignments)
         ja->removeRegisterReferences(rl, ih, oh);
 
 }
-
 QString Circuit::toString()
 {
     QString s;
@@ -287,7 +256,6 @@ QString Circuit::toString()
     s += "\n";
     return s;
 }
-
 QString Circuit::getComment() const
 {
     if (comment.empty())
@@ -295,19 +263,16 @@ QString Circuit::getComment() const
     else
         return comment.join('\n') + "\n";
 }
-
 void Circuit::setDisabledWithJacks(bool d)
 {
     disabled = d;
     for (auto ja: jackAssignments)
         ja->setDisabled(d);
 }
-
 void Circuit::setComment(QString c)
 {
     comment = c.trimmed().split("\n");
 }
-
 void Circuit::removeComment()
 {
     comment.clear();

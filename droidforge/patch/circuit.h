@@ -24,6 +24,7 @@ class Circuit
     QStringList comment;
     QList<JackAssignment *> jackAssignments;
     bool disabled;
+    bool folded;
 
 public:
     Circuit(QString name, const QStringList &comment, bool disabled);
@@ -33,6 +34,9 @@ public:
     QString getName() const { return name; };
     QString getComment() const;
     bool isDisabled() const { return disabled; };
+    bool isFolded() const { return folded; };
+    void toggleFold() { folded = !folded; };
+    void setFold(bool f) { folded = f; };
     void setDisabledWithJacks(bool d);
     void setEnabled() { disabled = false; };
     void setComment(QString c);

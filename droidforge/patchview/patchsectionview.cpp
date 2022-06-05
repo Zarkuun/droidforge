@@ -84,7 +84,6 @@ PatchSectionView::~PatchSectionView()
     if (atomSelectorDialog)
         delete atomSelectorDialog;
 }
-
 void PatchSectionView::connectActions()
 {
     CONNECT_ACTION(ACTION_CUT, &PatchSectionView::cut);
@@ -110,12 +109,13 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
     CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchSectionView::zoomOut);
+    CONNECT_ACTION(ACTION_FOLD_UNFOLD, &PatchSectionView::foldUnfold);
+    CONNECT_ACTION(ACTION_FOLD_UNFOLD_ALL, &PatchSectionView::foldUnfoldAll);
     CONNECT_ACTION(ACTION_START_PATCHING, &PatchSectionView::startPatching);
     CONNECT_ACTION(ACTION_FINISH_PATCHING, &PatchSectionView::finishPatching);
     CONNECT_ACTION(ACTION_ABORT_PATCHING, &PatchSectionView::abortPatching);
     CONNECT_ACTION(ACTION_FOLLOW_CABLE, &PatchSectionView::followCable);
 }
-
 void PatchSectionView::buildPatchSection()
 {
     unsigned circuitWidth = viewport()->width() / zoomFactor;
@@ -143,19 +143,29 @@ void PatchSectionView::buildPatchSection()
     updateCursor();
     setScene(scene);
 }
-
 void PatchSectionView::updateProblemMarkers()
 {
+    QSet<int> foldedProblemCircuits;
+
     clearMarkers(DATA_INDEX_PROBLEM);
     for (auto problem: patch->allProblems())
     {
         if (problem->getSection() == patch->currentSectionIndex()) { // TODO: HACK!!
             const CursorPosition &pos = problem->getCursorPosition();
-            placeMarker(pos, DATA_INDEX_PROBLEM, problem->getReason());
+            Circuit *circuit = section()->circuit(pos.circuitNr);
+            if (circuit->isFolded())
+                foldedProblemCircuits.insert(pos.circuitNr);
+            else
+                placeMarker(pos, DATA_INDEX_PROBLEM, problem->getReason());
         }
     }
-}
 
+    // add problem markers for folded circuits
+    for (int circuitNr: foldedProblemCircuits) {
+        CursorPosition pos(circuitNr, -2, 0);
+        placeMarker(pos, DATA_INDEX_PROBLEM, tr("There are problems in this circuit"));
+    }
+}
 void PatchSectionView::updateInfoMarkers()
 {
     clearMarkers(DATA_INDEX_INFO);
@@ -173,13 +183,11 @@ void PatchSectionView::updateInfoMarkers()
         }
     }
 }
-
 void PatchSectionView::clickOnInfoMarker(const InfoMarker *info)
 {
     const CursorPosition &pos = info->cursorPosition();
     editJackCommentAt(pos);
 }
-
 void PatchSectionView::editJackCommentAt(const CursorPosition &pos)
 {
     JackAssignment *ja = section()->jackAssignmentAt(pos);
@@ -194,12 +202,10 @@ void PatchSectionView::editJackCommentAt(const CursorPosition &pos)
         emit patchModified();
     }
 }
-
 void PatchSectionView::editJackComment()
 {
     editJackCommentAt(section()->cursorPosition());
 }
-
 void PatchSectionView::placeMarker(const CursorPosition &pos, int which, const QString &toolTip)
 {
     CircuitView *cv = circuitViews[pos.circuitNr];
@@ -217,7 +223,6 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, int which, const Q
               cv->pos().y() + rect.top());
     marker->setPos(p);
 }
-
 void PatchSectionView::clearMarkers(int which)
 {
     for (auto item: scene()->items()) {
@@ -226,14 +231,12 @@ void PatchSectionView::clearMarkers(int which)
         }
     }
 }
-
 void PatchSectionView::deletePatchSection()
 {
     for (unsigned i=0; i<circuitViews.size(); i++)
         delete circuitViews[i];
     circuitViews.clear();
 }
-
 void PatchSectionView::rebuildPatchSection()
 {
     deletePatchSection();
@@ -242,7 +245,6 @@ void PatchSectionView::rebuildPatchSection()
     updateInfoMarkers();
     updateCursor();
 }
-
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 {
     int key = event->key();
@@ -283,17 +285,14 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
     }
     return true;
 }
-
 void PatchSectionView::mousePressEvent(QMouseEvent *event)
 {
     mouseClick(event->pos(), event->button(), false);
 }
-
 void PatchSectionView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     mouseClick(event->pos(), event->button(), true);
 }
-
 CursorPosition *PatchSectionView::cursorAtMousePosition(QPoint pos) const
 {
     // itemAt() applies the transformation of the graphics
@@ -325,7 +324,6 @@ CursorPosition *PatchSectionView::cursorAtMousePosition(QPoint pos) const
     }
     return 0;
 }
-
 void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
 {
     // Click on little "info" icon
@@ -351,12 +349,10 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
         handleRightMousePress(0);
     delete curPos;
 }
-
 void PatchSectionView::changeSelection()
 {
     rebuildPatchSection();
 }
-
 void PatchSectionView::modifyPatch()
 {
     setBackgroundBrush(COLOR(COLOR_PATCH_BACKGROUND));
@@ -369,22 +365,18 @@ void PatchSectionView::modifyPatch()
     buildPatchSection();
     rebuildPatchSection();
 }
-
 void PatchSectionView::switchSection()
 {
     rebuildPatchSection();
 }
-
 void PatchSectionView::moveCursor()
 {
     updateCursor();
 }
-
 void PatchSectionView::changePatching()
 {
     updateCursor();
 }
-
 void PatchSectionView::newCircuit()
 {
     jackselection_t jackSelection;
@@ -395,7 +387,6 @@ void PatchSectionView::newCircuit()
         emit patchModified();
     }
 }
-
 void PatchSectionView::addJack()
 {
     if (section()->isEmpty())
@@ -416,18 +407,15 @@ void PatchSectionView::addJack()
     patch->commit(tr("adding new jack '%1'").arg(name));
     emit patchModified();
 }
-
 void PatchSectionView::cut()
 {
     copyToClipboard();
     deleteCursorOrSelection();
 }
-
 void PatchSectionView::copy()
 {
     copyToClipboard();
 }
-
 void PatchSectionView::paste()
 {
     if (the_clipboard->numCircuits())
@@ -447,7 +435,6 @@ void PatchSectionView::paste()
         // Should never happen
     }
 }
-
 void PatchSectionView::pasteSmart()
 {
     Patch *pastedPatch = the_clipboard->getAsPatch();
@@ -466,7 +453,6 @@ void PatchSectionView::pasteSmart()
     patch->commit(tr("smart pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
 }
-
 void PatchSectionView::expandArray(bool max)
 {
     Circuit *circuit = section()->currentCircuit();
@@ -491,12 +477,10 @@ void PatchSectionView::expandArray(bool max)
     patch->commit(tr("expanding jack array"));
     emit patchModified();
 }
-
 void PatchSectionView::expandArrayMax()
 {
     expandArray(true);
 }
-
 void PatchSectionView::addMissingJacks()
 {
     Circuit *circuit = currentCircuit();
@@ -507,7 +491,6 @@ void PatchSectionView::addMissingJacks()
     patch->commit(tr("adding missing jacks"));
     emit patchModified();
 }
-
 void PatchSectionView::removeUndefinedJacks()
 {
     currentCircuit()->removeUndefinedJacks();
@@ -515,7 +498,6 @@ void PatchSectionView::removeUndefinedJacks()
     section()->sanitizeCursor();
     emit patchModified();
 }
-
 void PatchSectionView::sortJacks()
 {
     const Selection *selection = section()->getSelection();
@@ -540,23 +522,19 @@ void PatchSectionView::sortJacks()
     patch->commit(tr("sorting jacks"));
     emit patchModified();
 }
-
 void PatchSectionView::selectAll()
 {
     section()->selectAll();
     emit selectionChanged();
 }
-
 void PatchSectionView::disableObjects()
 {
     enableDisableObjects(false);
 }
-
 void PatchSectionView::enableObjects()
 {
     enableDisableObjects(true);
 }
-
 void PatchSectionView::enableDisableObjects(bool enable)
 {
     // Important: There *never* must be an enabled jack on
@@ -610,7 +588,6 @@ void PatchSectionView::enableDisableObjects(bool enable)
         }
     }
 }
-
 void PatchSectionView::pasteCircuitsFromClipboard()
 {
     int position = 0;
@@ -623,7 +600,6 @@ void PatchSectionView::pasteCircuitsFromClipboard()
     patch->commit(tr("pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
 }
-
 void PatchSectionView::pasteCommentFromClipboard()
 {
     QString comment = the_clipboard->getComment();
@@ -633,7 +609,6 @@ void PatchSectionView::pasteCommentFromClipboard()
         emit patchModified();
     }
 }
-
 void PatchSectionView::pasteJacksFromClipboard()
 {
     const QList<JackAssignment *> &jas = the_clipboard->getJackAssignment();
@@ -660,7 +635,6 @@ void PatchSectionView::pasteJacksFromClipboard()
     patch->commit(tr("pasting %1 jack assignments").arg(jas.count()));
     emit patchModified();
 }
-
 void PatchSectionView::pasteAtomsFromClipboard()
 {
     JackAssignment *ja = currentJackAssignment();
@@ -692,22 +666,31 @@ void PatchSectionView::pasteAtomsFromClipboard()
     patch->commit(tr("pasting parameters"));
     emit patchModified();
 }
-
 void PatchSectionView::zoomReset()
 {
     changeZoom(0);
 }
-
 void PatchSectionView::zoomIn()
 {
     changeZoom(1);
 }
-
 void PatchSectionView::zoomOut()
 {
     changeZoom(-1);
 }
-
+void PatchSectionView::foldUnfold()
+{
+    clearSelection();
+    currentCircuit()->toggleFold();
+    section()->setCursorRowColumn(-2, 0);
+    emit patchModified();
+}
+void PatchSectionView::foldUnfoldAll()
+{
+    clearSelection();
+    section()->toggleFold();
+    emit patchModified();
+}
 void PatchSectionView::changeZoom(int how)
 {
     if (how == 0)
@@ -719,7 +702,6 @@ void PatchSectionView::changeZoom(int how)
     settings.setValue("patchwindow/zoom", zoomLevel);
     setZoom(zoomLevel);
 }
-
 void PatchSectionView::setZoom(int zoom)
 {
     zoomFactor = pow(ZOOM_STEP, double(zoom));
@@ -729,7 +711,6 @@ void PatchSectionView::setZoom(int zoom)
     rebuildPatchSection();
     setMinimumWidth(CircuitView::minimumWidth() * zoomFactor + ASSUMED_SCROLLBAR_WIDTH);
 }
-
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 {
     if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier) {
@@ -741,7 +722,6 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
         emit cursorMoved();
     }
 }
-
 void PatchSectionView::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton) {
@@ -753,7 +733,6 @@ void PatchSectionView::mouseMoveEvent(QMouseEvent *event)
         }
     }
 }
-
 void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 {
     QMenu *menu = new QMenu(this);
@@ -784,6 +763,13 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 
         menu->addSeparator();
 
+        ADD_ACTION_IF_ENABLED(ACTION_RENAME_CABLE, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_START_PATCHING, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_FINISH_PATCHING, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_ABORT_PATCHING, menu);
+
+        menu->addSeparator();
+
         ADD_ACTION(ACTION_SORT_JACKS, menu);
         ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
         ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);
@@ -803,33 +789,27 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 
         menu->addSeparator();
 
+        ADD_ACTION(ACTION_FOLD_UNFOLD, menu);
+        ADD_ACTION(ACTION_FOLD_UNFOLD_ALL, menu);
         ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_CABLE, menu);
-        ADD_ACTION_IF_ENABLED(ACTION_RENAME_CABLE, menu);
-        ADD_ACTION_IF_ENABLED(ACTION_START_PATCHING, menu);
-        ADD_ACTION_IF_ENABLED(ACTION_FINISH_PATCHING, menu);
-        ADD_ACTION_IF_ENABLED(ACTION_ABORT_PATCHING, menu);
     }
 
     menu->setAttribute(Qt::WA_DeleteOnClose);
     menu->popup(QCursor::pos());
 }
-
 void PatchSectionView::resizeEvent(QResizeEvent *)
 {
     rebuildPatchSection();
 }
-
 void PatchSectionView::showEvent(QShowEvent *)
 {
     // updateCableIndicator(); Was macht das Hier/??
 }
-
 PatchView *PatchSectionView::patchView()
 {
     // TODO: Das hier ist der Megahack.
     return (PatchView *)parent()->parent();
 }
-
 JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
 {
     Circuit *circuit = currentCircuit();
@@ -841,7 +821,6 @@ JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
     else
         return new JackAssignmentUnknown(name);
 }
-
 QChar PatchSectionView::keyToChar(int key)
 {
     if (key >= 0 && key <= 127)
@@ -849,7 +828,6 @@ QChar PatchSectionView::keyToChar(int key)
     else
         return ' ';
 }
-
 void PatchSectionView::copyToClipboard()
 {
     const Selection *selection = section()->getSelection();
@@ -862,7 +840,6 @@ void PatchSectionView::copyToClipboard()
     }
     emit clipboardChanged();
 }
-
 void PatchSectionView::createSectionFromSelection()
 {
     QString newname = NameChooseDialog::getName(tr("Create new section from selection"), tr("New name:"));
@@ -880,13 +857,11 @@ void PatchSectionView::createSectionFromSelection()
     patch->commit(tr("moving circuits into new section"));
     emit patchModified();
 }
-
 void PatchSectionView::startPatching()
 {
     patch->startPatching();
     emit patchingChanged();
 }
-
 void PatchSectionView::finishPatching()
 {
     Q_ASSERT(patch->isPatching());
@@ -918,13 +893,11 @@ void PatchSectionView::finishPatching()
     emit patchingChanged();
     emit patchModified();
 }
-
 void PatchSectionView::abortPatching()
 {
     patch->stopPatching();
     emit patchingChanged();
 }
-
 void PatchSectionView::followCable()
 {
     const Atom *currentAtom = patch->currentAtom();
@@ -967,7 +940,6 @@ void PatchSectionView::followCable()
     patch->setCursorTo(it.sectionIndex(), it.cursorPosition());
     emit sectionSwitched();
 }
-
 void PatchSectionView::editJack(int key)
 {
     if (key)
@@ -996,20 +968,15 @@ void PatchSectionView::editJack(int key)
         emit patchModified();
     }
 }
-
-
 QString PatchSectionView::currentCircuitName() const
 {
     // TODO: Wenn es keinen current circuit gibt.
     return currentCircuit()->getName();
 }
-
 QStringList PatchSectionView::usedJacks() const
 {
     return currentCircuitView()->usedJacks();
 }
-
-
 void PatchSectionView::editValue(int key)
 {
     if (isEmpty())
@@ -1027,16 +994,12 @@ void PatchSectionView::editValue(int key)
     else
         editAtom(key);
 }
-
-
 void PatchSectionView::editValueByMouse(CursorPosition &pos)
 {
     section()->setCursor(pos);
     emit cursorMoved();
     editValue(0);
 }
-
-
 void PatchSectionView::editAtom(int key)
 {
     if (key == 0 && patch->isPatching()) {
@@ -1071,7 +1034,6 @@ void PatchSectionView::editAtom(int key)
         emit patchModified();
     }
 }
-
 void PatchSectionView::editCircuitComment(int key)
 {
     Circuit *circuit = currentCircuit();
@@ -1092,7 +1054,6 @@ void PatchSectionView::editCircuitComment(int key)
         emit patchModified();
     }
 }
-
 void PatchSectionView::renameCable()
 {
     const Atom *atom = currentAtom();
@@ -1128,18 +1089,15 @@ void PatchSectionView::renameCable()
     patch->commit(tr("renaming cable '%1' to '%2'").arg(oldName).arg(newName));
     emit patchModified();
 }
-
 bool PatchSectionView::isEmpty() const
 {
     return section()->circuits.empty();
 }
-
 void PatchSectionView::updateCircuits()
 {
     for (unsigned i=0; i<circuitViews.size(); i++)
         circuitViews[i]->update();
 }
-
 void PatchSectionView::clickOnRegister(AtomRegister ar)
 {
     CursorPosition cursor = section()->cursorPosition();
@@ -1169,7 +1127,6 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     patch->commit(tr("inserting register %1").arg(ar.toString()));
     emit patchModified();
 }
-
 void PatchSectionView::clockTick()
 {
     if (needScrollbarAdaption) {
@@ -1215,9 +1172,6 @@ void PatchSectionView::clockTick()
         }
     }
 }
-
-// Repositions the frameCursor so that it matches the current
-// cursor position in the current section
 void PatchSectionView::updateCursor()
 {
     if (currentCircuit()) {
@@ -1242,25 +1196,21 @@ void PatchSectionView::updateCursor()
     else
         frameCursor.setVisible(false);
 }
-
 void PatchSectionView::setMouseSelection(const CursorPosition &to)
 {
     section()->setMouseSelection(to);
     emit selectionChanged();
 }
-
 void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
 {
     section()->updateKeyboardSelection(before, after);
     emit selectionChanged();
 }
-
 void PatchSectionView::clearSelection()
 {
     section()->clearSelection();
     emit selectionChanged();
 }
-
 CircuitView *PatchSectionView::currentCircuitView()
 {
     if (circuitViews.isEmpty())
@@ -1268,7 +1218,6 @@ CircuitView *PatchSectionView::currentCircuitView()
     else
         return circuitViews[section()->cursorPosition().circuitNr];
 }
-
 const CircuitView *PatchSectionView::currentCircuitView() const
 {
     if (circuitViews.isEmpty())
@@ -1276,25 +1225,19 @@ const CircuitView *PatchSectionView::currentCircuitView() const
     else
         return circuitViews[section()->cursorPosition().circuitNr];
 }
-
-
 Circuit *PatchSectionView::currentCircuit()
 {
     return section() ? section()->currentCircuit() : 0;
 
 }
-
 const Circuit *PatchSectionView::currentCircuit() const
 {
     return section() ? section()->currentCircuit() : 0;
 }
-
-
 JackAssignment *PatchSectionView::currentJackAssignment()
 {
     return section()->currentJackAssignment();
 }
-
 void PatchSectionView::moveCursorPageUpDown(int whence)
 {
     if (whence == -1)
@@ -1303,7 +1246,6 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
         section()->moveCursorToNextCircuit();
     emit cursorMoved();
 }
-
 void PatchSectionView::deleteCursorOrSelection()
 {
     if (section()->getSelection()) {
@@ -1339,8 +1281,6 @@ void PatchSectionView::deleteCursorOrSelection()
         deleteCurrentRow();
     }
 }
-
-
 void PatchSectionView::deleteCurrentRow()
 {
     if (isEmpty())
@@ -1356,7 +1296,6 @@ void PatchSectionView::deleteCurrentRow()
     else
         deleteCurrentAtom();
 }
-
 void PatchSectionView::deleteCurrentCircuit()
 {
     QString name = currentCircuit()->getName().toUpper();
@@ -1364,7 +1303,6 @@ void PatchSectionView::deleteCurrentCircuit()
     patch->commit(tr("deleting circuit '%1'").arg(name));
     emit patchModified();
 }
-
 void PatchSectionView::deleteMultipleCircuits(int from, int to)
 {
     for (int i=to; i>=from; i--)
@@ -1372,14 +1310,12 @@ void PatchSectionView::deleteMultipleCircuits(int from, int to)
     patch->commit(tr("deleting %1 circuits").arg(to - from + 1));
     emit patchModified();
 }
-
 void PatchSectionView::deleteCurrentComment()
 {
     section()->deleteCurrentComment();
     patch->commit(tr("deleting comment"));
     emit patchModified();
 }
-
 void PatchSectionView::deleteCurrentJack()
 {
     QString jackName = currentJackAssignment()->jackName();
@@ -1387,7 +1323,6 @@ void PatchSectionView::deleteCurrentJack()
     patch->commit(tr("deleting assignment of jack '%1'").arg(jackName));
     emit patchModified();
 }
-
 void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
 {
     for (int i=to; i>=from; i--)
@@ -1396,7 +1331,6 @@ void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
     patch->commit(tr("deleting %1 jack assignments").arg(to - from + 1));
     emit patchModified();
 }
-
 const Atom *PatchSectionView::currentAtom() const
 {
     const JackAssignment *ja = section()->currentJackAssignment();
@@ -1407,7 +1341,6 @@ const Atom *PatchSectionView::currentAtom() const
         return ja->atomAt(column);
     }
 }
-
 Atom *PatchSectionView::currentAtom()
 {
     // TODO: Kann man hier nicht Copy & Paste vermeiden?
@@ -1419,18 +1352,15 @@ Atom *PatchSectionView::currentAtom()
         return ja->atomAt(column);
     }
 }
-
 bool PatchSectionView::atomCellSelected() const
 {
     const CursorPosition &cp = section()->cursorPosition();
     return (cp.row >= 0 && cp.column > 0);
 }
-
 const CursorPosition &PatchSectionView::getCursorPosition() const
 {
     return section()->cursorPosition();
 }
-
 void PatchSectionView::deleteCurrentAtom()
 {
     JackAssignment *ja = section()->currentJackAssignment();
@@ -1442,7 +1372,6 @@ void PatchSectionView::deleteCurrentAtom()
         emit patchModified();
     }
 }
-
 void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int to)
 {
     Circuit *circuit = section()->circuit(circuitNr);
@@ -1459,7 +1388,6 @@ void PatchSectionView::deleteMultipleAtoms(int circuitNr, int row, int from, int
         emit patchModified();
     }
 }
-
 void PatchSectionView::editCircuit(int key)
 {
     if (key)
@@ -1474,7 +1402,6 @@ void PatchSectionView::editCircuit(int key)
         emit patchModified();
     }
 }
-
 void PatchSectionView::moveCursorLeftRight(int whence)
 {
     if (isEmpty())
@@ -1486,7 +1413,6 @@ void PatchSectionView::moveCursorLeftRight(int whence)
         section()->moveCursorRight();
     emit cursorMoved();
 }
-
 void PatchSectionView::moveCursorUpDown(int whence)
 {
     if (isEmpty())

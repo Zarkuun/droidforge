@@ -93,6 +93,9 @@ void EditorActions::moveCursor()
     actions[ACTION_ADD_MISSING_JACKS]->setEnabled(circuit && circuit->hasMissingJacks());
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setEnabled(circuit && circuit->hasUndefinedJacks());
     updateDisablingActions();
+
+    actions[ACTION_FOLD_UNFOLD]->setEnabled(circuit);
+    actions[ACTION_FOLD_UNFOLD_ALL]->setEnabled(circuit);
 }
 void EditorActions::updateDisablingActions()
 {
@@ -319,7 +322,6 @@ void EditorActions::createActions()
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("Merge with previous section"));
 
     actions[ACTION_MERGE_WITH_NEXT_SECTION] = new QAction(tr("Merge with next section"));
-
     actions[ACTION_MERGE_ALL_SECTIONS] = new QAction(tr("Merge all sections into one"));
 
     actions[ACTION_RESET_ZOOM] = new QAction(ICON("zoom_in"), tr("Normal font size"), this);
@@ -330,6 +332,12 @@ void EditorActions::createActions()
 
     actions[ACTION_ZOOM_OUT] = new QAction(ICON("zoom_out"), tr("Outcrease font size"), this);
     actions[ACTION_ZOOM_OUT]->setShortcuts(QKeySequence::ZoomOut);
+
+    actions[ACTION_FOLD_UNFOLD] = new QAction(ICON("format_line_spacing"), tr("Fold / unfold circuit"), this);
+    actions[ACTION_FOLD_UNFOLD]->setShortcut(QKeySequence(tr("Space")));
+
+    actions[ACTION_FOLD_UNFOLD_ALL] = new QAction(tr("Fold / unfold all circuits"), this);
+    actions[ACTION_FOLD_UNFOLD_ALL]->setShortcut(QKeySequence(tr("Shift+Space")));
 
     actions[ACTION_ADD_CONTROLLER] = new QAction(ICON("keyboard"), tr("&New controller..."), this);
     actions[ACTION_ADD_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));

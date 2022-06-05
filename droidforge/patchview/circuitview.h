@@ -35,6 +35,7 @@ public:
     int jackAt(unsigned y);
 
 private:
+    bool isFolded() const { return circuit->isFolded(); };
     void paintJacks(QPainter *painter);
     void paintJack(QPainter *painter, JackAssignment *ja, unsigned row);
     void paintOperator(QPainter *painter, unsigned x, unsigned y, QString o);
@@ -53,6 +54,10 @@ private:
     float column123Width() const;
     float columnPosition(int c) const;
     float operatorPosition(int o) const; // o is 0 or 1
+    void paintHeader(QPainter *painter);
+    void paintComment(QPainter *painter);
+    void paintLines(QPainter *painter);
+    void paintSelection(QPainter *painter);
 };
 
 #endif // CIRCUITVIEW_H
