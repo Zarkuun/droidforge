@@ -93,6 +93,9 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
     CONNECT_ACTION(ACTION_EXPAND_ARRAY, &PatchSectionView::expandArray);
     CONNECT_ACTION(ACTION_EXPAND_ARRAY_MAX, &PatchSectionView::expandArrayMax);
+    CONNECT_ACTION(ACTION_ADD_MISSING_JACKS, &PatchSectionView::addMissingJacks);
+    CONNECT_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, &PatchSectionView::removeUndefinedJacks);
+
     CONNECT_ACTION(ACTION_SELECT_ALL, &PatchSectionView::selectAll);
     CONNECT_ACTION(ACTION_SORT_JACKS, &PatchSectionView::sortJacks);
     CONNECT_ACTION(ACTION_DISABLE, &PatchSectionView::disableObjects);
@@ -494,6 +497,18 @@ void PatchSectionView::expandArrayMax()
     expandArray(true);
 }
 
+void PatchSectionView::addMissingJacks()
+{
+shoutfunc;
+}
+
+void PatchSectionView::removeUndefinedJacks()
+{
+    currentCircuit()->removeUndefinedJacks();
+    patch->commit(tr("removing undefined jacks"));
+    emit patchModified();
+}
+
 void PatchSectionView::sortJacks()
 {
     const Selection *selection = section()->getSelection();
@@ -757,10 +772,16 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_COPY, menu);
         ADD_ACTION(ACTION_PASTE, menu);
         ADD_ACTION(ACTION_PASTE_SMART, menu);
-        ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
-        ADD_ACTION(ACTION_SORT_JACKS, menu);
         ADD_ACTION(ACTION_DISABLE, menu);
         ADD_ACTION(ACTION_ENABLE, menu);
+
+        menu->addSeparator();
+
+        ADD_ACTION(ACTION_SORT_JACKS, menu);
+        ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
+        ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);
+        ADD_ACTION(ACTION_ADD_MISSING_JACKS, menu);
+        ADD_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, menu);
 
         menu->addSeparator();
 

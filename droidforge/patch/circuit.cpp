@@ -49,6 +49,24 @@ const JackAssignment *Circuit::findJack(const QString name) const
     return 0;
 }
 
+bool Circuit::hasUndefinedJacks() const
+{
+    for (auto ja: jackAssignments)
+        if (ja->isUndefined())
+            return true;
+    return false;
+}
+
+void Circuit::removeUndefinedJacks()
+{
+    for (qsizetype i=0; i<jackAssignments.count(); i++) {
+        if (jackAssignments[i]->isUndefined()) {
+            jackAssignments.remove(i);
+            i--;
+        }
+    }
+}
+
 QString Circuit::nextJackArrayName(const QString &jackName, bool isInput)
 {
     QString prefix = jackName;

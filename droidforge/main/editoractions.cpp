@@ -90,6 +90,7 @@ void EditorActions::moveCursor()
                     ja->jackName(), ja->jackType() == JACKTYPE_INPUT) != "";
     actions[ACTION_EXPAND_ARRAY]->setEnabled(expandPossible);
     actions[ACTION_EXPAND_ARRAY_MAX]->setEnabled(expandPossible);
+    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setEnabled(circuit && circuit->hasUndefinedJacks());
     updateDisablingActions();
 }
 void EditorActions::updateDisablingActions()
@@ -237,10 +238,18 @@ void EditorActions::createActions()
                                                      "increasing number."));
 
     actions[ACTION_EXPAND_ARRAY_MAX] = new QAction(tr("Expand jack array to max"), this);
-    actions[ACTION_EXPAND_ARRAY_MAX]->setShortcut(QKeySequence(tr("Shift+Ctrl+D")));
+    actions[ACTION_EXPAND_ARRAY_MAX]->setShortcut(QKeySequence(tr("Shift+Ctrl+E")));
     actions[ACTION_EXPAND_ARRAY_MAX]->setStatusTip(tr("Works only for parameter lines with arrays like pitch1...16. "
                                                   "Grows that array to its maximum size by creating all remaining "
                                                   "parameter lines."));
+
+    actions[ACTION_ADD_MISSING_JACKS] = new QAction(tr("Add remaining jacks"), this);
+    actions[ACTION_ADD_MISSING_JACKS]->setShortcut(QKeySequence(tr("Ctrl+U")));
+    actions[ACTION_ADD_MISSING_JACKS]->setStatusTip(tr("Adds all jacks of this circuit that are not already defined."));
+
+    actions[ACTION_REMOVE_UNDEFINED_JACKS] = new QAction(tr("Remove undefined jacks"), this);
+    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setShortcut(QKeySequence(tr("Shift+Ctrl+U")));
+    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setStatusTip(tr("Rmoves all jacks in your definition that have not assigned values to them"));
 
     actions[ACTION_SELECT_ALL] = new QAction(tr("Select all"), this);
     actions[ACTION_SELECT_ALL]->setShortcut(QKeySequence(tr("Ctrl+A")));

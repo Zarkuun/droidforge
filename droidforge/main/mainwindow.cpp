@@ -1,5 +1,5 @@
-#include "mainwindow.h"
 #include "globals.h"
+#include "mainwindow.h"
 #include "parseexception.h"
 #include "patch.h"
 #include "rackview.h"
@@ -173,12 +173,17 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_COPY, menu);
     ADD_ACTION(ACTION_PASTE, menu);
     ADD_ACTION(ACTION_PASTE_SMART, menu);
-    ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
-    ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);
     ADD_ACTION(ACTION_SELECT_ALL, menu);
-    ADD_ACTION(ACTION_SORT_JACKS, menu);
     ADD_ACTION(ACTION_DISABLE, menu);
     ADD_ACTION(ACTION_ENABLE, menu);
+
+    menu->addSeparator();
+
+    ADD_ACTION(ACTION_SORT_JACKS, menu);
+    ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
+    ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);
+    ADD_ACTION(ACTION_ADD_MISSING_JACKS, menu);
+    ADD_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, menu);
 
     menu->addSeparator();
 

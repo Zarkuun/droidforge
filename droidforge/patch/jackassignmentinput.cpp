@@ -331,6 +331,10 @@ QList<PatchProblem *> JackAssignmentInput::collectProblems(const Patch *patch) c
     return problems;
 }
 
+bool JackAssignmentInput::isUndefined() const
+{
+    return atomA == 0 && atomB == 0 && atomC == 0;
+}
 
 Atom *JackAssignmentInput::parseOnOff(QString s)
 {
@@ -341,7 +345,6 @@ Atom *JackAssignmentInput::parseOnOff(QString s)
     else
         return 0;
 }
-
 
 Atom *JackAssignmentInput::parseNumber(QString s)
 {

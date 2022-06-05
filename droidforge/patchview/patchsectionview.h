@@ -135,6 +135,8 @@ public slots:
     void pasteSmart();
     void expandArray(bool max = false);
     void expandArrayMax();
+    void addMissingJacks();
+    void removeUndefinedJacks();
     void sortJacks();
     void selectAll();
     void disableObjects();

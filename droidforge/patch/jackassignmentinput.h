@@ -24,6 +24,7 @@ public:
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     static Atom *parseInputAtom(const QString &s);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
+    bool isUndefined() const;
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_INPUT; };

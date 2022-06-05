@@ -99,7 +99,10 @@ ColorScheme::ColorScheme(QWidget *parent)
     item->setData(1, RACV_REGMARKER_PEN_COLOR);
 
     item = new QListWidgetItem(tr("Rackview: register hilites BG"), list);
-    item->setData(1, RACV_REGHILITES_BACKGROUND);
+    item->setData(1, RACV_REGHILITES_BG);
+
+    item = new QListWidgetItem(tr("Rackview: register hilites inactive BG"), list);
+    item->setData(1, RACV_REGHILITES_INACTIVE_BG);
 
     item = new QListWidgetItem(tr("Rackview: register hilites border"), list);
     item->setData(1, RACV_REGHILITES_PEN_COLOR);

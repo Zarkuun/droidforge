@@ -65,7 +65,7 @@ void Module::paintHiliteRegister(QPainter *painter, int usage, QChar type, unsig
     QPen pen(usage == 2 ? COLOR(RACV_REGHILITES_PEN_COLOR) : QColor(128, 128, 128));
     pen.setWidth(10);
     painter->setPen(pen);
-    painter->setBrush(usage == 2 ? COLOR(RACV_REGHILITES_BACKGROUND) : QColor(128, 128, 128, 128));
+    painter->setBrush(usage == 2 ? COLOR(RACV_REGHILITES_BG) : COLOR(RACV_REGHILITES_INACTIVE_BG));
     if (type == REGISTER_RGB_LED || type == REGISTER_EXTRA)
         painter->drawRect(r);
     else

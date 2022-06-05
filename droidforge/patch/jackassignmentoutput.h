@@ -23,6 +23,7 @@ public:
     static Atom *parseOutputAtom(const QString &s);
     void removeRegisterReferences(RegisterList &rl, int, int oh);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
+    bool isUndefined() const { return atom == 0; };
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_OUTPUT; };

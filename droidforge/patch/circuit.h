@@ -36,6 +36,8 @@ public:
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
     const JackAssignment *jackAssignment(unsigned i) const { return jackAssignments[i]; };
     const JackAssignment *findJack(const QString name) const;
+    bool hasUndefinedJacks() const;
+    void removeUndefinedJacks();
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     QString nextJackArrayName(const QString &jackName, bool isInput);
     void deleteJackAssignment(unsigned i);

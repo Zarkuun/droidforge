@@ -20,6 +20,7 @@ public:
     void parseExpression(const QString &expression);
     void removeRegisterReferences(RegisterList &, int, int) {};
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
+    bool isUndefined() const { return true; }
 
 protected:
     JackAssignment *clone() const;
