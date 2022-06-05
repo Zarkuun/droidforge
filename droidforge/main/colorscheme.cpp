@@ -38,6 +38,9 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Circuits: text (disabled)"), list);
     item->setData(1, CIRV_COLOR_DISABLED_TEXT);
 
+    item = new QListWidgetItem(tr("Circuits: comments"), list);
+    item->setData(1, CIRV_COLOR_COMMENT);
+
     item = new QListWidgetItem(tr("Circuits: lines"), list);
     item->setData(1, CIRV_COLOR_LINE);
 

@@ -138,6 +138,7 @@
 #define CIRV_TOP_PADDING                     (2 * STANDARD_SPACING)
 #define CIRV_BOTTOM_PADDING                  CIRV_TOP_PADDING
 #define CIRV_FOLDED_PADDING                  (STANDARD_SPACING / 2)
+#define CIRV_FOLDING_COMMENT_INDENT          200
 #define CIRV_SIDE_PADDING                    (2 * STANDARD_SPACING)
 #define CIRV_COMMENT_PADDING                 (0.5 * STANDARD_SPACING)
 #define CIRV_TEXT_SIDE_PADDING               7
@@ -154,7 +155,7 @@
 // #define CIRV_COLOR_OPERATOR_BACKGROUND       QColor(60, 60, 60)
 // #define CIRV_COLOR_BACKGROUND                QColor(40, 40, 40, 160)
 #define CIRV_COLOR_CIRCUIT_NAME              QColor(250, 250, 250)
-#define CIRV_COLOR_COMMENT                   QColor(200, 200, 200)
+// #define CIRV_COLOR_COMMENT                   QColor(180, 200, 200)
 #define CIRV_COLOR_COMMENT_BACKGROUND        QColor(40, 40, 40)
 // #define CIRV_COLOR_SELECTION                 QColor(255, 200, 50, 90)
 

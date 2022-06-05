@@ -1,6 +1,7 @@
 #include "circuitview.h"
 #include "colorscheme.h"
 #include "globals.h"
+#include "iconbase.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
@@ -70,7 +71,8 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 {
     paintHeader(painter);
     if (!isFolded()) {
-        paintComment(painter);
+        if (circuit->hasComment())
+            paintComment(painter);
         paintJacks(painter);
         paintLines(painter);
     }
@@ -85,18 +87,39 @@ void CircuitView::paintHeader(QPainter *painter)
     if (circuit->isDisabled())
         painter->fillRect(imageRect, QColor(80, 80, 80, 160)); // TODO: COLOR MAKRO
     painter->setPen(circuit->isDisabled() ? COLOR_TEXT_DISABLED : CIRV_COLOR_CIRCUIT_NAME);
-    painter->drawText(
+    QRectF textRect =
                 QRectF(headerRect().left() + CIRV_HEADER_HEIGHT + CIRV_ICON_MARGIN,
                       headerRect().top(),
                       headerRect().width() - CIRV_HEADER_HEIGHT - CIRV_ICON_MARGIN,
-                      headerRect().height()),
+                      headerRect().height());
+    painter->drawText(textRect,
                       Qt::AlignVCenter,
-                circuit->getName().toUpper() + (isFolded() ? " (FOLDED)" : ""));
+                circuit->getName().toUpper()); //  + (isFolded() ? " (FOLDED)" : ""));
+
+    if (isFolded()) {
+        if (circuit->hasComment()) {
+            painter->setPen(COLOR(CIRV_COLOR_COMMENT));
+            QString oneliner = circuit->getComment().replace("\n", "").simplified();
+            QRectF r(textRect.left() + CIRV_FOLDING_COMMENT_INDENT,
+                     textRect.top(),
+                     textRect.width() - CIRV_FOLDING_COMMENT_INDENT - 2 * CIRV_HEADER_HEIGHT - CIRV_ICON_MARGIN,
+                     textRect.height());
+            painter->drawText(r, Qt::AlignVCenter, oneliner);
+        }
+        unsigned margin = 2;
+        unsigned iconsize = CIRV_HEADER_HEIGHT - 2 * margin;
+        QRectF ir(headerRect().right() - iconsize - 5,
+                  headerRect().top() + margin,
+                  iconsize,
+                  iconsize);
+        static QImage ic(QString(ICON_PATH_TEMPLATE).arg("format_line_spacing"));
+        painter->drawImage(ir, ic);
+    }
 }
 void CircuitView::paintComment(QPainter *painter)
 {
     painter->fillRect(commentRect(), CIRV_COLOR_COMMENT_BACKGROUND);
-    painter->setPen(CIRV_COLOR_COMMENT);
+    painter->setPen(COLOR(CIRV_COLOR_COMMENT));
     painter->drawText(
                 QRectF(commentRect().left() + CIRV_TEXT_SIDE_PADDING,
                       headerRect().bottom() + CIRV_COMMENT_PADDING,
