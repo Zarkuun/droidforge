@@ -45,10 +45,8 @@ private:
     QRectF atomRect(int row, int column) const;
     void paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput);
     // geometry helpers
-    QRectF contentRect() const;
-    float contentHeight() const;
+    float totalHeight() const;
     float commentHeight() const;
-    float contentWidth() const;
     float columnWidth(int c) const;
     float column123Width() const;
     float columnPosition(int c) const;

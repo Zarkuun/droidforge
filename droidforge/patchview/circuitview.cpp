@@ -44,7 +44,7 @@ float CircuitView::commentHeight() const
     else
         return 0;
 }
-float CircuitView::contentHeight() const
+float CircuitView::totalHeight() const
 {
     if (isFolded())
         return CIRV_HEADER_HEIGHT;
@@ -57,15 +57,14 @@ float CircuitView::contentHeight() const
 }
 QRectF CircuitView::boundingRect() const
 {
-    return QRectF(0, 0, totalWidth, contentHeight());
+    return QRectF(0, 0, totalWidth, totalHeight());
 }
 unsigned CircuitView::minimumWidth()
 {
     return
             CIRV_COLUMN_JACK_MINIMUM_WIDTH +
             CIRV_COLUMN_ATOM_MINIMUM_WIDTH * 3 +
-            CIRV_COLUMN_OPERATOR_WIDTH * 2 +
-            CIRV_SIDE_PADDING * 2;
+            CIRV_COLUMN_OPERATOR_WIDTH * 2;
 }
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
@@ -168,7 +167,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
 void CircuitView::paintLines(QPainter *painter)
 {
     painter->setPen(COLOR(CIRV_COLOR_LINE));
-    QRectF cr = contentRect();
+    QRectF cr = boundingRect();
     painter->drawRect(cr); // borders
     painter->drawLine(
                 columnPosition(1),
@@ -178,17 +177,9 @@ void CircuitView::paintLines(QPainter *painter)
 }
 void CircuitView::paintSelection(QPainter *painter)
 {
-    QRectF cr = contentRect();
+    QRectF cr = boundingRect();
     if (*selection && (*selection)->circuitSelected(circuitNumber))
         painter->fillRect(cr, COLOR(CIRV_COLOR_SELECTION));
-}
-QRectF CircuitView::contentRect() const
-{
-    return QRectF(CIRV_SIDE_PADDING, CIRV_TOP_PADDING, contentWidth(), contentHeight());
-}
-float CircuitView::contentWidth() const
-{
-    return totalWidth - 2 * CIRV_SIDE_PADDING;
 }
 float CircuitView::columnWidth(int c) const
 {
@@ -203,7 +194,7 @@ float CircuitView::column123Width() const
 }
 float CircuitView::columnPosition(int c) const
 {
-    float pos = CIRV_SIDE_PADDING;
+    float pos = 0;
     for (int i=0; i<c; i++)
         pos += columnWidth(i);
     if (c >= 2)
@@ -294,7 +285,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
 
     // horizontal line
     painter->setPen(COLOR(CIRV_COLOR_LINE));
-    painter->drawLine(jr.left(), jr.top(), jr.left() + contentWidth(), jr.top());
+    painter->drawLine(jr.left(), jr.top(), jr.left() + totalWidth, jr.top());
 }
 void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QString o)
 {
@@ -309,30 +300,24 @@ void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QStri
 }
 QRectF CircuitView::headerRect() const
 {
-    return QRectF(CIRV_SIDE_PADDING, CIRV_TOP_PADDING,
-                 totalWidth - 2 * CIRV_SIDE_PADDING,
-                 CIRV_HEADER_HEIGHT);
+    return QRectF(0, 0, totalWidth, CIRV_HEADER_HEIGHT);
 }
 QRectF CircuitView::commentRect() const
 {
-    return QRectF(CIRV_SIDE_PADDING,
-                 CIRV_TOP_PADDING + CIRV_HEADER_HEIGHT,
-                 totalWidth - 2 * CIRV_SIDE_PADDING,
-                 commentHeight());
+    return QRectF(0, CIRV_HEADER_HEIGHT, totalWidth, commentHeight());
 }
 QRectF CircuitView::jackLineRect(int row) const
 {
-    return QRectF(
-                CIRV_SIDE_PADDING,
-                CIRV_TOP_PADDING + CIRV_HEADER_HEIGHT + commentHeight() + row * CIRV_JACK_HEIGHT,
-                totalWidth - 2 * CIRV_SIDE_PADDING,
+    return QRectF(0,
+                CIRV_HEADER_HEIGHT + commentHeight() + row * CIRV_JACK_HEIGHT,
+                totalWidth,
                 CIRV_JACK_HEIGHT);
 }
 QRectF CircuitView::jackRect(int row) const
 {
     return QRectF(
-                CIRV_SIDE_PADDING,
-                CIRV_TOP_PADDING + CIRV_HEADER_HEIGHT + commentHeight() + row * CIRV_JACK_HEIGHT,
+                0,
+                CIRV_HEADER_HEIGHT + commentHeight() + row * CIRV_JACK_HEIGHT,
                 columnWidth(0),
                 CIRV_JACK_HEIGHT);
 }
@@ -364,9 +349,9 @@ int CircuitView::columnAt(unsigned x)
 }
 int CircuitView::jackAt(unsigned y)
 {
-    if (y < CIRV_HEADER_HEIGHT + CIRV_TOP_PADDING)
+    if (y < CIRV_HEADER_HEIGHT)
         return -2;
-    y -= CIRV_HEADER_HEIGHT + CIRV_TOP_PADDING;
+    y -= CIRV_HEADER_HEIGHT;
 
     if (y < commentHeight())
         return -1;

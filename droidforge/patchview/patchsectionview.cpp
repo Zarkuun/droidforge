@@ -118,10 +118,11 @@ void PatchSectionView::connectActions()
 }
 void PatchSectionView::buildPatchSection()
 {
-    unsigned circuitWidth = viewport()->width() / zoomFactor;
+    unsigned totalWidth = viewport()->width() / zoomFactor;
+    unsigned circuitWidth = totalWidth - 2 * CIRV_SIDE_PADDING;
     QGraphicsScene *scene = new QGraphicsScene();
 
-    int y = 0;
+    int y = CIRV_TOP_PADDING;
     bool lastWasFolded = false;
     for (qsizetype i=0; i<section()->circuits.size(); i++)
     {
@@ -138,11 +139,13 @@ void PatchSectionView::buildPatchSection()
         cv->setData(DATA_INDEX_CIRCUIT, true);
         circuitViews.append(cv);
         scene->addItem(cv);
-        cv->setPos(0, y);
+        cv->setPos(CIRV_SIDE_PADDING, y);
         lastWasFolded = circuit->isFolded();
         y += cv->boundingRect().height() + CIRV_BOTTOM_PADDING;
     }
-    scene->addRect(0, y, 10, CIRV_BOTTOM_PADDING, QPen(QColor(0, 0, 0, 0))); // add strut
+    QRectF totalRect(0, 0, totalWidth, y);
+    scene->setSceneRect(totalRect);
+    // ctor;10, CIRV_BOTTOM_PADDING, QPen(QColor(0, 0, 0, 0))); // add strut
     scene->addItem(&frameCursor);
     updateCursor();
     setScene(scene);
@@ -176,6 +179,8 @@ void PatchSectionView::updateInfoMarkers()
     for (unsigned i=0; i<section()->numCircuits(); i++)
     {
         const Circuit *circuit = section()->circuit(i);
+        if (circuit->isFolded())
+            continue;
         for (unsigned j=0; j<circuit->numJackAssignments(); j++) {
             const JackAssignment *ja = circuit->jackAssignment(j);
             QString comment = ja->getComment();
