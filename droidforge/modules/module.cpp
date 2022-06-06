@@ -99,9 +99,6 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
         text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
     text = text.toUpper();
 
-    // TODO: move to tuning.h
-    static const float fontSizes[MAX_LENGTH_SHORTHAND + 1] = { 99.9, 1.5, 1.1, 0.8, 0.64, 0.50 };
-
     QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()), 1);
     QFont font;
     font.setPixelSize(100);

@@ -2,6 +2,7 @@
 #define TUNING_H
 
 #define APPLICATION_NAME                     "DROID Forge"
+#define DROID_PATCH_FILENAME                 "droid.ini"
 #define SHOP_PRODUCTS_URL                    "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"
 #define SECTION_DEFAULT_NAME                 TR("Circuits")
@@ -9,6 +10,7 @@
 #define ICON_PATH_TEMPLATE                   ":images/icons/white/%1.png"
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001
+#define MAC_UMOUNT_TIMEOUT_MS                10000
 
 // #define NUMBER_INPUTS                        8
 // #define NUMBER_OUTPUTS                       8

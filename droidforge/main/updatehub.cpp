@@ -48,3 +48,9 @@ void UpdateHub::changePatching()
     // Called when the editor state "patching" has changed
     emit patchingChanged();
 }
+
+void UpdateHub::changeDroidState()
+{
+    // Called when the state if the Droid SD card or X7 connection has changed.
+    emit droidStateChanged();
+}

@@ -146,6 +146,7 @@ void MainWindow::createFileMenu()
     #endif
 
     ADD_ACTION(ACTION_UPLOAD_TO_DROID, menu);
+    ADD_ACTION(ACTION_SAVE_TO_SD, menu);
     patchOperator.createRecentFileActions(menu);
 
     ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
@@ -263,6 +264,7 @@ void MainWindow::createToolbar()
     toolbar->addSeparator();
     ADD_ACTION(ACTION_PROBLEMS, toolbar);
     ADD_ACTION(ACTION_UPLOAD_TO_DROID, toolbar);
+    ADD_ACTION(ACTION_SAVE_TO_SD, toolbar);
 }
 void MainWindow::splitterMoved()
 {

@@ -12,18 +12,20 @@
 #include <QProcess>
 #include <QTimer>
 
-#include <CoreMIDI/MIDIServices.h>
+// #include <CoreMIDI/MIDIServices.h>
 
 PatchOperator *the_operator = 0;
 
 PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     : patch(patch)
+    , sdCardPresent(false)
 {
     Q_ASSERT(the_operator == 0);
     the_operator = this;
 
     CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
     CONNECT_ACTION(ACTION_UPLOAD_TO_DROID, &PatchOperator::upload);
+    CONNECT_ACTION(ACTION_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_OPEN, &PatchOperator::open);
     CONNECT_ACTION(ACTION_SAVE, &PatchOperator::save);
@@ -47,14 +49,21 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     connect(this, &PatchOperator::sectionSwitched, the_hub, &UpdateHub::switchSection);
     connect(this, &PatchOperator::cursorMoved, the_hub, &UpdateHub::moveCursor);
     connect(this, &PatchOperator::patchingChanged, the_hub, &UpdateHub::changePatching);
+    connect(this, &PatchOperator::droidStateChanged, the_hub, &UpdateHub::changeDroidState);
 
     QSettings settings;
     if (initialFilename == "" && settings.contains("lastfile"))
         initialFilename = settings.value("lastfile").toString();
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [this,initialFilename] () { this->loadFile(initialFilename, FILE_MODE_LOAD);});
-}
 
+    // TODO: There is a mac foundation function for getting called whenever a disk
+    // get's mounted. Use that rather than a timer. This is much faster and avoids
+    // nasty polling!
+    QTimer *sdTimer = new QTimer(this);
+    connect(sdTimer, &QTimer::timeout, this, &PatchOperator::updateSDState);
+    sdTimer->start(100);
+}
 void PatchOperator::newPatch()
 {
     if (!checkModified())
@@ -127,7 +136,6 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
     else
         emit cursorMoved();
 }
-
 void PatchOperator::upload()
 {
     if (patch->isModified())
@@ -142,9 +150,99 @@ void PatchOperator::upload()
     QStringList args;
     args << patch->getFilePath();
     QProcess::startDetached("/usr/local/bin/droidpatch", args);
-    shout << "UPLOAD!";
     // TODO: Das hier direkt mit MIDI machen
 #endif
+}
+void PatchOperator::saveToSD()
+{
+    shout << "Save to SD";
+    QDir dir = sdCardDir();
+    if (!dir.exists()) {
+        QMessageBox::critical(
+                    the_forge,
+                    tr("Cannot find memory card"),
+                    tr("There is no DROID SD card mounted.\n\nIf it has been "
+                       "ejected, remove and reinsert it. Note: it must be a "
+                       "microSD card that has already been used in your DROID master."),
+                    QMessageBox::Ok);
+        return;
+    }
+
+    QFileInfo droidIni(dir, DROID_PATCH_FILENAME);
+    if (!patch->saveToFile(droidIni.absoluteFilePath()))
+    {
+        QMessageBox::critical(
+                    the_forge,
+                    tr("Cannot write %1").arg(QString(DROID_PATCH_FILENAME)),
+                    tr("Error writing %1").arg(droidIni.absoluteFilePath()),
+                    QMessageBox::Ok);
+        return;
+    }
+
+    // TODO: Der Krampf hier geht scheinbar nicht. Hier steht, wie es richtig
+    // geht unter Mac:
+    // https://developer.apple.com/library/archive/documentation/DriversKernelHardware/Conceptual/DiskArbitrationProgGuide/ManipulatingDisks/ManipulatingDisks.html
+    // Man kann aber den Krampf so fast wie er ist unter Linux verwenden.
+    // Vielleicht.
+
+    QProcess process;
+    QStringList arguments;
+    arguments << "eject" << sdCardDir().absolutePath();
+    process.start("diskutil", arguments);
+    shout << "Running" << "diskutil" << arguments;
+    bool success = process.waitForFinished(MAC_UMOUNT_TIMEOUT_MS);
+    if (!success) {
+        QMessageBox::warning(
+                    the_forge,
+                    tr("Could not eject SD card"),
+                    tr("Timeout while trying to safely eject the SD card."),
+                    QMessageBox::Ok);
+    }
+    else if (process.exitStatus() != QProcess::NormalExit) {
+        QString error = process.readAll();
+        QMessageBox::warning(
+                    the_forge,
+                    tr("Could not eject SD card"),
+                    tr("An error occurred while ejecting the SD card:\n%1").arg(error),
+                    QMessageBox::Ok);
+    }
+    else {
+        shout << "OK" << process.readAll();
+        sdCardPresent = false;
+        emit droidStateChanged();
+    }
+}
+
+QDir PatchOperator::sdCardDir() const
+{
+    QDir volumesDir("/Volumes");
+    QDir sdDir;
+    for (const QFileInfo &file: volumesDir.entryInfoList()) {
+        if (file.fileName().startsWith("."))
+            continue;
+        else if (!file.isDir())
+            continue;
+        else if (isDroidVolume(file)) {
+            sdDir = QDir(file.filePath());
+            return sdDir;
+        }
+    }
+    return QDir("/does/not/exist"); // TODO: hack
+}
+bool PatchOperator::isDroidVolume(const QFileInfo &fileinfo) const
+{
+    QDir dir(fileinfo.filePath());
+    return dir.exists("DROIRDCAL.BIN") || dir.exists("DROIDSTA.BIN");
+}
+void PatchOperator::updateSDState()
+{
+    bool oldState = sdCardPresent;
+    QDir sdDir = sdCardDir();
+    sdCardPresent = sdDir.exists();
+    if (oldState != sdCardPresent) {
+        shout << "Card: " << sdCardPresent;
+        emit droidStateChanged();
+    }
 }
 void PatchOperator::loadFile(const QString &filePath, int how)
 {

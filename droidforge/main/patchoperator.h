@@ -6,6 +6,7 @@
 #include "patchparser.h"
 
 #include <QObject>
+#include <QFileInfo>
 
 
 class PatchOperator : public QObject
@@ -13,6 +14,7 @@ class PatchOperator : public QObject
     Q_OBJECT
     PatchEditEngine *patch;
     PatchParser parser;
+    bool sdCardPresent;
 
 public:
     explicit PatchOperator(PatchEditEngine *patch, QString initialFilename);
@@ -21,6 +23,7 @@ public:
     void quit();
     void jumpTo(int sectionIndex, const CursorPosition &pos);
     void clearSelection();
+    bool droidSDCardPresent() const { return sdCardPresent; };
 
 protected:
     PatchSection *section() { return patch->currentSection(); };
@@ -28,6 +31,7 @@ protected:
 
 private slots:
     void upload();
+    void saveToSD();
     void newPatch();
     void open();
     void integrate();
@@ -51,6 +55,9 @@ private:
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
+    bool isDroidVolume(const QFileInfo &fileinfo) const;
+    void updateSDState();
+    QDir sdCardDir() const;
 
 signals:
     void patchModified();
@@ -59,6 +66,7 @@ signals:
     void sectionSwitched();
     void cursorMoved();
     void patchingChanged();
+    void droidStateChanged();
 };
 
 extern PatchOperator *the_operator;

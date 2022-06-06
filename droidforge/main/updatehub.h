@@ -19,6 +19,7 @@ public slots:
     void changeSelection();
     void moveCursor();
     void changePatching();
+    void changeDroidState();
     // TODO: Esc -> Abort all actions
 
 signals:
@@ -28,6 +29,7 @@ signals:
     void selectionChanged();
     void patchingChanged();
     void cursorMoved();
+    void droidStateChanged();
 };
 
 

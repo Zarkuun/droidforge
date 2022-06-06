@@ -1,5 +1,6 @@
 #include "editoractions.h"
 #include "iconbase.h"
+#include "patchoperator.h"
 #include "updatehub.h"
 #include "clipboard.h"
 
@@ -24,12 +25,12 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
     connect(the_hub, &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
     connect(the_hub, &UpdateHub::cursorMoved, this, &EditorActions::moveCursor);
     connect(the_hub, &UpdateHub::patchingChanged, this, &EditorActions::changePatching);
+    connect(the_hub, &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
 }
 
 void EditorActions::modifyPatch()
 {
     actions[ACTION_SAVE]->setEnabled(patch->isModified());
-    actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems());
     actions[ACTION_OPEN_ENCLOSING_FOLDER]->setEnabled(patch->getFilePath() != "");
 
     if (patch->undoPossible()) {
@@ -57,6 +58,7 @@ void EditorActions::modifyPatch()
     actions[ACTION_PROBLEMS]->setVisible(patch->numProblems() > 0);
 
     switchSection();
+    changeDroidState(); // actions for upload and save to SD
 }
 void EditorActions::switchSection()
 {
@@ -90,10 +92,9 @@ void EditorActions::moveCursor()
 
     Circuit *circuit = section()->currentCircuit();
     actions[ACTION_MOVE_CIRCUIT_UP]->setEnabled(circuit && section()->currentCircuitId() > 0);
-    actions[ACTION_MOVE_CIRCUIT_DOWN]->setEnabled(circuit && section()->currentCircuitId() + 1 < section()->numCircuits());
+    actions[ACTION_MOVE_CIRCUIT_DOWN]->setEnabled(circuit && section()->currentCircuitId() + 1 < (int)section()->numCircuits());
     JackAssignment *ja = section()->currentJackAssignment();
-    bool expandPossible =
-                ja && circuit->nextJackArrayName(
+    bool expandPossible = circuit && ja && circuit->nextJackArrayName(
                     ja->jackName(), ja->jackType() == JACKTYPE_INPUT) != "";
     actions[ACTION_EXPAND_ARRAY]->setEnabled(expandPossible);
     actions[ACTION_EXPAND_ARRAY_MAX]->setEnabled(expandPossible);
@@ -157,6 +158,12 @@ void EditorActions::changePatching()
     actions[ACTION_FINISH_PATCHING]->setEnabled(patch->isPatching());
     actions[ACTION_ABORT_PATCHING]->setEnabled(patch->isPatching());
 }
+
+void EditorActions::changeDroidState()
+{
+    actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
+    actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
+}
 void EditorActions::createActions()
 {
     actions[ACTION_NEW] = new QAction(ICON("settings_input_composite"), tr("&New..."), this);
@@ -184,6 +191,9 @@ void EditorActions::createActions()
 
     actions[ACTION_UPLOAD_TO_DROID] = new QAction(ICON("exit_to_app"), tr("Activate!"), this);
     actions[ACTION_UPLOAD_TO_DROID]->setShortcut(QKeySequence(tr("F9")));
+
+    actions[ACTION_SAVE_TO_SD] = new QAction(ICON("sim_card"), tr("Save to SD"), this);
+    actions[ACTION_SAVE_TO_SD]->setShortcut(QKeySequence(tr("F10")));
 
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS

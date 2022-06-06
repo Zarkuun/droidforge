@@ -12,6 +12,7 @@ typedef enum {
     ACTION_MOVE_CIRCUIT_UP,
     ACTION_MOVE_CIRCUIT_DOWN,
     ACTION_UPLOAD_TO_DROID,
+    ACTION_SAVE_TO_SD,
     ACTION_ABORT_PATCHING,
     ACTION_ADD_CONTROLLER,
     ACTION_ADD_JACK,
@@ -84,6 +85,7 @@ private slots:
     void changeSelection();
     void moveCursor();
     void changePatching();
+    void changeDroidState();
 
 private:
     void createActions();
