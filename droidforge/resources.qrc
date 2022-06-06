@@ -1322,5 +1322,10 @@
         <file>images/icons/info.png</file>
         <file>images/circuits/sequencer.png</file>
         <file>images/circuits/algoquencer.png</file>
+        <file>images/circuits/euklid.png</file>
+        <file>images/circuits/arpeggio.png</file>
+        <file>images/circuits/polytool.png</file>
+        <file>images/circuits/cvlooper.png</file>
+        <file>images/circuits/matrixmixer.png</file>
     </qresource>
 </RCC>
