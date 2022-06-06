@@ -145,6 +145,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, menu);
     #endif
 
+    ADD_ACTION(ACTION_UPLOAD_TO_DROID, menu);
     patchOperator.createRecentFileActions(menu);
 
     ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
@@ -259,6 +260,7 @@ void MainWindow::createToolbar()
     ADD_ACTION(ACTION_ADD_CONTROLLER, toolbar);
     toolbar->addSeparator();
     ADD_ACTION(ACTION_PROBLEMS, toolbar);
+    ADD_ACTION(ACTION_UPLOAD_TO_DROID, toolbar);
 }
 void MainWindow::splitterMoved()
 {

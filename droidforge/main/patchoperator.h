@@ -26,6 +26,7 @@ protected:
     const PatchSection *section() const { return patch->currentSection(); };
 
 private slots:
+    void upload();
     void newPatch();
     void open();
     void integrate();

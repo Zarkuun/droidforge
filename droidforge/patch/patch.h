@@ -61,6 +61,7 @@ public:
     void collectUsedRegisterAtoms(RegisterList &) const;
     bool registerUsed(AtomRegister reg);
     void collectAvailableRegisterAtoms(RegisterList &) const;
+    bool hasProblems() const { return problems.count() > 0; };
     unsigned numProblems() const { return problems.count(); };
     unsigned numProblemsInSection(int i) const;
     QString problemAt(int section, const CursorPosition &pos);

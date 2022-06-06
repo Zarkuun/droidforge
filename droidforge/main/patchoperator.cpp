@@ -21,6 +21,7 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     the_operator = this;
 
     CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
+    CONNECT_ACTION(ACTION_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_OPEN, &PatchOperator::open);
     CONNECT_ACTION(ACTION_SAVE, &PatchOperator::save);
@@ -121,6 +122,20 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
         emit sectionSwitched();
     else
         emit cursorMoved();
+}
+
+void PatchOperator::upload()
+{
+    if (patch->isModified())
+        save();
+
+#ifdef Q_OS_MACOS
+    QStringList args;
+    args << patch->getFilePath();
+    QProcess::startDetached("/usr/local/bin/droidpatch", args);
+    shout << "UPLOAD!";
+    // TODO: Das hier direkt mit MIDI machen
+#endif
 }
 void PatchOperator::loadFile(const QString &filePath, int how)
 {

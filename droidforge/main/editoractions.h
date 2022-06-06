@@ -9,6 +9,7 @@
 #include <QAction>
 
 typedef enum {
+    ACTION_UPLOAD_TO_DROID,
     ACTION_ABORT_PATCHING,
     ACTION_ADD_CONTROLLER,
     ACTION_ADD_JACK,

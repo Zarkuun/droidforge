@@ -1320,5 +1320,7 @@
         <file>images/circuits/math.png</file>
         <file>images/circuits/logic.png</file>
         <file>images/icons/info.png</file>
+        <file>images/circuits/sequencer.png</file>
+        <file>images/circuits/algoquencer.png</file>
     </qresource>
 </RCC>

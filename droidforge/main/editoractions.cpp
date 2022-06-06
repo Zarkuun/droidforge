@@ -29,6 +29,7 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
 void EditorActions::modifyPatch()
 {
     actions[ACTION_SAVE]->setEnabled(patch->isModified());
+    actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems());
     actions[ACTION_OPEN_ENCLOSING_FOLDER]->setEnabled(patch->getFilePath() != "");
 
     if (patch->undoPossible()) {
@@ -156,7 +157,7 @@ void EditorActions::changePatching()
 }
 void EditorActions::createActions()
 {
-    actions[ACTION_NEW] = new QAction(NOICON("settings_input_composite"), tr("&New..."), this);
+    actions[ACTION_NEW] = new QAction(ICON("settings_input_composite"), tr("&New..."), this);
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
     actions[ACTION_NEW]->setStatusTip(tr("Create a new patch from scratch"));
 
@@ -178,6 +179,9 @@ void EditorActions::createActions()
     actions[ACTION_EXPORT_SELECTION] = new QAction(tr("E&xport selection as patch..."), this);
     actions[ACTION_EXPORT_SELECTION]->setStatusTip(tr("Save the currently selected circuits into a new patch file"));
     actions[ACTION_EXPORT_SELECTION]->setEnabled(false);
+
+    actions[ACTION_UPLOAD_TO_DROID] = new QAction(ICON("exit_to_app"), tr("Activate!"), this);
+    actions[ACTION_UPLOAD_TO_DROID]->setShortcut(QKeySequence(tr("F9")));
 
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS
