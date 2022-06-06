@@ -277,7 +277,7 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
             updateKeyboardSelection(posBefore, section()->cursorPosition());
         else
             if (section()->getSelection())
-                clearSelection();
+                the_operator->clearSelection();
         return true;
     }
 
@@ -691,14 +691,14 @@ void PatchSectionView::zoomOut()
 }
 void PatchSectionView::foldUnfold()
 {
-    clearSelection();
+    the_operator->clearSelection();
     currentCircuit()->toggleFold();
     section()->setCursorRowColumn(-2, 0);
     emit patchModified();
 }
 void PatchSectionView::foldUnfoldAll()
 {
-    clearSelection();
+    the_operator->clearSelection();
     section()->toggleFold();
     emit patchModified();
 }
@@ -728,7 +728,7 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
         setMouseSelection(curPos);
     }
     else {
-        clearSelection();
+        the_operator->clearSelection();
         section()->setCursor(curPos);
         emit cursorMoved();
     }
@@ -1216,11 +1216,6 @@ void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, con
     section()->updateKeyboardSelection(before, after);
     emit selectionChanged();
 }
-void PatchSectionView::clearSelection()
-{
-    section()->clearSelection();
-    emit selectionChanged();
-}
 CircuitView *PatchSectionView::currentCircuitView()
 {
     if (circuitViews.isEmpty())
@@ -1260,7 +1255,7 @@ void PatchSectionView::deleteCursorOrSelection()
 {
     if (section()->getSelection()) {
         Selection selection = *section()->getSelection();
-        clearSelection();
+        the_operator->clearSelection();
 
         // When just a single object is selected, we can use
         // the existing functions for deleting at the cursor position

@@ -64,6 +64,7 @@ public:
     void setCursor(const CursorPosition &pos) { cursor = pos; };
     Circuit *currentCircuit();
     const Circuit *currentCircuit() const;
+    int currentCircuitId() const { return cursor.circuitNr; };
     const Atom *currentAtom() const;
     const Atom *atomAt(const CursorPosition &pos);
     void setAtomAt(const CursorPosition &pos, Atom *atom);
@@ -72,6 +73,7 @@ public:
     unsigned numCircuits() const { return circuits.count(); };
     const Circuit *circuit(int n) const { return circuits[n]; };
     const QList<Circuit *> &getCircuits() const { return circuits; };
+    void swapCircuits(int ida, int idb);
     JackAssignment *currentJackAssignment();
     const JackAssignment *currentJackAssignment() const;
     JackAssignment *jackAssignmentAt(const CursorPosition &pos);

@@ -89,6 +89,8 @@ void EditorActions::moveCursor()
     actions[ACTION_SORT_JACKS]->setEnabled(section()->currentCircuit());
 
     Circuit *circuit = section()->currentCircuit();
+    actions[ACTION_MOVE_CIRCUIT_UP]->setEnabled(circuit && section()->currentCircuitId() > 0);
+    actions[ACTION_MOVE_CIRCUIT_DOWN]->setEnabled(circuit && section()->currentCircuitId() + 1 < section()->numCircuits());
     JackAssignment *ja = section()->currentJackAssignment();
     bool expandPossible =
                 ja && circuit->nextJackArrayName(
@@ -204,7 +206,7 @@ void EditorActions::createActions()
                                              "need to fix all these problems before you can load "
                                              "the patch to your master."));
 
-    actions[ACTION_PROBLEMS] = new QAction(NOICON("warning"), tr("Problems"), this);
+    actions[ACTION_PROBLEMS] = new QAction(ICON("warning"), tr("Problems"), this);
     actions[ACTION_PROBLEMS]->setStatusTip(tr("You have problems in your patch. You "
                                              "need to fix all these problems before you can load "
                                              "the patch to your master."));
@@ -266,6 +268,12 @@ void EditorActions::createActions()
     actions[ACTION_SELECT_ALL] = new QAction(tr("Select all"), this);
     actions[ACTION_SELECT_ALL]->setShortcut(QKeySequence(tr("Ctrl+A")));
     actions[ACTION_SELECT_ALL]->setStatusTip(tr("Select all circuits in the current section"));
+
+    actions[ACTION_MOVE_CIRCUIT_UP] = new QAction(tr("Move circuit up"), this);
+    actions[ACTION_MOVE_CIRCUIT_UP]->setShortcut(QKeySequence(tr("Shift+Ctrl+Up")));
+
+    actions[ACTION_MOVE_CIRCUIT_DOWN] = new QAction(tr("Move circuit down"), this);
+    actions[ACTION_MOVE_CIRCUIT_DOWN]->setShortcut(QKeySequence(tr("Shift+Ctrl+Down")));
 
     actions[ACTION_DISABLE] = new QAction(tr("&Disable"), this);
     actions[ACTION_DISABLE]->setShortcut(QKeySequence(tr("#")));

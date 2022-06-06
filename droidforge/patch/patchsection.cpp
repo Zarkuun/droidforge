@@ -346,6 +346,15 @@ void PatchSection::setAtomAt(const CursorPosition &pos, Atom *atom)
     circuits[pos.circuitNr]->setAtomAt(pos.row, pos.column, atom);
 
 }
+void PatchSection::swapCircuits(int ida, int idb)
+{
+    // Cursor sticks to the moved circuit
+    if (cursor.circuitNr == ida)
+        cursor.circuitNr = idb;
+    else if (cursor.circuitNr == idb)
+        cursor.circuitNr = ida;
+    circuits.swapItemsAt(ida, idb);
+}
 JackAssignment *PatchSection::currentJackAssignment()
 {
     Circuit *c = currentCircuit();

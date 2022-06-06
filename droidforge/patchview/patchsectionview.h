@@ -113,7 +113,6 @@ private:
     void pasteCircuitsFromClipboard();
     void clickOnInfoMarker(const InfoMarker *info);
     void editJackCommentAt(const CursorPosition &pos);
-    void clearSelection();
     void enableDisableObjects(bool enable);
     void handleRightMousePress(const CursorPosition *curPos);
 

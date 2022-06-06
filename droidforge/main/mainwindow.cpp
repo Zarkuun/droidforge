@@ -180,6 +180,8 @@ void MainWindow::createEditMenu()
 
     menu->addSeparator();
 
+    ADD_ACTION(ACTION_MOVE_CIRCUIT_UP, menu);
+    ADD_ACTION(ACTION_MOVE_CIRCUIT_DOWN, menu);
     ADD_ACTION(ACTION_SORT_JACKS, menu);
     ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
     ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);

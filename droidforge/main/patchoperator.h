@@ -20,6 +20,7 @@ public:
     void loadFile(const QString &filename, int how);
     void quit();
     void jumpTo(int sectionIndex, const CursorPosition &pos);
+    void clearSelection();
 
 protected:
     PatchSection *section() { return patch->currentSection(); };
@@ -38,6 +39,8 @@ private slots:
     void undo();
     void redo();
     void configureColors();
+    void moveCircuitUp();
+    void moveCircuitDown();
 
 private:
     bool checkModified();

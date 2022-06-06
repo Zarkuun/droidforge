@@ -12,6 +12,8 @@
 #include <QProcess>
 #include <QTimer>
 
+#include <CoreMIDI/MIDIServices.h>
+
 PatchOperator *the_operator = 0;
 
 PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
@@ -35,6 +37,8 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_REDO, &PatchOperator::redo);
     CONNECT_ACTION(ACTION_PATCH_PROPERTIES, &PatchOperator::editProperties);
     CONNECT_ACTION(ACTION_CONFIGURE_COLORS, &PatchOperator::configureColors);
+    CONNECT_ACTION(ACTION_MOVE_CIRCUIT_UP, &PatchOperator::moveCircuitUp);
+    CONNECT_ACTION(ACTION_MOVE_CIRCUIT_DOWN, &PatchOperator::moveCircuitDown);
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -128,6 +132,11 @@ void PatchOperator::upload()
 {
     if (patch->isModified())
         save();
+
+
+    // int num = MIDIGetNumberOfDevices();
+    // shout << num << "MIDI devices";
+
 
 #ifdef Q_OS_MACOS
     QStringList args;
@@ -442,4 +451,26 @@ void PatchOperator::configureColors()
         the_colorscheme->hide();
     else
         the_colorscheme->show();
+}
+
+void PatchOperator::moveCircuitUp()
+{
+    clearSelection();
+    int id = section()->currentCircuitId();
+    section()->swapCircuits(id-1, id);
+    patch->commit(tr("moving circuit up"));
+    emit patchModified();
+}
+
+void PatchOperator::moveCircuitDown()
+{
+    int id = section()->currentCircuitId();
+    section()->swapCircuits(id, id+1);
+    patch->commit(tr("moving circuit down"));
+    emit patchModified();
+}
+void PatchOperator::clearSelection()
+{
+    section()->clearSelection();
+    emit selectionChanged();
 }
