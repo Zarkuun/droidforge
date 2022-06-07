@@ -39,6 +39,7 @@ RackView::RackView(PatchEditEngine *patch)
     initScene();
 
     CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
+    CONNECT_ACTION(ACTION_TOOLBAR_ADD_CONTROLLER, &RackView::addController);
 
     // Events that we create
     connect(this, &RackView::patchModified, the_hub, &UpdateHub::modifyPatch);

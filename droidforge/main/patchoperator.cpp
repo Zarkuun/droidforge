@@ -25,10 +25,15 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
 
     CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
     CONNECT_ACTION(ACTION_UPLOAD_TO_DROID, &PatchOperator::upload);
+    CONNECT_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_SAVE_TO_SD, &PatchOperator::saveToSD);
+    CONNECT_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
+    CONNECT_ACTION(ACTION_TOOLBAR_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_OPEN, &PatchOperator::open);
+    CONNECT_ACTION(ACTION_TOOLBAR_OPEN, &PatchOperator::open);
     CONNECT_ACTION(ACTION_SAVE, &PatchOperator::save);
+    CONNECT_ACTION(ACTION_TOOLBAR_SAVE, &PatchOperator::save);
     CONNECT_ACTION(ACTION_SAVE_AS, &PatchOperator::saveAs);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &PatchOperator::openEnclosingFolder);

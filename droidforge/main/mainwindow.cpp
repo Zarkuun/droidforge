@@ -193,6 +193,7 @@ void MainWindow::createEditMenu()
 
     ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
     ADD_ACTION(ACTION_ADD_JACK, menu);
+    ADD_ACTION(ACTION_TOOLBAR_ADD_JACK, menu);
     ADD_ACTION(ACTION_EDIT_VALUE, menu);
     ADD_ACTION(ACTION_FOLLOW_CABLE, menu);
     ADD_ACTION(ACTION_RENAME_CABLE, menu);
@@ -254,17 +255,17 @@ void MainWindow::createToolbar()
     toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     addToolBar(Qt::LeftToolBarArea, toolbar);
 
-    ADD_ACTION(ACTION_NEW, toolbar);
-    ADD_ACTION(ACTION_OPEN, toolbar);
-    ADD_ACTION(ACTION_SAVE, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_NEW, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_OPEN, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_SAVE, toolbar);
     toolbar->addSeparator();
-    ADD_ACTION(ACTION_NEW_CIRCUIT, toolbar);
-    ADD_ACTION(ACTION_ADD_JACK, toolbar);
-    ADD_ACTION(ACTION_ADD_CONTROLLER, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_NEW_CIRCUIT, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_ADD_JACK, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_ADD_CONTROLLER, toolbar);
     toolbar->addSeparator();
-    ADD_ACTION(ACTION_PROBLEMS, toolbar);
-    ADD_ACTION(ACTION_UPLOAD_TO_DROID, toolbar);
-    ADD_ACTION(ACTION_SAVE_TO_SD, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_PROBLEMS, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, toolbar);
 }
 void MainWindow::splitterMoved()
 {

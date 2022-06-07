@@ -31,6 +31,7 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
 void EditorActions::modifyPatch()
 {
     actions[ACTION_SAVE]->setEnabled(patch->isModified());
+    actions[ACTION_TOOLBAR_SAVE]->setEnabled(patch->isModified());
     actions[ACTION_OPEN_ENCLOSING_FOLDER]->setEnabled(patch->getFilePath() != "");
 
     if (patch->undoPossible()) {
@@ -55,7 +56,7 @@ void EditorActions::modifyPatch()
     actions[ACTION_MERGE_ALL_SECTIONS]->setEnabled(patch->numSections() >= 2);
 
     actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems() > 0);
-    actions[ACTION_PROBLEMS]->setVisible(patch->numProblems() > 0);
+    actions[ACTION_TOOLBAR_PROBLEMS]->setVisible(patch->numProblems() > 0);
 
     switchSection();
     changeDroidState(); // actions for upload and save to SD
@@ -66,6 +67,9 @@ void EditorActions::switchSection()
     int numSections = patch->numSections();
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(sectionIndex > 0);
     actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(sectionIndex+1 < numSections);
+    bool hasCircuit = !section()->isEmpty();
+    actions[ACTION_ADD_JACK]->setEnabled(!hasCircuit);
+    actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(!hasCircuit);
     moveCursor();
 }
 void EditorActions::changeClipboard()
@@ -162,24 +166,29 @@ void EditorActions::changePatching()
 void EditorActions::changeDroidState()
 {
     actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
+    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
     actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
+    actions[ACTION_TOOLBAR_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
 }
 void EditorActions::createActions()
 {
-    actions[ACTION_NEW] = new QAction(ICON("settings_input_composite"), tr("&New..."), this);
+    actions[ACTION_NEW] = new QAction(tr("&New..."), this);
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
     actions[ACTION_NEW]->setStatusTip(tr("Create a new patch from scratch"));
+    actions[ACTION_TOOLBAR_NEW] = new QAction(ICON("settings_input_composite"), tr("New"), this);
 
     actions[ACTION_CONFIGURE_COLORS] = new QAction(tr("Edit colors"), this);
     actions[ACTION_CONFIGURE_COLORS]->setShortcut(QKeySequence(tr("F7")));
 
-    actions[ACTION_OPEN] = new QAction(ICON("open_in_browser"), tr("&Open..."), this);
+    actions[ACTION_OPEN] = new QAction(tr("&Open..."), this);
     actions[ACTION_OPEN]->setShortcuts(QKeySequence::Open);
     actions[ACTION_OPEN]->setStatusTip(tr("Open an existing patch"));
+    actions[ACTION_TOOLBAR_OPEN] = new QAction(ICON("open_in_browser"), tr("Open"), this);
 
-    actions[ACTION_SAVE] = new QAction(ICON("save"), tr("&Save..."), this);
+    actions[ACTION_SAVE] = new QAction(tr("&Save..."), this);
     actions[ACTION_SAVE]->setShortcuts(QKeySequence::Save);
     actions[ACTION_SAVE]->setStatusTip(tr("Save patch to file"));
+    actions[ACTION_TOOLBAR_SAVE] = new QAction(ICON("save"), tr("Save"), this);
 
     actions[ACTION_SAVE_AS] = new QAction(tr("Save &as..."), this);
     actions[ACTION_SAVE_AS]->setShortcuts(QKeySequence::SaveAs);
@@ -189,11 +198,13 @@ void EditorActions::createActions()
     actions[ACTION_EXPORT_SELECTION]->setStatusTip(tr("Save the currently selected circuits into a new patch file"));
     actions[ACTION_EXPORT_SELECTION]->setEnabled(false);
 
-    actions[ACTION_UPLOAD_TO_DROID] = new QAction(ICON("exit_to_app"), tr("Activate!"), this);
+    actions[ACTION_UPLOAD_TO_DROID] = new QAction(tr("Activate in master via USB to X7"), this);
     actions[ACTION_UPLOAD_TO_DROID]->setShortcut(QKeySequence(tr("F9")));
+    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID] = new QAction(ICON("exit_to_app"), tr("Activate!"), this);
 
-    actions[ACTION_SAVE_TO_SD] = new QAction(ICON("sim_card"), tr("Save to SD"), this);
+    actions[ACTION_SAVE_TO_SD] = new QAction(tr("Save to DROID microSD card"), this);
     actions[ACTION_SAVE_TO_SD]->setShortcut(QKeySequence(tr("F10")));
+    actions[ACTION_TOOLBAR_SAVE_TO_SD] = new QAction(ICON("sim_card"), tr("Save to SD"), this);
 
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS
@@ -216,8 +227,8 @@ void EditorActions::createActions()
                                              "need to fix all these problems before you can load "
                                              "the patch to your master."));
 
-    actions[ACTION_PROBLEMS] = new QAction(ICON("warning"), tr("Problems"), this);
-    actions[ACTION_PROBLEMS]->setStatusTip(tr("You have problems in your patch. You "
+    actions[ACTION_TOOLBAR_PROBLEMS] = new QAction(ICON("warning"), tr("Problems"), this);
+    actions[ACTION_TOOLBAR_PROBLEMS]->setStatusTip(tr("You have problems in your patch. You "
                                              "need to fix all these problems before you can load "
                                              "the patch to your master."));
 
@@ -294,11 +305,13 @@ void EditorActions::createActions()
     actions[ACTION_SORT_JACKS] = new QAction(NOICON("filter_list"), tr("Sort jack assignments"), this);
     actions[ACTION_SORT_JACKS]->setShortcut(QKeySequence(tr("Meta+S")));
 
-    actions[ACTION_NEW_CIRCUIT] = new QAction(ICON("open_in_new"), tr("&New circuit..."), this);
+    actions[ACTION_NEW_CIRCUIT] = new QAction(tr("&New circuit..."), this);
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
+    actions[ACTION_TOOLBAR_NEW_CIRCUIT] = new QAction(ICON("open_in_new"), tr("New circuit..."), this);
 
-    actions[ACTION_ADD_JACK] = new QAction(ICON("settings_input_composite"), tr("&New jack"), this);
+    actions[ACTION_ADD_JACK] = new QAction(tr("&New jack"), this);
     actions[ACTION_ADD_JACK]->setShortcut(QKeySequence(tr("Ctrl+N")));
+    actions[ACTION_TOOLBAR_ADD_JACK] = new QAction(ICON("settings_input_composite"), tr("New jack"), this);
 
     actions[ACTION_EDIT_VALUE] = new QAction(NOICON("edit"), tr("&Edit element under cursor..."), this);
     actions[ACTION_EDIT_VALUE]->setShortcuts({ QKeySequence(tr("Enter")),
@@ -365,10 +378,10 @@ void EditorActions::createActions()
     actions[ACTION_FOLD_UNFOLD_ALL] = new QAction(tr("Fold / unfold all circuits"), this);
     actions[ACTION_FOLD_UNFOLD_ALL]->setShortcut(QKeySequence(tr("Shift+Space")));
 
-    actions[ACTION_ADD_CONTROLLER] = new QAction(ICON("keyboard"), tr("&Add module..."), this);
+    actions[ACTION_ADD_CONTROLLER] = new QAction(tr("&Add controller module..."), this);
     actions[ACTION_ADD_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
+    actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("keyboard"), tr("Add module..."), this);
 
-    // for (auto action: actions)
     //     action->setShortcutVisibleInContextMenu(false);
 }
 /*
