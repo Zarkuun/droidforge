@@ -160,6 +160,10 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
     }
     return allProblems;
 }
+bool Circuit::jackIsArray(int row) const
+{
+    return the_firmware->jackIsArray(name, jackAssignments[row]->jackName());
+}
 QStringList Circuit::missingJacks(jacktype_t jackType) const
 {
     QStringList jacks = jackType == JACKTYPE_INPUT

@@ -143,11 +143,8 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 }
 void PatchOperator::upload()
 {
-    shoutfunc;
-
     if (patch->isModified())
         save();
-
 
     // int num = MIDIGetNumberOfDevices();
     // shout << num << "MIDI devices";
@@ -196,7 +193,6 @@ void PatchOperator::saveToSD()
     QStringList arguments;
     arguments << "eject" << sdCardDir().absolutePath();
     process.start("diskutil", arguments);
-    shout << "Running" << "diskutil" << arguments;
     bool success = process.waitForFinished(MAC_UMOUNT_TIMEOUT_MS);
     if (!success) {
         QMessageBox::warning(
@@ -253,7 +249,6 @@ void PatchOperator::updateSDState()
 }
 void PatchOperator::loadFile(const QString &filePath, int how)
 {
-    shoutfunc;
     if (FILE_MODE_LOAD && !checkModified())
         return;
 
@@ -279,8 +274,6 @@ void PatchOperator::loadFile(const QString &filePath, int how)
 }
 void PatchOperator::open()
 {
-    shoutfunc;
-
     if (!checkModified())
         return;
 

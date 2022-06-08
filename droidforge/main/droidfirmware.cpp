@@ -24,13 +24,10 @@ DroidFirmware::DroidFirmware()
         circuits = json["circuits"].toObject();
     }
 }
-
-
 bool DroidFirmware::circuitExists(QString circuit) const
 {
     return circuits.keys().contains(circuit);
 }
-
 QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
 {
     // Some circuits have array like pitch1...pitch16. In the DROID patch,
@@ -45,8 +42,6 @@ QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
 
     return jack;
 }
-
-
 bool DroidFirmware::jackIsInput(QString circuit, QString jack) const
 {
     // TODO: Wenn ein jack als input und output vorkommt,
@@ -55,15 +50,24 @@ bool DroidFirmware::jackIsInput(QString circuit, QString jack) const
     QJsonValue jackinfo = findJack(circuit, "inputs", jack);
     return !jackinfo.isNull();
 }
-
-
 bool DroidFirmware::jackIsOutput(QString circuit, QString jack) const
 {
     QJsonValue jackinfo = findJack(circuit, "outputs", jack);
     return !jackinfo.isNull();
 }
+bool DroidFirmware::jackIsArray(QString circuit, QString jack) const
+{
+    QString prefix = jack;
+    while (prefix != "" && prefix.back().isDigit())
+        prefix.chop(1);
 
-
+    if (jackIsInput(circuit, jack))
+        return jackArraySize(circuit, prefix, true) > 1;
+    else if (jackIsOutput(circuit, jack))
+        return jackArraySize(circuit, prefix, false) > 1;
+    else
+        return false; // unknown jacks
+}
 unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isInput) const
 {
     QJsonValue jackinfo;
@@ -81,8 +85,6 @@ unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isIn
     else
         return 0;
 }
-
-
 QStringList DroidFirmware::circuitsOfCategory(QString category) const
 {
     QStringList result;
@@ -95,24 +97,19 @@ QStringList DroidFirmware::circuitsOfCategory(QString category) const
     }
     return result;
 }
-
 QString DroidFirmware::circuitDescription(QString circuit) const
 {
     QString fullDescription = circuits[circuit].toObject()["description"].toString();
     return fullDescription.split('.')[0].replace("\n", " ");
 }
-
 QStringList DroidFirmware::inputsOfCircuit(QString circuit, jackselection_t jackSelection) const
 {
     return jacksOfCircuit(circuit, "inputs", jackSelection);
 }
-
 QStringList DroidFirmware::outputsOfCircuit(QString circuit, jackselection_t jackSelection) const
 {
     return jacksOfCircuit(circuit, "outputs", jackSelection);
 }
-
-
 QStringList DroidFirmware::jacksOfCircuit(QString circuit, QString whence, jackselection_t jackSelection) const
 {
     QStringList result;
@@ -137,7 +134,6 @@ QStringList DroidFirmware::jacksOfCircuit(QString circuit, QString whence, jacks
     }
     return result;
 }
-
 QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence, QString search) const
 {
     QStringList result;
@@ -154,7 +150,6 @@ QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence, 
     }
     return result;
 }
-
 unsigned DroidFirmware::numGlobalRegisters(char registerType) const
 {
     switch (registerType) {
@@ -168,7 +163,6 @@ unsigned DroidFirmware::numGlobalRegisters(char registerType) const
     }
 
 }
-
 unsigned DroidFirmware::numControllerRegisters(const QString &module, char registerType) const
 {
     if (module == "p4b2") {
@@ -212,8 +206,6 @@ unsigned DroidFirmware::numControllerRegisters(const QString &module, char regis
 
     return 0;
 }
-
-
 QJsonValue DroidFirmware::findJack(QString circuit, QString whence, QString jack) const
 {
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
@@ -233,7 +225,6 @@ QJsonValue DroidFirmware::findJack(QString circuit, QString whence, QString jack
     }
     return QJsonValue(QJsonValue::Null);
 }
-
 QJsonValue DroidFirmware::findJackArray(QString circuit, QString whence, QString prefix) const
 {
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();

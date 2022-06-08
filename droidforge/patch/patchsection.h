@@ -61,7 +61,7 @@ public:
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     const CursorPosition &cursorPosition() const { return cursor; };
-    void setCursor(const CursorPosition &pos) { cursor = pos; };
+    void setCursor(const CursorPosition &pos);;
     Circuit *currentCircuit();
     const Circuit *currentCircuit() const;
     int currentCircuitId() const { return cursor.circuitNr; };

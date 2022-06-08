@@ -28,6 +28,7 @@ class RackView : public QGraphicsView, PatchView
     bool draggedAtRegister;
     AtomRegister draggingStartRegister;
     QPointF draggingStartPosition;
+    float maxDistanceFromMouseDown;
 
 public:
     explicit RackView(PatchEditEngine *patch);

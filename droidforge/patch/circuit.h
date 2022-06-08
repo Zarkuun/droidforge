@@ -63,6 +63,7 @@ public:
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
+    bool jackIsArray(int row) const;
 
     void changeCircuit(QString newCircuit);
     bool needG8() const;

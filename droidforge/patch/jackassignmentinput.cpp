@@ -2,6 +2,7 @@
 #include "atomcable.h"
 #include "atominvalid.h"
 #include "atomnumber.h"
+#include "globals.h"
 #include "parseexception.h"
 
 #include <QRegularExpression>

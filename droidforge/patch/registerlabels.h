@@ -18,6 +18,7 @@ class RegisterLabels : public QMap<AtomRegister, RegisterLabel>
 public:
     QString toString() const;
     void swapRegisters(AtomRegister regA, AtomRegister regB);
+    void swapControllerNumbers(unsigned fromnum, unsigned tonum);
 
 private:
     QString toString(char reg, unsigned controller, const QString &title=0) const;

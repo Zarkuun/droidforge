@@ -315,6 +315,13 @@ QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
     }
     return allProblems;
 }
+
+void PatchSection::setCursor(const CursorPosition &pos)
+{
+    cursor = pos;
+    if (pos.row != -2 && currentCircuit()->isFolded())
+        currentCircuit()->setFold(false);
+}
 Circuit *PatchSection::currentCircuit()
 {
     if (circuits.size())

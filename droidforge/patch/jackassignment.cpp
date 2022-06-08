@@ -36,6 +36,14 @@ QString JackAssignment::toString() const
     return s;
 }
 
+QString JackAssignment::jackPrefix() const
+{
+    QString prefix = jack;
+    while (prefix != "" && prefix.back().isDigit())
+        prefix.chop(1);
+    return prefix;
+}
+
 JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString line)
 {
     QStringList parts = line.split("#");

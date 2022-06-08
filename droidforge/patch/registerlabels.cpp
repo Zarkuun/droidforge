@@ -49,7 +49,6 @@ QString RegisterLabels::toString() const
     }
     return s;
 }
-
 void RegisterLabels::swapRegisters(AtomRegister regA, AtomRegister regB)
 {
     RegisterLabel labA, labB;
@@ -72,8 +71,31 @@ void RegisterLabels::swapRegisters(AtomRegister regA, AtomRegister regB)
     if (hadB)
         insert(regA, labB);
 }
+void RegisterLabels::swapControllerNumbers(unsigned fromnum, unsigned tonum)
+{
+    QMap<AtomRegister, RegisterLabel> swapped;
 
+    for (auto it = keyBegin(); it != keyEnd(); ++it)
+    {
+        AtomRegister reg = *it;
+        if (!reg.isControl())
+            swapped[reg] = (*this)[reg];
+        else {
+            AtomRegister newReg;
+            if (reg.controller() == fromnum)
+                newReg = AtomRegister(reg.getRegisterType(), tonum, reg.number());
+            else if (reg.controller() == tonum)
+                newReg = AtomRegister(reg.getRegisterType(), fromnum, reg.number());
+            else
+                newReg = reg;
+            swapped[newReg] = (*this)[reg];
+        }
+    }
 
+    clear();
+    for (auto it = swapped.keyBegin(); it != swapped.keyEnd(); ++it)
+        (*this)[*it] = swapped[*it];
+}
 QString RegisterLabels::toString(char reg, unsigned controller, const QString &title) const
 {
     QString s;

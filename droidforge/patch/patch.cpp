@@ -130,6 +130,7 @@ void Patch::swapControllersSmart(int fromindex, int toindex)
     }
     controllers = newControllers;
     swapControllerNumbers(fromindex+1, toindex+1);
+    registerLabels.swapControllerNumbers(fromindex+1, toindex+1);
 }
 
 void Patch::removeController(int index)

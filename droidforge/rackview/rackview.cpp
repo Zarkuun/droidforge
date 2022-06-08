@@ -78,11 +78,11 @@ void RackView::mousePressEvent(QMouseEvent *event)
                 onModule = true;
             }
             else if (item == registerMarker && event->button() == Qt::LeftButton) {
-                emit registerClicked(markedRegister);
                 dragging = true;
                 draggedAtRegister = false;
                 draggingStartRegister = markedRegister;
                 draggingStartPosition = registerMarker->pos();
+                maxDistanceFromMouseDown = 0;
                 updateDragIndicator(draggingStartPosition, false, false);
                 registerMarker->setVisible(false);
             }
@@ -95,13 +95,19 @@ void RackView::mousePressEvent(QMouseEvent *event)
 void RackView::mouseReleaseEvent(QMouseEvent *)
 {
      if (dragging) {
-         AtomRegister draggingEndRegister = markedRegister;
-         if (registersSuitableForSwapping(draggingStartRegister, draggingEndRegister)) {
-             swapRegisters(draggingStartRegister, draggingEndRegister);
-             dragRegisterIndicator->doSuccessAnimation();
-         }
-         else
+         if (maxDistanceFromMouseDown < 100) {
+             emit registerClicked(draggingStartRegister);
              dragRegisterIndicator->setVisible(false);
+         }
+         else {
+             AtomRegister draggingEndRegister = markedRegister;
+             if (registersSuitableForSwapping(draggingStartRegister, draggingEndRegister)) {
+                 swapRegisters(draggingStartRegister, draggingEndRegister);
+                 dragRegisterIndicator->doSuccessAnimation();
+             }
+             else
+                 dragRegisterIndicator->setVisible(false);
+         }
 
          registerMarker->setVisible(true);
          dragging = false;
@@ -129,6 +135,10 @@ void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
+    if (dragging) {
+        QPointF vector = draggingStartPosition - mapToScene(mousePos);
+        maxDistanceFromMouseDown = qMax(maxDistanceFromMouseDown, vector.manhattanLength());
+    }
 
     bool foundRegister = false;
     for (auto item: items(mousePos))

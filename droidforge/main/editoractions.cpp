@@ -69,7 +69,6 @@ void EditorActions::switchSection()
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(sectionIndex > 0);
     actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(sectionIndex+1 < numSections);
     bool hasCircuit = !section()->isEmpty();
-    shout << hasCircuit << "HAS";
 
     actions[ACTION_ADD_JACK]->setEnabled(hasCircuit);
     actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(hasCircuit);

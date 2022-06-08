@@ -12,6 +12,7 @@
 CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     : QGraphicsView(parent)
     , backgroundRect(0)
+    , numCircuits(0)
     , selectedCircuit(0)
 {
     initScene();
@@ -22,8 +23,8 @@ CircuitCollection::CircuitCollection(QString category, QWidget *parent)
 CircuitCollection::CircuitCollection(QWidget *parent)
     : QGraphicsView(parent)
     , backgroundRect(0)
-    , selectedCircuit(0)
     , numCircuits(0)
+    , selectedCircuit(0)
 {
     initScene();
 }
