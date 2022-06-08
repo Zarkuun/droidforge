@@ -1,5 +1,5 @@
-#ifndef MIDIHOST_H
-#define MIDIHOST_H
+#ifndef MACMIDIHOST_H
+#define MACMIDIHOST_H
 
 #include "patch.h"
 #include "tuning.h"
@@ -10,15 +10,14 @@
 #include <CoreFoundation/CFRunLoop.h>
 
 
-class MIDIHost
+class MacMIDIHost
 {
     MIDIPortRef   outputPortRef;
     MIDIClientRef clientRef;
-    Byte sysexBuffer[MAX_DROID_INI + 16];
-    uint64_t lastTime;
+    Byte sysexBuffer[MAX_DROID_INI + 16 + 1000 /* test */];
 
 public:
-    MIDIHost();
+    MacMIDIHost();
     // bool x7Connected();
     QString sendPatch(const Patch *patch);
     MIDIEndpointRef findX7() const;
@@ -27,4 +26,4 @@ private:
     unsigned prepareSysexMessage(const Patch *patch);
 };
 
-#endif // MIDIHOST_H
+#endif // MACMIDIHOST_H

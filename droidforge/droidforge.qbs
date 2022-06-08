@@ -29,6 +29,8 @@ QtApplication {
     ]
 
     files: [
+        "macmidihost.cpp",
+        "macmidihost.h",
         "main/cablestatusindicator.cpp",
         "main/cablestatusindicator.h",
         "main/colorscheme.cpp",
@@ -47,8 +49,6 @@ QtApplication {
         "main/patchview.h",
         "main/updatehub.cpp",
         "main/updatehub.h",
-        "midihost.cpp",
-        "midihost.h",
         "patch/globals.h",
         "patch/patcheditengine.cpp",
         "patch/patcheditengine.h",

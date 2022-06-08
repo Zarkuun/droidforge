@@ -2,10 +2,10 @@ GROSSE THEMEN:
 
 - Button -> LED Warnung oder sowas
 - Button -> make LEDs match buttons
---> Finally: Deploy (MIDI, SD-Karte)
 - Handbuch und Doku verklinken, auch zu den Jacks
 
 KLEINERE FEATURES:
+- Das mit der SD-Karte besser machen. Oder reicht das erstmal so?
 - Sektionen per Drag-Drop vertauschen
 - Module per Drag-Drop vertauschen
 - View source code (oder open source code in text editor)

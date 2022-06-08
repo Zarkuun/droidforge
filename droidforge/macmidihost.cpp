@@ -1,4 +1,4 @@
-#include "midihost.h"
+#include "macmidihost.h"
 #include "globals.h"
 
 #include <QDateTime>
@@ -6,12 +6,12 @@
 
 bool sysexOngoing = false;
 
-void sysex_complete(MIDISysexSendRequest *req)
+void sysex_complete(MIDISysexSendRequest *)
 {
     sysexOngoing = false;
 }
 
-MIDIHost::MIDIHost()
+MacMIDIHost::MacMIDIHost()
     : outputPortRef(0)
     , clientRef(0)
 {
@@ -23,7 +23,7 @@ MIDIHost::MIDIHost()
 // we got crashed in the CoreMIDI Foundation from time to time.
 struct MIDISysexSendRequest req;
 
-QString MIDIHost::sendPatch(const Patch *patch)
+QString MacMIDIHost::sendPatch(const Patch *patch)
 {
     // Wait until a previous Sysex has finished. Otherwise
     // the data structures get wasted and we crash. Yes, this
@@ -54,7 +54,7 @@ QString MIDIHost::sendPatch(const Patch *patch)
     CFRunLoopRun();
     return "";
 }
-MIDIEndpointRef MIDIHost::findX7() const
+MIDIEndpointRef MacMIDIHost::findX7() const
 {
     int numDestinations = MIDIGetNumberOfDestinations();
 
@@ -77,7 +77,7 @@ MIDIEndpointRef MIDIHost::findX7() const
     }
     return 0;
 }
-unsigned MIDIHost::prepareSysexMessage(const Patch *patch)
+unsigned MacMIDIHost::prepareSysexMessage(const Patch *patch)
 {
     sysexBuffer[0] = 0xf0;
     sysexBuffer[1] = 0x00;
@@ -89,8 +89,29 @@ unsigned MIDIHost::prepareSysexMessage(const Patch *patch)
     unsigned patchLen = strlen(iniAsCstring);
     if (patchLen > MAX_DROID_INI)
         return 0;
-    memcpy(&sysexBuffer[5], iniAsCstring, patchLen);
-    sysexBuffer[patchLen + 5] = 0xf7;
-    int sysexLength = patchLen + 6;
-    return sysexLength;
+
+    // The MIDI Driver of MAC seems to have hickups if the length
+    // of a sysex message is > 255 bytes. It drops each 256th byte.
+    // Strange. I dont' know wether this is a bug or part of the specs
+    // somewhere. So we simply insert one space byte every 256th byte
+    // (which will then happily get lost on the way)
+    #define SYSEX_MAX_CHUNK 255
+
+    const char *read = iniAsCstring;
+    Byte *write = &sysexBuffer[5];
+    int remaining = patchLen;
+    int maxChunkLen = SYSEX_MAX_CHUNK - 5;
+    while (remaining) {
+        int chunk = qMin(remaining, maxChunkLen);
+        remaining -= chunk;
+        memcpy(write, read, chunk);
+        write += chunk;
+        read += chunk;
+        *write++ = ' ';
+        maxChunkLen = SYSEX_MAX_CHUNK;
+    }
+    *write++ = 0xf7;
+
+    int totalLen = write - &sysexBuffer[0];
+    return totalLen;
 }
