@@ -11,6 +11,7 @@ UpdateHub::UpdateHub(QObject *parent)
 
 void UpdateHub::modifyPatch()
 {
+    shoutfunc;
     // Called, when the current patch is modified in any possible way -
     // except for (only) cursor movements. This is always done directly
     // after a patch->commit() from one of our subsystems.

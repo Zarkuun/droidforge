@@ -118,7 +118,7 @@ void CircuitView::paintHeader(QPainter *painter)
 }
 void CircuitView::paintComment(QPainter *painter)
 {
-    painter->fillRect(commentRect(), CIRV_COLOR_COMMENT_BACKGROUND);
+    painter->fillRect(commentRect(), COLOR(CIRV_COLOR_COMMENT_BACKGROUND));
     painter->setPen(COLOR(CIRV_COLOR_COMMENT));
     painter->drawText(
                 QRectF(commentRect().left() + CIRV_TEXT_SIDE_PADDING,
@@ -168,7 +168,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 rect.width() - 2 * CIRV_TEXT_SIDE_PADDING,
                 rect.height());
 
-    painter->fillRect(rect, COLOR(COLOR_CIRV_ATOM_BACKGROUND));
+    // painter->fillRect(rect, COLOR(CIRV_COLOR_ATOM_BACKGROUND));
     painter->setPen(textcolor);
 
     if (atom) {
@@ -236,10 +236,12 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
     QRectF jr = jackRect(row);
     QColor jackFgColor, jackBgColor, atomColor;
     atomColor = COLOR(CIRV_COLOR_TEXT);
+    QColor bgColor = COLOR(row % 2 == 0 ? CIRV_COLOR_EVEN_ROW : CIRV_COLOR_ODD_ROW);
 
     if (ja->isDisabled()) {
         jackFgColor = COLOR(CIRV_COLOR_DISABLED_TEXT);
         atomColor = jackFgColor;
+        bgColor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
         jackBgColor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
     }
     else if (ja->jackType() == JACKTYPE_INPUT) {
@@ -256,6 +258,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
         jackBgColor = COLOR(CIRV_COLOR_UNKNOWN_JACK_BG);
     }
 
+    painter->fillRect(jackLineRect(row), bgColor);
     painter->fillRect(jr, jackBgColor);
     painter->setPen(jackFgColor);
     painter->drawText(

@@ -137,29 +137,30 @@ void MainWindow::createFileMenu()
 
     ADD_ACTION(ACTION_NEW, menu);
     ADD_ACTION(ACTION_OPEN, menu);
-    ADD_ACTION(ACTION_SAVE, menu);
-    ADD_ACTION(ACTION_SAVE_AS, menu);
-    ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
-
+    patchOperator.createRecentFileActions(menu);
+    ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, menu);
     #endif
 
-    ADD_ACTION(ACTION_UPLOAD_TO_DROID, menu);
-    ADD_ACTION(ACTION_SAVE_TO_SD, menu);
-    patchOperator.createRecentFileActions(menu);
+    menu->addSeparator();
 
-    ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
-    ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, menu);
-    ADD_ACTION(ACTION_QUIT, menu);
+    ADD_ACTION(ACTION_SAVE, menu);
+    ADD_ACTION(ACTION_SAVE_AS, menu);
+    ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
 
     menu->addSeparator();
 
     ADD_ACTION(ACTION_PATCH_PROPERTIES, menu);
+    ADD_ACTION(ACTION_CONFIGURE_COLORS, menu);
 
     menu->addSeparator();
 
-    ADD_ACTION(ACTION_CONFIGURE_COLORS, menu);
+    ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, menu);
+    ADD_ACTION(ACTION_UPLOAD_TO_DROID, menu);
+    ADD_ACTION(ACTION_SAVE_TO_SD, menu);
+    ADD_ACTION(ACTION_QUIT, menu);
+
 
 }
 void MainWindow::createEditMenu()

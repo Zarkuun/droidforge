@@ -47,8 +47,14 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Circuits: circuit name background"), list);
     item->setData(1, CIRV_COLOR_CIRCUIT_NAME_BG);
 
-    item = new QListWidgetItem(tr("Circuits: atom background"), list);
-    item->setData(1, COLOR_CIRV_ATOM_BACKGROUND);
+    item = new QListWidgetItem(tr("Circuits: comment background"), list);
+    item->setData(1, CIRV_COLOR_COMMENT_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Circuits: odd row background"), list);
+    item->setData(1, CIRV_COLOR_ODD_ROW);
+
+    item = new QListWidgetItem(tr("Circuits: even row background"), list);
+    item->setData(1, CIRV_COLOR_EVEN_ROW);
 
     item = new QListWidgetItem(tr("Circuits: input jack"), list);
     item->setData(1, CIRV_COLOR_INPUT_JACK);

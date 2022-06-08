@@ -251,6 +251,7 @@ void PatchOperator::updateSDState()
 }
 void PatchOperator::loadFile(const QString &filePath, int how)
 {
+    shoutfunc;
     if (FILE_MODE_LOAD && !checkModified())
         return;
 
@@ -276,6 +277,8 @@ void PatchOperator::loadFile(const QString &filePath, int how)
 }
 void PatchOperator::open()
 {
+    shoutfunc;
+
     if (!checkModified())
         return;
 
@@ -403,10 +406,18 @@ void PatchOperator::loadPatch(const QString &aFilePath)
 {
     Patch newPatch;
     parser.parse(aFilePath, &newPatch); // throws exception
-    // reached if parsing was successfull
+
+    // Move contents of new patch into "our" patch without
+    // invalidating its pointer
     patch->startFromScratch();
     patch->setFilePath(aFilePath);
     newPatch.cloneInto(patch);
+
+    // Beware: a patch *must* have at least one section. If we load
+    // an empty patch, we crash if there is no section
+    if (patch->numSections() == 0)
+        patch->addSection(new PatchSection());
+
     patch->commit(tr("loading patch"));
     emit patchModified();
 }
