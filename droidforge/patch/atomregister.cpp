@@ -69,6 +69,26 @@ bool AtomRegister::isNull() const
     return registerType == 0;
 }
 
+bool AtomRegister::belongsTo(AtomRegister &other) const
+{
+    if (cont != other.cont)
+        return false;
+    else if (num != other.num)
+        return false;
+    else if (registerType == other.registerType)
+        return true;
+    else if (registerType == REGISTER_BUTTON && other.registerType == REGISTER_LED)
+        return true;
+    else if (registerType == REGISTER_LED && other.registerType == REGISTER_BUTTON)
+        return true;
+    else if (registerType == REGISTER_INPUT && other.registerType == REGISTER_NORMALIZE)
+        return true;
+    else if (registerType == REGISTER_NORMALIZE && other.registerType == REGISTER_INPUT)
+        return true;
+    else
+        return false;
+}
+
 bool AtomRegister::needG8() const
 {
     return registerType == REGISTER_GATE

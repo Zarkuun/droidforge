@@ -31,6 +31,7 @@ public:
     unsigned number() const { return num; };
     unsigned getController() const { return cont; }
     unsigned getNumber() const { return num; }
+    bool belongsTo(AtomRegister &other) const;
 
     void setRegisterType(QChar t) { registerType = t.toLatin1(); };
     QChar getRegisterType() const { return registerType; };
