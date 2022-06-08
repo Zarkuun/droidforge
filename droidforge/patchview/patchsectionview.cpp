@@ -1059,7 +1059,8 @@ void PatchSectionView::editCircuitComment(int key)
             circuit->setComment(newComment);
         else
             circuit->removeComment();
-        section()->setCursorRow(-1);
+        if (!circuit->isFolded())
+            section()->setCursorRow(-1);
         patch->commit(tr("changing comment for circuit '%1'").arg(circuit->getName()));
         emit patchModified();
     }
@@ -1412,10 +1413,22 @@ void PatchSectionView::moveCursorLeftRight(int whence)
     if (isEmpty())
         return;
 
-    if (whence == -1)
+    CursorPosition pos = section()->cursorPosition();
+
+    if (whence == -1) {
+        if (pos.row == -2 && !currentCircuit()->isFolded()) {
+            foldUnfold();
+            return;
+        }
         section()->moveCursorLeft();
-    else
+    }
+    else {
+        if (pos.row == -2 && currentCircuit()->isFolded()) {
+            foldUnfold();
+            return;
+        }
         section()->moveCursorRight();
+    }
     emit cursorMoved();
 }
 void PatchSectionView::moveCursorUpDown(int whence)
