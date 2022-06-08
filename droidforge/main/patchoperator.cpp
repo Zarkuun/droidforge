@@ -144,6 +144,9 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 }
 void PatchOperator::upload()
 {
+    if (patch->isModified())
+        save();
+
     MacMIDIHost midiHost;
     QString error = midiHost.sendPatch(patch);
     if (error != "") {
@@ -275,10 +278,8 @@ void PatchOperator::open()
         return;
 
     QString filePath = QFileDialog::getOpenFileName(the_forge);
-    if (!filePath.isEmpty()) {
+    if (!filePath.isEmpty())
         loadFile(filePath, FILE_MODE_LOAD);
-        setLastFilePath(filePath);
-    }
 }
 void PatchOperator::integrate()
 {
@@ -377,6 +378,7 @@ void PatchOperator::setLastFilePath(const QString &path)
 {
     QSettings settings;
     settings.setValue("lastfile", path);
+    shout << "Last file path ist jetzt" << path;
 }
 QStringList PatchOperator::getRecentFiles()
 {
@@ -411,6 +413,7 @@ void PatchOperator::loadPatch(const QString &aFilePath)
         patch->addSection(new PatchSection());
 
     patch->commit(tr("loading patch"));
+    setLastFilePath(aFilePath);
     emit patchModified();
 }
 void PatchOperator::integratePatch(const QString &aFilePath)
