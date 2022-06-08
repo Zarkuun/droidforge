@@ -3,6 +3,11 @@ import qbs.FileInfo
 QtApplication {
     Depends { name: "Qt.widgets" }
 
+    cpp.frameworks: [
+        "CoreMIDI",
+        "CoreFoundation",
+    ]
+
     cpp.defines: [
         // You can make your code fail to compile if it uses deprecated APIs.
         // In order to do so, uncomment the following line.
@@ -42,6 +47,8 @@ QtApplication {
         "main/patchview.h",
         "main/updatehub.cpp",
         "main/updatehub.h",
+        "midihost.cpp",
+        "midihost.h",
         "patch/globals.h",
         "patch/patcheditengine.cpp",
         "patch/patcheditengine.h",

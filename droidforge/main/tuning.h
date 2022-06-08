@@ -11,6 +11,7 @@
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001
 #define MAC_UMOUNT_TIMEOUT_MS                10000
+#define MAX_DROID_INI                        64000 // from x7.h
 
 // #define NUMBER_INPUTS                        8
 // #define NUMBER_OUTPUTS                       8

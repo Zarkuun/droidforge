@@ -2,6 +2,7 @@
 #include "colorscheme.h"
 #include "globals.h"
 #include "mainwindow.h"
+#include "midihost.h"
 #include "parseexception.h"
 #include "updatehub.h"
 #include "patchpropertiesdialog.h"
@@ -143,19 +144,15 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 }
 void PatchOperator::upload()
 {
-    if (patch->isModified())
-        save();
-
-    // int num = MIDIGetNumberOfDevices();
-    // shout << num << "MIDI devices";
-
-
-#ifdef Q_OS_MACOS
-    QStringList args;
-    args << patch->getFilePath();
-    QProcess::startDetached("/usr/local/bin/droidpatch", args);
-    // TODO: Das hier direkt mit MIDI machen
-#endif
+    MIDIHost midiHost;
+    QString error = midiHost.sendPatch(patch);
+    if (error != "") {
+        QMessageBox::critical(
+                    the_forge,
+                    tr("Cannot send patch via MIDI"),
+                    error,
+                    QMessageBox::Ok);
+    }
 }
 void PatchOperator::saveToSD()
 {
