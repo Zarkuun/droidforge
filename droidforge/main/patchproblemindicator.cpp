@@ -20,7 +20,7 @@ PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *pa
 
     CONNECT_ACTION(ACTION_TOOLBAR_PROBLEMS, &PatchProblemIndicator::jumpToNextProblem);
     CONNECT_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::jumpToNextProblem);
-    TRIGGER_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::clicked);
+    SET_ACTION_TRIGGER(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::clicked);
 
     // Events that we create
     connect(this, &PatchProblemIndicator::patchModified, the_hub, &UpdateHub::modifyPatch);

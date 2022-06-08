@@ -143,6 +143,8 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 }
 void PatchOperator::upload()
 {
+    shoutfunc;
+
     if (patch->isModified())
         save();
 

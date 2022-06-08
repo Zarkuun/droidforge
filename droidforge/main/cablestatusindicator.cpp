@@ -24,7 +24,7 @@ CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *pare
     // TODO: mouse click soll signal machen bzw. direkt
     // eine Aktion triggern (follow cable). Und eine Hand will ich
     // sehen.
-    TRIGGER_ACTION(ACTION_ADD_JACK, &CableStatusIndicator::clicked);
+    SET_ACTION_TRIGGER(ACTION_ADD_JACK, &CableStatusIndicator::clicked);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &CableStatusIndicator::updateStatus);

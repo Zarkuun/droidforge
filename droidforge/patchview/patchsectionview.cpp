@@ -102,6 +102,8 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, &PatchSectionView::createSectionFromSelection);
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
+    CONNECT_ACTION(ACTION_TOOLBAR_NEW_CIRCUIT, &PatchSectionView::newCircuit);
+    CONNECT_ACTION(ACTION_TOOLBAR_ADD_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchSectionView::editCircuitComment);
     CONNECT_ACTION(ACTION_EDIT_JACK_COMMENT, &PatchSectionView::editJackComment);

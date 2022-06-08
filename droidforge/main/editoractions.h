@@ -106,10 +106,11 @@ extern EditorActions *the_actions;
  * - The connect() is always be done by the class that receives
  *   the action signal, not by someone else.
 */
-#define CONNECT_ACTION(A, FUNC)      connect(the_actions->action(A), &QAction::triggered, this, FUNC)
-#define TRIGGER_ACTION(A, FUNC)      connect(this, FUNC, the_actions->action(A), &QAction::trigger)
-#define ADD_ACTION(A, TO)            TO->addAction(the_actions->action(A))
-#define ADD_ACTION_IF_ENABLED(A, TO) if (the_actions->action(A)->isEnabled()) TO->addAction(the_actions->action(A))
+#define CONNECT_ACTION(A, FUNC)        connect(the_actions->action(A), &QAction::triggered, this, FUNC)
+#define SET_ACTION_TRIGGER(A, FUNC)    connect(this, FUNC, the_actions->action(A), &QAction::trigger)
+#define TRIGGER_ACTION(A)               the_actions->action(A)->trigger();
+#define ADD_ACTION(A, TO)              TO->addAction(the_actions->action(A))
+#define ADD_ACTION_IF_ENABLED(A, TO)   if (the_actions->action(A)->isEnabled()) TO->addAction(the_actions->action(A))
 
 
 #endif // EDITORACTIONS_H

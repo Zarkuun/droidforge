@@ -112,13 +112,18 @@ void RackView::mouseReleaseEvent(QMouseEvent *)
 
 void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    bool foundItem = false;
     for (auto item: items(event->pos())) {
+        foundItem = true;
         if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
             QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
             int index = v.isValid() ? v.toInt() : -1;
             editLabelling(item->data(DATA_INDEX_MODULE_NAME).toString(), index);
+            return;
         }
     }
+    if (!foundItem)
+        TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
 }
 
 void RackView::mouseMoveEvent(QMouseEvent *event)

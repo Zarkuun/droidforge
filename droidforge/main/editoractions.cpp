@@ -1,4 +1,5 @@
 #include "editoractions.h"
+#include "globals.h"
 #include "iconbase.h"
 #include "patchoperator.h"
 #include "updatehub.h"
@@ -68,8 +69,10 @@ void EditorActions::switchSection()
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(sectionIndex > 0);
     actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(sectionIndex+1 < numSections);
     bool hasCircuit = !section()->isEmpty();
-    actions[ACTION_ADD_JACK]->setEnabled(!hasCircuit);
-    actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(!hasCircuit);
+    shout << hasCircuit << "HAS";
+
+    actions[ACTION_ADD_JACK]->setEnabled(hasCircuit);
+    actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(hasCircuit);
     moveCursor();
 }
 void EditorActions::changeClipboard()
@@ -87,7 +90,6 @@ void EditorActions::changeSelection()
 void EditorActions::moveCursor()
 {
     const Atom *atom = section()->currentAtom();
-    actions[ACTION_ADD_JACK]->setEnabled(section()->currentCircuit());
     actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(section()->currentCircuit());
@@ -395,7 +397,6 @@ void EditorActions::createActions()
 
     const PatchSectionView *psv = patchView.currentPatchSectionView();
     bool empty = !psv || psv->isEmpty();
-    actions[ACTION_ADD_JACK]->setEnabled(!empty);
     actions[ACTION_EDIT_VALUE]->setEnabled(!empty);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(!empty);
     const Atom *atom = 0;

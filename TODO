@@ -3,7 +3,7 @@ GROSSE THEMEN:
 - Button -> LED Warnung oder sowas
 - Button -> make LEDs match buttons
 --> Finally: Deploy (MIDI, SD-Karte)
-
+- Handbuch und Doku verklinken, auch zu den Jacks
 
 KLEINERE FEATURES:
 - Find register in patch: Doppeldinger anzeigen: Bei B auch L, Bei I auch N.
@@ -22,6 +22,12 @@ KLEINERE FEATURES:
 - Jacks mit Lookuptabellen. z.B. Tonarten 1-12. Dazu macht man in der
   Doku eine Tabelle. Und im AtomSelector kann man dann beim Numberdingens
   diese direkt auswählen.
+- Snippet als Quelltext reinpasten. Und zwar vom global Clipboard des
+  Rechners.
+- Auch umgekehrt!! Wenn ich ih meinem Patch etwas ins Clipboard kopiere,
+  soll ich es in anderen Anwendungen als Text einfügen können!
+- Patchsectionview umschalten auf "Text"??
+
 
 BUGS:
 - Namensgebung: Soll nicht "Jack" lieber "Parameter" heißen?
