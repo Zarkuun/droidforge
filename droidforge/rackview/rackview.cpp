@@ -276,31 +276,31 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
    QMenu *menu = new QMenu(this);
    if (controllerIndex >= 0) {
        ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
-       menu->addAction(ICON("delete"), tr("Remove this controller"), this,
+       menu->addAction(tr("Remove this controller"), this,
                        [this,controllerIndex,moduleType] () {this->askRemoveController(moduleType, controllerIndex); });
        if (controllerIndex > 0)
-           menu->addAction(ICON("keyboard_arrow_left"), tr("Move by one position to the left"), this,
+           menu->addAction(tr("Move by one position to the left"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex-1); });
        if (controllerIndex+1 < patch->numControllers())
-           menu->addAction(ICON("keyboard_arrow_right"), tr("Move by one position to the right"), this,
+           menu->addAction(tr("Move by one position to the right"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex+1); });
        if (controllersRegistersUsed(controllerIndex) && numControllers() >= 2)
            menu->addAction(tr("Move used controls and LEDs to other controllers"),
                            this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
    }
 
-   menu->addAction(ICON("assignment"), tr("Edit labelling of controls"), this,
+   menu->addAction(tr("Edit labelling of controls"), this,
                    [this,controllerIndex,moduleType] () {this->editLabelling(moduleType, controllerIndex); });
 
    AtomRegister reg = markedRegister;
    if (!markedRegister.isNull() && patch->registerUsed(markedRegister)) {
-       menu->addAction(ICON("search"), tr("Find this register in your patch"), this,
+       menu->addAction(tr("Find this register in your patch"), this,
                        [this,reg] () {this->findRegister(reg); });
    }
 
    menu->addSeparator();
 
-   menu->addAction(ICON("purchase"), tr("Lookup this module in the shop"), this,
+   menu->addAction(tr("Lookup this module in the shop"), this,
                    [this,moduleType] () {this->purchaseController(moduleType); });
    menu->setAttribute(Qt::WA_DeleteOnClose);
    menu->popup(QCursor::pos());
