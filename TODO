@@ -6,7 +6,6 @@ GROSSE THEMEN:
 - Handbuch und Doku verklinken, auch zu den Jacks
 
 KLEINERE FEATURES:
-- Find register in patch: Doppeldinger anzeigen: Bei B auch L, Bei I auch N.
 - Sektionen per Drag-Drop vertauschen
 - Module per Drag-Drop vertauschen
 - View source code (oder open source code in text editor)
@@ -26,7 +25,14 @@ KLEINERE FEATURES:
   Rechners.
 - Auch umgekehrt!! Wenn ich ih meinem Patch etwas ins Clipboard kopiere,
   soll ich es in anderen Anwendungen als Text einfügen können!
-- Patchsectionview umschalten auf "Text"??
+- Patchsectionview umschalten auf "Text"?? Also in einer Textansicht
+  editieren. Dabei trotzdem die Sektionen erhalten? Macht Sinn?
+  Beim Umschalten könnte man einfach ein Textfenster machen mit "toString()".
+  Dort einen Standardeditor reinhängen. Sobald man was ändert, müsste man
+  das feststellen und gleich parsen? Was ist aber dann mit den ganzen anderen
+  Modi? Die Problems? usw???? Ist es nicht besser, ein Fenster aufzumachen,
+  indem man dierekt editiert, modal? Das ganze könnte man für alle
+  Ebenen machen: Patch, Section, Circuit.
 
 
 BUGS:
