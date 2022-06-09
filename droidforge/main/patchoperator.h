@@ -80,6 +80,7 @@ private:
     bool isDroidVolume(const QFileInfo &fileinfo) const;
     void updateSDState();
     QDir sdCardDir() const;
+    Patch *editSource(QString oldSource);
 public: // TODO: Spater wieder private machen
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
 

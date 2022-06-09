@@ -600,33 +600,44 @@ shoutfunc;
 
 void PatchOperator::editSectionSource()
 {
-shoutfunc;
-
+    Patch *parsed = editSource(section()->toString());
+    if (parsed) {
+        int sectionIndex = patch->currentSectionIndex();
+        patch->removeSection(sectionIndex);
+        patch->insertSection(sectionIndex, parsed->section(0)->clone());
+        section()->sanitizeCursor();
+        patch->commit(tr("editing section source code"));
+        delete parsed;
+        emit patchModified();
+    }
 }
 
 void PatchOperator::editCircuitSource()
 {
-    QString oldSource = section()->currentCircuit()->toString();
-    int circuitIndex = section()->currentCircuitId();
-
+    Patch *parsed = editSource(section()->currentCircuit()->toString());
+    if (parsed) {
+        int circuitIndex = section()->currentCircuitId();
+        section()->deleteCircuit(circuitIndex);
+        for (auto circuit: parsed->section(0)->circuits)
+            section()->insertCircuit(circuitIndex++, circuit->clone());
+        section()->sanitizeCursor();
+        patch->commit(tr("editing circuit source code"));
+        delete parsed;
+        emit patchModified();
+    }
+}
+Patch *PatchOperator::editSource(QString oldSource)
+{
     SourceCodeEditor editor(oldSource, the_forge);
     PatchParser parser;
-
     while (true) {
         if (!editor.edit())
-            return; // User aborted
+            return 0; // User aborted
         try {
             QString newSource = editor.getEditedText();
             Patch parsed;
             parser.parseString(newSource, &parsed);
-            section()->deleteCircuit(circuitIndex);
-            for (auto circuit: parsed.section(0)->circuits)
-                section()->insertCircuit(circuitIndex++, circuit->clone());
-
-            section()->sanitizeCursor();
-            patch->commit(tr("editing circuit source code"));
-            emit patchModified();
-            break;
+            return parsed.clone();
         }
         catch (ParseException &e) {
             QMessageBox::critical(
