@@ -11,6 +11,7 @@ class RegisterList : public QList<AtomRegister>
 public:
     RegisterList();
     QString toString() const;
+    QString toSmartString() const;
 };
 
 QDebug &operator<<(QDebug &out, const RegisterList &rl);

@@ -453,7 +453,7 @@ void PatchSectionView::paste()
 void PatchSectionView::pasteSmart()
 {
     Patch *pastedPatch = the_clipboard->getAsPatch();
-    if (!interactivelyRemapRegisters(pastedPatch)) {
+    if (!the_operator->interactivelyRemapRegisters(pastedPatch)) {
         delete pastedPatch;
         return;
     }

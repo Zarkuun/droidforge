@@ -24,9 +24,7 @@ JackAssignment::~JackAssignment()
 
 QString JackAssignment::toString() const
 {
-    QString s = "    ";
-    if (disabled)
-        s += "# ";
+    QString s = disabled ? "#   " : "    ";
     s += jack + " =";
     QString v = valueToString();
     if (v != "")

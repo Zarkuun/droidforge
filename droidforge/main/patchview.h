@@ -19,7 +19,7 @@ protected:
 public:
     PatchView(PatchEditEngine *patch);
     // TODO: Das ist eine Kopie! Rausewrfen!!!
-    bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
+    // bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
 };
 
 #endif // PATCHVIEW_H

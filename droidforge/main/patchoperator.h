@@ -74,10 +74,11 @@ private:
     QStringList getRecentFiles();
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);
-    bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
     bool isDroidVolume(const QFileInfo &fileinfo) const;
     void updateSDState();
     QDir sdCardDir() const;
+public: // TODO: Spater wieder private machen
+    bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
 
 signals:
     void patchModified();

@@ -376,7 +376,6 @@ void PatchOperator::setLastFilePath(const QString &path)
 {
     QSettings settings;
     settings.setValue("lastfile", path);
-    shout << "Last file path ist jetzt" << path;
 }
 QStringList PatchOperator::getRecentFiles()
 {
@@ -473,21 +472,29 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
     ontoPatch->collectUsedRegisterAtoms(occupiedRegisters);
     RegisterList neededRegisters;
     otherPatch->collectUsedRegisterAtoms(neededRegisters);
+
+    // Create a list of registers to remap and a list of registers
+    // that are occupied (in the new configuration already)
     RegisterList atomsToRemap;
     for (auto &reg: neededRegisters) {
-        if (occupiedRegisters.contains(reg) || !availableRegisters.contains(reg)) {
+        // registers need to be remapped if they are not existing in our
+        // current controller configuration or if they are already
+        // occupied.
+        if (occupiedRegisters.contains(reg) || !availableRegisters.contains(reg))
             atomsToRemap.append(reg);
-        }
+        // Not need to be remapped: then they *now* occupy a register
+        // and are not available for remapping
         else
             occupiedRegisters.append(reg); // now occupied
     }
+
     if (atomsToRemap.count()) {
         int reply = QMessageBox::question(
                     the_forge,
                     TR("Register conflicts"),
                     TR("Some of the register references in the integrated patch either do not exist in your "
                        "current rack definition or are already occupied. Shall I try to find useful replacements "
-                       "for those?\n\n%1").arg(atomsToRemap.toString()),
+                       "for those?\n\n%1").arg(atomsToRemap.toSmartString()),
                     QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::Yes);
 
@@ -501,14 +508,18 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
 
             for (auto& toRemap: atomsToRemap) {
                 for (auto &candidate: availableRegisters) {
-                    if (occupiedRegisters.contains(candidate))
-                        continue;
+
                     if (toRemap.getRegisterType() != candidate.getRegisterType())
                         continue;
+
+                    if (occupiedRegisters.contains(candidate))
+                        continue;
+
                     remapFrom.append(toRemap);
                     remapTo.append(candidate);
                     occupiedRegisters.append(candidate);
                     remapped.append(toRemap);
+                    break;
                 }
             }
 
@@ -526,7 +537,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
                             TR("Register conflicts"),
                             TR("For some register references I could not find a valid replacement in your patch. "
                                "Shall I remove these references (otherwise I would just leave them as "
-                               "they are and you check yourselves later)?\n\n%1").arg(atomsToRemap.toString()),
+                               "they are and you check yourselves later)?\n\n%1").arg(atomsToRemap.toSmartString()),
                             QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
                             QMessageBox::Yes);
 

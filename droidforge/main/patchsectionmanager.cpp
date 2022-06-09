@@ -1,5 +1,6 @@
 #include "patchsectionmanager.h"
 #include "clipboard.h"
+#include "patchoperator.h"
 #include "tuning.h"
 #include "updatehub.h"
 #include "editoractions.h"
@@ -153,7 +154,7 @@ void PatchSectionManager::duplicateSection()
 
     Patch *newpatch = new Patch();
     newpatch->addSection(oldSection->clone());
-    if (!interactivelyRemapRegisters(newpatch)) {
+    if (!the_operator->interactivelyRemapRegisters(newpatch)) {
         delete newpatch;
         return;
     }
