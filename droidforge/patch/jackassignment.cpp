@@ -36,6 +36,14 @@ QString JackAssignment::toString() const
     return s;
 }
 
+QString JackAssignment::toBare() const
+{
+    if (disabled)
+        return "";
+    else
+        return jack + "=" + valueToString().replace(" ", "");
+}
+
 QString JackAssignment::jackPrefix() const
 {
     QString prefix = jack;

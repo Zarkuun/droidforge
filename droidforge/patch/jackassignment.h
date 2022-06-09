@@ -32,6 +32,7 @@ public:
     void setDisabled(bool d) { disabled = d; };
     bool isDisabled() const { return disabled; };
     QString toString() const;
+    QString toBare() const;
     QString jackName() const { return jack; };
     QString jackPrefix() const;
     void setJackName(const QString &name) { jack = name; };

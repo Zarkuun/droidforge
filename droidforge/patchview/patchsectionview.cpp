@@ -284,12 +284,14 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
     }
 
     // All keys that are used for entering a value popup the atom selector
-    // preselected accordingly.
-    if ( (key >= Qt::Key_A && key <= Qt::Key_Z)
+    // preselected accordingly. Make sure that they are only valid
+    // if no modified is pressed.
+    if ( ((event->modifiers() | Qt::ShiftModifier) == Qt::ShiftModifier)
+        && ((key >= Qt::Key_A && key <= Qt::Key_Z)
         || key == Qt::Key_Underscore
         || (key >= Qt::Key_0 && key <= Qt::Key_9)
          || key == Qt::Key_Period
-         || key == Qt::Key_Minus)
+         || key == Qt::Key_Minus))
     {
         editValue(key);
         return true;

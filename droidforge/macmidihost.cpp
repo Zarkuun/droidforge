@@ -84,7 +84,7 @@ unsigned MacMIDIHost::prepareSysexMessage(const Patch *patch)
     sysexBuffer[2] = 0x66;
     sysexBuffer[3] = 0x66;
     sysexBuffer[4] = 'P';
-    QString droidini = patch->toString(); // TODO: strip comments
+    QString droidini = patch->toBare();
     const char *iniAsCstring = droidini.toUtf8();
     unsigned patchLen = strlen(iniAsCstring);
     if (patchLen > MAX_DROID_INI)

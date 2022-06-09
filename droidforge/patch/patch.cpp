@@ -408,7 +408,16 @@ QString Patch::toString() const
     while (s.endsWith("\n\n"))
         s.chop(1);
     return s;
+}
 
+QString Patch::toBare() const
+{
+    QString s;
+    for (qsizetype i=0; i<controllers.length(); i++)
+        s += "[" + controllers[i] + "]\n";
+    for (qsizetype i=0; i<sections.length(); i++)
+        s += sections[i]->toBare();
+    return s;
 }
 
 bool Patch::saveToFile(const QString filePath) const

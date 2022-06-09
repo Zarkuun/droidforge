@@ -2,7 +2,6 @@
 #include "colorscheme.h"
 #include "globals.h"
 #include "mainwindow.h"
-#include "macmidihost.h"
 #include "parseexception.h"
 #include "updatehub.h"
 #include "patchpropertiesdialog.h"
@@ -147,7 +146,6 @@ void PatchOperator::upload()
     if (patch->isModified())
         save();
 
-    MacMIDIHost midiHost;
     QString error = midiHost.sendPatch(patch);
     if (error != "") {
         QMessageBox::critical(

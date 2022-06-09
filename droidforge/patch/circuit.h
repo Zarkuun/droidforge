@@ -30,7 +30,8 @@ public:
     Circuit(QString name, const QStringList &comment, bool disabled);
     ~Circuit();
     Circuit *clone() const;
-    QString toString();
+    QString toString() const;
+    QString toBare() const;
     QString getName() const { return name; };
     QString getComment() const;
     bool isDisabled() const { return disabled; };

@@ -41,6 +41,14 @@ QString PatchSection::toString() const
 
     return s;
 }
+
+QString PatchSection::toBare() const
+{
+    QString s;
+    for (qsizetype i=0; i<circuits.length(); i++)
+        s += circuits[i]->toBare();
+    return s;
+}
 QString PatchSection::getNonemptyTitle() const
 {
     if (title.isEmpty())

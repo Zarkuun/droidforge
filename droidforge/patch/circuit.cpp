@@ -239,7 +239,7 @@ void Circuit::removeRegisterReferences(RegisterList &rl, int ih, int oh)
         ja->removeRegisterReferences(rl, ih, oh);
 
 }
-QString Circuit::toString()
+QString Circuit::toString() const
 {
     QString s;
     for (qsizetype i=0; i<comment.size(); i++)
@@ -258,6 +258,19 @@ QString Circuit::toString()
         s += jackLine;
     }
     s += "\n";
+    return s;
+}
+
+QString Circuit::toBare() const
+{
+    if (disabled)
+        return "";
+    QString s = "[" + name + "]\n";
+    for (qsizetype i=0; i<jackAssignments.length(); i++)
+    {
+        QString jackLine = jackAssignments[i]->toBare() + "\n";
+        s += jackLine;
+    }
     return s;
 }
 QString Circuit::getComment() const

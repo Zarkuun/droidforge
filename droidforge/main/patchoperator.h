@@ -5,6 +5,16 @@
 #include "editoractions.h"
 #include "patchparser.h"
 
+#ifdef Q_OS_MACOS
+#include "macmidihost.h"
+#else
+#ifdef Q_OS_WIN
+#include "windowsmidihost.h"
+#else
+#include "linuxmidihost.h"
+#endif
+#endif
+
 #include <QObject>
 #include <QFileInfo>
 
@@ -15,6 +25,16 @@ class PatchOperator : public QObject
     PatchEditEngine *patch;
     PatchParser parser;
     bool sdCardPresent;
+#ifdef Q_OS_MACOS
+    MacMIDIHost midiHost;
+#else
+#ifdef Q_OS_WIN
+    WindowsMIDIHost midiHost;
+#else
+    LinuxMIDIHost midiHost;
+#endif
+#endif
+
 
 public:
     explicit PatchOperator(PatchEditEngine *patch, QString initialFilename);
