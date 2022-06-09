@@ -29,7 +29,7 @@ void PatchEditEngine::startFromScratch()
 {
     patching = false;
     redoPointer = -1;
-    versionOnDisk = -1;
+    versionOnDisk = -2;
     clear();
     clearVersions();
     filePath = "";
