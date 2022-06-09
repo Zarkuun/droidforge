@@ -25,9 +25,9 @@ int main(int argc, char *argv[])
     QDir dir = QDir::homePath();
     if (!dir.cd(PATCH_DIRECTORY_NAME)) {
         dir.mkdir(PATCH_DIRECTORY_NAME);
-        dir.cd(PATCH_DIRECTORY_NAME);
-        QDir::setCurrent(dir.absolutePath());
     }
+    dir.cd(PATCH_DIRECTORY_NAME);
+    QDir::setCurrent(dir.absolutePath());
 
     UpdateHub updateHub; // signal hub, to avoid n:m connections
     Clipboard clipboard; // must be global to all windows
