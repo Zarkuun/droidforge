@@ -595,7 +595,13 @@ void PatchOperator::moveCircuitDown()
 
 void PatchOperator::editPatchSource()
 {
-shoutfunc;
+    Patch *parsed = editSource(patch->toString());
+    if (parsed) {
+        parsed->cloneInto(patch);
+        patch->commit(tr("editing patch source code"));
+        delete parsed;
+        emit patchModified();
+    }
 }
 
 void PatchOperator::editSectionSource()
