@@ -44,7 +44,7 @@ public:
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
     void addNewCircuit(QString name, jackselection_t jackSelection);
-    void addCircuit(int pos, Circuit *circuit);
+    void insertCircuit(int pos, Circuit *circuit);
     void addCircuit(Circuit *circuit);
     bool allCircuitsFolded() const;
     void toggleFold();

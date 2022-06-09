@@ -65,6 +65,9 @@ private slots:
     void configureColors();
     void moveCircuitUp();
     void moveCircuitDown();
+    void editPatchSource();
+    void editSectionSource();
+    void editCircuitSource();
 
 private:
     bool checkModified();

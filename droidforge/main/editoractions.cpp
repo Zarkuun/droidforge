@@ -29,148 +29,6 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
     connect(the_hub, &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
 }
 
-void EditorActions::modifyPatch()
-{
-    actions[ACTION_SAVE]->setEnabled(patch->isModified());
-    actions[ACTION_TOOLBAR_SAVE]->setEnabled(patch->isModified());
-    actions[ACTION_OPEN_ENCLOSING_FOLDER]->setEnabled(patch->getFilePath() != "");
-
-    if (patch->undoPossible()) {
-        actions[ACTION_UNDO]->setText(tr("&Undo ") + patch->nextUndoTitle());
-        actions[ACTION_UNDO]->setEnabled(true);
-    }
-    else {
-        actions[ACTION_UNDO]->setText(tr("&Undo"));
-        actions[ACTION_UNDO]->setEnabled(false);
-    }
-
-    if (patch->redoPossible()) {
-        actions[ACTION_REDO]->setText(tr("&Redo ") + patch->nextRedoTitle());
-        actions[ACTION_REDO]->setEnabled(true);
-    }
-    else {
-        actions[ACTION_REDO]->setText(tr("&Redo"));
-        actions[ACTION_REDO]->setEnabled(false);
-    }
-
-    actions[ACTION_DELETE_PATCH_SECTION]->setEnabled(patch->numSections() >= 2);
-    actions[ACTION_MERGE_ALL_SECTIONS]->setEnabled(patch->numSections() >= 2);
-
-    actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems() > 0);
-    actions[ACTION_TOOLBAR_PROBLEMS]->setVisible(patch->numProblems() > 0);
-
-    switchSection();
-    changeDroidState(); // actions for upload and save to SD
-}
-void EditorActions::switchSection()
-{
-    int sectionIndex = patch->currentSectionIndex();
-    int numSections = patch->numSections();
-    actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(sectionIndex > 0);
-    actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(sectionIndex+1 < numSections);
-    bool hasCircuit = !section()->isEmpty();
-
-    actions[ACTION_ADD_JACK]->setEnabled(hasCircuit);
-    actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(hasCircuit);
-    moveCursor();
-}
-void EditorActions::changeClipboard()
-{
-    actions[ACTION_PASTE]->setEnabled(!the_clipboard->isEmpty());
-    actions[ACTION_PASTE_SMART]->setEnabled(the_clipboard->numCircuits());
-}
-void EditorActions::changeSelection()
-{
-    const Selection *selection = section()->getSelection();
-    actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
-    actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
-    updateDisablingActions();
-}
-void EditorActions::moveCursor()
-{
-    const Atom *atom = section()->currentAtom();
-    actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
-    actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
-    actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(section()->currentCircuit());
-    actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
-    actions[ACTION_SORT_JACKS]->setEnabled(section()->currentCircuit());
-
-    Circuit *circuit = section()->currentCircuit();
-    actions[ACTION_MOVE_CIRCUIT_UP]->setEnabled(circuit && section()->currentCircuitId() > 0);
-    actions[ACTION_MOVE_CIRCUIT_DOWN]->setEnabled(circuit && section()->currentCircuitId() + 1 < (int)section()->numCircuits());
-    JackAssignment *ja = section()->currentJackAssignment();
-    bool expandPossible = circuit && ja && circuit->nextJackArrayName(
-                    ja->jackName(), ja->jackType() == JACKTYPE_INPUT) != "";
-    actions[ACTION_EXPAND_ARRAY]->setEnabled(expandPossible);
-    actions[ACTION_EXPAND_ARRAY_MAX]->setEnabled(expandPossible);
-    actions[ACTION_ADD_MISSING_JACKS]->setEnabled(circuit && circuit->hasMissingJacks());
-    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setEnabled(circuit && circuit->hasUndefinedJacks());
-    updateDisablingActions();
-
-    actions[ACTION_FOLD_UNFOLD]->setEnabled(circuit);
-    actions[ACTION_FOLD_UNFOLD_ALL]->setEnabled(circuit);
-}
-void EditorActions::updateDisablingActions()
-{
-    const Selection *selection = section()->getSelection();
-    bool somethingEnabled = false;
-    bool somethingDisabled = false;
-    if (selection) {
-        const CursorPosition &fromPos = selection->fromPos();
-        const CursorPosition &toPos = selection->toPos();
-        if (selection->isCircuitSelection())
-        {
-            for (int i=fromPos.circuitNr; i<=toPos.circuitNr; i++) {
-                const Circuit *circuit = section()->circuit(i);
-                somethingEnabled |= !circuit->isDisabled();
-                somethingDisabled |= circuit->isDisabled();
-            }
-        }
-        else if (selection->isJackSelection())
-        {
-            const Circuit *circuit = section()->circuit(fromPos.circuitNr);
-            for (int i=fromPos.row; i<=toPos.row; i++) {
-                if (i < 0)
-                    continue;
-                const JackAssignment *ja = circuit->jackAssignment(i);
-                somethingEnabled |= !ja->isDisabled();
-                somethingDisabled |= ja->isDisabled();
-            }
-        }
-    }
-    else {
-        const JackAssignment *ja = section()->currentJackAssignment();
-        if (ja) {
-            somethingEnabled = !ja->isDisabled();
-            somethingDisabled = ja->isDisabled();
-        }
-        else {
-            const Circuit *circuit = section()->currentCircuit();
-            if (circuit) {
-                somethingEnabled = !circuit->isDisabled();
-                somethingDisabled = circuit->isDisabled();
-            }
-        }
-    }
-    // Never enable both, our shortcut '#' would be ambigous otherwise
-    actions[ACTION_DISABLE]->setEnabled(somethingEnabled);
-    actions[ACTION_ENABLE]->setEnabled(somethingDisabled && !somethingEnabled);
-
-}
-void EditorActions::changePatching()
-{
-    actions[ACTION_START_PATCHING]->setEnabled(!patch->isPatching());
-    actions[ACTION_FINISH_PATCHING]->setEnabled(patch->isPatching());
-    actions[ACTION_ABORT_PATCHING]->setEnabled(patch->isPatching());
-}
-
-void EditorActions::changeDroidState()
-{
-    actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
-    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
-    actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
-    actions[ACTION_TOOLBAR_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
-}
 void EditorActions::createActions()
 {
     actions[ACTION_NEW] = new QAction(tr("&New..."), this);
@@ -280,11 +138,11 @@ void EditorActions::createActions()
                                                   "parameter lines."));
 
     actions[ACTION_ADD_MISSING_JACKS] = new QAction(tr("Add remaining jacks"), this);
-    actions[ACTION_ADD_MISSING_JACKS]->setShortcut(QKeySequence(tr("Ctrl+U")));
+    actions[ACTION_ADD_MISSING_JACKS]->setShortcut(QKeySequence(tr("Ctrl+R")));
     actions[ACTION_ADD_MISSING_JACKS]->setStatusTip(tr("Adds all jacks of this circuit that are not already defined."));
 
     actions[ACTION_REMOVE_UNDEFINED_JACKS] = new QAction(tr("Remove undefined jacks"), this);
-    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setShortcut(QKeySequence(tr("Shift+Ctrl+U")));
+    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setShortcut(QKeySequence(tr("Shift+Ctrl+R")));
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setStatusTip(tr("Rmoves all jacks in your definition that have not assigned values to them"));
 
     actions[ACTION_SELECT_ALL] = new QAction(tr("Select all"), this);
@@ -383,7 +241,167 @@ void EditorActions::createActions()
     actions[ACTION_ADD_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
     actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("keyboard"), tr("Add module..."), this);
 
-    //     action->setShortcutVisibleInContextMenu(false);
+    actions[ACTION_EDIT_CIRCUIT_SOURCE] = new QAction(tr("Edit circuit source code"), this);
+    actions[ACTION_EDIT_CIRCUIT_SOURCE]->setShortcut(QKeySequence(tr("Ctrl+U")));
+
+    actions[ACTION_EDIT_SECTION_SOURCE] = new QAction(tr("Edit section source code"), this);
+    actions[ACTION_EDIT_SECTION_SOURCE]->setShortcut(QKeySequence(tr("Shift+Ctrl+U")));
+
+    actions[ACTION_EDIT_PATCH_SOURCE] = new QAction(tr("Edit patch source code"), this);
+    actions[ACTION_EDIT_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Meta+U")));
+
+    for (auto action: actions)
+         action->setShortcutVisibleInContextMenu(true);
+}
+void EditorActions::modifyPatch()
+{
+    actions[ACTION_SAVE]->setEnabled(patch->isModified());
+    actions[ACTION_TOOLBAR_SAVE]->setEnabled(patch->isModified());
+    actions[ACTION_OPEN_ENCLOSING_FOLDER]->setEnabled(patch->getFilePath() != "");
+
+    if (patch->undoPossible()) {
+        actions[ACTION_UNDO]->setText(tr("&Undo ") + patch->nextUndoTitle());
+        actions[ACTION_UNDO]->setEnabled(true);
+    }
+    else {
+        actions[ACTION_UNDO]->setText(tr("&Undo"));
+        actions[ACTION_UNDO]->setEnabled(false);
+    }
+
+    if (patch->redoPossible()) {
+        actions[ACTION_REDO]->setText(tr("&Redo ") + patch->nextRedoTitle());
+        actions[ACTION_REDO]->setEnabled(true);
+    }
+    else {
+        actions[ACTION_REDO]->setText(tr("&Redo"));
+        actions[ACTION_REDO]->setEnabled(false);
+    }
+
+    actions[ACTION_DELETE_PATCH_SECTION]->setEnabled(patch->numSections() >= 2);
+    actions[ACTION_MERGE_ALL_SECTIONS]->setEnabled(patch->numSections() >= 2);
+
+    actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems() > 0);
+    actions[ACTION_TOOLBAR_PROBLEMS]->setVisible(patch->numProblems() > 0);
+
+    switchSection();
+    changeDroidState(); // actions for upload and save to SD
+}
+void EditorActions::switchSection()
+{
+    int sectionIndex = patch->currentSectionIndex();
+    int numSections = patch->numSections();
+    bool hasCircuit = !section()->isEmpty();
+
+    actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(sectionIndex > 0);
+    actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(sectionIndex+1 < numSections);
+    actions[ACTION_ADD_JACK]->setEnabled(hasCircuit);
+    actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(hasCircuit);
+    actions[ACTION_EDIT_CIRCUIT_SOURCE]->setEnabled(hasCircuit);
+    moveCursor();
+    changeSelection();
+}
+void EditorActions::changeClipboard()
+{
+    actions[ACTION_PASTE]->setEnabled(!the_clipboard->isEmpty());
+    actions[ACTION_PASTE_SMART]->setEnabled(the_clipboard->numCircuits());
+}
+void EditorActions::changeSelection()
+{
+    const Selection *selection = section()->getSelection();
+    const Circuit *circuit = section()->currentCircuit();
+    actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
+    actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
+    actions[ACTION_CUT]->setEnabled(selection || circuit);
+    actions[ACTION_COPY]->setEnabled(selection || circuit);
+    updateDisablingActions();
+}
+void EditorActions::moveCursor()
+{
+    Circuit *circuit = section()->currentCircuit();
+
+    const Atom *atom = section()->currentAtom();
+    actions[ACTION_EDIT_VALUE]->setEnabled(circuit);
+    actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
+    actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
+    actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(circuit);
+    actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
+    actions[ACTION_SORT_JACKS]->setEnabled(circuit);
+
+    actions[ACTION_MOVE_CIRCUIT_UP]->setEnabled(circuit && section()->currentCircuitId() > 0);
+    actions[ACTION_MOVE_CIRCUIT_DOWN]->setEnabled(circuit && section()->currentCircuitId() + 1 < (int)section()->numCircuits());
+    JackAssignment *ja = section()->currentJackAssignment();
+    bool expandPossible = circuit && ja && circuit->nextJackArrayName(
+                    ja->jackName(), ja->jackType() == JACKTYPE_INPUT) != "";
+    actions[ACTION_EXPAND_ARRAY]->setEnabled(expandPossible);
+    actions[ACTION_EXPAND_ARRAY_MAX]->setEnabled(expandPossible);
+    actions[ACTION_ADD_MISSING_JACKS]->setEnabled(circuit && circuit->hasMissingJacks());
+    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setEnabled(circuit && circuit->hasUndefinedJacks());
+    updateDisablingActions();
+
+    actions[ACTION_FOLD_UNFOLD]->setEnabled(circuit);
+    actions[ACTION_FOLD_UNFOLD_ALL]->setEnabled(circuit);
+    actions[ACTION_START_PATCHING]->setEnabled(atom && !patch->isPatching());
+}
+void EditorActions::updateDisablingActions()
+{
+    const Selection *selection = section()->getSelection();
+    bool somethingEnabled = false;
+    bool somethingDisabled = false;
+    if (selection) {
+        const CursorPosition &fromPos = selection->fromPos();
+        const CursorPosition &toPos = selection->toPos();
+        if (selection->isCircuitSelection())
+        {
+            for (int i=fromPos.circuitNr; i<=toPos.circuitNr; i++) {
+                const Circuit *circuit = section()->circuit(i);
+                somethingEnabled |= !circuit->isDisabled();
+                somethingDisabled |= circuit->isDisabled();
+            }
+        }
+        else if (selection->isJackSelection())
+        {
+            const Circuit *circuit = section()->circuit(fromPos.circuitNr);
+            for (int i=fromPos.row; i<=toPos.row; i++) {
+                if (i < 0)
+                    continue;
+                const JackAssignment *ja = circuit->jackAssignment(i);
+                somethingEnabled |= !ja->isDisabled();
+                somethingDisabled |= ja->isDisabled();
+            }
+        }
+    }
+    else {
+        const JackAssignment *ja = section()->currentJackAssignment();
+        if (ja) {
+            somethingEnabled = !ja->isDisabled();
+            somethingDisabled = ja->isDisabled();
+        }
+        else {
+            const Circuit *circuit = section()->currentCircuit();
+            if (circuit) {
+                somethingEnabled = !circuit->isDisabled();
+                somethingDisabled = circuit->isDisabled();
+            }
+        }
+    }
+    // Never enable both, our shortcut '#' would be ambigous otherwise
+    actions[ACTION_DISABLE]->setEnabled(somethingEnabled);
+    actions[ACTION_ENABLE]->setEnabled(somethingDisabled && !somethingEnabled);
+
+}
+void EditorActions::changePatching()
+{
+    const Atom *atom = section()->currentAtom();
+    actions[ACTION_START_PATCHING]->setEnabled(atom && !patch->isPatching());
+    actions[ACTION_FINISH_PATCHING]->setEnabled(patch->isPatching());
+    actions[ACTION_ABORT_PATCHING]->setEnabled(patch->isPatching());
+}
+void EditorActions::changeDroidState()
+{
+    actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
+    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
+    actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
+    actions[ACTION_TOOLBAR_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
 }
 /*
  * void MainWindow::updateActions()

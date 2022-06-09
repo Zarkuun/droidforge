@@ -173,8 +173,12 @@ void PatchSection::sanitizeCursor()
         cursor.row = -2;
         return;
     }
+    else if (cursor.circuitNr < 0)
+        cursor.circuitNr = 0;
 
     Circuit *circuit = currentCircuit();
+    if (!circuit)
+        return;
 
     if (cursor.row >= circuit->numJackAssignments())
         cursor.row = circuit->numJackAssignments() - 1;
@@ -223,7 +227,7 @@ void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
     cursor.row = -2;
     cursor.circuitNr = newPosition;
 }
-void PatchSection::addCircuit(int pos, Circuit *circuit)
+void PatchSection::insertCircuit(int pos, Circuit *circuit)
 {
     circuits.insert(pos, circuit);
 }

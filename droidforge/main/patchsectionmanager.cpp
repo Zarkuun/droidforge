@@ -68,6 +68,8 @@ void PatchSectionManager::popupSectionMenu(int index)
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_PREVIOUS_SECTION, menu);
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_NEXT_SECTION, menu);
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_ALL_SECTIONS, menu);
+        menu->addSeparator();
+        ADD_ACTION(ACTION_EDIT_SECTION_SOURCE, menu);
     }
     ADD_ACTION_IF_ENABLED(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
     menu->popup(QCursor::pos());

@@ -28,9 +28,11 @@ class PatchParser
 
 public:
     PatchParser();
-    void parse(QString filePath, Patch *patch);
+    void parseFile(QString filePath, Patch *patch);
+    void parseString(QString source, Patch *patch);
 
 private:
+    void parse(QStringList lines, Patch *patch);
     void parseLine(QString line);
     void parseEmptyLine();
     void parseCommentLine(QString line);

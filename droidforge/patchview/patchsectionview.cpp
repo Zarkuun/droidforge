@@ -462,7 +462,7 @@ void PatchSectionView::pasteSmart()
     for (auto circuit: pastedPatch->section(0)->getCircuits()) {
         Circuit *newCircuit = circuit->clone();
         position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
-        section()->addCircuit(position, newCircuit);
+        section()->insertCircuit(position, newCircuit);
     }
     section()->setCursor(CursorPosition(position, -2, 0));
     patch->commit(tr("smart pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
@@ -609,7 +609,7 @@ void PatchSectionView::pasteCircuitsFromClipboard()
     for (auto circuit: the_clipboard->getCircuits()) {
         Circuit *newCircuit = circuit->clone();
         position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
-        section()->addCircuit(position, newCircuit);
+        section()->insertCircuit(position, newCircuit);
     }
     section()->setCursor(CursorPosition(position, -2, 0));
     patch->commit(tr("pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
@@ -800,7 +800,8 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 
         ADD_ACTION_IF_ENABLED(ACTION_EDIT_VALUE, menu);
         ADD_ACTION_IF_ENABLED(ACTION_EDIT_CIRCUIT_COMMENT, menu);
-        ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_EDIT_JACK_COMMENT, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_EDIT_CIRCUIT_SOURCE, menu);
 
         menu->addSeparator();
 

@@ -152,6 +152,7 @@ void MainWindow::createFileMenu()
     menu->addSeparator();
 
     ADD_ACTION(ACTION_PATCH_PROPERTIES, menu);
+    ADD_ACTION(ACTION_EDIT_PATCH_SOURCE, menu);
     ADD_ACTION(ACTION_CONFIGURE_COLORS, menu);
 
     menu->addSeparator();
@@ -202,6 +203,7 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_ABORT_PATCHING, menu);
     ADD_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, menu);
     ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
+    ADD_ACTION(ACTION_EDIT_CIRCUIT_SOURCE, menu);
 
     menu->addSeparator();
 
@@ -215,12 +217,19 @@ void MainWindow::createSectionMenu()
     QMenu *menu = menuBar()->addMenu(tr("Section"));
     ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
     ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
-    ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
+
+    menu->addSeparator();
+
     ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);
     ADD_ACTION(ACTION_MERGE_WITH_PREVIOUS_SECTION, menu);
     ADD_ACTION(ACTION_MERGE_WITH_NEXT_SECTION, menu);
     ADD_ACTION(ACTION_MERGE_ALL_SECTIONS, menu);
-    ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
+    ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
+
+    menu->addSeparator();
+
+    ADD_ACTION(ACTION_EDIT_SECTION_SOURCE, menu);
 }
 void MainWindow::createViewMenu()
 {

@@ -17,11 +17,9 @@ JackAssignment::JackAssignment(QString jack, QString comment)
     , disabled(false)
 {
 }
-
 JackAssignment::~JackAssignment()
 {
 }
-
 QString JackAssignment::toString() const
 {
     QString s = disabled ? "#   " : "    ";
@@ -33,7 +31,6 @@ QString JackAssignment::toString() const
         s += " # " + comment;
     return s;
 }
-
 QString JackAssignment::toBare() const
 {
     if (disabled)
@@ -41,7 +38,6 @@ QString JackAssignment::toBare() const
     else
         return jack + "=" + valueToString().replace(" ", "");
 }
-
 QString JackAssignment::jackPrefix() const
 {
     QString prefix = jack;
@@ -49,7 +45,6 @@ QString JackAssignment::jackPrefix() const
         prefix.chop(1);
     return prefix;
 }
-
 JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString line)
 {
     QStringList parts = line.split("#");
@@ -75,7 +70,6 @@ JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString li
     return ja;
 
 }
-
 bool JackAssignment::needG8() const
 {
     for (int i=1; i<=3; i++) {
@@ -85,7 +79,6 @@ bool JackAssignment::needG8() const
     }
     return false;
 }
-
 bool JackAssignment::needX7() const
 {
     for (int i=1; i<=3; i++) {
@@ -95,7 +88,6 @@ bool JackAssignment::needX7() const
     }
     return false;
 }
-
 void JackAssignment::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (int i=1; i<=3; i++) {
@@ -104,7 +96,6 @@ void JackAssignment::swapControllerNumbers(int fromNumber, int toNumber)
              atom->swapControllerNumbers(fromNumber, toNumber);
     }
 }
-
 void JackAssignment::shiftControllerNumbers(int number, int by)
 {
     for (int i=1; i<=3; i++) {
@@ -113,7 +104,6 @@ void JackAssignment::shiftControllerNumbers(int number, int by)
              atom->shiftControllerNumbers(number, by);
     }
 }
-
 void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
 {
     for (int i=1; i<=3; i++) {
@@ -124,7 +114,6 @@ void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
          }
     }
 }
-
 void JackAssignment::remapRegister(AtomRegister from, AtomRegister to)
 {
     for (int i=1; i<=3; i++) {
@@ -136,7 +125,6 @@ void JackAssignment::remapRegister(AtomRegister from, AtomRegister to)
          }
     }
 }
-
 Atom *JackAssignment::parseCable(QString s)
 {
     static QRegularExpression exp("^_[a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);
@@ -147,8 +135,6 @@ Atom *JackAssignment::parseCable(QString s)
         return 0;
 
 }
-
-
 Atom *JackAssignment::parseRegister(QString s)
 {
     // Note: we allow invalid registers such as I0 here. It's easer
@@ -176,7 +162,6 @@ Atom *JackAssignment::parseRegister(QString s)
     else
         return new AtomInvalid(s);
 }
-
 bool numericStringLess(const QString &a, const QString &b)
 {
     if (b == "")
@@ -209,7 +194,6 @@ bool numericStringLess(const QString &a, const QString &b)
         i++;
     return numericStringLess(a.mid(i), b.mid(i));
 }
-
 bool operator<(const JackAssignment &a, const JackAssignment &b)
 {
     if (a.jackType() < b.jackType())

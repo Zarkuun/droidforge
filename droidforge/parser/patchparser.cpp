@@ -19,20 +19,9 @@ PatchParser::PatchParser()
     , circuit(0)
 {
 }
-
-
-void PatchParser::parse(QString filePath, Patch *patch)
+void PatchParser::parseFile(QString filePath, Patch *patch)
 {
-    commentState = AWAITING_TITLE_COMMENT;
-    errorMessage = "";
-    errorLine = 0;
-    section = 0;
-    circuit = 0;
-
-    this->patch = patch;
-
-    QString lineerrors;
-
+    QStringList lines;
     QFile inputFile(filePath);
     if (!inputFile.open(QIODevice::ReadOnly)) {
         throw ParseException("Cannot open file: " + inputFile.errorString());
@@ -40,7 +29,27 @@ void PatchParser::parse(QString filePath, Patch *patch)
 
     QTextStream in(&inputFile);
     while (!in.atEnd()) {
-        QString line = in.readLine();
+        lines.append(in.readLine());
+    }
+    inputFile.close();
+    parse(lines, patch);
+}
+void PatchParser::parseString(QString source, Patch *patch)
+{
+    QStringList lines = source.split('\n');
+    parse(lines, patch);
+}
+void PatchParser::parse(QStringList lines, Patch *patch)
+{
+    commentState = AWAITING_TITLE_COMMENT;
+    errorMessage = "";
+    errorLine = 0;
+    section = 0;
+    circuit = 0;
+    this->patch = patch;
+
+    QString lineerrors;
+    for (auto line: lines) {
         errorLine ++;
         try {
             parseLine(line);
@@ -50,12 +59,15 @@ void PatchParser::parse(QString filePath, Patch *patch)
             lineerrors += error;
         }
     }
-    inputFile.close();
     if (!lineerrors.isEmpty())
         throw ParseException("Syntax errors in your patch:\n\n" + lineerrors);
+
+    if (patch->numSections() == 0) {
+        shout << "OH. Empt {atch";
+        patch->addSection(new PatchSection());
+        shout << patch->currentSectionIndex();
+    }
 }
-
-
 void PatchParser::parseLine(QString line)
 {
     line = line.trimmed();
@@ -74,15 +86,11 @@ void PatchParser::parseLine(QString line)
     else
         throw ParseException("Garbled line");
 }
-
-
 void PatchParser::parseEmptyLine()
 {
     if (currentComment.size() > 0)
         currentComment.append("");
 }
-
-
 void PatchParser::parseCommentLine(QString line)
 {
     QString comment = line.mid(1).trimmed();
@@ -130,8 +138,6 @@ void PatchParser::parseCommentLine(QString line)
             currentComment.append(comment);
     }
 }
-
-
 bool PatchParser::maybeParseRegisterComment(QString comment)
 {
     // Examples:
@@ -169,7 +175,6 @@ bool PatchParser::maybeParseRegisterComment(QString comment)
     else
         return false;
 }
-
 bool PatchParser::maybeParseMetaComment(QString comment)
 {
     static QRegularExpression regex("^[[:space:]]*([A-Z][A-Z 0-9]*):[[:space:]]*(.*)$");
@@ -185,15 +190,12 @@ bool PatchParser::maybeParseMetaComment(QString comment)
     else
         return false;
 }
-
-
 void PatchParser::parseLibraryMetaData(QString data)
 {
     // Example:
     // LIBRARY: name=arpeggio; version=1.0; firmware=blue-1
     patch->setLibraryMetaData(data);
 }
-
 void PatchParser::parseCircuitLine(QString line, bool disabled)
 {
     static QRegularExpression withComment("^\\[([a-zA-Z0-9]+)\\][[:space:]]*#(.*)$");
@@ -217,7 +219,6 @@ void PatchParser::parseCircuitLine(QString line, bool disabled)
         }
     }
 
-
     if (ModuleBuilder::controllerExists(circuitName.toLower())) {
         if (!disabled) { // disabling controller is not supported
             patch->addController(circuitName.toLower());
@@ -231,7 +232,6 @@ void PatchParser::parseCircuitLine(QString line, bool disabled)
         parseCircuit(circuitName, disabled);
     }
 }
-
 void PatchParser::parseCircuit(QString name, bool disabled)
 {
     // TODO: Hier die JSON-Datei verwenden?
@@ -249,7 +249,6 @@ void PatchParser::parseCircuit(QString name, bool disabled)
     section->circuits.append(circuit);
     currentComment.clear();
 }
-
 void PatchParser::stripEmptyCommentLines()
 {
     while (currentComment.size() > 0 &&
@@ -258,13 +257,11 @@ void PatchParser::stripEmptyCommentLines()
         currentComment.removeLast();
     }
 }
-
 void PatchParser::startNewSection(QString name)
 {
     section = new PatchSection(name);
     patch->addSection(section);
 }
-
 void PatchParser::parseJackLine(Circuit *circuit, QString line, bool disabled)
 {
     JackAssignment *ja = JackAssignment::parseJackLine(circuit->getName(), line);

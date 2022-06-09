@@ -5,6 +5,7 @@
 #include "parseexception.h"
 #include "updatehub.h"
 #include "patchpropertiesdialog.h"
+#include "sourcecodeeditor.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -46,6 +47,10 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_CONFIGURE_COLORS, &PatchOperator::configureColors);
     CONNECT_ACTION(ACTION_MOVE_CIRCUIT_UP, &PatchOperator::moveCircuitUp);
     CONNECT_ACTION(ACTION_MOVE_CIRCUIT_DOWN, &PatchOperator::moveCircuitDown);
+
+    CONNECT_ACTION(ACTION_EDIT_CIRCUIT_SOURCE, &PatchOperator::editCircuitSource);
+    CONNECT_ACTION(ACTION_EDIT_SECTION_SOURCE, &PatchOperator::editSectionSource);
+    CONNECT_ACTION(ACTION_EDIT_PATCH_SOURCE, &PatchOperator::editPatchSource);
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -396,7 +401,7 @@ void PatchOperator::addToRecentFiles(const QString &path)
 void PatchOperator::loadPatch(const QString &aFilePath)
 {
     Patch newPatch;
-    parser.parse(aFilePath, &newPatch); // throws exception
+    parser.parseFile(aFilePath, &newPatch); // throws exception
 
     // Move contents of new patch into "our" patch without
     // invalidating its pointer
@@ -416,7 +421,7 @@ void PatchOperator::loadPatch(const QString &aFilePath)
 void PatchOperator::integratePatch(const QString &aFilePath)
 {
     Patch otherpatch;
-    parser.parse(aFilePath, &otherpatch); // may throw exceptions
+    parser.parseFile(aFilePath, &otherpatch); // may throw exceptions
 
     Patch *newPatch = patch->clone();
     if (interactivelyRemapRegisters(&otherpatch, newPatch)) {
@@ -586,6 +591,51 @@ void PatchOperator::moveCircuitDown()
     section()->swapCircuits(id, id+1);
     patch->commit(tr("moving circuit down"));
     emit patchModified();
+}
+
+void PatchOperator::editPatchSource()
+{
+shoutfunc;
+}
+
+void PatchOperator::editSectionSource()
+{
+shoutfunc;
+
+}
+
+void PatchOperator::editCircuitSource()
+{
+    QString oldSource = section()->currentCircuit()->toString();
+    int circuitIndex = section()->currentCircuitId();
+
+    SourceCodeEditor editor(oldSource, the_forge);
+    PatchParser parser;
+
+    while (true) {
+        if (!editor.edit())
+            return; // User aborted
+        try {
+            QString newSource = editor.getEditedText();
+            Patch parsed;
+            parser.parseString(newSource, &parsed);
+            section()->deleteCircuit(circuitIndex);
+            for (auto circuit: parsed.section(0)->circuits)
+                section()->insertCircuit(circuitIndex++, circuit->clone());
+
+            section()->sanitizeCursor();
+            patch->commit(tr("editing circuit source code"));
+            emit patchModified();
+            break;
+        }
+        catch (ParseException &e) {
+            QMessageBox::critical(
+                        the_forge,
+                        tr("Parse error"),
+                        e.toString(),
+                        QMessageBox::Ok);
+        }
+    }
 }
 void PatchOperator::clearSelection()
 {
