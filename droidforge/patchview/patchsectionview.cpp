@@ -35,6 +35,7 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     : PatchView(initialPatch) // patch is never ever 0!
     , zoomLevel(0)
     , zoomFactor(1.0)
+    , dragging(false)
     , atomSelectorDialog{}
 {
     setFocusPolicy(Qt::NoFocus);
@@ -364,7 +365,6 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
     if (button == Qt::LeftButton) {
         for (auto item: items(pos)) {
             if (item->data(DATA_INDEX_ICON_MARKER).isValid()) {
-                shout << "CLICK ON" << item;
                 clickOnIconMarker((IconMarker *)item);
                 return;
             }
@@ -382,7 +382,7 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
         else
             handleRightMousePress(curPos);
     }
-    else  if (button == Qt::RightButton)
+    else if (button == Qt::RightButton)
         handleRightMousePress(0);
     delete curPos;
 }
@@ -755,13 +755,20 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
     }
     else {
         the_operator->clearSelection();
+        dragging = true;
         section()->setCursor(curPos);
         emit cursorMoved();
     }
 }
 void PatchSectionView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->buttons() & Qt::LeftButton) {
+    if (!(event->buttons() & Qt::LeftButton))
+    {
+        dragging = false;
+        return;
+    }
+
+    if (dragging) {
         const CursorPosition *curPos = cursorAtMousePosition(event->pos());
         if (curPos) {
             if (*curPos != section()->cursorPosition())
