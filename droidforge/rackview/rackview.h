@@ -76,7 +76,7 @@ private slots:
     void findRegister(AtomRegister reg);
     void moveController(int oldindex, int newindex);
     void remapControls(QString moduleType, int controllerIndex);
-    void editLabelling(QString moduleType, int controllerIndex);
+    void editLabelling(QString moduleType, int controllerIndex, AtomRegister reg);
 
 signals:
     void registerClicked(AtomRegister ar);

@@ -122,9 +122,14 @@ void RackView::mouseDoubleClickEvent(QMouseEvent *event)
     for (auto item: items(event->pos())) {
         foundItem = true;
         if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
+            Module *module = (Module *)item;
             QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
             int index = v.isValid() ? v.toInt() : -1;
-            editLabelling(item->data(DATA_INDEX_MODULE_NAME).toString(), index);
+
+            QPointF relPos = mapToScene(event->pos()) - module->pos();
+            AtomRegister *ar = module->registerAt(relPos.toPoint());
+
+            editLabelling(item->data(DATA_INDEX_MODULE_NAME).toString(), index, ar ? *ar : AtomRegister());
             return;
         }
     }
@@ -289,10 +294,10 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
                            this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
    }
 
-   menu->addAction(tr("Edit labelling of controls"), this,
-                   [this,controllerIndex,moduleType] () {this->editLabelling(moduleType, controllerIndex); });
-
    AtomRegister reg = markedRegister;
+   menu->addAction(tr("Edit labelling of controls"), this,
+                   [this,controllerIndex,moduleType,reg] () {this->editLabelling(moduleType, controllerIndex, reg); });
+
    if (!markedRegister.isNull() && patch->registerUsed(markedRegister)) {
        menu->addAction(tr("Find this register in your patch"), this,
                        [this,reg] () {this->findRegister(reg); });
@@ -596,12 +601,14 @@ void RackView::remapControls(QString controllerName, int controllerIndex)
     emit patchModified();
 }
 
-void RackView::editLabelling(QString moduleType, int controllerIndex)
+void RackView::editLabelling(QString moduleType, int controllerIndex, AtomRegister reg)
 {
     // Get current position of register marker
+    shout << "Ich labelle" << markedRegister;
+
 
     RegisterLabels &labels = patch->getRegisterLabels();
-    ControllerLabellingDialog dialog(labels, moduleType, controllerIndex + 1, markedRegister, this);
+    ControllerLabellingDialog dialog(labels, moduleType, controllerIndex + 1, reg, this);
     int ret = dialog.exec();
     if (ret == QDialog::Accepted) {
         patch->commit(tr("editing labelling of '%1'").arg(moduleType));
