@@ -69,6 +69,7 @@ private slots:
     void editPatchSource();
     void editSectionSource();
     void editCircuitSource();
+    void fixLEDMismatch();
 
 private:
     bool checkModified();

@@ -53,6 +53,8 @@ public:
     void removeUndefinedJacks();
     QStringList missingJacks(jacktype_t jackType) const;
     bool hasMissingJacks() const;
+    bool hasLEDMismatch();
+    void fixLEDMismatches();
     qsizetype numJackAssignments() const { return jackAssignments.count(); };
     QString nextJackArrayName(const QString &jackName, bool isInput);
     void deleteJackAssignment(unsigned i);
@@ -74,6 +76,10 @@ public:
     void collectRegisterAtoms(RegisterList &) const;
     void remapRegister(AtomRegister from, AtomRegister to);
     void removeRegisterReferences(RegisterList &rl, int ih, int oh);
+
+private:
+    bool checkLEDMismatches(bool fixit);
+    JackAssignment *findJack(const QString name);
 };
 
 #endif // CIRCUIT_H

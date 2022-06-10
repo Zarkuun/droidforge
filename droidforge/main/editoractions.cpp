@@ -143,7 +143,12 @@ void EditorActions::createActions()
 
     actions[ACTION_REMOVE_UNDEFINED_JACKS] = new QAction(tr("Remove undefined jacks"), this);
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setShortcut(QKeySequence(tr("Shift+Ctrl+R")));
-    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setStatusTip(tr("Rmoves all jacks in your definition that have not assigned values to them"));
+    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setStatusTip(tr("Removes all jacks in your definition that have not assigned values to them"));
+
+    actions[ACTION_FIX_LED_MISMATCH] = new QAction(tr("Fix button/LED mismatches"), this);
+    actions[ACTION_FIX_LED_MISMATCH]->setShortcut(QKeySequence(tr("Ctrl+L")));
+    actions[ACTION_FIX_LED_MISMATCH]->setStatusTip(tr("Add missing definitions or fix wrong definitions for "
+                                                      "LEDs that do not match their button counterparts"));
 
     actions[ACTION_SELECT_ALL] = new QAction(tr("Select all"), this);
     actions[ACTION_SELECT_ALL]->setShortcut(QKeySequence(tr("Ctrl+A")));
@@ -341,6 +346,7 @@ void EditorActions::moveCursor()
     actions[ACTION_EXPAND_ARRAY_MAX]->setEnabled(expandPossible);
     actions[ACTION_ADD_MISSING_JACKS]->setEnabled(circuit && circuit->hasMissingJacks());
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setEnabled(circuit && circuit->hasUndefinedJacks());
+    actions[ACTION_FIX_LED_MISMATCH]->setEnabled(circuit && circuit->hasLEDMismatch());
     updateDisablingActions();
 
     actions[ACTION_FOLD_UNFOLD]->setEnabled(circuit);

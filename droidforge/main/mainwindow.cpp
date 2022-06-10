@@ -187,6 +187,7 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);
     ADD_ACTION(ACTION_ADD_MISSING_JACKS, menu);
     ADD_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, menu);
+    ADD_ACTION(ACTION_FIX_LED_MISMATCH, menu);
 
     menu->addSeparator();
 

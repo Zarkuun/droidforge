@@ -89,6 +89,7 @@ private:
     void createProblemMarkes();
     void createInfoMarkers();
     void createFoldMarkers();
+    void createLEDMismatchMarkers();
     void placeMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip = "");
 
     void connectActions();

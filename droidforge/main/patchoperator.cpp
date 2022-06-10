@@ -53,6 +53,8 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_EDIT_PATCH_SOURCE, &PatchOperator::editPatchSource);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &PatchOperator::abortAllActions);
 
+    CONNECT_ACTION(ACTION_FIX_LED_MISMATCH, &PatchOperator::fixLEDMismatch);
+
     // Events that we create
     connect(this, &PatchOperator::patchModified, the_hub, &UpdateHub::modifyPatch);
     connect(this, &PatchOperator::clipboardChanged, the_hub, &UpdateHub::changeClipboard);
@@ -630,6 +632,12 @@ void PatchOperator::editCircuitSource()
         emit patchModified();
     }
 }
+void PatchOperator::fixLEDMismatch()
+{
+    section()->currentCircuit()->fixLEDMismatches();
+    patch->commit(tr("fixing LED mismatches"));
+    emit patchModified();
+}
 Patch *PatchOperator::editSource(QString oldSource)
 {
     SourceCodeEditor editor(oldSource, the_forge);
@@ -664,4 +672,15 @@ void PatchOperator::abortAllActions()
         patch->stopPatching();
         emit patchingChanged();
     }
+
+    bool changed = false;
+    for (unsigned i=0; i<patch->numSections(); i++) {
+        PatchSection *s = patch->section(i);
+        if (s->getSelection()) {
+            s->clearSelection();
+            changed = true;
+        }
+    }
+    if (changed)
+        emit selectionChanged();
 }

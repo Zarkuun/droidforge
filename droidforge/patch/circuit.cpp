@@ -1,6 +1,7 @@
 #include "circuit.h"
 #include "droidfirmware.h"
 #include "globals.h"
+#include "jackassignmentoutput.h"
 
 #include <QCoreApplication>
 
@@ -34,6 +35,13 @@ void Circuit::addJackAssignment(JackAssignment *ja)
 void Circuit::insertJackAssignment(JackAssignment *ja, int index)
 {
     jackAssignments.insert(index, ja);
+}
+JackAssignment *Circuit::findJack(const QString name)
+{
+    for (auto ja: jackAssignments)
+        if (ja->jackName() == name)
+            return ja;
+    return 0;
 }
 const JackAssignment *Circuit::findJack(const QString name) const
 {
@@ -177,7 +185,93 @@ QStringList Circuit::missingJacks(jacktype_t jackType) const
 bool Circuit::hasMissingJacks() const
 {
     return missingJacks(JACKTYPE_INPUT).count() > 0
-          || missingJacks(JACKTYPE_OUTPUT).count() > 0;
+            || missingJacks(JACKTYPE_OUTPUT).count() > 0;
+}
+bool Circuit::hasLEDMismatch()
+{
+    return checkLEDMismatches(false);
+}
+void Circuit::fixLEDMismatches()
+{
+   checkLEDMismatches(true);
+}
+bool Circuit::checkLEDMismatches(bool fixit)
+{
+    // LED mismatch:
+    // For every buttonX which is assigned to a B...
+    // there must be a ledX which is assigned to the corresponding L...
+
+    // Phase 1: add missing LED assignments
+    for (auto ja: jackAssignments) {
+        if (ja->jackPrefix() == "button") {
+            Atom *atom = ja->atomAt(1);
+            if (!atom || !atom->isRegister())
+                continue;
+            AtomRegister reg = *(AtomRegister *)atom;
+            if (reg.getRegisterType() != REGISTER_BUTTON)
+                continue; // Weird special thing. Ignore
+            unsigned controller = reg.controller();
+            unsigned number = reg.number();
+
+            QString suffix = ja->jackName().mid(6);
+            QString ledname = "led" + suffix;
+
+            JackAssignment *ledja = findJack(ledname);
+            if (!ledja) {
+                if (fixit) {
+                    JackAssignmentOutput *newJa = new JackAssignmentOutput(ledname);
+                    newJa->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
+                    this->addJackAssignment(newJa);
+                    continue;
+                }
+                else
+                    return true;
+            }
+
+            const Atom *ledAtom = ledja->atomAt(1);
+            if (!ledAtom || !ledAtom->isRegister()) {
+                if (fixit) {
+                    ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
+                    continue;
+                }
+                else
+                    return true;
+            }
+
+            AtomRegister ledReg = *(AtomRegister *)ledAtom;
+            if (ledReg.getRegisterType() != REGISTER_LED
+                || ledReg.controller() != controller
+                || ledReg.number() != number)
+            {
+                if (fixit)
+                    ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
+                else
+                    return true;
+            }
+        }
+    }
+
+    // Phase 2: remove exceeding LED assignments
+    QList<unsigned> toRemove;
+    unsigned nr = 0;
+    for (auto ja: jackAssignments) {
+        if (ja->jackPrefix() == "led") {
+            QString suffix = ja->jackName().mid(3);
+            if (!findJack("button" + suffix)) {
+                if (fixit)
+                    toRemove.append(nr);
+                else
+                    return true;
+            }
+        }
+        nr++;
+    }
+
+    // remove in reverse direction (avoids index chaos)
+    while (!toRemove.isEmpty())
+       deleteJackAssignment(toRemove.takeLast());
+
+    return false;
 }
 void Circuit::changeCircuit(QString newCircuit)
 {

@@ -149,7 +149,7 @@ void PatchSectionView::buildPatchSection()
 }
 void PatchSectionView::createFoldMarkers()
 {
-    for (int i=0; i<section()->numCircuits(); i++) {
+    for (unsigned i=0; i<section()->numCircuits(); i++) {
         if (section()->circuit(i)->isFolded()) {
             CursorPosition pos(i, -2, 0);
             placeMarker(pos, ICON_MARKER_FOLDED);
@@ -196,12 +196,22 @@ void PatchSectionView::createInfoMarkers()
         }
     }
 }
+void PatchSectionView::createLEDMismatchMarkers()
+{
+    for (unsigned i=0; i<section()->numCircuits(); i++) {
+        if (section()->circuit(i)->hasLEDMismatch()) {
+            CursorPosition pos(i, -2, 0);
+            placeMarker(pos, ICON_MARKER_LEDMISMATCH,
+                        tr("The button and LED definitions of this circuit do not match. Click to fix."));
+
+        }
+    }
+
+}
 void PatchSectionView::clickOnIconMarker(const IconMarker *marker)
 {
     const CursorPosition &pos = marker->cursorPosition();
-    icon_marker_t type = marker->getType();
-    shout << pos.circuitNr << type;
-    switch (type) {
+    switch (marker->getType()) {
     case ICON_MARKER_INFO:
         editJackCommentAt(pos);
         break;
@@ -209,6 +219,9 @@ void PatchSectionView::clickOnIconMarker(const IconMarker *marker)
         TRIGGER_ACTION(ACTION_FOLD_UNFOLD);
         break;
 
+    case ICON_MARKER_LEDMISMATCH:
+        TRIGGER_ACTION(ACTION_FIX_LED_MISMATCH);
+        break;
 
     default:
         break;
@@ -236,7 +249,6 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
 {
     CircuitView *cv = circuitViews[pos.circuitNr];
     QRectF rect = cv->cellRect(pos.row, pos.column);
-    int height = rect.height();
 
     IconMarker *marker = new IconMarker(pos, type, toolTip);
     int offset;
@@ -262,6 +274,7 @@ void PatchSectionView::rebuildPatchSection()
     createFoldMarkers();
     createProblemMarkes();
     createInfoMarkers();
+    createLEDMismatchMarkers();
     updateCursor();
 }
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
@@ -799,6 +812,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);
         ADD_ACTION(ACTION_ADD_MISSING_JACKS, menu);
         ADD_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_FIX_LED_MISMATCH, menu);
 
         menu->addSeparator();
 
