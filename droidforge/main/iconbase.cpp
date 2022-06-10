@@ -12,7 +12,23 @@ const QIcon &IconBase::getIcon(const QString &name)
     }
     return icons[name];
 }
+
 const QIcon &IconBase::icon(const QString &name)
 {
     return the_iconbase.getIcon(name);
+}
+
+const QImage &IconBase::getImage(const QString &name)
+{
+    if (!images.contains(name)) {
+        QImage image(QString(ICON_PATH_TEMPLATE).arg(name));
+        shout << "Lade image" <<QString(ICON_PATH_TEMPLATE).arg(name) ;
+        images[name] = image;
+    }
+    return images[name];
+}
+
+const QImage &IconBase::image(const QString &name)
+{
+    return the_iconbase.getImage(name);
 }

@@ -7,7 +7,6 @@
 #include "cablecolorizer.h"
 #include "colorscheme.h"
 #include "globals.h"
-#include "infomarker.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
@@ -16,7 +15,6 @@
 #include "commentdialog.h"
 #include "circuitchoosedialog.h"
 #include "namechoosedialog.h"
-#include "problemmarker.h"
 #include "circuitchoosedialog.h"
 #include "updatehub.h"
 #include "jackchoosedialog.h"
@@ -32,9 +30,6 @@
 #include <QScrollBar>
 
 #define DATA_INDEX_CIRCUIT 0
-#define DATA_INDEX_PROBLEM 1
-#define DATA_INDEX_INFO 2
-
 
 PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     : PatchView(initialPatch) // patch is never ever 0!
@@ -156,7 +151,6 @@ void PatchSectionView::updateProblemMarkers()
 {
     QSet<int> foldedProblemCircuits;
 
-    clearMarkers(DATA_INDEX_PROBLEM);
     for (auto problem: patch->allProblems())
     {
         if (problem->getSection() == patch->currentSectionIndex()) { // TODO: HACK!!
@@ -165,19 +159,18 @@ void PatchSectionView::updateProblemMarkers()
             if (circuit->isFolded())
                 foldedProblemCircuits.insert(pos.circuitNr);
             else
-                placeMarker(pos, DATA_INDEX_PROBLEM, problem->getReason());
+                placeMarker(pos, ICON_MARKER_PROBLEM, problem->getReason());
         }
     }
 
     // add problem markers for folded circuits
     for (int circuitNr: foldedProblemCircuits) {
         CursorPosition pos(circuitNr, -2, 0);
-        placeMarker(pos, DATA_INDEX_PROBLEM, tr("There are problems in this circuit"));
+        placeMarker(pos, ICON_MARKER_PROBLEM, tr("There are problems in this circuit"));
     }
 }
 void PatchSectionView::updateInfoMarkers()
 {
-    clearMarkers(DATA_INDEX_INFO);
     for (unsigned i=0; i<section()->numCircuits(); i++)
     {
         const Circuit *circuit = section()->circuit(i);
@@ -189,15 +182,22 @@ void PatchSectionView::updateInfoMarkers()
             if (comment != "") {
                 // TODO: If both problem and info marker are present, they overlay
                 // each other quite uglyly.
-                placeMarker(CursorPosition(i, j, 0), DATA_INDEX_INFO, comment);
+                placeMarker(CursorPosition(i, j, 0), ICON_MARKER_INFO, comment);
             }
         }
     }
 }
-void PatchSectionView::clickOnInfoMarker(const InfoMarker *info)
+void PatchSectionView::clickOnIconMarker(const IconMarker *marker)
 {
-    const CursorPosition &pos = info->cursorPosition();
-    editJackCommentAt(pos);
+    const CursorPosition &pos = marker->cursorPosition();
+    icon_marker_t type = marker->getType();
+    switch (type) {
+    case ICON_MARKER_INFO:
+        editJackCommentAt(pos);
+        break;
+    default:
+        break;
+    }
 }
 void PatchSectionView::editJackCommentAt(const CursorPosition &pos)
 {
@@ -217,30 +217,17 @@ void PatchSectionView::editJackComment()
 {
     editJackCommentAt(section()->cursorPosition());
 }
-void PatchSectionView::placeMarker(const CursorPosition &pos, int which, const QString &toolTip)
+void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip)
 {
     CircuitView *cv = circuitViews[pos.circuitNr];
     QRectF rect = cv->cellRect(pos.row, pos.column);
     int height = rect.height();
 
-    IconMarker *marker;
-    if (which == DATA_INDEX_PROBLEM)
-        marker = new ProblemMarker(height, toolTip);
-    else
-        marker = new InfoMarker(pos, height, toolTip);
-    marker->setData(which, true);
+    IconMarker *marker = new IconMarker(pos, type, toolTip);
     scene()->addItem(marker);
     QPointF p(cv->pos().x() + rect.right() - rect.height(),
               cv->pos().y() + rect.top());
     marker->setPos(p);
-}
-void PatchSectionView::clearMarkers(int which)
-{
-    for (auto item: scene()->items()) {
-        if (item->data(which).isValid()) {
-            scene()->removeItem(item);
-        }
-    }
 }
 void PatchSectionView::deletePatchSection()
 {
@@ -342,8 +329,8 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
     // Click on little "info" icon
     if (button == Qt::LeftButton) {
         for (auto item: items(pos)) {
-            if (item->data(DATA_INDEX_INFO).isValid()) {
-                clickOnInfoMarker((InfoMarker *)item);
+            if (item->data(DATA_INDEX_ICON_MARKER).isValid()) {
+                clickOnIconMarker((IconMarker *)item);
                 return;
             }
         }

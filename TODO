@@ -2,17 +2,15 @@ GROSSE THEMEN:
 
 - Button -> LED Warnung oder sowas
 - Button -> make LEDs match buttons
-- Handbuch und Doku verklinken, auch zu den Jacks
-
-KLEINERE FEATURES:
-- Das mit der SD-Karte besser machen. Oder reicht das erstmal so?
-- Sektionen per Drag-Drop vertauschen
-- Module per Drag-Drop vertauschen
-- View source code (oder open source code in text editor)
-- Tasten, mit eer man die LEDs an die Buttons angleichen kann.
 - Eine Wwarnung oder irgendwas, wenn man buttons aber keine
   LEDs hat. Mit Klicken, dass es automatisch repariert wird.
   Nur was machen wir für den seltenen Fall,l dass man es so will?
+- Handbuch und Doku verklinken, auch zu den Jacks
+
+KLEINERE FEATURES:
+- Sektionen per Drag-Drop vertauschen
+- Module per Drag-Drop vertauschen
+- Tasten, mit eer man die LEDs an die Buttons angleichen kann.
 - Kabelkonflikte (externe, interne?) beim Einfügen von Sachen
   noch programmieren. Interne->automatisch umbenennen.
 - Bessere Grafiken für die Rackview (Skizzen?)
@@ -20,18 +18,7 @@ KLEINERE FEATURES:
 - Jacks mit Lookuptabellen. z.B. Tonarten 1-12. Dazu macht man in der
   Doku eine Tabelle. Und im AtomSelector kann man dann beim Numberdingens
   diese direkt auswählen.
-- Snippet als Quelltext reinpasten. Und zwar vom global Clipboard des
-  Rechners.
-- Auch umgekehrt!! Wenn ich ih meinem Patch etwas ins Clipboard kopiere,
-  soll ich es in anderen Anwendungen als Text einfügen können!
-- Patchsectionview umschalten auf "Text"?? Also in einer Textansicht
-  editieren. Dabei trotzdem die Sektionen erhalten? Macht Sinn?
-  Beim Umschalten könnte man einfach ein Textfenster machen mit "toString()".
-  Dort einen Standardeditor reinhängen. Sobald man was ändert, müsste man
-  das feststellen und gleich parsen? Was ist aber dann mit den ganzen anderen
-  Modi? Die Problems? usw???? Ist es nicht besser, ein Fenster aufzumachen,
-  indem man dierekt editiert, modal? Das ganze könnte man für alle
-  Ebenen machen: Patch, Section, Circuit.
+- Globales Clipboard nutzen, um Patches auszutauschen. Rein und Raus.
 
 
 BUGS:

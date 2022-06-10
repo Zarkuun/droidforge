@@ -4,7 +4,6 @@
 #include "circuitview.h"
 #include "framecursor.h"
 #include "iconmarker.h"
-#include "infomarker.h"
 #include "patchsection.h"
 #include "selection.h"
 #include "tuning.h"
@@ -89,8 +88,7 @@ private:
     void mouseClick(QPoint pos, int button, bool doubleClock);
     void updateProblemMarkers();
     void updateInfoMarkers();
-    void clearMarkers(int which);
-    void placeMarker(const CursorPosition &pos, int which, const QString &toolTip);
+    void placeMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip);
 
     void connectActions();
     void setZoom(int zoom);
@@ -111,7 +109,7 @@ private:
     void pasteAtomsFromClipboard();
     void pasteFromClipboard();
     void pasteCircuitsFromClipboard();
-    void clickOnInfoMarker(const InfoMarker *info);
+    void clickOnIconMarker(const IconMarker *info);
     void editJackCommentAt(const CursorPosition &pos);
     void enableDisableObjects(bool enable);
     void handleRightMousePress(const CursorPosition *curPos);

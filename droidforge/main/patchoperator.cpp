@@ -164,7 +164,6 @@ void PatchOperator::upload()
 }
 void PatchOperator::saveToSD()
 {
-    shout << "Save to SD";
     QDir dir = sdCardDir();
     if (!dir.exists()) {
         QMessageBox::critical(
@@ -196,7 +195,6 @@ void PatchOperator::saveToSD()
 
     QProcess process;
     QStringList arguments;
-    arguments << "eject" << sdCardDir().absolutePath();
     process.start("diskutil", arguments);
     bool success = process.waitForFinished(MAC_UMOUNT_TIMEOUT_MS);
     if (!success) {
@@ -215,7 +213,7 @@ void PatchOperator::saveToSD()
                     QMessageBox::Ok);
     }
     else {
-        shout << "OK" << process.readAll();
+        // process.readAll();
         sdCardPresent = false;
         emit droidStateChanged();
     }
@@ -247,10 +245,8 @@ void PatchOperator::updateSDState()
     bool oldState = sdCardPresent;
     QDir sdDir = sdCardDir();
     sdCardPresent = sdDir.exists();
-    if (oldState != sdCardPresent) {
-        shout << "Card: " << sdCardPresent;
+    if (oldState != sdCardPresent)
         emit droidStateChanged();
-    }
 }
 void PatchOperator::loadFile(const QString &filePath, int how)
 {

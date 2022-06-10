@@ -1118,5 +1118,7 @@
         <file>images/circuits/togglebutton.png</file>
         <file>images/circuits/faderbank.png</file>
         <file>images/circuits/fadermatrix.png</file>
+        <file>images/icons/ledmismatch.png</file>
+        <file>images/icons/folded.png</file>
     </qresource>
 </RCC>
