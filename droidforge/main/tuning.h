@@ -8,6 +8,7 @@
 #define SECTION_DEFAULT_NAME                 TR("Circuits")
 #define CIRCUIT_ICON_PATH                    ":images/circuits/"
 #define ICON_PATH_TEMPLATE                   ":images/icons/white/%1.png"
+#define IMAGE_PATH_TEMPLATE                  ":images/icons/%1.png"
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001
 #define MAC_UMOUNT_TIMEOUT_MS                10000
@@ -149,7 +150,7 @@
 #define CIRV_JACK_HEIGHT                     22
 #define CIRV_ICON_WIDTH                      15
 #define CIRV_ICON_MARGIN                     (STANDARD_SPACING / 2)
-#define CIRV_HEADER_HEIGHT                   42
+#define CIRV_HEADER_HEIGHT                   26
 #define CIRV_COLUMN_JACK_MINIMUM_WIDTH       110
 #define CIRV_COLUMN_ATOM_MINIMUM_WIDTH       80
 #define CIRV_COLUMN_OPERATOR_WIDTH           20

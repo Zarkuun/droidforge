@@ -21,6 +21,7 @@ CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selecti
     , totalWidth(width)
     , lineHeight(lineHeight)
     , icon(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
+    , markerOffset(0)
 {
     effect.setBlurRadius(15);
     effect.setColor(QColor(0,0,0));
@@ -106,14 +107,14 @@ void CircuitView::paintHeader(QPainter *painter)
                      textRect.height());
             painter->drawText(r, Qt::AlignVCenter, oneliner);
         }
-        unsigned margin = 2;
-        unsigned iconsize = CIRV_HEADER_HEIGHT - 2 * margin;
-        QRectF ir(headerRect().right() - iconsize - 5,
-                  headerRect().top() + margin,
-                  iconsize,
-                  iconsize);
-        static QImage ic(QString(ICON_PATH_TEMPLATE).arg("format_line_spacing"));
-        painter->drawImage(ir, ic);
+        // unsigned margin = 2;
+        // unsigned iconsize = CIRV_HEADER_HEIGHT - 2 * margin;
+        // QRectF ir(headerRect().right() - iconsize - 5,
+        //           headerRect().top() + margin,
+        //           iconsize,
+        //           iconsize);
+        // static QImage ic(QString(ICON_PATH_TEMPLATE).arg("format_line_spacing"));
+        // painter->drawImage(ir, ic);
     }
 }
 void CircuitView::paintComment(QPainter *painter)
@@ -388,4 +389,10 @@ int CircuitView::jackAt(unsigned y)
         return circuit->numJackAssignments() - 1;
     else
         return jack;
+}
+
+int CircuitView::nextHeaderMarkerOffset()
+{
+    markerOffset -= CIRV_HEADER_HEIGHT;
+    return markerOffset;
 }

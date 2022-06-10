@@ -147,7 +147,16 @@ void PatchSectionView::buildPatchSection()
     updateCursor();
     setScene(scene);
 }
-void PatchSectionView::updateProblemMarkers()
+void PatchSectionView::createFoldMarkers()
+{
+    for (int i=0; i<section()->numCircuits(); i++) {
+        if (section()->circuit(i)->isFolded()) {
+            CursorPosition pos(i, -2, 0);
+            placeMarker(pos, ICON_MARKER_FOLDED);
+        }
+    }
+}
+void PatchSectionView::createProblemMarkes()
 {
     QSet<int> foldedProblemCircuits;
 
@@ -169,7 +178,7 @@ void PatchSectionView::updateProblemMarkers()
         placeMarker(pos, ICON_MARKER_PROBLEM, tr("There are problems in this circuit"));
     }
 }
-void PatchSectionView::updateInfoMarkers()
+void PatchSectionView::createInfoMarkers()
 {
     for (unsigned i=0; i<section()->numCircuits(); i++)
     {
@@ -191,10 +200,16 @@ void PatchSectionView::clickOnIconMarker(const IconMarker *marker)
 {
     const CursorPosition &pos = marker->cursorPosition();
     icon_marker_t type = marker->getType();
+    shout << pos.circuitNr << type;
     switch (type) {
     case ICON_MARKER_INFO:
         editJackCommentAt(pos);
         break;
+    case ICON_MARKER_FOLDED:
+        TRIGGER_ACTION(ACTION_FOLD_UNFOLD);
+        break;
+
+
     default:
         break;
     }
@@ -224,8 +239,13 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
     int height = rect.height();
 
     IconMarker *marker = new IconMarker(pos, type, toolTip);
+    int offset;
+    if (pos.row == -2)
+        offset = cv->nextHeaderMarkerOffset();
+    else
+        offset = -rect.height();
     scene()->addItem(marker);
-    QPointF p(cv->pos().x() + rect.right() - rect.height(),
+    QPointF p(cv->pos().x() + rect.right() + offset,
               cv->pos().y() + rect.top());
     marker->setPos(p);
 }
@@ -239,8 +259,9 @@ void PatchSectionView::rebuildPatchSection()
 {
     deletePatchSection();
     buildPatchSection();
-    updateProblemMarkers();
-    updateInfoMarkers();
+    createFoldMarkers();
+    createProblemMarkes();
+    createInfoMarkers();
     updateCursor();
 }
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
@@ -330,6 +351,7 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
     if (button == Qt::LeftButton) {
         for (auto item: items(pos)) {
             if (item->data(DATA_INDEX_ICON_MARKER).isValid()) {
+                shout << "CLICK ON" << item;
                 clickOnIconMarker((IconMarker *)item);
                 return;
             }

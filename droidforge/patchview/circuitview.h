@@ -20,6 +20,7 @@ class CircuitView : public QObject, public QGraphicsItem
     float atomColumnWidth;
     QGraphicsDropShadowEffect effect;
     QPixmap icon;
+    int markerOffset;
 
 public:
     CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const *selection, float width, unsigned lineHeight);
@@ -32,6 +33,7 @@ public:
     QStringList usedJacks() const;
     int columnAt(unsigned x);
     int jackAt(unsigned y);
+    int nextHeaderMarkerOffset();
 
 private:
     bool isFolded() const { return circuit->isFolded(); };

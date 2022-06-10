@@ -21,8 +21,7 @@ const QIcon &IconBase::icon(const QString &name)
 const QImage &IconBase::getImage(const QString &name)
 {
     if (!images.contains(name)) {
-        QImage image(QString(ICON_PATH_TEMPLATE).arg(name));
-        shout << "Lade image" <<QString(ICON_PATH_TEMPLATE).arg(name) ;
+        QImage image(QString(IMAGE_PATH_TEMPLATE).arg(name));
         images[name] = image;
     }
     return images[name];

@@ -86,9 +86,10 @@ private:
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key); // TODO: was soll das hier?
     void mouseClick(QPoint pos, int button, bool doubleClock);
-    void updateProblemMarkers();
-    void updateInfoMarkers();
-    void placeMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip);
+    void createProblemMarkes();
+    void createInfoMarkers();
+    void createFoldMarkers();
+    void placeMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip = "");
 
     void connectActions();
     void setZoom(int zoom);
