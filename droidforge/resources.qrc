@@ -1120,5 +1120,11 @@
         <file>images/circuits/fadermatrix.png</file>
         <file>images/icons/ledmismatch.png</file>
         <file>images/icons/folded.png</file>
+        <file>images/circuits/crossfader.png</file>
+        <file>images/circuits/slew.png</file>
+        <file>images/circuits/switch.png</file>
+        <file>images/circuits/queue.png</file>
+        <file>images/circuits/sample.png</file>
+        <file>images/circuits/quantizer.png</file>
     </qresource>
 </RCC>
