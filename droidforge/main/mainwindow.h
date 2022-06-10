@@ -85,5 +85,8 @@ private slots:
     void modifyPatch();
     void cursorMoved();
     void splitterMoved();
+
+signals:
+    void allActionsAborted();
 };
 #endif // MAINWINDOW_H

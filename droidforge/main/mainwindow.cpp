@@ -96,13 +96,8 @@ void MainWindow::modifyPatch()
 }
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Escape) {
-        // patchView.abortAllActions(); // TODO
-        // rackView.abortAllAction();
-    }
-    else  if (!patchSectionView.handleKeyPress(event)) {
+    if (!patchSectionView.handleKeyPress(event))
         event->ignore();
-    }
 }
 void MainWindow::closeEvent(QCloseEvent *event)
 {
@@ -127,9 +122,11 @@ void MainWindow::createMenus()
     createSectionMenu();
     createViewMenu();
 
-    // TODO: looks strange to me
-    ADD_ACTION(ACTION_NEXT_SECTION, this); // make shortcuts work
-    ADD_ACTION(ACTION_PREVIOUS_SECTION, this); // make shortcuts work
+    // Add actions to the main window that have no menu entry
+    // or toolbar, so that the keyboard shortcuts will work.
+    ADD_ACTION(ACTION_NEXT_SECTION, this);
+    ADD_ACTION(ACTION_PREVIOUS_SECTION, this);
+    ADD_ACTION(ACTION_ABORT_ALL_ACTIONS, this);
 }
 void MainWindow::createFileMenu()
 {

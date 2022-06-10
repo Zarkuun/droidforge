@@ -50,6 +50,7 @@ protected:
     const PatchSection *section() const { return patch->currentSection(); };
 
 private slots:
+    void abortAllActions();
     void upload();
     void saveToSD();
     void newPatch();

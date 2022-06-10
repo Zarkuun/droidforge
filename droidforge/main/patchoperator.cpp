@@ -51,6 +51,7 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_SOURCE, &PatchOperator::editCircuitSource);
     CONNECT_ACTION(ACTION_EDIT_SECTION_SOURCE, &PatchOperator::editSectionSource);
     CONNECT_ACTION(ACTION_EDIT_PATCH_SOURCE, &PatchOperator::editPatchSource);
+    CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &PatchOperator::abortAllActions);
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -658,4 +659,10 @@ void PatchOperator::clearSelection()
 {
     section()->clearSelection();
     emit selectionChanged();
+}
+
+void PatchOperator::abortAllActions()
+{
+    if (patch->isPatching())
+        patch->stopPatching();
 }

@@ -20,7 +20,6 @@ public slots:
     void moveCursor();
     void changePatching();
     void changeDroidState();
-    // TODO: Esc -> Abort all actions
 
 signals:
     void patchModified();

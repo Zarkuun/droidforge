@@ -191,6 +191,9 @@ void EditorActions::createActions()
     actions[ACTION_ABORT_PATCHING] = new QAction(NOICON("swap_horiz"), tr("Abort creating internal cable"), this);
     actions[ACTION_ABORT_PATCHING]->setEnabled(false);
 
+    actions[ACTION_ABORT_ALL_ACTIONS] = new QAction(tr("Abort all actions"), this);
+    actions[ACTION_ABORT_ALL_ACTIONS]->setShortcut(QKeySequence(tr("Escape")));
+
     actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
 
@@ -342,7 +345,7 @@ void EditorActions::moveCursor()
 
     actions[ACTION_FOLD_UNFOLD]->setEnabled(circuit);
     actions[ACTION_FOLD_UNFOLD_ALL]->setEnabled(circuit);
-    actions[ACTION_START_PATCHING]->setEnabled(atom && !patch->isPatching());
+    actions[ACTION_START_PATCHING]->setEnabled(section()->cursorPosition().column >= 1 && !patch->isPatching());
 }
 void EditorActions::updateDisablingActions()
 {

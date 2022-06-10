@@ -1117,5 +1117,6 @@
         <file>images/circuits/motorfader.png</file>
         <file>images/circuits/togglebutton.png</file>
         <file>images/circuits/faderbank.png</file>
+        <file>images/circuits/fadermatrix.png</file>
     </qresource>
 </RCC>
