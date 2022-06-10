@@ -61,6 +61,7 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     connect(this, &PatchOperator::cursorMoved, the_hub, &UpdateHub::moveCursor);
     connect(this, &PatchOperator::patchingChanged, the_hub, &UpdateHub::changePatching);
     connect(this, &PatchOperator::droidStateChanged, the_hub, &UpdateHub::changeDroidState);
+    connect(this, &PatchOperator::patchingChanged, the_hub, &UpdateHub::changePatching);
 
     QSettings settings;
     if (initialFilename == "" && settings.contains("lastfile"))
@@ -663,6 +664,8 @@ void PatchOperator::clearSelection()
 
 void PatchOperator::abortAllActions()
 {
-    if (patch->isPatching())
+    if (patch->isPatching()) {
         patch->stopPatching();
+        emit patchingChanged();
+    }
 }

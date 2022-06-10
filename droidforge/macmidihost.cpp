@@ -37,6 +37,8 @@ QString MacMIDIHost::sendPatch(const Patch *patch)
     if (sysexLength == 0)
         return TR("You have exceeded the maximum allowed patch size.");
 
+    shout << "Total len: " << sysexLength;
+
     MIDIEndpointRef endpointRef = findX7();
     if (!endpointRef)
         return TR("Cannot find DROID X7");
@@ -79,16 +81,13 @@ MIDIEndpointRef MacMIDIHost::findX7() const
 }
 unsigned MacMIDIHost::prepareSysexMessage(const Patch *patch)
 {
+    shout << "TITEL VOM PATCH" << patch->getTitle();
     sysexBuffer[0] = 0xf0;
     sysexBuffer[1] = 0x00;
     sysexBuffer[2] = 0x66;
     sysexBuffer[3] = 0x66;
     sysexBuffer[4] = 'P';
     QString droidini = patch->toBare();
-    const char *iniAsCstring = droidini.toUtf8();
-    unsigned patchLen = strlen(iniAsCstring);
-    if (patchLen > MAX_DROID_INI)
-        return 0;
 
     // The MIDI Driver of MAC seems to have hickups if the length
     // of a sysex message is > 255 bytes. It drops each 256th byte.
@@ -97,18 +96,16 @@ unsigned MacMIDIHost::prepareSysexMessage(const Patch *patch)
     // (which will then happily get lost on the way)
     #define SYSEX_MAX_CHUNK 255
 
-    const char *read = iniAsCstring;
+    unsigned i=0;
+    unsigned offset = 5;
     Byte *write = &sysexBuffer[5];
-    int remaining = patchLen;
-    int maxChunkLen = SYSEX_MAX_CHUNK - 5;
-    while (remaining) {
-        int chunk = qMin(remaining, maxChunkLen);
-        remaining -= chunk;
-        memcpy(write, read, chunk);
-        write += chunk;
-        read += chunk;
-        *write++ = ' ';
-        maxChunkLen = SYSEX_MAX_CHUNK;
+    while (i < droidini.size()) {
+        if (offset == SYSEX_MAX_CHUNK) {
+            *write++ = ' ';
+            offset = 0;
+        }
+        *write++ = droidini[i++].toLatin1();
+        offset++;
     }
     *write++ = 0xf7;
 

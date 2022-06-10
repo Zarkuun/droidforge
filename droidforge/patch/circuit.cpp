@@ -124,7 +124,8 @@ void Circuit::collectCables(QStringList &cables) const
 void Circuit::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
 {
     for (auto ja: jackAssignments)
-        ja->findCableConnections(cable, asInput, asOutput);
+        if (!ja->isDisabled())
+            ja->findCableConnections(cable, asInput, asOutput);
 }
 QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {

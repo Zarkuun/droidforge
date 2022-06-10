@@ -307,7 +307,8 @@ void PatchSection::collectCables(QStringList &cables) const
 void PatchSection::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
 {
     for (auto circuit: circuits)
-        circuit->findCableConnections(cable, asInput, asOutput);
+        if (!circuit->isDisabled())
+            circuit->findCableConnections(cable, asInput, asOutput);
 }
 QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
 {
