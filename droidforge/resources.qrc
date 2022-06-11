@@ -1126,5 +1126,19 @@
         <file>images/circuits/queue.png</file>
         <file>images/circuits/sample.png</file>
         <file>images/circuits/quantizer.png</file>
+        <file>images/circuits/switchedpot.png</file>
+        <file>images/circuits/pot.png</file>
+        <file>images/circuits/notchedpot.png</file>
+        <file>images/circuits/notebuttons.png</file>
+        <file>images/circuits/fourstatebutton.png</file>
+        <file>images/circuits/nudge.png</file>
+        <file>images/circuits/burst.png</file>
+        <file>images/circuits/timing.png</file>
+        <file>images/circuits/triggerdelay.png</file>
+        <file>images/circuits/bernoulli.png</file>
+        <file>images/circuits/clocktool.png</file>
+        <file>images/circuits/explin.png</file>
+        <file>images/circuits/dac.png</file>
+        <file>images/circuits/adc.png</file>
     </qresource>
 </RCC>

@@ -280,7 +280,8 @@ void PatchOperator::open()
     if (!checkModified())
         return;
 
-    QString filePath = QFileDialog::getOpenFileName(the_forge);
+    QString filePath = QFileDialog::getOpenFileName(
+                the_forge, "", "", "DROID patches (*.ini)");
     if (!filePath.isEmpty())
         loadFile(filePath, FILE_MODE_LOAD);
 }

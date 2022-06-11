@@ -16,7 +16,7 @@ public:
 protected:
     QPointF registerPosition(QChar type, unsigned number) const;
     float registerSize(QChar type, unsigned number) const;
-    bool labelNeedsBackground(QChar, unsigned n) const { return n >= 3; };
+    bool labelNeedsBackground(QChar, unsigned n) const { return true; };
 };
 
 #endif // MODULES10_H

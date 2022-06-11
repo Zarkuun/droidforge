@@ -30,3 +30,5 @@ float ModuleP10::registerSize(QChar, unsigned number) const
         return CONTROL_SMALL_POT_SIZE;
 
 }
+
+

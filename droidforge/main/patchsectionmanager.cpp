@@ -263,10 +263,10 @@ void PatchSectionManager::switchToSection(int i)
 
 void PatchSectionManager::switchBackward()
 {
-    switchToSection((patch->currentSectionIndex() - 1 + patch->numSections()) % patch->numSections());
+    switchToSection(qMax(0, patch->currentSectionIndex() - 1));
 }
 
 void PatchSectionManager::switchForward()
 {
-    switchToSection((patch->currentSectionIndex() + 1) % patch->numSections());
+    switchToSection(qMin(patch->numSections() -1 , patch->currentSectionIndex() + 1));
 }

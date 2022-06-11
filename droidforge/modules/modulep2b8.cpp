@@ -11,6 +11,11 @@ unsigned ModuleP2B8::numRegisters(QChar type) const
         return 0;
 }
 
+bool ModuleP2B8::labelNeedsBackground(QChar type, unsigned) const
+{
+    return type == REGISTER_POT;
+}
+
 
 QPointF ModuleP2B8::registerPosition(QChar type, unsigned number) const
 {

@@ -13,9 +13,17 @@ KLEINERE FEATURES:
   Doku eine Tabelle. Und im AtomSelector kann man dann beim Numberdingens
   diese direkt auswählen.
 - Globales Clipboard nutzen, um Patches auszutauschen. Rein und Raus.
+- Das Programm registrieren für "*.ini"-Dateien
+- Im DROID-Git die essential und typical jacks markieren
+- Direkteingabe: Sollte ohne Return direkt funktionieren.
+  Ich glaube, wir müssen direkt im Atom selbst rummalen oder
+  so.
+
 
 
 BUGS:
+- Doppelklick um ein Register zu labeln für dazu, dass man den
+  Namen des Registers aus Versehen in eine Atom einträgt
 - Namensgebung: Soll nicht "Jack" lieber "Parameter" heißen?
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen?

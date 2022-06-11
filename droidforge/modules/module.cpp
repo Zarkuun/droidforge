@@ -14,12 +14,10 @@ Module::Module(const QString &faceplate)
 Module::~Module()
 {
 }
-
 bool Module::isController() const
 {
     return data(DATA_INDEX_CONTROLLER_INDEX).isValid();
 }
-
 unsigned Module::controllerNumber() const
 {
     unsigned controller = 0;
@@ -27,17 +25,14 @@ unsigned Module::controllerNumber() const
         controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
     return controller;
 }
-
 void Module::clearHilites()
 {
     memset(&registerHilite, 0, sizeof(registerHilite));
 }
-
 QRectF Module::boundingRect() const
 {
     return QRectF(0, 0, hp() * RACV_PIXEL_PER_HP, RACV_MODULE_HEIGHT);
 }
-
 void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     QRect r = boundingRect().toRect();
@@ -46,7 +41,6 @@ void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
     paintRegisterHilites(painter);
     paintRegisterLabels(painter);
 }
-
 void Module::paintRegisterHilites(QPainter *painter)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
@@ -58,7 +52,6 @@ void Module::paintRegisterHilites(QPainter *painter)
         }
     }
 }
-
 void Module::paintHiliteRegister(QPainter *painter, int usage, QChar type, unsigned number)
 {
     QRectF r = registerRect(type, number, usage);
@@ -71,7 +64,6 @@ void Module::paintHiliteRegister(QPainter *painter, int usage, QChar type, unsig
     else
         painter->drawEllipse(r);
 }
-
 void Module::paintRegisterLabels(QPainter *painter)
 {
     if (!registerLabels)
@@ -91,13 +83,11 @@ void Module::paintRegisterLabels(QPainter *painter)
         paintRegisterLabel(painter, atom, it.value());
     }
 }
-
 void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const RegisterLabel &label)
 {
     QString text = label.shorthand;
     if (text == "")
         text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
-    text = text.toUpper();
 
     QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()), 1);
     QFont font;
@@ -112,7 +102,7 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
 
     if (labelNeedsBackground(atom.getRegisterType(), atom.getNumber())) {
         painter->save();
-        painter->setBrush(QColor(255, 255, 255, 128));
+        painter->setBrush(COLOR(RACV_COLOR_LABEL_BG));
         painter->setPen(Qt::NoPen);
         painter->drawEllipse(r);
         painter->restore();
@@ -123,7 +113,6 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
 
     painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
 }
-
 bool Module::haveRegister(AtomRegister atom)
 {
     unsigned count = numRegisters(atom.getRegisterType());
@@ -131,7 +120,6 @@ bool Module::haveRegister(AtomRegister atom)
     bool have = atom.number() >= 1 + offset && atom.number() <= count + offset;
     return have;
 }
-
 void Module::hiliteRegisters(int usage, QChar type, unsigned number)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
@@ -144,7 +132,6 @@ void Module::hiliteRegisters(int usage, QChar type, unsigned number)
         }
     }
 }
-
 QRectF Module::registerRect(QChar type, unsigned number, int usage) const
 {
     QPointF posHP = registerPosition(type, number); // in HP, mid
@@ -155,7 +142,6 @@ QRectF Module::registerRect(QChar type, unsigned number, int usage) const
                 posHP.y() * RACV_PIXEL_PER_HP - size/2);
     return QRectF(pos, QSize(size, size));
 }
-
 AtomRegister *Module::registerAt(const QPoint &pos) const
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
@@ -171,7 +157,6 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
     }
     return 0;
 }
-
 AtomRegister Module::registerAtom(QChar type, unsigned number) const
 {
     return AtomRegister(type, controllerNumber(), number + numberOffset(type));

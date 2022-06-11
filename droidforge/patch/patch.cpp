@@ -381,9 +381,7 @@ QString Patch::toString() const
         s += "# " + title + "\n";
 
     if (!libraryMetaData.isEmpty())
-        s += "# LIBRARY: " + libraryMetaData;
-
-    s += "\n";
+        s += "# LIBRARY: " + libraryMetaData + "\n";
 
     if (!description.isEmpty()) {
         if (!s.isEmpty())

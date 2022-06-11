@@ -12,6 +12,7 @@ public:
     QString title() const { return "P2B8 Controller"; }
     float hp() const  { return 5; }
     unsigned numRegisters(QChar type) const;
+    bool labelNeedsBackground(QChar, unsigned) const;
 
 protected:
     QPointF registerPosition(QChar type, unsigned number) const;

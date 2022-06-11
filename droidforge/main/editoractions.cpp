@@ -223,6 +223,7 @@ void EditorActions::createActions()
     actions[ACTION_RENAME_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+R")));
 
     actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("Delete section"), this);
+    actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+Backspace")));
 
     actions[ACTION_CREATE_SECTION_FROM_SELECTION] = new QAction(tr("Create new section from selection"), this);
     actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(false);
