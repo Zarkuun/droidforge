@@ -31,6 +31,8 @@ TODO für die erste Version:
   als Defaults festlegen. Und die Möglichkeit eines
   Reset.
 - Wenn umount nicht klappt, dann ein Fenster aufpoppen.
+- Das gloabl Rack-Menü ist komisch. Nur ein Eintrag.
+  das geht so nicht.
 
 Code aufräumen:
 - Alle Aktionen in den patchoperator umziehen
