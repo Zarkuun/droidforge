@@ -1,34 +1,48 @@
-GROSSE THEMEN:
+TODO für die erste Version:
 
 - Handbuch und Doku verklinken, auch zu den Jacks
-
-KLEINERE FEATURES:
-- Sektionen per Drag-Drop vertauschen
-- Module per Drag-Drop vertauschen
+- Circuitbeschreibungen von Latexcode befreien
+- Jackbeschreibungen einbetten und verfügbar machen
+- Jacktabellen (scales, etc.)
+- Releasepaket für Apple
+- Im DROID-Git die essential und typical jacks markieren
 - Kabelkonflikte (externe, interne?) beim Einfügen von Sachen
   noch programmieren. Interne->automatisch umbenennen.
-- Bessere Grafiken für die Rackview (Skizzen?)
 - Tasten um an den Anfang und ans Ende zu springen.
-- Jacks mit Lookuptabellen. z.B. Tonarten 1-12. Dazu macht man in der
-  Doku eine Tabelle. Und im AtomSelector kann man dann beim Numberdingens
-  diese direkt auswählen.
-- Globales Clipboard nutzen, um Patches auszutauschen. Rein und Raus.
 - Das Programm registrieren für "*.ini"-Dateien
-- Im DROID-Git die essential und typical jacks markieren
+- Ein Icon für das Programm
 - Direkteingabe: Sollte ohne Return direkt funktionieren.
   Ich glaube, wir müssen direkt im Atom selbst rummalen oder
   so.
-
-
-
-BUGS:
 - Doppelklick um ein Register zu labeln für dazu, dass man den
-  Namen des Registers aus Versehen in eine Atom einträgt
+  Namen des Registers aus Versehen in eine Atom einträgt?
+  Oder ist das schon gefixt?
+- Ein Klick auf die Birne erzeugt eine Selection
+- Der Handcursor kommt bei der Birne und anderen Icons
+  nicht.
 - Namensgebung: Soll nicht "Jack" lieber "Parameter" heißen?
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
-  sorgen. Kann man das geordnet irgendwie machen?
+  sorgen. Kann man das geordnet irgendwie machen? Oder ist das
+  schon gemacht?
 - "pitch" als input und "pitch1" als output: Erkennung
-   von Jacktyp geht nicht? Testen
+   von Jacktyp geht nicht? Testen. Oder ist das schon
+   fertig?
+- Die Eingestellen Farben hart kodieren oder zumindest
+  als Defaults festlegen. Und die Möglichkeit eines
+  Reset.
+- Wenn umount nicht klappt, dann ein Fenster aufpoppen.
+
+Code aufräumen:
+- Alle Aktionen in den patchoperator umziehen
+- Alle Farben über COLOR() machen
+
+KLEINERE FEATURES:
+- Irgendwelche globalen Eistellungen fürirgendwas.
+- Light theme?
+- Sektionen per Drag-Drop vertauschen
+- Module per Drag-Drop vertauschen
+- Bessere Grafiken für die Rackview (Skizzen?)
+- Globales Clipboard nutzen, um Patches auszutauschen. Rein und Raus.
 
 Version 2:
 - Mehrere Dateien gleichzeitig auf haben
