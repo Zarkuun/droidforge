@@ -1140,5 +1140,17 @@
         <file>images/circuits/explin.png</file>
         <file>images/circuits/dac.png</file>
         <file>images/circuits/adc.png</file>
+        <file>images/circuits/chord.png</file>
+        <file>images/circuits/calibrator.png</file>
+        <file>images/circuits/fold.png</file>
+        <file>images/circuits/superjust.png</file>
+        <file>images/circuits/octave.png</file>
+        <file>images/circuits/minifonion.png</file>
+        <file>images/circuits/midithrough.png</file>
+        <file>images/circuits/midiout.png</file>
+        <file>images/circuits/midiin.png</file>
+        <file>images/circuits/midifileplayer.png</file>
+        <file>images/circuits/firefacecontrol.png</file>
+        <file>images/circuits/droid.png</file>
     </qresource>
 </RCC>
