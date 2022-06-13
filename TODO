@@ -33,6 +33,11 @@ TODO für die erste Version:
 - Wenn umount nicht klappt, dann ein Fenster aufpoppen.
 - Das gloabl Rack-Menü ist komisch. Nur ein Eintrag.
   das geht so nicht.
+- Die RGB-Register vom M4 gehen nicht: R1.4
+- Selektion muss weg gehen wenn man auf den Hintergrund klickt
+
+- DAs LED->BUTTON Dings klappt nicht bei nudge
+  (buttonup / buttondown)
 
 Code aufräumen:
 - Alle Aktionen in den patchoperator umziehen

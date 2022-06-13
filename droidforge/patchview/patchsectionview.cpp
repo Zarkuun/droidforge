@@ -384,6 +384,8 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
     }
     else if (button == Qt::RightButton)
         handleRightMousePress(0);
+    else if (doubleClick)
+        TRIGGER_ACTION(ACTION_NEW_CIRCUIT);
     delete curPos;
 }
 void PatchSectionView::changeSelection()
