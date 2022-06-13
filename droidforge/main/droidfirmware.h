@@ -22,6 +22,7 @@ public:
     unsigned jackArraySize(QString circuit, QString jack, bool isInput) const;
     QStringList circuitsOfCategory(QString category) const;
     QString circuitDescription(QString circuit) const;
+    QString circuitTitle(QString circuit) const;
     QStringList inputsOfCircuit(QString circuit, jackselection_t sel = JACKSELECTION_FULL) const;
     QStringList outputsOfCircuit(QString circuit, jackselection_t sel = JACKSELECTION_FULL) const;
     QStringList jacksOfCircuit(QString circuit, QString whence, jackselection_t) const;

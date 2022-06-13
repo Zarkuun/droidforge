@@ -37,7 +37,8 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     painter->drawText(QRect(text_x, CICH_PADDING,
                       *circuitViewWidth - text_x, CICH_TITLE_HEIGHT),
                       Qt::AlignTop,
-                      circuit.toUpper());
+                      circuit.toUpper() + " - " +
+                      the_firmware->circuitTitle(circuit));
 
     // Description
     painter->setPen(CICH_COLOR_DESCRIPTION);

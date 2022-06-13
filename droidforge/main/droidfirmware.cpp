@@ -99,8 +99,15 @@ QStringList DroidFirmware::circuitsOfCategory(QString category) const
 }
 QString DroidFirmware::circuitDescription(QString circuit) const
 {
-    QString fullDescription = circuits[circuit].toObject()["description"].toString();
+    auto object = circuits[circuit].toObject();
+    QString fullDescription = object["description"].toString();
     return fullDescription.split('.')[0].replace("\n", " ");
+}
+
+QString DroidFirmware::circuitTitle(QString circuit) const
+{
+    return circuits[circuit].toObject()["title"].toString();
+
 }
 QStringList DroidFirmware::inputsOfCircuit(QString circuit, jackselection_t jackSelection) const
 {
