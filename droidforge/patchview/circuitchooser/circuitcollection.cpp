@@ -19,7 +19,6 @@ CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     loadCircuitCategory(category);
     initBackgroundRect(numCircuits);
 }
-
 CircuitCollection::CircuitCollection(QWidget *parent)
     : QGraphicsView(parent)
     , backgroundRect(0)
@@ -28,7 +27,9 @@ CircuitCollection::CircuitCollection(QWidget *parent)
 {
     initScene();
 }
-
+CircuitCollection::~CircuitCollection()
+{
+}
 void CircuitCollection::initScene()
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -37,7 +38,6 @@ void CircuitCollection::initScene()
     scene->setBackgroundBrush(CICH_BACKGROUND_COLOR);
     setScene(scene);
 }
-
 void CircuitCollection::initBackgroundRect(int numCircuits)
 {
     // Create an invisible rectangle that works as a global
@@ -60,11 +60,6 @@ void CircuitCollection::initBackgroundRect(int numCircuits)
     backgroundRect->setZValue(-1);
     scene()->addItem(backgroundRect);
 }
-
-CircuitCollection::~CircuitCollection()
-{
-}
-
 void CircuitCollection::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
@@ -73,13 +68,11 @@ void CircuitCollection::mousePressEvent(QMouseEvent *event)
         }
     }
 }
-
 void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (handleMousePress(event->pos()))
             chooseCurrentCircuit();
 }
-
 void CircuitCollection::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Down)
@@ -89,7 +82,6 @@ void CircuitCollection::keyPressEvent(QKeyEvent *event)
     else
         QWidget::keyPressEvent(event);
 }
-
 QString CircuitCollection::selectedCircuitName()
 {
     CircuitInfoView *civ = currentCircuit();
@@ -98,7 +90,6 @@ QString CircuitCollection::selectedCircuitName()
     else
         return ""; // empty search
 }
-
 void CircuitCollection::updateSearch(QString text)
 {
     scene()->clear();
@@ -109,12 +100,10 @@ void CircuitCollection::updateSearch(QString text)
     initBackgroundRect(numCircuits);
     update();
 }
-
 void CircuitCollection::resizeEvent(QResizeEvent *event)
 {
     circuitViewWidth = event->size().width() - CICH_WIDTH_MARGIN;
 }
-
 bool CircuitCollection::preselectCircuit(QString name)
 {
     for (qsizetype i=0; i<numCircuits; i++) {
@@ -130,7 +119,6 @@ bool CircuitCollection::preselectCircuit(QString name)
     }
     return false;
 }
-
 bool CircuitCollection::handleMousePress(const QPointF &pos)
 {
     QGraphicsItem *item = itemAt(pos.x(), pos.y());
@@ -151,7 +139,6 @@ bool CircuitCollection::handleMousePress(const QPointF &pos)
     }
     return true;
 }
-
 void CircuitCollection::loadCircuitCategory(QString category, QString search)
 {
     search = search.toLower();
@@ -179,7 +166,6 @@ void CircuitCollection::loadCircuitCategory(QString category, QString search)
     }
     moveCursorUpDown(0); // sanitize cursor position
 }
-
 void CircuitCollection::moveCursorUpDown(int whence)
 {
     if (circuits.empty())
@@ -190,7 +176,6 @@ void CircuitCollection::moveCursorUpDown(int whence)
     currentCircuit()->select();
     ensureVisible(currentCircuit(), 0, STANDARD_SPACING);
 }
-
 CircuitInfoView *CircuitCollection::currentCircuit()
 {
     if (circuits.empty())
@@ -198,7 +183,6 @@ CircuitInfoView *CircuitCollection::currentCircuit()
     else
         return circuits[qMax(0, qMin(selectedCircuit, circuits.size()-1))];
 }
-
 void CircuitCollection::chooseCurrentCircuit()
 {
     emit selectCircuit();

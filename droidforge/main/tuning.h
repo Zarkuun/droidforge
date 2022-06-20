@@ -169,7 +169,7 @@
 #define CICH_DIALOG_HEIGHT                   500
 #define CICH_GLOBAL_MARGIN                   STANDARD_SPACING
 #define CICH_ICON_MARGIN                     STANDARD_SPACING
-#define CICH_ICON_WIDTH                      50
+#define CICH_ICON_WIDTH                      55
 #define CICH_CIRCUIT_HEIGHT                  (CICH_ICON_WIDTH + 2 * (CICH_PADDING))
 #define CICH_CIRCUIT_DISTANCE                STANDARD_SPACING
 #define CICH_TITLE_HEIGHT                    20
@@ -182,6 +182,7 @@
 
 // Jack selector (JSEL)
 #define JSEL_TOTAL_WIDTH                     600
+#define JSEL_DESCRIPTION_WIDTH               200
 #define JSEL_JACK_HEIGHT                     22
 #define JSEL_CIRCUIT_TEXT_HEIGHT             22
 #define JSEL_JACK_WIDTH                      120

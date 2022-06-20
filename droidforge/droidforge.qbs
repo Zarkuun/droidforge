@@ -49,6 +49,8 @@ QtApplication {
         "main/patchview.h",
         "main/updatehub.cpp",
         "main/updatehub.h",
+        "modules/manualviewer.cpp",
+        "modules/manualviewer.h",
         "patch/globals.h",
         "patch/patcheditengine.cpp",
         "patch/patcheditengine.h",

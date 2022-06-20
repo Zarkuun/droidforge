@@ -1,8 +1,6 @@
 TODO für die erste Version:
 
-- Handbuch und Doku verklinken, auch zu den Jacks
-- Circuitbeschreibungen von Latexcode befreien
-- Jackbeschreibungen einbetten und verfügbar machen
+- Handbuch und Doku verklinken
 - Jacktabellen (scales, etc.)
 - Releasepaket für Apple
 - Im DROID-Git die essential und typical jacks markieren
@@ -35,6 +33,7 @@ TODO für die erste Version:
   das geht so nicht.
 - Die RGB-Register vom M4 gehen nicht: R1.4
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
+- Jackselector: bei Match mit input1/2 gibt's Ärger.
 
 - DAs LED->BUTTON Dings klappt nicht bei nudge
   (buttonup / buttondown)

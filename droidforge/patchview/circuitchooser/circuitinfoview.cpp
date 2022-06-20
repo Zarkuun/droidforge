@@ -19,14 +19,11 @@ QRectF CircuitInfoView::boundingRect() const
 {
     return QRectF(0, 0, *circuitViewWidth, CICH_CIRCUIT_HEIGHT);
 }
-
 void CircuitInfoView::select(bool sel)
 {
     selected = sel;
     update();
 }
-
-
 void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     unsigned text_x = CICH_ICON_WIDTH + 2*CICH_PADDING + STANDARD_SPACING;
@@ -50,10 +47,8 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                       the_firmware->circuitDescription(circuit));
 
     // Icon
-    QPixmap image(QString(CIRCUIT_ICON_PATH +  circuit + CIRCUIT_ICON_SUFFIX));
-    if (image.isNull())
-        image = QPixmap(QString(CIRCUIT_ICON_PATH) + "noicon" + CIRCUIT_ICON_SUFFIX);
-    painter->drawPixmap(QRect(CICH_PADDING, CICH_PADDING,
+    QImage image(QString(CIRCUIT_ICON_PATH +  circuit + CIRCUIT_ICON_SUFFIX));
+    painter->drawImage(QRect(CICH_PADDING, CICH_PADDING,
                               CICH_ICON_WIDTH, CICH_ICON_WIDTH), image);
 
     // Cursor

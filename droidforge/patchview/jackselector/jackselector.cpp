@@ -17,7 +17,6 @@ JackSelector::JackSelector(QWidget *parent)
 {
     initScene();
 }
-
 void JackSelector::setCircuit(const QString &c, const QString &current, const QStringList &uj, jacktype_t onlyType, QString search)
 {
     circuit = c;
@@ -26,7 +25,6 @@ void JackSelector::setCircuit(const QString &c, const QString &current, const QS
     loadJacks(circuit, search);
     setCursor(current);
 }
-
 void JackSelector::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Down)
@@ -40,19 +38,16 @@ void JackSelector::keyPressEvent(QKeyEvent *event)
     else
         QWidget::keyPressEvent(event);
 }
-
 void JackSelector::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         handleMousePress(event->pos());
 }
-
 void JackSelector::mouseDoubleClickEvent(QMouseEvent *event)
 {
     handleMousePress(event->pos());
     emit accepted();
 }
-
 QString JackSelector::getSelectedJack() const
 {
     QString jack = currentJack()->getJack();
@@ -60,7 +55,6 @@ QString JackSelector::getSelectedJack() const
         jack += QString::number(currentSubjack+1);
     return jack;
 }
-
 void JackSelector::initScene()
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -70,10 +64,10 @@ void JackSelector::initScene()
     scene->setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
     setScene(scene);
 }
-
 void JackSelector::loadJacks(QString circuit, QString search)
 {
-    scene()->clear();
+    initScene();
+    // scene()->clear();
     for (int i=0; i<2; i++)
         jackViews[i].clear();
 
@@ -102,8 +96,8 @@ void JackSelector::loadJacks(QString circuit, QString search)
     int y = (totalHeight - JSEL_CIRCUIT_HEIGHT) / 2;
     scene()->addItem(jcv);
     jcv->setPos(x, y);
+    ensureVisible(jcv);
 }
-
 void JackSelector::setCursor(QString current)
 {
     if (!current.isEmpty()) {
@@ -126,7 +120,6 @@ void JackSelector::setCursor(QString current)
     currentRow = qMin(currentRow, jackViews[currentColumn].count()-1);
     selectCurrentJack(true);
 }
-
 unsigned JackSelector::createJacks(const QStringList &jacks, int column)
 {
     unsigned height = 0;
@@ -139,7 +132,6 @@ unsigned JackSelector::createJacks(const QStringList &jacks, int column)
     }
     return height;
 }
-
 void JackSelector::placeJacks(int totalHeight, float space, int column)
 {
     QList<JackView *> *jvs = &jackViews[column];
@@ -185,7 +177,6 @@ void JackSelector::placeJacks(int totalHeight, float space, int column)
         y += spacePerJack + h;
     }
 }
-
 void JackSelector::moveCursorUpDown(int whence)
 {
     int rows = jackViews[currentColumn].count();
@@ -223,7 +214,6 @@ void JackSelector::moveCursorUpDown(int whence)
     ensureVisible(currentJack(), JSEL_SCROLL_MARGIN, JSEL_SCROLL_MARGIN);
     scene()->update();
 }
-
 void JackSelector::moveCursorLeftRight(int whence)
 {
     JackView *jv = currentJack();
@@ -255,17 +245,14 @@ void JackSelector::moveCursorLeftRight(int whence)
     currentRow = round(relpos * (count - 1));
     selectCurrentJack(true);
 }
-
 JackView *JackSelector::currentJack()
 {
     return jackViews[currentColumn][currentRow];
 }
-
 const JackView *JackSelector::currentJack() const
 {
     return jackViews[currentColumn][currentRow];
 }
-
 void JackSelector::selectCurrentJack(bool sel)
 {
     JackView *jv = currentJack();
@@ -274,9 +261,16 @@ void JackSelector::selectCurrentJack(bool sel)
     else
         jv->deselect();
 
-    emit cursorMoved(jv->isActive(currentSubjack));
-}
+    shout << currentRow << currentSubjack;
+    QString jackName = jv->getJack();
+    if (jv->isArray())
+        jackName += QString::number(currentSubjack + 1);
 
+    emit cursorMoved(
+                jackName,
+                currentColumn == 0 ? JACKTYPE_INPUT : JACKTYPE_OUTPUT,
+                jv->isActive(currentSubjack));
+}
 bool JackSelector::handleMousePress(const QPointF &pos)
 {
     QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
@@ -312,7 +306,6 @@ bool JackSelector::handleMousePress(const QPointF &pos)
     }
     return false;
 }
-
 void JackSelector::searchChanged(QString text)
 {
     loadJacks(circuit, text);

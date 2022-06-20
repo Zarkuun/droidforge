@@ -67,6 +67,8 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_RACK_ZOOM_IN, &MainWindow::rackZoomIn);
     CONNECT_ACTION(ACTION_RACK_ZOOM_OUT, &MainWindow::rackZoomOut);
     CONNECT_ACTION(ACTION_RACK_RESET_ZOOM, &MainWindow::rackZoomReset);
+    CONNECT_ACTION(ACTION_USER_MANUAL, &MainWindow::showUserManual);
+    CONNECT_ACTION(ACTION_CIRCUIT_MANUAL, &MainWindow::showCircuitManual);
 
     createMenus();
     createToolbar();
@@ -125,6 +127,7 @@ void MainWindow::createMenus()
     createEditMenu();
     createSectionMenu();
     createViewMenu();
+    createHelpMenu();
 
     // Add actions to the main window that have no menu entry
     // or toolbar, so that the keyboard shortcuts will work.
@@ -258,6 +261,12 @@ void MainWindow::createRackMenu()
     ADD_ACTION(ACTION_RACK_ZOOM_IN, menu);
     ADD_ACTION(ACTION_RACK_ZOOM_OUT, menu);
 }
+void MainWindow::createHelpMenu()
+{
+    QMenu *menu = menuBar()->addMenu(tr("&Help"));
+    ADD_ACTION(ACTION_USER_MANUAL, menu);
+    ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
+}
 void MainWindow::createStatusBar()
 {
     statusbar = new QStatusBar(this);
@@ -300,6 +309,16 @@ void MainWindow::rackZoomOut()
 void MainWindow::rackZoomReset()
 {
     rackZoom(0);
+}
+
+void MainWindow::showUserManual()
+{
+    shoutfunc;
+}
+
+void MainWindow::showCircuitManual()
+{
+    shoutfunc;
 }
 void MainWindow::updateWindowTitle()
 {

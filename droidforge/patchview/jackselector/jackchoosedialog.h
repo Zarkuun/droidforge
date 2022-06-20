@@ -6,14 +6,17 @@
 #include "dialog.h"
 
 #include <QDialogButtonBox>
+#include <QLabel>
 
 class JackChooseDialog : public Dialog
 {
     Q_OBJECT
 
+    QString circuit;
     QDialogButtonBox *buttonBox;
     JackSelector *jackSelector;
     QLineEdit *lineEditSearch;
+    QLabel *labelDescription;
 
 public:
     JackChooseDialog(QWidget *parent = nullptr);
@@ -23,7 +26,7 @@ public:
             jacktype_t jackType = JACKTYPE_DONT_CARE);
 
 public slots:
-    void cursorMoved(bool onActive);
+    void cursorMoved(QString jack, jacktype_t jacktype, bool onActive);
 
 private:
     void setCircuit(const QString &circuit, const QString &current, const QStringList &usedJacks, jacktype_t jackType);

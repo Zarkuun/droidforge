@@ -1,4 +1,5 @@
 #include "jackchoosedialog.h"
+#include "globals.h"
 #include "jackselector.h"
 #include "droidfirmware.h"
 
@@ -14,6 +15,14 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     // Canvas with circuit diagram
     jackSelector = new JackSelector(this);
 
+    // Description
+    labelDescription = new QLabel(this);
+    labelDescription->setWordWrap(true);
+    labelDescription->setMinimumWidth(JSEL_DESCRIPTION_WIDTH);
+    labelDescription->setMaximumWidth(JSEL_DESCRIPTION_WIDTH);
+    labelDescription->setStyleSheet(
+           "QLabel { padding: 10px; background-color : #202020; color: white; }");
+
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -25,29 +34,27 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     connect(lineEditSearch, &QLineEdit::textChanged, jackSelector, &JackSelector::searchChanged);
 
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(jackSelector, 0, 0, 1, -1);
+    mainLayout->addWidget(jackSelector, 0, 0, 1, 2);
+    mainLayout->addWidget(labelDescription, 0, 2);
     mainLayout->addWidget(searchLabel, 1, 0);
     mainLayout->addWidget(lineEditSearch, 1, 1);
     mainLayout->addWidget(buttonBox, 1, 2);
+    mainLayout->setColumnStretch(0, 1);
+    mainLayout->setColumnStretch(1, 0);
     setLayout(mainLayout);
 
     connect(jackSelector, &JackSelector::cursorMoved, this, &JackChooseDialog::cursorMoved);
     connect(jackSelector, &JackSelector::accepted, this, &JackChooseDialog::accept);
 }
-
-
-void JackChooseDialog::setCircuit(const QString &circuit, const QString &current, const QStringList &usedJacks, jacktype_t jackType)
+void JackChooseDialog::setCircuit(const QString &circ, const QString &current, const QStringList &usedJacks, jacktype_t jackType)
 {
+    circuit = circ;
     jackSelector->setCircuit(circuit, current, usedJacks, jackType, lineEditSearch->text());
 }
-
-
 QString JackChooseDialog::getSelectedJack() const
 {
     return jackSelector->getSelectedJack();
 }
-
-
 void JackChooseDialog::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z)
@@ -57,8 +64,6 @@ void JackChooseDialog::keyPressEvent(QKeyEvent *event)
     else
         QDialog::keyPressEvent(event);
 }
-
-
 QString JackChooseDialog::chooseJack(const QString &circuit, const QString &current, const QStringList &used, jacktype_t jackType)
 {
     static JackChooseDialog *dialog = 0;
@@ -71,10 +76,10 @@ QString JackChooseDialog::chooseJack(const QString &circuit, const QString &curr
     else
         return "";
 }
-
-
-void JackChooseDialog::cursorMoved(bool onActive)
+void JackChooseDialog::cursorMoved(QString jack, jacktype_t jacktype, bool onActive)
 {
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(onActive);
-
+    QString whence = jacktype == JACKTYPE_INPUT ? "inputs" : "outputs";
+    QString description = the_firmware->jackDescriptionHTML(circuit, whence, jack);
+    labelDescription->setText(description);
 }

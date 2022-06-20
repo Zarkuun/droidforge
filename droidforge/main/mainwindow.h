@@ -76,6 +76,7 @@ private:
     void createSectionMenu();
     void createViewMenu();
     void createRackMenu();
+    void createHelpMenu();
     void createToolbar();
     void createStatusBar();
     void updateWindowTitle();
@@ -89,6 +90,8 @@ private slots:
     void rackZoomIn();
     void rackZoomOut();
     void rackZoomReset();
+    void showUserManual();
+    void showCircuitManual();
 
 signals:
     void allActionsAborted();

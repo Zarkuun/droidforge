@@ -390,7 +390,6 @@ int CircuitView::jackAt(unsigned y)
     else
         return jack;
 }
-
 int CircuitView::nextHeaderMarkerOffset()
 {
     markerOffset -= CIRV_HEADER_HEIGHT;

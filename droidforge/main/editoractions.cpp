@@ -270,6 +270,12 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_PATCH_SOURCE] = new QAction(tr("Edit patch source code"), this);
     actions[ACTION_EDIT_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Shift+Ctrl+U")));
 
+    actions[ACTION_USER_MANUAL] = new QAction(tr("User manual"), this);
+    actions[ACTION_USER_MANUAL]->setShortcuts({QKeySequence(tr("Shift+Ctrl+M")), QKeySequence(tr("F1"))});
+
+    actions[ACTION_CIRCUIT_MANUAL] = new QAction(tr("User manual of circuit"), this);
+    actions[ACTION_CIRCUIT_MANUAL]->setShortcut(QKeySequence(tr("Ctrl+M")));
+
     for (auto action: actions)
          action->setShortcutVisibleInContextMenu(true);
 }
@@ -362,6 +368,7 @@ void EditorActions::moveCursor()
     actions[ACTION_FOLD_UNFOLD]->setEnabled(circuit);
     actions[ACTION_FOLD_UNFOLD_ALL]->setEnabled(circuit);
     actions[ACTION_START_PATCHING]->setEnabled(section()->cursorPosition().column >= 1 && !patch->isPatching());
+    actions[ACTION_CIRCUIT_MANUAL]->setEnabled(circuit);
 }
 void EditorActions::updateDisablingActions()
 {

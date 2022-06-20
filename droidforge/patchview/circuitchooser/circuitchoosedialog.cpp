@@ -28,12 +28,13 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     addCategoryTab("modulation", tr("Modulation"));
     addCategoryTab("sequencing", tr("Sequencing"));
     addCategoryTab("cv", tr("&CV Processing"));
-    addCategoryTab("ui", tr("Knobs && Buttons"));
-    addCategoryTab("clock", tr("Clocks && Triggers"));
-    addCategoryTab("logic", tr("Math && Logic"));
+    addCategoryTab("ui", tr("Controls"));
+    addCategoryTab("clock", tr("Clocks / Triggers"));
+    addCategoryTab("logic", tr("Math / Logic"));
     addCategoryTab("pitch", tr("Pitch"));
     addCategoryTab("midi", tr("MIDI"));
     addCategoryTab("other", tr("Other"));
+    addCategoryTab("deprecated", tr("Deprecated"));
     tabWidget->setTabVisible(TAB_INDEX_SEARCH, false);
     tabWidget->setCurrentIndex(TAB_INDEX_FIRST_CATEGORY);
 

@@ -103,12 +103,7 @@ QString DroidFirmware::circuitDescription(QString circuit) const
     auto object = circuits[circuit].toObject();
     QString latexcode = object["description"].toString();
     QString firstSentence = latexcode.split('.')[0].replace("\n", " ") + ".";
-    if (circuit == "notchedpot")
-        shout << "VORHER:" << firstSentence;
-
     QString fullDescription = delatexify(firstSentence);
-    if (circuit == "notchedpot")
-        shout << "NACHER:" << fullDescription;
     return fullDescription;
 }
 QString DroidFirmware::circuitTitle(QString circuit) const
@@ -162,6 +157,17 @@ QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence, 
             result.append(name);
     }
     return result;
+}
+
+QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QString jack) const
+{
+    QJsonValue jackinfo = findJack(circuit, whence, jack);
+    if (!jackinfo.isNull()) {
+        QJsonObject info = jackinfo.toObject();
+        return delatexify(info["description"].toString(), true /* html */);
+    }
+    else
+        return TR("Sorry, there is no documentation of this jack, yet.");
 }
 unsigned DroidFirmware::numGlobalRegisters(char registerType) const
 {
@@ -250,17 +256,83 @@ QJsonValue DroidFirmware::findJackArray(QString circuit, QString whence, QString
     return 0;
 }
 
-QString DroidFirmware::delatexify(QString s) const
+QString DroidFirmware::delatexify(QString s, bool html) const
 {
-    static QRegularExpression replaceT("{\\\\t ([^}]*)}");
-    static QRegularExpression replaceIt("{\\\\it ([^}]*)}");
-    static QRegularExpression replaceCircuit("\\\\circuit{([^}]*)}");
+    #define GROUP "([^}]*)"
+    static QRegularExpression replace_("_{" GROUP "}");
+    static QRegularExpression replaceT("{\\\\t " GROUP "}");
+    static QRegularExpression replaceNth("\\\\nth([4-9])");
+    static QRegularExpression replaceNthX("\\\\nth{" GROUP "}");
+    static QRegularExpression replaceIt("{\\\\it" GROUP "}");
+    static QRegularExpression replaceBf("{\\\\bf" GROUP "}");
+    static QRegularExpression replaceSqrt("\\\\sqrt{" GROUP "}");
+    static QRegularExpression replaceFootnotesize("{\\\\footnotesize" GROUP "}");
+    static QRegularExpression replaceCircuit("\\\\circuit{" GROUP "}");
+    static QRegularExpression replaceFrac("\\\\frac{" GROUP "}{" GROUP "}");
     static QRegularExpression replaceTextcolor("\\\\textcolor{red}{\\\\bf (.*)}");
-    s.replace("\\&" ,"&");
+    static QRegularExpression replaceFramebox("\\\\framebox[^{]*{" GROUP "}");
+    s.replace("\n\n", "<PARAGRAPH>");
+    s.replace("\n", " ");
+    s.replace("<PARAGRAPH>", "\n\n");
+    s.replace("--", "-");
+    s.replace("<", html ? "&lt;" : "<");
+    s.replace(">", html ? "&gt;" : ">");
+    s.replace("$", "");
+    s.replace("^\\circ", "°");
+    s.replace("\\%", "%");
+    s.replace("\\times", " X ");
+    s.replace("\\ ", " ");
+    s.replace("\\dots", "...");
+    s.replace("\\pi", "𝜋");
+    s.replace("\\sharp", "♯");
+    s.replace("\\flat", "♭");
+    s.replace("\\#", "#");
+
+    s.replace("\\nth1", html ? "1<sup>st</sup>" : "first");
+    s.replace("\\nth2", html ? "2<sup>nd</sup>" : "second");
+    s.replace("\\nth3", html ? "3<sup>rd</sup>" : "third");
+    s.replace(replaceNth, html ? "\\1<sup>th</sup>" : "\\1th");
+    s.replace(replaceNthX, html ? "\\1<sup>th</sup>" : "\\1th");
+
+    s.replace("\\ding{192}", "➀");
+    s.replace("\\ding{193}", "➁");
+    s.replace("\\ding{194}", "➂");
+    s.replace("\\ding{195}", "➃");
+    s.replace("\\ding{196}", "➄");
+    s.replace("\\ding{197}", "➅");
+
+    s.replace("\\ding{202}", "➊");
+    s.replace("\\ding{203}", "➋");
+    s.replace("\\ding{204}", "➌");
+    s.replace("\\ding{205}", "➍");
+    s.replace("\\ding{206}", "➎");
+    s.replace("\\ding{207}", "➏");
+
+    s.replace("\\rightarrow", "→");
+    s.replace("\\leftarrow",  "←");
+
+    s.replace("\\customcolortable", "0.2 = cyan, 0.4 = green, 0.6 = yellow, 0.73 = orange, 0.8 = red, 1.0 = magenta, 1.1 = violet, 1.2 = blue");
+    s.replace("\\normalsize", "");
+    s.replace("\\medskip", "\n\n");
+    s.replace("~", " ");
+    s.replace("''", "\"");
+    s.replace("``", "\"");
+    s.replace("\\droid", "DROID");
     s.replace("$\\times$", " X ");
-    s.replace(replaceT, "\"\\1\"");
-    s.replace(replaceIt, "\\1");
-    s.replace(replaceCircuit, "\"\\1\"");
+    s.replace("\\begin{itemize}", html ? "<ul>" : "");
+    s.replace("\\end{itemize}", html ? "</ul>" : "");
+    s.replace("\\item", html ? "<br><li>" : "");
+    s.replace("\\&" , "&");
     s.replace(replaceTextcolor, "\\1");
+    s.replace(replaceFramebox, "\\1");
+    s.replace(replaceT,       html ? "<tt>\\1</tt>" : "\"\\1\"");
+    s.replace(replaceIt,      html ? "<i>\\1</i>"   : "\\1");
+    s.replace(replaceBf,      html ? "<b>\\1</b>"   : "\\1");
+    s.replace(replaceCircuit, html ? "<tt>\\1</tt>" : "\"\\1\"");
+    s.replace(replace_, html ? "<sub>\\1</sub>" : "\\1");
+    s.replace(replaceSqrt, "√\\1");
+    s.replace("\\sqrt", "√");
+    s.replace(replaceFrac, "\\1 / \\2");
+    s.replace(replaceFootnotesize, "\\1");
     return s;
 }

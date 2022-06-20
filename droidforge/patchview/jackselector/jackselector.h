@@ -41,7 +41,7 @@ private:
     void setCursor(QString current = "");
 
 signals:
-    void cursorMoved(bool onActive);
+    void cursorMoved(QString jack, jacktype_t jacktype, bool onActive);
     void accepted();
 
 public slots:
