@@ -88,6 +88,7 @@
 #define RACV_SPLITTER_HANDLE_WIDTH           12
 #define RACV_MIN_HEIGHT                      100
 #define RACV_MAX_HEIGHT                      400
+#define RACV_NORMAL_HEIGHT                   220
 #define RACV_PIXEL_PER_HP                    87
 #define RACV_CONTROLLER_GAP                  (2 * RACV_PIXEL_PER_HP)
 // #define RACV_BACKGROUND_HEIGHT               2510

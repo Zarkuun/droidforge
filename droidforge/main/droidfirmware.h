@@ -33,6 +33,7 @@ public:
 private:
     QJsonValue findJack(QString circuit, QString whence, QString jack) const;
     QJsonValue findJackArray(QString circuit, QString whence, QString prefix) const;
+    QString delatexify(QString s) const;
 };
 
 extern DroidFirmware *the_firmware;

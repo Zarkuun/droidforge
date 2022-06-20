@@ -54,7 +54,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     rackSplitter->addWidget(&rackView);
     rackSplitter->addWidget(sectionSplitter);
 
-    resize(800, 600);
+    resize(800, 600); // TODO
     QSettings settings;
     if (settings.contains("mainwindow/position")) {
         move(settings.value("mainwindow/position").toPoint());
@@ -63,6 +63,10 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     if (settings.contains("mainwindow/splitposition"))
         rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
+
+    CONNECT_ACTION(ACTION_RACK_ZOOM_IN, &MainWindow::rackZoomIn);
+    CONNECT_ACTION(ACTION_RACK_ZOOM_OUT, &MainWindow::rackZoomOut);
+    CONNECT_ACTION(ACTION_RACK_RESET_ZOOM, &MainWindow::rackZoomReset);
 
     createMenus();
     createToolbar();
@@ -247,6 +251,12 @@ void MainWindow::createRackMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&Rack"));
     ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
+
+    menu->addSeparator();
+
+    ADD_ACTION(ACTION_RACK_RESET_ZOOM, menu);
+    ADD_ACTION(ACTION_RACK_ZOOM_IN, menu);
+    ADD_ACTION(ACTION_RACK_ZOOM_OUT, menu);
 }
 void MainWindow::createStatusBar()
 {
@@ -278,6 +288,18 @@ void MainWindow::splitterMoved()
 {
     QSettings settings;
     settings.setValue("mainwindow/splitposition", rackSplitter->saveState());
+}
+void MainWindow::rackZoomIn()
+{
+    rackZoom(1);
+}
+void MainWindow::rackZoomOut()
+{
+    rackZoom(-1);
+}
+void MainWindow::rackZoomReset()
+{
+    rackZoom(0);
 }
 void MainWindow::updateWindowTitle()
 {
@@ -328,6 +350,25 @@ void MainWindow::updateStatusbarMessage()
         statusbar->showMessage(message);
     else
         statusbar->clearMessage();
+}
+void MainWindow::rackZoom(int whence)
+{
+    QList<int> currentSizes = rackSplitter->sizes();
+    int totalsize = currentSizes[0] + currentSizes[1];
+    if (whence == 0)
+        currentSizes[0] = RACV_NORMAL_HEIGHT;
+    else if (whence == 1) {
+        currentSizes[0] *= 1.2;
+        if (currentSizes[0] < RACV_MIN_HEIGHT)
+            currentSizes[0] = RACV_MIN_HEIGHT;
+    }
+    else {
+        currentSizes[0] /= 1.2;
+        if (currentSizes[0] < RACV_MIN_HEIGHT)
+            currentSizes[0] = 0;
+    }
+    currentSizes[1] = totalsize - currentSizes[0];
+    rackSplitter->setSizes(currentSizes);
 }
 void MainWindow::cursorMoved()
 {

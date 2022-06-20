@@ -5,6 +5,7 @@
 
 #include <QFile>
 #include <QJsonArray>
+#include <QRegularExpression>
 
 DroidFirmware *the_firmware = 0;
 
@@ -100,14 +101,19 @@ QStringList DroidFirmware::circuitsOfCategory(QString category) const
 QString DroidFirmware::circuitDescription(QString circuit) const
 {
     auto object = circuits[circuit].toObject();
-    QString fullDescription = object["description"].toString();
-    return fullDescription.split('.')[0].replace("\n", " ");
-}
+    QString latexcode = object["description"].toString();
+    QString firstSentence = latexcode.split('.')[0].replace("\n", " ") + ".";
+    if (circuit == "notchedpot")
+        shout << "VORHER:" << firstSentence;
 
+    QString fullDescription = delatexify(firstSentence);
+    if (circuit == "notchedpot")
+        shout << "NACHER:" << fullDescription;
+    return fullDescription;
+}
 QString DroidFirmware::circuitTitle(QString circuit) const
 {
-    return circuits[circuit].toObject()["title"].toString();
-
+    return delatexify(circuits[circuit].toObject()["title"].toString());
 }
 QStringList DroidFirmware::inputsOfCircuit(QString circuit, jackselection_t jackSelection) const
 {
@@ -242,4 +248,19 @@ QJsonValue DroidFirmware::findJackArray(QString circuit, QString whence, QString
         }
     }
     return 0;
+}
+
+QString DroidFirmware::delatexify(QString s) const
+{
+    static QRegularExpression replaceT("{\\\\t ([^}]*)}");
+    static QRegularExpression replaceIt("{\\\\it ([^}]*)}");
+    static QRegularExpression replaceCircuit("\\\\circuit{([^}]*)}");
+    static QRegularExpression replaceTextcolor("\\\\textcolor{red}{\\\\bf (.*)}");
+    s.replace("\\&" ,"&");
+    s.replace("$\\times$", " X ");
+    s.replace(replaceT, "\"\\1\"");
+    s.replace(replaceIt, "\\1");
+    s.replace(replaceCircuit, "\"\\1\"");
+    s.replace(replaceTextcolor, "\\1");
+    return s;
 }

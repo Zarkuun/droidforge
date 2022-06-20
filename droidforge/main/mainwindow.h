@@ -80,11 +80,15 @@ private:
     void createStatusBar();
     void updateWindowTitle();
     void updateStatusbarMessage();
+    void rackZoom(int whence);
 
 private slots:
     void modifyPatch();
     void cursorMoved();
     void splitterMoved();
+    void rackZoomIn();
+    void rackZoomOut();
+    void rackZoomReset();
 
 signals:
     void allActionsAborted();

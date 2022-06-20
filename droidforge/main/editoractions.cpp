@@ -239,8 +239,17 @@ void EditorActions::createActions()
     actions[ACTION_ZOOM_IN] = new QAction(NOICON("zoom_in"), tr("Increase font size"), this);
     actions[ACTION_ZOOM_IN]->setShortcuts(QKeySequence::ZoomIn);
 
-    actions[ACTION_ZOOM_OUT] = new QAction(NOICON("zoom_out"), tr("Outcrease font size"), this);
+    actions[ACTION_ZOOM_OUT] = new QAction(NOICON("zoom_out"), tr("Decrease font size"), this);
     actions[ACTION_ZOOM_OUT]->setShortcuts(QKeySequence::ZoomOut);
+
+    actions[ACTION_RACK_RESET_ZOOM] = new QAction(tr("Normal rack size"), this);
+    actions[ACTION_RACK_RESET_ZOOM]->setShortcut(QKeySequence(tr("Alt+Ctrl+0")));
+
+    actions[ACTION_RACK_ZOOM_IN] = new QAction(tr("Increase rack size"), this);
+    actions[ACTION_RACK_ZOOM_IN]->setShortcut(QKeySequence(tr("Alt+Ctrl+=")));
+
+    actions[ACTION_RACK_ZOOM_OUT] = new QAction(tr("Decrease rack size"), this);
+    actions[ACTION_RACK_ZOOM_OUT]->setShortcut(QKeySequence(tr("Alt+Ctrl+-")));
 
     actions[ACTION_FOLD_UNFOLD] = new QAction(NOICON("format_line_spacing"), tr("Fold / unfold circuit"), this);
     actions[ACTION_FOLD_UNFOLD]->setShortcut(QKeySequence(tr("Space")));
