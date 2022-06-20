@@ -6,6 +6,7 @@
 Dialog::Dialog(QString id, QWidget *parent)
     : QDialog(parent)
     , id(id)
+    , closeOnReturn(true)
 {
     QSettings settings;
     if (settings.contains(id + "/size"))
@@ -28,7 +29,7 @@ void Dialog::moveEvent(QMoveEvent *)
 
 void Dialog::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Return && event->modifiers() | Qt::ControlModifier)
+    if (closeOnReturn && event->key() == Qt::Key_Return && event->modifiers() | Qt::ControlModifier)
         accept();
     else
         QDialog::keyPressEvent(event);

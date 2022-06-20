@@ -45,6 +45,7 @@ private slots:
     void previousCategory();
     void searchChanged(QString text);
     void saveSettings();
+    void showManual();
 };
 
 #endif // CIRCUITCHOOSEDIALOG_H

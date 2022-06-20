@@ -3,6 +3,7 @@
 #include "droidfirmware.h"
 #include "globals.h"
 #include "tuning.h"
+#include "usermanual.h"
 
 #include <QGridLayout>
 #include <QAction>
@@ -57,6 +58,9 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    QPushButton *manualButton = new QPushButton(tr("Manual"));
+    connect(manualButton, &QPushButton::clicked, this, &CircuitChooseDialog::showManual);
+    buttonBox->addButton(manualButton, QDialogButtonBox::ActionRole);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
@@ -85,49 +89,44 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     addAction(previousCategoryAct);
     connect(previousCategoryAct, &QAction::triggered, this, &CircuitChooseDialog::previousCategory);
 }
-
 QString CircuitChooseDialog::getSelectedCircuit() const
 {
     CircuitCollection *collection = (CircuitCollection *)tabWidget->currentWidget();
     return collection->selectedCircuitName();
 }
-
 jackselection_t CircuitChooseDialog::getJackSelection() const
 {
     return (jackselection_t)startJacksBox->currentIndex();
 }
-
 void CircuitChooseDialog::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z)
+    shout << event;
+    if (event->key() == Qt::Key_M && (event->modifiers() & Qt::ControlModifier))
+        showManual();
+    else if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z)
         lineEditSearch->insert(event->text());
     else if (event->key() == Qt::Key_Backspace)
         lineEditSearch->backspace();
     else
         QDialog::keyPressEvent(event);
 }
-
 void CircuitChooseDialog::showEvent(QShowEvent *)
 {
     lineEditSearch->selectAll();
 }
-
 void CircuitChooseDialog::accept()
 {
     QDialog::accept();
 }
-
 QString CircuitChooseDialog::chooseCircuit(jackselection_t &jsel)
 {
     return chooseCircuit(jsel, "");
 }
-
 QString CircuitChooseDialog::chooseCircuit(QString oldCircuit)
 {
     jackselection_t jsel;
     return chooseCircuit(jsel, oldCircuit);
 }
-
 QString CircuitChooseDialog::chooseCircuit(jackselection_t &jsel, QString oldCircuit)
 {
     static CircuitChooseDialog *dialog = 0;
@@ -143,14 +142,12 @@ QString CircuitChooseDialog::chooseCircuit(jackselection_t &jsel, QString oldCir
     else
         return "";
 }
-
 void CircuitChooseDialog::addCategoryTab(QString category, QString title)
 {
     CircuitCollection *cc = new CircuitCollection(category, this);
     tabWidget->addTab(cc, title);
     connect(cc, &CircuitCollection::selectCircuit, this, &CircuitChooseDialog::accept);
 }
-
 void CircuitChooseDialog::setCurrentCircuit(QString name)
 {
     for (qsizetype i=0; i<tabWidget->count(); i++) {
@@ -162,21 +159,18 @@ void CircuitChooseDialog::setCurrentCircuit(QString name)
         }
     }
 }
-
 void CircuitChooseDialog::nextCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() + 1) % tabWidget->count());
     if (tabWidget->currentIndex() == TAB_INDEX_SEARCH && lineEditSearch->text().isEmpty())
         nextCategory();
 }
-
 void CircuitChooseDialog::previousCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() - 1 + tabWidget->count()) % tabWidget->count());
     if (tabWidget->currentIndex() == TAB_INDEX_SEARCH && lineEditSearch->text().isEmpty())
         previousCategory();
 }
-
 void CircuitChooseDialog::searchChanged(QString text)
 {
     if (text.isEmpty()) {
@@ -189,9 +183,12 @@ void CircuitChooseDialog::searchChanged(QString text)
         tabWidget->setTabVisible(TAB_INDEX_SEARCH, true);
     }
 }
-
 void CircuitChooseDialog::saveSettings()
 {
     QSettings settings;
     settings.setValue("circuitchooser/startjacks", startJacksBox->currentIndex());
+}
+void CircuitChooseDialog::showManual()
+{
+    the_manual->showCircuit(getSelectedCircuit());
 }

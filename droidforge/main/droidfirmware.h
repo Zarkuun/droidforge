@@ -15,6 +15,7 @@ class DroidFirmware
 public:
     DroidFirmware();
     bool circuitExists(QString circuit) const;
+    unsigned circuitManualPage(QString circuit) const;
     QString canonizeJackName(QString circuit, QString jack) const;
     bool jackIsInput(QString circuit, QString jack) const;
     bool jackIsOutput(QString circuit, QString jack) const;

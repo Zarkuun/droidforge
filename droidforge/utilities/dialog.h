@@ -6,9 +6,11 @@
 class Dialog : public QDialog
 {
     QString id;
+    bool closeOnReturn;
 
 public:
     Dialog(QString id, QWidget *parent = nullptr);
+    void setCloseOnReturn(bool cr) { closeOnReturn = cr; };
 
 protected:
     void resizeEvent(QResizeEvent *);

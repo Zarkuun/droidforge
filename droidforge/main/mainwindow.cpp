@@ -12,6 +12,7 @@
 #include "patchview.h"
 #include "colorscheme.h"
 #include "patchoperator.h"
+#include "usermanual.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -310,15 +311,15 @@ void MainWindow::rackZoomReset()
 {
     rackZoom(0);
 }
-
 void MainWindow::showUserManual()
 {
-    shoutfunc;
+    the_manual->show();
 }
-
 void MainWindow::showCircuitManual()
 {
-    shoutfunc;
+    const Circuit *circuit = section()->currentCircuit();
+    if (circuit)
+        the_manual->showCircuit(circuit->getName());
 }
 void MainWindow::updateWindowTitle()
 {

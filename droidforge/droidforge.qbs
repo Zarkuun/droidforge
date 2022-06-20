@@ -2,6 +2,7 @@ import qbs.FileInfo
 
 QtApplication {
     Depends { name: "Qt.widgets" }
+    Depends { name: "Qt.pdfwidgets" }
 
     cpp.frameworks: [
         "CoreMIDI",
@@ -49,8 +50,12 @@ QtApplication {
         "main/patchview.h",
         "main/updatehub.cpp",
         "main/updatehub.h",
-        "modules/manualviewer.cpp",
-        "modules/manualviewer.h",
+        "modules/keycapturelineedit.cpp",
+        "modules/keycapturelineedit.h",
+        "modules/pageselector.cpp",
+        "modules/pageselector.h",
+        "modules/usermanual.cpp",
+        "modules/usermanual.h",
         "patch/globals.h",
         "patch/patcheditengine.cpp",
         "patch/patcheditengine.h",

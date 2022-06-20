@@ -29,6 +29,10 @@ bool DroidFirmware::circuitExists(QString circuit) const
 {
     return circuits.keys().contains(circuit);
 }
+unsigned DroidFirmware::circuitManualPage(QString circuit) const
+{
+    return circuits[circuit].toObject()["manual"].toInt();
+}
 QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
 {
     // Some circuits have array like pitch1...pitch16. In the DROID patch,
