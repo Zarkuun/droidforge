@@ -1,4 +1,6 @@
 #include "colorscheme.h"
+#include "globals.h"
+#include "tuning.h"
 
 ColorScheme *the_colorscheme = 0;
 
@@ -6,6 +8,11 @@ ColorScheme *the_colorscheme = 0;
 #include <QListWidget>
 #include <QSettings>
 #include <QColorDialog>
+#include <QFile>
+#include <QMap>
+#include <QColor>
+
+#include "colors.h"
 
 
 ColorScheme::ColorScheme(QWidget *parent)
@@ -145,9 +152,19 @@ ColorScheme::ColorScheme(QWidget *parent)
 
 QColor ColorScheme::color(int index)
 {
+    // This is the normal way
+    if (colors.contains(index))
+        return colors[index];
+
+    // This is during the development phase if a new
+    // colors just as been added but the header file
+    // colors.h has not been generated, again, yet.
     QString key = "color/" + QString::number(index);
     if (settings.value(key).isValid())
         return settings.value(key).value<QColor>();
+
+    // This case is if a new color has never been
+    // adjusted.
     else
         return QColor(128, 128, 128);
 }
@@ -174,4 +191,45 @@ void ColorScheme::colorChanged(const QColor &color)
 {
     setColor(currentIndex, color);
     emit changed();
+}
+
+void ColorScheme::dumpHeaderFile() const
+{
+    shout << "Regenerating color file " << COLOR_DEFINITION_FILE;
+
+    // Create a CPP file in order to hard code all the
+    // colors for a release.
+    QFile file(COLOR_DEFINITION_FILE);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    QTextStream stream(&file);
+    stream << "#include <QColor>\n";
+    stream << "#include <QMap>\n";
+    stream << "QMap<int, QColor> colors;\n";
+    stream << "void loadColors()\n";
+    stream << "{\n";
+
+    for (auto &key: settings.allKeys()) {
+        if (key.startsWith("color/")) {
+            QColor color = settings.value(key).value<QColor>();
+            QString s = key.mid(6);
+            int keyInt = s.toInt();
+
+            QString line =  QString("    colors.insert(%1, QColor(%2, %3, %4, %5));\n")
+                     .arg(keyInt)
+                     .arg(color.red())
+                     .arg(color.green())
+                     .arg(color.blue())
+                     .arg(color.alpha());
+
+            stream << line;
+        }
+    }
+    stream << "}\n";
+    file.close();
+}
+bool ColorScheme::isDevelopment() const
+{
+    QFile file(COLOR_DEFINITION_FILE);
+    return file.exists();
 }

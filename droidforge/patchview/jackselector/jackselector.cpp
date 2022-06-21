@@ -100,9 +100,10 @@ void JackSelector::loadJacks(QString circuit, QString search)
     int x = (JSEL_TOTAL_WIDTH - JSEL_CIRCUIT_WIDTH) / 2;
     int y = (totalHeight - JSEL_CIRCUIT_HEIGHT) / 2;
     scene()->addItem(jcv);
-    scene()->addRect(0, -JSEL_VERTICAL_PADDING, 0, totalHeight+2*JSEL_VERTICAL_PADDING, Qt::NoPen, Qt::NoBrush);
     jcv->setPos(x, y);
     ensureVisible(jcv);
+
+    scene()->addRect(0, -JSEL_VERTICAL_PADDING, 0, totalHeight+2*JSEL_VERTICAL_PADDING, Qt::NoPen, Qt::NoBrush);
 }
 void JackSelector::setCursor(QString current)
 {

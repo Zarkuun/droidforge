@@ -34,6 +34,8 @@ int main(int argc, char *argv[])
     Clipboard clipboard; // must be global to all windows
     UserManual userManual;
     ColorScheme colorscheme;
+    if (colorscheme.isDevelopment())
+        colorscheme.dumpHeaderFile();
 
     QString initialFilename;
     if (argc > 1)

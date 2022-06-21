@@ -60,6 +60,8 @@ public:
     QColor color(int index);
     void setColor(int index, const QColor &color);
     void hideEvent(QHideEvent *);
+    void dumpHeaderFile() const;
+    bool isDevelopment() const;
 
 public slots:
     void itemSelected(QListWidgetItem *item);

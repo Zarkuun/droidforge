@@ -5,22 +5,17 @@ TODO für die erste Version:
 - Direkteingabe: Sollte ohne Return direkt funktionieren.
   Ich glaube, wir müssen direkt im Atom selbst rummalen oder
   so.
-- Der Handcursor kommt bei der Birne und anderen Icons
-  nicht.
 - Namensgebung: Soll nicht "Jack" lieber "Parameter" heißen?
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen? Oder ist das
   schon gemacht?
-- Die Eingestellen Farben hart kodieren oder zumindest
-  als Defaults festlegen. Und die Möglichkeit eines
-  Reset.
 - Wenn umount nicht klappt, dann ein Fenster aufpoppen.
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
+- Selektion mit Rahmen ziehen
 
 BUGS:
 - Absturz bei Undo!
 - Die Cablecombobox kackt total ab (Qt 6.3.1)
-- Ein Klick auf die Birne erzeugt eine Selection
 
 Handbuch / Inhalte vorbereiten:
 - Im DROID-Git die essential und typical jacks markieren
@@ -36,7 +31,10 @@ Code aufräumen:
 - Alle Farben über COLOR() machen
 - Das -2 und -1 bei der Cursorrow durch makros ersetzen
 
-KLEINERE FEATURES:
+
+KLEINERE FEATURES FÜR SPÄTER:
+- Handcursor für Icons usw. die man klicken kann (da hat Qt
+  aber komische Bugs).
 - Der AtomSelektor ist schon irgendwie nicht so geil.
   Kann ich das nicht besser machen?
 - Bei der Jackinfo müssen die Defaultwerte angezeigt werden.

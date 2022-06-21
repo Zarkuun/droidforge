@@ -143,7 +143,6 @@ void PatchSectionView::buildPatchSection()
     }
     QRectF totalRect(0, 0, totalWidth, y);
     scene->setSceneRect(totalRect);
-    // ctor;10, CIRV_BOTTOM_PADDING, QPen(QColor(0, 0, 0, 0))); // add strut
     scene->addItem(&frameCursor);
     updateCursor();
     setScene(scene);
