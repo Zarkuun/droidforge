@@ -636,6 +636,7 @@ void PatchOperator::editCircuitSource()
 void PatchOperator::fixLEDMismatch()
 {
     section()->currentCircuit()->fixLEDMismatches();
+    section()->sanitizeCursor();
     patch->commit(tr("fixing LED mismatches"));
     emit patchModified();
 }

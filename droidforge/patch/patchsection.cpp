@@ -180,10 +180,10 @@ void PatchSection::sanitizeCursor()
     if (!circuit)
         return;
 
-    if (cursor.row >= circuit->numJackAssignments())
+    else if (cursor.row >= circuit->numJackAssignments())
         cursor.row = circuit->numJackAssignments() - 1;
 
-    else if (cursor.row == -1 && !circuit->hasComment())
+    if (cursor.row == -1 && !circuit->hasComment())
         cursor.row = -2;
 
 }

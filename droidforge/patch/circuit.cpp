@@ -203,7 +203,10 @@ bool Circuit::checkLEDMismatches(bool fixit)
 
     // Phase 1: add missing LED assignments
     for (auto ja: jackAssignments) {
-        if (ja->jackPrefix() == "button") {
+        if (ja->jackPrefix() == "button" ||
+                ja->jackName() == "buttonup" ||
+                ja->jackName() == "buttondown")
+        {
             Atom *atom = ja->atomAt(1);
             if (!atom || !atom->isRegister())
                 continue;
