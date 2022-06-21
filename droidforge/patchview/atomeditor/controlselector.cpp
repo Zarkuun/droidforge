@@ -10,11 +10,13 @@ ControlSelector::ControlSelector(jacktype_t jacktype, QWidget *parent)
     if (jacktype == JACKTYPE_INPUT) {
         addRegisterButton(REGISTER_BUTTON, tr("Button"));
         addRegisterButton(REGISTER_LED, tr("LED in Button"));
+        addRegisterButton(REGISTER_RGB_LED, tr("RGB-LED"));
         addRegisterButton(REGISTER_POT, tr("Potentiometer"));
         addRegisterButton(REGISTER_SWITCH, tr("Swich"));
     }
     else {
         addRegisterButton(REGISTER_LED, tr("LED in Button"));
+        addRegisterButton(REGISTER_RGB_LED, tr("RGB-LED"));
         addRegisterButton(REGISTER_SWITCH, tr("Swich"));
     }
 }

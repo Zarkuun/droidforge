@@ -140,7 +140,7 @@ Atom *JackAssignment::parseRegister(QString s)
     // Note: we allow invalid registers such as I0 here. It's easer
     // for creating precise error messages later.
     static QRegularExpression expa("^([INOGRX])([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
-    static QRegularExpression expb("^([BLPS])([0-9]+)[.]([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
+    static QRegularExpression expb("^([BLPSR])([0-9]+)[.]([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
 
     QRegularExpressionMatch m;
 

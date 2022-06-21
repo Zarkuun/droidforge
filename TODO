@@ -2,7 +2,6 @@ TODO für die erste Version:
 
 - Kabelkonflikte (externe, interne?) beim Einfügen von Sachen
   noch programmieren. Interne->automatisch umbenennen.
-- Tasten um an den Anfang und ans Ende zu springen.
 - Direkteingabe: Sollte ohne Return direkt funktionieren.
   Ich glaube, wir müssen direkt im Atom selbst rummalen oder
   so.
@@ -19,7 +18,6 @@ TODO für die erste Version:
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
 
 BUGS:
-- Die RGB-Register vom M4 gehen nicht: R1.4
 - DAs LED->BUTTON Dings klappt nicht bei nudge
   (buttonup / buttondown)
 - Jackselector: bei Match mit input1/2 gibt's Ärger.

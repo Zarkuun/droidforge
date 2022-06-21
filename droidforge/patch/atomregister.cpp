@@ -115,8 +115,8 @@ void AtomRegister::swapControllerNumbers(int fromController, int toController)
 
 void AtomRegister::shiftControllerNumbers(int controller, int by)
 {
-    if ((int)controller > controller)
-        controller += by;
+    if ((int)cont > controller)
+        cont += by;
 }
 
 QString AtomRegister::problemAsInput(const Patch *patch) const
