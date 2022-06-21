@@ -193,6 +193,7 @@
 #define JSEL_CIRCUIT_HEIGHT                  200
 #define JSEL_CIRCUIT_ICON_WIDTH              80
 #define JSEL_SCROLL_MARGIN                   50
+#define JSEL_VERTICAL_PADDING                STANDARD_SPACING
 #define JSEL_COLOR_JACK_BACKGROUND           QColor(0, 0, 0)
 #define JSEL_COLOR_CIRCUIT_BACKGROUND        QColor(20, 20, 20)
 #define JSEL_COLOR_JACK_LINE                 QColor(120, 120, 120)

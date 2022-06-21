@@ -33,6 +33,7 @@ private:
     unsigned createJacks(const QStringList &jacks, int column);
     void placeJacks(int totalHeight, float space, int column);
     void moveCursorUpDown(int whence);
+    void moveCursorHomeEnd(int whence);
     void moveCursorLeftRight(int whence);
     JackView *currentJack();
     const JackView *currentJack() const;

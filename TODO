@@ -21,12 +21,6 @@ BUGS:
 - Absturz bei Undo!
 - Die Cablecombobox kackt total ab (Qt 6.3.1)
 - Ein Klick auf die Birne erzeugt eine Selection
-- Doppelklick um ein Register zu labeln für dazu, dass man den
-  Namen des Registers aus Versehen in eine Atom einträgt?
-  Oder ist das schon gefixt?
-- "pitch" als input und "pitch1" als output: Erkennung
-   von Jacktyp geht nicht? Testen. Oder ist das schon
-   fertig?
 
 Handbuch / Inhalte vorbereiten:
 - Im DROID-Git die essential und typical jacks markieren

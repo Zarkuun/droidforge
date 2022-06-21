@@ -36,6 +36,10 @@ void JackSelector::keyPressEvent(QKeyEvent *event)
         moveCursorLeftRight(-1);
     else if (event->key() == Qt::Key_Right)
         moveCursorLeftRight(1);
+    else if (event->key() == Qt::Key_Home)
+        moveCursorHomeEnd(-1);
+    else if (event->key() == Qt::Key_End)
+        moveCursorHomeEnd(1);
     else
         QWidget::keyPressEvent(event);
 }
@@ -96,6 +100,7 @@ void JackSelector::loadJacks(QString circuit, QString search)
     int x = (JSEL_TOTAL_WIDTH - JSEL_CIRCUIT_WIDTH) / 2;
     int y = (totalHeight - JSEL_CIRCUIT_HEIGHT) / 2;
     scene()->addItem(jcv);
+    scene()->addRect(0, -JSEL_VERTICAL_PADDING, 0, totalHeight+2*JSEL_VERTICAL_PADDING, Qt::NoPen, Qt::NoBrush);
     jcv->setPos(x, y);
     ensureVisible(jcv);
 }
@@ -211,6 +216,24 @@ void JackSelector::moveCursorUpDown(int whence)
     else
         currentSubjack = 0;
 
+    selectCurrentJack(true);
+    ensureVisible(currentJack(), JSEL_SCROLL_MARGIN, JSEL_SCROLL_MARGIN);
+    scene()->update();
+}
+
+void JackSelector::moveCursorHomeEnd(int whence)
+{
+    selectCurrentJack(false);
+
+    if (whence == -1)
+        currentRow = 0;
+
+    else {
+        int rows = jackViews[currentColumn].count();
+        currentRow = rows - 1;
+    }
+
+    currentSubjack = 0;
     selectCurrentJack(true);
     ensureVisible(currentJack(), JSEL_SCROLL_MARGIN, JSEL_SCROLL_MARGIN);
     scene()->update();

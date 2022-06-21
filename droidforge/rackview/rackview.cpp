@@ -92,12 +92,31 @@ void RackView::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void RackView::mouseReleaseEvent(QMouseEvent *)
+void RackView::mouseReleaseEvent(QMouseEvent *event)
 {
      if (dragging) {
          if (maxDistanceFromMouseDown < 100) {
-             emit registerClicked(draggingStartRegister);
-             dragRegisterIndicator->setVisible(false);
+             // Problem: This might be the first of a double click. And
+             // double click is labelling. And in that cust we must not
+             // emit a registerClicked. Hm. So instead of a single/double
+             // click, we make Ctrl-Click for labelling
+             if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+                 for (auto item: items(event->pos())) {
+                     if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
+                         Module *module = (Module *)item;
+                         QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
+                         int index = v.isValid() ? v.toInt() : -1;
+                         QPointF relPos = mapToScene(event->pos()) - module->pos();
+                         AtomRegister *ar = module->registerAt(relPos.toPoint());
+                         editLabelling(item->data(DATA_INDEX_MODULE_NAME).toString(), index, ar ? *ar : AtomRegister());
+                         break;
+                     }
+                 }
+             }
+             else {
+                 emit registerClicked(draggingStartRegister);
+                 dragRegisterIndicator->setVisible(false);
+             }
          }
          else {
              AtomRegister draggingEndRegister = markedRegister;
@@ -119,20 +138,9 @@ void RackView::mouseReleaseEvent(QMouseEvent *)
 void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     bool foundItem = false;
-    for (auto item: items(event->pos())) {
+    for (auto item: items(event->pos()))
         foundItem = true;
-        if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
-            Module *module = (Module *)item;
-            QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
-            int index = v.isValid() ? v.toInt() : -1;
 
-            QPointF relPos = mapToScene(event->pos()) - module->pos();
-            AtomRegister *ar = module->registerAt(relPos.toPoint());
-
-            editLabelling(item->data(DATA_INDEX_MODULE_NAME).toString(), index, ar ? *ar : AtomRegister());
-            return;
-        }
-    }
     if (!foundItem)
         TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
 }
