@@ -212,10 +212,14 @@ void PatchSectionView::createLEDMismatchMarkers()
 void PatchSectionView::clickOnIconMarker(const IconMarker *marker)
 {
     const CursorPosition &pos = marker->cursorPosition();
+    section()->setCursor(pos);
+    emit cursorMoved();
+
     switch (marker->getType()) {
     case ICON_MARKER_INFO:
         editJackCommentAt(pos);
         break;
+
     case ICON_MARKER_FOLDED:
         TRIGGER_ACTION(ACTION_FOLD_UNFOLD);
         break;

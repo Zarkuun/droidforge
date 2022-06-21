@@ -18,6 +18,7 @@ TODO für die erste Version:
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
 
 BUGS:
+- Absturz bei Undo!
 - Die Cablecombobox kackt total ab (Qt 6.3.1)
 - Ein Klick auf die Birne erzeugt eine Selection
 - Doppelklick um ein Register zu labeln für dazu, dass man den
@@ -42,6 +43,8 @@ Code aufräumen:
 - Das -2 und -1 bei der Cursorrow durch makros ersetzen
 
 KLEINERE FEATURES:
+- Der AtomSelektor ist schon irgendwie nicht so geil.
+  Kann ich das nicht besser machen?
 - Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
 - Irgendwelche globalen Eistellungen fürirgendwas.
 - Light theme?

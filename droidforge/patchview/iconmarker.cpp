@@ -3,6 +3,7 @@
 #include "tuning.h"
 
 #include <QPainter>
+#include <QCursor>
 
 IconMarker::IconMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip)
     : type(type)
@@ -12,6 +13,7 @@ IconMarker::IconMarker(const CursorPosition &pos, icon_marker_t type, const QStr
     setZValue(60);
     setToolTip(toolTip);
     setData(DATA_INDEX_ICON_MARKER, type);
+    setCursor(Qt::PointingHandCursor);
 }
 
 QRectF IconMarker::boundingRect() const
