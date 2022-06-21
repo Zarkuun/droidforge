@@ -261,7 +261,6 @@ void JackSelector::selectCurrentJack(bool sel)
     else
         jv->deselect();
 
-    shout << currentRow << currentSubjack;
     QString jackName = jv->getJack();
     if (jv->isArray())
         jackName += QString::number(currentSubjack + 1);

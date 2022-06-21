@@ -2,6 +2,7 @@
 #include "droidfirmware.h"
 #include "globals.h"
 #include "iconbase.h"
+#include "jackvaluetabledialog.h"
 #include "tuning.h"
 #include "atomselector.h"
 
@@ -9,8 +10,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QComboBox>
-
-QComboBox hirnBox;
 
 NumberSelector::NumberSelector(QWidget *parent)
     : AtomSubSelector{parent}
@@ -27,33 +26,29 @@ NumberSelector::NumberSelector(QWidget *parent)
     valueBox->addWidget(lineEdit);
     valueBox->addWidget(labelUnit);
 
-    // Combo box for jack value tables
-    // comboBox = new QComboBox(this);
-    comboBox = &hirnBox;
-    comboBox->setEditable(false);
-    comboBox->setVisible(false);
-
     // Buttons for switching between different units
     QGridLayout *buttonBox = new QGridLayout();
+    buttonTable = new QPushButton(tr("Table"), this);
     buttonFraction = new QPushButton(tr("1 / X"), this);
     buttonFraction->setCheckable(true);
     buttonNumber = new QPushButton("➞ " + tr("#"), this);
     buttonVoltage = new QPushButton("➞ " + tr("V"), this);
     buttonPercentage = new QPushButton("➞ " + tr("%"), this);
     buttonOnOff = new QPushButton("➞ " + tr("□ / ▣"), this);
-    buttonBox->addWidget(buttonNumber, 0, 0);
-    buttonBox->addWidget(buttonVoltage, 0, 1);
-    buttonBox->addWidget(buttonPercentage, 1, 0);
-    buttonBox->addWidget(buttonOnOff, 1, 1);
-    buttonBox->addWidget(buttonFraction, 2, 0, 1, 2);
+    buttonBox->addWidget(buttonTable, 0, 0, 1, 2);
+    buttonBox->addWidget(buttonNumber, 1, 0);
+    buttonBox->addWidget(buttonVoltage, 1, 1);
+    buttonBox->addWidget(buttonPercentage, 2, 0);
+    buttonBox->addWidget(buttonOnOff, 2, 1);
+    buttonBox->addWidget(buttonFraction, 3, 0, 1, 2);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(valueBox);
-    mainLayout->addWidget(comboBox);
     mainLayout->addStretch();
     mainLayout->addLayout(buttonBox);
 
     connect(lineEdit, &QLineEdit::textEdited, this, &NumberSelector::lineEdited);
+    connect(buttonTable, &QPushButton::pressed, this, &NumberSelector::openTable);
     connect(buttonNumber, &QPushButton::pressed, this, &NumberSelector::switchToNumber);
     connect(buttonFraction, &QPushButton::toggled, this, &NumberSelector::toggleFraction);
     connect(buttonVoltage, &QPushButton::pressed, this, &NumberSelector::switchToVoltage);
@@ -111,24 +106,16 @@ void NumberSelector::setAllowFraction(bool af)
     buttonFraction->setVisible(af);
 }
 
-void NumberSelector::setCircuitAndJack(QString circuit, QString jack)
+void NumberSelector::setCircuitAndJack(QString c, QString j)
 {
-    jackValueTable = the_firmware->jackValueTable(circuit, "inputs", jack);
-    comboBox->clear();
+    circuit = c;
+    jack = j;
+    auto jackValueTable = the_firmware->jackValueTable(circuit, "inputs", jack);
     if (jackValueTable.empty()) {
-        comboBox->setVisible(false);
+        buttonTable->setVisible(false);
     }
     else {
-        comboBox->setVisible(true);
-        for (auto it = jackValueTable.keyBegin();
-             it != jackValueTable.keyEnd();
-             ++it)
-        {
-            float value = *it;
-            QString description = jackValueTable[value];
-            shout << value << description;
-            comboBox->addItem(ICON("work"), "HALLO", value); // description); // , value);
-        }
+        buttonTable->setVisible(true);
     }
 }
 
@@ -320,4 +307,16 @@ void NumberSelector::toggleFraction(bool checked)
         lineEdit->setFocus();
     }
     labelFraction->setVisible(checked);
+}
+
+void NumberSelector::openTable()
+{
+    JackValueTableDialog jvtd(circuit, jack, this);
+    int ret = jvtd.exec();
+    if (ret == QDialog::Accepted) {
+        number = jvtd.getSelectedValue();
+        setNumberType(ATOM_NUMBER_NUMBER);
+        lineEdit->setText(niceNumber(number));
+        lineEdit->setFocus();
+    }
 }

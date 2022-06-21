@@ -67,6 +67,8 @@ QtApplication {
         "patch/registerlabels.h",
         "patch/sourcecodeeditor.cpp",
         "patch/sourcecodeeditor.h",
+        "patchview/atomeditor/jackvaluetabledialog.cpp",
+        "patchview/atomeditor/jackvaluetabledialog.h",
         "patchview/cablecolorizer.cpp",
         "patchview/cablecolorizer.h",
         "patchview/clipboard.cpp",

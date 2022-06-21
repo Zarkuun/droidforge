@@ -604,9 +604,6 @@ void RackView::remapControls(QString controllerName, int controllerIndex)
 void RackView::editLabelling(QString moduleType, int controllerIndex, AtomRegister reg)
 {
     // Get current position of register marker
-    shout << "Ich labelle" << markedRegister;
-
-
     RegisterLabels &labels = patch->getRegisterLabels();
     ControllerLabellingDialog dialog(labels, moduleType, controllerIndex + 1, reg, this);
     int ret = dialog.exec();

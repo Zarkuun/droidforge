@@ -20,6 +20,7 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     labelDescription->setWordWrap(true);
     labelDescription->setMinimumWidth(JSEL_DESCRIPTION_WIDTH);
     labelDescription->setMaximumWidth(JSEL_DESCRIPTION_WIDTH);
+    labelDescription->setTextFormat(Qt::RichText);
     labelDescription->setStyleSheet(
            "QLabel { padding: 10px; background-color : #202020; color: white; }");
 
@@ -85,6 +86,7 @@ void JackChooseDialog::cursorMoved(QString jack, jacktype_t jacktype, bool onAct
     if (!table.empty())
         description += jackTableAsString(table);
     labelDescription->setText(description);
+    shout << "DER GANZE:" << description;
 }
 QString JackChooseDialog::jackTableAsString(const QMap<float, QString> &table)
 {

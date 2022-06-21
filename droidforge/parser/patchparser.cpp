@@ -63,9 +63,7 @@ void PatchParser::parse(QStringList lines, Patch *patch)
         throw ParseException("Syntax errors in your patch:\n\n" + lineerrors);
 
     if (patch->numSections() == 0) {
-        shout << "OH. Empt {atch";
         patch->addSection(new PatchSection());
-        shout << patch->currentSectionIndex();
     }
 }
 void PatchParser::parseLine(QString line)

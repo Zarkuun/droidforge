@@ -37,8 +37,6 @@ QString MacMIDIHost::sendPatch(const Patch *patch)
     if (sysexLength == 0)
         return TR("You have exceeded the maximum allowed patch size.");
 
-    shout << "Total len: " << sysexLength;
-
     MIDIEndpointRef endpointRef = findX7();
     if (!endpointRef)
         return TR("Cannot find DROID X7");
@@ -81,7 +79,6 @@ MIDIEndpointRef MacMIDIHost::findX7() const
 }
 unsigned MacMIDIHost::prepareSysexMessage(const Patch *patch)
 {
-    shout << "TITEL VOM PATCH" << patch->getTitle();
     sysexBuffer[0] = 0xf0;
     sysexBuffer[1] = 0x00;
     sysexBuffer[2] = 0x66;

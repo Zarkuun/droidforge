@@ -37,11 +37,6 @@ PageSelector::PageSelector(QWidget *parent)
 
 void PageSelector::setPageNavigation(QPdfPageNavigation *pageNav)
 {
-    shoutfunc;
-    if (pageNavigation == 0){
-        shout << "OWEIJ";
-    }
-
     pageNavigation = pageNav;
 
     connect(buttonPrev, &QToolButton::clicked, pageNavigation, &QPdfPageNavigation::goToPreviousPage);
@@ -63,8 +58,6 @@ void PageSelector::onCurrentPageChanged(int page)
 {
     if (!pageNavigation)
         return;
-
-    shout << "P" << page;
 
     if (pageNavigation->pageCount() == 0)
         lineEditPage->setText(QString::number(0));
@@ -93,7 +86,6 @@ void PageSelector::pageNumberEdited()
 
 void PageSelector::handleKeyPress(int key)
 {
-    shout << key;
     switch (key) {
     case Qt::Key_Up:
         pageNavigation->goToPreviousPage();

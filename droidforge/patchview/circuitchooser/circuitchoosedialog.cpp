@@ -100,7 +100,6 @@ jackselection_t CircuitChooseDialog::getJackSelection() const
 }
 void CircuitChooseDialog::keyPressEvent(QKeyEvent *event)
 {
-    shout << event;
     if (event->key() == Qt::Key_M && (event->modifiers() & Qt::ControlModifier))
         showManual();
     else if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z)

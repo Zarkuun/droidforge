@@ -187,7 +187,11 @@ QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QStr
     QJsonValue jackinfo = findJack(circuit, whence, jack);
     if (!jackinfo.isNull()) {
         QJsonObject info = jackinfo.toObject();
-        return delatexify(info["description"].toString(), true /* html */);
+        QString desc = info["description"].toString();
+        int i = desc.indexOf("\\begin{tabular}");
+        if (i >= 0)
+            desc = desc.mid(0, i);
+        return delatexify(desc, true /* html */);
     }
     else
         return TR("Sorry, there is no documentation of this jack, yet.");
@@ -303,12 +307,12 @@ QString DroidFirmware::delatexify(QString s, bool html) const
 {
     s.replace(regTabular, "");
     s.replace(regVspace, "");
-    s.replace(regJacktable, "");
-    s.replace(regJacktableE, "");
     s.replace("\n\n", "<PARAGRAPH>");
     s.replace("\n", " ");
     s.replace("<PARAGRAPH>", "\n\n");
     s.replace("$", "");
+    s.replace("<", html ? "&lt;" : "<");
+    s.replace(">", html ? "&gt;" : ">");
 
     s.replace("\\nth1", html ? "1<sup>st</sup>" : "first");
     s.replace("\\nth2", html ? "2<sup>nd</sup>" : "second");
@@ -316,9 +320,6 @@ QString DroidFirmware::delatexify(QString s, bool html) const
     s.replace(replaceNth, html ? "\\1<sup>th</sup>" : "\\1th");
     s.replace(replaceNthX, html ? "\\1<sup>th</sup>" : "\\1th");
     s.replace(regSup, html ? "<sup>\\1</sup>" : "\\1");
-
-    s.replace("<", html ? "&lt;" : "<");
-    s.replace(">", html ? "&gt;" : ">");
 
     replaceLatexSymbols(s);
 
@@ -373,5 +374,4 @@ void DroidFirmware::replaceLatexSymbols(QString &s) const
     s.replace("\\sharp", "♯");
     s.replace("\\flat", "♭");
     s.replace("\\#", "#");
-
 }
