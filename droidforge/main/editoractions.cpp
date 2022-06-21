@@ -431,31 +431,3 @@ void EditorActions::changeDroidState()
     actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
     actions[ACTION_TOOLBAR_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
 }
-/*
- * void MainWindow::updateActions()
-{
-    // File menu
-
-    // Edit menu
-    actionPaste->setEnabled(patchView.clipboardFilled());
-    actionPasteSmart->setEnabled(patchView.circuitsInClipboard());
-
-    const PatchSectionView *psv = patchView.currentPatchSectionView();
-    bool empty = !psv || psv->isEmpty();
-    actions[ACTION_EDIT_VALUE]->setEnabled(!empty);
-    actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(!empty);
-    const Atom *atom = 0;
-    if (psv)
-        atom = psv->currentAtom();
-    bool isAtAtom = psv && psv->getCursorPosition().isAtAtom();
-
-    if (psv && patchView.numSections() > 1) {
-        actionDeletePatchSection->setText(tr("Delete section '%1'").arg(psv->getTitle()));
-        actionDeletePatchSection->setEnabled(true);
-    }
-    else {
-        actionDeletePatchSection->setText(tr("Delete section"));
-        actionDeletePatchSection->setEnabled(false);
-    }
-    actions[ACTION_MOVE_INTO_SECTION]->setEnabled(patchView.circuitsSelected());
-}*/
