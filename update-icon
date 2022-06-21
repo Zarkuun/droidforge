@@ -1,6 +1,9 @@
 #!/bin/bash
+
+# After updating the application icon file "droidforge-icon.png" with Illustrator or any other
+# software at a resolution of 1024x1024 pixels, this script creates an ICNS file for Mac.
+
 set -e
-set -xv
 
 TMPDIR=droidforge.iconset
 SOURCEPNG=droidforge-icon.png
@@ -17,4 +20,5 @@ sips -z 512 512   $SOURCEPNG --out $TMPDIR/icon_256x256@2x.png
 sips -z 512 512   $SOURCEPNG --out $TMPDIR/icon_512x512.png
 cp $SOURCEPNG $TMPDIR/icon_512x512@2x.png
 iconutil -c icns $TMPDIR
+cp -v droidforge.icns droidforge/
 rm -R $TMPDIR

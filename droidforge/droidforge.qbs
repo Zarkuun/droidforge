@@ -1,6 +1,11 @@
 import qbs.FileInfo
 
 QtApplication {
+    // Properties {
+    //     // condition: qbs.targetOS.contains("macos")
+    //     appIconName: "droidforXge"
+    // }
+
     Depends { name: "Qt.widgets" }
     Depends { name: "Qt.pdfwidgets" }
 
