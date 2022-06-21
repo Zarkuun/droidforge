@@ -16,6 +16,7 @@ class NumberSelector : public AtomSubSelector
     Q_OBJECT
 
     QLineEdit *lineEdit;
+    QComboBox *comboBox; // for jackValueTables
     QLabel *labelUnit;
     QLabel *labelFraction;
     QPushButton *buttonFraction;
@@ -26,12 +27,15 @@ class NumberSelector : public AtomSubSelector
     float number; // 1V is 1, not 0.1 here!
     atom_number_t numberType;
 
+    QMap<float, QString> jackValueTable;
+
 public:
     explicit NumberSelector(QWidget *parent = nullptr);
-    QString title() const { return tr("Fixed number"); };
+    QString title() const { return tr("Fixed value"); };
     bool handlesAtom(const Atom *atom) const;
     void setAtom(const Patch *patch, const Atom *atom);
     void setAllowFraction(bool af);
+    void setCircuitAndJack(QString circuit, QString jack);
     void clearAtom();
     Atom *getAtom() const;
     void setNumberType(atom_number_t t);

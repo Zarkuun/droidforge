@@ -1,23 +1,37 @@
 #include "numberselector.h"
+#include "droidfirmware.h"
+#include "globals.h"
+#include "iconbase.h"
 #include "tuning.h"
 #include "atomselector.h"
 
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QComboBox>
+
+QComboBox hirnBox;
 
 NumberSelector::NumberSelector(QWidget *parent)
     : AtomSubSelector{parent}
     , number(0.0)
     , numberType(ATOM_NUMBER_NUMBER)
 {
+    // Text entry for manual values
     labelFraction = new QLabel(tr("1 /"), this);
     lineEdit = new QLineEdit(this);
     labelUnit = new QLabel(this);
+
     QHBoxLayout *valueBox = new QHBoxLayout();
     valueBox->addWidget(labelFraction);
     valueBox->addWidget(lineEdit);
     valueBox->addWidget(labelUnit);
+
+    // Combo box for jack value tables
+    // comboBox = new QComboBox(this);
+    comboBox = &hirnBox;
+    comboBox->setEditable(false);
+    comboBox->setVisible(false);
 
     // Buttons for switching between different units
     QGridLayout *buttonBox = new QGridLayout();
@@ -35,6 +49,7 @@ NumberSelector::NumberSelector(QWidget *parent)
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(valueBox);
+    mainLayout->addWidget(comboBox);
     mainLayout->addStretch();
     mainLayout->addLayout(buttonBox);
 
@@ -94,6 +109,27 @@ void NumberSelector::setAtom(const Patch *, const Atom *atom)
 void NumberSelector::setAllowFraction(bool af)
 {
     buttonFraction->setVisible(af);
+}
+
+void NumberSelector::setCircuitAndJack(QString circuit, QString jack)
+{
+    jackValueTable = the_firmware->jackValueTable(circuit, "inputs", jack);
+    comboBox->clear();
+    if (jackValueTable.empty()) {
+        comboBox->setVisible(false);
+    }
+    else {
+        comboBox->setVisible(true);
+        for (auto it = jackValueTable.keyBegin();
+             it != jackValueTable.keyEnd();
+             ++it)
+        {
+            float value = *it;
+            QString description = jackValueTable[value];
+            shout << value << description;
+            comboBox->addItem(ICON("work"), "HALLO", value); // description); // , value);
+        }
+    }
 }
 
 void NumberSelector::clearAtom()

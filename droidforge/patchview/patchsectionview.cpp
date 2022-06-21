@@ -1074,7 +1074,7 @@ void PatchSectionView::editAtom(int key)
         newAtom = AtomOneliner::editAtom(posInScreen, patch, ja->jackType(), start);
     }
     else
-        newAtom = AtomSelectorDialog::editAtom(patch, ja->jackType(), curPos.column == 2, atom);
+        newAtom = AtomSelectorDialog::editAtom(patch, circuit->getName(), ja->jackName(), ja->jackType(), curPos.column == 2, atom);
 
     if (newAtom != 0 && newAtom != atom) {
         ja->replaceAtom(section()->cursorPosition().column, newAtom);

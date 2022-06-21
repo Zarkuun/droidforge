@@ -3,6 +3,7 @@
 #include "atomregister.h"
 #include "cableselector.h"
 #include "controlselector.h"
+#include "globals.h"
 #include "numberselector.h"
 #include "inputoutputselector.h"
 
@@ -48,6 +49,12 @@ void AtomSelector::setAllowFraction(bool af)
 {
     if (numberSelector)
         numberSelector->setAllowFraction(af);
+}
+
+void AtomSelector::setCircuitAndJack(QString circuit, QString jack)
+{
+    if (numberSelector)
+        numberSelector->setCircuitAndJack(circuit, jack);
 }
 
 void AtomSelector::setAtom(const Patch *patch, const Atom *atom)

@@ -12,6 +12,7 @@
 class CableSelector : public AtomSubSelector
 {
     Q_OBJECT
+
     const Patch *patch;
     QComboBox *comboBox;
     QString cable;
