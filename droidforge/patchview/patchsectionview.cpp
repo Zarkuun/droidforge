@@ -293,6 +293,8 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
     case Qt::Key_Right:     moveCursorLeftRight(1);   moved = true; break;
     case Qt::Key_PageUp:    moveCursorPageUpDown(-1); moved = true; break;
     case Qt::Key_PageDown:  moveCursorPageUpDown(1);  moved = true; break;
+    case Qt::Key_Home:      moveCursorHome();         moved = true; break;
+    case Qt::Key_End:       moveCursorEnd();          moved = true; break;
     case Qt::Key_Backspace: deleteCursorOrSelection(); return true; // TODO
     }
 
@@ -1291,6 +1293,18 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
         section()->moveCursorToPreviousCircuit();
     else
         section()->moveCursorToNextCircuit();
+    emit cursorMoved();
+}
+void PatchSectionView::moveCursorHome()
+{
+    if (!section()->isEmpty())
+        section()->setCursor(CursorPosition(0, -2, 0));
+    emit cursorMoved();
+}
+void PatchSectionView::moveCursorEnd()
+{
+    if (!section()->isEmpty())
+        section()->setCursor(CursorPosition(section()->numCircuits()-1, -2, 0));
     emit cursorMoved();
 }
 void PatchSectionView::deleteCursorOrSelection()

@@ -1,48 +1,52 @@
 TODO für die erste Version:
 
-- Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
-- Releasepaket für Apple
-- Im DROID-Git die essential und typical jacks markieren
 - Kabelkonflikte (externe, interne?) beim Einfügen von Sachen
   noch programmieren. Interne->automatisch umbenennen.
 - Tasten um an den Anfang und ans Ende zu springen.
-- Das Programm registrieren für "*.ini"-Dateien
-- Ein Icon für das Programm
 - Direkteingabe: Sollte ohne Return direkt funktionieren.
   Ich glaube, wir müssen direkt im Atom selbst rummalen oder
   so.
-- Doppelklick um ein Register zu labeln für dazu, dass man den
-  Namen des Registers aus Versehen in eine Atom einträgt?
-  Oder ist das schon gefixt?
-- Ein Klick auf die Birne erzeugt eine Selection
 - Der Handcursor kommt bei der Birne und anderen Icons
   nicht.
 - Namensgebung: Soll nicht "Jack" lieber "Parameter" heißen?
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen? Oder ist das
   schon gemacht?
-- "pitch" als input und "pitch1" als output: Erkennung
-   von Jacktyp geht nicht? Testen. Oder ist das schon
-   fertig?
 - Die Eingestellen Farben hart kodieren oder zumindest
   als Defaults festlegen. Und die Möglichkeit eines
   Reset.
 - Wenn umount nicht klappt, dann ein Fenster aufpoppen.
-- Das gloabl Rack-Menü ist komisch. Nur ein Eintrag.
-  das geht so nicht.
-- Die RGB-Register vom M4 gehen nicht: R1.4
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
-- Jackselector: bei Match mit input1/2 gibt's Ärger.
 
+BUGS:
+- Die RGB-Register vom M4 gehen nicht: R1.4
 - DAs LED->BUTTON Dings klappt nicht bei nudge
   (buttonup / buttondown)
+- Jackselector: bei Match mit input1/2 gibt's Ärger.
 - Die Cablecombobox kackt total ab (Qt 6.3.1)
+- Ein Klick auf die Birne erzeugt eine Selection
+- Doppelklick um ein Register zu labeln für dazu, dass man den
+  Namen des Registers aus Versehen in eine Atom einträgt?
+  Oder ist das schon gefixt?
+- "pitch" als input und "pitch1" als output: Erkennung
+   von Jacktyp geht nicht? Testen. Oder ist das schon
+   fertig?
+
+Handbuch / Inhalte vorbereiten:
+- Im DROID-Git die essential und typical jacks markieren
+
+Release:
+- Der Name des Programms bei Mac "droidforge -> DROID Forge"
+- Ein Icon für das Programm
+- Das Programm registrieren für "*.ini"-Dateien
+- Releasepaket für Apple
 
 Code aufräumen:
 - Alle Aktionen in den patchoperator umziehen
 - Alle Farben über COLOR() machen
 
 KLEINERE FEATURES:
+- Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
 - Irgendwelche globalen Eistellungen fürirgendwas.
 - Light theme?
 - Sektionen per Drag-Drop vertauschen
