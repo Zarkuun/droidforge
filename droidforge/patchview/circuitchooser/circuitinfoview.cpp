@@ -38,11 +38,14 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                       the_firmware->circuitTitle(circuit));
 
     // Description
+    QRectF textRect(text_x, CICH_PADDING + CICH_TITLE_HEIGHT,
+                    *circuitViewWidth - text_x - CICH_PADDING,
+                    CICH_CIRCUIT_HEIGHT - CICH_TITLE_HEIGHT - 2 * CICH_PADDING - 2); // Hack
+    // TODO: This -2 is a hack in order to avoid some pixels of a potential third line
+    // to be visible. We rather need to check if the text would get a third line and
+    // remove that line. And indicate the missing text with "..." or something.
     painter->setPen(CICH_COLOR_DESCRIPTION);
-    painter->drawText(QRect(text_x,
-                            CICH_PADDING + CICH_TITLE_HEIGHT,
-                            *circuitViewWidth - text_x,
-                            CICH_CIRCUIT_HEIGHT - CICH_TITLE_HEIGHT),
+    painter->drawText(textRect,
                       Qt::AlignTop | Qt::AlignLeft | Qt::TextWordWrap,
                       the_firmware->circuitDescription(circuit));
 
