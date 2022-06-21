@@ -31,6 +31,7 @@ public slots:
 private:
     void setCircuit(const QString &circuit, const QString &current, const QStringList &usedJacks, jacktype_t jackType);
     QString getSelectedJack() const;
+    QString jackTableAsString(const QMap<float, QString> &table);
 };
 
 #endif // JACKCHOOSEDIALOG_H

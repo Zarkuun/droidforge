@@ -29,6 +29,7 @@ public:
     QStringList jacksOfCircuit(QString circuit, QString whence, jackselection_t) const;
     QStringList jackGroupsOfCircuit(QString circuit, QString whence, QString search) const;
     QString jackDescriptionHTML(QString circuit, QString whence, QString jack) const;
+    QMap<float, QString> jackValueTable(QString circuit, QString whence, QString jack) const;
     unsigned numControllerRegisters(const QString &controller, char registerType) const;
     unsigned numGlobalRegisters(char registerType) const;
 
@@ -36,6 +37,7 @@ private:
     QJsonValue findJack(QString circuit, QString whence, QString jack) const;
     QJsonValue findJackArray(QString circuit, QString whence, QString prefix) const;
     QString delatexify(QString s, bool html=false) const;
+    void replaceLatexSymbols(QString &s) const;
 };
 
 extern DroidFirmware *the_firmware;

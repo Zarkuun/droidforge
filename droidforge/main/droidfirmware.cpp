@@ -7,6 +7,26 @@
 #include <QJsonArray>
 #include <QRegularExpression>
 
+#define GROUP "([^}]*)"
+QRegularExpression replace_("_{" GROUP "}");
+QRegularExpression replaceT("{\\\\t " GROUP "}");
+QRegularExpression replaceNth("\\\\nth([4-9])");
+QRegularExpression replaceNthX("\\\\nth{" GROUP "}");
+QRegularExpression replaceIt("{\\\\it" GROUP "}");
+QRegularExpression replaceBf("{\\\\bf" GROUP "}");
+QRegularExpression replaceSqrt("\\\\sqrt{" GROUP "}");
+QRegularExpression replaceFootnotesize("{\\\\footnotesize" GROUP "}");
+QRegularExpression replaceCircuit("\\\\circuit{" GROUP "}");
+QRegularExpression replaceFrac("\\\\frac{" GROUP "}{" GROUP "}");
+QRegularExpression replaceTextcolor("\\\\textcolor{red}{\\\\bf (.*)}");
+QRegularExpression replaceFramebox("\\\\framebox[^{]*{" GROUP "}");
+QRegularExpression regTabular("\\\\(begin|end){tabular}.*");
+QRegularExpression regVspace("\\\\vspace{[^}]*}");
+QRegularExpression regJacktable("\\\\jacktablerow{" GROUP "}{" GROUP "}");
+QRegularExpression regJacktableE("\\\\jacktablerowE{" GROUP "}{" GROUP "}{" GROUP "}");
+QRegularExpression regSup("\\^([2-9])");
+
+
 DroidFirmware *the_firmware = 0;
 
 DroidFirmware::DroidFirmware()
@@ -162,7 +182,6 @@ QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence, 
     }
     return result;
 }
-
 QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QString jack) const
 {
     QJsonValue jackinfo = findJack(circuit, whence, jack);
@@ -172,6 +191,27 @@ QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QStr
     }
     else
         return TR("Sorry, there is no documentation of this jack, yet.");
+}
+QMap<float, QString> DroidFirmware::jackValueTable(QString circuit, QString whence, QString jack) const
+{
+    QMap<float, QString> table;
+    QJsonValue jackinfo = findJack(circuit, whence, jack);
+    if (!jackinfo.isNull()) {
+        QString desc = jackinfo.toObject()["description"].toString();
+        QStringList parts = desc.split('\n');
+        for (auto &line: parts) {
+            auto match = regJacktable.match(line);
+            if (!match.hasMatch())
+                match =  regJacktableE.match(line);
+            if (!match.hasMatch())
+                continue;
+
+            QString value = match.captured(1);
+            QString description = delatexify(match.captured(2));
+            table[value.toFloat()] = description;
+        }
+    }
+    return table;
 }
 unsigned DroidFirmware::numGlobalRegisters(char registerType) const
 {
@@ -259,74 +299,37 @@ QJsonValue DroidFirmware::findJackArray(QString circuit, QString whence, QString
     }
     return 0;
 }
-
 QString DroidFirmware::delatexify(QString s, bool html) const
 {
-    #define GROUP "([^}]*)"
-    static QRegularExpression replace_("_{" GROUP "}");
-    static QRegularExpression replaceT("{\\\\t " GROUP "}");
-    static QRegularExpression replaceNth("\\\\nth([4-9])");
-    static QRegularExpression replaceNthX("\\\\nth{" GROUP "}");
-    static QRegularExpression replaceIt("{\\\\it" GROUP "}");
-    static QRegularExpression replaceBf("{\\\\bf" GROUP "}");
-    static QRegularExpression replaceSqrt("\\\\sqrt{" GROUP "}");
-    static QRegularExpression replaceFootnotesize("{\\\\footnotesize" GROUP "}");
-    static QRegularExpression replaceCircuit("\\\\circuit{" GROUP "}");
-    static QRegularExpression replaceFrac("\\\\frac{" GROUP "}{" GROUP "}");
-    static QRegularExpression replaceTextcolor("\\\\textcolor{red}{\\\\bf (.*)}");
-    static QRegularExpression replaceFramebox("\\\\framebox[^{]*{" GROUP "}");
+    s.replace(regTabular, "");
+    s.replace(regVspace, "");
+    s.replace(regJacktable, "");
+    s.replace(regJacktableE, "");
     s.replace("\n\n", "<PARAGRAPH>");
     s.replace("\n", " ");
     s.replace("<PARAGRAPH>", "\n\n");
-    s.replace("--", "-");
-    s.replace("<", html ? "&lt;" : "<");
-    s.replace(">", html ? "&gt;" : ">");
     s.replace("$", "");
-    s.replace("^\\circ", "°");
-    s.replace("\\%", "%");
-    s.replace("\\times", " X ");
-    s.replace("\\ ", " ");
-    s.replace("\\dots", "...");
-    s.replace("\\pi", "𝜋");
-    s.replace("\\sharp", "♯");
-    s.replace("\\flat", "♭");
-    s.replace("\\#", "#");
 
     s.replace("\\nth1", html ? "1<sup>st</sup>" : "first");
     s.replace("\\nth2", html ? "2<sup>nd</sup>" : "second");
     s.replace("\\nth3", html ? "3<sup>rd</sup>" : "third");
     s.replace(replaceNth, html ? "\\1<sup>th</sup>" : "\\1th");
     s.replace(replaceNthX, html ? "\\1<sup>th</sup>" : "\\1th");
+    s.replace(regSup, html ? "<sup>\\1</sup>" : "\\1");
 
-    s.replace("\\ding{192}", "➀");
-    s.replace("\\ding{193}", "➁");
-    s.replace("\\ding{194}", "➂");
-    s.replace("\\ding{195}", "➃");
-    s.replace("\\ding{196}", "➄");
-    s.replace("\\ding{197}", "➅");
+    s.replace("<", html ? "&lt;" : "<");
+    s.replace(">", html ? "&gt;" : ">");
 
-    s.replace("\\ding{202}", "➊");
-    s.replace("\\ding{203}", "➋");
-    s.replace("\\ding{204}", "➌");
-    s.replace("\\ding{205}", "➍");
-    s.replace("\\ding{206}", "➎");
-    s.replace("\\ding{207}", "➏");
-
-    s.replace("\\rightarrow", "→");
-    s.replace("\\leftarrow",  "←");
+    replaceLatexSymbols(s);
 
     s.replace("\\customcolortable", "0.2 = cyan, 0.4 = green, 0.6 = yellow, 0.73 = orange, 0.8 = red, 1.0 = magenta, 1.1 = violet, 1.2 = blue");
     s.replace("\\normalsize", "");
     s.replace("\\medskip", "\n\n");
-    s.replace("~", " ");
-    s.replace("''", "\"");
-    s.replace("``", "\"");
     s.replace("\\droid", "DROID");
     s.replace("$\\times$", " X ");
     s.replace("\\begin{itemize}", html ? "<ul>" : "");
     s.replace("\\end{itemize}", html ? "</ul>" : "");
     s.replace("\\item", html ? "<br><li>" : "");
-    s.replace("\\&" , "&");
     s.replace(replaceTextcolor, "\\1");
     s.replace(replaceFramebox, "\\1");
     s.replace(replaceT,       html ? "<tt>\\1</tt>" : "\"\\1\"");
@@ -339,4 +342,36 @@ QString DroidFirmware::delatexify(QString s, bool html) const
     s.replace(replaceFrac, "\\1 / \\2");
     s.replace(replaceFootnotesize, "\\1");
     return s;
+}
+void DroidFirmware::replaceLatexSymbols(QString &s) const
+{
+    s.replace("^\\circ", "°");
+    s.replace("\\%", "%");
+    s.replace("\\times", " X ");
+    s.replace("\\ ", " ");
+    s.replace("--", "-");
+    s.replace("\\ding{192}", "➀");
+    s.replace("\\ding{193}", "➁");
+    s.replace("\\ding{194}", "➂");
+    s.replace("\\ding{195}", "➃");
+    s.replace("\\ding{196}", "➄");
+    s.replace("\\ding{197}", "➅");
+    s.replace("\\ding{202}", "➊");
+    s.replace("\\ding{203}", "➋");
+    s.replace("\\ding{204}", "➌");
+    s.replace("\\ding{205}", "➍");
+    s.replace("\\ding{206}", "➎");
+    s.replace("\\ding{207}", "➏");
+    s.replace("\\rightarrow", "→");
+    s.replace("\\leftarrow",  "←");
+    s.replace("\\&" , "&");
+    s.replace("~", " ");
+    s.replace("''", "\"");
+    s.replace("``", "\"");
+    s.replace("\\dots", "...");
+    s.replace("\\pi", "𝜋");
+    s.replace("\\sharp", "♯");
+    s.replace("\\flat", "♭");
+    s.replace("\\#", "#");
+
 }

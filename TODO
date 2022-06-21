@@ -1,7 +1,28 @@
 TODO für die erste Version:
 
-- Handbuch und Doku verklinken
 - Jacktabellen (scales, etc.)
+
+Jacktabellen:
+
+Ermittlung:
+
+1. Ich muss bei den Jacks, wo es solche Tabellen gibt, die
+irgendwie einheitlich in der Doku ablegen, damit ich sie
+gut parsen kann. Eventuell kann man bei dem Latex-Konstrukt
+bleiben, wenn man z.B. die Zeilenumbrüche usw macht.
+
+2. Ich muss die Tabellen dann in den Datensatz zu den
+Jacks einbauen. Ein Jack kann dann einfach eine "table"
+haben. Das ist eine Tupelliste mit immer Zahl (int) und
+Beschreibung (text)
+
+3. Diese Tabelle kann ich bei der Onlinehilfe mit anzeigen
+
+4. Beim Atomselektor wird ein Auswahlfeld dazu gezeigt.
+
+
+
+- Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
 - Releasepaket für Apple
 - Im DROID-Git die essential und typical jacks markieren
 - Kabelkonflikte (externe, interne?) beim Einfügen von Sachen
