@@ -86,7 +86,6 @@ void JackChooseDialog::cursorMoved(QString jack, jacktype_t jacktype, bool onAct
     if (!table.empty())
         description += jackTableAsString(table);
     labelDescription->setText(description);
-    shout << "DER GANZE:" << description;
 }
 QString JackChooseDialog::jackTableAsString(const QMap<float, QString> &table)
 {

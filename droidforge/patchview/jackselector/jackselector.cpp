@@ -6,6 +6,7 @@
 #include "jackline.h"
 
 #include <QKeyEvent>
+#include <QtGlobal>
 
 JackSelector::JackSelector(QWidget *parent)
     : QGraphicsView(parent)
@@ -218,8 +219,9 @@ void JackSelector::moveCursorLeftRight(int whence)
 {
     JackView *jv = currentJack();
     if (jv->isArray()) {
-        int c = currentSubjack % 4;
-        if ((whence == -1 && c > 0) || (whence == 1 && c < 3))
+        int col = currentSubjack % 4;
+        int width = qMin(4, (int)jv->getArraySize());
+        if ((whence == -1 && col > 0) || (whence == 1 && col < (width-1)))
         {
             currentSubjack += whence;
             selectCurrentJack(true);
