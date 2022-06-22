@@ -3,6 +3,7 @@
 
 #define APPLICATION_NAME                     "DROID Forge"
 #define APPLICATION_VERSION                  "0.1"
+#define LICENSE_URL                          "https://www.gnu.org/licenses/gpl.txt"
 
 #define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors.h"
 #define DROID_PATCH_FILENAME                 "droid.ini"

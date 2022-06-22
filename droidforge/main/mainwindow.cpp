@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QtGlobal>
+#include <QDesktopServices>
 
 MainWindow *the_forge;
 
@@ -68,6 +69,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
     CONNECT_ACTION(ACTION_ABOUT, &MainWindow::about);
+    CONNECT_ACTION(ACTION_LICENSE, &MainWindow::showLicense);
     CONNECT_ACTION(ACTION_RACK_ZOOM_IN, &MainWindow::rackZoomIn);
     CONNECT_ACTION(ACTION_RACK_ZOOM_OUT, &MainWindow::rackZoomOut);
     CONNECT_ACTION(ACTION_RACK_RESET_ZOOM, &MainWindow::rackZoomReset);
@@ -272,6 +274,10 @@ void MainWindow::createHelpMenu()
     ADD_ACTION(ACTION_ABOUT, menu);
     ADD_ACTION(ACTION_USER_MANUAL, menu);
     ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
+
+    menu->addSeparator();
+
+    ADD_ACTION(ACTION_LICENSE, menu);
 }
 void MainWindow::createStatusBar()
 {
@@ -402,12 +408,27 @@ void MainWindow::about()
     QMessageBox::about( this,
                         tr("About DROID Forge"),
                         tr("DROID Forge version %1.\n\n"
+
                            "This version of DROID Forge assumes that your "
                            "DROID master is running firmware version %2 or newer.\n\n"
-                           "DROID Forge was initially brought to you by Der Mann mit der Maschine. "
-                           "You can use, redistribute and modify it under the terms of the GNU GPL version 3. "
-                           "No warranties, use at your own risk.")
+
+                           "Copyright Mathias Kettner 2022.\n\n"
+
+                           "This program is free software: you can redistribute it and/or modify it under "
+                           "the terms of the GNU General Public License as published by the Free Software "
+                           "Foundation, either version 3 of the License, or (at your option) any later version."
+                           "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; "
+                           "without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. "
+                           "See the GNU General Public License for more details.\n\n"
+
+                           "You should have received a copy of the GNU General Public License along with this program. "
+                           "If not, see <https://www.gnu.org/licenses/>. ")
                         .arg(APPLICATION_VERSION, firmware_version));
+}
+
+void MainWindow::showLicense()
+{
+    QDesktopServices::openUrl(QUrl(LICENSE_URL));
 }
 void MainWindow::cursorMoved()
 {

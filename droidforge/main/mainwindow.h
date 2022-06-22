@@ -85,6 +85,7 @@ private:
 
 private slots:
     void about();
+    void showLicense();
     void modifyPatch();
     void cursorMoved();
     void splitterMoved();

@@ -9,6 +9,8 @@ INSTALL_ROOT=droidforge/build/release-mac/install-root/usr/local/Applications
 APP_DIR="$INSTALL_ROOT/$NAME.app"
 DMG="$INSTALL_ROOT/$NAME.dmg"
 TARGET_INFO_PLIST=$APP_DIR/Contents/Info.plist
+LICENSE="droidforge/GNU GPL v3.txt"
+TARGET_LICENSE="$APP_DIR/Contents"
 
 # First build the project
 
@@ -31,6 +33,9 @@ echo OK
 echo -n "Installing Info.plist..."
 cp -v Info.plist "$TARGET_INFO_PLIST"
 echo OK
+
+echo -m "Installing GPL License..."
+cp -v "$LICENSE" "$TARGET_LICENSE"
 
 echo -n "Installing icon..."
 mkdir -p "$APP_DIR/Contents/Resources"

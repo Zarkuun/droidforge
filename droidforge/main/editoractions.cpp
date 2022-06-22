@@ -32,6 +32,7 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
 void EditorActions::createActions()
 {
     actions[ACTION_ABOUT] = new QAction(tr("About DROID Forge"), this);
+    actions[ACTION_LICENSE] = new QAction(tr("DROID Forge license"), this);
 
     actions[ACTION_NEW] = new QAction(tr("&New..."), this);
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));

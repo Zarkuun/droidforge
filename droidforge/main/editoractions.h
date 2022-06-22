@@ -9,6 +9,7 @@
 #include <QAction>
 
 typedef enum {
+    ACTION_LICENSE,
     ACTION_ABOUT,
     ACTION_USER_MANUAL,
     ACTION_CIRCUIT_MANUAL,

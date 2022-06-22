@@ -22,8 +22,6 @@ Handbuch / Inhalte vorbereiten:
 
 Release:
 - Das Programm registrieren für "*.ini"-Dateien
-- About
-- GPL
 
 Code aufräumen:
 - Alle Aktionen in den patchoperator umziehen
@@ -33,6 +31,9 @@ Code aufräumen:
 
 KLEINERE FEATURES FÜR SPÄTER:
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
+- Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
+  komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
+
 - Handcursor für Icons usw. die man klicken kann (da hat Qt
   aber komische Bugs).
 - Der AtomSelektor ist schon irgendwie nicht so geil.
