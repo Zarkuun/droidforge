@@ -137,10 +137,7 @@ void RackView::mouseReleaseEvent(QMouseEvent *event)
 
 void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    bool foundItem = false;
-    for (auto item: items(event->pos()))
-        foundItem = true;
-
+    bool foundItem = !items(event->pos()).empty();
     if (!foundItem)
         TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
 }
