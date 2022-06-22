@@ -28,5 +28,7 @@
 	<string>10.14</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+        <key>CFBundleIconFile</key>
+        <string>droidforge.icns</string>
 </dict>
 </plist>
