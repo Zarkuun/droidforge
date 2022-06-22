@@ -22,7 +22,6 @@ Handbuch / Inhalte vorbereiten:
 
 Release:
 - Das Programm registrieren für "*.ini"-Dateien
-- Releasepaket für Apple
 - About
 - GPL
 
@@ -33,6 +32,7 @@ Code aufräumen:
 
 
 KLEINERE FEATURES FÜR SPÄTER:
+- Releasepaket für Apple, wo man das Icon so rüberziehen kann
 - Handcursor für Icons usw. die man klicken kann (da hat Qt
   aber komische Bugs).
 - Der AtomSelektor ist schon irgendwie nicht so geil.

@@ -66,7 +66,7 @@ void PatchEditEngine::commit(QString message)
 
     versions.append(new PatchVersion(message, this)); // is cloned here
     redoPointer++; // is always at the end now
-    if (versionOnDisk == -1)
+    if (versionOnDisk == -2)
         versionOnDisk = redoPointer; // initial commit
 
     while (versions.size() > UNDO_HISTORY_SIZE) {

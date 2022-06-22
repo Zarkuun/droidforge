@@ -398,11 +398,16 @@ void MainWindow::rackZoom(int whence)
 
 void MainWindow::about()
 {
-   QMessageBox::about(
-               this,
-               tr("About DROID Forge"),
-               tr("DROID Forge was initially brought to you by Der Mann mit der Maschine, "
-                  "but has been released into the public unter GPLv3 since."));
+    QString firmware_version = the_firmware->version();
+    QMessageBox::about( this,
+                        tr("About DROID Forge"),
+                        tr("DROID Forge version %1.\n\n"
+                           "This version of DROID Forge assumes that your "
+                           "DROID master is running firmware version %2 or newer.\n\n"
+                           "DROID Forge was initially brought to you by Der Mann mit der Maschine. "
+                           "You can use, redistribute and modify it under the terms of the GNU GPL version 3. "
+                           "No warranties, use at your own risk.")
+                        .arg(APPLICATION_VERSION, firmware_version));
 }
 void MainWindow::cursorMoved()
 {

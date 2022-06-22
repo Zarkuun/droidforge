@@ -45,6 +45,10 @@ DroidFirmware::DroidFirmware()
         circuits = json["circuits"].toObject();
     }
 }
+QString DroidFirmware::version() const
+{
+    return json["firmware_version"].toString();
+}
 bool DroidFirmware::circuitExists(QString circuit) const
 {
     return circuits.keys().contains(circuit);

@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     app.setApplicationName(APPLICATION_NAME);
+    app.setApplicationVersion(APPLICATION_VERSION);
     app.setApplicationDisplayName(APPLICATION_NAME);
     app.setOrganizationName("Der Mann mit der Maschine");
     app.setOrganizationDomain("dmmdm.de");

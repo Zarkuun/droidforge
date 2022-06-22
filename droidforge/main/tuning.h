@@ -1,8 +1,10 @@
 #ifndef TUNING_H
 #define TUNING_H
 
-#define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors.h"
 #define APPLICATION_NAME                     "DROID Forge"
+#define APPLICATION_VERSION                  "0.1"
+
+#define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors.h"
 #define DROID_PATCH_FILENAME                 "droid.ini"
 #define SHOP_PRODUCTS_URL                    "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"

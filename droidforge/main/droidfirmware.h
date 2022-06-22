@@ -14,6 +14,7 @@ class DroidFirmware
 
 public:
     DroidFirmware();
+    QString version() const;
     bool circuitExists(QString circuit) const;
     unsigned circuitManualPage(QString circuit) const;
     QString canonizeJackName(QString circuit, QString jack) const;
