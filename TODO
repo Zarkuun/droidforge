@@ -14,7 +14,6 @@ TODO für die erste Version:
 - Selektion mit Rahmen ziehen
 
 BUGS:
-- Absturz bei Undo!
 - Die Cablecombobox kackt total ab (Qt 6.3.1)
 
 Handbuch / Inhalte vorbereiten:

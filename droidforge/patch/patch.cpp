@@ -269,6 +269,14 @@ void Patch::findCableConnections(const QString &cable, int &asInput, int &asOutp
         section->findCableConnections(cable, asInput, asOutput);
 }
 
+bool Patch::cableExists(const QString &cable) const
+{
+    int asInput = 0;
+    int asOutput = 0;
+    findCableConnections(cable, asInput, asOutput);
+    return asInput > 0 || asOutput > 0;
+}
+
 bool Patch::needG8() const
 {
     for (qsizetype i=0; i<sections.length(); i++)

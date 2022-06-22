@@ -363,9 +363,11 @@ void PatchOperator::editProperties()
 }
 void PatchOperator::undo()
 {
-    qDebug("ICH UNDOE");
+    shout << "ICH UNDOE";
     if (patch->undoPossible()) {
         patch->undo();
+        shout << patch->toString();
+
         emit patchModified();
     }
 }
@@ -538,8 +540,8 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
             if (!atomsToRemap.isEmpty()) {
                 int reply = QMessageBox::question(
                             the_forge,
-                            TR("Register conflicts"),
-                            TR("For some register references I could not find a valid replacement in your patch. "
+                            tr("Register conflicts"),
+                            tr("For some register references I could not find a valid replacement in your patch. "
                                "Shall I remove these references (otherwise I would just leave them as "
                                "they are and you check yourselves later)?\n\n%1").arg(atomsToRemap.toSmartString()),
                             QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
@@ -556,11 +558,61 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
     }
 
     // Phase 3: Cables
-    // TODO: Alle Kabel des otherpatch sammeln. KOnflikte finden.
-    // Wenn es welche gibt, fragen:
-    // - umbenennen
-    // - lassen
-    // - abbrechen
+    // Cables that are internally to otherpatch are renamed, if they
+    // have a conflict. Cables that come "in" or "out" the otherpatch
+    // will be renamed, if the user whishes to do so.
+
+    QStringList existingCables = ontoPatch->allCables();
+
+    // Loop through all cables of the newly integrated patch
+    for (auto cable: otherPatch->allCables())
+    {
+        // Does this cable already exist in the existing patch?
+        if (existingCables.contains(cable))
+        {
+            // Check if that cable is pure internally. We consider
+            // it as internally if it has at least one in and one
+            // out usage.
+            int asInput = 0;
+            int asOutput = 0;
+            otherPatch->findCableConnections(cable, asInput, asOutput);
+            shout << cable << asInput << asOutput;
+            bool isInternally = asInput > 0 && asOutput > 0;
+            bool rename = true;
+            if (!isInternally) {
+                int ontoAsInput = 0;
+                int ontoAsOutput = 0;
+                otherPatch->findCableConnections(cable, ontoAsInput, ontoAsOutput);
+                if (asOutput && ontoAsOutput) {
+                    int reply = QMessageBox::question(
+                                the_forge,
+                                tr("Cable conflict"),
+                                tr("The internal patch cable \"%1\" is used as output both by "
+                                   "the existing and the integrated patch. This will result in a "
+                                   "problem.\n\nShall I rename that cable in order to avoid fear, "
+                                   "uncertainty and doubt?").arg(cable),
+                                QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::Yes);
+
+                    if (reply == QMessageBox::Cancel)
+                        return false;
+
+                    else if (reply == QMessageBox::No)
+                        rename = false;
+                }
+            }
+            if (rename) {
+                int n = 1;
+                QString newName = cable + QString::number(n);
+                while (ontoPatch->cableExists(newName) || otherPatch->cableExists(newName)) {
+                    n++;
+                    newName = cable + QString::number(n);
+                }
+                otherPatch->renameCable(cable, newName);
+                shout << "RENAME " << cable << "->" << newName;
+            }
+        }
+    }
     return true;
 }
 

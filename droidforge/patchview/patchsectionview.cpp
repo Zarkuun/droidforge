@@ -406,7 +406,6 @@ void PatchSectionView::modifyPatch()
     the_cable_colorizer->colorizeAllCables(patch->allCables());
     if (patch->isPatching())
         abortPatching();
-    buildPatchSection();
     rebuildPatchSection();
 }
 void PatchSectionView::switchSection()

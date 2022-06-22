@@ -97,7 +97,6 @@ void CircuitChooseDialog::keyPressEvent(QKeyEvent *event)
 }
 void CircuitChooseDialog::showEvent(QShowEvent *)
 {
-    shoutfunc;
     lineEditSearch->selectAll();
     lineEditSearch->setFocus();
 }
@@ -216,5 +215,4 @@ void CircuitChooseDialog::keyPressed(int key)
         switchToLastCategory();
         break;
     }
-   shout << key;
 }
