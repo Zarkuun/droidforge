@@ -57,6 +57,12 @@ void AtomSelector::setCircuitAndJack(QString circuit, QString jack)
         numberSelector->setCircuitAndJack(circuit, jack);
 }
 
+void AtomSelector::setPatch(const Patch *patch)
+{
+    for (auto ss: subSelectors)
+        ss->setPatch(patch);
+}
+
 void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
 {
     if (!atom) {

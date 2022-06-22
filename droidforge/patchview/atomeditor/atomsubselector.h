@@ -20,6 +20,7 @@ public:
     virtual Atom *getAtom() const = 0;
     virtual void getFocus() = 0;
     virtual bool handlesAtom(const Atom *atom) const = 0;
+    virtual void setPatch(const Patch *) {};
     virtual void setAtom(const Patch *patch, const Atom *atom) = 0;
     virtual void installFocusFilter(QWidget *) {};
     bool eventFilter(QObject *, QEvent *);

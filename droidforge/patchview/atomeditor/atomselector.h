@@ -23,6 +23,7 @@ public:
     explicit AtomSelector(jacktype_t, QWidget *parent = nullptr);
     void setAllowFraction(bool);
     void setCircuitAndJack(QString circuit, QString jack);
+    void setPatch(const Patch *patch);
     void setAtom(const Patch *patch, const Atom *atom);
     Atom *getAtom();
     void mousePressEvent(QMouseEvent *event);

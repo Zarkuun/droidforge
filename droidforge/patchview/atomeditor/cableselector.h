@@ -7,22 +7,24 @@
 
 #include <QGroupBox>
 #include <QObject>
-#include <QComboBox>
 #include <QListWidget>
+#include <QLineEdit>
 
 class CableSelector : public AtomSubSelector
 {
     Q_OBJECT
 
     const Patch *patch;
-    QComboBox *comboBox;
-    QString cable;
+
+    QLineEdit *lineEdit;
     QListWidget *listWidget;
+    QString cable;
 
 public:
     CableSelector(QWidget *parent = nullptr);
     QString title() const { return tr("Internal cable"); };
     bool handlesAtom(const Atom *atom) const;
+    void setPatch(const Patch *patch);
     void setAtom(const Patch *patch, const Atom *atom);
     void clearAtom();
     Atom *getAtom() const;
@@ -31,6 +33,7 @@ public:
 
 private slots:
     void cableEdited(QString text);
+    void cableSelected(int row);
 };
 
 #endif // CABLESELECTOR_H

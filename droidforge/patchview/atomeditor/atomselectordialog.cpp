@@ -58,6 +58,7 @@ Atom *AtomSelectorDialog::editAtom(const Patch *patch, const QString &circuit, c
         dialog = outputAtomSelectorDialog;
     }
 
+    dialog->atomSelector->setPatch(patch);
     dialog->atomSelector->setAtom(patch, atom);
     int result = dialog->exec();
     if (result == QDialog::Accepted)

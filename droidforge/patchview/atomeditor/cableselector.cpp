@@ -10,15 +10,14 @@ CableSelector::CableSelector(QWidget *parent)
     setFixedWidth(2 * ASEL_SUBSELECTOR_WIDTH);
 
     static QRegularExpression re("[a-zA-Z][_0-9a-zA-Z]*");
-    comboBox = new QComboBox(this);
-    comboBox->setEditable(true);
-    // comboBox->setValidator(new QRegularExpressionValidator(re, this));
+    lineEdit = new QLineEdit(this);
+    lineEdit->setValidator(new QRegularExpressionValidator(re, this));
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(comboBox);
-    mainLayout->addStretch();
+    mainLayout->addWidget(lineEdit);
     listWidget = new QListWidget(this);
     mainLayout->addWidget(listWidget);
-    connect(comboBox, &QComboBox::editTextChanged, this, &CableSelector::cableEdited);
+    connect(lineEdit, &QLineEdit::textEdited, this, &CableSelector::cableEdited);
+    connect(listWidget, &QListWidget::currentRowChanged, this, &CableSelector::cableSelected);
 }
 
 bool CableSelector::handlesAtom(const Atom *atom) const
@@ -26,45 +25,55 @@ bool CableSelector::handlesAtom(const Atom *atom) const
     return atom->isCable();
 }
 
-void CableSelector::setAtom(const Patch *patch, const Atom *atom)
+void CableSelector::setPatch(const Patch *patch)
 {
-    cable = ((const AtomCable *)atom)->getCable();
-    comboBox->clear();
+    listWidget->clear();
     QStringList cables = patch->allCables();
     for (auto &cable: cables) {
-        comboBox->addItem(cable);
         const QIcon *icon = the_cable_colorizer->iconForCable(cable);
         QListWidgetItem *item = new QListWidgetItem(*icon, cable, listWidget);
         listWidget->addItem(item);
     }
+}
 
+void CableSelector::setAtom(const Patch *patch, const Atom *atom)
+{
+    cable = ((const AtomCable *)atom)->getCable();
+    QStringList cables = patch->allCables();
     int index = cables.indexOf(cable);
-    comboBox->setCurrentIndex(index);
+    listWidget->setCurrentRow(index);
 }
 
 void CableSelector::clearAtom()
 {
-    comboBox->setCurrentText("");
+    lineEdit->setText("");
     cable = "";
 }
 
 Atom *CableSelector::getAtom() const
 {
-    return new AtomCable(comboBox->currentText());
+    return new AtomCable(lineEdit->text());
 }
 
 void CableSelector::getFocus()
 {
-    comboBox->setFocus();
+    lineEdit->setFocus();
 }
 
 void CableSelector::installFocusFilter(QWidget *w)
 {
-    comboBox->installEventFilter(w);
+    lineEdit->installEventFilter(w);
+    listWidget->installEventFilter(w);
 }
 
 void CableSelector::cableEdited(QString text)
 {
     if (text != text.toUpper())
-        comboBox->setCurrentText(text.toUpper());
+        lineEdit->setText(text.toUpper());
+}
+
+void CableSelector::cableSelected(int row)
+{
+    if (row >= 0)
+        lineEdit->setText(listWidget->item(row)->text());
 }
