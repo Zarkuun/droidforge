@@ -41,7 +41,7 @@ QString IconMarker::iconName() const
 
 int IconMarker::size() const
 {
-   if (position.row == -2)
+   if (position.row == ROW_CURSOR)
        return CIRV_HEADER_HEIGHT;
    else
        return CIRV_JACK_HEIGHT;

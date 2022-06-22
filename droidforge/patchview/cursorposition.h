@@ -3,6 +3,9 @@
 
 #include <QDebug>
 
+#define ROW_CURSOR -2
+#define ROW_COMMENT -1
+
 struct CursorPosition
 {
     int circuitNr;

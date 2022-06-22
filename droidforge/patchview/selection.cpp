@@ -103,7 +103,7 @@ bool Selection::isCircuitSelection() const
         return true;
 
     // Circuit header is part of selection
-    if (from.row == -2)
+    if (from.row == ROW_CURSOR)
         return true;
 
     // Comment and non-comment are part of selection

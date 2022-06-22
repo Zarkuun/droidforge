@@ -2,7 +2,7 @@
 
 CursorPosition::CursorPosition()
     : circuitNr(0)
-    , row(-2)
+    , row(ROW_CURSOR)
     , column(0)
 {
 }

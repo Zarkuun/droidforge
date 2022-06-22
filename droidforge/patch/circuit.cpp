@@ -141,7 +141,7 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
     // TODO: Account for RAM usage in DROID
     if (!the_firmware->circuitExists(name)) {
         allProblems.append(
-            new PatchProblem(-2, 0, tr("There is no such circuit with the name '%1'").arg(name)));
+            new PatchProblem(ROW_CURSOR, 0, tr("There is no such circuit with the name '%1'").arg(name)));
     }
 
     QSet<QString> usedJacks;
