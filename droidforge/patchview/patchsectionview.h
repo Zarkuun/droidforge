@@ -63,6 +63,7 @@ protected:
     void showEvent(QShowEvent *event);
 
 private:
+    bool handleKeyPress(int key, int modifiers);
     PatchView *patchView();
     void updateCableIndicator();
     CursorPosition *cursorAtMousePosition(QPoint pos) const;

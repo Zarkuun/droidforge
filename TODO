@@ -1,8 +1,5 @@
 TODO für die erste Version:
 
-- Direkteingabe: Sollte ohne Return direkt funktionieren.
-  Ich glaube, wir müssen direkt im Atom selbst rummalen oder
-  so.
 - Namensgebung: Soll nicht "Jack" lieber "Parameter" heißen?
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen? Oder ist das

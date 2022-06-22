@@ -283,9 +283,13 @@ void PatchSectionView::rebuildPatchSection()
 }
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 {
-    int key = event->key();
-    bool shiftHeld = event->modifiers() & Qt::ShiftModifier;
+    return handleKeyPress(event->key(), event->modifiers());
+}
 
+
+bool PatchSectionView::handleKeyPress(int key, int modifiers)
+{
+    bool shiftHeld = modifiers & Qt::ShiftModifier;
     CursorPosition posBefore = section()->cursorPosition();
     bool moved = false;
 
@@ -313,7 +317,7 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
     // All keys that are used for entering a value popup the atom selector
     // preselected accordingly. Make sure that they are only valid
     // if no modified is pressed.
-    if ( ((event->modifiers() | Qt::ShiftModifier) == Qt::ShiftModifier)
+    if ( ((modifiers | Qt::ShiftModifier) == Qt::ShiftModifier)
         && ((key >= Qt::Key_A && key <= Qt::Key_Z)
         || key == Qt::Key_Underscore
         || (key >= Qt::Key_0 && key <= Qt::Key_9)
@@ -1054,6 +1058,8 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 }
 void PatchSectionView::editAtom(int key)
 {
+    int lastKey;
+
     if (key == 0 && patch->isPatching()) {
         finishPatching();
         return;
@@ -1069,13 +1075,18 @@ void PatchSectionView::editAtom(int key)
     Atom *newAtom;
 
     if (key != 0) {
-        QRectF cursor = currentCircuitView()->cellRect(curPos.row, curPos.column);
-        QPointF posRelativeToScene = cursor.topLeft();
-        QPoint posRelativeToView = mapFromScene(posRelativeToScene);
-        QPoint posInScreen = mapToGlobal(posRelativeToView);
+        QRectF cursor = currentCircuitView()->cellRect(curPos.row, curPos.column).translated(currentCircuitView()->pos());
+        QPointF topleftRelativeToScene = cursor.topLeft();
+        QPointF botrightRelativeToScene = cursor.bottomRight();
+        QPoint topleftRelativeToView = mapFromScene(topleftRelativeToScene);
+        QPoint botrightRelativeToView = mapFromScene(botrightRelativeToScene);
+        QPoint topleftInScreen = mapToGlobal(topleftRelativeToView);
+        QPoint botrightInScreen = mapToGlobal(botrightRelativeToView);
+        QRectF geometry(topleftInScreen, botrightInScreen);
+
         QChar c(key);
         QString start(c);
-        newAtom = AtomOneliner::editAtom(posInScreen, patch, ja->jackType(), start);
+        newAtom = AtomOneliner::editAtom(geometry, patch, ja->jackType(), start, lastKey);
     }
     else
         newAtom = AtomSelectorDialog::editAtom(patch, circuit->getName(), ja->jackName(), ja->jackType(), curPos.column == 2, atom);
@@ -1084,6 +1095,9 @@ void PatchSectionView::editAtom(int key)
         ja->replaceAtom(section()->cursorPosition().column, newAtom);
         patch->commit(tr("changing parameter '%1'").arg(ja->jackName()));
         emit patchModified();
+    }
+    if (lastKey) {
+        handleKeyPress(lastKey, 0);
     }
 }
 void PatchSectionView::editCircuitComment(int key)

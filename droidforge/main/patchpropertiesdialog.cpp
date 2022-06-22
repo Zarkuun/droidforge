@@ -4,30 +4,29 @@
 
 #include <QKeyEvent>
 #include <QMessageBox>
-#include <QGridLayout>
+#include <QFormLayout>
+#include <QVBoxLayout>
 #include <QLabel>
 
 PatchPropertiesDialog::PatchPropertiesDialog(QWidget *parent)
     : Dialog("patchproperties", parent)
 {
-    QLabel *labelTitle = new QLabel(tr("Title:"));
     lineEditTitle = new QLineEdit(this);
-
-    QLabel *labelDescription = new QLabel(tr("Description:"));
     textEditDescription = new QTextEdit(this);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    setLayout(mainLayout);
+
+    QFormLayout *formLayout = new QFormLayout();
+    formLayout->addRow(tr("Title"), lineEditTitle);
+    formLayout->addRow(tr("Description"), textEditDescription);
+    mainLayout->addLayout(formLayout);
 
     // Buttons with OK/Cancel
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
-    QGridLayout *layout = new QGridLayout(this);
-    setLayout(layout);
-    layout->addWidget(labelTitle, 0, 0);
-    layout->addWidget(lineEditTitle, 0, 1);
-    layout->addWidget(labelDescription, 1, 0);
-    layout->addWidget(textEditDescription, 1, 1);
-    layout->addWidget(buttonBox, 2, 0, 1, 2);
+    mainLayout->addWidget(buttonBox);
 }
 bool PatchPropertiesDialog::editPatchProperties(PatchEditEngine *patch)
 {

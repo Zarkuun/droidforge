@@ -2,27 +2,33 @@
 #define ATOMONELINER_H
 
 #include "atom.h"
-#include "dialog.h"
 #include "patch.h"
+#include "keycapturelineedit.h"
 
-#include <QLineEdit>
 #include <QPoint>
+#include <QDialog>
 
-class AtomOneliner : public Dialog
+class AtomOneliner : public QDialog
 {
     Q_OBJECT
-    QLineEdit *lineEdit;
+
+    KeyCaptureLineEdit *lineEdit;
     jacktype_t jacktype;
     bool initialDeselect;
+    int lastKey;
 
     AtomOneliner(QWidget *parent = nullptr);
     void returnPressed();
     void selectionChanged();
-    bool edit(QPoint dialogPos, jacktype_t jacktype, QString start);
+    bool edit(QRectF geometry, jacktype_t jacktype, QString start);
 
 public:
-    static Atom *editAtom(QPoint dialogPos, const Patch *patch, jacktype_t, QString start);
+    static Atom *editAtom(QRectF geometry, const Patch *, jacktype_t jacktype, QString start, int &lastKey);
     Atom *getAtom();
+    int getLastKey() const { return lastKey; };
+
+private slots:
+    void keyPressed(int);
 };
 
 #endif // ATOMONELINER_H
