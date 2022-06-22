@@ -20,5 +20,5 @@ sips -z 512 512   $SOURCEPNG --out $TMPDIR/icon_256x256@2x.png
 sips -z 512 512   $SOURCEPNG --out $TMPDIR/icon_512x512.png
 cp $SOURCEPNG $TMPDIR/icon_512x512@2x.png
 iconutil -c icns $TMPDIR
-cp -v droidforge.icns droidforge/
+mv -v droidforge.icns droidforge/
 rm -R $TMPDIR
