@@ -1,21 +1,32 @@
 #include "cableselector.h"
+#include "globals.h"
 #include "tuning.h"
 #include "cablecolorizer.h"
 
-#include <QVBoxLayout>
+#include <QGridLayout>
 
 CableSelector::CableSelector(QWidget *parent)
     : AtomSubSelector{parent}
 {
     setFixedWidth(2 * ASEL_SUBSELECTOR_WIDTH);
 
+    QGridLayout *mainLayout = new QGridLayout(this);
+
+    // Icon for current cable
+    labelIcon = new QLabel();
+    labelIcon->setText("AHLL");
+    mainLayout->addWidget(labelIcon, 0, 0);
+
+    // Line edit for creating new cables
     static QRegularExpression re("[a-zA-Z][_0-9a-zA-Z]*");
     lineEdit = new QLineEdit(this);
     lineEdit->setValidator(new QRegularExpressionValidator(re, this));
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(lineEdit);
+    mainLayout->addWidget(lineEdit, 0, 1);
+
+    // List for selecting existing cables
     listWidget = new QListWidget(this);
-    mainLayout->addWidget(listWidget);
+    mainLayout->addWidget(listWidget, 1, 0, 1, 2);
+
     connect(lineEdit, &QLineEdit::textEdited, this, &CableSelector::cableEdited);
     connect(listWidget, &QListWidget::currentRowChanged, this, &CableSelector::cableSelected);
 }
@@ -70,10 +81,19 @@ void CableSelector::cableEdited(QString text)
 {
     if (text != text.toUpper())
         lineEdit->setText(text.toUpper());
+    updateIcon();
 }
 
 void CableSelector::cableSelected(int row)
 {
-    if (row >= 0)
+    if (row >= 0) {
         lineEdit->setText(listWidget->item(row)->text());
+        updateIcon();
+    }
+}
+
+void CableSelector::updateIcon()
+{
+    const QImage *image = the_cable_colorizer->imageForCable(lineEdit->text());
+    labelIcon->setPixmap(QPixmap::fromImage(*image));
 }

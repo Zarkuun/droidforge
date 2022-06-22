@@ -9,6 +9,7 @@
 #include <QObject>
 #include <QListWidget>
 #include <QLineEdit>
+#include <QLabel>
 
 class CableSelector : public AtomSubSelector
 {
@@ -16,6 +17,7 @@ class CableSelector : public AtomSubSelector
 
     const Patch *patch;
 
+    QLabel *labelIcon;
     QLineEdit *lineEdit;
     QListWidget *listWidget;
     QString cable;
@@ -34,6 +36,7 @@ public:
 private slots:
     void cableEdited(QString text);
     void cableSelected(int row);
+    void updateIcon();
 };
 
 #endif // CABLESELECTOR_H
