@@ -7,6 +7,7 @@ APP_ICON=droidforge.icns
 INSTALL_ROOT=droidforge/build/release-mac/install-root/usr/local/Applications
 APP_DIR=$INSTALL_ROOT/droidforge.app
 DMG=$INSTALL_ROOT/droidforge.dmg
+TARGET_INFO_PLIST=$APP_DIR/Contents/Info.plist
 
 # First build the project
 
@@ -22,10 +23,20 @@ if [ ! -e "$APP_DIR" ] ; then
     exit 1
 fi
 
-TARGET_INFO_PLIST=$APP_DIR/Contents/Info.plist
+echo -n "Fixing rpath..."
+install_name_tool -add_rpath @loader_path/../Frameworks $APP_DIR/Contents/MacOS/droidforge
+echo OK
 
-# cp -v Info.plist $TARGET_INFO_PLIST
+echo -n "Installing Info.plist..."
+cp -v Info.plist $TARGET_INFO_PLIST
+echo OK
+
+echo -n "Installing icon..."
 mkdir -p $APP_DIR/Contents/Resources
 cp -v $APP_ICON $APP_DIR/Contents/Resources
+echo OK
+
+echo -n "Creating DMG..."
 rm -f $DMG
 macdeployqt $APP_DIR -dmg
+echo OK
