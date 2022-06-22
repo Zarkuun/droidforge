@@ -60,7 +60,7 @@ public:
     QColor color(int index);
     void setColor(int index, const QColor &color);
     void hideEvent(QHideEvent *);
-    void dumpHeaderFile() const;
+    void dumpHeaderFile();
     bool isDevelopment() const;
 
 public slots:

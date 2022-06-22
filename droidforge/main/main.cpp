@@ -17,7 +17,7 @@ CableColorizer *the_cable_colorizer;
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    app.setApplicationName("droidforge");
+    app.setApplicationName(APPLICATION_NAME);
     app.setApplicationDisplayName(APPLICATION_NAME);
     app.setOrganizationName("Der Mann mit der Maschine");
     app.setOrganizationDomain("dmmdm.de");

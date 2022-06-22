@@ -68,6 +68,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
         rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
+    CONNECT_ACTION(ACTION_ABOUT, &MainWindow::about);
     CONNECT_ACTION(ACTION_RACK_ZOOM_IN, &MainWindow::rackZoomIn);
     CONNECT_ACTION(ACTION_RACK_ZOOM_OUT, &MainWindow::rackZoomOut);
     CONNECT_ACTION(ACTION_RACK_RESET_ZOOM, &MainWindow::rackZoomReset);
@@ -269,6 +270,7 @@ void MainWindow::createRackMenu()
 void MainWindow::createHelpMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&Help"));
+    ADD_ACTION(ACTION_ABOUT, menu);
     ADD_ACTION(ACTION_USER_MANUAL, menu);
     ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
 }
@@ -393,6 +395,15 @@ void MainWindow::rackZoom(int whence)
     }
     currentSizes[1] = totalsize - currentSizes[0];
     rackSplitter->setSizes(currentSizes);
+}
+
+void MainWindow::about()
+{
+   QMessageBox::about(
+               this,
+               tr("About DROID Forge"),
+               tr("DROID Forge was initially brought to you by Der Mann mit der Maschine, "
+                  "but has been released into the public unter GPLv3 since."));
 }
 void MainWindow::cursorMoved()
 {

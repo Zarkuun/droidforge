@@ -21,6 +21,8 @@ ColorScheme::ColorScheme(QWidget *parent)
     if (the_colorscheme == 0)
         the_colorscheme = this;
 
+    loadColors();
+
     setFocusPolicy(Qt::NoFocus);
 
     setWindowTitle(tr("Color scheme"));
@@ -193,9 +195,21 @@ void ColorScheme::colorChanged(const QColor &color)
     emit changed();
 }
 
-void ColorScheme::dumpHeaderFile() const
+void ColorScheme::dumpHeaderFile()
 {
     shout << "Regenerating color file " << COLOR_DEFINITION_FILE;
+
+    // First put all colors into the settings that are not
+    // contained there. This is neccessary if someone is developing
+    // but does not yet have colors settings.
+    for (auto it = colors.constKeyValueBegin();
+         it != colors.constKeyValueEnd();
+         ++it)
+    {
+        QString key = "color/" + QString::number(it->first);
+        if (!settings.contains(key))
+            settings.setValue(key, it->second);
+    }
 
     // Create a CPP file in order to hard code all the
     // colors for a release.

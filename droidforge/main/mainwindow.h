@@ -84,6 +84,7 @@ private:
     void rackZoom(int whence);
 
 private slots:
+    void about();
     void modifyPatch();
     void cursorMoved();
     void splitterMoved();

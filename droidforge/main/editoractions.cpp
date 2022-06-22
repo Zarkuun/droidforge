@@ -31,6 +31,8 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
 
 void EditorActions::createActions()
 {
+    actions[ACTION_ABOUT] = new QAction(tr("About DROID Forge"), this);
+
     actions[ACTION_NEW] = new QAction(tr("&New..."), this);
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
     actions[ACTION_NEW]->setStatusTip(tr("Create a new patch from scratch"));

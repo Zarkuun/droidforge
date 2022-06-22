@@ -21,10 +21,10 @@ Handbuch / Inhalte vorbereiten:
 - Im DROID-Git die essential und typical jacks markieren
 
 Release:
-- Der Name des Programms bei Mac "droidforge -> DROID Forge"
-- Ein Icon für das Programm
 - Das Programm registrieren für "*.ini"-Dateien
 - Releasepaket für Apple
+- About
+- GPL
 
 Code aufräumen:
 - Alle Aktionen in den patchoperator umziehen
