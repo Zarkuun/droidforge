@@ -1,0 +1,47 @@
+Deployment auf dem Mac ist sehr komisch.
+Was ich rausgefunden hab:
+
+Ich bin in :
+mk:~/git/droidforge/droidforge/build-release/release/install-root/usr/local/Applications/droidforge.app/Contents
+
+Dort:
+install_name_tool -add_rpath @loader_path/../Frameworks MacOS/droidforge
+
+Qt setzt hier keinen rpath. Muss noch rausfinden, warum. Wenn man den
+mit dem obigen Befehl setzt, relativ zur App selbst, dann
+kann man die App danach starten mit MacOS/droidforge.
+
+Auch gut zu wissen: die Crashdumps findet man in der Console.app (in Utilities)
+
+Ablauf:
+
+0. nach ~/git/droidforge/droidforge/build-release/release/install-root/usr/local/Applications gehen
+1. rm -rf droidforge.app droidforge.dmg
+2. Im QtCreator mit dem Hammer das Release bauen
+  -> Es entsteht fast nur das binary (und zwei Infodateien)
+3. install_name_tool -add_rpath @loader_path/../Frameworks droidforge.app/Contents/MacOS/droidforge
+4. ~/Qt/6.3.1/macos/bin/macdeployqt droidforge.app -dmg
+ --> Das kopiert alle Frameworks und den Schmarrn dazu
+ --> Jetzt kann man das schon direkt aufrufen
+ --> Und es gibt ein DMG
+
+Jetzt kann man entweder die App direkt öffnen. Oder man nimmt das DMG.
+Das kann man irgendwo hinkopieren, Downloaden, etc. Wenn man es anklickt,
+geht es auf, und das Appsymbol ist drin. Das kann man dann nach Applications
+schieben oder sonstwo hin. Ist eigentlich egal.
+
+ICONS:
+
+Zum Design des Icons hier was:
+
+https://bootcamp.uxdesign.cc/creating-app-icons-for-macos-11-and-up-1132ccd479bc
+
+       <key>CFBundleIconFile</key>
+        <string>droidforge.icns</key>
+
+
+Man kann die Info.plist mit Xcode editieren.
+
+Und das Icon nach Ressources legen. Das scheint zu funktionierne.
+Zumindest ist das Icon jetzt in Alt-Tab zu sehen!
+
