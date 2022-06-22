@@ -106,10 +106,6 @@ void PatchOperator::createRecentFileActions(QMenu *fileMenu)
 }
 bool PatchOperator::checkModified()
 {
-    // TODO: Aktivieren vor Release!!
-    return true;
-
-    // TODO rackview modified
     if (patch->isModified()) {
         QMessageBox box(
                     QMessageBox::Warning,
