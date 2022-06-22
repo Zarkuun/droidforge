@@ -151,7 +151,7 @@ void PatchSectionView::createFoldMarkers()
 {
     for (unsigned i=0; i<section()->numCircuits(); i++) {
         if (section()->circuit(i)->isFolded()) {
-            CursorPosition pos(i, ROW_CURSOR, 0);
+            CursorPosition pos(i, ROW_CIRCUIT, 0);
             placeMarker(pos, ICON_MARKER_FOLDED);
         }
     }
@@ -174,7 +174,7 @@ void PatchSectionView::createProblemMarkes()
 
     // add problem markers for folded circuits
     for (int circuitNr: foldedProblemCircuits) {
-        CursorPosition pos(circuitNr, ROW_CURSOR, 0);
+        CursorPosition pos(circuitNr, ROW_CIRCUIT, 0);
         placeMarker(pos, ICON_MARKER_PROBLEM, tr("There are problems in this circuit"));
     }
 }
@@ -200,7 +200,7 @@ void PatchSectionView::createLEDMismatchMarkers()
 {
     for (unsigned i=0; i<section()->numCircuits(); i++) {
         if (section()->circuit(i)->hasLEDMismatch()) {
-            CursorPosition pos(i, ROW_CURSOR, 0);
+            CursorPosition pos(i, ROW_CIRCUIT, 0);
             placeMarker(pos, ICON_MARKER_LEDMISMATCH,
                         tr("The button and LED definitions of this circuit do not match. Click to fix."));
 
@@ -256,7 +256,7 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
 
     IconMarker *marker = new IconMarker(pos, type, toolTip);
     int offset;
-    if (pos.row == ROW_CURSOR)
+    if (pos.row == ROW_CIRCUIT)
         offset = cv->nextHeaderMarkerOffset();
     else
         offset = -rect.height();
@@ -382,7 +382,7 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
 
     CursorPosition *curPos = cursorAtMousePosition(pos);
     if (curPos) {
-        if (doubleClick && curPos->row == ROW_CURSOR)
+        if (doubleClick && curPos->row == ROW_CIRCUIT)
             foldUnfold();
         else if (doubleClick)
             editValueByMouse(*curPos);
@@ -496,7 +496,7 @@ void PatchSectionView::pasteSmart()
         position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
         section()->insertCircuit(position, newCircuit);
     }
-    section()->setCursor(CursorPosition(position, ROW_CURSOR, 0));
+    section()->setCursor(CursorPosition(position, ROW_CIRCUIT, 0));
     patch->commit(tr("smart pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
 }
@@ -643,7 +643,7 @@ void PatchSectionView::pasteCircuitsFromClipboard()
         position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
         section()->insertCircuit(position, newCircuit);
     }
-    section()->setCursor(CursorPosition(position, ROW_CURSOR, 0));
+    section()->setCursor(CursorPosition(position, ROW_CIRCUIT, 0));
     patch->commit(tr("pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
 }
@@ -729,7 +729,7 @@ void PatchSectionView::foldUnfold()
 {
     the_operator->clearSelection();
     currentCircuit()->toggleFold();
-    section()->setCursorRowColumn(ROW_CURSOR, 0);
+    section()->setCursorRowColumn(ROW_CIRCUIT, 0);
     emit patchModified();
 }
 void PatchSectionView::foldUnfoldAll()
@@ -1041,7 +1041,7 @@ void PatchSectionView::editValue(int key)
     int row = section()->cursorPosition().row;
     int column = section()->cursorPosition().column;
 
-    if (row == ROW_CURSOR)
+    if (row == ROW_CIRCUIT)
         editCircuit(key);
     else if (row == -1)
         editCircuitComment(key);
@@ -1314,13 +1314,13 @@ void PatchSectionView::moveCursorPageUpDown(int whence)
 void PatchSectionView::moveCursorHome()
 {
     if (!section()->isEmpty())
-        section()->setCursor(CursorPosition(0, ROW_CURSOR, 0));
+        section()->setCursor(CursorPosition(0, ROW_CIRCUIT, 0));
     emit cursorMoved();
 }
 void PatchSectionView::moveCursorEnd()
 {
     if (!section()->isEmpty())
-        section()->setCursor(CursorPosition(section()->numCircuits()-1, ROW_CURSOR, 0));
+        section()->setCursor(CursorPosition(section()->numCircuits()-1, ROW_CIRCUIT, 0));
     emit cursorMoved();
 }
 void PatchSectionView::deleteCursorOrSelection()
@@ -1364,7 +1364,7 @@ void PatchSectionView::deleteCurrentRow()
         return;
 
     const CursorPosition &pos = section()->cursorPosition();
-    if (pos.row == ROW_CURSOR)
+    if (pos.row == ROW_CIRCUIT)
         deleteCurrentCircuit();
     else if (pos.row == -1)
         deleteCurrentComment();
@@ -1487,14 +1487,14 @@ void PatchSectionView::moveCursorLeftRight(int whence)
     CursorPosition pos = section()->cursorPosition();
 
     if (whence == -1) {
-        if (pos.row == ROW_CURSOR && !currentCircuit()->isFolded()) {
+        if (pos.row == ROW_CIRCUIT && !currentCircuit()->isFolded()) {
             foldUnfold();
             return;
         }
         section()->moveCursorLeft();
     }
     else {
-        if (pos.row == ROW_CURSOR && currentCircuit()->isFolded()) {
+        if (pos.row == ROW_CIRCUIT && currentCircuit()->isFolded()) {
             foldUnfold();
             return;
         }

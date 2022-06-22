@@ -132,7 +132,7 @@ void CircuitView::paintComment(QPainter *painter)
 }
 QRectF CircuitView::cellRect(int row, int column) const
 {
-    if (row == ROW_CURSOR) // TODO: Endlich makros für ROW_CURSOR und -1 !!
+    if (row == ROW_CIRCUIT) // TODO: Endlich makros für ROW_CIRCUIT und -1 !!
         return headerRect();
     else if (row == -1)
         return commentRect();
@@ -377,7 +377,7 @@ int CircuitView::columnAt(unsigned x)
 int CircuitView::jackAt(unsigned y)
 {
     if (y < CIRV_HEADER_HEIGHT)
-        return ROW_CURSOR;
+        return ROW_CIRCUIT;
     y -= CIRV_HEADER_HEIGHT;
 
     if (y < commentHeight())

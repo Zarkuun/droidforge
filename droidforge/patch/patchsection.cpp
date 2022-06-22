@@ -85,15 +85,15 @@ void PatchSection::moveCursorUp()
     if (cursor.row == -1 && !currentCircuit()->hasComment())
         cursor.row --;
 
-    if (cursor.row < ROW_CURSOR) { // move up to previous circuit
+    if (cursor.row < ROW_CIRCUIT) { // move up to previous circuit
         cursor.circuitNr--; // 0 -3 0
         if (cursor.circuitNr < 0) { // first circuit
             cursor.circuitNr = 0;
-            cursor.row = ROW_CURSOR;
+            cursor.row = ROW_CIRCUIT;
         }
 
         else if (currentCircuit()->isFolded())
-            cursor.row = ROW_CURSOR;
+            cursor.row = ROW_CIRCUIT;
 
         else {
             cursor.row = currentCircuit()->numJackAssignments() - 1;
@@ -123,7 +123,7 @@ void PatchSection::moveCursorDown()
                 cursor.row--; // skip back to title
         }
         else
-            cursor.row = ROW_CURSOR;
+            cursor.row = ROW_CIRCUIT;
     }
 }
 void PatchSection::moveCursorLeft()
@@ -170,7 +170,7 @@ void PatchSection::sanitizeCursor()
     if (cursor.circuitNr >= circuits.size()) {
         cursor.circuitNr = circuits.size() - 1;
         cursor.column = 0;
-        cursor.row = ROW_CURSOR;
+        cursor.row = ROW_CIRCUIT;
         return;
     }
     else if (cursor.circuitNr < 0)
@@ -184,20 +184,20 @@ void PatchSection::sanitizeCursor()
         cursor.row = circuit->numJackAssignments() - 1;
 
     if (cursor.row == -1 && !circuit->hasComment())
-        cursor.row = ROW_CURSOR;
+        cursor.row = ROW_CIRCUIT;
 
 }
 void PatchSection::moveCursorToNextCircuit()
 {
     if (cursor.circuitNr < circuits.size()-1) {
         cursor.circuitNr ++;
-        cursor.row = ROW_CURSOR;
+        cursor.row = ROW_CIRCUIT;
     }
 }
 void PatchSection::moveCursorToPreviousCircuit()
 {
-    if (cursor.row > ROW_CURSOR)
-        cursor.row = ROW_CURSOR;
+    if (cursor.row > ROW_CIRCUIT)
+        cursor.row = ROW_CIRCUIT;
     else if (cursor.circuitNr > 0)
         cursor.circuitNr --;
 }
@@ -206,7 +206,7 @@ void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
     int newPosition;
     if (!circuits.isEmpty()) {
         newPosition = cursorPosition().circuitNr;
-        if (cursorPosition().row != ROW_CURSOR)
+        if (cursorPosition().row != ROW_CIRCUIT)
             newPosition ++;
     }
     else
@@ -224,7 +224,7 @@ void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
         circuit->addJackAssignment(new JackAssignmentOutput(eo[o]));
     }
     circuits.insert(newPosition, circuit);
-    cursor.row = ROW_CURSOR;
+    cursor.row = ROW_CIRCUIT;
     cursor.circuitNr = newPosition;
 }
 void PatchSection::insertCircuit(int pos, Circuit *circuit)
@@ -249,7 +249,7 @@ void PatchSection::toggleFold()
     for (auto circuit: circuits)
         circuit->setFold(fold);
     if (currentCircuit()->isFolded())
-        setCursorRowColumn(ROW_CURSOR, 0);
+        setCursorRowColumn(ROW_CIRCUIT, 0);
 }
 Patch *PatchSection::getSelectionAsPatch() const
 {
@@ -332,7 +332,7 @@ QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
 void PatchSection::setCursor(const CursorPosition &pos)
 {
     cursor = pos;
-    if (pos.row != ROW_CURSOR && currentCircuit()->isFolded())
+    if (pos.row != ROW_CIRCUIT && currentCircuit()->isFolded())
         currentCircuit()->setFold(false);
 }
 Circuit *PatchSection::currentCircuit()

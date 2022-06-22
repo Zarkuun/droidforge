@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-#define ROW_CURSOR -2
+#define ROW_CIRCUIT -2
 #define ROW_COMMENT -1
 
 struct CursorPosition
