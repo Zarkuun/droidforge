@@ -549,10 +549,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
                     return false;
 
                 else if (reply == QMessageBox::Yes) {
-                    otherPatch->removeRegisterReferences(
-                                atomsToRemap,
-                                ControllerRemovalDialog::INPUT_REMOVE,
-                                ControllerRemovalDialog::OUTPUT_REMOVE);
+                    otherPatch->removeRegisterReferences(atomsToRemap);
                 }
             }
         }

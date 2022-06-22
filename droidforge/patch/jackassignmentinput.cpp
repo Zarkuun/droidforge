@@ -77,18 +77,12 @@ void JackAssignmentInput::replaceAtom(int column, Atom *newAtom)
         delete old;
 }
 
-void JackAssignmentInput::removeRegisterReferences(RegisterList &rl, int ih, int)
+void JackAssignmentInput::removeRegisterReferences(RegisterList &rl)
 {
-    if (ih == 0) // INPUT_LEAVE
-        return;
-
     // Atom A
     if (isInRegisterList(rl, atomA)) {
         delete atomA;
-        if (ih == 1) // INPUT_SET_TO_ONE
-            atomA = new AtomNumber(1.0, ATOM_NUMBER_NUMBER, false);
-        else
-            atomA = 0;
+        atomA = 0;
     }
 
     if (isInRegisterList(rl, atomB)) {

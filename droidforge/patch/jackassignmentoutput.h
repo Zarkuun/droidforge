@@ -21,7 +21,7 @@ public:
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     void parseExpression(const QString &expression);
     static Atom *parseOutputAtom(const QString &s);
-    void removeRegisterReferences(RegisterList &rl, int, int oh);
+    void removeRegisterReferences(RegisterList &rl);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
     bool isUndefined() const { return atom == 0; };
 

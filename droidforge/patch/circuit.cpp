@@ -331,10 +331,10 @@ void Circuit::remapRegister(AtomRegister from, AtomRegister to)
     for (auto ja: jackAssignments)
         ja->remapRegister(from, to);
 }
-void Circuit::removeRegisterReferences(RegisterList &rl, int ih, int oh)
+void Circuit::removeRegisterReferences(RegisterList &rl)
 {
     for (auto ja: jackAssignments)
-        ja->removeRegisterReferences(rl, ih, oh);
+        ja->removeRegisterReferences(rl);
 
 }
 QString Circuit::toString() const

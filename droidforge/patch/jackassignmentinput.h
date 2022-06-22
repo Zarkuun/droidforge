@@ -18,7 +18,7 @@ public:
     const Atom *atomAt(int column) const;
     Atom *atomAt(int column);
     void replaceAtom(int column, Atom *newAtom);
-    void removeRegisterReferences(RegisterList &rl, int ih, int);
+    void removeRegisterReferences(RegisterList &rl);
     QString valueToString() const;
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;

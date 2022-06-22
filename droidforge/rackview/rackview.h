@@ -4,7 +4,6 @@
 #include "module.h"
 #include "patcheditengine.h"
 #include "registermarker.h"
-#include "controllerremovaldialog.h"
 #include "patchview.h"
 #include "dragregisterindicator.h"
 
@@ -49,21 +48,13 @@ private:
     void popupControllerContextMenu(int controller, QString name);
     void popupBackgroundContextMenu();
     void updateRegisterMarker(QPointF, float);
-    void removeController(int controllerIndex, QString controllerName,
-            RegisterList &atomsToRemap,
-            ControllerRemovalDialog::InputHandling ih = ControllerRemovalDialog::INPUT_LEAVE,
-            ControllerRemovalDialog::OutputHandling oh = ControllerRemovalDialog::OUTPUT_LEAVE);
-    void remapRegisters(
-            int controllerIndex,
-            RegisterList &atomsToRemap,
-            ControllerRemovalDialog::InputHandling inputHandling,
-            ControllerRemovalDialog::OutputHandling outputHandling);
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
     void updateDragIndicator(QPointF endPos, bool hits, bool suitable);
     bool registersSuitableForSwapping(AtomRegister a, AtomRegister b);
     void swapRegisters(AtomRegister regA, AtomRegister regB);
     void refreshModules();
+    void removeController(int controllerIndex);
 
 public slots:
     void modifyPatch();
@@ -71,7 +62,7 @@ public slots:
     void addController();
 
 private slots:
-    void askRemoveController(const QString moduleType, int controller);
+    void askRemoveController(int controller);
     void purchaseController(QString name);
     void findRegister(AtomRegister reg);
     void moveController(int oldindex, int newindex);

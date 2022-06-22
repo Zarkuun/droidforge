@@ -18,7 +18,7 @@ public:
     void replaceAtom(int column, Atom *newAtom);
     void collectCables(QStringList &) const {};
     void parseExpression(const QString &expression);
-    void removeRegisterReferences(RegisterList &, int, int) {};
+    void removeRegisterReferences(RegisterList &) {};
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
     bool isUndefined() const { return true; }
 

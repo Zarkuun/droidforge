@@ -6,11 +6,9 @@
 #include "modulebuilder.h"
 #include "tuning.h"
 #include "controllerchoosedialog.h"
-#include "controllerremovaldialog.h"
 #include "editoractions.h"
 #include "updatehub.h"
 #include "globals.h"
-
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
@@ -53,16 +51,17 @@ RackView::RackView(PatchEditEngine *patch)
 
 void RackView::modifyPatch()
 {
-    scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
+    // scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
+    dragging = false;
+    markedRegister = AtomRegister();
     refreshModules();
     updateRegisterHilites();
+    registerMarker->setVisible(false);
 }
-
 void RackView::resizeEvent(QResizeEvent *)
 {
     updateSize();
 }
-
 void RackView::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
@@ -91,7 +90,6 @@ void RackView::mousePressEvent(QMouseEvent *event)
             popupBackgroundContextMenu();
     }
 }
-
 void RackView::mouseReleaseEvent(QMouseEvent *event)
 {
      if (dragging) {
@@ -134,14 +132,12 @@ void RackView::mouseReleaseEvent(QMouseEvent *event)
          scene()->update();
      }
 }
-
 void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     bool foundItem = !items(event->pos()).empty();
     if (!foundItem)
         TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
 }
-
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
@@ -194,7 +190,6 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
         updateDragIndicator(end, false, false);
     }
 }
-
 bool RackView::registersSuitableForSwapping(AtomRegister a, AtomRegister b)
 {
     if (a == b)
@@ -204,7 +199,6 @@ bool RackView::registersSuitableForSwapping(AtomRegister a, AtomRegister b)
     else
         return false;
 }
-
 void RackView::updateRegisterMarker(QPointF p, float diameter)
 {
     diameter += RACV_REGMARKER_EXTRA_DIAMETER;
@@ -213,7 +207,6 @@ void RackView::updateRegisterMarker(QPointF p, float diameter)
     registerMarker->setVisible(true);
     registerMarker->startAnimation();
 }
-
 void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
 {
     patch->swapRegisters(regA, regB);
@@ -231,63 +224,17 @@ void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
     patch->commit(tr("Exchanging registers '%1' and '%2'").arg(regA.toString()).arg(regB.toString()));
     emit patchModified();
 }
-
-void RackView::remapRegisters(
-        int controllerIndex,
-        RegisterList &atomsToRemap,
-        ControllerRemovalDialog::InputHandling , // inputHandling,
-        ControllerRemovalDialog::OutputHandling ) // outputHandling)
-{
-    unsigned controller = controllerIndex + 1;
-
-    // Get list of all registers.
-    RegisterList allRegisters;
-    patch->collectAvailableRegisterAtoms(allRegisters);
-
-    RegisterList remapFrom;
-    RegisterList remapTo;
-    RegisterList remapped;
-
-    // Loop through all registers to be remapped
-    for (auto& toRemap: atomsToRemap)
-    {
-        // Loop through all candidate registers
-        for (auto &candidate: allRegisters) {
-            if (candidate.getController() == controller)
-                continue; // Don't remap to ourselves
-            // TODO: Fehlt da nicht ein check, ob das schon belegt ist?
-            if (toRemap.getRegisterType() == candidate.getRegisterType())
-            // TODO: remapp G to I or O, but then we need to known
-            // wether G is used as an input or output.
-            {
-                remapFrom.append(toRemap);
-                remapTo.append(candidate);
-                allRegisters.removeAll(candidate);
-                remapped.append(toRemap);
-                break;
-            }
-        }
-    }
-
-    for (auto& atom: remapped)
-        atomsToRemap.removeAll(atom);
-
-    // Apply this remapping
-    for (unsigned i=0; i<remapFrom.size(); i++)
-        patch->remapRegister(remapFrom[i], remapTo[i]);
-}
-
 void RackView::hideRegisterMarker()
 {
+    // TOOD: HAH??
 }
-
 void RackView::popupControllerContextMenu(int controllerIndex, QString moduleType)
 {
    QMenu *menu = new QMenu(this);
    if (controllerIndex >= 0) {
        ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
        menu->addAction(tr("Remove this controller"), this,
-                       [this,controllerIndex,moduleType] () {this->askRemoveController(moduleType, controllerIndex); });
+                       [this,controllerIndex,moduleType] () {this->askRemoveController(controllerIndex); });
        if (controllerIndex > 0)
            menu->addAction(tr("Move by one position to the left"), this,
                            [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex-1); });
@@ -315,40 +262,83 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
    menu->setAttribute(Qt::WA_DeleteOnClose);
    menu->popup(QCursor::pos());
 }
-
 void RackView::popupBackgroundContextMenu()
 {
    QMenu *menu = new QMenu(this);
    ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
    menu->popup(QCursor::pos());
 }
-
-void RackView::askRemoveController(const QString moduleType, int controllerIndex)
+void RackView::askRemoveController(int controllerIndex)
 {
     // Get a list of all registers that are in use
-    RegisterList atomsToRemap;
-    collectUsedRegisters(controllerIndex, atomsToRemap);
-    if (atomsToRemap.empty())
-        removeController(controllerIndex, moduleType, atomsToRemap);
+    RegisterList usedRegisters;
+    collectUsedRegisters(controllerIndex, usedRegisters);
 
-    else {
-        std::sort(atomsToRemap.begin(), atomsToRemap.end());
-        static ControllerRemovalDialog *dialog = 0;
-        if (!dialog)
-            dialog = new ControllerRemovalDialog(this);
-
-        dialog->setRegistersToRemap(atomsToRemap);
-        if (dialog->exec() == QDialog::Accepted) {
-            bool remap = dialog->shouldRemap();
-            if (!remap)
-                atomsToRemap.clear();
-            auto ih = dialog->inputHandling();
-            auto oh = dialog->outputHandling();
-            removeController(controllerIndex, moduleType, atomsToRemap, ih, oh);
-        }
+    // Nothing used? Simply remove the controller and we are done
+    if (usedRegisters.empty()) {
+        removeController(controllerIndex);
+        return;
     }
-}
 
+    int reply = QMessageBox::No;
+
+    if (patch->numControllers() > 1)
+        reply = QMessageBox::question(
+                    the_forge,
+                    tr("Used controls"),
+                    tr("The following controls of this controller are used "
+                       "by your patch:\n\n%1\n\nShall I try to move these "
+                       "to other controllers?")
+                       .arg(usedRegisters.toSmartString()),
+                    QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::Yes);
+
+    if (reply == QMessageBox::Cancel)
+        return;
+
+    // Create a working copy of the patch so we can roll back if
+    // the user cancels at a later stage
+    Patch *workingPatch = patch->clone();
+
+    if (reply == QMessageBox::Yes)
+        workingPatch->moveRegistersToOtherControllers(controllerIndex, usedRegisters);
+
+    if (!usedRegisters.empty()) {
+        QString msg;
+        if (reply == QMessageBox::Yes)
+            msg = tr("I could not move these controls somewhere else:\n\n%1\n\n")
+                    .arg(usedRegisters.toSmartString());
+        else if (patch->numControllers() == 1)
+            msg = tr("The following controls of this controller are used "
+                     "by your patch:\n\n%1\n\n")
+                    .arg(usedRegisters.toSmartString());
+        reply = QMessageBox::question(
+                    the_forge,
+                    tr("Used controls"),
+                    msg + tr("Shall I remove these references from your patch "
+                             "in order to avoid chaos and trouble?"),
+                    QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::Yes);
+
+        if (reply == QMessageBox::Cancel) {
+            delete workingPatch;
+            return;
+        }
+
+        if (reply == QMessageBox::Yes)
+            workingPatch->removeRegisterReferences(usedRegisters);
+    }
+
+    workingPatch->cloneInto(patch);
+    delete workingPatch;
+    removeController(controllerIndex);
+}
+void RackView::removeController(int controllerIndex)
+{
+    patch->removeController(controllerIndex);
+    patch->commit(tr("removing %1 controller").arg(patch->controller(controllerIndex).toUpper()));
+    emit patchModified();
+}
 void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
 {
     RegisterList allUsedRegisters;
@@ -360,14 +350,12 @@ void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
             used.append(atom);
     }
 }
-
 bool RackView::controllersRegistersUsed(int controllerIndex)
 {
     RegisterList used;
     collectUsedRegisters(controllerIndex, used);
     return !used.isEmpty();
 }
-
 void RackView::updateDragIndicator(QPointF endPos, bool hits, bool suitable)
 {
     dragRegisterIndicator->abortAnimation();
@@ -377,12 +365,10 @@ void RackView::updateDragIndicator(QPointF endPos, bool hits, bool suitable)
     dragRegisterIndicator->update();
     scene()->update();
 }
-
 void RackView::purchaseController(QString name)
 {
     QDesktopServices::openUrl(QUrl(SHOP_PRODUCTS_URL + name));
 }
-
 void RackView::findRegister(AtomRegister reg)
 {
     const Atom *currentAtom = patch->currentAtom();
@@ -423,14 +409,12 @@ void RackView::findRegister(AtomRegister reg)
     patch->setCursorTo(it.sectionIndex(), it.cursorPosition());
     emit sectionSwitched();
 }
-
 void RackView::moveController(int fromindex, int toindex)
 {
     patch->swapControllersSmart(fromindex, toindex);
     patch->commit(tr("changing controller order"));
     emit patchModified();
 }
-
 void RackView::refreshModules()
 {
     modules.clear();
@@ -458,7 +442,6 @@ void RackView::refreshModules()
     scene()->setSceneRect(bounding);
     ensureVisible(bounding);
 }
-
 void RackView::initScene()
 {
     registerMarker = new RegisterMarker;
@@ -473,12 +456,10 @@ void RackView::initScene()
     refreshModules();
     updateSize();
 }
-
 void RackView::updateSize()
 {
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
-
 void RackView::addModule(const QString &name, int controllerIndex)
 {
     Module *module = ModuleBuilder::buildModule(name, patch->getRegisterLabelsPointer());
@@ -490,7 +471,6 @@ void RackView::addModule(const QString &name, int controllerIndex)
     module->setPos(x, 0); //RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP;
 }
-
 unsigned RackView::numControllers() const
 {
     unsigned n=0;
@@ -499,14 +479,12 @@ unsigned RackView::numControllers() const
             n++;
     return n;
 }
-
 void RackView::removeModule(int controllerIndex)
 {
     Module *module = modules[controllerIndex];
     scene()->removeItem(module);
     modules.remove(controllerIndex);
 }
-
 void RackView::updateRegisterHilites()
 {
     const Circuit *circuit = section()->currentCircuit();
@@ -550,7 +528,6 @@ void RackView::updateRegisterHilites()
         module->update();
     }
 }
-
 void RackView::addController()
 {
     QString controller = ControllerChooseDialog::chooseController();
@@ -560,33 +537,12 @@ void RackView::addController()
         emit patchModified();
     }
 }
-
-void RackView::removeController(
-        int controllerIndex,
-        QString controllerName,
-        RegisterList &atomsToRemap,
-        ControllerRemovalDialog::InputHandling inputHandling,
-        ControllerRemovalDialog::OutputHandling  outputHandling)
-{
-    remapRegisters(controllerIndex, atomsToRemap, inputHandling, outputHandling);
-
-    if (!atomsToRemap.isEmpty()) {
-        patch->removeRegisterReferences(
-                    atomsToRemap,
-                    inputHandling,
-                    outputHandling);
-    }
-
-    patch->removeController(controllerIndex);
-    patch->commit(tr("removing %1 controller").arg(controllerName.toUpper()));
-    emit patchModified();
-}
-
 void RackView::remapControls(QString controllerName, int controllerIndex)
 {
+    // TODO: Das hier nochmal durcharbeiten, testen.
     RegisterList atomsToRemap;
     collectUsedRegisters(controllerIndex, atomsToRemap);
-    remapRegisters(controllerIndex, atomsToRemap, ControllerRemovalDialog::INPUT_LEAVE, ControllerRemovalDialog::OUTPUT_LEAVE);
+    patch->moveRegistersToOtherControllers(controllerIndex, atomsToRemap);
     if (!atomsToRemap.isEmpty())
     {
         QString listing;
@@ -596,7 +552,7 @@ void RackView::remapControls(QString controllerName, int controllerIndex)
         QMessageBox box(
                     QMessageBox::Warning,
                     tr("Not all controlles remapped"),
-                    tr("The following registers havea not been remapped, since there "
+                    tr("The following registers have not been remapped, since there "
                        "was nothing free: %1").arg(listing),
                     QMessageBox::Ok,
                     this);
@@ -605,7 +561,6 @@ void RackView::remapControls(QString controllerName, int controllerIndex)
     patch->commit(tr("moving used controls of %1").arg(controllerName.toUpper()));
     emit patchModified();
 }
-
 void RackView::editLabelling(QString moduleType, int controllerIndex, AtomRegister reg)
 {
     // Get current position of register marker

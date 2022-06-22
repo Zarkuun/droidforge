@@ -159,6 +159,47 @@ void Patch::addRegisterComment(QChar registerName, unsigned controller, unsigned
     registerLabels[atom] = rc;
 }
 
+void Patch::moveRegistersToOtherControllers(int controllerIndex, RegisterList &registers)
+{
+    unsigned controller = controllerIndex + 1;
+
+    // Get list of all registers.
+    RegisterList allRegisters;
+    collectAvailableRegisterAtoms(allRegisters);
+
+    RegisterList remapFrom;
+    RegisterList remapTo;
+    RegisterList remapped;
+
+    // Loop through all registers to be remapped
+    for (auto& toRemap: registers)
+    {
+        // Loop through all candidate registers
+        for (auto &candidate: allRegisters) {
+            if (candidate.getController() == controller)
+                continue; // Don't remap to ourselves
+            // TODO: Fehlt da nicht ein check, ob das schon belegt ist?
+            if (toRemap.getRegisterType() == candidate.getRegisterType())
+            // TODO: remapp G to I or O, but then we need to known
+            // wether G is used as an input or output.
+            {
+                remapFrom.append(toRemap);
+                remapTo.append(candidate);
+                allRegisters.removeAll(candidate);
+                remapped.append(toRemap);
+                break;
+            }
+        }
+    }
+
+    for (auto& atom: remapped)
+        registers.removeAll(atom);
+
+    // Apply this remapping
+    for (unsigned i=0; i<remapFrom.size(); i++)
+        remapRegister(remapFrom[i], remapTo[i]);
+}
+
 const QString &Patch::getTitle() const
 {
     return title;
@@ -353,10 +394,10 @@ void Patch::swapRegisters(AtomRegister regA, AtomRegister regB)
     registerLabels.swapRegisters(regA, regB);
 }
 
-void Patch::removeRegisterReferences(RegisterList &rl, int ih, int oh)
+void Patch::removeRegisterReferences(RegisterList &rl)
 {
     for (auto section: sections)
-        section->removeRegisterReferences(rl, ih, oh);
+        section->removeRegisterReferences(rl);
 }
 
 void Patch::swapControllerNumbers(int fromNumber, int toNumber)

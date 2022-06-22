@@ -93,9 +93,10 @@ public:
             unsigned number,
             const QString &shorthand,
             const QString &atomcomment);
+    void moveRegistersToOtherControllers(int controllerIndex, RegisterList &atomsToRemap);
     void remapRegister(AtomRegister from, AtomRegister to);
     void swapRegisters(AtomRegister regA, AtomRegister regB);
-    void removeRegisterReferences(RegisterList &rl, int ih, int oh);
+    void removeRegisterReferences(RegisterList &rl);
     void renameCable(const QString &oldName, const QString &newName);
 
 protected:

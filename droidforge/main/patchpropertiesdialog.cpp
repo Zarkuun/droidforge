@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QGridLayout>
+#include <QLabel>
 
 PatchPropertiesDialog::PatchPropertiesDialog(QWidget *parent)
     : Dialog("patchproperties", parent)

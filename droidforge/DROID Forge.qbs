@@ -207,8 +207,6 @@ QtApplication {
         "patchview/atomeditor/numberselector.h",
         "rackview/controllerchoosedialog.cpp",
         "rackview/controllerchoosedialog.h",
-        "rackview/controllerremovaldialog.cpp",
-        "rackview/controllerremovaldialog.h",
         "rackview/controllerselector.cpp",
         "rackview/controllerselector.h",
         "rackview/rackview.cpp",
