@@ -18,7 +18,6 @@ Release:
 Code aufräumen:
 - Alle Aktionen in den patchoperator umziehen
 - Alle Farben über COLOR() machen
-- Das -2 und -1 bei der Cursorrow durch makros ersetzen
 
 
 KLEINERE FEATURES FÜR SPÄTER:

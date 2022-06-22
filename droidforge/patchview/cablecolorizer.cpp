@@ -37,15 +37,21 @@ void CableColorizer::colorizeAllCables(const QStringList &sl)
     for (auto &name: sorted)
         imageForCable(name); // ignore result, just assign
 }
-
+int CableColorizer::imageIndex(QString name)
+{
+    if (cableColors.contains(name))
+        return cableColors[name];
+    else
+        return chooseColorForCable(name);
+}
 const QImage *CableColorizer::imageForCable(QString name)
 {
-    int index;
-    if (cableColors.contains(name))
-        index = cableColors[name];
-    else
-        index = chooseColorForCable(name);
-    return images[index];
+    return images[imageIndex(name)];
+}
+
+const QIcon *CableColorizer::iconForCable(QString name)
+{
+    return icons[imageIndex(name)];
 }
 
 int CableColorizer::chooseColorForCable(QString name)
@@ -68,14 +74,18 @@ int CableColorizer::chooseColorForCable(QString name)
 
 void CableColorizer::loadImages()
 {
-    QDir dir(":images/cables");
-    QStringList entries = dir.entryList();
+    QDir imageDir(":images/cables");
+    QDir iconDir(":images/cableicons");
+    QStringList entries = imageDir.entryList();
     for (auto &entry: entries) {
-        QImage *image = new QImage(dir.filePath(entry));
+        QImage *image = new QImage(imageDir.filePath(entry));
         if (entry == "ghost.png")
             ghostImage = image;
-        else
+        else {
             images.append(image);
+            QIcon *icon = new QIcon(iconDir.filePath(entry));
+            icons.append(icon);
+        }
     }
 }
 

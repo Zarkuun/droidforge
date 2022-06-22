@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+cd droidforge/images
+rm -rf cableicons
+mkdir cableicons
+cp cables/*png cableicons
+cd cableicons
+sips -c 14 27 --cropOffset 0 8 *.png

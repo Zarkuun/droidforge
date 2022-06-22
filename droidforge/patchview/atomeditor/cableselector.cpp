@@ -1,5 +1,6 @@
 #include "cableselector.h"
 #include "tuning.h"
+#include "cablecolorizer.h"
 
 #include <QVBoxLayout>
 
@@ -11,10 +12,12 @@ CableSelector::CableSelector(QWidget *parent)
     static QRegularExpression re("[a-zA-Z][_0-9a-zA-Z]*");
     comboBox = new QComboBox(this);
     comboBox->setEditable(true);
-    comboBox->setValidator(new QRegularExpressionValidator(re, this));
+    // comboBox->setValidator(new QRegularExpressionValidator(re, this));
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(comboBox);
     mainLayout->addStretch();
+    listWidget = new QListWidget(this);
+    mainLayout->addWidget(listWidget);
     connect(comboBox, &QComboBox::editTextChanged, this, &CableSelector::cableEdited);
 }
 
@@ -28,7 +31,13 @@ void CableSelector::setAtom(const Patch *patch, const Atom *atom)
     cable = ((const AtomCable *)atom)->getCable();
     comboBox->clear();
     QStringList cables = patch->allCables();
-    comboBox->addItems(cables);
+    for (auto &cable: cables) {
+        comboBox->addItem(cable);
+        const QIcon *icon = the_cable_colorizer->iconForCable(cable);
+        QListWidgetItem *item = new QListWidgetItem(*icon, cable, listWidget);
+        listWidget->addItem(item);
+    }
+
     int index = cables.indexOf(cable);
     comboBox->setCurrentIndex(index);
 }

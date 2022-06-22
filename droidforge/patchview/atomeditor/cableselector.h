@@ -8,6 +8,7 @@
 #include <QGroupBox>
 #include <QObject>
 #include <QComboBox>
+#include <QListWidget>
 
 class CableSelector : public AtomSubSelector
 {
@@ -16,6 +17,7 @@ class CableSelector : public AtomSubSelector
     const Patch *patch;
     QComboBox *comboBox;
     QString cable;
+    QListWidget *listWidget;
 
 public:
     CableSelector(QWidget *parent = nullptr);
