@@ -1153,5 +1153,6 @@
         <file>images/circuits/firefacecontrol.png</file>
         <file>images/circuits/droid.png</file>
         <file>droid-manual.pdf</file>
+        <file>droidforge.icns</file>
     </qresource>
 </RCC>

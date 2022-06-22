@@ -9,7 +9,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>droidforge</string>
 	<key>CFBundleExecutable</key>
-	<string>droidforge</string>
+	<string>DROID Forge</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.example.droidforge</string>
 	<key>CFBundleInfoDictionaryVersion</key>
