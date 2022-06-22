@@ -17,6 +17,7 @@ JackSelector::JackSelector(QWidget *parent)
     , jackType(JACKTYPE_DONT_CARE)
 {
     initScene();
+    setMinimumWidth(700);
 }
 void JackSelector::setCircuit(const QString &c, const QString &current, const QStringList &uj, jacktype_t onlyType, QString search)
 {

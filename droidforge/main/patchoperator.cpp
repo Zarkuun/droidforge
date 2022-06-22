@@ -70,6 +70,8 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
         initialFilename = settings.value("lastfile").toString();
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [this,initialFilename] () { this->loadFile(initialFilename, FILE_MODE_LOAD);});
+    else
+        QTimer::singleShot(0, this, [this] () { this->newPatch();});
 
     // TODO: There is a mac foundation function for getting called whenever a disk
     // get's mounted. Use that rather than a timer. This is much faster and avoids

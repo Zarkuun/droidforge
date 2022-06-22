@@ -117,13 +117,12 @@
 #define RLD_MINIMUM_LABEL_WIDTH              150
 
 // Controller Selector
-#define CSEL_HEIGHT                          2600
-#define CSEL_SIDE_MARGIN                     50
-#define CSEL_TOP_MARGIN                      150
+#define CSEL_HEIGHT                          2300
+#define CSEL_SIDE_MARGIN                     100
+#define CSEL_TOP_MARGIN                      100
 #define CSEL_PIXEL_PER_HP                    RACV_PIXEL_PER_HP
 #define CSEL_CONTROLLER_DISTANCE             200
 #define CSEL_CURSOR_WIDTH                    8
-#define CSEL_CURSOR_HEIGHT                   2300
 
 // Patch section manager
 #define PSM_COLOR_BACKGROUND                 COLOR_STANDARD_BACKGROUND

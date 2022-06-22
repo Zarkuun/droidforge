@@ -37,7 +37,6 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
 
     setWindowTitle(APPLICATION_NAME);
     QIcon appIcon(":droidforge.icns");
-    shout << appIcon;
     setWindowIcon(appIcon);
 
     menubar = new QMenuBar(this);

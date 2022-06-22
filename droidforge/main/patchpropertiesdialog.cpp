@@ -9,22 +9,25 @@
 PatchPropertiesDialog::PatchPropertiesDialog(QWidget *parent)
     : Dialog("patchproperties", parent)
 {
-    QGridLayout *layout = new QGridLayout(this);
-    setLayout(layout);
-
+    QLabel *labelTitle = new QLabel(tr("Title:"));
     lineEditTitle = new QLineEdit(this);
-    layout->addWidget(lineEditTitle, 0, 0);
 
+    QLabel *labelDescription = new QLabel(tr("Description:"));
     textEditDescription = new QTextEdit(this);
-    layout->addWidget(textEditDescription, 1, 0);
 
     // Buttons with OK/Cancel
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    QGridLayout *layout = new QGridLayout(this);
+    setLayout(layout);
+    layout->addWidget(labelTitle, 0, 0);
+    layout->addWidget(lineEditTitle, 0, 1);
+    layout->addWidget(labelDescription, 1, 0);
+    layout->addWidget(textEditDescription, 1, 1);
     layout->addWidget(buttonBox, 2, 0, 1, 2);
 }
-
 bool PatchPropertiesDialog::editPatchProperties(PatchEditEngine *patch)
 {
     static PatchPropertiesDialog *dialog = 0;
@@ -68,7 +71,6 @@ bool PatchPropertiesDialog::editPatchProperties(PatchEditEngine *patch)
             return false;
     }
 }
-
 bool PatchPropertiesDialog::validateInput()
 {
      if (lineEditTitle->text().trimmed().isEmpty()) {

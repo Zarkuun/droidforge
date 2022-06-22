@@ -12,8 +12,9 @@ ControllerSelector::ControllerSelector(QWidget *parent)
 {
     QGraphicsScene *scene = new QGraphicsScene();
     const QStringList &controllers = ModuleBuilder::allControllers();
-    int x = CSEL_SIDE_MARGIN;
+    int x = 0;
 
+    int height = 0;
     for (qsizetype i=0; i<controllers.size(); i++)
     {
         QString name = controllers[i];
@@ -21,9 +22,10 @@ ControllerSelector::ControllerSelector(QWidget *parent)
         scene->addItem(module);
         module->setData(0, name);
         module->setZValue(10); // make it above margin rect
-        module->setPos(x, CSEL_TOP_MARGIN);
+        module->setPos(x, 0); // CSEL_TOP_MARGIN);
         x += module->hp() * CSEL_PIXEL_PER_HP;
         x += CSEL_CONTROLLER_DISTANCE;
+        height = module->boundingRect().height();
     }
 
     QPen pen(COLOR(COLOR_CURSOR_NORMAL));
@@ -33,11 +35,11 @@ ControllerSelector::ControllerSelector(QWidget *parent)
     placeCursor();
 
     // Force visible margins around everything
-    scene->addRect(
-                0,  0,
+    scene->setSceneRect(
+                - CSEL_SIDE_MARGIN,
+                - CSEL_TOP_MARGIN,
                 x - CSEL_CONTROLLER_DISTANCE + 2 * CSEL_SIDE_MARGIN,
-                CSEL_HEIGHT),
-            QPen(QColor(0, 0, 0, 0));
+                height + 2 * CSEL_TOP_MARGIN);
 
     setScene(scene);
 
@@ -46,12 +48,10 @@ ControllerSelector::ControllerSelector(QWidget *parent)
     // away to here and the keyboard will stop working.
     setFocusPolicy(Qt::NoFocus);
 }
-
 void ControllerSelector::resizeEvent(QResizeEvent *)
 {
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
-
 void ControllerSelector::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
@@ -69,29 +69,22 @@ void ControllerSelector::mousePressEvent(QMouseEvent *event)
         }
     }
 }
-
 void ControllerSelector::mouseDoubleClickEvent(QMouseEvent *)
 {
     if (!selectedController.isEmpty()) {
         emit controllerSelected(selectedController);
     }
 }
-
 void ControllerSelector::placeCursor()
 {
-    int x = CSEL_SIDE_MARGIN;
+    int x = 0;
     const QStringList &controllers = ModuleBuilder::allControllers();
     for (qsizetype i=0; i<controllers.size(); i++)
     {
         QString name = controllers[i];
         Module *module = ModuleBuilder::buildModule(name);
         if (name == selectedController) {
-            QRectF cursorRect(x - CSEL_CURSOR_WIDTH/2,
-                            CSEL_TOP_MARGIN - CSEL_CURSOR_WIDTH/2,
-                            module->hp() * CSEL_PIXEL_PER_HP +
-                            CSEL_CURSOR_WIDTH * 2,
-                            CSEL_CURSOR_HEIGHT);
-            cursor->setRect(cursorRect);
+            cursor->setRect(module->boundingRect().translated(x, 0));
             cursor->update();
         }
         x += module->hp() * CSEL_PIXEL_PER_HP;
@@ -99,7 +92,6 @@ void ControllerSelector::placeCursor()
         delete module;
     }
 }
-
 void ControllerSelector::moveCursor(int whence)
 {
     const QStringList &controllers = ModuleBuilder::allControllers();

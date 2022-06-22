@@ -1,4 +1,5 @@
 #include "dialog.h"
+#include "globals.h"
 
 #include <QSettings>
 #include <QKeyEvent>
