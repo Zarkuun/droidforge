@@ -4,6 +4,7 @@
 #include "circuitcollection.h"
 #include "dialog.h"
 #include "circuit.h"
+#include "keycapturelineedit.h"
 
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -19,7 +20,7 @@ class CircuitChooseDialog : public Dialog
     QDialogButtonBox *buttonBox;
     QTabWidget *tabWidget;
     QComboBox *startJacksBox;
-    QLineEdit *lineEditSearch;
+    KeyCaptureLineEdit *lineEditSearch;
     CircuitCollection *searchResults;
 
     CircuitChooseDialog(QWidget *parent = nullptr);
@@ -39,13 +40,16 @@ private:
     static QString chooseCircuit(jackselection_t &jsel, QString oldCircuit);
     void addCategoryTab(QString category, QString title);
     void setCurrentCircuit(QString name);
+    void switchToNextCategory();
+    void switchToPreviousCategory();
+    void switchToFirstCategory();
+    void switchToLastCategory();
 
 private slots:
-    void nextCategory();
-    void previousCategory();
     void searchChanged(QString text);
     void saveSettings();
     void showManual();
+    void keyPressed(int key);
 };
 
 #endif // CIRCUITCHOOSEDIALOG_H

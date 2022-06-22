@@ -38,6 +38,7 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     addCategoryTab("deprecated", tr("Deprecated"));
     tabWidget->setTabVisible(TAB_INDEX_SEARCH, false);
     tabWidget->setCurrentIndex(TAB_INDEX_FIRST_CATEGORY);
+    tabWidget-> setFocusPolicy(Qt::NoFocus);
 
     // The "Start jacks" choice determines with which jack assignments
     // should the new circuit start its life.
@@ -53,8 +54,9 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
 
     // Search
     QLabel *label = new QLabel(tr("Search:"), this);
-    lineEditSearch = new QLineEdit(this);
+    lineEditSearch = new KeyCaptureLineEdit(this);
     connect(lineEditSearch, &QLineEdit::textChanged, this, &CircuitChooseDialog::searchChanged);
+    connect(lineEditSearch, &KeyCaptureLineEdit::keyPressed, this, &CircuitChooseDialog::keyPressed);
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -72,22 +74,6 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     mainLayout->addWidget(lineEditSearch, 1, 2);
     mainLayout->addWidget(buttonBox, 1, 3);
     setLayout(mainLayout);
-
-    QAction *nextCategoryAct = new QAction(tr("Next category"));
-    QList<QKeySequence> s1;
-    s1.append(QKeySequence(tr("Right")));
-    s1.append(QKeySequence(tr("Ctrl+Right")));
-    nextCategoryAct->setShortcuts(s1);
-    addAction(nextCategoryAct);
-    connect(nextCategoryAct, &QAction::triggered, this, &CircuitChooseDialog::nextCategory);
-
-    QAction *previousCategoryAct = new QAction(tr("Previous category"));
-    QList<QKeySequence> s2;
-    s2.append(QKeySequence(tr("Left")));
-    s2.append(QKeySequence(tr("Ctrl+Left")));
-    previousCategoryAct->setShortcuts(s2);
-    addAction(previousCategoryAct);
-    connect(previousCategoryAct, &QAction::triggered, this, &CircuitChooseDialog::previousCategory);
 }
 QString CircuitChooseDialog::getSelectedCircuit() const
 {
@@ -111,7 +97,9 @@ void CircuitChooseDialog::keyPressEvent(QKeyEvent *event)
 }
 void CircuitChooseDialog::showEvent(QShowEvent *)
 {
+    shoutfunc;
     lineEditSearch->selectAll();
+    lineEditSearch->setFocus();
 }
 void CircuitChooseDialog::accept()
 {
@@ -158,17 +146,29 @@ void CircuitChooseDialog::setCurrentCircuit(QString name)
         }
     }
 }
-void CircuitChooseDialog::nextCategory()
+void CircuitChooseDialog::switchToNextCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() + 1) % tabWidget->count());
     if (tabWidget->currentIndex() == TAB_INDEX_SEARCH && lineEditSearch->text().isEmpty())
-        nextCategory();
+        switchToNextCategory();
 }
-void CircuitChooseDialog::previousCategory()
+void CircuitChooseDialog::switchToPreviousCategory()
 {
     tabWidget->setCurrentIndex((tabWidget->currentIndex() - 1 + tabWidget->count()) % tabWidget->count());
     if (tabWidget->currentIndex() == TAB_INDEX_SEARCH && lineEditSearch->text().isEmpty())
-        previousCategory();
+        switchToPreviousCategory();
+}
+
+void CircuitChooseDialog::switchToFirstCategory()
+{
+    tabWidget->setCurrentIndex(0);
+    if (tabWidget->currentIndex() == TAB_INDEX_SEARCH && lineEditSearch->text().isEmpty())
+        switchToNextCategory();
+}
+
+void CircuitChooseDialog::switchToLastCategory()
+{
+    tabWidget->setCurrentIndex(tabWidget->count() - 1);
 }
 void CircuitChooseDialog::searchChanged(QString text)
 {
@@ -190,4 +190,31 @@ void CircuitChooseDialog::saveSettings()
 void CircuitChooseDialog::showManual()
 {
     the_manual->showCircuit(getSelectedCircuit());
+}
+
+void CircuitChooseDialog::keyPressed(int key)
+{
+    CircuitCollection *collection = (CircuitCollection *)tabWidget->currentWidget();
+
+    switch (key) {
+    case Qt::Key_Up:
+        collection->moveCursorUpDown(-1);
+        break;
+    case Qt::Key_Down:
+        collection->moveCursorUpDown(1);
+        break;
+    case Qt::Key_Left:
+        switchToPreviousCategory();
+        break;
+    case Qt::Key_Right:
+        switchToNextCategory();
+        break;
+    case Qt::Key_Home:
+        switchToFirstCategory();
+        break;
+    case Qt::Key_End:
+        switchToLastCategory();
+        break;
+    }
+   shout << key;
 }

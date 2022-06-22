@@ -18,6 +18,7 @@ CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     initScene();
     loadCircuitCategory(category);
     initBackgroundRect(numCircuits);
+    setFocusPolicy(Qt::NoFocus);
 }
 CircuitCollection::CircuitCollection(QWidget *parent)
     : QGraphicsView(parent)
@@ -73,15 +74,15 @@ void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
     if (handleMousePress(event->pos()))
             chooseCurrentCircuit();
 }
-void CircuitCollection::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Down)
-        moveCursorUpDown(1);
-    else if (event->key() == Qt::Key_Up)
-        moveCursorUpDown(-1);
-    else
-        QWidget::keyPressEvent(event);
-}
+// void CircuitCollection::keyPressEvent(QKeyEvent *event)
+// {
+//     if (event->key() == Qt::Key_Down)
+//         moveCursorUpDown(1);
+//     else if (event->key() == Qt::Key_Up)
+//         moveCursorUpDown(-1);
+//     else
+//         QWidget::keyPressEvent(event);
+// }
 QString CircuitCollection::selectedCircuitName()
 {
     CircuitInfoView *civ = currentCircuit();
