@@ -539,9 +539,9 @@ void RackView::addController()
 }
 void RackView::remapControls(QString controllerName, int controllerIndex)
 {
-    // TODO: Das hier nochmal durcharbeiten, testen.
     RegisterList atomsToRemap;
     collectUsedRegisters(controllerIndex, atomsToRemap);
+    unsigned num = atomsToRemap.count();
     patch->moveRegistersToOtherControllers(controllerIndex, atomsToRemap);
     if (!atomsToRemap.isEmpty())
     {
@@ -558,8 +558,11 @@ void RackView::remapControls(QString controllerName, int controllerIndex)
                     this);
         box.exec();
     }
-    patch->commit(tr("moving used controls of %1").arg(controllerName.toUpper()));
-    emit patchModified();
+    // Only create a commit if something has been moved
+    if (num != atomsToRemap.count()) {
+        patch->commit(tr("moving used controls of %1").arg(controllerName.toUpper()));
+        emit patchModified();
+    }
 }
 void RackView::editLabelling(QString moduleType, int controllerIndex, AtomRegister reg)
 {
