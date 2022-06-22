@@ -1,7 +1,5 @@
 TODO für die erste Version:
 
-- Kabelkonflikte (externe, interne?) beim Einfügen von Sachen
-  noch programmieren. Interne->automatisch umbenennen.
 - Direkteingabe: Sollte ohne Return direkt funktionieren.
   Ich glaube, wir müssen direkt im Atom selbst rummalen oder
   so.
@@ -9,7 +7,6 @@ TODO für die erste Version:
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen? Oder ist das
   schon gemacht?
-- Wenn umount nicht klappt, dann ein Fenster aufpoppen.
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
 - Selektion mit Rahmen ziehen
 

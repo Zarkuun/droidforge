@@ -195,25 +195,38 @@ void PatchOperator::saveToSD()
 
     QProcess process;
     QStringList arguments;
+    arguments << "umount";
+    arguments << dir.absolutePath();
     process.start("diskutil", arguments);
     bool success = process.waitForFinished(MAC_UMOUNT_TIMEOUT_MS);
-    if (!success) {
+    if (!success) { // never happened ever.
         QMessageBox::warning(
                     the_forge,
                     tr("Could not eject SD card"),
                     tr("Timeout while trying to safely eject the SD card."),
                     QMessageBox::Ok);
     }
-    else if (process.exitStatus() != QProcess::NormalExit) {
-        QString error = process.readAll();
+    else if (process.exitStatus() != QProcess::NormalExit) { // neither happened
+        QString error = process.readAll(); // always empty
         QMessageBox::warning(
                     the_forge,
                     tr("Could not eject SD card"),
                     tr("An error occurred while ejecting the SD card:\n%1").arg(error),
                     QMessageBox::Ok);
     }
+    else if (dir.exists()) {
+        QMessageBox::warning(
+                    the_forge,
+                    tr("Could not eject SD card"),
+                    tr("I have saved your patch to the SD card.\n\n"
+                       "However, I could not eject it.\n\n"
+                       "Probably the card is in use by some other application. "
+                       "Better go and check and eject the card with Finder before "
+                       "you remove it from the card reader."),
+                    QMessageBox::Ok);
+    }
     else {
-        // process.readAll();
+        // QString all = process.readAll();
         sdCardPresent = false;
         emit droidStateChanged();
     }
@@ -573,7 +586,6 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
             int asInput = 0;
             int asOutput = 0;
             otherPatch->findCableConnections(cable, asInput, asOutput);
-            shout << cable << asInput << asOutput;
             bool isInternally = asInput > 0 && asOutput > 0;
             bool rename = true;
             if (!isInternally) {
@@ -606,7 +618,6 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
                     newName = cable + QString::number(n);
                 }
                 otherPatch->renameCable(cable, newName);
-                shout << "RENAME " << cable << "->" << newName;
             }
         }
     }
