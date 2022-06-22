@@ -82,12 +82,14 @@ void PatchEditEngine::undo()
 {
     Q_ASSERT(undoPossible());
     versions[--redoPointer]->getPatch()->cloneInto(this);
+    updateProblems(); // This is the one and only place where we do this!
 }
 
 void PatchEditEngine::redo()
 {
     Q_ASSERT(redoPossible());
     versions[++redoPointer]->getPatch()->cloneInto(this);
+    updateProblems(); // This is the one and only place where we do this!
 }
 
 bool PatchEditEngine::undoPossible() const

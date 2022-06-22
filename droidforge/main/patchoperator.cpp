@@ -363,11 +363,8 @@ void PatchOperator::editProperties()
 }
 void PatchOperator::undo()
 {
-    shout << "ICH UNDOE";
     if (patch->undoPossible()) {
         patch->undo();
-        shout << patch->toString();
-
         emit patchModified();
     }
 }
