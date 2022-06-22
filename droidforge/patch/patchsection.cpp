@@ -82,7 +82,7 @@ void PatchSection::deleteCurrentComment()
 void PatchSection::moveCursorUp()
 {
     cursor.row --; // 1 -3 0
-    if (cursor.row == -1 && !currentCircuit()->hasComment())
+    if (cursor.row == ROW_COMMENT && !currentCircuit()->hasComment())
         cursor.row --;
 
     if (cursor.row < ROW_CIRCUIT) { // move up to previous circuit
@@ -97,7 +97,7 @@ void PatchSection::moveCursorUp()
 
         else {
             cursor.row = currentCircuit()->numJackAssignments() - 1;
-            if (cursor.row == -1 && !currentCircuit()->hasComment())
+            if (cursor.row == ROW_COMMENT && !currentCircuit()->hasComment())
                 cursor.row --;
         }
     }
@@ -112,14 +112,14 @@ void PatchSection::moveCursorDown()
     int n = currentCircuit()->numJackAssignments();
 
     cursor.row ++;
-    if (cursor.row == -1 && !currentCircuit()->hasComment())
+    if (cursor.row == ROW_COMMENT && !currentCircuit()->hasComment())
         cursor.row ++;
     if (cursor.row >= n) {
         cursor.circuitNr ++;
         if (cursor.circuitNr >= circuits.size()) {
             cursor.row--;
             cursor.circuitNr--;
-            if (cursor.row == -1 && !currentCircuit()->hasComment())
+            if (cursor.row == ROW_COMMENT && !currentCircuit()->hasComment())
                 cursor.row--; // skip back to title
         }
         else
@@ -183,7 +183,7 @@ void PatchSection::sanitizeCursor()
     else if (cursor.row >= circuit->numJackAssignments())
         cursor.row = circuit->numJackAssignments() - 1;
 
-    if (cursor.row == -1 && !circuit->hasComment())
+    if (cursor.row == ROW_COMMENT && !circuit->hasComment())
         cursor.row = ROW_CIRCUIT;
 
 }

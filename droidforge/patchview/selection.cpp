@@ -45,8 +45,8 @@ bool Selection::commentSelected(int circuitNr) const
     return
             from.circuitNr == circuitNr &&
             to.circuitNr == circuitNr &&
-            from.row == -1
-            && to.row == -1;
+            from.row == ROW_COMMENT
+            && to.row == ROW_COMMENT;
 }
 
 bool Selection::jackSelected(int circuitNr, int row) const
@@ -107,7 +107,7 @@ bool Selection::isCircuitSelection() const
         return true;
 
     // Comment and non-comment are part of selection
-    if (from.row == -1 && to.row != -1)
+    if (from.row == ROW_COMMENT && to.row != ROW_COMMENT)
         return true;
 
     return false;
@@ -121,5 +121,5 @@ bool Selection::isSingleCircuitSelection() const
 bool Selection::isCommentSelection() const
 {
     return from.circuitNr == to.circuitNr &&
-            from.row == -1 && to.row == -1;
+            from.row == ROW_COMMENT && to.row == ROW_COMMENT;
 }

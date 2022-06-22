@@ -1043,7 +1043,7 @@ void PatchSectionView::editValue(int key)
 
     if (row == ROW_CIRCUIT)
         editCircuit(key);
-    else if (row == -1)
+    else if (row == ROW_COMMENT)
         editCircuitComment(key);
     else if (column == 0)
         editJack(key);
@@ -1116,7 +1116,7 @@ void PatchSectionView::editCircuitComment(int key)
         else
             circuit->removeComment();
         if (!circuit->isFolded())
-            section()->setCursorRow(-1);
+            section()->setCursorRow(ROW_COMMENT);
         patch->commit(tr("changing comment for circuit '%1'").arg(circuit->getName()));
         emit patchModified();
     }
@@ -1366,7 +1366,7 @@ void PatchSectionView::deleteCurrentRow()
     const CursorPosition &pos = section()->cursorPosition();
     if (pos.row == ROW_CIRCUIT)
         deleteCurrentCircuit();
-    else if (pos.row == -1)
+    else if (pos.row == ROW_COMMENT)
         deleteCurrentComment();
     else if (pos.column == 0)
         deleteCurrentJack();

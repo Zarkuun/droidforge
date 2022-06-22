@@ -493,7 +493,7 @@ void RackView::updateRegisterHilites()
 
     RegisterList currentRegisters;
     CursorPosition cursor = section()->cursorPosition();
-    if (cursor.row == ROW_CIRCUIT || cursor.row == -1) // Circuit selected
+    if (cursor.row == ROW_CIRCUIT || cursor.row == ROW_COMMENT) // Circuit selected
         circuit->collectRegisterAtoms(currentRegisters);
     else {
         const JackAssignment *ja = circuit->jackAssignment(cursor.row);
