@@ -11,7 +11,7 @@
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"
 #define SECTION_DEFAULT_NAME                 TR("Untitled")
 #define CIRCUIT_ICON_PATH                    ":images/circuits/"
-#define ICON_PATH_TEMPLATE                   ":images/icons/white/%1.png"
+#define ICON_PATH_TEMPLATE                   ":images/icons/%1/%2.png"
 #define IMAGE_PATH_TEMPLATE                  ":images/icons/%1.png"
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001

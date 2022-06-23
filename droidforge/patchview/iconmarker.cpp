@@ -1,4 +1,5 @@
 #include "iconmarker.h"
+#include "colorscheme.h"
 #include "iconbase.h"
 #include "tuning.h"
 
@@ -29,14 +30,19 @@ void IconMarker::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWid
 
 QString IconMarker::iconName() const
 {
+    QString t;
     switch (type) {
-    case ICON_MARKER_PROBLEM:     return "warning";
-    case ICON_MARKER_INFO:        return "info";
-    case ICON_MARKER_LEDMISMATCH: return "ledmismatch";
-    case ICON_MARKER_FOLDED:      return "folded";
+    case ICON_MARKER_PROBLEM:     t = "warning"; break;
+    case ICON_MARKER_INFO:        t = "info"; break;
+    case ICON_MARKER_LEDMISMATCH: t = "ledmismatch"; break;
+    case ICON_MARKER_FOLDED:      t = "%1/folded"; break;
     default:
         return "";
     }
+    if (the_colorscheme->isDark())
+        return t.arg("dark");
+    else
+        return t.arg("light");
 }
 
 int IconMarker::size() const

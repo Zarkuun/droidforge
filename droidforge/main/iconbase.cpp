@@ -1,13 +1,16 @@
 #include "iconbase.h"
 #include "globals.h"
 #include "tuning.h"
+#include "colorscheme.h"
 
 IconBase the_iconbase;
 
 const QIcon &IconBase::getIcon(const QString &name)
 {
     if (!icons.contains(name)) {
-        QIcon icon(QString(ICON_PATH_TEMPLATE).arg(name));
+        QIcon icon(QString(ICON_PATH_TEMPLATE)
+                   .arg(the_colorscheme->isDark() ? "dark" : "light",
+                        name));
         icons[name] = icon;
     }
     return icons[name];

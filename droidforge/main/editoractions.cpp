@@ -7,10 +7,6 @@
 
 EditorActions *the_actions = 0;
 
-QIcon noicon("");
-
-#define NOICON(x) noicon
-
 EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
     : QObject{parent}
     , PatchView(patch)
@@ -37,7 +33,7 @@ void EditorActions::createActions()
     actions[ACTION_NEW] = new QAction(tr("&New..."), this);
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
     actions[ACTION_NEW]->setStatusTip(tr("Create a new patch from scratch"));
-    actions[ACTION_TOOLBAR_NEW] = new QAction(ICON("settings_input_composite"), tr("New"), this);
+    actions[ACTION_TOOLBAR_NEW] = new QAction(ICON("new"), tr("New"), this);
 
     actions[ACTION_CONFIGURE_COLORS] = new QAction(tr("Edit colors"), this);
     actions[ACTION_CONFIGURE_COLORS]->setShortcut(QKeySequence(tr("F7")));
@@ -45,7 +41,7 @@ void EditorActions::createActions()
     actions[ACTION_OPEN] = new QAction(tr("&Open..."), this);
     actions[ACTION_OPEN]->setShortcuts(QKeySequence::Open);
     actions[ACTION_OPEN]->setStatusTip(tr("Open an existing patch"));
-    actions[ACTION_TOOLBAR_OPEN] = new QAction(ICON("open_in_browser"), tr("Open"), this);
+    actions[ACTION_TOOLBAR_OPEN] = new QAction(ICON("open"), tr("Open"), this);
 
     actions[ACTION_SAVE] = new QAction(tr("&Save..."), this);
     actions[ACTION_SAVE]->setShortcuts(QKeySequence::Save);
@@ -62,11 +58,11 @@ void EditorActions::createActions()
 
     actions[ACTION_UPLOAD_TO_DROID] = new QAction(tr("Activate in master via USB to X7"), this);
     actions[ACTION_UPLOAD_TO_DROID]->setShortcut(QKeySequence(tr("F9")));
-    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID] = new QAction(ICON("exit_to_app"), tr("Activate!"), this);
+    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID] = new QAction(ICON("upload_to_droid"), tr("Activate!"), this);
 
     actions[ACTION_SAVE_TO_SD] = new QAction(tr("Save to DROID microSD card"), this);
     actions[ACTION_SAVE_TO_SD]->setShortcut(QKeySequence(tr("F10")));
-    actions[ACTION_TOOLBAR_SAVE_TO_SD] = new QAction(ICON("sim_card"), tr("Save to SD"), this);
+   actions[ACTION_TOOLBAR_SAVE_TO_SD] = new QAction(ICON("save_to_sd"), tr("Save to SD"), this);
 
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS
@@ -77,19 +73,19 @@ void EditorActions::createActions()
     actions[ACTION_OPEN_ENCLOSING_FOLDER] = new QAction(title, this);
     actions[ACTION_OPEN_ENCLOSING_FOLDER]->setStatusTip(tr("Open the folder where the current patch is located."));
     #endif
-    actions[ACTION_INTEGRATE_PATCH] = new QAction(NOICON("extension"), tr("&Integrate other patch as new section"), this);
+    actions[ACTION_INTEGRATE_PATCH] = new QAction(tr("&Integrate other patch as new section"), this);
     actions[ACTION_INTEGRATE_PATCH]->setShortcut(QKeySequence(tr("Ctrl+I")));
     actions[ACTION_INTEGRATE_PATCH]->setStatusTip(tr("Load another patch, add that as a new section after the currently selected section "
                                "and try to move the controls, inputs and outputs of that patch to unused "
                                "jacks and controlls"));
 
-    actions[ACTION_JUMP_TO_NEXT_PROBLEM] = new QAction(NOICON("warning"), tr("&Jump to next problem"), this);
+    actions[ACTION_JUMP_TO_NEXT_PROBLEM] = new QAction(tr("&Jump to next problem"), this);
     actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setShortcut(QKeySequence(tr("F6")));
     actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setStatusTip(tr("Jump to the next problem in your patch. You "
                                              "need to fix all these problems before you can load "
                                              "the patch to your master."));
 
-    actions[ACTION_TOOLBAR_PROBLEMS] = new QAction(ICON("warning"), tr("Problems"), this);
+    actions[ACTION_TOOLBAR_PROBLEMS] = new QAction(ICON("problems"), tr("Problems"), this);
     actions[ACTION_TOOLBAR_PROBLEMS]->setStatusTip(tr("You have problems in your patch. You "
                                              "need to fix all these problems before you can load "
                                              "the patch to your master."));
@@ -98,26 +94,26 @@ void EditorActions::createActions()
     actions[ACTION_QUIT]->setShortcuts(QKeySequence::Quit);
     actions[ACTION_QUIT]->setStatusTip(tr("Quit DROID Forge"));
 
-    actions[ACTION_PATCH_PROPERTIES] = new QAction(NOICON("dns"), tr("&Patch properties..."), this);
+    actions[ACTION_PATCH_PROPERTIES] = new QAction(tr("&Patch properties..."), this);
     actions[ACTION_PATCH_PROPERTIES]->setShortcut(QKeySequence(tr("Ctrl+.")));
 
-    actions[ACTION_UNDO] = new QAction(NOICON("undo"), tr("&Undo"), this);
+    actions[ACTION_UNDO] = new QAction(tr("&Undo"), this);
     actions[ACTION_UNDO]->setShortcuts(QKeySequence::Undo);
     actions[ACTION_UNDO]->setStatusTip(tr("Undo last edit action"));
 
-    actions[ACTION_REDO] = new QAction(NOICON("redo"), tr("&Redo"), this);
+    actions[ACTION_REDO] = new QAction(tr("&Redo"), this);
     actions[ACTION_REDO]->setShortcuts(QKeySequence::Redo);
     actions[ACTION_REDO]->setStatusTip(tr("Redo last edit action"));
 
-    actions[ACTION_CUT] = new QAction(NOICON("content_cut"), tr("C&ut"), this);
+    actions[ACTION_CUT] = new QAction(tr("C&ut"), this);
     actions[ACTION_CUT]->setShortcuts(QKeySequence::Cut);
     actions[ACTION_CUT]->setStatusTip(tr("Cut selection to clipboard"));
 
-    actions[ACTION_COPY] = new QAction(NOICON("content_copy"), tr("&Copy"), this);
+    actions[ACTION_COPY] = new QAction(tr("&Copy"), this);
     actions[ACTION_COPY]->setShortcuts(QKeySequence::Copy);
     actions[ACTION_COPY]->setStatusTip(tr("Copy selected stuff to clipboard"));
 
-    actions[ACTION_PASTE] = new QAction(NOICON("content_paste"), tr("&Paste"), this);
+    actions[ACTION_PASTE] = new QAction(tr("&Paste"), this);
     actions[ACTION_PASTE]->setShortcuts(QKeySequence::Paste);
     actions[ACTION_PASTE]->setStatusTip(tr("Paste contents from clipboard"));
     actions[ACTION_PASTE]->setEnabled(false); // enabled by clipboard
@@ -169,34 +165,34 @@ void EditorActions::createActions()
     actions[ACTION_ENABLE] = new QAction(tr("&Enable"), this);
     actions[ACTION_ENABLE]->setShortcut(QKeySequence(tr("#")));
 
-    actions[ACTION_SORT_JACKS] = new QAction(NOICON("filter_list"), tr("Sort parameters"), this);
+    actions[ACTION_SORT_JACKS] = new QAction(tr("Sort parameters"), this);
     actions[ACTION_SORT_JACKS]->setShortcut(QKeySequence(tr("Meta+S")));
 
     actions[ACTION_NEW_CIRCUIT] = new QAction(tr("&New circuit..."), this);
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
-    actions[ACTION_TOOLBAR_NEW_CIRCUIT] = new QAction(ICON("open_in_new"), tr("Circuit..."), this);
+    actions[ACTION_TOOLBAR_NEW_CIRCUIT] = new QAction(ICON("new_circuit"), tr("Circuit..."), this);
 
     actions[ACTION_ADD_JACK] = new QAction(tr("&New parameter..."), this);
     actions[ACTION_ADD_JACK]->setShortcut(QKeySequence(tr("Ctrl+N")));
-    actions[ACTION_TOOLBAR_ADD_JACK] = new QAction(ICON("settings_input_composite"), tr("Parameter"), this);
+    actions[ACTION_TOOLBAR_ADD_JACK] = new QAction(ICON("add_jack"), tr("Parameter"), this);
 
-    actions[ACTION_EDIT_VALUE] = new QAction(NOICON("edit"), tr("&Edit element under cursor..."), this);
+    actions[ACTION_EDIT_VALUE] = new QAction(tr("&Edit element under cursor..."), this);
     actions[ACTION_EDIT_VALUE]->setShortcuts({ QKeySequence(tr("Enter")),
                                     QKeySequence(tr("Return"))});
-    actions[ACTION_FOLLOW_CABLE] = new QAction(NOICON("youtube_searched_for"), tr("&Follow internal cable"), this);
+    actions[ACTION_FOLLOW_CABLE] = new QAction(tr("&Follow internal cable"), this);
     actions[ACTION_FOLLOW_CABLE]->setShortcut(QKeySequence(tr("?")));
 
     actions[ACTION_RENAME_CABLE] = new QAction(tr("&Rename internal cable"), this);
     actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+Ctrl+R")));
 
-    actions[ACTION_START_PATCHING] = new QAction(NOICON("swap_horiz"), tr("Start creating internal cable"), this);
+    actions[ACTION_START_PATCHING] = new QAction(tr("Start creating internal cable"), this);
     actions[ACTION_START_PATCHING]->setShortcut(QKeySequence(tr("=")));
 
-    actions[ACTION_FINISH_PATCHING] = new QAction(NOICON("swap_horiz"), tr("Finish creating internal cable"), this);
+    actions[ACTION_FINISH_PATCHING] = new QAction(tr("Finish creating internal cable"), this);
     actions[ACTION_FINISH_PATCHING]->setShortcut(QKeySequence(tr("=")));
     actions[ACTION_FINISH_PATCHING]->setEnabled(false);
 
-    actions[ACTION_ABORT_PATCHING] = new QAction(NOICON("swap_horiz"), tr("Abort creating internal cable"), this);
+    actions[ACTION_ABORT_PATCHING] = new QAction(tr("Abort creating internal cable"), this);
     actions[ACTION_ABORT_PATCHING]->setEnabled(false);
 
     actions[ACTION_ABORT_ALL_ACTIONS] = new QAction(tr("Abort all actions"), this);
@@ -236,13 +232,13 @@ void EditorActions::createActions()
     actions[ACTION_MERGE_WITH_NEXT_SECTION] = new QAction(tr("Merge with next section"));
     actions[ACTION_MERGE_ALL_SECTIONS] = new QAction(tr("Merge all sections into one"));
 
-    actions[ACTION_RESET_ZOOM] = new QAction(NOICON("zoom_in"), tr("Normal font size"), this);
+    actions[ACTION_RESET_ZOOM] = new QAction(tr("Normal font size"), this);
     actions[ACTION_RESET_ZOOM]->setShortcut(QKeySequence(tr("Ctrl+0")));
 
-    actions[ACTION_ZOOM_IN] = new QAction(NOICON("zoom_in"), tr("Increase font size"), this);
+    actions[ACTION_ZOOM_IN] = new QAction(tr("Increase font size"), this);
     actions[ACTION_ZOOM_IN]->setShortcuts(QKeySequence::ZoomIn);
 
-    actions[ACTION_ZOOM_OUT] = new QAction(NOICON("zoom_out"), tr("Decrease font size"), this);
+    actions[ACTION_ZOOM_OUT] = new QAction(tr("Decrease font size"), this);
     actions[ACTION_ZOOM_OUT]->setShortcuts(QKeySequence::ZoomOut);
 
     actions[ACTION_RACK_RESET_ZOOM] = new QAction(tr("Normal rack size"), this);
@@ -254,7 +250,7 @@ void EditorActions::createActions()
     actions[ACTION_RACK_ZOOM_OUT] = new QAction(tr("Decrease rack size"), this);
     actions[ACTION_RACK_ZOOM_OUT]->setShortcut(QKeySequence(tr("Alt+Ctrl+-")));
 
-    actions[ACTION_FOLD_UNFOLD] = new QAction(NOICON("format_line_spacing"), tr("Fold / unfold circuit"), this);
+    actions[ACTION_FOLD_UNFOLD] = new QAction(tr("Fold / unfold circuit"), this);
     actions[ACTION_FOLD_UNFOLD]->setShortcut(QKeySequence(tr("Space")));
 
     actions[ACTION_FOLD_UNFOLD_ALL] = new QAction(tr("Fold / unfold all circuits"), this);
@@ -262,7 +258,7 @@ void EditorActions::createActions()
 
     actions[ACTION_ADD_CONTROLLER] = new QAction(tr("&Add controller module..."), this);
     actions[ACTION_ADD_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
-    actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("keyboard"), tr("Controller"), this);
+    actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("add_controller"), tr("Controller"), this);
 
     actions[ACTION_EDIT_CIRCUIT_SOURCE] = new QAction(tr("Edit circuit source code"), this);
     actions[ACTION_EDIT_CIRCUIT_SOURCE]->setShortcut(QKeySequence(tr("Ctrl+U")));
