@@ -1,12 +1,5 @@
 TODO für die erste Version:
 
-- Registerremapping: Wenn ich I remappe, muss ich auch für N
-  sorgen. Kann man das geordnet irgendwie machen? Oder ist das
-  schon gemacht?
-  -> Nicht bei Controllerremoval
-  -> Bei Smart Paste / Integrate / ... interactively... Denn im Snippet
-     kann eine I/N-Kombi drin sein.
-  -> Beim Verschieben mit der Maus
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
 - Selektion mit Rahmen ziehen
 
@@ -19,6 +12,7 @@ Release:
 
 
 KLEINERE FEATURES FÜR SPÄTER:
+- Dieser Hintdialog. Den könnten wir noch noch viel öfter einsetzen...
 - Speicherverbrauch der Circuit zusammenrechnen
 - Skizzen der Module anstelle von Fotos
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
