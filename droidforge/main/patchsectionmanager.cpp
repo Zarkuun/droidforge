@@ -225,7 +225,7 @@ void PatchSectionManager::rebuildGraphics()
     QGraphicsTextItem *text = scene()->addText(tr("Sections"));
     int textWidth = text->boundingRect().width();
     text->setPos((viewport()->width() - textWidth) / 2, 0);
-    text->setDefaultTextColor(PSM_COLOR_TITLE);
+    text->setDefaultTextColor(COLOR(PSM_COLOR_TITLE));
 
     int y = text->boundingRect().bottom() + PSM_TOP_PADDING;
     int width = viewport()->width() - 2 * PSM_SIDE_PADDING;

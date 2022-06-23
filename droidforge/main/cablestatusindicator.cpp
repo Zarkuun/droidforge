@@ -18,8 +18,8 @@ CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *pare
     setMinimumWidth(CSI_WIDTH);
     setMaximumWidth(CSI_WIDTH);
 
-    cablePen.setColor(CSI_CABLE_COLOR);
-    cableHilitePen.setColor(CSI_CABLE_HILITE_COLOR);
+    cablePen.setColor(COLOR(CSI_CABLE_COLOR));
+    cableHilitePen.setColor(COLOR(CSI_CABLE_HILITE_COLOR));
     cableHilitePen.setWidth(1);
 
     // TODO: mouse click soll signal machen bzw. direkt
@@ -73,7 +73,7 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
     if (cableName == "") {
         return;
     }
-    painter.fillRect(rect(), CSI_BACKGROUND_COLOR);
+    painter.fillRect(rect(), COLOR(COLOR_STATUSBAR_BACKGROUND));
 
     float imgHeight = height() - 2 * CSI_IMAGE_MARGIN;
     float imgWidth =  imgHeight * the_cable_colorizer->imageAspect();
@@ -111,8 +111,8 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
             paintMarker(
                     painter,
                     leftPlugRect.right() + CSI_MARKER_DISTANCE,
-                    CSI_BAD_MARKER_BORDER,
-                    CSI_BAD_MARKER_BACKGROUND,
+                    COLOR(CSI_BAD_MARKER_BORDER),
+                    COLOR(CSI_BAD_MARKER_BACKGROUND),
                     numAsOutput);
         }
     }
@@ -124,8 +124,8 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
             paintMarker(
                     painter,
                     rightPlugRect.left() - CSI_MARKER_DISTANCE,
-                    CSI_GOOD_MARKER_BORDER,
-                    CSI_GOOD_MARKER_BACKGROUND,
+                    COLOR(CSI_GOOD_MARKER_BORDER),
+                    COLOR(CSI_GOOD_MARKER_BACKGROUND),
                     numAsInput);
         }
     }
@@ -146,10 +146,10 @@ void CableStatusIndicator::paintLabel(QPainter &painter, int xpos, QString text)
                 CSI_IMAGE_MARGIN,
                 nameWidth,
                 height() - 2*CSI_IMAGE_MARGIN);
-    painter.setBrush(CSI_LABEL_BACKGROUND);
+    painter.setBrush(COLOR(CSI_LABEL_BACKGROUND));
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(nameRect, 5, 5);
-    painter.setPen(QColor(255, 255, 255));
+    painter.setPen(COLOR(CSI_LABEL_COLOR));
     painter.setFont(cableFont);
     painter.drawText(nameRect, text, Qt::AlignVCenter | Qt::AlignCenter);
 
@@ -174,7 +174,7 @@ void CableStatusIndicator::paintMarker(QPainter &painter, int xpos, QColor borde
     markerFont.setLetterSpacing(QFont::PercentageSpacing, CSI_MARKER_LETTER_SPACING);
 
     painter.setFont(markerFont);
-    painter.setPen(QColor(255, 255, 255));
+    painter.setPen(COLOR(CSI_MARKER_TEXT_COLOR));
     painter.drawText(
                 markerRect,
                 QString::number(number) + "X",

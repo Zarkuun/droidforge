@@ -3,6 +3,7 @@
 QMap<int, QColor> colors;
 void loadColors()
 {
+    colors.insert(0, QColor(128, 128, 128, 255));
     colors.insert(100, QColor(0, 0, 0, 255));
     colors.insert(101, QColor(56, 146, 28, 255));
     colors.insert(102, QColor(255, 38, 0, 255));
@@ -21,6 +22,14 @@ void loadColors()
     colors.insert(320, QColor(115, 255, 138, 255));
     colors.insert(321, QColor(201, 201, 201, 255));
     colors.insert(322, QColor(255, 0, 0, 255));
+    colors.insert(350, QColor(77, 77, 77, 255));
+    colors.insert(351, QColor(179, 179, 179, 255));
+    colors.insert(352, QColor(0, 0, 0, 255));
+    colors.insert(353, QColor(226, 34, 0, 255));
+    colors.insert(354, QColor(94, 94, 94, 255));
+    colors.insert(355, QColor(0, 0, 0, 255));
+    colors.insert(356, QColor(96, 96, 96, 255));
+    colors.insert(357, QColor(255, 255, 255, 255));
     colors.insert(40, QColor(191, 191, 191, 255));
     colors.insert(400, QColor(164, 164, 164, 255));
     colors.insert(401, QColor(238, 238, 238, 255));

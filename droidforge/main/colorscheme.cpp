@@ -190,11 +190,41 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Section manager: title background"), list);
     item->setData(1, PSM_COLOR_SECTION_BACKGROUND);
 
+    item = new QListWidgetItem(tr("Section manager: title"), list);
+    item->setData(1, PSM_COLOR_TITLE);
+
     item = new QListWidgetItem(tr("Statusbar: text"), list);
     item->setData(1, COLOR_STATUSBAR_TEXT);
 
     item = new QListWidgetItem(tr("Statusbar: background"), list);
     item->setData(1, COLOR_STATUSBAR_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Cable status: cable color"), list);
+    item->setData(1, CSI_CABLE_COLOR);
+
+    item = new QListWidgetItem(tr("Cable status: cable hilite color"), list);
+    item->setData(1, CSI_CABLE_HILITE_COLOR);
+
+    item = new QListWidgetItem(tr("Cable status: label"), list);
+    item->setData(1, CSI_LABEL_COLOR);
+
+    item = new QListWidgetItem(tr("Cable status: label background"), list);
+    item->setData(1, CSI_LABEL_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Cable status: bad marker border"), list);
+    item->setData(1, CSI_BAD_MARKER_BORDER);
+
+    item = new QListWidgetItem(tr("Cable status: bad marker bg"), list);
+    item->setData(1, CSI_BAD_MARKER_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Cable status: good marker border"), list);
+    item->setData(1, CSI_GOOD_MARKER_BORDER);
+
+    item = new QListWidgetItem(tr("Cable status: good marker bg"), list);
+    item->setData(1, CSI_GOOD_MARKER_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Cable status: marker text"), list);
+    item->setData(1, CSI_MARKER_TEXT_COLOR);
 
     colorDialog = new QColorDialog(this);
     colorDialog->setOption(QColorDialog::ShowAlphaChannel);

@@ -18,12 +18,6 @@
 #define MAC_UMOUNT_TIMEOUT_MS                10000
 #define MAX_DROID_INI                        64000 // from x7.h
 
-// #define NUMBER_INPUTS                        8
-// #define NUMBER_OUTPUTS                       8
-// #define NUMBER_GATES                         12
-// #define NUMBER_RGB_LEDS                      32
-// #define NUMBER_EXTRA_REGISTERS               1
-
 #define MAX_LENGTH_SHORTHAND                 5 // for register labels
 #define MAX_RECENT_FILES                     10
 #define UNDO_HISTORY_SIZE                    1000
@@ -36,19 +30,6 @@
 
 // Standard for all dialogs
 #define STANDARD_SPACING                     10
-// #define COLOR_LINE                           QColor(120, 120, 120)
-// #define COLOR_CURSOR_NORMAL                  QColor(255, 255, 255)
-// #define COLOR_CURSOR_PROBLEM                 QColor(255, 0, 0)
-// #define COLOR_CURSOR_PATCHING                QColor(50, 100, 255)
-// #define COLOR_CURSOR_DISABLED                QColor(160, 160, 160, 128)
-// #define COLOR_CURSOR_INACTIVE                QColor(180, 180, 180) // JackSelector
-#define COLOR_TEXT                           QColor(255, 255, 255)
-#define COLOR_TEXT_UNKNOWN                   QColor(255, 255, 0)
-#define COLOR_TEXT_DISABLED                  QColor(128, 128, 128)
-// #define COLOR_JACK_INPUT                     QColor(0, 200, 255)
-// #define COLOR_JACK_OUTPUT                    QColor(245, 60, 50)
-#define COLOR_JACK_UNKNOWN                   COLOR_TEXT_UNKNOWN
-#define COLOR_STANDARD_BACKGROUND            QColor(30, 30, 30)
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
 #define ASSUMED_SCROLLBAR_WIDTH              40
 
@@ -67,20 +48,12 @@
 #define CSI_WIDTH                            350
 #define CSI_MAX_NAME_WIDTH                   150
 #define CSI_SIDE_PADDING                     STANDARD_SPACING
-#define CSI_BACKGROUND_COLOR                 COLOR_STATUSBAR_BACKGROUND
 #define CSI_CABLE_THICKNESS                  0.4
-#define CSI_CABLE_COLOR                      QColor(30, 30, 30)
-#define CSI_CABLE_HILITE_COLOR               QColor(80, 80, 80)
-#define CSI_LABEL_BACKGROUND                 QColor(0, 0, 0, 90)
 #define CSI_LABEL_FONT_SIZE                  12
 #define CSI_MARKER_WIDTH                     20
 #define CSI_MARKER_DISTANCE                  STANDARD_SPACING
 #define CSI_MARKER_FONT_SIZE                 9
 #define CSI_MARKER_LETTER_SPACING            95
-#define CSI_GOOD_MARKER_BACKGROUND           QColor(50, 50, 50)
-#define CSI_GOOD_MARKER_BORDER               QColor(180, 180, 180)
-#define CSI_BAD_MARKER_BACKGROUND            QColor(180, 0, 0)
-#define CSI_BAD_MARKER_BORDER                QColor(255, 0, 0)
 #define CSI_NAME_PADDING                     STANDARD_SPACING
 #define CSI_ANIMATION_RANGE                  20
 #define CSI_ANIMATION_DURATION               1000
@@ -98,10 +71,6 @@
 #define RACV_REGMARKER_EXTRA_DIAMETER        30
 #define RACV_REGMARKER_PEN_WIDTH             10
 #define RACV_REGMARKER_PEN_STYLE             Qt::DotLine
-// #define RACV_REGMARKER_BACKGROUND            QColor(255, 255, 255, 100)
-// #define RACV_REGMARKER_PEN_COLOR             QColor(255, 255, 255)
-// #define RACV_REGHILITES_PEN_COLOR            QColor(255, 128, 0)
-// #define RACV_REGHILITES_BACKGROUND           QColor(255, 128, 0, 128)
 
 #define CONTROL_LARGE_POT_SIZE               4.1
 #define CONTROL_SMALL_POT_SIZE               1.4
@@ -125,13 +94,10 @@
 #define CSEL_CURSOR_WIDTH                    8
 
 // Patch section manager
-#define PSM_COLOR_BACKGROUND                 COLOR_STANDARD_BACKGROUND
-#define PSM_COLOR_TITLE                      QColor(80, 80, 80)
 #define PSM_SIDE_PADDING                     STANDARD_SPACING
 #define PSM_TOP_PADDING                      (STANDARD_SPACING / 2)
 #define PSM_VERTICAL_DISATNCE                (STANDARD_SPACING / 2)
 #define PSM_SECTION_HEIGHT                   20
-// #define PSM_COLOR_SECTION_BACKGROUND         QColor(40, 40, 40)
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
 #define PSM_IMAGE_MARGIN                     4
 
@@ -167,10 +133,6 @@
 #define CICH_TITLE_HEIGHT                    20
 #define CICH_PADDING                         (STANDARD_SPACING / 2)
 #define CICH_WIDTH_MARGIN                    (2 * CICH_GLOBAL_MARGIN)
-// #define CICH_BACKGROUND_COLOR                QColor(20, 20, 20)
-// #define CICH_CIRCUIT_BACKGROUND_COLOR        QColor(40, 40, 40)
-// #define CICH_COLOR_TITLE                     QColor(255, 255, 255)
-// #define CICH_COLOR_DESCRIPTION               QColor(190, 190, 190)
 
 // Jack selector (JSEL)
 #define JSEL_TOTAL_WIDTH                     600
