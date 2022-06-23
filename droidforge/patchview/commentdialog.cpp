@@ -6,7 +6,7 @@
 CommentDialog::CommentDialog(QWidget *parent)
     : Dialog{"comment", parent}
 {
-    setWindowTitle(tr("Edit circuit comment")); // TODO Also for jack comments
+    setWindowTitle(tr("Edit circuit comment"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);

@@ -128,25 +128,25 @@ void EditorActions::createActions()
                                  "in order to avoid conflicts."));
     actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
 
-    actions[ACTION_EXPAND_ARRAY] = new QAction(tr("Expand jack array by one"), this);
+    actions[ACTION_EXPAND_ARRAY] = new QAction(tr("Expand parameter array by one"), this);
     actions[ACTION_EXPAND_ARRAY]->setShortcut(QKeySequence(tr("Ctrl+E")));
     actions[ACTION_EXPAND_ARRAY]->setStatusTip(tr("Works only for parameter lines with arrays like pitch1...16. "
                                                      "Grows that array by creating one more line of that type with "
                                                      "increasing number."));
 
-    actions[ACTION_EXPAND_ARRAY_MAX] = new QAction(tr("Expand jack array to max"), this);
+    actions[ACTION_EXPAND_ARRAY_MAX] = new QAction(tr("Expand parameter array to max"), this);
     actions[ACTION_EXPAND_ARRAY_MAX]->setShortcut(QKeySequence(tr("Shift+Ctrl+E")));
     actions[ACTION_EXPAND_ARRAY_MAX]->setStatusTip(tr("Works only for parameter lines with arrays like pitch1...16. "
                                                   "Grows that array to its maximum size by creating all remaining "
                                                   "parameter lines."));
 
-    actions[ACTION_ADD_MISSING_JACKS] = new QAction(tr("Add remaining jacks"), this);
+    actions[ACTION_ADD_MISSING_JACKS] = new QAction(tr("Add remaining parameters"), this);
     actions[ACTION_ADD_MISSING_JACKS]->setShortcut(QKeySequence(tr("Ctrl+R")));
-    actions[ACTION_ADD_MISSING_JACKS]->setStatusTip(tr("Adds all jacks of this circuit that are not already defined."));
+    actions[ACTION_ADD_MISSING_JACKS]->setStatusTip(tr("Adds all parameters of this circuit that are not already defined."));
 
-    actions[ACTION_REMOVE_UNDEFINED_JACKS] = new QAction(tr("Remove undefined jacks"), this);
+    actions[ACTION_REMOVE_UNDEFINED_JACKS] = new QAction(tr("Remove undefined parameters"), this);
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setShortcut(QKeySequence(tr("Shift+Ctrl+R")));
-    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setStatusTip(tr("Removes all jacks in your definition that have not assigned values to them"));
+    actions[ACTION_REMOVE_UNDEFINED_JACKS]->setStatusTip(tr("Removes all parameters in your definition that have not assigned values to them"));
 
     actions[ACTION_FIX_LED_MISMATCH] = new QAction(tr("Fix button/LED mismatches"), this);
     actions[ACTION_FIX_LED_MISMATCH]->setShortcut(QKeySequence(tr("Ctrl+L")));
@@ -169,16 +169,16 @@ void EditorActions::createActions()
     actions[ACTION_ENABLE] = new QAction(tr("&Enable"), this);
     actions[ACTION_ENABLE]->setShortcut(QKeySequence(tr("#")));
 
-    actions[ACTION_SORT_JACKS] = new QAction(NOICON("filter_list"), tr("Sort jack assignments"), this);
+    actions[ACTION_SORT_JACKS] = new QAction(NOICON("filter_list"), tr("Sort parameters"), this);
     actions[ACTION_SORT_JACKS]->setShortcut(QKeySequence(tr("Meta+S")));
 
     actions[ACTION_NEW_CIRCUIT] = new QAction(tr("&New circuit..."), this);
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
-    actions[ACTION_TOOLBAR_NEW_CIRCUIT] = new QAction(ICON("open_in_new"), tr("New circuit..."), this);
+    actions[ACTION_TOOLBAR_NEW_CIRCUIT] = new QAction(ICON("open_in_new"), tr("Circuit..."), this);
 
-    actions[ACTION_ADD_JACK] = new QAction(tr("&New jack..."), this);
+    actions[ACTION_ADD_JACK] = new QAction(tr("&New parameter..."), this);
     actions[ACTION_ADD_JACK]->setShortcut(QKeySequence(tr("Ctrl+N")));
-    actions[ACTION_TOOLBAR_ADD_JACK] = new QAction(ICON("settings_input_composite"), tr("New jack"), this);
+    actions[ACTION_TOOLBAR_ADD_JACK] = new QAction(ICON("settings_input_composite"), tr("Parameter"), this);
 
     actions[ACTION_EDIT_VALUE] = new QAction(NOICON("edit"), tr("&Edit element under cursor..."), this);
     actions[ACTION_EDIT_VALUE]->setShortcuts({ QKeySequence(tr("Enter")),
@@ -205,7 +205,7 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
 
-    actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit jack info..."), this);
+    actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit parameter info..."), this);
     actions[ACTION_EDIT_JACK_COMMENT]->setShortcut(QKeySequence(tr("Alt+C")));
 
     actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Previous section"));
@@ -262,7 +262,7 @@ void EditorActions::createActions()
 
     actions[ACTION_ADD_CONTROLLER] = new QAction(tr("&Add controller module..."), this);
     actions[ACTION_ADD_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
-    actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("keyboard"), tr("Add module..."), this);
+    actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("keyboard"), tr("Controller"), this);
 
     actions[ACTION_EDIT_CIRCUIT_SOURCE] = new QAction(tr("Edit circuit source code"), this);
     actions[ACTION_EDIT_CIRCUIT_SOURCE]->setShortcut(QKeySequence(tr("Ctrl+U")));

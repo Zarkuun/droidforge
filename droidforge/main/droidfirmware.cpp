@@ -198,7 +198,7 @@ QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QStr
         return delatexify(desc, true /* html */);
     }
     else
-        return TR("Sorry, there is no documentation of this jack, yet.");
+        return TR("Sorry, this parameter is not documented, yet.");
 }
 QMap<float, QString> DroidFirmware::jackValueTable(QString circuit, QString whence, QString jack) const
 {

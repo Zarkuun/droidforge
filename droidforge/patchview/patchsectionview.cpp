@@ -238,10 +238,10 @@ void PatchSectionView::editJackCommentAt(const CursorPosition &pos)
         return;
 
     QString oldComment = ja->getComment();
-    QString newComment = NameChooseDialog::getName(tr("Edit info of this jack"), tr("Info:"), oldComment);
+    QString newComment = NameChooseDialog::getName(tr("Edit info of this parameter"), tr("Info:"), oldComment);
     if (newComment != oldComment) {
         ja->setComment(newComment);
-        patch->commit(tr("changing info of jack '%1'").arg(ja->jackName()));
+        patch->commit(tr("changing info of parameter '%1'").arg(ja->jackName()));
         emit patchModified();
     }
 }
@@ -451,7 +451,7 @@ void PatchSectionView::addJack()
     currentCircuit()->insertJackAssignment(buildJackAssignment(name), index);
     section()->setCursorRow(index);
     section()->setCursorColumn(1);
-    patch->commit(tr("adding new jack '%1'").arg(name));
+    patch->commit(tr("adding new parameter '%1'").arg(name));
     emit patchModified();
 }
 void PatchSectionView::cut()
@@ -521,7 +521,7 @@ void PatchSectionView::expandArray(bool max)
         if (!max)
             break;
     }
-    patch->commit(tr("expanding jack array"));
+    patch->commit(tr("expanding parameter array"));
     emit patchModified();
 }
 void PatchSectionView::expandArrayMax()
@@ -535,13 +535,13 @@ void PatchSectionView::addMissingJacks()
         circuit->addJackAssignment(new JackAssignmentInput(name));
     for (auto name: circuit->missingJacks(JACKTYPE_OUTPUT))
         circuit->addJackAssignment(new JackAssignmentOutput(name));
-    patch->commit(tr("adding missing jacks"));
+    patch->commit(tr("adding missing parameters"));
     emit patchModified();
 }
 void PatchSectionView::removeUndefinedJacks()
 {
     currentCircuit()->removeUndefinedJacks();
-    patch->commit(tr("removing undefined jacks"));
+    patch->commit(tr("removing undefined parameters"));
     section()->sanitizeCursor();
     emit patchModified();
 }
@@ -566,7 +566,7 @@ void PatchSectionView::sortJacks()
     else if (currentCircuit()) {
         currentCircuit()->sortJacks();
     }
-    patch->commit(tr("sorting jacks"));
+    patch->commit(tr("sorting parameters"));
     emit patchModified();
 }
 void PatchSectionView::selectAll()
@@ -611,7 +611,7 @@ void PatchSectionView::enableDisableObjects(bool enable)
                 JackAssignment *ja = circuit->jackAssignment(i);
                 ja->setDisabled(!enable);
             }
-            patch->commit(tr("%1 jack assignments").arg(what));
+            patch->commit(tr("%1 parameters").arg(what));
             emit patchModified();
         }
     }
@@ -621,7 +621,7 @@ void PatchSectionView::enableDisableObjects(bool enable)
             ja->setDisabled(!enable);
             if (enable && currentCircuit()->isDisabled())
                 currentCircuit()->setEnabled();
-            patch->commit(tr("%1 assignment of jack").arg(what));
+            patch->commit(tr("%1 parameter").arg(what));
             emit patchModified();
             return;
         }
@@ -629,7 +629,7 @@ void PatchSectionView::enableDisableObjects(bool enable)
         Circuit *circuit = currentCircuit();
         if (circuit) {
             circuit->setDisabledWithJacks(!enable);
-            patch->commit(tr("%1 assignment of circuit").arg(what));
+            patch->commit(tr("%1 circuit").arg(what));
             emit patchModified();
             return;
         }
@@ -679,7 +679,7 @@ void PatchSectionView::pasteJacksFromClipboard()
         section()->setCursorRow(index);
         index++;
     }
-    patch->commit(tr("pasting %1 jack assignments").arg(jas.count()));
+    patch->commit(tr("pasting %1 parameters").arg(jas.count()));
     emit patchModified();
 }
 void PatchSectionView::pasteAtomsFromClipboard()
@@ -1020,7 +1020,7 @@ void PatchSectionView::editJack(int key)
         }
         else
             currentJackAssignment()->changeJack(name);
-        patch->commit(tr("replacing jack with '%s'").arg(name));
+        patch->commit(tr("replacing parameter with '%s'").arg(name));
         emit patchModified();
     }
 }
@@ -1397,7 +1397,7 @@ void PatchSectionView::deleteCurrentJack()
 {
     QString jackName = currentJackAssignment()->jackName();
     section()->deleteCurrentJackAssignment();
-    patch->commit(tr("deleting assignment of jack '%1'").arg(jackName));
+    patch->commit(tr("deleting parameter '%1'").arg(jackName));
     emit patchModified();
 }
 void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
@@ -1405,7 +1405,7 @@ void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
     for (int i=to; i>=from; i--)
         section()->circuit(circuitNr)->deleteJackAssignment(i);
     section()->sanitizeCursor(); // TODO: Das soll die Section selbst machen
-    patch->commit(tr("deleting %1 jack assignments").arg(to - from + 1));
+    patch->commit(tr("deleting %1 parameters").arg(to - from + 1));
     emit patchModified();
 }
 const Atom *PatchSectionView::currentAtom() const

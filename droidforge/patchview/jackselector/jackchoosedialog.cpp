@@ -10,7 +10,7 @@
 JackChooseDialog::JackChooseDialog(QWidget *parent)
     : Dialog{"jackchooser", parent}
 {
-    setWindowTitle(tr("Add new jack / parameter"));
+    setWindowTitle(tr("Add new parameter"));
 
     // Canvas with circuit diagram
     jackSelector = new JackSelector(this);

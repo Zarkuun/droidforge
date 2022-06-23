@@ -424,9 +424,7 @@ void Patch::shiftControllerNumbers(int number, int by)
 QString Patch::toString() const
 {
     QString s;
-    if (title.isEmpty())
-        s += "# Untitled patch\n";
-    else
+    if (!title.isEmpty())
         s += "# " + title + "\n";
 
     if (!libraryMetaData.isEmpty())

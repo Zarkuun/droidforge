@@ -88,6 +88,7 @@ void PatchOperator::newPatch()
     patch->startFromScratch();
     patch->addSection(new PatchSection());
     patch->commit(tr("creating new patch"));
+    setLastFilePath("");
     emit patchModified();
 }
 void PatchOperator::createRecentFileActions(QMenu *fileMenu)

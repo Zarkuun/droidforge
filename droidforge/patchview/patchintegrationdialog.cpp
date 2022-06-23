@@ -68,7 +68,6 @@ void PatchIntegrationDialog::updateCheckboxes()
     else
         controls = needRemapControls;
 
-    QString text;
     if (needRemapJacks && controls)
         labelRemap->setText(tr("The integrated patch uses %1 controls and %2 registers on master/G8/X7\n"
                                "that are not free.").arg(controls).arg(needRemapJacks));

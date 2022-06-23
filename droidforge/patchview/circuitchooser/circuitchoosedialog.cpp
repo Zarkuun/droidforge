@@ -45,10 +45,10 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     startJacksBox = new QComboBox(this);
     // The order is imporant here. It must match the numbers
     // of jackselection_t
-    startJacksBox->addItem(tr("Start with all available jacks"));
+    startJacksBox->addItem(tr("Start with all available parameters"));
     startJacksBox->addItem(tr("Start with typical example"));
-    startJacksBox->addItem(tr("Start with essential jacks"));
-    startJacksBox->addItem(tr("Don't start with any jacks"));
+    startJacksBox->addItem(tr("Start with essential parameters"));
+    startJacksBox->addItem(tr("Don't start with any parameters"));
     startJacksBox->setCurrentIndex(settings.value("circuitchooser/startjacks", 1).toInt());
     connect(startJacksBox, &QComboBox::currentIndexChanged, this, &CircuitChooseDialog::saveSettings);
 

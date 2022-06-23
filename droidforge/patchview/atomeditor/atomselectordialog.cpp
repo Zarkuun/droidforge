@@ -8,9 +8,9 @@ AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
     : Dialog{"atomselector", parent}
 {
     if (jacktype == JACKTYPE_INPUT)
-        setWindowTitle(tr("Edit value for input jack"));
+        setWindowTitle(tr("Edit input parameter"));
     else
-        setWindowTitle(tr("Edit value for output jack"));
+        setWindowTitle(tr("Edit output parameter"));
 
     // Special widget for selecting values
     atomSelector = new AtomSelector(jacktype, this);

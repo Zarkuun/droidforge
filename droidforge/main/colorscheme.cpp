@@ -65,25 +65,25 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Circuits: even row background"), list);
     item->setData(1, CIRV_COLOR_EVEN_ROW);
 
-    item = new QListWidgetItem(tr("Circuits: input jack"), list);
+    item = new QListWidgetItem(tr("Circuits: input parameter"), list);
     item->setData(1, CIRV_COLOR_INPUT_JACK);
 
-    item = new QListWidgetItem(tr("Circuits: output jack"), list);
+    item = new QListWidgetItem(tr("Circuits: output parameter"), list);
     item->setData(1, CIRV_COLOR_OUTPUT_JACK);
 
-    item = new QListWidgetItem(tr("Circuits: unknown jack"), list);
+    item = new QListWidgetItem(tr("Circuits: unknown parameter"), list);
     item->setData(1, CIRV_COLOR_UNKNOWN_JACK);
 
-    item = new QListWidgetItem(tr("Circuits: input jack background"), list);
+    item = new QListWidgetItem(tr("Circuits: input parameter background"), list);
     item->setData(1, CIRV_COLOR_INPUT_JACK_BG);
 
-    item = new QListWidgetItem(tr("Circuits: output jack background"), list);
+    item = new QListWidgetItem(tr("Circuits: output parameter background"), list);
     item->setData(1, CIRV_COLOR_OUTPUT_JACK_BG);
 
-    item = new QListWidgetItem(tr("Circuits: unknown jack background"), list);
+    item = new QListWidgetItem(tr("Circuits: unknown parameter background"), list);
     item->setData(1, CIRV_COLOR_UNKNOWN_JACK_BG);
 
-    item = new QListWidgetItem(tr("Circuits: disabled jack background"), list);
+    item = new QListWidgetItem(tr("Circuits: disabled parameter background"), list);
     item->setData(1, CIRV_COLOR_DISABLED_JACK_BG);
 
     item = new QListWidgetItem(tr("Circuits: + and *"), list);
@@ -137,7 +137,7 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Rackview: drag arrow, not suitable"), list);
     item->setData(1, RACV_COLOR_DRAGARROW_UNSUITABLE);
 
-    item = new QListWidgetItem(tr("Jack selector: frame color"), list);
+    item = new QListWidgetItem(tr("Parameter selector: frame color"), list);
     item->setData(1, JSEL_COLOR_LINE);
 
     item = new QListWidgetItem(tr("Section manager: title background"), list);

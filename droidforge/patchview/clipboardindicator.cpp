@@ -41,7 +41,7 @@ void ClipboardIndicator::paintEvent(QPaintEvent *)
     else if (the_clipboard->numCircuits())
         info = tr("%1 circuits").arg(the_clipboard->numCircuits());
     else if (the_clipboard->numJacks())
-        info = tr("%1 jacks").arg(the_clipboard->numJacks());
+        info = tr("%1 parameters").arg(the_clipboard->numJacks());
     else if (the_clipboard->numAtoms())
         info = tr("%1 parameters").arg(the_clipboard->numAtoms());
     else if (the_clipboard->isComment())
