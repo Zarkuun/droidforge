@@ -142,6 +142,9 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Rackview: register hilites border"), list);
     item->setData(1, RACV_REGHILITES_PEN_COLOR);
 
+    item = new QListWidgetItem(tr("Rackview: register label"), list);
+    item->setData(1, RACV_COLOR_REGISTER_LABEL);
+
     item = new QListWidgetItem(tr("Rackview: register label BG"), list);
     item->setData(1, RACV_COLOR_LABEL_BG);
 

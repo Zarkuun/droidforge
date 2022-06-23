@@ -18,7 +18,6 @@ class CircuitView : public QObject, public QGraphicsItem
     float lineHeight;
     float jackColumnWidth;
     float atomColumnWidth;
-    QGraphicsDropShadowEffect effect;
     QPixmap icon;
     int markerOffset;
 

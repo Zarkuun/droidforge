@@ -18,6 +18,7 @@ void loadColors()
     colors.insert(303, QColor(255, 253, 122, 255));
     colors.insert(304, QColor(255, 253, 130, 107));
     colors.insert(305, QColor(243, 240, 162, 77));
+    colors.insert(307, QColor(0, 0, 0, 255));
     colors.insert(308, QColor(222, 222, 222, 93));
     colors.insert(320, QColor(115, 255, 138, 255));
     colors.insert(321, QColor(201, 201, 201, 255));
@@ -30,6 +31,7 @@ void loadColors()
     colors.insert(355, QColor(0, 0, 0, 255));
     colors.insert(356, QColor(96, 96, 96, 255));
     colors.insert(357, QColor(255, 255, 255, 255));
+    colors.insert(358, QColor(255, 255, 255, 255));
     colors.insert(40, QColor(191, 191, 191, 255));
     colors.insert(400, QColor(164, 164, 164, 255));
     colors.insert(401, QColor(238, 238, 238, 255));

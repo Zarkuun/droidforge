@@ -448,10 +448,6 @@ void RackView::initScene()
     dragRegisterIndicator = new DragRegisterIndicator;
     dragRegisterIndicator->setVisible(false);
     scene()->addItem(dragRegisterIndicator);
-
-    // Add strut, so space above and below the modules is visible
-    // scene()->addLine(0, 0, 0, RACV_BACKGROUND_HEIGHT, QPen(QColor(0, 0, 0, 0)));
-    // TODO: kann man das nicht mit setSceneRect() besser machen?
     refreshModules();
     updateSize();
 }

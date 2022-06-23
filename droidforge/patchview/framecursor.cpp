@@ -48,7 +48,7 @@ void FrameCursor::setanimationPhase(float newAnimationPhase)
 
     QColor c = pen().color();
     c.setAlphaF(animationPhase * 0.3);
-    setBrush(c); // QColor(255, 60, 10, 50));
+    setBrush(c);
 
     emit animationPhaseChanged();
 }

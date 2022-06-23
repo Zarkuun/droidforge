@@ -23,14 +23,6 @@ CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selecti
     , icon(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
     , markerOffset(0)
 {
-    effect.setBlurRadius(15);
-    effect.setColor(QColor(0,0,0));
-    effect.setOffset(0, 0);
-    effect.setEnabled(false);
-    setGraphicsEffect(&effect);
-
-    // Compute width of columns
-
     float sparePerColumn = (totalWidth - minimumWidth()) / NUM_COLUMNS;
     if (sparePerColumn < 0)
         sparePerColumn = 0;

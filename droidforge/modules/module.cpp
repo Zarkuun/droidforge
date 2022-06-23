@@ -55,7 +55,7 @@ void Module::paintRegisterHilites(QPainter *painter)
 void Module::paintHiliteRegister(QPainter *painter, int usage, QChar type, unsigned number)
 {
     QRectF r = registerRect(type, number, usage);
-    QPen pen(usage == 2 ? COLOR(RACV_REGHILITES_PEN_COLOR) : QColor(128, 128, 128));
+    QPen pen(COLOR(RACV_REGHILITES_PEN_COLOR));
     pen.setWidth(10);
     painter->setPen(pen);
     painter->setBrush(usage == 2 ? COLOR(RACV_REGHILITES_BG) : COLOR(RACV_REGHILITES_INACTIVE_BG));
@@ -69,7 +69,7 @@ void Module::paintRegisterLabels(QPainter *painter)
     if (!registerLabels)
         return;
 
-    painter->setPen(QColor(0, 0, 0));
+    painter->setPen(COLOR(RACV_COLOR_REGISTER_LABEL));
     unsigned controller = controllerNumber();
 
     QMapIterator<AtomRegister, RegisterLabel> it(*registerLabels);
