@@ -1,7 +1,7 @@
 #include <QColor>
 #include <QMap>
-QMap<int, QColor> colors;
-void loadColors()
+QMap<int, QColor> colors_light;
+void loadColorsLight()
 {
     colors.insert(0, QColor(128, 128, 128, 255));
     colors.insert(100, QColor(0, 0, 0, 255));

@@ -13,7 +13,8 @@ ColorScheme *the_colorscheme = 0;
 #include <QColor>
 #include <QLabel>
 
-#include "colors.h"
+#include "colors_light.h"
+#include "colors_dark.h"
 
 
 ColorScheme::ColorScheme(QWidget *parent)
@@ -32,7 +33,13 @@ ColorScheme::ColorScheme(QWidget *parent)
                         ":images/background_light.png")
                   .scaledToHeight(BACKGROUND_PIXMAP_HEIGHT);
 
-    loadColors();
+    loadColorsLight();
+    loadColorsDark();
+
+    if (dark)
+        colors = &colors_dark;
+    else
+        colors = &colors_light;
 
     setFocusPolicy(Qt::NoFocus);
 
@@ -45,12 +52,6 @@ ColorScheme::ColorScheme(QWidget *parent)
     QListWidgetItem *item;
     item = new QListWidgetItem(tr("Patch background"), list);
     item->setData(1, COLOR_PATCH_BACKGROUND);
-
-    item = new QListWidgetItem(tr("Rack background"), list);
-    item->setData(1, COLOR_RACK_BACKGROUND);
-
-    item = new QListWidgetItem(tr("Lines in general?"), list);
-    item->setData(1, COLOR_LINE);
 
     item = new QListWidgetItem(tr("Circuits: text"), list);
     item->setData(1, CIRV_COLOR_TEXT);
@@ -126,6 +127,9 @@ ColorScheme::ColorScheme(QWidget *parent)
 
     item = new QListWidgetItem(tr("Inactive cursor"), list);
     item->setData(1, COLOR_CURSOR_INACTIVE);
+
+    item = new QListWidgetItem(tr("Rack view: background"), list);
+    item->setData(1, COLOR_RACK_BACKGROUND);
 
     item = new QListWidgetItem(tr("Rackview: register marker BG"), list);
     item->setData(1, RACV_REGMARKER_BACKGROUND);
@@ -240,16 +244,16 @@ ColorScheme::ColorScheme(QWidget *parent)
 
 QColor ColorScheme::color(int index)
 {
+    QString key = settingsKey(index);
     // This is during the development phase if a new
     // colors just as been added but the header file
     // colors.h has not been generated, again, yet.
-    QString key = "color/" + QString::number(index);
     if (settings.value(key).isValid())
         return settings.value(key).value<QColor>();
 
     // This is the normal way
-    else if (colors.contains(index))
-        return colors[index];
+    else if (colors->contains(index))
+        return (*colors)[index];
 
     // This case is if a new color has never been
     // adjusted.
@@ -258,9 +262,9 @@ QColor ColorScheme::color(int index)
 }
 void ColorScheme::setColor(int index, const QColor &color)
 {
-    QString key = "color/" + QString::number(index);
+    QString key = settingsKey(index);
     settings.setValue(key, color);
-    colors[index] = color;
+    (*colors)[index] = color;
 }
 void ColorScheme::hideEvent(QHideEvent *)
 {
@@ -279,13 +283,14 @@ void ColorScheme::colorChanged(const QColor &color)
 }
 void ColorScheme::dumpHeaderFile()
 {
-    shout << "Regenerating color file " << COLOR_DEFINITION_FILE;
+    QString filename = QString(COLOR_DEFINITION_FILE).arg(dark ? "dark" : "light");
+    shout << "Regenerating color file " << filename;
 
     // First put all colors into the settings that are not
     // contained there. This is neccessary if someone is developing
     // but does not yet have colors settings.
-    for (auto it = colors.constKeyValueBegin();
-         it != colors.constKeyValueEnd();
+    for (auto it = colors->constKeyValueBegin();
+         it != colors->constKeyValueEnd();
          ++it)
     {
         QString key = "color/" + QString::number(it->first);
@@ -295,14 +300,14 @@ void ColorScheme::dumpHeaderFile()
 
     // Create a CPP file in order to hard code all the
     // colors for a release.
-    QFile file(COLOR_DEFINITION_FILE);
+    QFile file(filename);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
 
     QTextStream stream(&file);
     stream << "#include <QColor>\n";
     stream << "#include <QMap>\n";
-    stream << "QMap<int, QColor> colors;\n";
-    stream << "void loadColors()\n";
+    stream << QString("QMap<int, QColor> colors_%1;\n").arg(dark ? "dark" : "light");
+    stream << QString("void loadColors%1()\n").arg(dark ? "Dark" : "Light");
     stream << "{\n";
 
     for (auto &key: settings.allKeys()) {
@@ -311,7 +316,8 @@ void ColorScheme::dumpHeaderFile()
             QString s = key.mid(6);
             int keyInt = s.toInt();
 
-            QString line =  QString("    colors.insert(%1, QColor(%2, %3, %4, %5));\n")
+            QString line =  QString("    colors_%1.insert(%2, QColor(%3, %4, %5, %6));\n")
+                     .arg(dark ? "dark" : "light")
                      .arg(keyInt)
                      .arg(color.red())
                      .arg(color.green())
@@ -326,6 +332,11 @@ void ColorScheme::dumpHeaderFile()
 }
 bool ColorScheme::isDevelopment() const
 {
-    QFile file(COLOR_DEFINITION_FILE);
+    QFile file(QString(COLOR_DEFINITION_FILE).arg("dark"));
     return file.exists();
+}
+
+QString ColorScheme::settingsKey(int index)
+{
+    return QString("color/") + (dark ? "dark/" : "light/") + QString::number(index);
 }

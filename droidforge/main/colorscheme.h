@@ -11,7 +11,6 @@
 typedef enum {
     COLOR_PATCH_BACKGROUND = 40,
     COLOR_RACK_BACKGROUND = 41,
-    COLOR_LINE = 50,
     CIRV_COLOR_LINE = 51,
     CIRV_COLOR_CIRCUIT_NAME = 83,
     CIRV_COLOR_CIRCUIT_NAME_BG = 52,
@@ -82,6 +81,7 @@ class ColorScheme : public Dialog
     int currentIndex = -1;
     bool dark;
     QPixmap background;
+    QMap<int, QColor> *colors;
 
 public:
     ColorScheme(QWidget *parent = nullptr);
@@ -92,6 +92,9 @@ public:
     bool isDevelopment() const;
     bool isDark() const { return dark; };
     QPixmap backgroundPixmap() const { return background; };
+
+private:
+    QString settingsKey(int index);
 
 public slots:
     void itemSelected(QListWidgetItem *item);

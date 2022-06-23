@@ -5,7 +5,7 @@
 #define APPLICATION_VERSION                  "0.1"
 #define LICENSE_URL                          "https://www.gnu.org/licenses/gpl.txt"
 
-#define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors.h"
+#define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors_%1.h"
 #define DROID_PATCH_FILENAME                 "droid.ini"
 #define SHOP_PRODUCTS_URL                    "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"
