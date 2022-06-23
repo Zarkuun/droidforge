@@ -1,12 +1,10 @@
 TODO für die erste Version:
 
- Namensgebung: Soll nicht "Jack" lieber "Parameter" heißen?
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen? Oder ist das
   schon gemacht?
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
 - Selektion mit Rahmen ziehen
-- Im DROID-Git die essential und typical jacks markieren
 
 Code aufräumen:
 - Alle Farben über COLOR() machen
@@ -17,6 +15,7 @@ Release:
 
 
 KLEINERE FEATURES FÜR SPÄTER:
+- Speicherverbrauch der Circuit zusammenrechnen
 - Skizzen der Module anstelle von Fotos
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
 - Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
@@ -26,6 +25,7 @@ KLEINERE FEATURES FÜR SPÄTER:
 - Der AtomSelektor ist schon irgendwie nicht so geil.
   Kann ich das nicht besser machen?
 - Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
+- Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc)
 - Irgendwelche globalen Eistellungen für irgendwas.
 - Sektionen per Drag-Drop vertauschen
 - Module per Drag-Drop vertauschen

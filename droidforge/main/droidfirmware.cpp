@@ -154,11 +154,20 @@ QStringList DroidFirmware::jacksOfCircuit(QString circuit, QString whence, jacks
     for (qsizetype i=0; i<jacklist.size(); i++) {
         QJsonObject jackinfo = jacklist[i].toObject();
         int essential = jackinfo["essential"].toInt(0);
+        // HACK: I don't know how I can avoid this easily, but the motor fader
+        // circuits usually depend on "select" being used.
+        if ((circuit == "faderbank" || circuit == "motorfader")) {
+            if (jackinfo["name"] == "select")
+                essential = 2;
+            else if (jackinfo["name"] == "selectat")
+                essential = 1;
+        }
+
         // essential is 0, 1 or 2 (0 = none, 1 = typical, 2 = essential)
         // jackSelection is 0 -> all, ... 3 -> none
         if (essential >= jackSelection) {
-            if (jackinfo.contains("count")) {
-                int count = jackinfo["count"].toInt(1);
+            if (jackinfo.contains("essential_count")) {
+                int count = jackinfo["essential_count"].toInt(1);
                 for (int i=1; i<=count; i++) {
                     QString name = jackinfo["prefix"].toString() + QString::number(i);
                     result.append(name);
