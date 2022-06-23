@@ -1,5 +1,6 @@
 #include "circuitcollection.h"
 #include "circuitinfoview.h"
+#include "colorscheme.h"
 #include "droidfirmware.h"
 #include "tuning.h"
 
@@ -36,7 +37,7 @@ void CircuitCollection::initScene()
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     QGraphicsScene *scene = new QGraphicsScene();
-    scene->setBackgroundBrush(CICH_BACKGROUND_COLOR);
+    scene->setBackgroundBrush(COLOR(CICH_COLOR_BACKGROUND));
     setScene(scene);
 }
 void CircuitCollection::initBackgroundRect(int numCircuits)

@@ -27,10 +27,10 @@ void CircuitInfoView::select(bool sel)
 void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     unsigned text_x = CICH_ICON_WIDTH + 2*CICH_PADDING + STANDARD_SPACING;
-    painter->fillRect(boundingRect(), CICH_CIRCUIT_BACKGROUND_COLOR);
+    painter->fillRect(boundingRect(), COLOR(CICH_COLOR_CIRCUIT_BACKGROUND));
 
     // Circuit name
-    painter->setPen(CICH_COLOR_TITLE);
+    painter->setPen(COLOR(CICH_COLOR_TITLE));
     painter->drawText(QRect(text_x, CICH_PADDING,
                       *circuitViewWidth - text_x, CICH_TITLE_HEIGHT),
                       Qt::AlignTop,
@@ -44,7 +44,7 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     // TODO: This ROW_CIRCUIT is a hack in order to avoid some pixels of a potential third line
     // to be visible. We rather need to check if the text would get a third line and
     // remove that line. And indicate the missing text with "..." or something.
-    painter->setPen(CICH_COLOR_DESCRIPTION);
+    painter->setPen(COLOR(CICH_COLOR_DESCRIPTION));
     painter->drawText(textRect,
                       Qt::AlignTop | Qt::AlignLeft | Qt::TextWordWrap,
                       the_firmware->circuitDescription(circuit));

@@ -13,6 +13,7 @@ ControllerSelector::ControllerSelector(QWidget *parent)
     QGraphicsScene *scene = new QGraphicsScene();
     const QStringList &controllers = ModuleBuilder::allControllers();
     int x = 0;
+    setBackgroundBrush(COLOR(CSEL_COLOR_BACKGROUND));
 
     int height = 0;
     for (qsizetype i=0; i<controllers.size(); i++)

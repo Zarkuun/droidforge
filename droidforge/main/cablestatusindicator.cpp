@@ -1,6 +1,7 @@
 #include "cablestatusindicator.h"
 #include "atomcable.h"
 #include "cablecolorizer.h"
+#include "colorscheme.h"
 #include "tuning.h"
 #include "updatehub.h"
 #include "editoractions.h"
@@ -51,7 +52,7 @@ void CableStatusIndicator::mousePressEvent(QMouseEvent *event)
 
 void CableStatusIndicator::paintPatching(QPainter &painter)
 {
-    painter.fillRect(rect(), CSI_BACKGROUND_COLOR);
+    painter.fillRect(rect(), COLOR(COLOR_STATUSBAR_BACKGROUND));
     float left = CSI_SIDE_PADDING + animationPhase * CSI_ANIMATION_RANGE;
     float right = width() - CSI_SIDE_PADDING - (animationPhase * CSI_ANIMATION_RANGE);
     paintCable(painter, left, right);

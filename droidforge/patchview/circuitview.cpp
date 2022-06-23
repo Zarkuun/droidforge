@@ -87,7 +87,7 @@ void CircuitView::paintHeader(QPainter *painter)
     painter->drawPixmap(imageRect.toRect(), icon);
     if (circuit->isDisabled())
         painter->fillRect(imageRect, QColor(80, 80, 80, 160)); // TODO: COLOR MAKRO
-    painter->setPen(circuit->isDisabled() ? COLOR_TEXT_DISABLED : CIRV_COLOR_CIRCUIT_NAME);
+    painter->setPen(circuit->isDisabled() ? COLOR(CIRV_COLOR_DISABLED_TEXT) : COLOR(CIRV_COLOR_CIRCUIT_NAME));
     QRectF textRect =
                 QRectF(headerRect().left() + CIRV_HEADER_HEIGHT + CIRV_ICON_MARGIN,
                       headerRect().top(),
@@ -107,14 +107,6 @@ void CircuitView::paintHeader(QPainter *painter)
                      textRect.height());
             painter->drawText(r, Qt::AlignVCenter, oneliner);
         }
-        // unsigned margin = 2;
-        // unsigned iconsize = CIRV_HEADER_HEIGHT - 2 * margin;
-        // QRectF ir(headerRect().right() - iconsize - 5,
-        //           headerRect().top() + margin,
-        //           iconsize,
-        //           iconsize);
-        // static QImage ic(QString(ICON_PATH_TEMPLATE).arg("format_line_spacing"));
-        // painter->drawImage(ir, ic);
     }
 }
 void CircuitView::paintComment(QPainter *painter)

@@ -38,11 +38,6 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
         layout->addWidget(button, 0, i);
         layout->addWidget(ss, 1, i);
     }
-
-    // Dieses Widget kann Focus bekommen, und zwar nur durch
-    // die Tabtaste.
-    // setFocusPolicy(Qt::TabFocus);
-    // setFocusPolicy(Qt::StrongFocus);
 }
 
 void AtomSelector::setAllowFraction(bool af)

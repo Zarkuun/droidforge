@@ -1058,7 +1058,7 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 }
 void PatchSectionView::editAtom(int key)
 {
-    int lastKey;
+    int lastKey = 0;
 
     if (key == 0 && patch->isPatching()) {
         finishPatching();

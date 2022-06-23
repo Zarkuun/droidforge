@@ -32,7 +32,6 @@ RackView::RackView(PatchEditEngine *patch)
     setScene(thescene);
     // QPixmap background(":images/background.png");
     // QBrush brush(background.scaledToHeight(1200));
-    scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
     setMouseTracking(true);
     initScene();
 
@@ -51,7 +50,7 @@ RackView::RackView(PatchEditEngine *patch)
 
 void RackView::modifyPatch()
 {
-    // scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
+    scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
     dragging = false;
     markedRegister = AtomRegister();
     refreshModules();

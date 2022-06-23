@@ -1,5 +1,6 @@
 #include "patchsectionmanager.h"
 #include "clipboard.h"
+#include "colorscheme.h"
 #include "patchoperator.h"
 #include "tuning.h"
 #include "updatehub.h"
@@ -12,6 +13,7 @@
 #include <QSettings>
 #include <QResizeEvent>
 #include <QMenu>
+#include <QPalette>
 
 #define DATA_INDEX_SECTION_INDEX 0
 
@@ -25,9 +27,8 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     setMinimumWidth(150);
     setMaximumWidth(300);
     setScene(new QGraphicsScene());
-    QPixmap background(":images/background.png");
-    scene()->setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
-    // scene()->setBackgroundBrush(QColor(PSM_COLOR_BACKGROUND));
+
+    scene()->setBackgroundBrush(QBrush(the_colorscheme->backgroundPixmap()));
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setMouseTracking(true);
 

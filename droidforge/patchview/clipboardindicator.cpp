@@ -1,4 +1,5 @@
 #include "clipboardindicator.h"
+#include "colorscheme.h"
 #include "tuning.h"
 #include "updatehub.h"
 
@@ -19,7 +20,7 @@ ClipboardIndicator::ClipboardIndicator(QWidget *parent)
 void ClipboardIndicator::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), CI_BACKGROUND_COLOR);
+    painter.fillRect(rect(), COLOR(COLOR_STATUSBAR_BACKGROUND));
     if (the_clipboard->isEmpty()) {
         setMaximumWidth(0);
         return;
@@ -47,6 +48,7 @@ void ClipboardIndicator::paintEvent(QPaintEvent *)
     else if (the_clipboard->isComment())
         info = tr("comment");
 
+    painter.setPen(COLOR(COLOR_STATUSBAR_TEXT));
     painter.drawText(textRect, Qt::AlignVCenter, info);
 }
 

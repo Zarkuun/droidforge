@@ -19,12 +19,12 @@ QRectF JackCircuitView::boundingRect() const
 void JackCircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     QRectF textrect(0, 0, JSEL_CIRCUIT_WIDTH, JSEL_CIRCUIT_TEXT_HEIGHT);
-    painter->fillRect(boundingRect(), JSEL_COLOR_CIRCUIT_BACKGROUND);
+    painter->fillRect(boundingRect(), COLOR(JSEL_COLOR_CIRCUIT_BACKGROUND));
     painter->setPen(COLOR(JSEL_COLOR_LINE));
     painter->drawRect(boundingRect());
     painter->drawRect(textrect);
 
-    painter->setPen(CICH_COLOR_TITLE);
+    painter->setPen(COLOR(JSEL_COLOR_CIRCUIT_NAME));
     painter->drawText(textrect, Qt::AlignCenter | Qt::AlignVCenter, circuit.toUpper());
 
 

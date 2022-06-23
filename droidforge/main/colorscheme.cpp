@@ -11,6 +11,7 @@ ColorScheme *the_colorscheme = 0;
 #include <QFile>
 #include <QMap>
 #include <QColor>
+#include <QLabel>
 
 #include "colors.h"
 
@@ -20,6 +21,16 @@ ColorScheme::ColorScheme(QWidget *parent)
 {
     if (the_colorscheme == 0)
         the_colorscheme = this;
+
+    QLabel label("am I in the dark?");
+    int text_hsv_value = label.palette().color(QPalette::WindowText).value();
+    int bg_hsv_value = label.palette().color(QPalette::Window).value();
+    dark = text_hsv_value > bg_hsv_value;
+
+    background = QPixmap(dark ?
+                        ":images/background_dark.png" :
+                        ":images/background_light.png")
+                  .scaledToHeight(BACKGROUND_PIXMAP_HEIGHT);
 
     loadColors();
 
@@ -52,6 +63,9 @@ ColorScheme::ColorScheme(QWidget *parent)
 
     item = new QListWidgetItem(tr("Circuits: lines"), list);
     item->setData(1, CIRV_COLOR_LINE);
+
+    item = new QListWidgetItem(tr("Circuits: circuit name"), list);
+    item->setData(1, CIRV_COLOR_CIRCUIT_NAME);
 
     item = new QListWidgetItem(tr("Circuits: circuit name background"), list);
     item->setData(1, CIRV_COLOR_CIRCUIT_NAME_BG);
@@ -94,6 +108,9 @@ ColorScheme::ColorScheme(QWidget *parent)
 
     item = new QListWidgetItem(tr("Circuits: Selection"), list);
     item->setData(1, CIRV_COLOR_SELECTION);
+
+    item = new QListWidgetItem(tr("Controller selector: background"), list);
+    item->setData(1, CSEL_COLOR_BACKGROUND);
 
     item = new QListWidgetItem(tr("Normal cursor"), list);
     item->setData(1, COLOR_CURSOR_NORMAL);
@@ -140,8 +157,44 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Parameter selector: frame color"), list);
     item->setData(1, JSEL_COLOR_LINE);
 
+    item = new QListWidgetItem(tr("Parameter selector: parameter BG"), list);
+    item->setData(1, JSEL_COLOR_JACK_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Parameter selector: circuit name"), list);
+    item->setData(1, JSEL_COLOR_CIRCUIT_NAME);
+
+    item = new QListWidgetItem(tr("Parameter selector: circuit BG"), list);
+    item->setData(1, JSEL_COLOR_CIRCUIT_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Parameter selector: inactive parameter"), list);
+    item->setData(1, JSEL_COLOR_JACK_INACTIVE);
+
+    item = new QListWidgetItem(tr("Parameter selector: description text"), list);
+    item->setData(1, JSEL_COLOR_DESCRIPTION);
+
+    item = new QListWidgetItem(tr("Parameter selector: description BG"), list);
+    item->setData(1, JSEL_COLOR_DESCRIPTION_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Circuit chooser: title"), list);
+    item->setData(1, CICH_COLOR_TITLE);
+
+    item = new QListWidgetItem(tr("Circuit chooser: description"), list);
+    item->setData(1, CICH_COLOR_DESCRIPTION);
+
+    item = new QListWidgetItem(tr("Circuit chooser: circuit BG"), list);
+    item->setData(1, CICH_COLOR_CIRCUIT_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Circuit chooser: background"), list);
+    item->setData(1, CICH_COLOR_BACKGROUND);
+
     item = new QListWidgetItem(tr("Section manager: title background"), list);
     item->setData(1, PSM_COLOR_SECTION_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Statusbar: text"), list);
+    item->setData(1, COLOR_STATUSBAR_TEXT);
+
+    item = new QListWidgetItem(tr("Statusbar: background"), list);
+    item->setData(1, COLOR_STATUSBAR_BACKGROUND);
 
     colorDialog = new QColorDialog(this);
     colorDialog->setOption(QColorDialog::ShowAlphaChannel);
@@ -154,10 +207,6 @@ ColorScheme::ColorScheme(QWidget *parent)
 
 QColor ColorScheme::color(int index)
 {
-    // This is the normal way
-    if (colors.contains(index))
-        return colors[index];
-
     // This is during the development phase if a new
     // colors just as been added but the header file
     // colors.h has not been generated, again, yet.
@@ -165,36 +214,36 @@ QColor ColorScheme::color(int index)
     if (settings.value(key).isValid())
         return settings.value(key).value<QColor>();
 
+    // This is the normal way
+    else if (colors.contains(index))
+        return colors[index];
+
     // This case is if a new color has never been
     // adjusted.
     else
         return QColor(128, 128, 128);
 }
-
 void ColorScheme::setColor(int index, const QColor &color)
 {
     QString key = "color/" + QString::number(index);
     settings.setValue(key, color);
+    colors[index] = color;
 }
-
 void ColorScheme::hideEvent(QHideEvent *)
 {
     colorDialog->hide();
 }
-
 void ColorScheme::itemSelected(QListWidgetItem *item)
 {
     currentIndex = item->data(1).toInt();
     colorDialog->setCurrentColor(color(currentIndex));
     colorDialog->show();
 }
-
 void ColorScheme::colorChanged(const QColor &color)
 {
     setColor(currentIndex, color);
     emit changed();
 }
-
 void ColorScheme::dumpHeaderFile()
 {
     shout << "Regenerating color file " << COLOR_DEFINITION_FILE;

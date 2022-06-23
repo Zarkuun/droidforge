@@ -25,7 +25,7 @@ void JackLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
 {
     QColor color;
     if (!isSelected)
-        color = JSEL_COLOR_JACK_LINE;
+        color = COLOR(JSEL_COLOR_LINE);
     else if (!active)
         color = COLOR(COLOR_CURSOR_INACTIVE);
     else

@@ -60,10 +60,10 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
 
     QRectF rect = boundingRect();
     painter->setPen(COLOR(JSEL_COLOR_LINE));
-    painter->fillRect(rect, JSEL_COLOR_JACK_BACKGROUND);
+    painter->fillRect(rect, COLOR(JSEL_COLOR_JACK_BACKGROUND));
     painter->drawRect(rect);
     QColor activeColor = isInput ? COLOR(CIRV_COLOR_INPUT_JACK) : COLOR(CIRV_COLOR_OUTPUT_JACK);
-    painter->setPen(active ? activeColor : JSEL_COLOR_JACK_INACTIVE);
+    painter->setPen(active ? activeColor : COLOR(JSEL_COLOR_JACK_INACTIVE));
     painter->drawText(
                 QRect(JSEL_JACK_HORIZONTAL_PADDING,
                       JSEL_JACK_VERTICAL_PADDING,
@@ -77,7 +77,7 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
             QString n = QString::number(i+1);
             painter->setPen(COLOR(JSEL_COLOR_LINE));
             painter->drawRect(r);
-            painter->setPen(isActive(i) ? activeColor : JSEL_COLOR_JACK_INACTIVE);
+            painter->setPen(isActive(i) ? activeColor : COLOR(JSEL_COLOR_JACK_INACTIVE));
             painter->drawText(r, n, Qt::AlignCenter | Qt::AlignVCenter);
         }
     }

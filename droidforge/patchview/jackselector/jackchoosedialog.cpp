@@ -1,4 +1,5 @@
 #include "jackchoosedialog.h"
+#include "colorscheme.h"
 #include "globals.h"
 #include "jackselector.h"
 #include "droidfirmware.h"
@@ -22,7 +23,11 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     labelDescription->setMaximumWidth(JSEL_DESCRIPTION_WIDTH);
     labelDescription->setTextFormat(Qt::RichText);
     labelDescription->setStyleSheet(
-           "QLabel { padding: 10px; background-color : #202020; color: white; }");
+       QString("QLabel { padding: 10px; background-color : #%1; color: #%2; }")
+                .arg(COLOR(JSEL_COLOR_DESCRIPTION_BACKGROUND).name())
+                .arg(COLOR(JSEL_COLOR_DESCRIPTION).name()));
+
+
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);

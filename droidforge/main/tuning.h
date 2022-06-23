@@ -49,7 +49,6 @@
 // #define COLOR_JACK_OUTPUT                    QColor(245, 60, 50)
 #define COLOR_JACK_UNKNOWN                   COLOR_TEXT_UNKNOWN
 #define COLOR_STANDARD_BACKGROUND            QColor(30, 30, 30)
-#define COLOR_STATUSBAR_BACKGROUND           QColor(60, 60, 60)
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
 #define ASSUMED_SCROLLBAR_WIDTH              40
 
@@ -57,13 +56,11 @@
 #define PPI_WIDTH                            130
 #define PPI_SIDE_PADDING                     STANDARD_SPACING
 #define PPI_IMAGE_MARGIN                     3
-#define PPI_BACKGROUND_COLOR                 COLOR_STATUSBAR_BACKGROUND
 
 // Clipboard indicator
 #define CI_WIDTH                            130
 #define CI_SIDE_PADDING                     STANDARD_SPACING
 #define CI_IMAGE_MARGIN                     3
-#define CI_BACKGROUND_COLOR                 COLOR_STATUSBAR_BACKGROUND
 
 // Cable status indicator in status bar
 #define CSI_IMAGE_MARGIN                     3
@@ -158,14 +155,6 @@
 #define CIRV_COLUMN_JACK_MINIMUM_WIDTH       110
 #define CIRV_COLUMN_ATOM_MINIMUM_WIDTH       80
 #define CIRV_COLUMN_OPERATOR_WIDTH           20
-// #define CIRV_COLOR_LINE                      QColor(0, 0, 0, 96)
-// #define CIRV_COLOR_OPERATOR                  QColor(255, 255, 255)
-// #define CIRV_COLOR_OPERATOR_BACKGROUND       QColor(60, 60, 60)
-// #define CIRV_COLOR_BACKGROUND                QColor(40, 40, 40, 160)
-#define CIRV_COLOR_CIRCUIT_NAME              QColor(250, 250, 250)
-// #define CIRV_COLOR_COMMENT                   QColor(180, 200, 200)
-// #define CIRV_COLOR_COMMENT_BACKGROUND        QColor(40, 40, 40)
-// #define CIRV_COLOR_SELECTION                 QColor(255, 200, 50, 90)
 
 // Circuit chooser (CICH)
 #define CICH_DIALOG_WIDTH                    890
@@ -178,10 +167,10 @@
 #define CICH_TITLE_HEIGHT                    20
 #define CICH_PADDING                         (STANDARD_SPACING / 2)
 #define CICH_WIDTH_MARGIN                    (2 * CICH_GLOBAL_MARGIN)
-#define CICH_BACKGROUND_COLOR                QColor(20, 20, 20)
-#define CICH_CIRCUIT_BACKGROUND_COLOR        QColor(40, 40, 40)
-#define CICH_COLOR_TITLE                     QColor(255, 255, 255)
-#define CICH_COLOR_DESCRIPTION               QColor(190, 190, 190)
+// #define CICH_BACKGROUND_COLOR                QColor(20, 20, 20)
+// #define CICH_CIRCUIT_BACKGROUND_COLOR        QColor(40, 40, 40)
+// #define CICH_COLOR_TITLE                     QColor(255, 255, 255)
+// #define CICH_COLOR_DESCRIPTION               QColor(190, 190, 190)
 
 // Jack selector (JSEL)
 #define JSEL_TOTAL_WIDTH                     600
@@ -197,10 +186,6 @@
 #define JSEL_CIRCUIT_ICON_WIDTH              80
 #define JSEL_SCROLL_MARGIN                   50
 #define JSEL_VERTICAL_PADDING                STANDARD_SPACING
-#define JSEL_COLOR_JACK_BACKGROUND           QColor(0, 0, 0)
-#define JSEL_COLOR_CIRCUIT_BACKGROUND        QColor(20, 20, 20)
-#define JSEL_COLOR_JACK_LINE                 QColor(120, 120, 120)
-#define JSEL_COLOR_JACK_INACTIVE             QColor(80, 80, 80)
 
 // Atom selector
 #define ASEL_SUBSELECTOR_WIDTH               150

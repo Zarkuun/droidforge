@@ -985,7 +985,6 @@
         <file>images/icons/white/zoom_in.png</file>
         <file>images/icons/white/zoom_out.png</file>
         <file>images/icons/white/zoom_out_map.png</file>
-        <file>images/background.png</file>
         <file>images/icons/warning.png</file>
         <file>images/rackbackground.png</file>
         <file>images/faceplates/faceplate-blind-front.jpg</file>
@@ -1264,5 +1263,7 @@
         <file>images/cableicons/yellow-6.png</file>
         <file>images/cableicons/yellow-7.png</file>
         <file>images/cableicons/yellow-8.png</file>
+        <file>images/background_dark.png</file>
+        <file>images/background_light.png</file>
     </qresource>
 </RCC>

@@ -13,6 +13,7 @@ typedef enum {
     COLOR_RACK_BACKGROUND = 41,
     COLOR_LINE = 50,
     CIRV_COLOR_LINE = 51,
+    CIRV_COLOR_CIRCUIT_NAME = 83,
     CIRV_COLOR_CIRCUIT_NAME_BG = 52,
     CIRV_COLOR_COMMENT_BACKGROUND = 53,
     CIRV_COLOR_INPUT_JACK_BG = 54,
@@ -30,6 +31,7 @@ typedef enum {
     CIRV_COLOR_UNKNOWN_JACK = 203,
     CIRV_COLOR_OPERATOR = 70,
     CIRV_COLOR_OPERATOR_BG = 71,
+    CSEL_COLOR_BACKGROUND = 90,
     COLOR_CURSOR_NORMAL = 100,
     COLOR_CURSOR_PROBLEM = 102,
     COLOR_CURSOR_PATCHING = 103,
@@ -45,15 +47,30 @@ typedef enum {
     RACV_COLOR_DRAGARROW_UNLOCKED = 321,
     RACV_COLOR_DRAGARROW_UNSUITABLE = 322,
     JSEL_COLOR_LINE = 400,
+    JSEL_COLOR_JACK_BACKGROUND = 401,
+    JSEL_COLOR_CIRCUIT_NAME = 404,
+    JSEL_COLOR_CIRCUIT_BACKGROUND = 402,
+    JSEL_COLOR_JACK_INACTIVE = 403,
+    JSEL_COLOR_DESCRIPTION = 408,
+    JSEL_COLOR_DESCRIPTION_BACKGROUND = 409,
+    CICH_COLOR_TITLE = 450,
+    CICH_COLOR_DESCRIPTION = 451,
+    CICH_COLOR_CIRCUIT_BACKGROUND = 452,
+    CICH_COLOR_BACKGROUND = 453,
     PSM_COLOR_SECTION_BACKGROUND = 500,
+    COLOR_STATUSBAR_BACKGROUND = 550,
+    COLOR_STATUSBAR_TEXT = 551,
 } color_t;
 
 class ColorScheme : public Dialog
 {
     Q_OBJECT
+
     QSettings settings;
     QColorDialog *colorDialog;
     int currentIndex = -1;
+    bool dark;
+    QPixmap background;
 
 public:
     ColorScheme(QWidget *parent = nullptr);
@@ -62,6 +79,8 @@ public:
     void hideEvent(QHideEvent *);
     void dumpHeaderFile();
     bool isDevelopment() const;
+    bool isDark() const { return dark; };
+    QPixmap backgroundPixmap() const { return background; };
 
 public slots:
     void itemSelected(QListWidgetItem *item);

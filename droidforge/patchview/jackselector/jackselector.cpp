@@ -1,4 +1,5 @@
 #include "jackselector.h"
+#include "colorscheme.h"
 #include "globals.h"
 #include "jackcircuitview.h"
 #include "tuning.h"
@@ -66,8 +67,7 @@ void JackSelector::initScene()
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
     QGraphicsScene *scene = new QGraphicsScene();
-    QPixmap background(":images/background.png");
-    scene->setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
+    scene->setBackgroundBrush(QBrush(the_colorscheme->backgroundPixmap()));
     setScene(scene);
 }
 void JackSelector::loadJacks(QString circuit, QString search)

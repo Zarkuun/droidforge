@@ -1,4 +1,5 @@
 #include "patchproblemindicator.h"
+#include "colorscheme.h"
 #include "editoractions.h"
 #include "patchoperator.h"
 #include "tuning.h"
@@ -34,7 +35,7 @@ PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *pa
 void PatchProblemIndicator::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), PPI_BACKGROUND_COLOR);
+    painter.fillRect(rect(), COLOR(COLOR_STATUSBAR_BACKGROUND));
 
     unsigned imgHeight = height() - 2 * PPI_IMAGE_MARGIN;
 
@@ -48,6 +49,7 @@ void PatchProblemIndicator::paintEvent(QPaintEvent *)
     float textLeft = warnRect.right() + STANDARD_SPACING;
     QRectF textRect(textLeft, 0, width() - textLeft, height());
     QString text = tr("%1 problems").arg(numProblems);
+    painter.setPen(COLOR(COLOR_STATUSBAR_TEXT));
     painter.drawText(textRect, Qt::AlignVCenter, text);
 }
 
