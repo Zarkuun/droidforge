@@ -164,6 +164,7 @@ void PatchSectionManager::duplicateSection()
     PatchSection *newsection = newpatch->section(0)->clone();
     patch->insertSection(index + 1, newsection);
     delete newpatch;
+    patch->commit(tr("duplicating section"));
     emit patchModified(); // implies sectionSwitched
 }
 

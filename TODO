@@ -3,6 +3,10 @@ TODO für die erste Version:
 - Registerremapping: Wenn ich I remappe, muss ich auch für N
   sorgen. Kann man das geordnet irgendwie machen? Oder ist das
   schon gemacht?
+  -> Nicht bei Controllerremoval
+  -> Bei Smart Paste / Integrate / ... interactively... Denn im Snippet
+     kann eine I/N-Kombi drin sein.
+  -> Beim Verschieben mit der Maus
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
 - Selektion mit Rahmen ziehen
 
