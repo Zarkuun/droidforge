@@ -34,12 +34,14 @@ QString IconMarker::iconName() const
     switch (type) {
     case ICON_MARKER_PROBLEM:     t = "warning"; break;
     case ICON_MARKER_INFO:        t = "info"; break;
-    case ICON_MARKER_LEDMISMATCH: t = "ledmismatch"; break;
+    case ICON_MARKER_LEDMISMATCH: t = "%1/ledmismatch"; break;
     case ICON_MARKER_FOLDED:      t = "%1/folded"; break;
     default:
         return "";
     }
-    if (the_colorscheme->isDark())
+    if (!t.contains('%'))
+        return t;
+    else if (the_colorscheme->isDark())
         return t.arg("dark");
     else
         return t.arg("light");

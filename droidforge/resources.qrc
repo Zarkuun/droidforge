@@ -162,7 +162,6 @@
         <file>images/circuits/togglebutton.png</file>
         <file>images/circuits/faderbank.png</file>
         <file>images/circuits/fadermatrix.png</file>
-        <file>images/icons/ledmismatch.png</file>
         <file>images/circuits/crossfader.png</file>
         <file>images/circuits/slew.png</file>
         <file>images/circuits/switch.png</file>
@@ -329,5 +328,7 @@
         <file>images/icons/light/upload_to_droid.png</file>
         <file>images/icons/light/folded.png</file>
         <file>images/icons/dark/folded.png</file>
+        <file>images/icons/dark/ledmismatch.png</file>
+        <file>images/icons/light/ledmismatch.png</file>
     </qresource>
 </RCC>
