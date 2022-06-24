@@ -43,8 +43,6 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     buildPatchSection();
-    // QPixmap background(":images/background.png");
-    // setBackgroundBrush(QBrush(background.scaledToHeight(BACKGROUND_PIXMAP_HEIGHT)));
     setBackgroundBrush(COLOR(COLOR_PATCH_BACKGROUND));
 
     QSettings settings;
@@ -331,11 +329,11 @@ bool PatchSectionView::handleKeyPress(int key, int modifiers)
 }
 void PatchSectionView::mousePressEvent(QMouseEvent *event)
 {
-    mouseClick(event->pos(), event->button(), false);
+    mousePress(event->pos(), event->button(), false);
 }
 void PatchSectionView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    mouseClick(event->pos(), event->button(), true);
+    mousePress(event->pos(), event->button(), true);
 }
 CursorPosition *PatchSectionView::cursorAtMousePosition(QPoint pos) const
 {
@@ -368,7 +366,7 @@ CursorPosition *PatchSectionView::cursorAtMousePosition(QPoint pos) const
     }
     return 0;
 }
-void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
+void PatchSectionView::mousePress(QPoint pos, int button, bool doubleClick)
 {
     // Click on little "info" icon
     if (button == Qt::LeftButton) {
@@ -393,8 +391,11 @@ void PatchSectionView::mouseClick(QPoint pos, int button, bool doubleClick)
     }
     else if (button == Qt::RightButton)
         handleRightMousePress(0);
-    else if (doubleClick)
-        TRIGGER_ACTION(ACTION_NEW_CIRCUIT);
+    else {
+        the_operator->clearSelection();
+        if (doubleClick)
+            TRIGGER_ACTION(ACTION_NEW_CIRCUIT);
+    }
     delete curPos;
 }
 void PatchSectionView::changeSelection()

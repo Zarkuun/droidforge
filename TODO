@@ -1,16 +1,22 @@
 TODO für die erste Version:
 
-- Selektion muss weg gehen wenn man auf den Hintergrund klickt
-- Selektion mit Rahmen ziehen
+- Schonmal etliche Beispiele machen. Dabei noch Bugs fixen.
+  Die Beispiele schon für eine Patchlibrary sammeln.
 
-Release:
+Größere Dinge:
+- Mehrere Dateien gleichzeitig auf haben
+- Patch library
 
-
-KLEINERE FEATURES FÜR SPÄTER:
-- Dieser Hintdialog. Den könnten wir noch noch viel öfter einsetzen...
+Kleinere Features:
 - Speicherverbrauch der Circuit zusammenrechnen
-- Skizzen der Module anstelle von Fotos
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
+- Dieser Hintdialog. Den könnten wir noch noch viel öfter einsetzen...
+- Selektion mit Rahmen ziehen
+- Sektionen per Drag-Drop vertauschen
+- Controller per Drag-Drop vertauschen
+- Skizzen der Module anstelle von Fotos
+- Globales Clipboard nutzen, um Patches auszutauschen. Rein und Raus.
+- Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc) (oder verwerfen)(
 - Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
   komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
 - Handcursor für Icons usw. die man klicken kann (da hat Qt
@@ -18,13 +24,5 @@ KLEINERE FEATURES FÜR SPÄTER:
 - Der AtomSelektor ist schon irgendwie nicht so geil.
   Kann ich das nicht besser machen?
 - Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
-- Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc)
 - Irgendwelche globalen Eistellungen für irgendwas.
-- Sektionen per Drag-Drop vertauschen
-- Module per Drag-Drop vertauschen
-- Bessere Grafiken für die Rackview (Skizzen?)
-- Globales Clipboard nutzen, um Patches auszutauschen. Rein und Raus.
-
-Version 2:
-- Mehrere Dateien gleichzeitig auf haben
-- Patch library
+- Firmwareupgrade von master, M4 und X7 unterstützen

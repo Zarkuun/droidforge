@@ -91,6 +91,10 @@ void RackView::mousePressEvent(QMouseEvent *event)
 }
 void RackView::mouseReleaseEvent(QMouseEvent *event)
 {
+    // TODO: This whole dragging is a complete hack. Also
+    // it would be nice to return to double clicking for labelling
+    // without unintentionally setting the current atom to the
+    // register.
      if (dragging) {
          if (maxDistanceFromMouseDown < 100) {
              // Problem: This might be the first of a double click. And
@@ -111,7 +115,8 @@ void RackView::mouseReleaseEvent(QMouseEvent *event)
                  }
              }
              else {
-                 emit registerClicked(draggingStartRegister);
+                 if (!draggingStartRegister.isNull())
+                     emit registerClicked(draggingStartRegister);
                  dragRegisterIndicator->setVisible(false);
              }
          }
