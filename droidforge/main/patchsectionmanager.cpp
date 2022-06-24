@@ -1,6 +1,7 @@
 #include "patchsectionmanager.h"
 #include "clipboard.h"
 #include "colorscheme.h"
+#include "globals.h"
 #include "patchoperator.h"
 #include "tuning.h"
 #include "updatehub.h"
@@ -25,7 +26,7 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     setFocusPolicy(Qt::NoFocus);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMinimumWidth(150);
-    setMaximumWidth(300);
+    setMaximumWidth(400);
     setScene(new QGraphicsScene());
 
     scene()->setBackgroundBrush(QBrush(the_colorscheme->backgroundPixmap()));
@@ -42,6 +43,10 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     // Events we are interested in
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
     connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionManager::modifyPatch);
+
+    QSettings settings;
+    int width = settings.value("patchsectionmanager/size").toInt();
+    resize(width, height());
 }
 
 void PatchSectionManager::connectActions()
@@ -80,6 +85,8 @@ void PatchSectionManager::resizeEvent(QResizeEvent *)
 {
     if (patch)
         rebuildGraphics();
+    QSettings settings;
+    settings.setValue("patchsectionmanager/size", width());
 }
 
 void PatchSectionManager::mousePressEvent(QMouseEvent *event)

@@ -3,12 +3,7 @@ TODO für die erste Version:
 - Selektion muss weg gehen wenn man auf den Hintergrund klickt
 - Selektion mit Rahmen ziehen
 
-Code aufräumen:
-- Alle Farben über COLOR() machen
-- Icons aufräumen. Was ist das mit dem "white"
-
 Release:
-- Lighttheme muss auch gut aussehen (aktuell totaler Crap!)
 
 
 KLEINERE FEATURES FÜR SPÄTER:

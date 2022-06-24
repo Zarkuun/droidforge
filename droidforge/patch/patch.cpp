@@ -145,6 +145,11 @@ void Patch::addDescriptionLine(const QString &line)
     description.append(line);
 }
 
+void Patch::addDescriptionLines(const QStringList &list)
+{
+    description += list;
+}
+
 void Patch::setDescription(const QString &d)
 {
     description = d.split('\n');

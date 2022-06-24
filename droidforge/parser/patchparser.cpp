@@ -74,37 +74,50 @@ void PatchParser::parseLine(QString line)
     else if (line[0] == '#')
         parseCommentLine(line);
     else if (line[0] == '[')
-        parseCircuitLine(line, false /* disabled */);
+        parseCircuitLine(line, false /* not disabled */);
     else if (line[0].isLetter() && line.contains('=')) {
         if (!circuit)
             throw ParseException("Jack assignment before any circuit was declared.");
         else
-            parseJackLine(circuit, line, false /* disabled */);
+            parseJackLine(circuit, line, false /* not disabled */);
     }
     else
         throw ParseException("Garbled line");
 }
 void PatchParser::parseEmptyLine()
 {
-    if (currentComment.size() > 0)
+    if (commentState == AWAITING_TITLE_COMMENT) // no title
+        commentState = DESCRIPTION;
+
+    else if (commentState == DESCRIPTION) {
+        patch->addDescriptionLines(currentComment);
+        currentComment.clear();
+    }
+
+    else if (currentComment.size() > 0) {
         currentComment.append("");
+    }
 }
 void PatchParser::parseCommentLine(QString line)
 {
-    QString comment = line.mid(1).trimmed();
     static QRegularExpression disabledJackLine("^[a-zA-z]+([1-9][0-9]*)?[[:space:]]*=.*");
 
+    QString comment = line.mid(1).trimmed(); // strip off '#'
+
+    // Is this a disabled circuit?
     if (comment.startsWith("[")) {
-        parseCircuitLine(comment, true);
+        parseCircuitLine(comment, true /* disabled */);
         return;
     }
 
+    // Or maybe a disabled jack line?
     QRegularExpressionMatch m = disabledJackLine.match(comment);
     if (m.hasMatch()) {
         parseJackLine(circuit, comment, true /* disabled */);
         return;
     }
 
+    // Comments like "# ------------" start (or end) section headers
     if (comment.startsWith("---")) {
         if (commentState == SECTION_HEADER_ACTIVE) {
             commentState = CIRCUIT_HEADER;
@@ -117,21 +130,33 @@ void PatchParser::parseCommentLine(QString line)
             sectionHeader = "";
         }
     }
+
+    // Normal comment goes here...
     else {
+        // Is this the very first comment in the patch? Then
+        // it is considered to be the title. One line.
         if (commentState == AWAITING_TITLE_COMMENT) {
             patch->setTitle(comment);
-            commentState = DESCRIPTION;
+            commentState = DESCRIPTION; // now we wait for the description
         }
+
+        // We are already in the description? Add that line to the
+        // description (or such register or meta data from that line)
         else if (commentState == DESCRIPTION) {
             if (!maybeParseRegisterComment(comment)
                 && !maybeParseMetaComment(comment))
-            patch->addDescriptionLine(comment);
+                currentComment.append(comment);
         }
+
+        // A comment int the section header belongs to the name
+        // of the section
         else if (commentState == SECTION_HEADER_ACTIVE) {
             if (!sectionHeader.isEmpty())
                 sectionHeader += " ";
             sectionHeader += comment;
         }
+
+        // Finally: collect normal comment for the next circuit
         else
             currentComment.append(comment);
     }

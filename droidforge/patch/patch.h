@@ -73,6 +73,7 @@ public:
 
     // Modifications
     void addDescriptionLine(const QString &line);
+    void addDescriptionLines(const QStringList &list);
     void setTitle(const QString &newTitle);
     void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
     void switchCurrentSection(qsizetype i) { sectionIndex = i; };
