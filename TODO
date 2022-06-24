@@ -23,6 +23,9 @@ Kleinere Features:
   aber komische Bugs).
 - Der AtomSelektor ist schon irgendwie nicht so geil.
   Kann ich das nicht besser machen?
+- Atomonliner: Das wär schon echt wichtig, wenn man außerhalb klicken
+  könnte und das erkannt würde und der dann speichern würde. Oder
+  auch z.B. wenn man eine Funktionstaste wie F9 drückt.
 - Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
 - Irgendwelche globalen Eistellungen für irgendwas.
 - Firmwareupgrade von master, M4 und X7 unterstützen

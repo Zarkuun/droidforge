@@ -109,6 +109,8 @@ void PatchSectionManager::mouseDoubleClickEvent(QMouseEvent *event)
         switchToSection(index);
         renameSection();
     }
+    else
+        TRIGGER_ACTION(ACTION_NEW_PATCH_SECTION);
 }
 
 int PatchSectionManager::clickedSectionIndex(QMouseEvent *event)
