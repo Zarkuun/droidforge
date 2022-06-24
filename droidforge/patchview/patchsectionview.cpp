@@ -93,7 +93,6 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_SORT_JACKS, &PatchSectionView::sortJacks);
     CONNECT_ACTION(ACTION_DISABLE, &PatchSectionView::disableObjects);
     CONNECT_ACTION(ACTION_ENABLE, &PatchSectionView::enableObjects);
-    CONNECT_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, &PatchSectionView::createSectionFromSelection);
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_TOOLBAR_NEW_CIRCUIT, &PatchSectionView::newCircuit);
@@ -796,7 +795,6 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_CUT, menu);
         ADD_ACTION(ACTION_COPY, menu);
         ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
-        ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
         ADD_ACTION(ACTION_SORT_JACKS, menu);
     }
 
@@ -897,23 +895,6 @@ void PatchSectionView::copyToClipboard()
         the_clipboard->copyFromSelection(&sel, section());
     }
     emit clipboardChanged();
-}
-void PatchSectionView::createSectionFromSelection()
-{
-    QString newname = NameChooseDialog::getName(tr("Create new section from selection"), tr("New name:"));
-    if (newname.isEmpty())
-        return;
-    Clipboard cb;
-    cb.copyFromSelection(section()->getSelection(), section());
-    deleteCursorOrSelection();
-    PatchSection *newSection = new PatchSection(newname);
-    for (auto circuit: cb.getCircuits())
-        newSection->addCircuit(circuit->clone());
-    int index = patch->currentSectionIndex() + 1;
-    patch->insertSection(index, newSection);
-    patch->switchCurrentSection(index);
-    patch->commit(tr("moving circuits into new section"));
-    emit patchModified();
 }
 void PatchSectionView::startPatching()
 {

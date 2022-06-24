@@ -46,6 +46,7 @@ public slots:
     void mergeWithPreviousSection();
     void mergeWithNextSection();
     void newSectionAfterCurrent();
+    void pasteAsSection();
     void mergeAllSections();
 
 signals:

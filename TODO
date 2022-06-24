@@ -26,3 +26,9 @@ Kleinere Features:
 - Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
 - Irgendwelche globalen Eistellungen für irgendwas.
 - Firmwareupgrade von master, M4 und X7 unterstützen
+- Kommentar in Circuit wrappen. Problem: Dann ist die Höhe des Kastens
+  abhängig von der Breite und dem genauen Text, nicht nur von der
+  Anzahl der Zeilen. Und dann brauchen wir eine Fontmetric, um das
+  durchzuberechnen. und dann wiederum braucht commentHeight() einen
+  Painter oder wir müssen die Fontmetric irgendwo statisch speichern.
+  Nicht ganz unkomplex das Ganze!

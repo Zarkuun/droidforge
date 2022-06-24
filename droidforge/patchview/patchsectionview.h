@@ -146,7 +146,6 @@ public slots:
     void selectAll();
     void disableObjects();
     void enableObjects();
-    void createSectionFromSelection();
     void startPatching();
     void finishPatching();
     void abortPatching();

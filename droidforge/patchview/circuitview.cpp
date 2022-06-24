@@ -110,7 +110,8 @@ void CircuitView::paintComment(QPainter *painter)
                       headerRect().bottom() + CIRV_COMMENT_PADDING,
                       commentRect().width() -  2 * CIRV_TEXT_SIDE_PADDING,
                       commentHeight()),
-                      Qt::AlignLeft | Qt::AlignJustify | Qt::AlignTop, circuit->getComment());
+                      Qt::AlignLeft | Qt::AlignJustify | Qt::AlignTop,
+                circuit->getComment());
     if (*selection && (*selection)->commentSelected(circuitNumber))
         painter->fillRect(commentRect(), COLOR(CIRV_COLOR_SELECTION));
 }

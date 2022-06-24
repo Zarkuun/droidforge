@@ -124,6 +124,11 @@ void EditorActions::createActions()
                                  "in order to avoid conflicts."));
     actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
 
+    actions[ACTION_PASTE_AS_SECTION] = new QAction(tr("Paste as new section"), this);
+    actions[ACTION_PASTE_AS_SECTION]->setShortcut(QKeySequence("Meta+V"));
+    actions[ACTION_PASTE_AS_SECTION]->setStatusTip(tr("Create a new section with the contents of the clipboard"));
+    actions[ACTION_PASTE_AS_SECTION]->setEnabled(false);
+
     actions[ACTION_EXPAND_ARRAY] = new QAction(tr("Expand parameter array by one"), this);
     actions[ACTION_EXPAND_ARRAY]->setShortcut(QKeySequence(tr("Ctrl+E")));
     actions[ACTION_EXPAND_ARRAY]->setStatusTip(tr("Works only for parameter lines with arrays like pitch1...16. "
@@ -223,9 +228,6 @@ void EditorActions::createActions()
 
     actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("Delete section"), this);
     actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+Backspace")));
-
-    actions[ACTION_CREATE_SECTION_FROM_SELECTION] = new QAction(tr("Create new section from selection"), this);
-    actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(false);
 
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("Merge with previous section"));
 
@@ -329,13 +331,13 @@ void EditorActions::changeClipboard()
 {
     actions[ACTION_PASTE]->setEnabled(!the_clipboard->isEmpty());
     actions[ACTION_PASTE_SMART]->setEnabled(the_clipboard->numCircuits());
+    actions[ACTION_PASTE_AS_SECTION]->setEnabled(the_clipboard->numCircuits());
 }
 void EditorActions::changeSelection()
 {
     const Selection *selection = section()->getSelection();
     const Circuit *circuit = section()->currentCircuit();
     actions[ACTION_EXPORT_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
-    actions[ACTION_CREATE_SECTION_FROM_SELECTION]->setEnabled(selection && selection->isCircuitSelection());
     actions[ACTION_CUT]->setEnabled(selection || circuit);
     actions[ACTION_COPY]->setEnabled(selection || circuit);
     updateDisablingActions();

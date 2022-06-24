@@ -54,6 +54,7 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_PREVIOUS_SECTION, &PatchSectionManager::switchBackward);
     CONNECT_ACTION(ACTION_NEXT_SECTION, &PatchSectionManager::switchForward);
     CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchSectionManager::newSectionAfterCurrent);
+    CONNECT_ACTION(ACTION_PASTE_AS_SECTION, &PatchSectionManager::pasteAsSection);
     CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchSectionManager::duplicateSection);
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchSectionManager::deleteSection);
     CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchSectionManager::renameSection);
@@ -67,6 +68,7 @@ void PatchSectionManager::popupSectionMenu(int index)
     QMenu *menu = new QMenu(this);
     menu->setAttribute(Qt::WA_DeleteOnClose);
     ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_PASTE_AS_SECTION, menu);
     if (index >= 0) {
         ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
         ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
@@ -77,7 +79,6 @@ void PatchSectionManager::popupSectionMenu(int index)
         menu->addSeparator();
         ADD_ACTION(ACTION_EDIT_SECTION_SOURCE, menu);
     }
-    ADD_ACTION_IF_ENABLED(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
     menu->popup(QCursor::pos());
 }
 
@@ -97,7 +98,7 @@ void PatchSectionManager::mousePressEvent(QMouseEvent *event)
         if (event->button() == Qt::RightButton)
             popupSectionMenu(index);
     }
-    else
+    if (event->button() == Qt::RightButton)
         popupSectionMenu();
 }
 
@@ -208,6 +209,21 @@ void PatchSectionManager::newSectionAfterCurrent()
 
     patch->insertSection(index + 1, new PatchSection(newname));
     patch->commit(tr("adding new patch section '%1'").arg(newname));
+    emit patchModified();
+}
+
+void PatchSectionManager::pasteAsSection()
+{
+    QString newname = NameChooseDialog::getName(tr("Paste as new section"), tr("New section name:"));
+    if (newname.isEmpty())
+        return;
+    PatchSection *newSection = new PatchSection(newname);
+    for (auto circuit: the_clipboard->getCircuits())
+        newSection->addCircuit(circuit->clone());
+    int index = patch->currentSectionIndex() + 1;
+    patch->insertSection(index, newSection);
+    patch->switchCurrentSection(index);
+    patch->commit(tr("pasting as new section"));
     emit patchModified();
 }
 

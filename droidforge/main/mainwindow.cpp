@@ -222,14 +222,13 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
     ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);
     ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
-    ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
 }
 void MainWindow::createSectionMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("Section"));
     ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_PASTE_AS_SECTION, menu);
     ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
-    ADD_ACTION(ACTION_CREATE_SECTION_FROM_SELECTION, menu);
 
     menu->addSeparator();
 
