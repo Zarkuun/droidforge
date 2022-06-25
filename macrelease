@@ -44,5 +44,9 @@ echo OK
 
 echo -n "Creating DMG..."
 rm -f "$DMG"
-macdeployqt "$APP_DIR" -dmg
+pushd "$INSTALL_ROOT"
+macdeployqt "$NAME.app" -dmg
 echo OK
+popd
+
+mv -v "$INSTALL_ROOT/$NAME.dmg" .
