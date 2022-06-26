@@ -1,7 +1,13 @@
 TODO für die erste Version:
 
+- Wenn man 2x O1 gleichzeitig verwendet, soll das ein 
+  Problem sein.
+- Man hat ein Problem.Cursor istbei Problem. Man klick auf das große
+  Problemicon. Danach ist in der Statusbar der Problemtext für das
+  eigentliche Problem, wo der Cursor sitzt, weg.
 - Schonmal etliche Beispiele machen. Dabei noch Bugs fixen.
   Die Beispiele schon für eine Patchlibrary sammeln.
+- Duplicat Section: Der eingetippte Name wird nicht verwendet.
 
 Größere Dinge:
 - Mehrere Dateien gleichzeitig auf haben
