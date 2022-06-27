@@ -6,9 +6,8 @@
 class ModuleMaster : public Module
 {
 public:
-    ModuleMaster() : Module("faceplate-master-off") {  }
+    ModuleMaster() : Module("Master") {  }
     QString name() const { return "master"; }
-    QString faceplate() const { return "faceplate-master-off";  }
     QString title() const { return "DROID master"; }
     float hp() const { return 8; }
     unsigned numRegisters(QChar type) const;

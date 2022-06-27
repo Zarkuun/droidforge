@@ -469,7 +469,7 @@ void RackView::addModule(const QString &name, int controllerIndex)
     if (controllerIndex >= 0)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
     module->setPos(x, 0); //RACV_TOP_MARGIN);
-    x += module->hp() * RACV_PIXEL_PER_HP;
+    x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
 }
 unsigned RackView::numControllers() const
 {

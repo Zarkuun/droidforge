@@ -1,29 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>images/faceplates/faceplate-b32-blue.jpg</file>
-        <file>images/faceplates/faceplate-b32-green.jpg</file>
-        <file>images/faceplates/faceplate-b32-off.jpg</file>
-        <file>images/faceplates/faceplate-b32-red.jpg</file>
-        <file>images/faceplates/faceplate-b32-white.jpg</file>
-        <file>images/faceplates/faceplate-b32-yellow.jpg</file>
-        <file>images/faceplates/faceplate-g8-off.jpg</file>
-        <file>images/faceplates/faceplate-g8-on.jpg</file>
-        <file>images/faceplates/faceplate-m4.jpg</file>
-        <file>images/faceplates/faceplate-master-off.jpg</file>
-        <file>images/faceplates/faceplate-master-on.jpg</file>
-        <file>images/faceplates/faceplate-p2b4-on.jpg</file>
-        <file>images/faceplates/faceplate-p2b8-blue.jpg</file>
-        <file>images/faceplates/faceplate-p2b8-green.jpg</file>
-        <file>images/faceplates/faceplate-p2b8-off.jpg</file>
-        <file>images/faceplates/faceplate-p2b8-on.jpg</file>
-        <file>images/faceplates/faceplate-p2b8-red.jpg</file>
-        <file>images/faceplates/faceplate-p2b8-yellow.jpg</file>
-        <file>images/faceplates/faceplate-p4b2-off.jpg</file>
-        <file>images/faceplates/faceplate-p10-2.jpg</file>
-        <file>images/faceplates/faceplate-p10.jpg</file>
-        <file>images/faceplates/faceplate-s10.jpg</file>
-        <file>images/faceplates/faceplate-x7-off.jpg</file>
-        <file>images/faceplates/faceplate-x7-on.jpg</file>
         <file>droidfirmware.json</file>
         <file>images/circuits/lfo.png</file>
         <file>images/circuits/contour.png</file>
@@ -33,7 +9,6 @@
         <file>images/circuits/transient.png</file>
         <file>images/icons/warning.png</file>
         <file>images/rackbackground.png</file>
-        <file>images/faceplates/faceplate-blind-front.jpg</file>
         <file>images/circuits/copy.png</file>
         <file>images/circuits/mixer.png</file>
         <file>images/circuits/compare.png</file>
@@ -330,5 +305,14 @@
         <file>images/icons/dark/folded.png</file>
         <file>images/icons/dark/ledmismatch.png</file>
         <file>images/icons/light/ledmismatch.png</file>
+        <file>images/faceplates/B32.png</file>
+        <file>images/faceplates/P2B8.png</file>
+        <file>images/faceplates/P10.png</file>
+        <file>images/faceplates/P4B2.png</file>
+        <file>images/faceplates/S10.png</file>
+        <file>images/faceplates/M4.png</file>
+        <file>images/faceplates/Master.png</file>
+        <file>images/faceplates/G8.png</file>
+        <file>images/faceplates/X7.png</file>
     </qresource>
 </RCC>
