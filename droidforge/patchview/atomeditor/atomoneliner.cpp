@@ -67,7 +67,6 @@ Atom *AtomOneliner::editAtom(QRectF geometry, const Patch *, jacktype_t jacktype
     if (!dialog)
         dialog = new AtomOneliner();
 
-
     if (dialog->edit(geometry, jacktype, start)) {
         lastKey = dialog->getLastKey();
         return dialog->getAtom();
@@ -84,6 +83,7 @@ bool AtomOneliner::edit(QRectF geometry, jacktype_t jt, QString start)
     lineEdit->setFont(font);
 
     move(geometry.topLeft().toPoint());
+    resize(geometry.width(), geometry.height());
     lineEdit->setFixedHeight(geometry.height());
     lineEdit->setFixedWidth(geometry.width());
     lineEdit->setText(start);
