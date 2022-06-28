@@ -98,7 +98,7 @@ void PatchSectionManager::mousePressEvent(QMouseEvent *event)
         if (event->button() == Qt::RightButton)
             popupSectionMenu(index);
     }
-    if (event->button() == Qt::RightButton)
+    else if (event->button() == Qt::RightButton)
         popupSectionMenu();
 }
 
@@ -166,7 +166,9 @@ void PatchSectionManager::duplicateSection()
         return;
 
     Patch *newpatch = new Patch();
-    newpatch->addSection(oldSection->clone());
+    PatchSection *newSection = oldSection->clone();
+    newSection->setTitle(newname);
+    newpatch->addSection(newSection);
     if (!the_operator->interactivelyRemapRegisters(newpatch)) {
         delete newpatch;
         return;
