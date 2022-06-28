@@ -20,6 +20,7 @@ PatchOperator *the_operator = 0;
 PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     : patch(patch)
     , sdCardPresent(false)
+    , x7Present(false)
 {
     Q_ASSERT(the_operator == 0);
     the_operator = this;
@@ -77,7 +78,7 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     // get's mounted. Use that rather than a timer. This is much faster and avoids
     // nasty polling!
     QTimer *sdTimer = new QTimer(this);
-    connect(sdTimer, &QTimer::timeout, this, &PatchOperator::updateSDState);
+    connect(sdTimer, &QTimer::timeout, this, &PatchOperator::updateSDAndX7State);
     sdTimer->start(100);
 }
 void PatchOperator::newPatch()
@@ -254,12 +255,19 @@ bool PatchOperator::isDroidVolume(const QFileInfo &fileinfo) const
     QDir dir(fileinfo.filePath());
     return dir.exists("DROIRDCAL.BIN") || dir.exists("DROIDSTA.BIN");
 }
-void PatchOperator::updateSDState()
+void PatchOperator::updateSDAndX7State()
 {
-    bool oldState = sdCardPresent;
+    bool oldSDState = sdCardPresent;
     QDir sdDir = sdCardDir();
     sdCardPresent = sdDir.exists();
-    if (oldState != sdCardPresent)
+    if (oldSDState != sdCardPresent) {
+        emit droidStateChanged();
+        return;
+    }
+
+    bool oldX7State = x7Present;
+    x7Present = midiHost.x7Connected();
+    if (oldX7State != x7Present)
         emit droidStateChanged();
 }
 void PatchOperator::loadFile(const QString &filePath, int how)

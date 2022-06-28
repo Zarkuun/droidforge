@@ -18,7 +18,7 @@ class MacMIDIHost
 
 public:
     MacMIDIHost();
-    // bool x7Connected();
+    bool x7Connected() const;
     QString sendPatch(const Patch *patch);
     MIDIEndpointRef findX7() const;
 

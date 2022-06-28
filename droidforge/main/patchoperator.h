@@ -25,6 +25,7 @@ class PatchOperator : public QObject
     PatchEditEngine *patch;
     PatchParser parser;
     bool sdCardPresent;
+    bool x7Present;
 #ifdef Q_OS_MACOS
     MacMIDIHost midiHost;
 #else
@@ -44,6 +45,7 @@ public:
     void jumpTo(int sectionIndex, const CursorPosition &pos);
     void clearSelection();
     bool droidSDCardPresent() const { return sdCardPresent; };
+    bool droidX7Present() const { return x7Present; };
 
 protected:
     PatchSection *section() { return patch->currentSection(); };
@@ -80,7 +82,7 @@ private:
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);
     bool isDroidVolume(const QFileInfo &fileinfo) const;
-    void updateSDState();
+    void updateSDAndX7State();
     QDir sdCardDir() const;
     Patch *editSource(QString oldSource);
 public: // TODO: Spater wieder private machen

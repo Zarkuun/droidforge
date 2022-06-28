@@ -427,8 +427,8 @@ void EditorActions::changePatching()
 }
 void EditorActions::changeDroidState()
 {
-    actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
-    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems()); // TODO: X7 state
-    actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
-    actions[ACTION_TOOLBAR_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent()); // TODO: SD card state
+    actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems() && the_operator->droidX7Present());
+    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems() && the_operator->droidX7Present());
+    actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent());
+    actions[ACTION_TOOLBAR_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent());
 }

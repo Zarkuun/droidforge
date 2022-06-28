@@ -19,6 +19,11 @@ MacMIDIHost::MacMIDIHost()
     MIDIOutputPortCreate(clientRef, CFSTR("Output port"), &outputPortRef);
 }
 
+bool MacMIDIHost::x7Connected() const
+{
+    return findX7() != 0;
+}
+
 // Strange. But this struct seems to need to be global. Otherwise
 // we got crashed in the CoreMIDI Foundation from time to time.
 struct MIDISysexSendRequest req;
