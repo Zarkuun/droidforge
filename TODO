@@ -1,5 +1,12 @@
 TODO für die erste Version:
 
+- Stefan: Beim Anlegen eines Circuits könnten die Defaultwerte eingetragen
+  werden (hm. Wo es halt möglich ist, also nicht bei clocks und sowas)
+- Sektionen per Drag-Drop vertauschen
+- Controller per Drag-Drop vertauschen
+- Circuits per Drag-Drop vertauschen
+- Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
+
 Größere Dinge:
 - Mehrere Dateien gleichzeitig auf haben
 - Patch library
@@ -9,11 +16,7 @@ Kleinere Features:
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
 - Dieser Hintdialog. Den könnten wir noch noch viel öfter einsetzen...
 - Selektion mit Rahmen ziehen
-- Sektionen per Drag-Drop vertauschen
-- Controller per Drag-Drop vertauschen
-- Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc) (oder verwerfen)(
-- Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
-  komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
+- Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc) (sollen wir das wirklich machen?)
 - Handcursor für Icons usw. die man klicken kann (da hat Qt
   aber komische Bugs).
 - Der AtomSelektor ist schon irgendwie nicht so geil.
@@ -21,13 +24,10 @@ Kleinere Features:
 - Atomonliner: Das wär schon echt wichtig, wenn man außerhalb klicken
   könnte und das erkannt würde und der dann speichern würde. Oder
   auch z.B. wenn man eine Funktionstaste wie F9 drückt.
-- Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
-- Irgendwelche globalen Eistellungen für irgendwas.
+  Das ginge vielleicht, wenn man den modal macht und sobald er den Focus
+  verliert ihn beendet. Dazu müssen wir uns aber irgendwo merken,
+  dass wir gerade onelinern. Und bei dem Closeevent dann ein editatom
+  machen. Bisschen hässlich.
 - Firmwareupgrade von master, M4 und X7 unterstützen
-- Kommentar in Circuit wrappen. Problem: Dann ist die Höhe des Kastens
-  abhängig von der Breite und dem genauen Text, nicht nur von der
-  Anzahl der Zeilen. Und dann brauchen wir eine Fontmetric, um das
-  durchzuberechnen. und dann wiederum braucht commentHeight() einen
-  Painter oder wir müssen die Fontmetric irgendwo statisch speichern.
-  Nicht ganz unkomplex das Ganze!
-
+- Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
+  komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
