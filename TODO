@@ -1,7 +1,3 @@
-BUGS:
-- Im Circuitchooser gehen cursor hoch und runter nicht mehr. Macht stattdessen
-  den Scrollbar.
-
 TODO für die erste Version:
 
 - Wenn man 2x O1 gleichzeitig verwendet, soll das ein 
