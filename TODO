@@ -1,8 +1,5 @@
 TODO für die erste Version:
 
-- Man hat ein Problem.Cursor istbei Problem. Man klick auf das große
-  Problemicon. Danach ist in der Statusbar der Problemtext für das
-  eigentliche Problem, wo der Cursor sitzt, weg.
 - Schonmal etliche Beispiele machen. Dabei noch Bugs fixen.
   Die Beispiele schon für eine Patchlibrary sammeln.
 - Duplicat Section: Der eingetippte Name wird nicht verwendet.
