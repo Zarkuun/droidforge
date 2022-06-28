@@ -127,6 +127,7 @@ public:
         iterator(Patch *p) : patch(p) { moveToFirstAtom(); }
         iterator() : atom(0), patch(0) {}
         bool advance();
+        bool isOutput() const { return jackAssignment->isOutput(); };
         Atom *&operator*() { return atom; }
         bool operator != (const iterator &it) { return atom != it.atom; };
         void operator ++() { advance(); };

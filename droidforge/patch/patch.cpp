@@ -357,6 +357,34 @@ void Patch::updateProblems()
         problems += sectionProblems;
         sectionNr++;
     }
+
+    // Look for outputs (O) or normalizations (N) that are used twice as output.
+    // LEDs are fine! Since many circuits work with select and allow
+    // overloading of LEDs.
+    RegisterList usedOutputs;
+    for (auto it = begin(); it != end(); ++it)
+    {
+        const Atom *atom = *it;
+        if (!atom->isRegister() || !it.isOutput())
+            continue;
+
+        const AtomRegister *reg = (const AtomRegister *)atom;
+        if (reg->getRegisterType() != REGISTER_OUTPUT &&
+            reg->getRegisterType() != REGISTER_NORMALIZE)
+            continue;
+
+
+        if (usedOutputs.contains(*reg)) {
+            const CursorPosition &pos = it.cursorPosition();
+            PatchProblem *prob = new PatchProblem(pos.row, pos.column,
+                                                  TR("Duplicate usage of %1 as output").arg(reg->toString()));
+            prob->setCircuit(pos.circuitNr);
+            prob->setSection(it.sectionIndex());
+            problems.append(prob);
+        }
+        else
+            usedOutputs.append(*reg);
+    }
 }
 
 QString Patch::problemAt(int section, const CursorPosition &pos)

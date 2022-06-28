@@ -12,9 +12,14 @@ bool CursorPosition::isAtAtom() const
     return row >= 0 && column >= 1;
 }
 
+QString CursorPosition::toString() const
+{
+    return QString("%1.%2.%3").arg(circuitNr).arg(row).arg(column);
+}
+
 QDebug &operator<<(QDebug &out, const CursorPosition &pos)
 {
-    out << QString("%1.%2.%3").arg(pos.circuitNr).arg(pos.row).arg(pos.column);
+    out << pos.toString();
     return out;
 }
 
