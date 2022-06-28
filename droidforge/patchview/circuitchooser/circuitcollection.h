@@ -23,7 +23,6 @@ public:
     unsigned getNumCircuits() const { return numCircuits; };
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
-    // void keyPressEvent(QKeyEvent *event);
     QString selectedCircuitName();
     void updateSearch(QString text);
     void resizeEvent(QResizeEvent* event);

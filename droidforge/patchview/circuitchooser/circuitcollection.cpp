@@ -3,6 +3,7 @@
 #include "colorscheme.h"
 #include "droidfirmware.h"
 #include "tuning.h"
+#include "globals.h"
 
 #include <QMouseEvent>
 #include <QGraphicsRectItem>
@@ -73,8 +74,9 @@ void CircuitCollection::mousePressEvent(QMouseEvent *event)
 void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (handleMousePress(event->pos()))
-            chooseCurrentCircuit();
+        chooseCurrentCircuit();
 }
+
 // void CircuitCollection::keyPressEvent(QKeyEvent *event)
 // {
 //     if (event->key() == Qt::Key_Down)
@@ -101,6 +103,7 @@ void CircuitCollection::updateSearch(QString text)
     selectedCircuit = qMin(selectedCircuit, circuits.size() - 1);
     initBackgroundRect(numCircuits);
     update();
+    setFocusPolicy(Qt::NoFocus);
 }
 void CircuitCollection::resizeEvent(QResizeEvent *event)
 {

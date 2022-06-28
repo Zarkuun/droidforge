@@ -38,7 +38,7 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     addCategoryTab("deprecated", tr("Deprecated"));
     tabWidget->setTabVisible(TAB_INDEX_SEARCH, false);
     tabWidget->setCurrentIndex(TAB_INDEX_FIRST_CATEGORY);
-    tabWidget-> setFocusPolicy(Qt::NoFocus);
+    tabWidget->setFocusPolicy(Qt::NoFocus);
 
     // The "Start jacks" choice determines with which jack assignments
     // should the new circuit start its life.
@@ -74,6 +74,8 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     mainLayout->addWidget(lineEditSearch, 1, 2);
     mainLayout->addWidget(buttonBox, 1, 3);
     setLayout(mainLayout);
+
+    setFocusPolicy(Qt::NoFocus);
 }
 QString CircuitChooseDialog::getSelectedCircuit() const
 {
