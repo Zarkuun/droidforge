@@ -72,6 +72,7 @@ private slots:
     void editSectionSource();
     void editCircuitSource();
     void fixLEDMismatch();
+    void globalClipboardChanged();
 
 private:
     bool checkModified();

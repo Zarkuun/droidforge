@@ -1,8 +1,5 @@
 TODO für die erste Version:
 
-- Schonmal etliche Beispiele machen. Dabei noch Bugs fixen.
-  Die Beispiele schon für eine Patchlibrary sammeln.
-
 Größere Dinge:
 - Mehrere Dateien gleichzeitig auf haben
 - Patch library
@@ -14,8 +11,6 @@ Kleinere Features:
 - Selektion mit Rahmen ziehen
 - Sektionen per Drag-Drop vertauschen
 - Controller per Drag-Drop vertauschen
-- Skizzen der Module anstelle von Fotos
-- Globales Clipboard nutzen, um Patches auszutauschen. Rein und Raus.
 - Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc) (oder verwerfen)(
 - Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
   komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
@@ -35,3 +30,4 @@ Kleinere Features:
   durchzuberechnen. und dann wiederum braucht commentHeight() einen
   Painter oder wir müssen die Fontmetric irgendwo statisch speichern.
   Nicht ganz unkomplex das Ganze!
+

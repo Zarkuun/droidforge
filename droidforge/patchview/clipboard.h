@@ -32,8 +32,11 @@ public:
     const QList<JackAssignment *> getJackAssignment() const { return jackAssignments; };
     const QList<Atom *> &getAtoms() const { return atoms; };
     Patch *getAsPatch() const;
+    void copyToGlobalClipboard() const;
+    void copyFromGlobalClipboard();
 
 private:
+    QString toString() const;
     void clear();
 };
 

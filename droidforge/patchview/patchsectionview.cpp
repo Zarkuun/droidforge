@@ -894,6 +894,7 @@ void PatchSectionView::copyToClipboard()
         Selection sel(section()->cursorPosition());
         the_clipboard->copyFromSelection(&sel, section());
     }
+    the_clipboard->copyToGlobalClipboard();
     emit clipboardChanged();
 }
 void PatchSectionView::startPatching()

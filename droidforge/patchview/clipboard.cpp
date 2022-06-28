@@ -1,5 +1,11 @@
 #include "clipboard.h"
+#include "globals.h"
+#include "parseexception.h"
 #include "patch.h"
+#include "patchparser.h"
+
+#include <QGuiApplication>
+#include <QClipboard>
 
 Clipboard *the_clipboard = 0;
 
@@ -76,6 +82,57 @@ Patch *Clipboard::getAsPatch() const
         ps->addCircuit(circuit->clone());
     patch->addSection(ps);
     return patch;
+}
+
+void Clipboard::copyToGlobalClipboard() const
+{
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    clipboard->setText(toString());
+
+}
+
+void Clipboard::copyFromGlobalClipboard()
+{
+    clear();
+    try {
+        Patch patch;
+        PatchParser parser;
+        QClipboard *clipboard = QGuiApplication::clipboard();
+        parser.parseString(clipboard->text(), &patch);
+        for (auto section: patch.getSections())
+            for (auto circuit: section->getCircuits())
+                circuits.append(circuit->clone());
+    }
+    catch (ParseException &e) {
+    }
+
+}
+
+QString Clipboard::toString() const
+{
+    QString text;
+    for (auto circuit: circuits)
+        text += circuit->toString();
+    if (text != "")
+        return text;
+
+    for (auto ja: jackAssignments) {
+        text += ja->toString();
+        text += "\n";
+    }
+    if (text != "")
+        return text;
+
+    for (auto atom: atoms)
+        text += atom->toString();
+    if (text != "")
+        return text;
+
+    if (comment != "")
+        return comment;
+
+    else
+        return "";
 }
 
 unsigned Clipboard::numJacks() const

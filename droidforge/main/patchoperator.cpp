@@ -12,6 +12,7 @@
 #include <QSettings>
 #include <QProcess>
 #include <QTimer>
+#include <QClipboard>
 
 // #include <CoreMIDI/MIDIServices.h>
 
@@ -80,6 +81,9 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     QTimer *sdTimer = new QTimer(this);
     connect(sdTimer, &QTimer::timeout, this, &PatchOperator::updateSDAndX7State);
     sdTimer->start(100);
+
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    connect(clipboard, &QClipboard::dataChanged, this, &PatchOperator::globalClipboardChanged);
 }
 void PatchOperator::newPatch()
 {
@@ -703,6 +707,11 @@ void PatchOperator::fixLEDMismatch()
     section()->sanitizeCursor();
     patch->commit(tr("fixing LED mismatches"));
     emit patchModified();
+}
+void PatchOperator::globalClipboardChanged()
+{
+    the_clipboard->copyFromGlobalClipboard();
+    emit clipboardChanged();
 }
 Patch *PatchOperator::editSource(QString oldSource)
 {
