@@ -237,6 +237,7 @@ void PatchSectionManager::moveSectionUp()
 {
     int i = patch->currentSectionIndex();
     patch->moveSection(i, i-1);
+    patch->switchCurrentSection(i-1);
     patch->commit(tr("moving section up"));
     emit patchModified();
 }
@@ -244,6 +245,7 @@ void PatchSectionManager::moveSectionDown()
 {
     int i = patch->currentSectionIndex();
     patch->moveSection(i, i+1);
+    patch->switchCurrentSection(i+1);
     patch->commit(tr("moving section down"));
     emit patchModified();
 }

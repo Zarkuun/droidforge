@@ -286,6 +286,11 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 
 bool PatchSectionView::handleKeyPress(int key, int modifiers)
 {
+    // If any other modifier than shift is pressed, ignore
+    // the movement keys.
+    if (modifiers & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier))
+        return false;
+
     bool shiftHeld = modifiers & Qt::ShiftModifier;
     CursorPosition posBefore = section()->cursorPosition();
     bool moved = false;
@@ -637,12 +642,9 @@ void PatchSectionView::enableDisableObjects(bool enable)
 }
 void PatchSectionView::pasteCircuitsFromClipboard()
 {
-    shout << "CLIPBOARD" << the_clipboard->toString();
     int position = 0;
     for (auto circuit: the_clipboard->getCircuits()) {
-        shout << "FROM CLIP" << circuit->toString();
         Circuit *newCircuit = circuit->clone();
-        shout << "NEW CIRCUIT" << newCircuit->toString();
         position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
         section()->insertCircuit(position, newCircuit);
     }

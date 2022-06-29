@@ -212,10 +212,10 @@ void EditorActions::createActions()
     actions[ACTION_NEXT_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Down")));
 
     actions[ACTION_MOVE_SECTION_UP] = new QAction(tr("Move by one position up"));
-    actions[ACTION_MOVE_SECTION_UP]->setShortcut(QKeySequence(tr("Ctrl+Shift+Up")));
+    actions[ACTION_MOVE_SECTION_UP]->setShortcut(QKeySequence(tr("Meta+Shift+Up")));
 
     actions[ACTION_MOVE_SECTION_DOWN] = new QAction(tr("Move by one position down"));
-    actions[ACTION_MOVE_SECTION_DOWN]->setShortcut(QKeySequence(tr("Ctrl+Shift+Down")));
+    actions[ACTION_MOVE_SECTION_DOWN]->setShortcut(QKeySequence(tr("Meta+Shift+Down")));
 
     actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("New section..."), this);
     actions[ACTION_NEW_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+N")));
