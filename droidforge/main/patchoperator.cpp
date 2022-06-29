@@ -6,6 +6,7 @@
 #include "updatehub.h"
 #include "patchpropertiesdialog.h"
 #include "sourcecodeeditor.h"
+#include "atomcable.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -631,12 +632,9 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
                 }
             }
             if (rename) {
-                int n = 1;
-                QString newName = cable + QString::number(n);
-                while (ontoPatch->cableExists(newName) || otherPatch->cableExists(newName)) {
-                    n++;
-                    newName = cable + QString::number(n);
-                }
+                QString newName = AtomCable::nextCableName(cable);
+                while (ontoPatch->cableExists(newName) || otherPatch->cableExists(newName))
+                    newName = AtomCable::nextCableName(newName);
                 otherPatch->renameCable(cable, newName);
             }
         }

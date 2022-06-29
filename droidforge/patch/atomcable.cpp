@@ -31,3 +31,21 @@ QString AtomCable::problemAsOutput(const Patch *patch) const
 {
     return problemAsInput(patch);
 }
+
+QString AtomCable::nextCableName(const QString &name)
+{
+    // HIRN -> HIRN2
+    if (!name.back().isDigit())
+        return name + "2";
+
+    // HIRN1 -> HIRN2
+    // HIRN17 -> HIRN18
+    int i = name.length();
+    while (name[i-1].isDigit())
+        i--;
+
+    // i now points to first digit of the end part
+    QString stem = name.mid(0, i);
+    int number = name.mid(i).toInt();
+    return stem + QString::number(number+1);
+}

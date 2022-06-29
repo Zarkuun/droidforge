@@ -18,6 +18,7 @@ public:
     void setCable(const QString &n) { name = n; };
     QString problemAsInput(const Patch *patch) const;
     QString problemAsOutput(const Patch *patch) const;
+    static QString nextCableName(const QString &name);
 };
 
 #endif // ATOMCABLE_H
