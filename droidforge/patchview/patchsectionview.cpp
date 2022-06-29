@@ -637,9 +637,12 @@ void PatchSectionView::enableDisableObjects(bool enable)
 }
 void PatchSectionView::pasteCircuitsFromClipboard()
 {
+    shout << "CLIPBOARD" << the_clipboard->toString();
     int position = 0;
     for (auto circuit: the_clipboard->getCircuits()) {
+        shout << "FROM CLIP" << circuit->toString();
         Circuit *newCircuit = circuit->clone();
+        shout << "NEW CIRCUIT" << newCircuit->toString();
         position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
         section()->insertCircuit(position, newCircuit);
     }
@@ -794,6 +797,8 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
     if (section()->getSelection()) {
         ADD_ACTION(ACTION_CUT, menu);
         ADD_ACTION(ACTION_COPY, menu);
+        ADD_ACTION(ACTION_PASTE, menu);
+        ADD_ACTION(ACTION_PASTE_SMART, menu);
         ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
         ADD_ACTION(ACTION_SORT_JACKS, menu);
     }

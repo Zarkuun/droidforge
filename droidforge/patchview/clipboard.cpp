@@ -10,6 +10,7 @@
 Clipboard *the_clipboard = 0;
 
 Clipboard::Clipboard()
+    : ignoreNextGlobalClipboardChange(false)
 {
     // Hm. This seems like a hack. The first clipboard goes global.
     // Intermediate clipboards come later and will not overwrite this.
@@ -54,6 +55,8 @@ void Clipboard::copyFromSelection(const Selection *sel, const PatchSection *sect
         else // circuit comment selection
             comment = circuit->getComment();
     }
+
+    ignoreNextGlobalClipboardChange = true;
 }
 
 bool Clipboard::isEmpty() const
@@ -93,6 +96,12 @@ void Clipboard::copyToGlobalClipboard() const
 
 void Clipboard::copyFromGlobalClipboard()
 {
+    shoutfunc;
+    if (ignoreNextGlobalClipboardChange) {
+        shout << "Ignoring global!";
+        ignoreNextGlobalClipboardChange = false;
+        return;
+    }
     clear();
     try {
         Patch patch;

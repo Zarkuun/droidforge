@@ -1,5 +1,11 @@
 TODO für die erste Version:
 
+- Nach einem Undo springt das Folding zurück auf einen Stand nach der
+  letzten Aktion. Wir müssen es so machen, wie bei Cursorbewegungen,
+  dass die Foldings im letzten Patch immer wieder aktualisiert werden!
+- Wenn man mehrere Circuits ausschneidet und einfügt, ist die Stelle,
+  an der sie eingefügt werden, die falsche. Sollten *vor* dem aktuelle
+  Circuits eingefügt werden, denke ich.
 - Stefan: Beim Anlegen eines Circuits könnten die Defaultwerte eingetragen
   werden (hm. Wo es halt möglich ist, also nicht bei clocks und sowas)
 - Sektionen per Drag-Drop vertauschen

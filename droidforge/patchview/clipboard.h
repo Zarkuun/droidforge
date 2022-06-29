@@ -16,6 +16,7 @@ class Clipboard
     QList<JackAssignment *> jackAssignments;
     QList<Atom *> atoms;
     QString comment;
+    bool ignoreNextGlobalClipboardChange;
 
 public:
     Clipboard();
@@ -34,9 +35,9 @@ public:
     Patch *getAsPatch() const;
     void copyToGlobalClipboard() const;
     void copyFromGlobalClipboard();
+    QString toString() const;
 
 private:
-    QString toString() const;
     void clear();
 };
 
