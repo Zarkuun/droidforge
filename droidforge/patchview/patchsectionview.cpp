@@ -733,12 +733,16 @@ void PatchSectionView::foldUnfold()
     the_operator->clearSelection();
     currentCircuit()->toggleFold();
     section()->setCursorRowColumn(ROW_CIRCUIT, 0);
+    patch->commitCursorPosition();
+    patch->commitFolding();
     emit patchModified();
 }
 void PatchSectionView::foldUnfoldAll()
 {
     the_operator->clearSelection();
     section()->toggleFold();
+    patch->commitCursorPosition();
+    patch->commitFolding();
     emit patchModified();
 }
 void PatchSectionView::changeZoom(int how)

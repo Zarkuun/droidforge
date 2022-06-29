@@ -41,6 +41,7 @@ public:
     QString nextUndoTitle() const;
     QString nextRedoTitle() const;
     void commitCursorPosition();
+    void commitFolding();
 
     bool isPatching() const { return patching; };
     void startPatching();
