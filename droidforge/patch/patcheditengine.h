@@ -25,6 +25,7 @@ public:
     PatchEditEngine(); // empty
     ~PatchEditEngine();
     const QString &getFilePath() const { return filePath; };
+    bool hasFilename() const { return filePath != ""; };
     void setFilePath(const QString &f) { filePath = f; };
     void startFromScratch();
     bool isModified() const;

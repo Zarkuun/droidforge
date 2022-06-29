@@ -282,8 +282,9 @@ void EditorActions::createActions()
 }
 void EditorActions::modifyPatch()
 {
-    actions[ACTION_SAVE]->setEnabled(patch->isModified());
-    actions[ACTION_TOOLBAR_SAVE]->setEnabled(patch->isModified());
+    bool maySave = patch->isModified() || !patch->hasFilename();
+    actions[ACTION_SAVE]->setEnabled(maySave);
+    actions[ACTION_TOOLBAR_SAVE]->setEnabled(maySave);
     actions[ACTION_OPEN_ENCLOSING_FOLDER]->setEnabled(patch->getFilePath() != "");
 
     if (patch->undoPossible()) {
