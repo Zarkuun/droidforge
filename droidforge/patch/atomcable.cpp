@@ -7,12 +7,10 @@ AtomCable *AtomCable::clone() const
 {
     return new AtomCable(name);
 }
-
 QString AtomCable::toString() const
 {
     return QString("_") + name;
 }
-
 QString AtomCable::problemAsInput(const Patch *patch) const
 {
     int numAsOutput = 0;
@@ -26,12 +24,10 @@ QString AtomCable::problemAsInput(const Patch *patch) const
     else
         return "";
 }
-
 QString AtomCable::problemAsOutput(const Patch *patch) const
 {
     return problemAsInput(patch);
 }
-
 QString AtomCable::nextCableName(const QString &name)
 {
     // HIRN -> HIRN2

@@ -18,6 +18,7 @@ PatchPropertiesDialog::PatchPropertiesDialog(QWidget *parent)
     setLayout(mainLayout);
 
     QFormLayout *formLayout = new QFormLayout();
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     formLayout->addRow(tr("Title"), lineEditTitle);
     formLayout->addRow(tr("Description"), textEditDescription);
     mainLayout->addLayout(formLayout);
