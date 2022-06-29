@@ -80,6 +80,7 @@ public:
 private:
     bool checkLEDMismatches(bool fixit);
     JackAssignment *findJack(const QString name);
+    QString prefixOfJack(const QString &jackName);
 };
 
 #endif // CIRCUIT_H

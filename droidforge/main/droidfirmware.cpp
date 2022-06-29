@@ -105,6 +105,7 @@ unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isIn
         jackinfo = findJackArray(circuit, "inputs", prefix);
     else
         jackinfo = findJackArray(circuit, "outputs", prefix);
+
     if (jackinfo.isNull())
         return 0;
 
@@ -310,9 +311,8 @@ QJsonValue DroidFirmware::findJackArray(QString circuit, QString whence, QString
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
     for (qsizetype i=0; i<jacklist.size(); i++) {
         QJsonObject jackinfo = jacklist[i].toObject();
-        if (jackinfo["prefix"].toString() == prefix) {
+        if (jackinfo["prefix"].toString() == prefix)
             return jackinfo;
-        }
     }
     return 0;
 }

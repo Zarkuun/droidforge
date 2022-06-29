@@ -21,7 +21,7 @@ public:
     bool jackIsInput(QString circuit, QString jack) const;
     bool jackIsOutput(QString circuit, QString jack) const;
     bool jackIsArray(QString circuit, QString jack) const;
-    unsigned jackArraySize(QString circuit, QString jack, bool isInput) const;
+    unsigned jackArraySize(QString circuit, QString prefix, bool isInput) const;
     QStringList circuitsOfCategory(QString category) const;
     QString circuitDescription(QString circuit) const;
     QString circuitTitle(QString circuit) const;
