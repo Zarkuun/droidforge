@@ -191,7 +191,7 @@ void JackAssignmentInput::findCableConnections(const QString &cable, int &asInpu
 // von Atom machen? Zahlen, Register, Kabel. Und dann das hier sauber verschachteln.
 // das mit dem [^*/+-] scheint mir ein ziemlich wackliger hack zu sein.
 #define RATOMA "[^*/+-]+"
-#define RATOMB "-[0-9][^*/+-]+"
+#define RATOMB "-[0-9][^*/+-]*"
 #define RATOM "(" RATOMA "|" RATOMB ")"
 #define RNUMBER "(-?([0-9]+[.])?[0-9]+)"
 

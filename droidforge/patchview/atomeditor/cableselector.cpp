@@ -14,7 +14,6 @@ CableSelector::CableSelector(QWidget *parent)
 
     // Icon for current cable
     labelIcon = new QLabel();
-    labelIcon->setText("AHLL");
     mainLayout->addWidget(labelIcon, 0, 0);
 
     // Line edit for creating new cables
