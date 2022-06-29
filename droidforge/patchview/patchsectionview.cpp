@@ -647,8 +647,8 @@ void PatchSectionView::pasteCircuitsFromClipboard()
         Circuit *newCircuit = circuit->clone();
         position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
         section()->insertCircuit(position, newCircuit);
+        section()->setCursor(CursorPosition(position,  ROW_CIRCUIT, 0));
     }
-    section()->setCursor(CursorPosition(position, ROW_CIRCUIT, 0));
     patch->commit(tr("pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
 }
