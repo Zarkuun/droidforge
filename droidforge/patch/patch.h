@@ -51,6 +51,7 @@ public:
     const QList<PatchSection *> &getSections() const { return sections; };
     PatchSection *currentSection() { return sections[sectionIndex]; }; // never 0
     const Circuit *currentCircuit() const; // can be 0
+    void moveSection(int fromIndex, int toIndex);
     const Atom *currentAtom() const; // can be 0
     void setCursorTo(int section, const CursorPosition &pos);
 

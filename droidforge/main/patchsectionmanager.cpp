@@ -48,7 +48,6 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     int width = settings.value("patchsectionmanager/size").toInt();
     resize(width, height());
 }
-
 void PatchSectionManager::connectActions()
 {
     CONNECT_ACTION(ACTION_PREVIOUS_SECTION, &PatchSectionManager::switchBackward);
@@ -61,8 +60,9 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_MERGE_WITH_PREVIOUS_SECTION, &PatchSectionManager::mergeWithPreviousSection);
     CONNECT_ACTION(ACTION_MERGE_WITH_NEXT_SECTION, &PatchSectionManager::mergeWithNextSection);
     CONNECT_ACTION(ACTION_MERGE_ALL_SECTIONS, &PatchSectionManager::mergeAllSections);
+    CONNECT_ACTION(ACTION_MOVE_SECTION_UP, &PatchSectionManager::moveSectionUp);
+    CONNECT_ACTION(ACTION_MOVE_SECTION_DOWN, &PatchSectionManager::moveSectionDown);
 }
-
 void PatchSectionManager::popupSectionMenu(int index)
 {
     QMenu *menu = new QMenu(this);
@@ -71,17 +71,26 @@ void PatchSectionManager::popupSectionMenu(int index)
     ADD_ACTION(ACTION_PASTE_AS_SECTION, menu);
     if (index >= 0) {
         ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
-        ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
         ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);
+        ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
+
+        menu->addSeparator();
+
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_PREVIOUS_SECTION, menu);
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_WITH_NEXT_SECTION, menu);
         ADD_ACTION_IF_ENABLED(ACTION_MERGE_ALL_SECTIONS, menu);
+
         menu->addSeparator();
+
+        ADD_ACTION_IF_ENABLED(ACTION_MOVE_SECTION_UP, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_MOVE_SECTION_DOWN, menu);
+
+        menu->addSeparator();
+
         ADD_ACTION(ACTION_EDIT_SECTION_SOURCE, menu);
     }
     menu->popup(QCursor::pos());
 }
-
 void PatchSectionManager::resizeEvent(QResizeEvent *)
 {
     if (patch)
@@ -89,7 +98,6 @@ void PatchSectionManager::resizeEvent(QResizeEvent *)
     QSettings settings;
     settings.setValue("patchsectionmanager/size", width());
 }
-
 void PatchSectionManager::mousePressEvent(QMouseEvent *event)
 {
     int index = clickedSectionIndex(event);
@@ -101,7 +109,6 @@ void PatchSectionManager::mousePressEvent(QMouseEvent *event)
     else if (event->button() == Qt::RightButton)
         popupSectionMenu();
 }
-
 void PatchSectionManager::mouseDoubleClickEvent(QMouseEvent *event)
 {
     int index = clickedSectionIndex(event);
@@ -112,7 +119,6 @@ void PatchSectionManager::mouseDoubleClickEvent(QMouseEvent *event)
     else
         TRIGGER_ACTION(ACTION_NEW_PATCH_SECTION);
 }
-
 int PatchSectionManager::clickedSectionIndex(QMouseEvent *event)
 {
     for (auto item: items(event->pos())) {
@@ -122,17 +128,14 @@ int PatchSectionManager::clickedSectionIndex(QMouseEvent *event)
     }
     return -1;
 }
-
 void PatchSectionManager::modifyPatch()
 {
     rebuildGraphics();
 }
-
 void PatchSectionManager::switchSection()
 {
     updateCursor();
 }
-
 void PatchSectionManager::renameSection()
 {
     PatchSection *section = patch->currentSection();
@@ -144,7 +147,6 @@ void PatchSectionManager::renameSection()
         emit patchModified();
     }
 }
-
 void PatchSectionManager::deleteSection()
 {
     int index = patch->currentSectionIndex();
@@ -153,7 +155,6 @@ void PatchSectionManager::deleteSection()
     patch->commit(tr("deleting patch section '%1'").arg(title));
     emit patchModified();
 }
-
 void PatchSectionManager::duplicateSection()
 {
     int index = patch->currentSectionIndex();
@@ -180,17 +181,14 @@ void PatchSectionManager::duplicateSection()
     patch->commit(tr("duplicating section"));
     emit patchModified(); // implies sectionSwitched
 }
-
 void PatchSectionManager::mergeWithPreviousSection()
 {
     mergeSections(patch->currentSectionIndex(), patch->currentSectionIndex() - 1);
 }
-
 void PatchSectionManager::mergeWithNextSection()
 {
     mergeSections(patch->currentSectionIndex(), patch->currentSectionIndex() + 1);
 }
-
 void PatchSectionManager::mergeSections(int indexa, int indexb)
 {
     // Make sure indexa < indexb
@@ -203,7 +201,6 @@ void PatchSectionManager::mergeSections(int indexa, int indexb)
     patch->commit(tr("merging patch sections"));
     emit patchModified();
 }
-
 void PatchSectionManager::newSectionAfterCurrent()
 {
     int index = patch->currentSectionIndex();
@@ -215,7 +212,6 @@ void PatchSectionManager::newSectionAfterCurrent()
     patch->commit(tr("adding new patch section '%1'").arg(newname));
     emit patchModified();
 }
-
 void PatchSectionManager::pasteAsSection()
 {
     QString newname = NameChooseDialog::getName(tr("Paste as new section"), tr("New section name:"));
@@ -230,7 +226,6 @@ void PatchSectionManager::pasteAsSection()
     patch->commit(tr("pasting as new section"));
     emit patchModified();
 }
-
 void PatchSectionManager::mergeAllSections()
 {
     while (patch->numSections() > 1)
@@ -238,7 +233,20 @@ void PatchSectionManager::mergeAllSections()
     patch->commit(tr("merging all patch sections"));
     emit patchModified();
 }
-
+void PatchSectionManager::moveSectionUp()
+{
+    int i = patch->currentSectionIndex();
+    patch->moveSection(i, i-1);
+    patch->commit(tr("moving section up"));
+    emit patchModified();
+}
+void PatchSectionManager::moveSectionDown()
+{
+    int i = patch->currentSectionIndex();
+    patch->moveSection(i, i+1);
+    patch->commit(tr("moving section down"));
+    emit patchModified();
+}
 void PatchSectionManager::rebuildGraphics()
 {
     scene()->clear();
@@ -272,7 +280,6 @@ void PatchSectionManager::rebuildGraphics()
     scene()->addItem(frameCursor);
     updateCursor();
 }
-
 void PatchSectionManager::updateCursor()
 {
     int newIndex = patch->currentSectionIndex();
@@ -283,18 +290,15 @@ void PatchSectionManager::updateCursor()
         lastIndex = newIndex;
     }
 }
-
 void PatchSectionManager::switchToSection(int i)
 {
     patch->switchCurrentSection(i);
     emit sectionSwitched();
 }
-
 void PatchSectionManager::switchBackward()
 {
     switchToSection(qMax(0, patch->currentSectionIndex() - 1));
 }
-
 void PatchSectionManager::switchForward()
 {
     switchToSection(qMin(patch->numSections() -1 , patch->currentSectionIndex() + 1));

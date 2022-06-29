@@ -6,12 +6,22 @@ TODO für die erste Version:
 - Controller per Drag-Drop vertauschen
 - Circuits per Drag-Drop vertauschen
 - Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
+- Integrate other patch as new section: Häh? Was ist, wenn
+  es mehrere Sektinen sind? Und warum ist der dumme Titel so
+  lang?
+- Die setTooTips von den Menüpunkten: Die werden nirgends angezeigt,
+  oder? Klären. Evtl. einfach löschen.
 
 Größere Dinge:
 - Mehrere Dateien gleichzeitig auf haben
 - Patch library
 
 Kleinere Features:
+- Move circuit up/down: Kann das nicht ins Kontextmenü? Dann würde man
+  die Tastendrücke sehen.
+- Copy/Cut/Paste für Sektionen. Das wirkt sich allerdings auf das Clipboard
+  aus. Ist wahrscheinlich an vielen Stellen dann relevant. Aber man
+  würde es wirklich erwarten.
 - Speicherverbrauch der Circuit zusammenrechnen
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
 - Dieser Hintdialog. Den könnten wir noch noch viel öfter einsetzen...

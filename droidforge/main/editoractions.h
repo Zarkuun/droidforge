@@ -9,6 +9,8 @@
 #include <QAction>
 
 typedef enum {
+    ACTION_MOVE_SECTION_UP,
+    ACTION_MOVE_SECTION_DOWN,
     ACTION_LICENSE,
     ACTION_ABOUT,
     ACTION_USER_MANUAL,

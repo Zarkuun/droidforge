@@ -32,7 +32,6 @@ void EditorActions::createActions()
 
     actions[ACTION_NEW] = new QAction(tr("&New..."), this);
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
-    actions[ACTION_NEW]->setToolTip(tr("Create a new patch from scratch"));
     actions[ACTION_TOOLBAR_NEW] = new QAction(ICON("new"), tr("New"), this);
 
     actions[ACTION_CONFIGURE_COLORS] = new QAction(tr("Edit colors"), this);
@@ -40,12 +39,10 @@ void EditorActions::createActions()
 
     actions[ACTION_OPEN] = new QAction(tr("&Open..."), this);
     actions[ACTION_OPEN]->setShortcuts(QKeySequence::Open);
-    actions[ACTION_OPEN]->setToolTip(tr("Open an existing patch"));
     actions[ACTION_TOOLBAR_OPEN] = new QAction(ICON("open"), tr("Open"), this);
 
     actions[ACTION_SAVE] = new QAction(tr("&Save..."), this);
     actions[ACTION_SAVE]->setShortcuts(QKeySequence::Save);
-    actions[ACTION_SAVE]->setToolTip(tr("Save patch to file"));
     actions[ACTION_TOOLBAR_SAVE] = new QAction(ICON("save"), tr("Save"), this);
 
     actions[ACTION_SAVE_AS] = new QAction(tr("Save &as..."), this);
@@ -53,7 +50,6 @@ void EditorActions::createActions()
     actions[ACTION_SAVE_AS]->setToolTip(tr("Save patch to a different file"));
 
     actions[ACTION_EXPORT_SELECTION] = new QAction(tr("E&xport selection as patch..."), this);
-    actions[ACTION_EXPORT_SELECTION]->setToolTip(tr("Save the currently selected circuits into a new patch file"));
     actions[ACTION_EXPORT_SELECTION]->setEnabled(false);
 
     actions[ACTION_UPLOAD_TO_DROID] = new QAction(tr("Activate in master via USB to X7"), this);
@@ -211,11 +207,15 @@ void EditorActions::createActions()
 
     actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Previous section"));
     actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Up")));
-    actions[ACTION_PREVIOUS_SECTION]->setToolTip(tr("Switch to the previous section"));
 
     actions[ACTION_NEXT_SECTION] = new QAction(tr("Next section"));
     actions[ACTION_NEXT_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Down")));
-    actions[ACTION_NEXT_SECTION]->setToolTip(tr("Switch to the next section"));
+
+    actions[ACTION_MOVE_SECTION_UP] = new QAction(tr("Move by one position up"));
+    actions[ACTION_MOVE_SECTION_UP]->setShortcut(QKeySequence(tr("Ctrl+Shift+Up")));
+
+    actions[ACTION_MOVE_SECTION_DOWN] = new QAction(tr("Move by one position down"));
+    actions[ACTION_MOVE_SECTION_DOWN]->setShortcut(QKeySequence(tr("Ctrl+Shift+Down")));
 
     actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("New section..."), this);
     actions[ACTION_NEW_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+N")));
@@ -325,6 +325,8 @@ void EditorActions::switchSection()
     actions[ACTION_ADD_JACK]->setEnabled(hasCircuit);
     actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(hasCircuit);
     actions[ACTION_EDIT_CIRCUIT_SOURCE]->setEnabled(hasCircuit);
+    actions[ACTION_MOVE_SECTION_UP]->setEnabled(sectionIndex > 0);
+    actions[ACTION_MOVE_SECTION_DOWN]->setEnabled(sectionIndex+1 < numSections);
     moveCursor();
     changeSelection();
 }

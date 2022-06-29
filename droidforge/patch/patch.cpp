@@ -231,6 +231,13 @@ const Circuit *Patch::currentCircuit() const
     return currentSection()->currentCircuit();
 }
 
+void Patch::moveSection(int fromIndex, int toIndex)
+{
+    PatchSection *section = sections[fromIndex];
+    sections.remove(fromIndex);
+    sections.insert(toIndex, section);
+}
+
 const Atom *Patch::currentAtom() const
 {
     return currentSection()->currentAtom();

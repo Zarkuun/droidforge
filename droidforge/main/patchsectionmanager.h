@@ -48,6 +48,9 @@ public slots:
     void newSectionAfterCurrent();
     void pasteAsSection();
     void mergeAllSections();
+    void moveSectionUp();
+    void moveSectionDown();
+
 
 signals:
     void patchModified();
