@@ -33,6 +33,10 @@ public slots:
 
 private slots:
     void switchToSelector(int index);
+    void commit();
+
+signals:
+    void comitted();
 
 };
 

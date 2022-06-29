@@ -28,6 +28,7 @@ CableSelector::CableSelector(QWidget *parent)
 
     connect(lineEdit, &QLineEdit::textEdited, this, &CableSelector::cableEdited);
     connect(listWidget, &QListWidget::currentRowChanged, this, &CableSelector::cableSelected);
+    connect(listWidget, &QListWidget::itemDoubleClicked, this, &CableSelector::itemDoubleClicked);
 }
 
 bool CableSelector::handlesAtom(const Atom *atom) const
@@ -89,6 +90,11 @@ void CableSelector::cableSelected(int row)
         lineEdit->setText(listWidget->item(row)->text());
         updateIcon();
     }
+}
+
+void CableSelector::itemDoubleClicked()
+{
+    emit committed();
 }
 
 void CableSelector::updateIcon()

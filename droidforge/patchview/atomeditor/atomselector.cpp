@@ -24,7 +24,9 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     }
     subSelectors.append(new InputOutputSelector(jacktype, this));
     subSelectors.append(new ControlSelector(jacktype, this));
-    subSelectors.append(new CableSelector(this));
+    CableSelector *cs = new CableSelector(this);
+    subSelectors.append(cs);
+    connect(cs, &CableSelector::committed, this, &AtomSelector::commit);
 
     QGridLayout *layout = new QGridLayout(this);
     setLayout(layout);
@@ -110,4 +112,9 @@ void AtomSelector::subselectorSelected(AtomSubSelector *ass)
 void AtomSelector::switchToSelector(int index)
 {
     subSelectors[index]->getFocus();
+}
+
+void AtomSelector::commit()
+{
+    emit comitted();
 }

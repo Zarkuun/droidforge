@@ -14,6 +14,7 @@ AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
 
     // Special widget for selecting values
     atomSelector = new AtomSelector(jacktype, this);
+    connect(atomSelector, &AtomSelector::comitted, this, &QDialog::accept);
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);

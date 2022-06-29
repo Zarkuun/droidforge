@@ -36,7 +36,11 @@ public:
 private slots:
     void cableEdited(QString text);
     void cableSelected(int row);
+    void itemDoubleClicked();
     void updateIcon();
+
+signals:
+    void committed();
 };
 
 #endif // CABLESELECTOR_H
