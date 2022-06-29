@@ -96,9 +96,7 @@ void Clipboard::copyToGlobalClipboard() const
 
 void Clipboard::copyFromGlobalClipboard()
 {
-    shoutfunc;
     if (ignoreNextGlobalClipboardChange) {
-        shout << "Ignoring global!";
         ignoreNextGlobalClipboardChange = false;
         return;
     }
