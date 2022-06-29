@@ -11,6 +11,17 @@ TODO für die erste Version:
   lang?
 - Die setTooTips von den Menüpunkten: Die werden nirgends angezeigt,
   oder? Klären. Evtl. einfach löschen.
+- REnamedialg von Cableln (oder name aussuchen): Autoamtisch upper
+  case forcen.
+- Smart paste: Wenn ich nach einem neuen Kabelnamen für PULSE1 suche,
+  sollte PULSE2 rauskommen, nicht PULSE11.
+- Smart paste: Ein Kabel, dass im gepasteten nur als Input vorkommt,
+  könnte man doch einfach vom Namen her so lassen.
+- interactivelyremapregisters:
+    // TODO: Hier gibt's nochn Bug. Beispiel. Ich hab im otherpatch I1, I2 und I3.
+    // Und im alten auch. Es wird aber nur I1->I4 gelegt. I2, und I3 sagt er kann
+    // er nicht.
+
 
 Größere Dinge:
 - Mehrere Dateien gleichzeitig auf haben

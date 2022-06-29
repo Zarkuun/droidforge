@@ -605,7 +605,14 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
                 int ontoAsInput = 0;
                 int ontoAsOutput = 0;
                 otherPatch->findCableConnections(cable, ontoAsInput, ontoAsOutput);
-                if (asOutput && ontoAsOutput) {
+
+                // A cable that's just read from and is not internally obviously
+                // is better not renamed. It probably want's to read from the output
+                // of the other part of the patch
+                if (asInput && !asOutput)
+                    rename = false;
+
+                else if (asOutput && ontoAsOutput) {
                     int reply = QMessageBox::question(
                                 the_forge,
                                 tr("Cable conflict"),
