@@ -19,6 +19,7 @@ class CircuitView : public QObject, public QGraphicsItem
     float jackColumnWidth;
     float atomColumnWidth;
     QPixmap icon;
+    QImage  iconImage;
     int markerOffset;
 
 public:

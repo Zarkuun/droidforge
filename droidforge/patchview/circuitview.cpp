@@ -21,6 +21,7 @@ CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selecti
     , totalWidth(width)
     , lineHeight(lineHeight)
     , icon(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
+    , iconImage(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
     , markerOffset(0)
 {
     float sparePerColumn = (totalWidth - minimumWidth()) / NUM_COLUMNS;
@@ -76,9 +77,14 @@ void CircuitView::paintHeader(QPainter *painter)
     // Icon and circuit name
     painter->fillRect(headerRect(), COLOR(CIRV_COLOR_CIRCUIT_NAME_BG));
     QRectF imageRect(headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
-    painter->drawPixmap(imageRect.toRect(), icon);
-    if (circuit->isDisabled())
-        painter->fillRect(imageRect, QColor(80, 80, 80, 160)); // TODO: COLOR MAKRO
+    if (circuit->isDisabled()) {
+        QImage disIcon = iconImage.convertToFormat(QImage::Format_Grayscale8);        painter->fillRect(imageRect, QColor(80, 80, 80, 160)); // TODO: COLOR MAKRO
+        painter->drawImage(imageRect.toRect(), disIcon);
+    }
+    else
+        painter->drawImage(imageRect.toRect(), iconImage);
+
+    // Circuit name
     painter->setPen(circuit->isDisabled() ? COLOR(CIRV_COLOR_DISABLED_TEXT) : COLOR(CIRV_COLOR_CIRCUIT_NAME));
     QRectF textRect =
                 QRectF(headerRect().left() + CIRV_HEADER_HEIGHT + CIRV_ICON_MARGIN,

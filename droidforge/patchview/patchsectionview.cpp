@@ -1162,7 +1162,7 @@ void PatchSectionView::updateCircuits()
 void PatchSectionView::clickOnRegister(AtomRegister ar)
 {
     CursorPosition cursor = section()->cursorPosition();
-    if (cursor.row < 0 || cursor.column == 0) return;
+    if (cursor.row < 0) return;
     JackAssignment *ja = currentCircuit()->jackAssignment(cursor.row);
 
     // This is a bit of a hack, but I'm not sure how to do
@@ -1179,7 +1179,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             ar.setRegisterType(REGISTER_LED);
     }
 
-    ja->replaceAtom(cursor.column, ar.clone());
+    ja->replaceAtom(qMax(1, cursor.column), ar.clone());
 
     const Circuit *circuit = currentCircuit();
     if (circuit->numJackAssignments() > cursor.row + 1
