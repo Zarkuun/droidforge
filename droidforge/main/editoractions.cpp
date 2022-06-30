@@ -205,10 +205,10 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit parameter info..."), this);
     actions[ACTION_EDIT_JACK_COMMENT]->setShortcut(QKeySequence(tr("Alt+C")));
 
-    actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Previous section"));
+    actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Go to previous section"));
     actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Up")));
 
-    actions[ACTION_NEXT_SECTION] = new QAction(tr("Next section"));
+    actions[ACTION_NEXT_SECTION] = new QAction(tr("Go to next section"));
     actions[ACTION_NEXT_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Down")));
 
     actions[ACTION_MOVE_SECTION_UP] = new QAction(tr("Move by one position up"));
@@ -316,17 +316,21 @@ void EditorActions::modifyPatch()
 }
 void EditorActions::switchSection()
 {
+    bool hasCircuit = !section()->isEmpty();
     int sectionIndex = patch->currentSectionIndex();
     int numSections = patch->numSections();
-    bool hasCircuit = !section()->isEmpty();
+    bool notAtFirstSection = sectionIndex > 0;
+    bool notAtLastSection = sectionIndex + 1 < numSections;
 
-    actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(sectionIndex > 0);
-    actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(sectionIndex+1 < numSections);
+    actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(notAtFirstSection);
+    actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(notAtLastSection);
     actions[ACTION_ADD_JACK]->setEnabled(hasCircuit);
     actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(hasCircuit);
     actions[ACTION_EDIT_CIRCUIT_SOURCE]->setEnabled(hasCircuit);
-    actions[ACTION_MOVE_SECTION_UP]->setEnabled(sectionIndex > 0);
-    actions[ACTION_MOVE_SECTION_DOWN]->setEnabled(sectionIndex+1 < numSections);
+    actions[ACTION_PREVIOUS_SECTION]->setEnabled(notAtFirstSection);
+    actions[ACTION_NEXT_SECTION]->setEnabled(notAtLastSection);
+    actions[ACTION_MOVE_SECTION_UP]->setEnabled(notAtFirstSection);
+    actions[ACTION_MOVE_SECTION_DOWN]->setEnabled(notAtLastSection);
     moveCursor();
     changeSelection();
 }

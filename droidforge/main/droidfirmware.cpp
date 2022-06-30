@@ -26,7 +26,6 @@ QRegularExpression regJacktable("\\\\jacktablerow{" GROUP "}{" GROUP "}");
 QRegularExpression regJacktableE("\\\\jacktablerowE{" GROUP "}{" GROUP "}{" GROUP "}");
 QRegularExpression regSup("\\^([2-9])");
 
-
 DroidFirmware *the_firmware = 0;
 
 DroidFirmware::DroidFirmware()
@@ -230,6 +229,25 @@ QMap<float, QString> DroidFirmware::jackValueTable(QString circuit, QString when
         }
     }
     return table;
+}
+bool DroidFirmware::jackHasDefaultvalue(QString circuit, QString whence, QString jack) const
+{
+    QJsonValue jackinfo = findJack(circuit, whence, jack);
+    if (!jackinfo.isNull()) {
+        if (jackinfo.toObject()["default"].isNull())
+            return false;
+        QString s = jackinfo.toObject()["default"].toString();
+        return s[0].isDigit();
+    }
+    else
+        return false;
+}
+float DroidFirmware::jackDefaultvalue(QString circuit, QString whence, QString jack) const
+{
+    QJsonValue jackinfo = findJack(circuit, whence, jack);
+    QString s = jackinfo.toObject()["default"].toString();
+    shout << s;
+    return s.toFloat();
 }
 unsigned DroidFirmware::numGlobalRegisters(char registerType) const
 {

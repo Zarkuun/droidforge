@@ -24,10 +24,8 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     labelDescription->setTextFormat(Qt::RichText);
     labelDescription->setStyleSheet(
        QString("QLabel { padding: 10px; background-color : #%1; color: #%2; }")
-                .arg(COLOR(JSEL_COLOR_DESCRIPTION_BACKGROUND).name())
-                .arg(COLOR(JSEL_COLOR_DESCRIPTION).name()));
-
-
+                .arg(COLOR(JSEL_COLOR_DESCRIPTION_BACKGROUND).name(),
+                     COLOR(JSEL_COLOR_DESCRIPTION).name()));
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -39,6 +37,7 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     lineEditSearch = new QLineEdit(this);
     connect(lineEditSearch, &QLineEdit::textChanged, jackSelector, &JackSelector::searchChanged);
 
+    // Layout
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(jackSelector, 0, 0, 1, 2);
     mainLayout->addWidget(labelDescription, 0, 2);
@@ -90,6 +89,14 @@ void JackChooseDialog::cursorMoved(QString jack, jacktype_t jacktype, bool onAct
     auto table = the_firmware->jackValueTable(circuit, whence, jack);
     if (!table.empty())
         description += jackTableAsString(table);
+    else
+        description += "<br>";
+
+    if (jacktype == JACKTYPE_INPUT && the_firmware->jackHasDefaultvalue(circuit, whence, jack)) {
+        float default_value = the_firmware->jackDefaultvalue(circuit, whence, jack);
+        description += "<br>" + tr("Default value: %1").arg(default_value);
+    }
+
     labelDescription->setText(description);
 }
 QString JackChooseDialog::jackTableAsString(const QMap<float, QString> &table)

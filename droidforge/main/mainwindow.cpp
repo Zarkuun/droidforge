@@ -234,6 +234,8 @@ void MainWindow::createSectionMenu()
 
     menu->addSeparator();
 
+    ADD_ACTION(ACTION_PREVIOUS_SECTION, menu);
+    ADD_ACTION(ACTION_NEXT_SECTION, menu);
     ADD_ACTION(ACTION_MOVE_SECTION_UP, menu);
     ADD_ACTION(ACTION_MOVE_SECTION_DOWN, menu);
 

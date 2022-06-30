@@ -31,6 +31,8 @@ public:
     QStringList jackGroupsOfCircuit(QString circuit, QString whence, QString search) const;
     QString jackDescriptionHTML(QString circuit, QString whence, QString jack) const;
     QMap<float, QString> jackValueTable(QString circuit, QString whence, QString jack) const;
+    bool jackHasDefaultvalue(QString circuit, QString whence, QString jack) const;
+    float jackDefaultvalue(QString circuit, QString whence, QString jack) const;
     unsigned numControllerRegisters(const QString &controller, char registerType) const;
     unsigned numGlobalRegisters(char registerType) const;
 
