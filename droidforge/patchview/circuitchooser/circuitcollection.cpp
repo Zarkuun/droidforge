@@ -15,18 +15,16 @@
 
 CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     : QGraphicsView(parent)
-    , backgroundRect(0)
     , numCircuits(0)
     , selectedCircuit(0)
 {
     initScene();
     loadCircuitCategory(category);
-    initBackgroundRect(numCircuits);
+    updateSceneRect(numCircuits);
     setFocusPolicy(Qt::NoFocus);
 }
 CircuitCollection::CircuitCollection(QWidget *parent)
     : QGraphicsView(parent)
-    , backgroundRect(0)
     , numCircuits(0)
     , selectedCircuit(0)
 {
@@ -38,32 +36,23 @@ CircuitCollection::~CircuitCollection()
 void CircuitCollection::initScene()
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     QGraphicsScene *scene = new QGraphicsScene();
     scene->setBackgroundBrush(COLOR(CICH_COLOR_BACKGROUND));
     setScene(scene);
 }
-void CircuitCollection::initBackgroundRect(int numCircuits)
+void CircuitCollection::updateSceneRect(int numCircuits)
 {
-    // Create an invisible rectangle that works as a global
-    // bounding box. That will make sure that the visible area
-    // has the correct margins.
-    if (backgroundRect) {
-        scene()->removeItem(backgroundRect);
-        delete backgroundRect;
-   }
-
-    backgroundRect = new QGraphicsRectItem(
+    shoutfunc;
+    QRect rect(
         0,  // x
         0,  // y
         CICH_GLOBAL_MARGIN * 2 + circuitViewWidth, // width
         2 * CICH_GLOBAL_MARGIN
         + (numCircuits - 1 ) * CICH_CIRCUIT_DISTANCE
         + numCircuits * CICH_CIRCUIT_HEIGHT);
-    backgroundRect->setBrush(Qt::NoBrush);
-    backgroundRect->setPen(Qt::NoPen);
-    backgroundRect->setZValue(-1);
-    scene()->addItem(backgroundRect);
+    scene()->setSceneRect(rect);
 }
 void CircuitCollection::mousePressEvent(QMouseEvent *event)
 {
@@ -89,16 +78,16 @@ void CircuitCollection::updateSearch(QString text)
 {
     scene()->clear();
     circuits.clear();
-    backgroundRect = 0;
     loadCircuitCategory("", text);
     selectedCircuit = qMin(selectedCircuit, circuits.size() - 1);
-    initBackgroundRect(numCircuits);
+    updateSceneRect(numCircuits);
     update();
     setFocusPolicy(Qt::NoFocus);
 }
 void CircuitCollection::resizeEvent(QResizeEvent *event)
 {
     circuitViewWidth = event->size().width() - CICH_WIDTH_MARGIN;
+    QGraphicsView::resizeEvent(event);
 }
 bool CircuitCollection::preselectCircuit(QString name)
 {

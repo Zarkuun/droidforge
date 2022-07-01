@@ -10,7 +10,6 @@ class CircuitCollection : public QGraphicsView
 {
     Q_OBJECT
 
-    QGraphicsRectItem *backgroundRect;
     QList<CircuitInfoView *>circuits;
     int numCircuits;
     int selectedCircuit;
@@ -31,7 +30,7 @@ public:
 
 private:
     void initScene();
-    void initBackgroundRect(int numCircuits);
+    void updateSceneRect(int numCircuits);
     bool handleMousePress(const QPoint &pos);
     void loadCircuitCategory(QString category, QString search="");
     CircuitInfoView *currentCircuit();

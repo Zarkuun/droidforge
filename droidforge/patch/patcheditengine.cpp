@@ -115,7 +115,7 @@ void PatchEditEngine::commitFolding()
     for (int i=0; i<numSections(); i++) {
         PatchSection *lastSection = lastPatch->section(i);
         PatchSection *thisSection = section(i);
-        for (int j=0; j<lastSection->numCircuits(); j++) {
+        for (unsigned j=0; j<lastSection->numCircuits(); j++) {
             Circuit *lastCircuit = lastSection->circuit(j);
             Circuit *thisCircuit = thisSection->circuit(j);
             lastCircuit->setFold(thisCircuit->isFolded());
