@@ -1,8 +1,5 @@
 TODO für die erste Version:
 
-- Wenn man auf einen Button klickt, aber bei einem Input ist, 
-  bekommt man z.B. B1.1. Wenn man jetzt nochmal klickt, könnte er
-  auf L1.1 umschalten.
 - Clicken während man Ctrl gedrückty hälty, könnte den Wert einer
   anderen Zelle hierher kopieren oder so.
 - Manual viewer: Noch ein bisschen aufpeppen oder so.

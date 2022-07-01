@@ -1174,6 +1174,8 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     if (cursor.row < 0) return;
     JackAssignment *ja = currentCircuit()->jackAssignment(cursor.row);
 
+    int column = qMax(1, cursor.column); // allow cursor on jack name
+
     // This is a bit of a hack, but I'm not sure how to do
     // this in a much more clean way. If the user e.g. clicks
     // on I5 but is just editing on output jack, he rather
@@ -1188,7 +1190,20 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             ar.setRegisterType(REGISTER_LED);
     }
 
-    ja->replaceAtom(qMax(1, cursor.column), ar.clone());
+    // The following "hack" is a conveniance feature for that case that
+    // you want to use LEDs as inputs (as often done with buttons
+    // or buttongroups). You click on the button and get e.g. B1.1.
+    // Now if you click again, that changes to L1.1 (and later back again)
+    else if (ja->isInput()) {
+        const Atom *a = ja->atomAt(column);
+        if (a && a->isRegister()) {
+            const AtomRegister *arx = (AtomRegister *)a;
+            if (*arx == ar && ar.getRegisterType() == REGISTER_BUTTON) {
+                ar.setRegisterType(REGISTER_LED);
+            }
+        }
+    }
+    ja->replaceAtom(column, ar.clone());
 
     const Circuit *circuit = currentCircuit();
     if (circuit->numJackAssignments() > cursor.row + 1
