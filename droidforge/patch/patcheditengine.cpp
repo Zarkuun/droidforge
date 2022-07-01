@@ -103,7 +103,8 @@ void PatchEditEngine::commitCursorPosition()
 {
     Patch *lastPatch = versions.last()->getPatch();
     lastPatch->switchCurrentSection(currentSectionIndex());
-    lastPatch->currentSection()->setCursor(currentSection()->cursorPosition());
+    if (!lastPatch->currentSection()->isEmpty())
+        lastPatch->currentSection()->setCursor(currentSection()->cursorPosition());
 }
 void PatchEditEngine::commitFolding()
 {

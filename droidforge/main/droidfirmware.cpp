@@ -230,9 +230,9 @@ QMap<float, QString> DroidFirmware::jackValueTable(QString circuit, QString when
     }
     return table;
 }
-bool DroidFirmware::jackHasDefaultvalue(QString circuit, QString whence, QString jack) const
+bool DroidFirmware::jackHasDefaultvalue(QString circuit, QString jack) const
 {
-    QJsonValue jackinfo = findJack(circuit, whence, jack);
+    QJsonValue jackinfo = findJack(circuit, "inputs", jack);
     if (!jackinfo.isNull()) {
         if (jackinfo.toObject()["default"].isNull())
             return false;
@@ -242,9 +242,9 @@ bool DroidFirmware::jackHasDefaultvalue(QString circuit, QString whence, QString
     else
         return false;
 }
-float DroidFirmware::jackDefaultvalue(QString circuit, QString whence, QString jack) const
+float DroidFirmware::jackDefaultvalue(QString circuit, QString jack) const
 {
-    QJsonValue jackinfo = findJack(circuit, whence, jack);
+    QJsonValue jackinfo = findJack(circuit, "inputs", jack);
     QString s = jackinfo.toObject()["default"].toString();
     shout << s;
     return s.toFloat();

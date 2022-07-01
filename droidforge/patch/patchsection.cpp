@@ -5,6 +5,7 @@
 #include "jackassignmentoutput.h"
 #include "tuning.h"
 #include "globals.h"
+#include "atomnumber.h"
 
 
 PatchSection::PatchSection() : selection(0)
@@ -216,8 +217,13 @@ void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
     Circuit *circuit = new Circuit(name, emptyComment, false /* disabled */);
 
     QStringList ei = the_firmware->inputsOfCircuit(name, jackSelection);
-    for (qsizetype i=0; i<ei.count(); i++) {
-        circuit->addJackAssignment(new JackAssignmentInput(ei[i])); // TODO: Default value
+    for (auto &jackName: ei) {
+        auto ja = new JackAssignmentInput(jackName);
+        if (the_firmware->jackHasDefaultvalue(name, jackName)) {
+            AtomNumber *an = new AtomNumber(the_firmware->jackDefaultvalue(name, jackName), ATOM_NUMBER_NUMBER, false);
+            ja->replaceAtom(1, an);
+        }
+        circuit->addJackAssignment(ja);
     }
     QStringList eo = the_firmware->outputsOfCircuit(name, jackSelection);
     for (qsizetype o=0; o<eo.count(); o++) {;
@@ -266,13 +272,19 @@ void PatchSection::clearSelection()
 }
 void PatchSection::selectAll()
 {
-    if (selection)
+    if (selection) {
         delete selection;
+        selection = 0;
+    }
+
     if (isEmpty())
         return;
 
-    CursorPosition start(0, 0, 0);
-    CursorPosition end(circuits.count()-1, circuits[circuits.count()-1]->numJackAssignments()-1, 0);
+    CursorPosition start(0, ROW_CIRCUIT, 0);
+    CursorPosition end(
+                circuits.count() - 1,
+                circuits[circuits.count() - 1]->numJackAssignments() -1,
+                0);
     selection = new Selection(start, end);
 }
 void PatchSection::setMouseSelection(const CursorPosition &to)

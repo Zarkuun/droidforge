@@ -1,33 +1,41 @@
 TODO für die erste Version:
 
-- Stefan: Beim Anlegen eines Circuits könnten die Defaultwerte eingetragen
-  werden (hm. Wo es halt möglich ist, also nicht bei clocks und sowas)
+- Wenn man auf einen Button klickt, aber bei einem Input ist, 
+  bekommt man z.B. B1.1. Wenn man jetzt nochmal klickt, könnte er
+  auf L1.1 umschalten.
+- Clicken während man Ctrl gedrückty hälty, könnte den Wert einer
+  anderen Zelle hierher kopieren oder so.
+- Manual viewer: Noch ein bisschen aufpeppen oder so.
+- Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
+- Manual: in eingebautetm Viewer einen Knopf, dass der in einem externen
+  Programm aufgeht.
+- Light theme: Wir brauchen für den Cursor im Controllerselektor eine
+  Extrafarbe, da man den sonst nicht sehen kann.
+- Bug: Circuit chooser: In der Kategorie "Pitch" kann man nix mit der Maus
+  anklicken (ist vielleicht auch sporadisch)
+- Calibrator: Da ist noch \subsubsection zu sehen.
+- Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
+  Da muss ich ihm länger zeit geben.
+- Recent files: Man könnte hier noch den Titel dazuschreiben
+- Man kann kein komplett leere Patch hochladen.
+- Beim Speicher trailing spaces löschen
+- Intuitiv falsch: Ich drücke = für Kabel. Dann mach ich direkt edit.
+  Anstelle eines Kabelnamens kommt jetzt einfach ein garbled-Text.
 - Sektionen per Drag-Drop vertauschen
 - Controller per Drag-Drop vertauschen
 - Circuits per Drag-Drop vertauschen
-- Bei der Jackinfo müssen die Defaultwerte angezeigt werden.
 - Integrate other patch as new section: Häh? Was ist, wenn
   es mehrere Sektinen sind? Und warum ist der dumme Titel so
   lang?
 - Die setTooTips von den Menüpunkten: Die werden nirgends angezeigt,
   oder? Klären. Evtl. einfach löschen.
-- REnamedialg von Cableln (oder name aussuchen): Autoamtisch upper
-  case forcen.
-- Smart paste: Wenn ich nach einem neuen Kabelnamen für PULSE1 suche,
-  sollte PULSE2 rauskommen, nicht PULSE11.
-- Smart paste: Ein Kabel, dass im gepasteten nur als Input vorkommt,
-  könnte man doch einfach vom Namen her so lassen.
 - interactivelyremapregisters:
     // TODO: Hier gibt's nochn Bug. Beispiel. Ich hab im otherpatch I1, I2 und I3.
     // Und im alten auch. Es wird aber nur I1->I4 gelegt. I2, und I3 sagt er kann
     // er nicht.
 
-
-Größere Dinge:
-- Mehrere Dateien gleichzeitig auf haben
-- Patch library
-
-Kleinere Features:
+Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
+---------------------------------------------
 - Move circuit up/down: Kann das nicht ins Kontextmenü? Dann würde man
   die Tastendrücke sehen.
 - Copy/Cut/Paste für Sektionen. Das wirkt sich allerdings auf das Clipboard
@@ -52,3 +60,16 @@ Kleinere Features:
 - Firmwareupgrade von master, M4 und X7 unterstützen
 - Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
   komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
+- Controllerhinzufügen: Oft hat man ja immer die gleichen Controller,
+  die man braucht. Weil man ein Hardwarerack hat. Deswegen könnten wir
+  eine Liste der Most recent racks bereitstellen. Und jedesmal wenn
+  man deployt, wird diese aktualisiert (nach QSettings)
+
+Größere Dinge für die nächste Version:
+------------------------------------------------------------------
+- Mehrere Dateien gleichzeitig auf haben
+- Patch library
+  Idee: Suche alle Patches, für die in meinem aktuellen Patch noch "Platz"
+  ist (Button, Controller, etc.)
+- Discord-Integration
+

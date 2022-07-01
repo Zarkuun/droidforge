@@ -1,11 +1,13 @@
 #include "namechoosedialog.h"
 #include "tuning.h"
+#include "globals.h"
 
 #include <QGridLayout>
 #include <QDialogButtonBox>
 
 NameChooseDialog::NameChooseDialog(QWidget *parent)
     : Dialog{"namechooser", parent}
+    , forceUpper(false)
 {
     QGridLayout *layout = new QGridLayout(this);
     setLayout(layout);
@@ -17,6 +19,7 @@ NameChooseDialog::NameChooseDialog(QWidget *parent)
     // Text editor
     lineEdit = new QLineEdit();
     layout->addWidget(lineEdit, 0, 1);
+    connect(lineEdit, &QLineEdit::textChanged, this, &NameChooseDialog::changeText);
 
     // Buttons with OK/Cancel
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -25,7 +28,7 @@ NameChooseDialog::NameChooseDialog(QWidget *parent)
     layout->addWidget(buttonBox, 1, 1, 1, 2);
 }
 
-QString NameChooseDialog::getName(const QString &title, const QString &label, QString oldname)
+QString NameChooseDialog::getName(const QString &title, const QString &label, QString oldname, bool forceUpperCase)
 {
     static NameChooseDialog *dialog = 0;
     if (!dialog)
@@ -35,9 +38,17 @@ QString NameChooseDialog::getName(const QString &title, const QString &label, QS
     dialog->label->setText(label);
     dialog->lineEdit->setText(oldname);
     dialog->lineEdit->selectAll();
+    dialog->setForceUpperCase(forceUpperCase);
     // TODO: Avoid OK if new name is empty
     if (dialog->exec() == QDialog::Accepted)
         return dialog->lineEdit->text().trimmed();
     else
         return oldname;
+}
+
+void NameChooseDialog::changeText(const QString &)
+{
+   shoutfunc;
+   if (forceUpper)
+       lineEdit->setText(lineEdit->text().toUpper());
 }

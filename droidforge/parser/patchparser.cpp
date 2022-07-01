@@ -19,6 +19,18 @@ PatchParser::PatchParser()
     , circuit(0)
 {
 }
+Patch *PatchParser::parseFile(QString filePath)
+{
+    Patch *patch = new Patch;
+    try {
+        parseFile(filePath, patch);
+    }
+    catch (ParseException &e) {
+        delete patch;
+        return 0;
+    }
+    return patch;
+}
 void PatchParser::parseFile(QString filePath, Patch *patch)
 {
     QStringList lines;

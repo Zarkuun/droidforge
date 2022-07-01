@@ -1,6 +1,7 @@
 #include "patchsectionview.h"
 #include "atomcable.h"
 #include "atominvalid.h"
+#include "atomnumber.h"
 #include "atomoneliner.h"
 #include "atomregister.h"
 #include "circuitview.h"
@@ -536,10 +537,10 @@ void PatchSectionView::expandArrayMax()
 void PatchSectionView::addMissingJacks()
 {
     Circuit *circuit = currentCircuit();
-    for (auto name: circuit->missingJacks(JACKTYPE_INPUT))
-        circuit->addJackAssignment(new JackAssignmentInput(name));
-    for (auto name: circuit->missingJacks(JACKTYPE_OUTPUT))
-        circuit->addJackAssignment(new JackAssignmentOutput(name));
+    for (auto jackName: circuit->missingJacks(JACKTYPE_INPUT))
+        circuit->addJackAssignment(new JackAssignmentInput(jackName));
+    for (auto jackName: circuit->missingJacks(JACKTYPE_OUTPUT))
+        circuit->addJackAssignment(new JackAssignmentOutput(jackName));
     patch->commit(tr("adding missing parameters"));
     emit patchModified();
 }
@@ -881,8 +882,15 @@ JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
 {
     Circuit *circuit = currentCircuit();
     QString circuitName = circuit->getName();
-    if (the_firmware->jackIsInput(circuitName, name))
-        return new JackAssignmentInput(name);
+    if (the_firmware->jackIsInput(circuitName, name)) {
+        auto ja = new JackAssignmentInput(name);
+        if (the_firmware->jackHasDefaultvalue(circuitName, name)) {
+            float default_value = the_firmware->jackDefaultvalue(circuitName, name);
+            AtomNumber *an = new AtomNumber(default_value, ATOM_NUMBER_NUMBER, false);
+            ja->replaceAtom(1, an);
+        }
+        return ja;
+    }
     else if (the_firmware->jackIsOutput(circuitName, name))
         return new JackAssignmentOutput(name);
     else
@@ -931,7 +939,7 @@ void PatchSectionView::finishPatching()
     else if (endAtom && endAtom->isCable())
         cableName = ((AtomCable *)endAtom)->getCable();
     else {
-        cableName = NameChooseDialog::getName(tr("Create new internal patch cable"), tr("Cable name:"));
+        cableName = NameChooseDialog::getName(tr("Create new internal patch cable"), tr("Cable name:"), "", true);
         if (cableName == "") {
             return;
         }
@@ -1126,7 +1134,8 @@ void PatchSectionView::renameCable()
     QString newName = NameChooseDialog::getName(
                 tr("Rename internal cable '%1'").arg(oldName),
                 tr("New name:"),
-                oldName);
+                oldName,
+                true /* force upper case */);
     if (newName == oldName)
         return;
 

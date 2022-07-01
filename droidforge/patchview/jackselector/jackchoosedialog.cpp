@@ -92,8 +92,8 @@ void JackChooseDialog::cursorMoved(QString jack, jacktype_t jacktype, bool onAct
     else
         description += "<br>";
 
-    if (jacktype == JACKTYPE_INPUT && the_firmware->jackHasDefaultvalue(circuit, whence, jack)) {
-        float default_value = the_firmware->jackDefaultvalue(circuit, whence, jack);
+    if (jacktype == JACKTYPE_INPUT && the_firmware->jackHasDefaultvalue(circuit, jack)) {
+        float default_value = the_firmware->jackDefaultvalue(circuit, jack);
         description += "<br>" + tr("Default value: %1").arg(default_value);
     }
 

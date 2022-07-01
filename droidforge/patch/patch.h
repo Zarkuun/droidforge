@@ -33,7 +33,8 @@ public:
     bool saveToFile(const QString filePath) const;
 
     // Simple access functions
-    const QString &getTitle() const;
+    const QString &getTitle() const { return title; }
+    bool hasTitle() const { return title != ""; }
     QString getDescription() const;
     const QString &getLibraryMetaData() const { return libraryMetaData; }
     RegisterLabels &getRegisterLabels() { return registerLabels; };

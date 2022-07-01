@@ -99,16 +99,22 @@ void PatchOperator::newPatch()
 }
 void PatchOperator::createRecentFileActions(QMenu *fileMenu)
 {
+    PatchParser parser;
     QMenu *menu = fileMenu->addMenu(tr("Open recent file"));
     QStringList recentFiles = getRecentFiles();
     for (qsizetype i=0; i<recentFiles.count(); i++) {
-        QFileInfo fi(recentFiles[i]);
-        if (!fi.exists())
-            continue;
-        QAction *action = new QAction(fi.baseName(), this);
-        QString path = fi.absoluteFilePath();
-        connect(action, &QAction::triggered, this, [this, path]() { this->loadFile(path, FILE_MODE_LOAD); });
-        menu->addAction(action);
+        Patch *patch = parser.parseFile(recentFiles[i]);
+        if (patch) {
+            QFileInfo fi(recentFiles[i]);
+            QString title = fi.fileName();
+            if (patch->hasTitle())
+                title += " - " + patch->getTitle();
+            QAction *action = new QAction(title, this);
+            delete patch;
+            QString path = fi.absoluteFilePath();
+            connect(action, &QAction::triggered, this, [this, path]() { this->loadFile(path, FILE_MODE_LOAD); });
+            menu->addAction(action);
+        }
     }
 }
 bool PatchOperator::checkModified()

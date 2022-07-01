@@ -205,10 +205,7 @@ void Patch::moveRegistersToOtherControllers(int controllerIndex, RegisterList &r
         remapRegister(remapFrom[i], remapTo[i]);
 }
 
-const QString &Patch::getTitle() const
-{
-    return title;
-}
+
 
 QString Patch::getDescription() const
 {
