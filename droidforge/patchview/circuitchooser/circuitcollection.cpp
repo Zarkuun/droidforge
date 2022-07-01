@@ -11,6 +11,8 @@
 #include <QResizeEvent>
 #include <QScrollBar>
 
+#define DATA_INDEX_INDEX 0
+
 CircuitCollection::CircuitCollection(QString category, QWidget *parent)
     : QGraphicsView(parent)
     , backgroundRect(0)
@@ -66,9 +68,7 @@ void CircuitCollection::initBackgroundRect(int numCircuits)
 void CircuitCollection::mousePressEvent(QMouseEvent *event)
 {
     if (event->type() == QMouseEvent::MouseButtonPress) {
-        if (!handleMousePress(event->pos())) {
-            // TODO
-        }
+        handleMousePress(event->pos());
     }
 }
 void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
@@ -77,15 +77,6 @@ void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
         chooseCurrentCircuit();
 }
 
-// void CircuitCollection::keyPressEvent(QKeyEvent *event)
-// {
-//     if (event->key() == Qt::Key_Down)
-//         moveCursorUpDown(1);
-//     else if (event->key() == Qt::Key_Up)
-//         moveCursorUpDown(-1);
-//     else
-//         QWidget::keyPressEvent(event);
-// }
 QString CircuitCollection::selectedCircuitName()
 {
     CircuitInfoView *civ = currentCircuit();
@@ -124,25 +115,19 @@ bool CircuitCollection::preselectCircuit(QString name)
     }
     return false;
 }
-bool CircuitCollection::handleMousePress(const QPointF &pos)
+bool CircuitCollection::handleMousePress(const QPoint &pos)
 {
-    QGraphicsItem *item = itemAt(pos.x(), pos.y());
-
-    if (!item || item == backgroundRect)
-        return false;
-
-    CircuitInfoView *civ = (CircuitInfoView *)item;
-
-    // Find index of clicked circuit and select it
-    if (currentCircuit())
-        currentCircuit()->deselect();
-    for (qsizetype i=0; i<numCircuits; i++) {
-        if (civ == circuits[i]) {
-            selectedCircuit = i;
+    for (auto item: items(pos)) {
+        if (item->data(DATA_INDEX_INDEX).isValid()) {
+            int index = item->data(DATA_INDEX_INDEX).toInt();
+            if (currentCircuit())
+                currentCircuit()->deselect();
+            selectedCircuit = index;
             currentCircuit()->select();
+            return true;
         }
     }
-    return true;
+    return false;
 }
 void CircuitCollection::loadCircuitCategory(QString category, QString search)
 {
@@ -151,6 +136,7 @@ void CircuitCollection::loadCircuitCategory(QString category, QString search)
 
     unsigned y = CICH_GLOBAL_MARGIN;
     QStringList circuitNames = the_firmware->circuitsOfCategory(category);
+    int index = 0;
     for (qsizetype i=0; i<circuitNames.size(); i++) {
         QString circuit = circuitNames[i];
         QString description = the_firmware->circuitDescription(circuit);
@@ -165,6 +151,7 @@ void CircuitCollection::loadCircuitCategory(QString category, QString search)
         numCircuits ++;
         if (i == selectedCircuit)
             civ->select();
+        civ->setData(DATA_INDEX_INDEX, index++);
         scene()->addItem(civ);
         civ->setPos(CICH_GLOBAL_MARGIN, y);
         y += civ->boundingRect().height() + CICH_CIRCUIT_DISTANCE;

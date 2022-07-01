@@ -91,7 +91,7 @@
 #define CSEL_TOP_MARGIN                      100
 #define CSEL_PIXEL_PER_HP                    RACV_PIXEL_PER_HP
 #define CSEL_CONTROLLER_DISTANCE             200
-#define CSEL_CURSOR_WIDTH                    8
+#define CSEL_CURSOR_WIDTH                    16
 
 // Patch section manager
 #define PSM_SIDE_PADDING                     STANDARD_SPACING

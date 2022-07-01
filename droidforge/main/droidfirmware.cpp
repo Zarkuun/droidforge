@@ -246,7 +246,6 @@ float DroidFirmware::jackDefaultvalue(QString circuit, QString jack) const
 {
     QJsonValue jackinfo = findJack(circuit, "inputs", jack);
     QString s = jackinfo.toObject()["default"].toString();
-    shout << s;
     return s.toFloat();
 }
 unsigned DroidFirmware::numGlobalRegisters(char registerType) const

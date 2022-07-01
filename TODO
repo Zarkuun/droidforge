@@ -1,3 +1,8 @@
+BUGS:
+- Rackview: Die ganze click und draglogic ist immer noch kaputt.
+  Jetzt: Wenn man klickt, die Maus nicht bewegt, wird ein weiterer
+  Klick nicht gewertet.
+
 TODO für die erste Version:
 
 - Clicken während man Ctrl gedrückty hälty, könnte den Wert einer
@@ -6,10 +11,6 @@ TODO für die erste Version:
 - Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
 - Manual: in eingebautetm Viewer einen Knopf, dass der in einem externen
   Programm aufgeht.
-- Light theme: Wir brauchen für den Cursor im Controllerselektor eine
-  Extrafarbe, da man den sonst nicht sehen kann.
-- Bug: Circuit chooser: In der Kategorie "Pitch" kann man nix mit der Maus
-  anklicken (ist vielleicht auch sporadisch)
 - Calibrator: Da ist noch \subsubsection zu sehen.
 - Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
   Da muss ich ihm länger zeit geben.
@@ -26,10 +27,6 @@ TODO für die erste Version:
   lang?
 - Die setTooTips von den Menüpunkten: Die werden nirgends angezeigt,
   oder? Klären. Evtl. einfach löschen.
-- interactivelyremapregisters:
-    // TODO: Hier gibt's nochn Bug. Beispiel. Ich hab im otherpatch I1, I2 und I3.
-    // Und im alten auch. Es wird aber nur I1->I4 gelegt. I2, und I3 sagt er kann
-    // er nicht.
 
 Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 ---------------------------------------------

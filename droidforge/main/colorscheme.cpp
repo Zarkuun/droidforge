@@ -113,6 +113,9 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Controller selector: background"), list);
     item->setData(1, CSEL_COLOR_BACKGROUND);
 
+    item = new QListWidgetItem(tr("Controller selector: cursor"), list);
+    item->setData(1, CSEL_COLOR_CURSOR);
+
     item = new QListWidgetItem(tr("Normal cursor"), list);
     item->setData(1, COLOR_CURSOR_NORMAL);
 
@@ -284,7 +287,6 @@ void ColorScheme::colorChanged(const QColor &color)
 void ColorScheme::dumpHeaderFile()
 {
     QString filename = QString(COLOR_DEFINITION_FILE).arg(dark ? "dark" : "light");
-    shout << "Regenerating color file " << filename;
 
     // First put all colors into the settings that are not
     // contained there. This is neccessary if someone is developing

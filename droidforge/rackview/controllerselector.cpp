@@ -29,7 +29,7 @@ ControllerSelector::ControllerSelector(QWidget *parent)
         height = module->boundingRect().height();
     }
 
-    QPen pen(COLOR(COLOR_CURSOR_NORMAL));
+    QPen pen(COLOR(CSEL_COLOR_CURSOR));
     pen.setWidth(CSEL_CURSOR_WIDTH);
     cursor = scene->addRect(0, 0, 0, 0, pen);
     cursor->setZValue(20);

@@ -32,7 +32,7 @@ public:
 private:
     void initScene();
     void initBackgroundRect(int numCircuits);
-    bool handleMousePress(const QPointF &pos);
+    bool handleMousePress(const QPoint &pos);
     void loadCircuitCategory(QString category, QString search="");
     CircuitInfoView *currentCircuit();
     void chooseCurrentCircuit();
