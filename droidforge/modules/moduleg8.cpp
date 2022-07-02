@@ -26,14 +26,14 @@ QPointF ModuleG8::registerPosition(QChar type, unsigned number) const
     float y;
 
     if (type == REGISTER_GATE) {
-        y = row * 2.55 + 14.5;
-        x = column * 2.05 + 0.9;
+        y = row * 2.55 + 14.47;
+        x = column * 2.00 + 0.98;
     }
     else { // REGISTER_RGB_LED
-        y = row * 1.8 + 5.8;
+        y = row * 1.775 + 5.88;
         if (row >= 2)
-            y += 0.3;
-        x = column * 1.85 + 1.2;
+            y += 0.37;
+        x = column * 1.775 + 1.15;
     }
     return QPointF(x, y);
 }

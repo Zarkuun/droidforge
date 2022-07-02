@@ -11,14 +11,12 @@ unsigned ModuleS10::numRegisters(QChar type) const
 
 QPointF ModuleS10::registerPosition(QChar, unsigned number) const
 {
-    if (number == 1)
-        return QPointF(hp()/2, 3.63);
-    else if (number == 2)
-        return QPointF(hp()/2, 8.27);
+    if (number <= 2)
+        return QPointF(hp()/2, 4.91 * (number - 1) + 3.50);
     else  {
         unsigned column = (number-3) % 2;
         unsigned row = (number-3) / 2;
-        return QPointF(column * 2.5 + 1.25, row * 2.95 + 13.4);
+        return QPointF(column * 2.36 + 1.32, row * 2.964 + 13.35);
     }
 }
 

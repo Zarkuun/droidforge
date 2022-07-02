@@ -19,10 +19,11 @@ bool ModuleP4B2::labelNeedsBackground(QChar type, unsigned) const
 QPointF ModuleP4B2::registerPosition(QChar type, unsigned number) const
 {
     if (type == REGISTER_POT)
-        return QPointF(hp()/2, 4.71 * (number - 1) + 3.63);
+        return QPointF(hp()/2, 4.91 * (number - 1) + 3.50);
     else  {
         unsigned column = (number-1) % 2;
-        return QPointF(column * 2.2 + 1.35, 8.85 + 13.4);
+        unsigned row = 3;
+        return QPointF(column * 2.5 + 1.27, row * 2.97 + 13.43);
     }
 
 }

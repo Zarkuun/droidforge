@@ -204,8 +204,9 @@ void RackView::askRemoveController(int controllerIndex)
 }
 void RackView::removeController(int controllerIndex)
 {
+    QString name = patch->controller(controllerIndex).toUpper();
     patch->removeController(controllerIndex);
-    patch->commit(tr("removing %1 controller").arg(patch->controller(controllerIndex).toUpper()));
+    patch->commit(tr("removing %1 controller").arg(name));
     emit patchModified();
 }
 
@@ -475,7 +476,7 @@ void RackView::openMenuOnItem(QGraphicsItem *item)
     if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
         areg = item->data(DATA_INDEX_REGISTER_NAME).toString();
 
-    popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString(), areg);
+                        popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString(), areg);
 }
 
 void RackView::hoverIn(QGraphicsItem *item)

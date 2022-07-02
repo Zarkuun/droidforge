@@ -20,15 +20,12 @@ bool ModuleP2B8::labelNeedsBackground(QChar type, unsigned) const
 QPointF ModuleP2B8::registerPosition(QChar type, unsigned number) const
 {
     if (type == REGISTER_POT) {
-        if (number == 1)
-            return QPointF(hp()/2, 3.63);
-        else
-            return QPointF(hp()/2, 8.27);
+        return QPointF(hp()/2, 4.91 * (number - 1) + 3.50);
     }
     else  {
         unsigned column = (number-1) % 2;
         unsigned row = (number-1) / 2;
-        return QPointF(column * 2.2 + 1.35, row * 2.95 + 13.4);
+        return QPointF(column * 2.5 + 1.27, row * 2.97 + 13.43);
     }
 }
 

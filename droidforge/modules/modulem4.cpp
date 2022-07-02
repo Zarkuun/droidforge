@@ -11,18 +11,15 @@ unsigned ModuleM4::numRegisters(QChar type) const
 
 QPointF ModuleM4::registerPosition(QChar type, unsigned number) const
 {
-    const float faderPositions[4] = {
-        17.5,
-        9.5,
-        14.6,
-        6.1,
-    };
+    const float faderPositions[4] = { 18.25, 10.35, 14.53, 5.90, };
 
-    float x = 3.56 * (number - 1) + 1.65;
+    float x = 3.50 * (number - 1) + 1.83;
     float y;
 
-    if (type == REGISTER_POT)
+    if (type == REGISTER_POT) {
         y = faderPositions[number - 1];
+        x -= 0.1;
+    }
     else
         y = 23.0;
     return QPointF(x, y);

@@ -34,7 +34,7 @@ void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int con
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
             QRectF rect = registerRect(type, j+1, 1).translated(pos().x(), 0);
-            auto item = scene->addRect(rect, QPen(QColor(255, 0, 0), 8));
+            auto item = scene->addRect(rect, QPen(QColor(0, 0, 0, 0), 0));
             item->setData(DATA_INDEX_DRAGGER_PRIO, 2);
             item->setData(DATA_INDEX_REGISTER_NAME, registerAtom(type, j+1).toString());
             item->setData(DATA_INDEX_MODULE_INDEX, moduleIndex);

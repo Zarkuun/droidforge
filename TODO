@@ -2,7 +2,7 @@ BUGS:
 - Rackview: Die ganze click und draglogic ist immer noch kaputt.
   Jetzt: Wenn man klickt, die Maus nicht bewegt, wird ein weiterer
   Klick nicht gewertet.
-- Platzierung der Register fixen
+- Nach remove von Controller geht kein Hover mehr
 
 TODO für die erste Version:
 

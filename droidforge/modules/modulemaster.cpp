@@ -20,17 +20,17 @@ QPointF ModuleMaster::registerPosition(QChar type, unsigned number) const
     int row = (number - 1) / 4;
 
     float y;
-    float x = column * 2.05 + 0.9;
+    float x = column * 2.00 + 0.98;
 
     if (type == REGISTER_INPUT || type == REGISTER_NORMALIZE)
-        y = row * 2.55 + 14.5;
+        y = row * 2.55 + 14.47;
     else if (type == REGISTER_OUTPUT)
-        y = row * 2.55 + 19.6;
+        y = row * 2.55 + 19.57;
     else if (type == REGISTER_RGB_LED) {
-        y = row * 1.8 + 5.8;
+        y = row * 1.775 + 5.88;
         if (row >= 2)
-            y += 0.3;
-        x = column * 1.85 + 1.3;
+            y += 0.37;
+        x = column * 1.775 + 1.35;
     }
     else {
         return QPointF(4.0, 8.55);
