@@ -53,7 +53,6 @@ RackView::RackView(PatchEditEngine *patch)
 void RackView::modifyPatch()
 {
     scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
-    // markedRegister = AtomRegister();
     refreshModules();
     updateRegisterHilites();
     dragger.cancel();
@@ -438,7 +437,6 @@ void RackView::clickOnItem(QGraphicsItem *item)
 {
     if (item->data(DATA_INDEX_REGISTER_NAME).isValid()) {
         AtomRegister ar(item->data(DATA_INDEX_REGISTER_NAME).toString());
-        shout << ar.toString();
         emit registerClicked(ar);
     }
 }
@@ -504,7 +502,6 @@ void RackView::hoverOut(QGraphicsItem *item)
 
 void RackView::dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos)
 {
-    shoutfunc;
     if (startItem->data(DATA_INDEX_REGISTER_NAME).isValid()) { // dragging register
         AtomRegister fromReg(startItem->data(DATA_INDEX_REGISTER_NAME).toString());
         QPoint startPos = itemPosition(startItem);
@@ -543,13 +540,11 @@ void RackView::stopDraggingItemOnItem(QGraphicsItem *startItem, QGraphicsItem *i
 void RackView::stopDraggingItemOnBackground(QGraphicsItem *, QPoint)
 {
     dragRegisterIndicator->setVisible(false);
-    shout << ":NIX MACHEN";
 }
 
 void RackView::abortDragging()
 {
     dragRegisterIndicator->setVisible(false);
-    shout << "Aborterd";
 
 }
 void RackView::remapControls(QString controllerName, int controllerIndex)

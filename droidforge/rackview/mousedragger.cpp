@@ -5,19 +5,17 @@
 #include <QGuiApplication>
 #include <QStyleHints>
 #include <QTimer>
+#include <QApplication>
 
 MouseDragger::MouseDragger(QGraphicsView *gv)
     : graphicsView(gv)
     , leftButtonState(IDLE)
-    , leftButtonPressed(false)
-    , rightButtonPressed(false)
     , hoverItem(0)
     , dragStartItem(0)
 {
 }
 void MouseDragger::mousePress(QMouseEvent *event)
 {
-    shout << "PRESS" << event;
     if (event->button() == Qt::LeftButton)
         mousePressLeft(event);
     if (event->button() == Qt::RightButton)
@@ -25,17 +23,14 @@ void MouseDragger::mousePress(QMouseEvent *event)
 }
 void MouseDragger::mousePressLeft(QMouseEvent *event)
 {
-    leftButtonPressed = true;
     stopHovering();
 
     if (leftButtonState == IDLE) {
         leftClickPos = event->pos();
         leftButtonState = WAITING_FOR_FIRST_RELEASE;
-        shout << "TIMER 2 STARTED.";
         QTimer::singleShot(doubleClickTime(), this, &MouseDragger::pressTimeout);
     }
     else if (leftButtonState == WAITING_FOR_DOUBLE_CLICK) {
-        shout << "DOUBLE!";
         leftButtonState = IDLE;
         QGraphicsItem *item = itemAt(leftClickPos);
         if (item)
@@ -46,7 +41,6 @@ void MouseDragger::mousePressLeft(QMouseEvent *event)
 }
 void MouseDragger::mousePressRight(QMouseEvent *event)
 {
-    rightButtonPressed = true;
     auto item = itemAt(event->pos());
     if (item)
         emit menuOpenedOnItem(item);
@@ -55,7 +49,6 @@ void MouseDragger::mousePressRight(QMouseEvent *event)
 }
 void MouseDragger::mouseRelease(QMouseEvent *event)
 {
-    shout << "RELEASE" << event;
     if (event->button() == Qt::LeftButton)
         mouseReleaseLeft(event);
     if (event->button() == Qt::RightButton)
@@ -63,10 +56,8 @@ void MouseDragger::mouseRelease(QMouseEvent *event)
 }
 void MouseDragger::mouseReleaseLeft(QMouseEvent *event)
 {
-    leftButtonPressed = false;
     if (leftButtonState == WAITING_FOR_FIRST_RELEASE) {
         leftButtonState = WAITING_FOR_DOUBLE_CLICK;
-        shout << "TIMER 1 STARTED.";
         QTimer::singleShot(doubleClickTime(), this, &MouseDragger::doubleClickTimedOut);
         return;
     }
@@ -77,15 +68,13 @@ void MouseDragger::mouseReleaseLeft(QMouseEvent *event)
 }
 void MouseDragger::mouseReleaseRight(QMouseEvent *)
 {
-    rightButtonPressed = false;
 }
 void MouseDragger::mouseMove(QMouseEvent *event)
 {
-    shoutfunc;
-    if (!leftButtonPressed && !rightButtonPressed)
+    int buttons = QApplication::mouseButtons();
+    if ((buttons & (Qt::LeftButton | Qt::RightButton)) == 0)
         hover(event);
 
-    shout << leftButtonState;
     switch (leftButtonState) {
 
     case WAITING_FOR_DOUBLE_CLICK:
@@ -110,7 +99,6 @@ void MouseDragger::mouseMove(QMouseEvent *event)
 }
 void MouseDragger::cancel()
 {
-    shout << "CANCEL";
     if (leftButtonState == DRAGGING) {
         leftButtonState = IDLE;
         emit draggingAborted();
@@ -152,14 +140,12 @@ void MouseDragger::startHovering(QGraphicsItem *item)
     if (hoverItem)
         stopHovering();
     hoverItem = item;
-    shout << "HOVER" << item;
     emit hoveredIn(item);
 }
 
 void MouseDragger::stopHovering()
 {
     if (hoverItem) {
-        shout << "HOVEREND" << hoverItem;
         emit hoveredOut(hoverItem);
         hoverItem = 0;
     }
@@ -190,7 +176,6 @@ int MouseDragger::distanceFromClick(QPoint pos) const
 
 void MouseDragger::doLeftClick()
 {
-    shout << "CLICK";
     QGraphicsItem *item = itemAt(leftClickPos);
     if (item)
         emit clickedOnItem(item);
@@ -211,21 +196,17 @@ void MouseDragger::startDragging()
 
 void MouseDragger::drag(QMouseEvent *event)
 {
-    shoutfunc;
     QPoint pos = graphicsView->mapToScene(event->pos()).toPoint();
 
     if (!dragStartItem) {
-        shout << "DRAG " << pos;
         emit backgroundDragging(graphicsView->mapToScene(leftClickPos).toPoint(), pos);
     }
     else {
         QGraphicsItem *item = itemAt(event->pos());
         if (item && item != dragStartItem) {
-            shout << "DRAG ITEM" << item;
             emit itemDragged(dragStartItem, item, pos);
         }
         else {
-            shout << "DRAG ITEM BG";
             emit itemDragged(dragStartItem, 0, pos);
         }
     }
@@ -235,17 +216,14 @@ void MouseDragger::stopDragging(QMouseEvent *event)
 {
     QPoint pos = graphicsView->mapToScene(event->pos()).toPoint();
     if (!dragStartItem) {
-        shout << "STOP DRAG " << event->pos();
         emit backgroundDraggingStopped(leftClickPos, pos);
     }
     else {
         QGraphicsItem *item = itemAt(event->pos());
         if (item && item != dragStartItem) {
-            shout << "STOP DRAG ITEM" << item;
             emit itemDraggingStoppedOnItem(dragStartItem, item);
         }
         else {
-            shout << "STOP DRAG ITEM BG";
             emit itemDraggingStoppedOnBackground(dragStartItem, pos);
         }
     }
@@ -261,7 +239,6 @@ void MouseDragger::pressTimeout()
 
 void MouseDragger::doubleClickTimedOut()
 {
-    shout << "TIMEOUT";
     if (leftButtonState == WAITING_FOR_DOUBLE_CLICK)
         doLeftClick();
     leftButtonState = IDLE;

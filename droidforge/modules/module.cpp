@@ -30,7 +30,7 @@ void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int con
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         QChar type = register_types[i];
-        if (type == REGISTER_EXTRA)
+        if (type == REGISTER_EXTRA || type == REGISTER_LED || type == REGISTER_NORMALIZE)
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
             QRectF rect = registerRect(type, j+1, 1).translated(pos().x(), 0);

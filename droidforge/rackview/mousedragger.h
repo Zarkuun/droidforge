@@ -18,8 +18,6 @@ class MouseDragger : public QObject
         DRAGGING                    = 2,
         WAITING_FOR_DOUBLE_CLICK    = 3
     } leftButtonState;
-    bool leftButtonPressed;
-    bool rightButtonPressed;
     QPoint leftClickPos;
     QGraphicsItem *hoverItem;
     QGraphicsItem *dragStartItem;
