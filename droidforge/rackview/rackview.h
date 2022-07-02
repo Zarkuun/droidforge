@@ -65,6 +65,7 @@ public slots:
     void addController();
 
     // from mouseDragger
+    void clickOnItem(QGraphicsItem *item);
     void openMenuOnBackground();
     void openMenuOnItem(QGraphicsItem *item);
     void hoverIn(QGraphicsItem *item);

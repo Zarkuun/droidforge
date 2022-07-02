@@ -123,8 +123,8 @@ void RackView::mouseReleaseEvent(QMouseEvent *event)
                  }
              }
              else {
-                 if (!draggingStartRegister.isNull())
-                     emit registerClicked(draggingStartRegister);
+                 // if (!draggingStartRegister.isNull())
+                 //     emit registerClicked(draggingStartRegister);
                  dragRegisterIndicator->setVisible(false);
              }
          }
@@ -453,6 +453,7 @@ void RackView::connectDragger()
     connect(&dragger, &MouseDragger::menuOpenedOnItem, this, &RackView::openMenuOnItem);
     connect(&dragger, &MouseDragger::hoveredIn, this, &RackView::hoverIn);
     connect(&dragger, &MouseDragger::hoveredOut, this, &RackView::hoverOut);
+    connect(&dragger, &MouseDragger::clickedOnItem, this, &RackView::clickOnItem);
 }
 void RackView::updateSize()
 {
@@ -535,6 +536,15 @@ void RackView::addController()
         patch->addController(controller);
         patch->commit(tr("adding %1 controller").arg(controller.toUpper()));
         emit patchModified();
+    }
+}
+
+void RackView::clickOnItem(QGraphicsItem *item)
+{
+    if (item->data(DATA_INDEX_REGISTER_NAME).isValid()) {
+        AtomRegister ar(item->data(DATA_INDEX_REGISTER_NAME).toString());
+        shout << ar.toString();
+        emit registerClicked(ar);
     }
 }
 
