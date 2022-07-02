@@ -15,12 +15,10 @@ Patch::Patch()
     : sectionIndex(0)
 {
 }
-
 Patch::~Patch()
 {
     clear();
 }
-
 void Patch::clear()
 {
     title = "";
@@ -36,14 +34,12 @@ void Patch::clear()
         delete problem;
     problems.clear();
 }
-
 Patch *Patch::clone() const
 {
     Patch *newPatch = new Patch();
     cloneInto(newPatch);
     return newPatch;
 }
-
 void Patch::cloneInto(Patch *otherPatch) const
 {
     otherPatch->clear();
@@ -57,18 +53,15 @@ void Patch::cloneInto(Patch *otherPatch) const
         otherPatch->sections.append(section->clone());
     otherPatch->sectionIndex = sectionIndex;
 }
-
 void Patch::addSection(PatchSection *section)
 {
     sections.append(section);
 }
-
 void Patch::insertSection(int index, PatchSection *section)
 {
     sections.insert(index, section);
     sectionIndex = index;
 }
-
 void Patch::mergeSections(int indexa, int indexb)
 {
     PatchSection *sectiona = sections[indexa];
@@ -78,14 +71,12 @@ void Patch::mergeSections(int indexa, int indexb)
     removeSection(indexb);
     sectionIndex = qMin(indexa, indexb);
 }
-
 void Patch::removeSection(int index)
 {
     delete sections[index];
     sections.remove(index);
     sectionIndex = qMin(sectionIndex, sections.size() - 1);
 }
-
 void Patch::integratePatch(const Patch *snippet)
 {
     int index;
@@ -109,14 +100,12 @@ void Patch::integratePatch(const Patch *snippet)
     //       section, use the patch title instead
     // TODO: Move used registers to free things if required
 }
-
 void Patch::reorderSections(int fromindex, int toindex)
 {
     PatchSection *moved = sections[fromindex];
     sections.remove(fromindex);
     sections.insert(toindex, moved);
 }
-
 void Patch::swapControllersSmart(int fromindex, int toindex)
 {
     QStringList newControllers;
@@ -132,38 +121,32 @@ void Patch::swapControllersSmart(int fromindex, int toindex)
     swapControllerNumbers(fromindex+1, toindex+1);
     registerLabels.swapControllerNumbers(fromindex+1, toindex+1);
 }
-
 void Patch::removeController(int index)
 {
     for (auto section: sections)
         section->shiftControllerNumbers(index + 1, -1);
     controllers.remove(index);
 }
-
 void Patch::addDescriptionLine(const QString &line)
 {
     description.append(line);
 }
-
 void Patch::addDescriptionLines(const QStringList &list)
 {
     description += list;
 }
-
 void Patch::setDescription(const QString &d)
 {
     description = d.split('\n');
     if (d.endsWith("\n"))
         description.removeLast();
 }
-
 void Patch::addRegisterComment(QChar registerName, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
 {
     AtomRegister atom(registerName, controller, number);
     RegisterLabel rc{shorthand, comment};
     registerLabels[atom] = rc;
 }
-
 void Patch::moveRegistersToOtherControllers(int controllerIndex, RegisterList &registers)
 {
     unsigned controller = controllerIndex + 1;
@@ -204,9 +187,6 @@ void Patch::moveRegistersToOtherControllers(int controllerIndex, RegisterList &r
     for (unsigned i=0; i<remapFrom.size(); i++)
         remapRegister(remapFrom[i], remapTo[i]);
 }
-
-
-
 QString Patch::getDescription() const
 {
     if (description.empty())
@@ -214,7 +194,6 @@ QString Patch::getDescription() const
     else
         return description.join("\n") + "\n";
 }
-
 RegisterLabel Patch::registerLabel(AtomRegister atom) const
 {
     if (registerLabels.contains(atom))
@@ -222,35 +201,29 @@ RegisterLabel Patch::registerLabel(AtomRegister atom) const
     else
         return RegisterLabel();
 }
-
 const Circuit *Patch::currentCircuit() const
 {
     return currentSection()->currentCircuit();
 }
-
 void Patch::moveSection(int fromIndex, int toIndex)
 {
     PatchSection *section = sections[fromIndex];
     sections.remove(fromIndex);
     sections.insert(toIndex, section);
 }
-
 const Atom *Patch::currentAtom() const
 {
     return currentSection()->currentAtom();
 }
-
 void Patch::setCursorTo(int section, const CursorPosition &pos)
 {
     sectionIndex = section;
     currentSection()->setCursor(pos);
 }
-
 void Patch::setTitle(const QString &newTitle)
 {
     title = newTitle;
 }
-
 QStringList Patch::allCables() const
 {
     QStringList cables;
@@ -260,7 +233,6 @@ QStringList Patch::allCables() const
     cables.sort();
     return cables;
 }
-
 void Patch::renameCable(const QString &oldName, const QString &newName)
 {
     for (auto atom: *this) {
@@ -271,13 +243,11 @@ void Patch::renameCable(const QString &oldName, const QString &newName)
         }
     }
 }
-
 void Patch::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
 {
     for (auto section: sections)
         section->findCableConnections(cable, asInput, asOutput);
 }
-
 bool Patch::cableExists(const QString &cable) const
 {
     int asInput = 0;
@@ -285,7 +255,6 @@ bool Patch::cableExists(const QString &cable) const
     findCableConnections(cable, asInput, asOutput);
     return asInput > 0 || asOutput > 0;
 }
-
 bool Patch::needG8() const
 {
     for (qsizetype i=0; i<sections.length(); i++)
@@ -294,7 +263,6 @@ bool Patch::needG8() const
 
     return false;
 }
-
 bool Patch::needX7() const
 {
     for (qsizetype i=0; i<sections.length(); i++)
@@ -303,14 +271,12 @@ bool Patch::needX7() const
 
     return false;
 }
-
 void Patch::collectUsedRegisterAtoms(RegisterList &sl) const
 {
     // TODO: Mit iterator
     for (auto section: sections)
         section->collectRegisterAtoms(sl);
 }
-
 bool Patch::registerUsed(AtomRegister reg)
 {
     for (auto &atom: *this) {
@@ -322,7 +288,6 @@ bool Patch::registerUsed(AtomRegister reg)
     }
     return false;
 }
-
 void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
 {
     // TODO: Hardcode G8 and X7 here?
@@ -336,7 +301,6 @@ void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
         controllerNumber++;
     }
 }
-
 unsigned Patch::numProblemsInSection(int i) const
 {
     unsigned count = 0;
@@ -346,7 +310,6 @@ unsigned Patch::numProblemsInSection(int i) const
     }
     return count;
 }
-
 void Patch::updateProblems()
 {
     for (auto problem: problems)
@@ -390,7 +353,6 @@ void Patch::updateProblems()
             usedOutputs.append(*reg);
     }
 }
-
 QString Patch::problemAt(int section, const CursorPosition &pos)
 {
     for (auto problem: problems) {
@@ -399,7 +361,6 @@ QString Patch::problemAt(int section, const CursorPosition &pos)
     }
     return "";
 }
-
 bool Patch::registerAvailable(AtomRegister ar) const
 {
     char regType = ar.getRegisterType().toLatin1();
@@ -417,14 +378,12 @@ bool Patch::registerAvailable(AtomRegister ar) const
 
     return ar.getNumber() >= 1 && ar.getNumber() <= max;
 }
-
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
 {
     // TODO: Ohne rekursion mit iterator!
     for (auto section: sections)
         section->remapRegister(from, to);
 }
-
 void Patch::swapRegisters(AtomRegister regA, AtomRegister regB)
 {
     for (auto &atom: *this) {
@@ -438,26 +397,22 @@ void Patch::swapRegisters(AtomRegister regA, AtomRegister regB)
     }
     registerLabels.swapRegisters(regA, regB);
 }
-
 void Patch::removeRegisterReferences(RegisterList &rl)
 {
     for (auto section: sections)
         section->removeRegisterReferences(rl);
 }
-
 void Patch::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto section: sections)
         section->swapControllerNumbers(fromNumber, toNumber);
 }
-
 void Patch::shiftControllerNumbers(int number, int by)
 {
     for (auto section: sections)
         section->shiftControllerNumbers(number, by);
 
 }
-
 QString Patch::toString() const
 {
     QString s;
@@ -491,7 +446,6 @@ QString Patch::toString() const
         s.chop(1);
     return s;
 }
-
 QString Patch::toBare() const
 {
     QString s;
@@ -501,7 +455,6 @@ QString Patch::toBare() const
         s += sections[i]->toBare();
     return s;
 }
-
 bool Patch::saveToFile(const QString filePath) const
 {
     QFile file(filePath);
@@ -514,7 +467,6 @@ bool Patch::saveToFile(const QString filePath) const
     file.close();
     return stream.status() == QTextStream::Ok;
 }
-
 void Patch::iterator::moveToFirstAtom()
 {
     atom = 0;
@@ -536,8 +488,6 @@ void Patch::iterator::moveToFirstAtom()
         }
     }
 }
-
-
 bool Patch::iterator::advance()
 {
     while (true) {
@@ -555,7 +505,6 @@ bool Patch::iterator::advance()
         }
     }
 }
-
 bool Patch::iterator::advanceJack()
 {
     while (true) {
@@ -569,7 +518,6 @@ bool Patch::iterator::advanceJack()
         nJack = -1;
     }
 }
-
 bool Patch::iterator::advanceCircuit()
 {
     while (true) {
@@ -583,7 +531,6 @@ bool Patch::iterator::advanceCircuit()
         nCircuit = -1;
     }
 }
-
 bool Patch::iterator::advanceSection()
 {
     if (nSection+1 < patch->sections.size()) {

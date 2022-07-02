@@ -114,8 +114,9 @@ QString RegisterLabels::toString(char reg, unsigned controller, const QString &t
             }
             s += "#   " + atom.toString() + ": ";
             if (!label.shorthand.isEmpty())
-                s += "[" + label.shorthand + "] ";
-            s += label.description;
+                s += "[" + label.shorthand + "]";
+            if (label.description != "")
+                s += " " + label.description;
             s += "\n";
         }
     }

@@ -2,9 +2,20 @@ BUGS:
 - Rackview: Die ganze click und draglogic ist immer noch kaputt.
   Jetzt: Wenn man klickt, die Maus nicht bewegt, wird ein weiterer
   Klick nicht gewertet.
+- Integrate other patch as new section: Häh? Was ist, wenn
+  es mehrere Sektinen sind? Und warum ist der dumme Titel so
+  lang?
+- Beim Speicher trailing spaces löschen
+
 
 TODO für die erste Version:
 
+- Das "Weitersuchen" ist sehr umständlich. Wir brauchen eine
+  zentrale Suchlogik mit:
+    - Probleme
+    - Kabel
+    - Register
+    - evtl. später noch Freitextsuche
 - Clicken während man Ctrl gedrückty hälty, könnte den Wert einer
   anderen Zelle hierher kopieren oder so.
 - Manual viewer: Noch ein bisschen aufpeppen oder so.
@@ -16,17 +27,11 @@ TODO für die erste Version:
   Da muss ich ihm länger zeit geben.
 - Recent files: Man könnte hier noch den Titel dazuschreiben
 - Man kann kein komplett leere Patch hochladen.
-- Beim Speicher trailing spaces löschen
 - Intuitiv falsch: Ich drücke = für Kabel. Dann mach ich direkt edit.
   Anstelle eines Kabelnamens kommt jetzt einfach ein garbled-Text.
 - Sektionen per Drag-Drop vertauschen
 - Controller per Drag-Drop vertauschen
 - Circuits per Drag-Drop vertauschen
-- Integrate other patch as new section: Häh? Was ist, wenn
-  es mehrere Sektinen sind? Und warum ist der dumme Titel so
-  lang?
-- Die setTooTips von den Menüpunkten: Die werden nirgends angezeigt,
-  oder? Klären. Evtl. einfach löschen.
 
 Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 ---------------------------------------------

@@ -44,7 +44,6 @@ void CircuitCollection::initScene()
 }
 void CircuitCollection::updateSceneRect(int numCircuits)
 {
-    shoutfunc;
     QRect rect(
         0,  // x
         0,  // y
