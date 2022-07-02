@@ -39,7 +39,6 @@ public:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    void hideRegisterMarker();
     void initScene();
 
 private:
@@ -51,7 +50,6 @@ private:
     void updateSize();
     void popupControllerContextMenu(int controller, QString name);
     void popupBackgroundContextMenu();
-    void updateRegisterMarker(QPointF, float);
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
     void updateDragIndicator(QPointF endPos, bool hits, bool suitable);
@@ -69,6 +67,8 @@ public slots:
     // from mouseDragger
     void openMenuOnBackground();
     void openMenuOnItem(QGraphicsItem *item);
+    void hoverIn(QGraphicsItem *item);
+    void hoverOut(QGraphicsItem *item);
 
 private slots:
     void askRemoveController(int controller);

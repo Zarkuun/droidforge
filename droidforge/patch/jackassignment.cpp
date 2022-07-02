@@ -137,30 +137,11 @@ Atom *JackAssignment::parseCable(QString s)
 }
 Atom *JackAssignment::parseRegister(QString s)
 {
-    // Note: we allow invalid registers such as I0 here. It's easer
-    // for creating precise error messages later.
-    static QRegularExpression expa("^([INOGRX])([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
-    static QRegularExpression expb("^([BLPSR])([0-9]+)[.]([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
-
-    QRegularExpressionMatch m;
-
-    m = expa.match(s);
-    if (m.hasMatch()) {
-        QChar registerType = m.captured(1).toUpper()[0];
-        unsigned number = m.captured(2).toUInt();
-        return new AtomRegister(registerType, 0, number);
-    }
-
-    m = expb.match(s);
-    if (m.hasMatch()) {
-        QChar registerType = m.captured(1).toUpper()[0];
-        unsigned controller = m.captured(2).toUInt();
-        unsigned number = m.captured(3).toUInt();
-        return new AtomRegister(registerType, controller, number);
-    }
-
-    else
+    AtomRegister ar(s);
+    if (ar.isNull())
         return new AtomInvalid(s);
+    else
+        return ar.clone();
 }
 bool numericStringLess(const QString &a, const QString &b)
 {

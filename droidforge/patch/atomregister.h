@@ -19,6 +19,7 @@ public:
     AtomRegister(char t, unsigned c, unsigned n);
     AtomRegister(QChar t, unsigned c, unsigned n); // TODO: Get rid of this crap
     AtomRegister(const AtomRegister& ar);
+    AtomRegister(const QString &s);
     AtomRegister operator=(const AtomRegister &ar);
     AtomRegister *clone() const;
     QString toString() const;

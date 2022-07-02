@@ -26,7 +26,7 @@ unsigned Module::controllerNumber() const
         controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
     return controller;
 }
-void Module::createRegisterItems(QGraphicsScene *scene, int controllerIndex)
+void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         QChar type = register_types[i];
@@ -37,6 +37,7 @@ void Module::createRegisterItems(QGraphicsScene *scene, int controllerIndex)
             auto item = scene->addRect(rect, QPen(QColor(255, 0, 0), 8));
             item->setData(DATA_INDEX_DRAGGER_PRIO, 2);
             item->setData(DATA_INDEX_REGISTER_NAME, registerAtom(type, j+1).toString());
+            item->setData(DATA_INDEX_MODULE_INDEX, moduleIndex);
             item->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
         }
     }

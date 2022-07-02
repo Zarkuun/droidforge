@@ -38,6 +38,36 @@ AtomRegister::AtomRegister(const AtomRegister &ar)
     num = ar.num;
 }
 
+AtomRegister::AtomRegister(const QString &s)
+{
+    // Note: we allow invalid registers such as I0 here. It's easer
+    // for creating precise error messages later.
+    static QRegularExpression expa("^([INOGRX])([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
+    static QRegularExpression expb("^([BLPSR])([0-9]+)[.]([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
+
+    QRegularExpressionMatch m;
+
+    m = expa.match(s);
+    if (m.hasMatch()) {
+        registerType = m.captured(1).toUpper()[0].toLatin1();
+        num = m.captured(2).toUInt();
+        cont = 0;
+        return;
+    }
+
+    m = expb.match(s);
+    if (m.hasMatch()) {
+        registerType = m.captured(1).toUpper()[0].toLatin1();
+        cont = m.captured(2).toUInt();
+        num = m.captured(3).toUInt();
+    }
+    else {
+        registerType = 0;
+        cont = 0;
+        num = 0;
+    }
+}
+
 AtomRegister AtomRegister::operator=(const AtomRegister &ar)
 {
     registerType = ar.registerType;

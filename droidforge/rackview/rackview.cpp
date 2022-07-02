@@ -59,7 +59,7 @@ void RackView::modifyPatch()
     markedRegister = AtomRegister();
     refreshModules();
     updateRegisterHilites();
-    registerMarker->setVisible(false);
+    dragger.cancel();
 }
 void RackView::resizeEvent(QResizeEvent *)
 {
@@ -87,7 +87,7 @@ void RackView::mousePressEvent(QMouseEvent *event)
                 draggingStartPosition = registerMarker->pos();
                 maxDistanceFromMouseDown = 0;
                 updateDragIndicator(draggingStartPosition, false, false);
-                registerMarker->setVisible(false);
+                // registerMarker->setVisible(false);
             }
         }
         if (!onModule && event->button() == Qt::RightButton) {
@@ -138,7 +138,7 @@ void RackView::mouseReleaseEvent(QMouseEvent *event)
                  dragRegisterIndicator->setVisible(false);
          }
 
-         registerMarker->setVisible(true);
+         // registerMarker->setVisible(true);
          dragging = false;
          markedRegister = AtomRegister();
          scene()->update();
@@ -172,26 +172,24 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
                 QChar t = ar->getRegisterType();
                 unsigned n = ar->number() - module->numberOffset(t);
                 QPointF pos = module->registerPosition(t, n) * RACV_PIXEL_PER_HP;
-                float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
+                // float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
                 if (dragging && (!draggedAtRegister || markedRegister != *ar))
                 {
                     QPointF center = pos + module->pos();
                     bool suitable = registersSuitableForSwapping(*ar, draggingStartRegister);
                     updateDragIndicator(center, true, suitable);
                     draggedAtRegister = true;
-                    diameter = RACV_PIXEL_PER_HP;
+                    // diameter = RACV_PIXEL_PER_HP;
                 }
                 if  (markedRegister != *ar)
                 {
                     markedRegister = *ar;
-                    if (!dragging)
-                        updateRegisterMarker(pos + module->pos(), diameter);
                 }
                 delete ar;
             }
             else if (!ar) {
                 markedRegister = AtomRegister(0, 0, 0);
-                registerMarker->setVisible(false);
+                // registerMarker->setVisible(false);
             }
             break;
         }
@@ -212,14 +210,6 @@ bool RackView::registersSuitableForSwapping(AtomRegister a, AtomRegister b)
     else
         return false;
 }
-void RackView::updateRegisterMarker(QPointF p, float diameter)
-{
-    diameter += RACV_REGMARKER_EXTRA_DIAMETER;
-    registerMarker->setPos(p);
-    registerMarker->setDiameter(diameter);
-    registerMarker->setVisible(true);
-    registerMarker->startAnimation();
-}
 void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
 {
     patch->swapRegisters(regA, regB);
@@ -236,10 +226,6 @@ void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
     }
     patch->commit(tr("Exchanging registers '%1' and '%2'").arg(regA.toString()).arg(regB.toString()));
     emit patchModified();
-}
-void RackView::hideRegisterMarker()
-{
-    // TOOD: HAH??
 }
 void RackView::popupControllerContextMenu(int controllerIndex, QString moduleType)
 {
@@ -465,6 +451,8 @@ void RackView::connectDragger()
 {
     connect(&dragger, &MouseDragger::menuOpenedOnBackground, this, &RackView::openMenuOnBackground);
     connect(&dragger, &MouseDragger::menuOpenedOnItem, this, &RackView::openMenuOnItem);
+    connect(&dragger, &MouseDragger::hoveredIn, this, &RackView::hoverIn);
+    connect(&dragger, &MouseDragger::hoveredOut, this, &RackView::hoverOut);
 }
 void RackView::updateSize()
 {
@@ -480,7 +468,7 @@ void RackView::addModule(const QString &name, int controllerIndex)
     if (controllerIndex >= 0)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
     module->setPos(x, 0); //RACV_TOP_MARGIN);
-    module->createRegisterItems(scene(), controllerIndex);
+    module->createRegisterItems(scene(), modules.count() - 1, controllerIndex);
     x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
 }
 unsigned RackView::numControllers() const
@@ -563,6 +551,31 @@ void RackView::openMenuOnItem(QGraphicsItem *item)
     QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
     int index = v.isValid() ? v.toInt() : -1;
     popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
+}
+
+void RackView::hoverIn(QGraphicsItem *item)
+{
+    if (!item->data(DATA_INDEX_REGISTER_NAME).isValid())
+        return;
+
+    auto rect = item->boundingRect();
+    float diameter = rect.width() + RACV_REGMARKER_EXTRA_DIAMETER;
+    int x = (rect.left() + rect.right()) / 2;
+    int y = (rect.top() + rect.bottom()) / 2;
+    registerMarker->setPos(x, y);
+    registerMarker->setDiameter(diameter);
+    registerMarker->setVisible(true);
+    registerMarker->update();
+    registerMarker->startAnimation();
+}
+
+void RackView::hoverOut(QGraphicsItem *item)
+{
+    if (!item->data(DATA_INDEX_REGISTER_NAME).isValid())
+        return;
+    shout << "OUT --------------------------" << item;
+    shout << "VISIBLE" << registerMarker->isVisible();
+    registerMarker->setVisible(false);
 }
 void RackView::remapControls(QString controllerName, int controllerIndex)
 {

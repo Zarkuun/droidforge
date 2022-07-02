@@ -18,9 +18,11 @@ QT_END_NAMESPACE
 #define MAX_CONTROLS_OF_TYPE 32
 
 // for data(...) of QGraphicsItem
-#define DATA_INDEX_CONTROLLER_INDEX 0 // starting from 0, not from 1!
-#define DATA_INDEX_MODULE_NAME      1 // QString, e.g. "b32"
-#define DATA_INDEX_REGISTER_NAME    2 // QString, e.g. "L1.4"
+#define DATA_INDEX_MODULE_INDEX     0
+#define DATA_INDEX_CONTROLLER_INDEX 1 // starting from 0, not from 1!
+#define DATA_INDEX_MODULE_NAME      2 // QString, e.g. "b32"
+#define DATA_INDEX_REGISTER_NAME    3 // QString, e.g. "L1.4"
+#define DATA_INDEX_REGISTER         4
 
 
 class Module : public QGraphicsItem
@@ -53,7 +55,7 @@ public:
     AtomRegister registerAtom(QChar type, unsigned number) const;
     void collectAllRegisters(RegisterList &rl, int number=-1) const;
     unsigned controllerNumber() const;
-    void createRegisterItems(QGraphicsScene *scene, int controllerIndex);
+    void createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex);
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;

@@ -5,19 +5,24 @@
 
 MouseDragger::MouseDragger(QGraphicsView *gv)
     : graphicsView(gv)
+    , hoverItem(0)
+    , state(IDLE)
 {
 }
 void MouseDragger::mousePress(QMouseEvent *event)
 {
     shout << "PRESS" << event;
+    stopHovering();
     if (event->button() == Qt::RightButton) {
         auto item = itemAt(event->pos());
         if (item) {
             shout << "MENU OPEN ON ITEM" << item;
+            state = MENUOPEN;
             emit menuOpenedOnItem(item);
         }
         else {
             shout << "MENU OPEN ON BACKGROUND";
+            state = MENUOPEN;
             emit menuOpenedOnBackground();
         }
     }
@@ -25,14 +30,18 @@ void MouseDragger::mousePress(QMouseEvent *event)
 void MouseDragger::mouseRelease(QMouseEvent *e)
 {
     shout << "RELEASE" << e;
+    if (state == MENUOPEN)
+        state = IDLE;
 }
 void MouseDragger::mouseMove(QMouseEvent *e)
 {
-    shout << "MOVE" << e;
+    if (state == IDLE)
+        hover(e);
 }
 void MouseDragger::cancel()
 {
     shout << "CANCEL";
+    stopHovering();
 }
 
 QGraphicsItem *MouseDragger::itemAt(QPoint pos)
@@ -50,4 +59,33 @@ QGraphicsItem *MouseDragger::itemAt(QPoint pos)
         }
     }
     return bestItem;
+}
+
+void MouseDragger::hover(QMouseEvent *e)
+{
+    QGraphicsItem *item = itemAt(e->pos());
+    if (item != hoverItem) {
+        if (item)
+            startHovering(item);
+        else
+            stopHovering();
+    }
+}
+
+void MouseDragger::startHovering(QGraphicsItem *item)
+{
+    if (hoverItem)
+        stopHovering();
+    hoverItem = item;
+    shout << "HOVER" << item;
+    emit hoveredIn(item);
+}
+
+void MouseDragger::stopHovering()
+{
+    if (hoverItem) {
+        shout << "HOVEREND" << hoverItem;
+        emit hoveredOut(hoverItem);
+        hoverItem = 0;
+    }
 }
