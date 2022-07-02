@@ -24,6 +24,12 @@ class RackView : public QGraphicsView, PatchView
     AtomRegister markedRegister;
     DragRegisterIndicator *dragRegisterIndicator;
 
+    enum {
+        DRAG_NOTHING = 0,
+        DRAG_REGISTER = 1,
+        DRAG_MODULE = 2,
+    } dragMode;
+
     bool dragging;
     bool draggedAtRegister;
     AtomRegister draggingStartRegister;
@@ -52,11 +58,12 @@ private:
     void popupBackgroundContextMenu();
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
-    void updateDragIndicator(QPointF endPos, bool hits, bool suitable);
+    void updateDragIndicator(QPointF startPos, QPointF endPos, bool hits, bool suitable);
     bool registersSuitableForSwapping(AtomRegister a, AtomRegister b);
     void swapRegisters(AtomRegister regA, AtomRegister regB);
     void refreshModules();
     void removeController(int controllerIndex);
+    QPoint itemPosition(const QGraphicsItem *item, QPoint def=QPoint(0,0));
 
 public slots:
     void abortAllActions();
@@ -72,6 +79,10 @@ public slots:
     void openMenuOnItem(QGraphicsItem *item);
     void hoverIn(QGraphicsItem *item);
     void hoverOut(QGraphicsItem *item);
+    void dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
+    void stopDraggingItemOnItem(QGraphicsItem *startItem, QGraphicsItem *item);
+    void stopDraggingItemOnBackground(QGraphicsItem *startItem, QPoint pos);
+    void abortDragging();
 
 private slots:
     void askRemoveController(int controller);

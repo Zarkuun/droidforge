@@ -12,6 +12,7 @@ MouseDragger::MouseDragger(QGraphicsView *gv)
     , leftButtonPressed(false)
     , rightButtonPressed(false)
     , hoverItem(0)
+    , dragStartItem(0)
 {
 }
 void MouseDragger::mousePress(QMouseEvent *event)
@@ -30,6 +31,8 @@ void MouseDragger::mousePressLeft(QMouseEvent *event)
     if (leftButtonState == IDLE) {
         leftClickPos = event->pos();
         leftButtonState = WAITING_FOR_FIRST_RELEASE;
+        shout << "TIMER 2 STARTED.";
+        QTimer::singleShot(doubleClickTime(), this, &MouseDragger::pressTimeout);
     }
     else if (leftButtonState == WAITING_FOR_DOUBLE_CLICK) {
         shout << "DOUBLE!";
@@ -63,9 +66,12 @@ void MouseDragger::mouseReleaseLeft(QMouseEvent *event)
     leftButtonPressed = false;
     if (leftButtonState == WAITING_FOR_FIRST_RELEASE) {
         leftButtonState = WAITING_FOR_DOUBLE_CLICK;
-        shout << "TIMER STARTED.";
+        shout << "TIMER 1 STARTED.";
         QTimer::singleShot(doubleClickTime(), this, &MouseDragger::doubleClickTimedOut);
         return;
+    }
+    else if (leftButtonState == DRAGGING) {
+        stopDragging(event);
     }
     hover(event);
 }
@@ -75,19 +81,40 @@ void MouseDragger::mouseReleaseRight(QMouseEvent *)
 }
 void MouseDragger::mouseMove(QMouseEvent *event)
 {
+    shoutfunc;
     if (!leftButtonPressed && !rightButtonPressed)
         hover(event);
 
-    if (leftButtonState == WAITING_FOR_DOUBLE_CLICK
-        && distanceFromClick(event->pos()) > doubleClickDistance())
-    {
-        doLeftClick();
-        leftButtonState = IDLE;
+    shout << leftButtonState;
+    switch (leftButtonState) {
+
+    case WAITING_FOR_DOUBLE_CLICK:
+        if (distanceFromClick(event->pos()) > doubleClickDistance())
+        {
+            doLeftClick();
+            leftButtonState = IDLE;
+        }
+        break;
+
+    case WAITING_FOR_FIRST_RELEASE:
+        if (distanceFromClick(event->pos()) > dragDistance())
+            startDragging();
+        break;
+
+    case DRAGGING:
+        drag(event);
+
+    case IDLE:
+        break;
     }
 }
 void MouseDragger::cancel()
 {
     shout << "CANCEL";
+    if (leftButtonState == DRAGGING) {
+        leftButtonState = IDLE;
+        emit draggingAborted();
+    }
     stopHovering();
 }
 
@@ -151,6 +178,11 @@ int MouseDragger::doubleClickDistance() const
     return QGuiApplication::styleHints()->mouseDoubleClickDistance();
 }
 
+int MouseDragger::dragDistance() const
+{
+    return QGuiApplication::styleHints()->startDragDistance();
+}
+
 int MouseDragger::distanceFromClick(QPoint pos) const
 {
     return (leftClickPos - pos).manhattanLength();
@@ -164,6 +196,67 @@ void MouseDragger::doLeftClick()
         emit clickedOnItem(item);
     else
         emit clickedOnBackground();
+}
+
+void MouseDragger::startDragging()
+{
+    leftButtonState = DRAGGING;
+    dragStartItem = itemAt(leftClickPos);
+    QPoint pos = graphicsView->mapToScene(leftClickPos).toPoint();
+    if (dragStartItem)
+        emit itemDragged(dragStartItem, 0, pos);
+    else
+        emit backgroundDragging(pos, pos);
+}
+
+void MouseDragger::drag(QMouseEvent *event)
+{
+    shoutfunc;
+    QPoint pos = graphicsView->mapToScene(event->pos()).toPoint();
+
+    if (!dragStartItem) {
+        shout << "DRAG " << pos;
+        emit backgroundDragging(graphicsView->mapToScene(leftClickPos).toPoint(), pos);
+    }
+    else {
+        QGraphicsItem *item = itemAt(event->pos());
+        if (item && item != dragStartItem) {
+            shout << "DRAG ITEM" << item;
+            emit itemDragged(dragStartItem, item, pos);
+        }
+        else {
+            shout << "DRAG ITEM BG";
+            emit itemDragged(dragStartItem, 0, pos);
+        }
+    }
+}
+
+void MouseDragger::stopDragging(QMouseEvent *event)
+{
+    QPoint pos = graphicsView->mapToScene(event->pos()).toPoint();
+    if (!dragStartItem) {
+        shout << "STOP DRAG " << event->pos();
+        emit backgroundDraggingStopped(leftClickPos, pos);
+    }
+    else {
+        QGraphicsItem *item = itemAt(event->pos());
+        if (item && item != dragStartItem) {
+            shout << "STOP DRAG ITEM" << item;
+            emit itemDraggingStoppedOnItem(dragStartItem, item);
+        }
+        else {
+            shout << "STOP DRAG ITEM BG";
+            emit itemDraggingStoppedOnBackground(dragStartItem, pos);
+        }
+    }
+    leftButtonState = IDLE;
+}
+
+
+void MouseDragger::pressTimeout()
+{
+    if (leftButtonState == WAITING_FOR_FIRST_RELEASE)
+        startDragging();
 }
 
 void MouseDragger::doubleClickTimedOut()

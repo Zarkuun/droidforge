@@ -21,7 +21,7 @@ RackView::RackView(PatchEditEngine *patch)
     : QGraphicsView()
     , PatchView(patch)
     , dragging(false)
-    , draggedAtRegister(false)
+//    , draggedAtRegister(false)
     , dragger(this)
 {
     setFocusPolicy(Qt::NoFocus);
@@ -69,6 +69,7 @@ void RackView::mousePressEvent(QMouseEvent *event)
 {
     shout << "PRESS !!!!";
     dragger.mousePress(event);
+    return;
 
     if (event->type() == QMouseEvent::MouseButtonPress) {
         bool onModule = false;
@@ -88,7 +89,7 @@ void RackView::mousePressEvent(QMouseEvent *event)
                 draggingStartRegister = markedRegister;
                 draggingStartPosition = registerMarker->pos();
                 maxDistanceFromMouseDown = 0;
-                updateDragIndicator(draggingStartPosition, false, false);
+                // updateDragIndicator(draggingStartPosition, false, false);
                 // registerMarker->setVisible(false);
             }
         }
@@ -101,6 +102,8 @@ void RackView::mousePressEvent(QMouseEvent *event)
 void RackView::mouseReleaseEvent(QMouseEvent *event)
 {
     dragger.mouseRelease(event);
+    return;
+
     // TODO: This whole dragging is a complete hack. Also
     // it would be nice to return to double clicking for labelling
     // without unintentionally setting the current atom to the
@@ -160,53 +163,54 @@ void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     dragger.mouseMove(event);
-    QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
-    if (dragging) {
-        QPointF vector = draggingStartPosition - mapToScene(mousePos);
-        maxDistanceFromMouseDown = qMax(maxDistanceFromMouseDown, vector.manhattanLength());
-    }
-
-    bool foundRegister = false;
-    for (auto item: items(mousePos))
-    {
-        if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
-            Module *module = (Module *)item;
-            QPointF relPos = mapToScene(mousePos) - module->pos();
-            AtomRegister *ar = module->registerAt(relPos.toPoint());
-            if (ar != 0)
-            {
-                foundRegister = true;
-                QChar t = ar->getRegisterType();
-                unsigned n = ar->number() - module->numberOffset(t);
-                QPointF pos = module->registerPosition(t, n) * RACV_PIXEL_PER_HP;
-                // float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
-                if (dragging && (!draggedAtRegister || markedRegister != *ar))
-                {
-                    QPointF center = pos + module->pos();
-                    bool suitable = registersSuitableForSwapping(*ar, draggingStartRegister);
-                    updateDragIndicator(center, true, suitable);
-                    draggedAtRegister = true;
-                    // diameter = RACV_PIXEL_PER_HP;
-                }
-                if  (markedRegister != *ar)
-                {
-                    markedRegister = *ar;
-                }
-                delete ar;
-            }
-            else if (!ar) {
-                markedRegister = AtomRegister(0, 0, 0);
-                // registerMarker->setVisible(false);
-            }
-            break;
-        }
-    }
-
-    if (dragging && !foundRegister) {
-        draggedAtRegister = false;
-        QPointF end = mapToScene(event->pos());
-        updateDragIndicator(end, false, false);
-    }
+    return;
+///    QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
+///    if (dragging) {
+///        QPointF vector = draggingStartPosition - mapToScene(mousePos);
+///        maxDistanceFromMouseDown = qMax(maxDistanceFromMouseDown, vector.manhattanLength());
+///    }
+///
+///    bool foundRegister = false;
+///    for (auto item: items(mousePos))
+///    {
+///        if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
+///            Module *module = (Module *)item;
+///            QPointF relPos = mapToScene(mousePos) - module->pos();
+///            AtomRegister *ar = module->registerAt(relPos.toPoint());
+///            if (ar != 0)
+///            {
+///                foundRegister = true;
+///                QChar t = ar->getRegisterType();
+///                unsigned n = ar->number() - module->numberOffset(t);
+///                QPointF pos = module->registerPosition(t, n) * RACV_PIXEL_PER_HP;
+///                // float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
+///                if (dragging && (!draggedAtRegister || markedRegister != *ar))
+///                {
+///                    // QPointF center = pos + module->pos();
+///                    // bool suitable = registersSuitableForSwapping(*ar, draggingStartRegister);
+///                    // updateDragIndicator(center, true, suitable);
+///                    // draggedAtRegister = true;
+///                    // diameter = RACV_PIXEL_PER_HP;
+///                }
+///                if  (markedRegister != *ar)
+///                {
+///                    markedRegister = *ar;
+///                }
+///                delete ar;
+///            }
+///            else if (!ar) {
+///                markedRegister = AtomRegister(0, 0, 0);
+///                // registerMarker->setVisible(false);
+///            }
+///            break;
+///        }
+///    }
+///
+///    if (dragging && !foundRegister) {
+///        draggedAtRegister = false;
+///        // QPointF end = mapToScene(event->pos());
+///        // updateDragIndicator(end, false, false);
+///    }
 }
 bool RackView::registersSuitableForSwapping(AtomRegister a, AtomRegister b)
 {
@@ -339,6 +343,16 @@ void RackView::removeController(int controllerIndex)
     patch->commit(tr("removing %1 controller").arg(patch->controller(controllerIndex).toUpper()));
     emit patchModified();
 }
+
+QPoint RackView::itemPosition(const QGraphicsItem *item, QPoint def)
+{
+    if (!item)
+        return def;
+    QRectF rect = item->boundingRect();
+    return QPoint(
+                (rect.left() + rect.right()) / 2,
+                (rect.top() + rect.bottom()) / 2);
+}
 void RackView::abortAllActions()
 {
     dragger.cancel();
@@ -360,11 +374,11 @@ bool RackView::controllersRegistersUsed(int controllerIndex)
     collectUsedRegisters(controllerIndex, used);
     return !used.isEmpty();
 }
-void RackView::updateDragIndicator(QPointF endPos, bool hits, bool suitable)
+void RackView::updateDragIndicator(QPointF startPos, QPointF endPos, bool hits, bool suitable)
 {
     dragRegisterIndicator->abortAnimation();
-    dragRegisterIndicator->setPos(draggingStartPosition);
-    dragRegisterIndicator->setEnd(endPos - draggingStartPosition, hits, suitable);
+    dragRegisterIndicator->setPos(startPos);
+    dragRegisterIndicator->setEnd(endPos - startPos, hits, suitable);
     dragRegisterIndicator->setVisible(true);
     dragRegisterIndicator->update();
     scene()->update();
@@ -463,6 +477,11 @@ void RackView::connectDragger()
     connect(&dragger, &MouseDragger::clickedOnItem, this, &RackView::clickOnItem);
     connect(&dragger, &MouseDragger::doubleClickedOnBackground, this, &RackView::doubleClickOnBackground);
     connect(&dragger, &MouseDragger::doubleClickedOnItem, this, &RackView::doubleClickOnItem);
+
+    connect(&dragger, &MouseDragger::itemDragged, this, &RackView::dragItem);
+    connect(&dragger, &MouseDragger::itemDraggingStoppedOnItem, this, &RackView::stopDraggingItemOnItem);
+    connect(&dragger, &MouseDragger::itemDraggingStoppedOnBackground, this, &RackView::stopDraggingItemOnBackground);
+    connect(&dragger, &MouseDragger::draggingAborted, this, &RackView::abortDragging);
 }
 void RackView::updateSize()
 {
@@ -610,9 +629,58 @@ void RackView::hoverOut(QGraphicsItem *item)
 {
     if (!item->data(DATA_INDEX_REGISTER_NAME).isValid())
         return;
-    shout << "OUT --------------------------" << item;
-    shout << "VISIBLE" << registerMarker->isVisible();
     registerMarker->setVisible(false);
+}
+
+void RackView::dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos)
+{
+    shoutfunc;
+    if (startItem->data(DATA_INDEX_REGISTER_NAME).isValid()) { // dragging register
+        AtomRegister fromReg(startItem->data(DATA_INDEX_REGISTER_NAME).toString());
+        QPoint startPos = itemPosition(startItem);
+        bool hits = false;
+        bool suitable = false;
+        if (item && item->data(DATA_INDEX_REGISTER_NAME).isValid()) {
+            endPos = itemPosition(item);
+            hits = true;
+            AtomRegister toReg(item->data(DATA_INDEX_REGISTER_NAME).toString());
+            suitable = registersSuitableForSwapping(fromReg, toReg);
+        }
+        dragRegisterIndicator->abortAnimation();
+        dragRegisterIndicator->setPos(startPos);
+        dragRegisterIndicator->setEnd(endPos - startPos, hits, suitable);
+        dragRegisterIndicator->setVisible(true);
+        dragRegisterIndicator->update();
+        scene()->update();
+    }
+}
+void RackView::stopDraggingItemOnItem(QGraphicsItem *startItem, QGraphicsItem *item)
+{
+    if (startItem->data(DATA_INDEX_REGISTER_NAME).isValid()
+        &&   item->data(DATA_INDEX_REGISTER_NAME).isValid())
+    {
+        AtomRegister fromReg(startItem->data(DATA_INDEX_REGISTER_NAME).toString());
+        AtomRegister toReg(item->data(DATA_INDEX_REGISTER_NAME).toString());
+        if (registersSuitableForSwapping(fromReg, toReg)) {
+                 swapRegisters(fromReg, toReg);
+                 dragRegisterIndicator->doSuccessAnimation();
+            return;
+        }
+    }
+    dragRegisterIndicator->setVisible(false);
+}
+
+void RackView::stopDraggingItemOnBackground(QGraphicsItem *, QPoint)
+{
+    dragRegisterIndicator->setVisible(false);
+    shout << ":NIX MACHEN";
+}
+
+void RackView::abortDragging()
+{
+    dragRegisterIndicator->setVisible(false);
+    shout << "Aborterd";
+
 }
 void RackView::remapControls(QString controllerName, int controllerIndex)
 {

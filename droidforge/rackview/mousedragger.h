@@ -22,6 +22,7 @@ class MouseDragger : public QObject
     bool rightButtonPressed;
     QPoint leftClickPos;
     QGraphicsItem *hoverItem;
+    QGraphicsItem *dragStartItem;
 
 public:
     MouseDragger(QGraphicsView *gv);
@@ -41,10 +42,15 @@ private:
     void stopHovering();
     int doubleClickTime() const;
     int doubleClickDistance() const;
+    int dragDistance() const;
     int distanceFromClick(QPoint pos) const;
     void doLeftClick();
+    void startDragging();
+    void stopDragging(QMouseEvent *event);
+    void drag(QMouseEvent *event = 0);
 
 private slots:
+    void pressTimeout();
     void doubleClickTimedOut();
 
 signals:
@@ -56,11 +62,13 @@ signals:
     void menuOpenedOnItem(QGraphicsItem *item);
     void hoveredIn(QGraphicsItem *item); // always symmetrical ...
     void hoveredOut(QGraphicsItem *item); // ... to hoverout!
-    void draggedOnItem(QGraphicsItem *item);
-    void draggedFromItem(QGraphicsItem *item);
-    void draggedOnBackground(QPoint pos);
-    void draggedFinishOnItem(QGraphicsItem *item);
-    void draggedFinishOnBackground(QPoint pos);
+
+    void itemDragged(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
+    void backgroundDragging(QPoint startPos, QPoint pos);
+    void itemDraggingStoppedOnItem(QGraphicsItem *startItem, QGraphicsItem *item);
+    void itemDraggingStoppedOnBackground(QGraphicsItem *item, QPoint pos);
+    void backgroundDraggingStopped(QPoint startPos, QPoint pos);
+    void draggingAborted();
 };
 
 #endif // MOUSEDRAGGER_H
