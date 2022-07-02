@@ -32,6 +32,7 @@ void MouseDragger::mousePressLeft(QMouseEvent *event)
         leftButtonState = WAITING_FOR_FIRST_RELEASE;
     }
     else if (leftButtonState == WAITING_FOR_DOUBLE_CLICK) {
+        shout << "DOUBLE!";
         leftButtonState = IDLE;
         QGraphicsItem *item = itemAt(leftClickPos);
         if (item)
@@ -139,7 +140,10 @@ void MouseDragger::stopHovering()
 
 int MouseDragger::doubleClickTime() const
 {
-    return QGuiApplication::styleHints()->mouseDoubleClickInterval();
+    // TODO: This seems to output a wrong time, at least on Mac.
+    // It is always 400.
+    // return QGuiApplication::styleHints()->mouseDoubleClickInterval();
+    return 200;
 }
 
 int MouseDragger::doubleClickDistance() const

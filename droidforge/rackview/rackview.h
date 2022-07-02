@@ -66,6 +66,8 @@ public slots:
 
     // from mouseDragger
     void clickOnItem(QGraphicsItem *item);
+    void doubleClickOnItem(QGraphicsItem *item);
+    void doubleClickOnBackground();
     void openMenuOnBackground();
     void openMenuOnItem(QGraphicsItem *item);
     void hoverIn(QGraphicsItem *item);

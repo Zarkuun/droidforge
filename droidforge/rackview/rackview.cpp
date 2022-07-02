@@ -67,7 +67,9 @@ void RackView::resizeEvent(QResizeEvent *)
 }
 void RackView::mousePressEvent(QMouseEvent *event)
 {
+    shout << "PRESS !!!!";
     dragger.mousePress(event);
+
     if (event->type() == QMouseEvent::MouseButtonPress) {
         bool onModule = false;
         for (auto item: items(event->pos())) {
@@ -144,12 +146,17 @@ void RackView::mouseReleaseEvent(QMouseEvent *event)
          scene()->update();
      }
 }
+
 void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    bool foundItem = !items(event->pos()).empty();
-    if (!foundItem)
-        TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
+    dragger.mousePress(event);
 }
+// void RackView::mouseDoubleClickEvent(QMouseEvent *event)
+// {
+//     // bool foundItem = !items(event->pos()).empty();
+//     // if (!foundItem)
+//     //     TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
+// }
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     dragger.mouseMove(event);
@@ -454,6 +461,8 @@ void RackView::connectDragger()
     connect(&dragger, &MouseDragger::hoveredIn, this, &RackView::hoverIn);
     connect(&dragger, &MouseDragger::hoveredOut, this, &RackView::hoverOut);
     connect(&dragger, &MouseDragger::clickedOnItem, this, &RackView::clickOnItem);
+    connect(&dragger, &MouseDragger::doubleClickedOnBackground, this, &RackView::doubleClickOnBackground);
+    connect(&dragger, &MouseDragger::doubleClickedOnItem, this, &RackView::doubleClickOnItem);
 }
 void RackView::updateSize()
 {
@@ -463,6 +472,7 @@ void RackView::addModule(const QString &name, int controllerIndex)
 {
     Module *module = ModuleBuilder::buildModule(name, patch->getRegisterLabelsPointer());
     module->setData(DATA_INDEX_MODULE_NAME, name);
+    module->setData(DATA_INDEX_MODULE_INDEX, modules.count());
     module->setData(DATA_INDEX_DRAGGER_PRIO, 1);
     scene()->addItem(module);
     modules.append(module);
@@ -546,6 +556,23 @@ void RackView::clickOnItem(QGraphicsItem *item)
         shout << ar.toString();
         emit registerClicked(ar);
     }
+}
+
+void RackView::doubleClickOnItem(QGraphicsItem *item)
+{
+    if (item->data(DATA_INDEX_MODULE_INDEX).isValid()) {
+        Module *module = modules[item->data(DATA_INDEX_MODULE_INDEX).toInt()];
+        int controllerIndex = item->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
+        AtomRegister ar;
+        if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
+            ar = AtomRegister(item->data(DATA_INDEX_REGISTER_NAME).toString());
+        editLabelling(module->name(), controllerIndex, ar);
+    }
+}
+
+void RackView::doubleClickOnBackground()
+{
+    TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
 }
 
 void RackView::openMenuOnBackground()
