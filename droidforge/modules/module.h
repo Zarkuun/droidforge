@@ -4,6 +4,7 @@
 #include "atomregister.h"
 #include "registerlabels.h"
 #include "registerlist.h"
+#include "mousedragger.h"
 
 #include <QString>
 #include <QPixmap>
@@ -18,7 +19,8 @@ QT_END_NAMESPACE
 
 // for data(...) of QGraphicsItem
 #define DATA_INDEX_CONTROLLER_INDEX 0 // starting from 0, not from 1!
-#define DATA_INDEX_MODULE_NAME      1 // QString, etc. "b32"
+#define DATA_INDEX_MODULE_NAME      1 // QString, e.g. "b32"
+#define DATA_INDEX_REGISTER_NAME    2 // QString, e.g. "L1.4"
 
 
 class Module : public QGraphicsItem
@@ -51,6 +53,7 @@ public:
     AtomRegister registerAtom(QChar type, unsigned number) const;
     void collectAllRegisters(RegisterList &rl, int number=-1) const;
     unsigned controllerNumber() const;
+    void createRegisterItems(QGraphicsScene *scene, int controllerIndex);
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;

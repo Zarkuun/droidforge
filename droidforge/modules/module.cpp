@@ -3,6 +3,7 @@
 #include "tuning.h"
 
 #include <QPainter>
+#include <QGraphicsScene>
 
 Module::Module(const QString &faceplate)
     : faceplateImage(":images/faceplates/" + faceplate)
@@ -24,6 +25,21 @@ unsigned Module::controllerNumber() const
     if (data(DATA_INDEX_CONTROLLER_INDEX).isValid())
         controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
     return controller;
+}
+void Module::createRegisterItems(QGraphicsScene *scene, int controllerIndex)
+{
+    for (int i=0; i<NUM_REGISTER_TYPES; i++) {
+        QChar type = register_types[i];
+        if (type == REGISTER_EXTRA)
+            continue; // This should not be clickable
+        for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
+            QRectF rect = registerRect(type, j+1, 1).translated(pos().x(), 0);
+            auto item = scene->addRect(rect, QPen(QColor(255, 0, 0), 8));
+            item->setData(DATA_INDEX_DRAGGER_PRIO, 2);
+            item->setData(DATA_INDEX_REGISTER_NAME, registerAtom(type, j+1).toString());
+            item->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
+        }
+    }
 }
 void Module::clearHilites()
 {

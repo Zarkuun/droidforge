@@ -67,7 +67,7 @@ void EditorActions::createActions()
     #endif
     actions[ACTION_OPEN_ENCLOSING_FOLDER] = new QAction(title, this);
     #endif
-    actions[ACTION_INTEGRATE_PATCH] = new QAction(tr("&Integrate other patch as new section"), this);
+    actions[ACTION_INTEGRATE_PATCH] = new QAction(tr("&Integrate other patch"), this);
     actions[ACTION_INTEGRATE_PATCH]->setShortcut(QKeySequence(tr("Ctrl+I")));
 
     actions[ACTION_JUMP_TO_NEXT_PROBLEM] = new QAction(tr("&Jump to next problem"), this);

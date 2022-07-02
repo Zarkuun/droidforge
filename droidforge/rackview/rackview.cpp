@@ -22,6 +22,7 @@ RackView::RackView(PatchEditEngine *patch)
     , PatchView(patch)
     , dragging(false)
     , draggedAtRegister(false)
+    , dragger(this)
 {
     setFocusPolicy(Qt::NoFocus);
     setMinimumHeight(RACV_MIN_HEIGHT);
@@ -37,6 +38,9 @@ RackView::RackView(PatchEditEngine *patch)
 
     CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
     CONNECT_ACTION(ACTION_TOOLBAR_ADD_CONTROLLER, &RackView::addController);
+    CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &RackView::abortAllActions);
+
+    connectDragger();
 
     // Events that we create
     connect(this, &RackView::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -63,15 +67,16 @@ void RackView::resizeEvent(QResizeEvent *)
 }
 void RackView::mousePressEvent(QMouseEvent *event)
 {
+    dragger.mousePress(event);
     if (event->type() == QMouseEvent::MouseButtonPress) {
         bool onModule = false;
         for (auto item: items(event->pos())) {
             if (item->data(DATA_INDEX_MODULE_NAME).isValid())
             {
                 if (event->button() == Qt::RightButton) {
-                    QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
-                    int index = v.isValid() ? v.toInt() : -1;
-                    popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
+                    // QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
+                    // int index = v.isValid() ? v.toInt() : -1;
+                    // popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
                 }
                 onModule = true;
             }
@@ -85,12 +90,15 @@ void RackView::mousePressEvent(QMouseEvent *event)
                 registerMarker->setVisible(false);
             }
         }
-        if (!onModule && event->button() == Qt::RightButton)
-            popupBackgroundContextMenu();
+        if (!onModule && event->button() == Qt::RightButton) {
+            shout << "NIX";
+            // popupBackgroundContextMenu();
+        }
     }
 }
 void RackView::mouseReleaseEvent(QMouseEvent *event)
 {
+    dragger.mouseRelease(event);
     // TODO: This whole dragging is a complete hack. Also
     // it would be nice to return to double clicking for labelling
     // without unintentionally setting the current atom to the
@@ -144,6 +152,7 @@ void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 }
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
+    dragger.mouseMove(event);
     QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
     if (dragging) {
         QPointF vector = draggingStartPosition - mapToScene(mousePos);
@@ -266,12 +275,6 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
    menu->setAttribute(Qt::WA_DeleteOnClose);
    menu->popup(QCursor::pos());
 }
-void RackView::popupBackgroundContextMenu()
-{
-   QMenu *menu = new QMenu(this);
-   ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
-   menu->popup(QCursor::pos());
-}
 void RackView::askRemoveController(int controllerIndex)
 {
     // Get a list of all registers that are in use
@@ -342,6 +345,10 @@ void RackView::removeController(int controllerIndex)
     patch->removeController(controllerIndex);
     patch->commit(tr("removing %1 controller").arg(patch->controller(controllerIndex).toUpper()));
     emit patchModified();
+}
+void RackView::abortAllActions()
+{
+    dragger.cancel();
 }
 void RackView::collectUsedRegisters(int controllerIndex, RegisterList &used)
 {
@@ -424,16 +431,14 @@ void RackView::refreshModules()
     modules.clear();
     for (auto item: scene()->items())
     {
-        if (item->data(DATA_INDEX_MODULE_NAME).isValid())
+        if (item->data(DATA_INDEX_MODULE_NAME).isValid() ||
+            item->data(DATA_INDEX_REGISTER_NAME).isValid())
             scene()->removeItem(item);
     }
     x = 0;
     addModule("master");
-    // if (patch->needG8())
-        addModule("g8");
-    // if (patch->needX7())
-        addModule("x7");
-    // addModule("blind");
+    addModule("g8");
+    addModule("x7");
     x += RACV_CONTROLLER_GAP;
 
     for (qsizetype i=0; i<patch->numControllers(); i++)
@@ -456,6 +461,11 @@ void RackView::initScene()
     refreshModules();
     updateSize();
 }
+void RackView::connectDragger()
+{
+    connect(&dragger, &MouseDragger::menuOpenedOnBackground, this, &RackView::openMenuOnBackground);
+    connect(&dragger, &MouseDragger::menuOpenedOnItem, this, &RackView::openMenuOnItem);
+}
 void RackView::updateSize()
 {
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
@@ -464,11 +474,13 @@ void RackView::addModule(const QString &name, int controllerIndex)
 {
     Module *module = ModuleBuilder::buildModule(name, patch->getRegisterLabelsPointer());
     module->setData(DATA_INDEX_MODULE_NAME, name);
+    module->setData(DATA_INDEX_DRAGGER_PRIO, 1);
     scene()->addItem(module);
     modules.append(module);
     if (controllerIndex >= 0)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
     module->setPos(x, 0); //RACV_TOP_MARGIN);
+    module->createRegisterItems(scene(), controllerIndex);
     x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
 }
 unsigned RackView::numControllers() const
@@ -536,6 +548,21 @@ void RackView::addController()
         patch->commit(tr("adding %1 controller").arg(controller.toUpper()));
         emit patchModified();
     }
+}
+
+void RackView::openMenuOnBackground()
+{
+    QMenu *menu = new QMenu(this);
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
+    menu->popup(QCursor::pos());
+}
+
+void RackView::openMenuOnItem(QGraphicsItem *item)
+{
+    QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
+    int index = v.isValid() ? v.toInt() : -1;
+    popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
 }
 void RackView::remapControls(QString controllerName, int controllerIndex)
 {

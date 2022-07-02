@@ -85,6 +85,8 @@ QtApplication {
         "rackview/controllerlabellingdialog.h",
         "rackview/dragregisterindicator.cpp",
         "rackview/dragregisterindicator.h",
+        "rackview/mousedragger.cpp",
+        "rackview/mousedragger.h",
         "rackview/patchsectiontitleview.cpp",
         "rackview/patchsectiontitleview.h",
         "rackview/registerlabelwidget.cpp",

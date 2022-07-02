@@ -2,6 +2,7 @@
 #define RACKVIEW_H
 
 #include "module.h"
+#include "mousedragger.h"
 #include "patcheditengine.h"
 #include "registermarker.h"
 #include "patchview.h"
@@ -29,6 +30,8 @@ class RackView : public QGraphicsView, PatchView
     QPointF draggingStartPosition;
     float maxDistanceFromMouseDown;
 
+    MouseDragger dragger;
+
 public:
     explicit RackView(PatchEditEngine *patch);
     void resizeEvent(QResizeEvent *event);
@@ -40,6 +43,7 @@ public:
     void initScene();
 
 private:
+    void connectDragger();
     void addModule(const QString &name, int controllerIndex=-1);
     unsigned numControllers() const;
     void removeModule(int controllerIndex);
@@ -57,9 +61,14 @@ private:
     void removeController(int controllerIndex);
 
 public slots:
+    void abortAllActions();
     void modifyPatch();
     void updateRegisterHilites();
     void addController();
+
+    // from mouseDragger
+    void openMenuOnBackground();
+    void openMenuOnItem(QGraphicsItem *item);
 
 private slots:
     void askRemoveController(int controller);

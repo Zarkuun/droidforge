@@ -21,7 +21,7 @@ ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
 
     // OK, Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-    QPushButton *purchaseButton = new QPushButton(tr("Purchse"));
+    QPushButton *purchaseButton = new QPushButton(tr("Purchase"));
     connect(purchaseButton, &QPushButton::clicked, this, &ControllerChooseDialog::purchase);
     buttonBox->addButton(purchaseButton, QDialogButtonBox::ActionRole);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);

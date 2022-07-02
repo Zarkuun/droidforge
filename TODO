@@ -2,9 +2,7 @@ BUGS:
 - Rackview: Die ganze click und draglogic ist immer noch kaputt.
   Jetzt: Wenn man klickt, die Maus nicht bewegt, wird ein weiterer
   Klick nicht gewertet.
-- Integrate other patch as new section: Häh? Was ist, wenn
-  es mehrere Sektinen sind? Und warum ist der dumme Titel so
-  lang?
+- Platzierung der Register fixen
 
 TODO für die erste Version:
 
@@ -20,7 +18,6 @@ TODO für die erste Version:
 - Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
 - Manual: in eingebautetm Viewer einen Knopf, dass der in einem externen
   Programm aufgeht.
-- Calibrator: Da ist noch \subsubsection zu sehen.
 - Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
   Da muss ich ihm länger zeit geben.
 - Recent files: Man könnte hier noch den Titel dazuschreiben
