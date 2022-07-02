@@ -21,21 +21,8 @@ class RackView : public QGraphicsView, PatchView
     QList<Module *> modules;
     unsigned x;
     RegisterMarker *registerMarker;
-    AtomRegister markedRegister;
+    // AtomRegister markedRegister;
     DragRegisterIndicator *dragRegisterIndicator;
-
-    enum {
-        DRAG_NOTHING = 0,
-        DRAG_REGISTER = 1,
-        DRAG_MODULE = 2,
-    } dragMode;
-
-    bool dragging;
-    bool draggedAtRegister;
-    AtomRegister draggingStartRegister;
-    QPointF draggingStartPosition;
-    float maxDistanceFromMouseDown;
-
     MouseDragger dragger;
 
 public:
@@ -54,7 +41,7 @@ private:
     void removeModule(int controllerIndex);
     RegisterList findCurrentRegisters() const;
     void updateSize();
-    void popupControllerContextMenu(int controller, QString name);
+    void popupControllerContextMenu(int controller, QString name, AtomRegister areg);
     void popupBackgroundContextMenu();
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);

@@ -20,8 +20,6 @@
 RackView::RackView(PatchEditEngine *patch)
     : QGraphicsView()
     , PatchView(patch)
-    , dragging(false)
-//    , draggedAtRegister(false)
     , dragger(this)
 {
     setFocusPolicy(Qt::NoFocus);
@@ -55,8 +53,7 @@ RackView::RackView(PatchEditEngine *patch)
 void RackView::modifyPatch()
 {
     scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
-    dragging = false;
-    markedRegister = AtomRegister();
+    // markedRegister = AtomRegister();
     refreshModules();
     updateRegisterHilites();
     dragger.cancel();
@@ -67,150 +64,19 @@ void RackView::resizeEvent(QResizeEvent *)
 }
 void RackView::mousePressEvent(QMouseEvent *event)
 {
-    shout << "PRESS !!!!";
     dragger.mousePress(event);
-    return;
-
-    if (event->type() == QMouseEvent::MouseButtonPress) {
-        bool onModule = false;
-        for (auto item: items(event->pos())) {
-            if (item->data(DATA_INDEX_MODULE_NAME).isValid())
-            {
-                if (event->button() == Qt::RightButton) {
-                    // QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
-                    // int index = v.isValid() ? v.toInt() : -1;
-                    // popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
-                }
-                onModule = true;
-            }
-            else if (item == registerMarker && event->button() == Qt::LeftButton) {
-                dragging = true;
-                draggedAtRegister = false;
-                draggingStartRegister = markedRegister;
-                draggingStartPosition = registerMarker->pos();
-                maxDistanceFromMouseDown = 0;
-                // updateDragIndicator(draggingStartPosition, false, false);
-                // registerMarker->setVisible(false);
-            }
-        }
-        if (!onModule && event->button() == Qt::RightButton) {
-            shout << "NIX";
-            // popupBackgroundContextMenu();
-        }
-    }
 }
 void RackView::mouseReleaseEvent(QMouseEvent *event)
 {
     dragger.mouseRelease(event);
-    return;
-
-    // TODO: This whole dragging is a complete hack. Also
-    // it would be nice to return to double clicking for labelling
-    // without unintentionally setting the current atom to the
-    // register.
-     if (dragging) {
-         if (maxDistanceFromMouseDown < 100) {
-             // Problem: This might be the first of a double click. And
-             // double click is labelling. And in that cust we must not
-             // emit a registerClicked. Hm. So instead of a single/double
-             // click, we make Ctrl-Click for labelling
-             if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-                 for (auto item: items(event->pos())) {
-                     if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
-                         Module *module = (Module *)item;
-                         QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
-                         int index = v.isValid() ? v.toInt() : -1;
-                         QPointF relPos = mapToScene(event->pos()) - module->pos();
-                         AtomRegister *ar = module->registerAt(relPos.toPoint());
-                         editLabelling(item->data(DATA_INDEX_MODULE_NAME).toString(), index, ar ? *ar : AtomRegister());
-                         break;
-                     }
-                 }
-             }
-             else {
-                 // if (!draggingStartRegister.isNull())
-                 //     emit registerClicked(draggingStartRegister);
-                 dragRegisterIndicator->setVisible(false);
-             }
-         }
-         else {
-             AtomRegister draggingEndRegister = markedRegister;
-             if (registersSuitableForSwapping(draggingStartRegister, draggingEndRegister)) {
-                 swapRegisters(draggingStartRegister, draggingEndRegister);
-                 dragRegisterIndicator->doSuccessAnimation();
-             }
-             else
-                 dragRegisterIndicator->setVisible(false);
-         }
-
-         // registerMarker->setVisible(true);
-         dragging = false;
-         markedRegister = AtomRegister();
-         scene()->update();
-     }
 }
-
 void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     dragger.mousePress(event);
 }
-// void RackView::mouseDoubleClickEvent(QMouseEvent *event)
-// {
-//     // bool foundItem = !items(event->pos()).empty();
-//     // if (!foundItem)
-//     //     TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
-// }
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     dragger.mouseMove(event);
-    return;
-///    QPoint mousePos = event->pos(); // mapToScene(event->pos()).toPoint();
-///    if (dragging) {
-///        QPointF vector = draggingStartPosition - mapToScene(mousePos);
-///        maxDistanceFromMouseDown = qMax(maxDistanceFromMouseDown, vector.manhattanLength());
-///    }
-///
-///    bool foundRegister = false;
-///    for (auto item: items(mousePos))
-///    {
-///        if (item->data(DATA_INDEX_MODULE_NAME).isValid()) {
-///            Module *module = (Module *)item;
-///            QPointF relPos = mapToScene(mousePos) - module->pos();
-///            AtomRegister *ar = module->registerAt(relPos.toPoint());
-///            if (ar != 0)
-///            {
-///                foundRegister = true;
-///                QChar t = ar->getRegisterType();
-///                unsigned n = ar->number() - module->numberOffset(t);
-///                QPointF pos = module->registerPosition(t, n) * RACV_PIXEL_PER_HP;
-///                // float diameter = module->registerSize(t, n) * RACV_PIXEL_PER_HP;
-///                if (dragging && (!draggedAtRegister || markedRegister != *ar))
-///                {
-///                    // QPointF center = pos + module->pos();
-///                    // bool suitable = registersSuitableForSwapping(*ar, draggingStartRegister);
-///                    // updateDragIndicator(center, true, suitable);
-///                    // draggedAtRegister = true;
-///                    // diameter = RACV_PIXEL_PER_HP;
-///                }
-///                if  (markedRegister != *ar)
-///                {
-///                    markedRegister = *ar;
-///                }
-///                delete ar;
-///            }
-///            else if (!ar) {
-///                markedRegister = AtomRegister(0, 0, 0);
-///                // registerMarker->setVisible(false);
-///            }
-///            break;
-///        }
-///    }
-///
-///    if (dragging && !foundRegister) {
-///        draggedAtRegister = false;
-///        // QPointF end = mapToScene(event->pos());
-///        // updateDragIndicator(end, false, false);
-///    }
 }
 bool RackView::registersSuitableForSwapping(AtomRegister a, AtomRegister b)
 {
@@ -238,7 +104,7 @@ void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
     patch->commit(tr("Exchanging registers '%1' and '%2'").arg(regA.toString()).arg(regB.toString()));
     emit patchModified();
 }
-void RackView::popupControllerContextMenu(int controllerIndex, QString moduleType)
+void RackView::popupControllerContextMenu(int controllerIndex, QString moduleType, AtomRegister areg)
 {
    QMenu *menu = new QMenu(this);
    if (controllerIndex >= 0) {
@@ -256,13 +122,12 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
                            this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
    }
 
-   AtomRegister reg = markedRegister;
    menu->addAction(tr("Edit labelling of controls"), this,
-                   [this,controllerIndex,moduleType,reg] () {this->editLabelling(moduleType, controllerIndex, reg); });
+                   [this,controllerIndex,moduleType,areg] () {this->editLabelling(moduleType, controllerIndex, areg); });
 
-   if (!markedRegister.isNull() && patch->registerUsed(markedRegister)) {
+   if (!areg.isNull() && patch->registerUsed(areg)) {
        menu->addAction(tr("Find this register in your patch"), this,
-                       [this,reg] () {this->findRegister(reg); });
+                       [this,areg] () {this->findRegister(areg); });
    }
 
    menu->addSeparator();
@@ -606,7 +471,11 @@ void RackView::openMenuOnItem(QGraphicsItem *item)
 {
     QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
     int index = v.isValid() ? v.toInt() : -1;
-    popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString());
+    AtomRegister areg;
+    if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
+        areg = item->data(DATA_INDEX_REGISTER_NAME).toString();
+
+    popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString(), areg);
 }
 
 void RackView::hoverIn(QGraphicsItem *item)
