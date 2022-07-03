@@ -81,6 +81,8 @@ QtApplication {
         "patchview/iconmarker.h",
         "patchview/selection.cpp",
         "patchview/selection.h",
+        "rackview/animatedindicator.cpp",
+        "rackview/animatedindicator.h",
         "rackview/controllerlabellingdialog.cpp",
         "rackview/controllerlabellingdialog.h",
         "rackview/dragregisterindicator.cpp",
