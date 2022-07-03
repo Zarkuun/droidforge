@@ -7,6 +7,7 @@
 #include "registermarker.h"
 #include "patchview.h"
 #include "dragregisterindicator.h"
+#include "dragcontrollerindicator.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -21,8 +22,8 @@ class RackView : public QGraphicsView, PatchView
     QList<Module *> modules;
     unsigned x;
     RegisterMarker *registerMarker;
-    // AtomRegister markedRegister;
     DragRegisterIndicator *dragRegisterIndicator;
+    DragControllerIndicator *dragControllerIndicator;
     MouseDragger dragger;
 
 public:
@@ -51,6 +52,11 @@ private:
     void refreshModules();
     void removeController(int controllerIndex);
     QPoint itemPosition(const QGraphicsItem *item, QPoint def=QPoint(0,0));
+    void dragRegister(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos);
+    void dragController(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos);
+    void stopDraggingRegister(QGraphicsItem *startItem, QGraphicsItem *item);
+    void stopDraggingController(QGraphicsItem *startItem, QPoint pos);
+    int snapControllerInsertPosition(int fromIndex, float x, float *insertSnap) const;
 
 public slots:
     void abortAllActions();
@@ -67,15 +73,14 @@ public slots:
     void hoverIn(QGraphicsItem *item);
     void hoverOut(QGraphicsItem *item);
     void dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
-    void stopDraggingItemOnItem(QGraphicsItem *startItem, QGraphicsItem *item);
-    void stopDraggingItemOnBackground(QGraphicsItem *startItem, QPoint pos);
+    void stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
     void abortDragging();
 
 private slots:
     void askRemoveController(int controller);
     void purchaseController(QString name);
     void findRegister(AtomRegister reg);
-    void moveController(int oldindex, int newindex);
+    void swapControllers(int oldindex, int newindex);
     void remapControls(QString moduleType, int controllerIndex);
     void editLabelling(QString moduleType, int controllerIndex, AtomRegister reg);
 

@@ -112,10 +112,10 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
                        [this,controllerIndex,moduleType] () {this->askRemoveController(controllerIndex); });
        if (controllerIndex > 0)
            menu->addAction(tr("Move by one position to the left"), this,
-                           [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex-1); });
+                           [this,controllerIndex] () {this->swapControllers(controllerIndex, controllerIndex-1); });
        if (controllerIndex+1 < patch->numControllers())
            menu->addAction(tr("Move by one position to the right"), this,
-                           [this,controllerIndex] () {this->moveController(controllerIndex, controllerIndex+1); });
+                           [this,controllerIndex] () {this->swapControllers(controllerIndex, controllerIndex+1); });
        if (controllersRegistersUsed(controllerIndex) && numControllers() >= 2)
            menu->addAction(tr("Move used controls and LEDs to other controllers"),
                            this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
@@ -292,7 +292,7 @@ void RackView::findRegister(AtomRegister reg)
     patch->setCursorTo(it.sectionIndex(), it.cursorPosition());
     emit sectionSwitched();
 }
-void RackView::moveController(int fromindex, int toindex)
+void RackView::swapControllers(int fromindex, int toindex)
 {
     patch->swapControllersSmart(fromindex, toindex);
     patch->commit(tr("changing controller order"));
@@ -330,6 +330,9 @@ void RackView::initScene()
     dragRegisterIndicator = new DragRegisterIndicator;
     dragRegisterIndicator->setVisible(false);
     scene()->addItem(dragRegisterIndicator);
+    dragControllerIndicator = new DragControllerIndicator;
+    dragControllerIndicator->setVisible(false);
+    scene()->addItem(dragControllerIndicator);
     refreshModules();
     updateSize();
 }
@@ -344,8 +347,7 @@ void RackView::connectDragger()
     connect(&dragger, &MouseDragger::doubleClickedOnItem, this, &RackView::doubleClickOnItem);
 
     connect(&dragger, &MouseDragger::itemDragged, this, &RackView::dragItem);
-    connect(&dragger, &MouseDragger::itemDraggingStoppedOnItem, this, &RackView::stopDraggingItemOnItem);
-    connect(&dragger, &MouseDragger::itemDraggingStoppedOnBackground, this, &RackView::stopDraggingItemOnBackground);
+    connect(&dragger, &MouseDragger::itemDraggingStopped, this, &RackView::stopDraggingItem);
     connect(&dragger, &MouseDragger::draggingAborted, this, &RackView::abortDragging);
 }
 void RackView::updateSize()
@@ -502,50 +504,111 @@ void RackView::hoverOut(QGraphicsItem *item)
 
 void RackView::dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos)
 {
-    if (startItem->data(DATA_INDEX_REGISTER_NAME).isValid()) { // dragging register
-        AtomRegister fromReg(startItem->data(DATA_INDEX_REGISTER_NAME).toString());
-        QPoint startPos = itemPosition(startItem);
-        bool hits = false;
-        bool suitable = false;
-        if (item && item->data(DATA_INDEX_REGISTER_NAME).isValid()) {
-            endPos = itemPosition(item);
-            hits = true;
-            AtomRegister toReg(item->data(DATA_INDEX_REGISTER_NAME).toString());
-            suitable = registersSuitableForSwapping(fromReg, toReg);
-        }
-        dragRegisterIndicator->abortAnimation();
-        dragRegisterIndicator->setPos(startPos);
-        dragRegisterIndicator->setEnd(endPos - startPos, hits, suitable);
-        dragRegisterIndicator->setVisible(true);
-        dragRegisterIndicator->update();
-        scene()->update();
-    }
+    if (startItem->data(DATA_INDEX_REGISTER_NAME).isValid())
+        dragRegister(startItem, item, endPos);
+    else if (startItem->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+        dragController(startItem, item, endPos);
 }
-void RackView::stopDraggingItemOnItem(QGraphicsItem *startItem, QGraphicsItem *item)
+
+void RackView::dragRegister(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos)
+{
+    AtomRegister fromReg(startItem->data(DATA_INDEX_REGISTER_NAME).toString());
+    QPoint startPos = itemPosition(startItem);
+    bool hits = false;
+    bool suitable = false;
+    if (item && item->data(DATA_INDEX_REGISTER_NAME).isValid()) {
+        endPos = itemPosition(item);
+        hits = true;
+        AtomRegister toReg(item->data(DATA_INDEX_REGISTER_NAME).toString());
+        suitable = registersSuitableForSwapping(fromReg, toReg);
+    }
+    dragRegisterIndicator->abortAnimation();
+    dragRegisterIndicator->setPos(startPos);
+    dragRegisterIndicator->setEnd(endPos - startPos, hits, suitable);
+    dragRegisterIndicator->setVisible(true);
+    dragRegisterIndicator->update();
+    scene()->update();
+}
+
+void RackView::dragController(QGraphicsItem *startItem, QGraphicsItem *, QPoint endPos)
+{
+    int moduleIndex = startItem->data(DATA_INDEX_MODULE_INDEX).toInt();
+    int controllerIndex = startItem->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
+    float indicatorPos = endPos.x();
+    int ip = snapControllerInsertPosition(controllerIndex, endPos.x(), &indicatorPos);
+
+    Module *module = modules[moduleIndex];
+    dragControllerIndicator->abortAnimation();
+    dragControllerIndicator->setControllerRect(module->boundingRect().translated(module->pos()));
+    dragControllerIndicator->setInsertPos(indicatorPos, ip >= 0);
+    dragControllerIndicator->setVisible(true);
+    dragControllerIndicator->update();
+    scene()->update();
+}
+
+void RackView::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos)
 {
     if (startItem->data(DATA_INDEX_REGISTER_NAME).isValid()
         &&   item->data(DATA_INDEX_REGISTER_NAME).isValid())
-    {
-        AtomRegister fromReg(startItem->data(DATA_INDEX_REGISTER_NAME).toString());
-        AtomRegister toReg(item->data(DATA_INDEX_REGISTER_NAME).toString());
-        if (registersSuitableForSwapping(fromReg, toReg)) {
-                 swapRegisters(fromReg, toReg);
-                 dragRegisterIndicator->doSuccessAnimation();
-            return;
+        stopDraggingRegister(startItem, item);
+
+    else if (startItem->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+        stopDraggingController(startItem, pos);
+
+    dragRegisterIndicator->setVisible(false);
+    dragControllerIndicator->setVisible(false);
+}
+void RackView::stopDraggingRegister(QGraphicsItem *startItem, QGraphicsItem *item)
+{
+    AtomRegister fromReg(startItem->data(DATA_INDEX_REGISTER_NAME).toString());
+    AtomRegister toReg(item->data(DATA_INDEX_REGISTER_NAME).toString());
+    if (registersSuitableForSwapping(fromReg, toReg)) {
+        swapRegisters(fromReg, toReg);
+        dragRegisterIndicator->doSuccessAnimation();
+        return;
+    }
+}
+void RackView::stopDraggingController(QGraphicsItem *startItem, QPoint pos)
+{
+    int controllerIndex = startItem->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
+    float indicatorPos = pos.x();
+    int ip = snapControllerInsertPosition(controllerIndex, pos.x(), &indicatorPos);
+    if (ip >= 0) {
+        if (ip > controllerIndex)
+            ip --;
+        shout << "MOVE" << controllerIndex << " -> " << ip;
+        patch->moveControllerSmart(controllerIndex, ip);
+        patch->commit(tr("moving controller"));
+        emit patchModified();
+    }
+    dragControllerIndicator->setVisible(false);
+}
+
+int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insertSnap) const
+{
+    for (auto module: modules) {
+        if (module->data(DATA_INDEX_CONTROLLER_INDEX).isValid()) {
+            int i = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
+            if (i == fromIndex)
+                continue;
+            float left = module->pos().x();
+            if (fromIndex != i-1 && qAbs(left - x) < RACV_CONTROLLER_SNAP_DISTANCE) {
+                *insertSnap = left;
+                return i;
+            }
+            float right = left + module->boundingRect().width();
+            if (fromIndex != i+1 && qAbs(right - x) < RACV_CONTROLLER_SNAP_DISTANCE) {
+                *insertSnap = right;
+                return i + 1;
+            }
         }
     }
-    dragRegisterIndicator->setVisible(false);
+    return -1;
 }
-
-void RackView::stopDraggingItemOnBackground(QGraphicsItem *, QPoint)
-{
-    dragRegisterIndicator->setVisible(false);
-}
-
 void RackView::abortDragging()
 {
     dragRegisterIndicator->setVisible(false);
-
+    dragControllerIndicator->setVisible(false);
 }
 void RackView::remapControls(QString controllerName, int controllerIndex)
 {

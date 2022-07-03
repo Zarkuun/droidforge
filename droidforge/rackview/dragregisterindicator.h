@@ -14,10 +14,6 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                    QWidget *widget) override;
     void setEnd(QPointF pos, bool hits, bool s);
-
-private:
-    void paintArrowHead(QPainter *painter, float size);
-
 };
 
 #endif // DRAGREGISTERINDICATOR_H

@@ -121,6 +121,18 @@ void Patch::swapControllersSmart(int fromindex, int toindex)
     swapControllerNumbers(fromindex+1, toindex+1);
     registerLabels.swapControllerNumbers(fromindex+1, toindex+1);
 }
+
+void Patch::moveControllerSmart(int fromIndex, int toIndex)
+{
+    if (fromIndex < toIndex) {
+        for (int i=fromIndex; i<toIndex; i++)
+            swapControllersSmart(i, i+1);
+    }
+    else {
+        for (int i=fromIndex; i>toIndex; i--)
+            swapControllersSmart(i, i-1);
+    }
+}
 void Patch::removeController(int index)
 {
     for (auto section: sections)

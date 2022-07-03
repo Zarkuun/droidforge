@@ -62,28 +62,15 @@ void DragRegisterIndicator::paint(QPainter *painter, const QStyleOptionGraphicsI
     else
         phi = 0;
 
-    const int ARROW_HEAD_SIZE = 0.6 * RACV_PIXEL_PER_HP;
     painter->save();
     painter->rotate(phi);
-    paintArrowHead(painter, ARROW_HEAD_SIZE);
+    paintArrowHead(painter, RACV_ARROW_HEAD_SIZE);
     painter->restore();
     painter->save();
     painter->translate(endPos);
     painter->rotate(phi + 180);
-    paintArrowHead(painter, ARROW_HEAD_SIZE);
+    paintArrowHead(painter, RACV_ARROW_HEAD_SIZE);
     painter->restore();
-}
-void DragRegisterIndicator::paintArrowHead(QPainter *painter, float size)
-{
-    QPolygon poly;
-    poly << QPoint(0, 0)
-         << QPoint(-size, -2 * size)
-         << QPoint( size, -2 * size)
-         << QPoint(0,0);
-    // QColor fill = painter->pen().color();
-    // fill.setAlpha(fill.alpha() / 2);
-    // painter->setBrush(fill);
-    painter->drawPolygon(poly);
 }
 void DragRegisterIndicator::setEnd(QPointF pos, bool h, bool s)
 {

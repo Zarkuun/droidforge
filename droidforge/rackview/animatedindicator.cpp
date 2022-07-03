@@ -1,5 +1,7 @@
 #include "animatedindicator.h"
 
+#include <QPainter>
+
 AnimatedIndicator::AnimatedIndicator()
      : animation(this, "animationPhase")
 {
@@ -33,4 +35,13 @@ void AnimatedIndicator::abortAnimation()
 void AnimatedIndicator::endOfAnimation()
 {
     setVisible(false);
+}
+void AnimatedIndicator::paintArrowHead(QPainter *painter, float size)
+{
+    QPolygon poly;
+    poly << QPoint(0, 0)
+         << QPoint(-size, -2 * size)
+         << QPoint( size, -2 * size)
+         << QPoint(0,0);
+    painter->drawPolygon(poly);
 }

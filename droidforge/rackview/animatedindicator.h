@@ -20,6 +20,9 @@ public:
     void doSuccessAnimation();
     void abortAnimation();
 
+protected:
+    void paintArrowHead(QPainter *painter, float size);
+
 private:
     Q_PROPERTY(float animationPhase READ getanimationPhase WRITE setanimationPhase NOTIFY animationPhaseChanged)
 

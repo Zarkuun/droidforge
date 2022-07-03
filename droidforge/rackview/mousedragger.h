@@ -63,8 +63,7 @@ signals:
 
     void itemDragged(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
     void backgroundDragging(QPoint startPos, QPoint pos);
-    void itemDraggingStoppedOnItem(QGraphicsItem *startItem, QGraphicsItem *item);
-    void itemDraggingStoppedOnBackground(QGraphicsItem *item, QPoint pos);
+    void itemDraggingStopped(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
     void backgroundDraggingStopped(QPoint startPos, QPoint pos);
     void draggingAborted();
 };
