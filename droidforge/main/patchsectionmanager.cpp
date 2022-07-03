@@ -27,6 +27,10 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
 {
     setFocusPolicy(Qt::NoFocus);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    // When you scroll down, the drag indicator will not be shown anymore
+    // of the scroll offset > 62.5% of one section height. I don't know why.
+    // So for the while I simply shut off the scroll bar.
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setMinimumWidth(150);
     setMaximumWidth(400);
     setScene(new QGraphicsScene());
@@ -106,25 +110,17 @@ void PatchSectionManager::popupSectionMenu(int index)
     }
     menu->popup(QCursor::pos());
 }
-void PatchSectionManager::resizeEvent(QResizeEvent *)
+void PatchSectionManager::resizeEvent(QResizeEvent *event)
 {
     if (patch)
         rebuildGraphics();
     QSettings settings;
     settings.setValue("patchsectionmanager/size", width());
+    QGraphicsView::resizeEvent(event);
 }
 void PatchSectionManager::mousePressEvent(QMouseEvent *event)
 {
     dragger.mousePress(event);
-//
-//     int index = clickedSectionIndex(event);
-//     if (index >= 0) {
-//         switchToSection(index);
-//         if (event->button() == Qt::RightButton)
-//             popupSectionMenu(index);
-//     }
-//     else if (event->button() == Qt::RightButton)
-    //         popupSectionMenu();
 }
 
 void PatchSectionManager::mouseReleaseEvent(QMouseEvent *event)
@@ -315,17 +311,17 @@ void PatchSectionManager::openMenuOnItem(QGraphicsItem *item)
 {
     popupSectionMenu(item->data(DATA_INDEX_SECTION_INDEX).toInt());
 }
-void PatchSectionManager::hoverIn(QGraphicsItem *item)
+void PatchSectionManager::hoverIn(QGraphicsItem *)
 {
     setCursor(Qt::PointingHandCursor);
 }
-void PatchSectionManager::hoverOut(QGraphicsItem *item)
+void PatchSectionManager::hoverOut(QGraphicsItem *)
 {
     unsetCursor();
 }
-
 void PatchSectionManager::dragItem(QGraphicsItem *startItem, QGraphicsItem *, QPoint pos)
 {
+    setCursor(Qt::ClosedHandCursor);
     int sectionIndex = startItem->data(DATA_INDEX_SECTION_INDEX).toInt();
     switchToSection(sectionIndex);
     float indicatorPos = pos.y();
@@ -335,11 +331,10 @@ void PatchSectionManager::dragItem(QGraphicsItem *startItem, QGraphicsItem *, QP
     dragSectionIndicator->setVisible(true);
     dragSectionIndicator->update();
     scene()->update();
-    shoutfunc;
 }
-
 void PatchSectionManager::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos)
 {
+    unsetCursor();
     dragSectionIndicator->setVisible(false);
     int fromIndex = startItem->data(DATA_INDEX_SECTION_INDEX).toInt();
     float indicatorPos = pos.y();
@@ -356,6 +351,7 @@ void PatchSectionManager::stopDraggingItem(QGraphicsItem *startItem, QGraphicsIt
 
 void PatchSectionManager::abortDragging()
 {
+    unsetCursor();
     dragSectionIndicator->setVisible(false);
 }
 void PatchSectionManager::rebuildGraphics()
@@ -367,10 +363,6 @@ void PatchSectionManager::rebuildGraphics()
     dragSectionIndicator->setVisible(false);
     scene()->addItem(dragSectionIndicator);
     titleViews.clear();
-
-    // Add strut for padding
-    // scene()->addRect(QRectF(0, 0, viewport()->width(), 0));
-    // TODO: kann man das nicht mit setSceneRect() besser machen?
 
     // Add title
     QGraphicsTextItem *text = scene()->addText(tr("Sections"));
@@ -395,6 +387,9 @@ void PatchSectionManager::rebuildGraphics()
 
     frameCursor = new FrameCursor();
     scene()->addItem(frameCursor);
+    QRectF sceneRect(0, 0, viewport()->width(), y);
+    scene()->setSceneRect(sceneRect);
+    // scene()->addRect(sceneRect, QPen(QColor(255, 255, 0)));
     updateCursor();
 }
 void PatchSectionManager::updateCursor()

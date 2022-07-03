@@ -100,7 +100,7 @@
 #define PSM_SIDE_PADDING                     STANDARD_SPACING
 #define PSM_TOP_PADDING                      (STANDARD_SPACING / 2)
 #define PSM_VERTICAL_DISTANCE                (STANDARD_SPACING / 2)
-#define PSM_SECTION_HEIGHT                   20
+#define PSM_SECTION_HEIGHT                   22
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
 #define PSM_IMAGE_MARGIN                     4
 #define PSM_SECTION_DRAG_WIDTH               4

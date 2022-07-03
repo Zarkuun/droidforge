@@ -201,7 +201,7 @@ void MouseDragger::stopDragging(QMouseEvent *event)
 {
     QPoint pos = graphicsView->mapToScene(event->pos()).toPoint();
     if (!dragStartItem) {
-        emit backgroundDraggingStopped(leftClickPos, pos);
+        emit backgroundDraggingStopped(graphicsView->mapToScene(leftClickPos).toPoint(), pos);
     }
     else {
         QGraphicsItem *item = itemAt(event->pos());

@@ -511,6 +511,7 @@ void RackView::dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint en
 
 void RackView::dragRegister(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos)
 {
+    setCursor(Qt::ClosedHandCursor);
     AtomRegister fromReg(startItem->data(DATA_INDEX_REGISTER_NAME).toString());
     QPoint startPos = itemPosition(startItem);
     bool hits = false;
@@ -531,6 +532,7 @@ void RackView::dragRegister(QGraphicsItem *startItem, QGraphicsItem *item, QPoin
 
 void RackView::dragController(QGraphicsItem *startItem, QGraphicsItem *, QPoint endPos)
 {
+    setCursor(Qt::ClosedHandCursor);
     int moduleIndex = startItem->data(DATA_INDEX_MODULE_INDEX).toInt();
     int controllerIndex = startItem->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
     float indicatorPos = endPos.x();
@@ -547,6 +549,7 @@ void RackView::dragController(QGraphicsItem *startItem, QGraphicsItem *, QPoint 
 
 void RackView::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos)
 {
+    unsetCursor();
     if (startItem->data(DATA_INDEX_REGISTER_NAME).isValid()
         &&   item->data(DATA_INDEX_REGISTER_NAME).isValid())
         stopDraggingRegister(startItem, item);
@@ -605,6 +608,7 @@ int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insert
 }
 void RackView::abortDragging()
 {
+    unsetCursor();
     dragRegisterIndicator->setVisible(false);
     dragControllerIndicator->setVisible(false);
 }

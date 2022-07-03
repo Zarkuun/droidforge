@@ -1,6 +1,7 @@
 #include "dragsectionindicator.h"
 #include "tuning.h"
 #include "colorscheme.h"
+#include "globals.h"
 
 #include <QPainter>
 
