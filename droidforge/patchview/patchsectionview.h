@@ -38,7 +38,7 @@ public:
     bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
     QString currentCircuitName() const;
-    QString getTitle() const { return "KEIN TITLE"; }; // ; { return section->getNonemptyTitle(); };
+    QString getTitle() const { return "KEIN TITLE"; }; // TODO; { return section->getNonemptyTitle(); };
     QStringList usedJacks() const;
     void deleteCursorOrSelection();
     void editValue(int key);
@@ -68,6 +68,7 @@ private:
     void updateCableIndicator();
     CursorPosition *cursorAtMousePosition(QPoint pos) const;
     void setMouseSelection(const CursorPosition &to);
+    void instantCopyTo(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
     void handleLeftMousePress(const CursorPosition &curPos);
     void mouseMoveEvent(QMouseEvent *event);

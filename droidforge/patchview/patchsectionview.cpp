@@ -283,8 +283,6 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 {
     return handleKeyPress(event->key(), event->modifiers());
 }
-
-
 bool PatchSectionView::handleKeyPress(int key, int modifiers)
 {
     // If any other modifier than shift is pressed, ignore
@@ -770,9 +768,10 @@ void PatchSectionView::setZoom(int zoom)
 }
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
 {
-    if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier) {
+    if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
         setMouseSelection(curPos);
-    }
+    else if (QGuiApplication::keyboardModifiers() & Qt::ControlModifier)
+        instantCopyTo(curPos);
     else {
         the_operator->clearSelection();
         dragging = true;
@@ -1289,6 +1288,25 @@ void PatchSectionView::setMouseSelection(const CursorPosition &to)
     section()->setMouseSelection(to);
     emit selectionChanged();
 }
+
+void PatchSectionView::instantCopyTo(const CursorPosition &to)
+{
+    if (to.row < 0 || to.column <= 0) // not on an atom
+        return;
+
+    const Atom *atom = currentAtom();
+    const Atom *targetAtom = section()->atomAt(to);
+    if (atom == targetAtom) // do not copy onto itself
+        return;
+
+    if (!atom) // Won't copy empty cell
+        return;
+
+    JackAssignment *ja = section()->jackAssignmentAt(to);
+    ja->replaceAtom(to.column, atom->clone());
+    patch->commit(tr("copying '%1'").arg(atom->toString()));
+    emit patchModified();
+}
 void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
 {
     section()->updateKeyboardSelection(before, after);
@@ -1433,6 +1451,8 @@ const Atom *PatchSectionView::currentAtom() const
         return 0;
     else {
         int column = section()->cursorPosition().column;
+        if (!ja->isInput())
+            column = qMin(1, column);
         return ja->atomAt(column);
     }
 }
@@ -1444,6 +1464,8 @@ Atom *PatchSectionView::currentAtom()
         return 0;
     else {
         int column = section()->cursorPosition().column;
+        if (!ja->isInput())
+            column = qMin(1, column);
         return ja->atomAt(column);
     }
 }

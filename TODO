@@ -1,5 +1,13 @@
 ALS NÄCHSTES:
-- Circuits per Drag-Drop vertauschen
+- Intuitiv falsch: Ich drücke = für Kabel. Dann mach ich direkt edit.
+  Anstelle eines Kabelnamens kommt jetzt einfach ein garbled-Text.
+  überhaupt das Verkabeln nochmal finetunen!
+  Noch zum Verkabeln: alt+Maus verkabelt die Cursor Zelle mit der
+  geklickten oder so.
+  Vielleicht muss in die Zelle, wo man = gedrückt hat, auch so eine
+  graues Kabel rein oder so.
+- Beim Instantcabling könnte man auch gleich automatisch einen
+  Namen vergeben. 
 
 BUGS:
  KEINE!
@@ -12,21 +20,20 @@ TODO für die erste Version:
     - Kabel
     - Register
     - evtl. später noch Freitextsuche
-- Clicken während man Ctrl gedrückty hälty, könnte den Wert einer
-  anderen Zelle hierher kopieren oder so.
 - Manual viewer: Noch ein bisschen aufpeppen oder so.
 - Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
 - Manual: in eingebautetm Viewer einen Knopf, dass der in einem externen
   Programm aufgeht.
 - Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
   Da muss ich ihm länger zeit geben.
-- Recent files: Man könnte hier noch den Titel dazuschreiben
-- Man kann kein komplett leere Patch hochladen.
-- Intuitiv falsch: Ich drücke = für Kabel. Dann mach ich direkt edit.
-  Anstelle eines Kabelnamens kommt jetzt einfach ein garbled-Text.
+- Man kann kein komplett leeres Patch auf den DROID hochladen.
 
 Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 ---------------------------------------------
+- Circuits per Drag-Drop vertauschen? Wirklich? Die Selektion verschieben?
+  Könnte recht fummelig werden. Es gibt ja Cut&Paste. Reciht das ncht?
+  Allenfalls könnte man Alt+Pfeil so machen, dass es die selektion
+  verschiebt, wenn es eine gibt.
 - Move circuit up/down: Kann das nicht ins Kontextmenü? Dann würde man
   die Tastendrücke sehen.
 - Copy/Cut/Paste für Sektionen. Das wirkt sich allerdings auf das Clipboard
