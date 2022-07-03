@@ -60,6 +60,7 @@ public:
     QStringList allCables() const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     bool cableExists(const QString &cable) const;
+    QString freshCableName() const;
     bool needG8() const; // TODO: Do we need this?
     bool needX7() const; // TODO: Do we need this?
     void collectUsedRegisterAtoms(RegisterList &) const;

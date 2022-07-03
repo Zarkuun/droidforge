@@ -19,6 +19,9 @@ public:
 
 private:
     void jumpToPage(unsigned nr);
+
+private slots:
+    void openExternally();
 };
 
 extern UserManual *the_manual;

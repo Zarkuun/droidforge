@@ -267,6 +267,13 @@ bool Patch::cableExists(const QString &cable) const
     findCableConnections(cable, asInput, asOutput);
     return asInput > 0 || asOutput > 0;
 }
+QString Patch::freshCableName() const
+{
+    QString name = TR("CABLE1");
+    while (cableExists(name))
+        name = AtomCable::nextCableName(name);
+    return name;
+}
 bool Patch::needG8() const
 {
     for (qsizetype i=0; i<sections.length(); i++)

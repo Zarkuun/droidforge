@@ -9,6 +9,11 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QKeyEvent>
+#include <QDesktopServices>
+#include <QFile>
+#include <QFileInfo>
+#include <QStandardPaths>
+#include <QDir>
 
 UserManual *the_manual = 0;
 
@@ -34,13 +39,14 @@ UserManual::UserManual(QWidget *parent)
     pageSelector->setPageNavigation(pageNavigation);
 
     // Buttons
-    // QPushButton *button = new QPushButton(tr("Close"));
-    // connect(button, &QPushButton::pressed, this, &QDialog::close);
+    QPushButton *buttonExternal = new QPushButton(tr("Open in viewer"));
+    connect(buttonExternal, &QPushButton::pressed, this, &UserManual::openExternally);
 
     QGridLayout *mainLayout = new QGridLayout;
     setLayout(mainLayout);
     mainLayout->addWidget(pdfView, 0, 0, 1, 2);
     mainLayout->addWidget(pageSelector, 1, 0);
+    mainLayout->addWidget(buttonExternal, 1, 1);
 
     QString filename = ":droid-manual.pdf";
     document.load(filename);
@@ -48,6 +54,19 @@ UserManual::UserManual(QWidget *parent)
 void UserManual::jumpToPage(unsigned nr)
 {
     pageNavigation->setCurrentPage(nr-1);
+}
+
+void UserManual::openExternally()
+{
+    auto dirs = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
+    if (dirs.count() == 0)
+        return;
+
+    QDesktopServices desk;
+    QDir dir = dirs[0];
+    QString targetPath = dir.filePath("droid-manual-" + the_firmware->version() + ".pdf");
+    QFile::copy(":droid-manual.pdf", targetPath);
+    desk.openUrl("file:" + targetPath);
 }
 void UserManual::showCircuit(const QString &circuit)
 {

@@ -772,6 +772,9 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
         setMouseSelection(curPos);
     else if (QGuiApplication::keyboardModifiers() & Qt::ControlModifier)
         instantCopyTo(curPos);
+    else if (QGuiApplication::keyboardModifiers() & Qt::AltModifier)
+        instantCableTo(curPos);
+
     else {
         the_operator->clearSelection();
         dragging = true;
@@ -1306,6 +1309,33 @@ void PatchSectionView::instantCopyTo(const CursorPosition &to)
     ja->replaceAtom(to.column, atom->clone());
     patch->commit(tr("copying '%1'").arg(atom->toString()));
     emit patchModified();
+}
+void PatchSectionView::instantCableTo(const CursorPosition &to)
+{
+    if (to.row < 0 || to.column <= 0) // not on an atom
+        return;
+
+    const Atom *atom = currentAtom();
+    const Atom *targetAtom = section()->atomAt(to);
+
+    QString cableName;
+    if (atom && atom->isCable())
+        cableName = ((AtomCable *)atom)->getCable();
+    else if (targetAtom && targetAtom->isCable())
+        cableName = ((AtomCable *)targetAtom)->getCable();
+    else
+        cableName = patch->freshCableName();
+
+    AtomCable cable(cableName);
+
+    auto pos = section()->cursorPosition();
+
+    currentJackAssignment()->replaceAtom(pos.column, cable.clone());
+    JackAssignment *ja = section()->jackAssignmentAt(to);
+    ja->replaceAtom(to.column, cable.clone());
+    patch->commit(tr("creating cable '%1'").arg(cableName));
+    emit patchModified();
+
 }
 void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
 {

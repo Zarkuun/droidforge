@@ -6,8 +6,6 @@ ALS NÄCHSTES:
   geklickten oder so.
   Vielleicht muss in die Zelle, wo man = gedrückt hat, auch so eine
   graues Kabel rein oder so.
-- Beim Instantcabling könnte man auch gleich automatisch einen
-  Namen vergeben. 
 
 BUGS:
  KEINE!
@@ -22,8 +20,6 @@ TODO für die erste Version:
     - evtl. später noch Freitextsuche
 - Manual viewer: Noch ein bisschen aufpeppen oder so.
 - Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
-- Manual: in eingebautetm Viewer einen Knopf, dass der in einem externen
-  Programm aufgeht.
 - Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
   Da muss ich ihm länger zeit geben.
 - Man kann kein komplett leeres Patch auf den DROID hochladen.
@@ -70,4 +66,3 @@ Größere Dinge für die nächste Version:
   Idee: Suche alle Patches, für die in meinem aktuellen Patch noch "Platz"
   ist (Button, Controller, etc.)
 - Discord-Integration
-

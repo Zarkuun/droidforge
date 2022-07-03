@@ -69,6 +69,7 @@ private:
     CursorPosition *cursorAtMousePosition(QPoint pos) const;
     void setMouseSelection(const CursorPosition &to);
     void instantCopyTo(const CursorPosition &to);
+    void instantCableTo(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
     void handleLeftMousePress(const CursorPosition &curPos);
     void mouseMoveEvent(QMouseEvent *event);
