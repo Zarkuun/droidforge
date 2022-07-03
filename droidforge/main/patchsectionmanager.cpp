@@ -22,6 +22,8 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     : QGraphicsView{parent}
     , PatchView(patch)
     , lastIndex(-1)
+    , dragSectionIndicator(0)
+    , dragger(this)
 {
     setFocusPolicy(Qt::NoFocus);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -33,8 +35,8 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setMouseTracking(true);
 
-    // Actions we handle
     connectActions();
+    connectDragger();
 
     // Events we create
     connect(this, &PatchSectionManager::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -62,6 +64,19 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_MERGE_ALL_SECTIONS, &PatchSectionManager::mergeAllSections);
     CONNECT_ACTION(ACTION_MOVE_SECTION_UP, &PatchSectionManager::moveSectionUp);
     CONNECT_ACTION(ACTION_MOVE_SECTION_DOWN, &PatchSectionManager::moveSectionDown);
+}
+void PatchSectionManager::connectDragger()
+{
+    connect(&dragger, &MouseDragger::menuOpenedOnBackground, this, &PatchSectionManager::openMenuOnBackground);
+    connect(&dragger, &MouseDragger::menuOpenedOnItem, this, &PatchSectionManager::openMenuOnItem);
+    connect(&dragger, &MouseDragger::hoveredIn, this, &PatchSectionManager::hoverIn);
+    connect(&dragger, &MouseDragger::hoveredOut, this, &PatchSectionManager::hoverOut);
+    connect(&dragger, &MouseDragger::clickedOnItem, this, &PatchSectionManager::clickOnItem);
+    connect(&dragger, &MouseDragger::doubleClickedOnBackground, this, &PatchSectionManager::doubleClickOnBackground);
+    connect(&dragger, &MouseDragger::doubleClickedOnItem, this, &PatchSectionManager::doubleClickOnItem);
+    connect(&dragger, &MouseDragger::itemDragged, this, &PatchSectionManager::dragItem);
+    connect(&dragger, &MouseDragger::itemDraggingStopped, this, &PatchSectionManager::stopDraggingItem);
+    connect(&dragger, &MouseDragger::draggingAborted, this, &PatchSectionManager::abortDragging);
 }
 void PatchSectionManager::popupSectionMenu(int index)
 {
@@ -100,30 +115,60 @@ void PatchSectionManager::resizeEvent(QResizeEvent *)
 }
 void PatchSectionManager::mousePressEvent(QMouseEvent *event)
 {
-    int index = clickedSectionIndex(event);
-    if (index >= 0) {
-        switchToSection(index);
-        if (event->button() == Qt::RightButton)
-            popupSectionMenu(index);
-    }
-    else if (event->button() == Qt::RightButton)
-        popupSectionMenu();
+    dragger.mousePress(event);
+//
+//     int index = clickedSectionIndex(event);
+//     if (index >= 0) {
+//         switchToSection(index);
+//         if (event->button() == Qt::RightButton)
+//             popupSectionMenu(index);
+//     }
+//     else if (event->button() == Qt::RightButton)
+    //         popupSectionMenu();
+}
+
+void PatchSectionManager::mouseReleaseEvent(QMouseEvent *event)
+{
+    dragger.mouseRelease(event);
+}
+
+void PatchSectionManager::mouseMoveEvent(QMouseEvent *event)
+{
+    dragger.mouseMove(event);
 }
 void PatchSectionManager::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    int index = clickedSectionIndex(event);
-    if (index >= 0) {
-        switchToSection(index);
-        renameSection();
-    }
-    else
-        TRIGGER_ACTION(ACTION_NEW_PATCH_SECTION);
+    dragger.mousePress(event);
 }
 int PatchSectionManager::clickedSectionIndex(QMouseEvent *event)
 {
     for (auto item: items(event->pos())) {
         if (item->data(DATA_INDEX_SECTION_INDEX).isValid()) {
             return  item->data(DATA_INDEX_SECTION_INDEX).toInt();
+        }
+    }
+    return -1;
+}
+int PatchSectionManager::snapSectionInsertPosition(int fromIndex, float y, float *insertSnap) const
+{
+    float snapPos = titleViews[0]->pos().y() - PSM_VERTICAL_DISTANCE / 2;
+    for (int i=0; i < titleViews.count(); i++)
+    {
+        if (qAbs(y - snapPos) < PSM_SECTION_SNAP_DISTANCE
+                && i != fromIndex && i-1 != fromIndex)
+        {
+            *insertSnap = snapPos;
+            return i;
+        }
+        snapPos += titleViews[0]->boundingRect().height() + PSM_VERTICAL_DISTANCE;
+    }
+
+    // After last section we snap everywhere
+    if (fromIndex != titleViews.count() - 1) {
+        QRectF r = titleViews.back()->boundingRect().translated(titleViews.back()->pos());
+        if (y >= r.bottom()) {
+            *insertSnap = r.bottom() + PSM_VERTICAL_DISTANCE / 2;
+            return titleViews.count();
         }
     }
     return -1;
@@ -249,13 +294,82 @@ void PatchSectionManager::moveSectionDown()
     patch->commit(tr("moving section down"));
     emit patchModified();
 }
+void PatchSectionManager::clickOnItem(QGraphicsItem *item)
+{
+    switchToSection(item->data(DATA_INDEX_SECTION_INDEX).toInt());
+}
+void PatchSectionManager::doubleClickOnItem(QGraphicsItem *item)
+{
+    switchToSection(item->data(DATA_INDEX_SECTION_INDEX).toInt());
+    renameSection();
+}
+void PatchSectionManager::doubleClickOnBackground()
+{
+    TRIGGER_ACTION(ACTION_NEW_PATCH_SECTION);
+}
+void PatchSectionManager::openMenuOnBackground()
+{
+    popupSectionMenu();
+}
+void PatchSectionManager::openMenuOnItem(QGraphicsItem *item)
+{
+    popupSectionMenu(item->data(DATA_INDEX_SECTION_INDEX).toInt());
+}
+void PatchSectionManager::hoverIn(QGraphicsItem *item)
+{
+    setCursor(Qt::PointingHandCursor);
+}
+void PatchSectionManager::hoverOut(QGraphicsItem *item)
+{
+    unsetCursor();
+}
+
+void PatchSectionManager::dragItem(QGraphicsItem *startItem, QGraphicsItem *, QPoint pos)
+{
+    int sectionIndex = startItem->data(DATA_INDEX_SECTION_INDEX).toInt();
+    switchToSection(sectionIndex);
+    float indicatorPos = pos.y();
+    int ip = snapSectionInsertPosition(sectionIndex, pos.y(), &indicatorPos);
+    dragSectionIndicator->setSectionRect(startItem->boundingRect().translated(startItem->pos()));
+    dragSectionIndicator->setInsertPos(indicatorPos, ip >= 0);
+    dragSectionIndicator->setVisible(true);
+    dragSectionIndicator->update();
+    scene()->update();
+    shoutfunc;
+}
+
+void PatchSectionManager::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos)
+{
+    dragSectionIndicator->setVisible(false);
+    int fromIndex = startItem->data(DATA_INDEX_SECTION_INDEX).toInt();
+    float indicatorPos = pos.y();
+    int toIndex = snapSectionInsertPosition(fromIndex, pos.y(), &indicatorPos);
+    if (toIndex >= 0) {
+        if (toIndex > fromIndex)
+            toIndex--; // index after removing
+        patch->moveSection(fromIndex, toIndex);
+        patch->switchCurrentSection(toIndex);
+        patch->commit(tr("moving section"));
+        emit patchModified();
+    }
+}
+
+void PatchSectionManager::abortDragging()
+{
+    dragSectionIndicator->setVisible(false);
+}
 void PatchSectionManager::rebuildGraphics()
 {
+    if (dragSectionIndicator)
+        delete dragSectionIndicator;
     scene()->clear();
+    dragSectionIndicator = new DragSectionIndicator();
+    dragSectionIndicator->setVisible(false);
+    scene()->addItem(dragSectionIndicator);
     titleViews.clear();
 
     // Add strut for padding
-    scene()->addRect(QRectF(0, 0, viewport()->width(), 0));
+    // scene()->addRect(QRectF(0, 0, viewport()->width(), 0));
     // TODO: kann man das nicht mit setSceneRect() besser machen?
 
     // Add title
@@ -273,9 +387,10 @@ void PatchSectionManager::rebuildGraphics()
         PatchSectionTitleView *item = new PatchSectionTitleView(section->getNonemptyTitle(), width, numProblems);
         titleViews.append(item);
         item->setData(DATA_INDEX_SECTION_INDEX, i);
+        item->setData(DATA_INDEX_DRAGGER_PRIO, 1);
         scene()->addItem(item);
         item->setPos(PSM_SIDE_PADDING, y);
-        y += item->boundingRect().height() + PSM_VERTICAL_DISATNCE;
+        y += item->boundingRect().height() + PSM_VERTICAL_DISTANCE;
     }
 
     frameCursor = new FrameCursor();
@@ -294,8 +409,10 @@ void PatchSectionManager::updateCursor()
 }
 void PatchSectionManager::switchToSection(int i)
 {
-    patch->switchCurrentSection(i);
-    emit sectionSwitched();
+    if (i != patch->currentSectionIndex()) {
+        patch->switchCurrentSection(i);
+        emit sectionSwitched();
+    }
 }
 void PatchSectionManager::switchBackward()
 {

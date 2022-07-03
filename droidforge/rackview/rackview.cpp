@@ -345,7 +345,6 @@ void RackView::connectDragger()
     connect(&dragger, &MouseDragger::clickedOnItem, this, &RackView::clickOnItem);
     connect(&dragger, &MouseDragger::doubleClickedOnBackground, this, &RackView::doubleClickOnBackground);
     connect(&dragger, &MouseDragger::doubleClickedOnItem, this, &RackView::doubleClickOnItem);
-
     connect(&dragger, &MouseDragger::itemDragged, this, &RackView::dragItem);
     connect(&dragger, &MouseDragger::itemDraggingStopped, this, &RackView::stopDraggingItem);
     connect(&dragger, &MouseDragger::draggingAborted, this, &RackView::abortDragging);
@@ -576,7 +575,6 @@ void RackView::stopDraggingController(QGraphicsItem *startItem, QPoint pos)
     if (ip >= 0) {
         if (ip > controllerIndex)
             ip --;
-        shout << "MOVE" << controllerIndex << " -> " << ip;
         patch->moveControllerSmart(controllerIndex, ip);
         patch->commit(tr("moving controller"));
         emit patchModified();

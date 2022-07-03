@@ -1,14 +1,16 @@
 #ifndef PATCHSECTIONMANAGER_H
 #define PATCHSECTIONMANAGER_H
 
-#include <QObject>
-#include <QGraphicsView>
-#include <QList>
-
 #include "framecursor.h"
 #include "patcheditengine.h"
 #include "patchsectiontitleview.h"
 #include "patchview.h"
+#include "mousedragger.h"
+#include "dragsectionindicator.h"
+
+#include <QObject>
+#include <QGraphicsView>
+#include <QList>
 
 class PatchSectionManager : public QGraphicsView, PatchView
 {
@@ -16,6 +18,8 @@ class PatchSectionManager : public QGraphicsView, PatchView
     QList<PatchSectionTitleView *> titleViews;
     FrameCursor *frameCursor;
     int lastIndex;
+    DragSectionIndicator *dragSectionIndicator;
+    MouseDragger dragger;
 
 public:
     explicit PatchSectionManager(PatchEditEngine *patch, QWidget *parent = nullptr);
@@ -27,13 +31,17 @@ private:
     void switchBackward();
     void switchForward();
     void connectActions();
+    void connectDragger();
     void popupSectionMenu(int index=-1);
     void mergeSections(int indexa, int indexb);
     int clickedSectionIndex(QMouseEvent *event);
+    int snapSectionInsertPosition(int fromIndex, float y, float *insertSnap) const;
 
 protected:
     void resizeEvent(QResizeEvent *);
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
 
 public slots:
@@ -51,6 +59,17 @@ public slots:
     void moveSectionUp();
     void moveSectionDown();
 
+    // from mouseDragger
+    void clickOnItem(QGraphicsItem *item);
+    void doubleClickOnItem(QGraphicsItem *item);
+    void doubleClickOnBackground();
+    void openMenuOnBackground();
+    void openMenuOnItem(QGraphicsItem *item);
+    void hoverIn(QGraphicsItem *item);
+    void hoverOut(QGraphicsItem *item);
+    void dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
+    void stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
+    void abortDragging();
 
 signals:
     void patchModified();

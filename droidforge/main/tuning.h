@@ -99,10 +99,13 @@
 // Patch section manager
 #define PSM_SIDE_PADDING                     STANDARD_SPACING
 #define PSM_TOP_PADDING                      (STANDARD_SPACING / 2)
-#define PSM_VERTICAL_DISATNCE                (STANDARD_SPACING / 2)
+#define PSM_VERTICAL_DISTANCE                (STANDARD_SPACING / 2)
 #define PSM_SECTION_HEIGHT                   20
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
 #define PSM_IMAGE_MARGIN                     4
+#define PSM_SECTION_DRAG_WIDTH               4
+#define PSM_ARROW_HEAD_SIZE                  6
+#define PSM_SECTION_SNAP_DISTANCE            ((PSM_SECTION_HEIGHT / 2) - 1)
 
 // Patch section view
 #define CURSOR_VISIBILITY_MARGIN             30

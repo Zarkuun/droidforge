@@ -36,6 +36,8 @@ QtApplication {
         "main/cablestatusindicator.h",
         "main/colorscheme.cpp",
         "main/colorscheme.h",
+        "main/dragsectionindicator.cpp",
+        "main/dragsectionindicator.h",
         "main/editoractions.cpp",
         "main/editoractions.h",
         "main/iconbase.cpp",
