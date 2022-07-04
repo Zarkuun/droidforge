@@ -332,7 +332,7 @@ void PatchSectionManager::dragItem(QGraphicsItem *startItem, QGraphicsItem *, QP
     dragSectionIndicator->update();
     scene()->update();
 }
-void PatchSectionManager::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos)
+void PatchSectionManager::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *, QPoint pos)
 {
     unsetCursor();
     dragSectionIndicator->setVisible(false);

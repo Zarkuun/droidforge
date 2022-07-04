@@ -2,7 +2,11 @@
 #define TUNING_H
 
 #define APPLICATION_NAME                     "DROID Forge"
-#define APPLICATION_VERSION                  "0.1"
+#ifdef QT_DEBUG
+#define APPLICATION_VERSION                  ("SNAPSHOT " __DATE__)
+#else
+#define APPLICATION_VERSION                  "0.2"
+#endif
 #define LICENSE_URL                          "https://www.gnu.org/licenses/gpl.txt"
 
 #define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors_%1.h"

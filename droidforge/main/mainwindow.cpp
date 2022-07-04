@@ -404,7 +404,7 @@ void MainWindow::rackZoom(int whence)
 
 void MainWindow::about()
 {
-    QString firmware_version = the_firmware->version();
+    QString firmware_version = tr("DEVELOPMENT SNAPSHOT " __DATE__);
     QMessageBox::about( this,
                         tr("About DROID Forge"),
                         tr("DROID Forge version %1.\n\n"

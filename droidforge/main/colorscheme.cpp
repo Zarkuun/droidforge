@@ -247,21 +247,23 @@ ColorScheme::ColorScheme(QWidget *parent)
 
 QColor ColorScheme::color(int index)
 {
+#ifdef QT_DEBUG
     QString key = settingsKey(index);
     // This is during the development phase if a new
     // colors just as been added but the header file
     // colors.h has not been generated, again, yet.
     if (settings.value(key).isValid())
         return settings.value(key).value<QColor>();
+#endif
 
     // This is the normal way
-    else if (colors->contains(index))
+    if (colors->contains(index))
         return (*colors)[index];
 
     // This case is if a new color has never been
     // adjusted.
-    else
-        return QColor(128, 128, 128);
+    shout << "KEINE FARBE FUER" << index;
+    return QColor(128, 128, 128);
 }
 void ColorScheme::setColor(int index, const QColor &color)
 {
@@ -287,6 +289,7 @@ void ColorScheme::colorChanged(const QColor &color)
 void ColorScheme::dumpHeaderFile()
 {
     QString filename = QString(COLOR_DEFINITION_FILE).arg(dark ? "dark" : "light");
+    shout << "Creating " << filename;
 
     // First put all colors into the settings that are not
     // contained there. This is neccessary if someone is developing
@@ -295,7 +298,7 @@ void ColorScheme::dumpHeaderFile()
          it != colors->constKeyValueEnd();
          ++it)
     {
-        QString key = "color/" + QString::number(it->first);
+        QString key = settingsKey(it->first);
         if (!settings.contains(key))
             settings.setValue(key, it->second);
     }
@@ -312,10 +315,12 @@ void ColorScheme::dumpHeaderFile()
     stream << QString("void loadColors%1()\n").arg(dark ? "Dark" : "Light");
     stream << "{\n";
 
+    QString prefix("color/");
+    prefix += dark ? "dark/" : "light/";
     for (auto &key: settings.allKeys()) {
-        if (key.startsWith("color/")) {
+        if (key.startsWith(prefix)) {
             QColor color = settings.value(key).value<QColor>();
-            QString s = key.mid(6);
+            QString s = key.mid(prefix.length());
             int keyInt = s.toInt();
 
             QString line =  QString("    colors_%1.insert(%2, QColor(%3, %4, %5, %6));\n")
@@ -334,8 +339,13 @@ void ColorScheme::dumpHeaderFile()
 }
 bool ColorScheme::isDevelopment() const
 {
+#ifdef QT_DEBUG
     QFile file(QString(COLOR_DEFINITION_FILE).arg("dark"));
+    shout << "Are we development?" << file.exists();
     return file.exists();
+#else
+    return false;
+#endif
 }
 
 QString ColorScheme::settingsKey(int index)

@@ -8,6 +8,11 @@ ALS NÄCHSTES:
   graues Kabel rein oder so.
 
 BUGS:
+- Im Applemenü ist überall von "droidforge" die Rede, klein. Warum?
+- App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
+  -> Ich warte jetzt auf das Approval zum Developerprogram
+- Ich konnte im Circuitchooser wieder einmal nicht klicken
+
  KEINE!
 
 TODO für die erste Version:
