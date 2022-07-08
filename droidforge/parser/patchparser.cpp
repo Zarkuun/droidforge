@@ -147,8 +147,11 @@ void PatchParser::parseCommentLine(QString line)
     else {
         // Is this the very first comment in the patch? Then
         // it is considered to be the title. One line.
+        // Exception: It is a meta comment "CONTROLLER 2:"
+        // in a patch that does not have a title
         if (commentState == AWAITING_TITLE_COMMENT) {
-            patch->setTitle(comment);
+            if (!maybeParseMetaComment(comment))
+                patch->setTitle(comment);
             commentState = DESCRIPTION; // now we wait for the description
         }
 

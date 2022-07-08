@@ -169,11 +169,18 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
         if (atom->isCable()) {
             text = text.mid(1);
             QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
-            const QImage *image = the_cable_colorizer->imageForCable(text);
+            QImage image = *the_cable_colorizer->imageForCable(text);
+            // TOOD: Das hier geht nicht. Denn der Hintergrund ist dann
+            // nicht mehr transparent
+            // if (circuit->isDisabled())
+            //     image = image.convertToFormat(QImage::Format_Grayscale16);
+            if (circuit->isDisabled())
+                image = *the_cable_colorizer->ghostPlug();
+
             if (isInput)
-                painter->drawImage(imageRect, *image);
+                painter->drawImage(imageRect, image);
             else
-                painter->drawImage(imageRect, (*image).mirrored(true, false));
+                painter->drawImage(imageRect, image.mirrored(true, false));
             r = r.translated(imageWidth + STANDARD_SPACING, 0);
         }
         painter->drawText(r, Qt::AlignVCenter, text);
