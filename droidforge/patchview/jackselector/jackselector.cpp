@@ -57,6 +57,10 @@ void JackSelector::mouseDoubleClickEvent(QMouseEvent *event)
 }
 QString JackSelector::getSelectedJack() const
 {
+    const JackView *cr = currentJack();
+    if (!cr)
+        return "";
+
     QString jack = currentJack()->getJack();
     if (currentJack()->isArray())
         jack += QString::number(currentSubjack+1);
@@ -274,15 +278,24 @@ void JackSelector::moveCursorLeftRight(int whence)
 }
 JackView *JackSelector::currentJack()
 {
-    return jackViews[currentColumn][currentRow];
+    if (currentRow < 0)
+        return 0;
+    else
+        return jackViews[currentColumn][currentRow];
 }
 const JackView *JackSelector::currentJack() const
 {
-    return jackViews[currentColumn][currentRow];
+    if (currentRow < 0)
+        return 0;
+    else
+        return jackViews[currentColumn][currentRow];
 }
 void JackSelector::selectCurrentJack(bool sel)
 {
     JackView *jv = currentJack();
+    if (!jv)
+        return;
+
     if (sel)
         jv->select(currentSubjack);
     else

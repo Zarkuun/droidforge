@@ -107,6 +107,7 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
         text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
 
     QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()), 1);
+    // r.adjust(-20, 0, 20, 0);
     QFont font;
     font.setPixelSize(100);
     QFontMetrics fm(font);
