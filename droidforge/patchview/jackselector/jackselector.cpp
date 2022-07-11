@@ -28,22 +28,20 @@ void JackSelector::setCircuit(const QString &c, const QString &current, const QS
     loadJacks(circuit, search);
     setCursor(current);
 }
-void JackSelector::keyPressEvent(QKeyEvent *event)
+void JackSelector::keyPressed(int key)
 {
-    if (event->key() == Qt::Key_Down)
+    if (key == Qt::Key_Down)
         moveCursorUpDown(1);
-    else if (event->key() == Qt::Key_Up)
+    else if (key == Qt::Key_Up)
         moveCursorUpDown(-1);
-    else if (event->key() == Qt::Key_Left)
+    else if (key == Qt::Key_Left)
         moveCursorLeftRight(-1);
-    else if (event->key() == Qt::Key_Right)
+    else if (key == Qt::Key_Right)
         moveCursorLeftRight(1);
-    else if (event->key() == Qt::Key_Home)
+    else if (key == Qt::Key_Home)
         moveCursorHomeEnd(-1);
-    else if (event->key() == Qt::Key_End)
+    else if (key == Qt::Key_End)
         moveCursorHomeEnd(1);
-    else
-        QWidget::keyPressEvent(event);
 }
 void JackSelector::mousePressEvent(QMouseEvent *event)
 {
@@ -66,6 +64,7 @@ QString JackSelector::getSelectedJack() const
         jack += QString::number(currentSubjack+1);
     return jack;
 }
+
 void JackSelector::initScene()
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -130,7 +129,6 @@ void JackSelector::setCursor(QString current)
         }
     }
     sanitizeCursorPosition();
-    shout << "SETTING cursor, which currentJack is " << currentJack();
     selectCurrentJack(true);
 }
 void JackSelector::sanitizeCursorPosition()

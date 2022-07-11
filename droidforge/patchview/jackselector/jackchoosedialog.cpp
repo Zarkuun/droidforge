@@ -34,8 +34,9 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
 
     // Search
     QLabel *searchLabel = new QLabel(tr("Search:"), this);
-    lineEditSearch = new QLineEdit(this);
+    lineEditSearch = new KeyCaptureLineEdit(this);
     connect(lineEditSearch, &QLineEdit::textChanged, jackSelector, &JackSelector::searchChanged);
+    connect(lineEditSearch, &KeyCaptureLineEdit::keyPressed, jackSelector, &JackSelector::keyPressed);
 
     // Layout
     QGridLayout *mainLayout = new QGridLayout;
@@ -68,6 +69,11 @@ void JackChooseDialog::keyPressEvent(QKeyEvent *event)
         lineEditSearch->backspace();
     else
         QDialog::keyPressEvent(event);
+}
+void JackChooseDialog::showEvent(QShowEvent *)
+{
+    lineEditSearch->selectAll();
+    lineEditSearch->setFocus();
 }
 QString JackChooseDialog::chooseJack(const QString &circuit, const QString &current, const QStringList &used, jacktype_t jackType)
 {

@@ -4,6 +4,7 @@
 #include "jackselector.h"
 #include "jackassignment.h"
 #include "dialog.h"
+#include "keycapturelineedit.h"
 
 #include <QDialogButtonBox>
 #include <QLabel>
@@ -15,12 +16,13 @@ class JackChooseDialog : public Dialog
     QString circuit;
     QDialogButtonBox *buttonBox;
     JackSelector *jackSelector;
-    QLineEdit *lineEditSearch;
+    KeyCaptureLineEdit *lineEditSearch;
     QLabel *labelDescription;
 
 public:
     JackChooseDialog(QWidget *parent = nullptr);
     void keyPressEvent(QKeyEvent *event);
+    void showEvent(QShowEvent *event);
     static QString chooseJack(const QString &circuit, const QString &current,
             const QStringList &used,
             jacktype_t jackType = JACKTYPE_DONT_CARE);

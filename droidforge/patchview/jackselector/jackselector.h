@@ -22,7 +22,6 @@ class JackSelector : public QGraphicsView
 public:
     JackSelector(QWidget *parent);
     void setCircuit(const QString &ircuit, const QString &current, const QStringList &usedJacks, jacktype_t, QString search);
-    void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     QString getSelectedJack() const;
@@ -48,6 +47,7 @@ signals:
 
 public slots:
     void searchChanged(QString text);
+    void keyPressed(int key);
 };
 
 #endif // JACKSELECTOR_H
