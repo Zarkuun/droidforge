@@ -112,6 +112,8 @@ void JackSelector::loadJacks(QString circuit, QString search)
 }
 void JackSelector::setCursor(QString current)
 {
+    selectCurrentJack(false);
+
     if (!current.isEmpty()) {
         bool found=false;
         for (unsigned c=0; c<2; c++) {
@@ -127,10 +129,26 @@ void JackSelector::setCursor(QString current)
                 break;
         }
     }
-    if (jackViews[currentColumn].count() == 0)
-        currentColumn = (currentColumn + 1) % 2;
-    currentRow = qMin(currentRow, jackViews[currentColumn].count()-1);
+    sanitizeCursorPosition();
     selectCurrentJack(true);
+}
+void JackSelector::sanitizeCursorPosition()
+{
+    if (jackViews[currentColumn].count() == 0) {
+        currentColumn = (currentColumn + 1) % 2;
+        if (currentRow < 0)
+            currentRow = 0;
+
+    }
+
+    if (jackViews[currentColumn].count() == 0) {
+        // both columns are empty (to restrictive search)
+        currentRow = -1;
+    }
+    else {
+        currentRow = qMin(currentRow, jackViews[currentColumn].count()-1);
+    }
+
 }
 unsigned JackSelector::createJacks(const QStringList &jacks, int column)
 {
@@ -191,11 +209,14 @@ void JackSelector::placeJacks(int totalHeight, float space, int column)
 }
 void JackSelector::moveCursorUpDown(int whence)
 {
+    JackView *jv = currentJack();
+    if (!jv)
+        return; // we have no jacks
+
     int rows = jackViews[currentColumn].count();
     bool canGoDown = currentRow < rows-1;
     bool canGoUp = currentRow > 0;
 
-    JackView *jv = currentJack();
     if (jv->isArray()) {
         if (whence == -1 && currentSubjack < 4 && !canGoUp)
             return;
@@ -247,7 +268,7 @@ void JackSelector::moveCursorHomeEnd(int whence)
 void JackSelector::moveCursorLeftRight(int whence)
 {
     JackView *jv = currentJack();
-    if (jv->isArray()) {
+    if (jv && jv->isArray()) {
         int col = currentSubjack % 4;
         int width = qMin(4, (int)jv->getArraySize());
         if ((whence == -1 && col > 0) || (whence == 1 && col < (width-1)))
@@ -278,7 +299,7 @@ void JackSelector::moveCursorLeftRight(int whence)
 }
 JackView *JackSelector::currentJack()
 {
-    if (currentRow < 0)
+    if (currentRow < 0 || currentRow >= jackViews[currentColumn].count())
         return 0;
     else
         return jackViews[currentColumn][currentRow];

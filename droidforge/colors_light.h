@@ -37,6 +37,7 @@ void loadColorsLight()
     colors_light.insert(401, QColor(238, 238, 238, 255));
     colors_light.insert(402, QColor(227, 227, 227, 255));
     colors_light.insert(404, QColor(0, 0, 0, 255));
+    colors_light.insert(405, QColor(50, 50, 50, 255));
     colors_light.insert(408, QColor(0, 0, 0, 255));
     colors_light.insert(409, QColor(191, 191, 191, 255));
     colors_light.insert(41, QColor(168, 168, 168, 255));

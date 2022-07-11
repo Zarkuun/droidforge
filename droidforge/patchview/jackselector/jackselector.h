@@ -40,6 +40,7 @@ private:
     void selectCurrentJack(bool sel);
     bool handleMousePress(const QPointF &pos);
     void setCursor(QString current = "");
+    void sanitizeCursorPosition();
 
 signals:
     void cursorMoved(QString jack, jacktype_t jacktype, bool onActive);

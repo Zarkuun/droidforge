@@ -179,6 +179,9 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Parameter selector: inactive parameter"), list);
     item->setData(1, JSEL_COLOR_JACK_INACTIVE);
 
+    item = new QListWidgetItem(tr("Parameter selector: inactive cursor"), list);
+    item->setData(1, JSEL_COLOR_CURSOR_INACTIVE);
+
     item = new QListWidgetItem(tr("Parameter selector: description text"), list);
     item->setData(1, JSEL_COLOR_DESCRIPTION);
 

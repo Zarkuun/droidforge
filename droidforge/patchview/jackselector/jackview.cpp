@@ -31,7 +31,6 @@ JackView::JackView(QString circuit, QString jack, const QStringList *usedJacks, 
         active = allowedByOnlyType && !usedJacks->contains(jack);
 }
 
-
 QRectF JackView::boundingRect() const
 {
     unsigned height;
@@ -44,7 +43,6 @@ QRectF JackView::boundingRect() const
     QRectF r(0, 0, width, height);
     return r;
 }
-
 bool JackView::isActive(int subJack) const
 {
     if (subJack >= 0 && isArray())
@@ -52,7 +50,6 @@ bool JackView::isActive(int subJack) const
     else
         return active;
 }
-
 void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     // QFontMetrics fm(painter.font());
@@ -83,7 +80,7 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     }
 
     if (isSelected) {
-        painter->setPen(isActive(subjack) ? COLOR(COLOR_CURSOR_NORMAL) : COLOR(COLOR_CURSOR_INACTIVE));
+        painter->setPen(isActive(subjack) ? COLOR(COLOR_CURSOR_NORMAL) : COLOR(JSEL_COLOR_CURSOR_INACTIVE));
         if (isArray()) {
             QRectF r((subjack%4) * JSEL_JACK_WIDTH /4, (1 + subjack/4) * JSEL_JACK_HEIGHT, JSEL_JACK_WIDTH/4, JSEL_JACK_HEIGHT);
             painter->drawRect(r);
@@ -92,8 +89,6 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
             painter->drawRect(rect);
     }
 }
-
-
 void JackView::select(int s)
 {
     subjack = s;
@@ -101,8 +96,6 @@ void JackView::select(int s)
     jackLine->select(true);
     update();
 }
-
-
 void JackView::deselect()
 {
     isSelected = false;
