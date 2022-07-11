@@ -265,7 +265,6 @@ QColor ColorScheme::color(int index)
 
     // This case is if a new color has never been
     // adjusted.
-    shout << "KEINE FARBE FUER" << index;
     return QColor(128, 128, 128);
 }
 void ColorScheme::setColor(int index, const QColor &color)
@@ -344,7 +343,6 @@ bool ColorScheme::isDevelopment() const
 {
 #ifdef QT_DEBUG
     QFile file(QString(COLOR_DEFINITION_FILE).arg("dark"));
-    shout << "Are we development?" << file.exists();
     return file.exists();
 #else
     return false;

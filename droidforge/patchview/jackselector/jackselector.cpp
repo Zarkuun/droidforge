@@ -130,6 +130,7 @@ void JackSelector::setCursor(QString current)
         }
     }
     sanitizeCursorPosition();
+    shout << "SETTING cursor, which currentJack is " << currentJack();
     selectCurrentJack(true);
 }
 void JackSelector::sanitizeCursorPosition()
@@ -138,7 +139,6 @@ void JackSelector::sanitizeCursorPosition()
         currentColumn = (currentColumn + 1) % 2;
         if (currentRow < 0)
             currentRow = 0;
-
     }
 
     if (jackViews[currentColumn].count() == 0) {
@@ -146,9 +146,8 @@ void JackSelector::sanitizeCursorPosition()
         currentRow = -1;
     }
     else {
-        currentRow = qMin(currentRow, jackViews[currentColumn].count()-1);
+        currentRow = qMax(0, qMin(currentRow, jackViews[currentColumn].count()-1));
     }
-
 }
 unsigned JackSelector::createJacks(const QStringList &jacks, int column)
 {
