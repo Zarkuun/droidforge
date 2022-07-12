@@ -473,8 +473,9 @@ QString Patch::toCleanString() const
         s += "[" + controllers[i] + "]\n";
     if (controllers.length())
         s += "\n";
-    for (qsizetype i=0; i<sections.length(); i++)
+    for (qsizetype i=0; i<sections.length(); i++) {
         s += sections[i]->toCleanString();
+    }
     if (s.endsWith("\n\n"))
         s.chop(1);
 

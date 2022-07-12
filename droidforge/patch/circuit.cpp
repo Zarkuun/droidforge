@@ -370,16 +370,16 @@ QString Circuit::toString() const
 }
 QString Circuit::toCleanString() const
 {
-    if (disabled)
-        return "";
     QString s = "[" + name + "]\n";
     for (qsizetype i=0; i<jackAssignments.length(); i++)
     {
-        QString jackLine = "    " + jackAssignments[i]->toBare() + "\n";
-        jackLine.replace("=", " = ");
-        jackLine.replace("*", " * ");
-        jackLine.replace("+", " + ");
-        s += jackLine;
+        QString jackLine = jackAssignments[i]->toBare();
+        if (jackLine != "") {
+            jackLine.replace("=", " = ");
+            jackLine.replace("*", " * ");
+            jackLine.replace("+", " + ");
+            s += "    " + jackLine + "\n";
+        }
     }
     return s;
 }

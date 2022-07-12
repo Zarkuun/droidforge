@@ -47,8 +47,10 @@ QString PatchSection::toCleanString() const
 {
     QString s;
     for (qsizetype i=0; i<circuits.length(); i++) {
-        s += circuits[i]->toCleanString();
-        s += "\n";
+        if (!circuits[i]->isDisabled()) {
+            s += circuits[i]->toCleanString();
+            s += "\n";
+        }
     }
     return s;
 }
