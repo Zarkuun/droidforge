@@ -31,6 +31,7 @@ public:
     ~Circuit();
     Circuit *clone() const;
     QString toString() const;
+    QString toCleanString() const;
     QString toBare() const;
     QString getName() const { return name; };
     QString getComment() const;

@@ -71,6 +71,7 @@ private slots:
     void editPatchSource();
     void editSectionSource();
     void editCircuitSource();
+    void barePatchSource();
     void fixLEDMismatch();
     void globalClipboardChanged();
 
@@ -86,6 +87,7 @@ private:
     void updateSDAndX7State();
     QDir sdCardDir() const;
     Patch *editSource(QString oldSource);
+    void showSource(QString source);
 public: // TODO: Spater wieder private machen
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
 

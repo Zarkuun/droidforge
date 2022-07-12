@@ -465,6 +465,22 @@ QString Patch::toString() const
         s.chop(1);
     return s;
 }
+
+QString Patch::toCleanString() const
+{
+    QString s;
+    for (qsizetype i=0; i<controllers.length(); i++)
+        s += "[" + controllers[i] + "]\n";
+    if (controllers.length())
+        s += "\n";
+    for (qsizetype i=0; i<sections.length(); i++)
+        s += sections[i]->toCleanString();
+    if (s.endsWith("\n\n"))
+        s.chop(1);
+
+    return s;
+
+}
 QString Patch::toBare() const
 {
     QString s;

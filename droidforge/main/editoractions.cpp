@@ -240,6 +240,9 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_PATCH_SOURCE] = new QAction(tr("Edit patch source code"), this);
     actions[ACTION_EDIT_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Shift+Ctrl+U")));
 
+    actions[ACTION_BARE_PATCH_SOURCE] = new QAction(tr("Show bare patch source"), this);
+    actions[ACTION_BARE_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Alt+Ctrl+U")));
+
     actions[ACTION_USER_MANUAL] = new QAction(tr("User manual"), this);
     actions[ACTION_USER_MANUAL]->setShortcuts({QKeySequence(tr("Shift+Ctrl+M")), QKeySequence(tr("F1"))});
 

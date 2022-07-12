@@ -17,8 +17,9 @@ class SourceCodeEditor : public Dialog
     QString originalSource;
 
 public:
-    SourceCodeEditor(const QString &originalSource, QWidget *parent = nullptr);
+    SourceCodeEditor(const QString &originalSource, QWidget *parent, bool readonly);
     bool edit();
+    void showReadOnly();
     QString getEditedText() const;
 
 private slots:

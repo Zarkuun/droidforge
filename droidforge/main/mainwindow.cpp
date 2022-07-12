@@ -163,6 +163,7 @@ void MainWindow::createFileMenu()
 
     ADD_ACTION(ACTION_PATCH_PROPERTIES, menu);
     ADD_ACTION(ACTION_EDIT_PATCH_SOURCE, menu);
+    ADD_ACTION(ACTION_BARE_PATCH_SOURCE, menu);
     if (the_colorscheme->isDevelopment())
         ADD_ACTION(ACTION_CONFIGURE_COLORS, menu);
 

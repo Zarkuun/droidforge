@@ -54,6 +54,7 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_SOURCE, &PatchOperator::editCircuitSource);
     CONNECT_ACTION(ACTION_EDIT_SECTION_SOURCE, &PatchOperator::editSectionSource);
     CONNECT_ACTION(ACTION_EDIT_PATCH_SOURCE, &PatchOperator::editPatchSource);
+    CONNECT_ACTION(ACTION_BARE_PATCH_SOURCE, &PatchOperator::barePatchSource);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &PatchOperator::abortAllActions);
 
     CONNECT_ACTION(ACTION_FIX_LED_MISMATCH, &PatchOperator::fixLEDMismatch);
@@ -647,7 +648,6 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
     }
     return true;
 }
-
 void PatchOperator::configureColors()
 {
     if (the_colorscheme->isVisible())
@@ -655,7 +655,6 @@ void PatchOperator::configureColors()
     else
         the_colorscheme->show();
 }
-
 void PatchOperator::moveCircuitUp()
 {
     clearSelection();
@@ -664,7 +663,6 @@ void PatchOperator::moveCircuitUp()
     patch->commit(tr("moving circuit up"));
     emit patchModified();
 }
-
 void PatchOperator::moveCircuitDown()
 {
     int id = section()->currentCircuitId();
@@ -672,7 +670,6 @@ void PatchOperator::moveCircuitDown()
     patch->commit(tr("moving circuit down"));
     emit patchModified();
 }
-
 void PatchOperator::editPatchSource()
 {
     Patch *parsed = editSource(patch->toString());
@@ -683,7 +680,6 @@ void PatchOperator::editPatchSource()
         emit patchModified();
     }
 }
-
 void PatchOperator::editSectionSource()
 {
     Patch *parsed = editSource(section()->toString());
@@ -697,7 +693,6 @@ void PatchOperator::editSectionSource()
         emit patchModified();
     }
 }
-
 void PatchOperator::editCircuitSource()
 {
     Patch *parsed = editSource(section()->currentCircuit()->toString());
@@ -711,6 +706,10 @@ void PatchOperator::editCircuitSource()
         delete parsed;
         emit patchModified();
     }
+}
+void PatchOperator::barePatchSource()
+{
+    showSource(patch->toCleanString());
 }
 void PatchOperator::fixLEDMismatch()
 {
@@ -726,7 +725,7 @@ void PatchOperator::globalClipboardChanged()
 }
 Patch *PatchOperator::editSource(QString oldSource)
 {
-    SourceCodeEditor editor(oldSource, the_forge);
+    SourceCodeEditor editor(oldSource, the_forge, false /* readonly */);
     PatchParser parser;
     while (true) {
         if (!editor.edit())
@@ -746,12 +745,16 @@ Patch *PatchOperator::editSource(QString oldSource)
         }
     }
 }
+void PatchOperator::showSource(QString source)
+{
+    SourceCodeEditor editor(source, the_forge, true /* readonly */);
+    editor.exec();
+}
 void PatchOperator::clearSelection()
 {
     section()->clearSelection();
     emit selectionChanged();
 }
-
 void PatchOperator::abortAllActions()
 {
     if (patch->isPatching()) {

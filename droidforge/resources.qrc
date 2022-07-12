@@ -314,5 +314,6 @@
         <file>images/faceplates/Master.png</file>
         <file>images/faceplates/G8.png</file>
         <file>images/faceplates/X7.png</file>
+        <file>images/circuits/motoquencer.png</file>
     </qresource>
 </RCC>

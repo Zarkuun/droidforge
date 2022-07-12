@@ -29,6 +29,7 @@ public:
     Patch *clone() const;
     void cloneInto(Patch *otherPatch) const;
     QString toString() const;
+    QString toCleanString() const;
     QString toBare() const;
     bool saveToFile(const QString filePath) const;
 

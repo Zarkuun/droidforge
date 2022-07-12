@@ -43,6 +43,16 @@ QString PatchSection::toString() const
     return s;
 }
 
+QString PatchSection::toCleanString() const
+{
+    QString s;
+    for (qsizetype i=0; i<circuits.length(); i++) {
+        s += circuits[i]->toCleanString();
+        s += "\n";
+    }
+    return s;
+}
+
 QString PatchSection::toBare() const
 {
     QString s;
