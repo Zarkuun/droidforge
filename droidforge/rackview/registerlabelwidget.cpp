@@ -10,7 +10,6 @@ RegisterLabelWidget::RegisterLabelWidget(AtomRegister atom, const QString shortL
     : QGroupBox{parent}
     , atom(atom)
 {
-
     QGridLayout *layout = new QGridLayout(this);
     setLayout(layout);
 

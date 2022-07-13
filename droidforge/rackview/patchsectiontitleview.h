@@ -8,7 +8,6 @@ class PatchSectionTitleView : public QGraphicsItem
     QString title;
     int width;
     unsigned problems;
-    QImage warningImage;
 
 public:
     PatchSectionTitleView(const QString &title, int width, unsigned problems);

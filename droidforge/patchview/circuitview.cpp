@@ -148,7 +148,6 @@ void CircuitView::paintJacks(QPainter *painter)
 }
 void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput)
 {
-    // TODO: Das hier aufraumen
     float aspect = the_cable_colorizer->imageAspect();
     int imageHeight = CIRV_CABLEPLUG_HEIGHT;
     int imageWidth = imageHeight * aspect;
@@ -160,7 +159,6 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 rect.width() - 2 * CIRV_TEXT_SIDE_PADDING,
                 rect.height());
 
-    // painter->fillRect(rect, COLOR(CIRV_COLOR_ATOM_BACKGROUND));
     painter->setPen(textcolor);
 
     if (atom) {

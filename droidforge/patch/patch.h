@@ -112,7 +112,6 @@ private:
 
 public:
     // Iteration of all atoms in this patch
-    // TODO: Move to own file?
     class iterator {
         Atom *atom; // is 0 at end of iteration, otherwise never
         Patch *patch;

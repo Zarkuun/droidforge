@@ -9,7 +9,7 @@ class RegisterMarker : public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
 
-    float animationPhase; // TODO: Do I need this?
+    float animationPhase;
     QPropertyAnimation animation;
     float diameter;
 

@@ -1,5 +1,6 @@
 #include "patchsectiontitleview.h"
 #include "colorscheme.h"
+#include "iconbase.h"
 #include "tuning.h"
 #include "globals.h"
 
@@ -10,7 +11,6 @@ PatchSectionTitleView::PatchSectionTitleView(const QString &title, int width, un
     : title(title)
     , width(width)
     , problems(problems)
-    , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
 {
     setCursor(Qt::PointingHandCursor);
     if (problems)
@@ -33,6 +33,6 @@ void PatchSectionTitleView::paint(QPainter *painter, const QStyleOptionGraphicsI
                         PSM_IMAGE_MARGIN,
                         imgHeight,
                         imgHeight);
-        painter->drawImage(warnRect, warningImage);
+        painter->drawImage(warnRect, IMAGE("warning"));
     }
 }
