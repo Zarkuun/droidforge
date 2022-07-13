@@ -149,7 +149,7 @@ void Circuit::findCableConnections(const QString &cable, int &asInput, int &asOu
 QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *> allProblems;
-    // TODO: Account for RAM usage in DROID
+
     if (!the_firmware->circuitExists(name)) {
         allProblems.append(
             new PatchProblem(ROW_CIRCUIT, 0, tr("There is no such circuit with the name '%1'").arg(name)));
@@ -299,26 +299,6 @@ void Circuit::changeCircuit(QString newCircuit)
     }
     jackAssignments.clear();
     jackAssignments = newJacks;
-}
-bool Circuit::needG8() const
-{
-    // TODO: Toplevel lösen mit atom-iterator
-    for (qsizetype i=0; i<jackAssignments.length(); i++) {
-        if (jackAssignments[i]->needG8())
-            return true;
-    }
-    return false;
-}
-bool Circuit::needX7() const
-{
-    // TODO: This seems somewhat hacky...
-    if (name.startsWith("midi") || name == "firefacecontrol")
-        return true;
-    for (qsizetype i=0; i<jackAssignments.length(); i++) {
-        if (jackAssignments[i]->needX7())
-            return true;
-    }
-    return false;
 }
 void Circuit::swapControllerNumbers(int fromNumber, int toNumber)
 {

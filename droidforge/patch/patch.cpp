@@ -274,22 +274,6 @@ QString Patch::freshCableName() const
         name = AtomCable::nextCableName(name);
     return name;
 }
-bool Patch::needG8() const
-{
-    for (qsizetype i=0; i<sections.length(); i++)
-        if (sections[i]->needG8())
-            return true;
-
-    return false;
-}
-bool Patch::needX7() const
-{
-    for (qsizetype i=0; i<sections.length(); i++)
-        if (sections[i]->needX7())
-            return true;
-
-    return false;
-}
 void Patch::collectUsedRegisterAtoms(RegisterList &sl) const
 {
     // TODO: Mit iterator

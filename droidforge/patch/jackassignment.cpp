@@ -70,24 +70,6 @@ JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString li
     return ja;
 
 }
-bool JackAssignment::needG8() const
-{
-    for (int i=1; i<=3; i++) {
-         const Atom *atom = atomAt(i);
-         if (atom && atom->needG8())
-             return true;
-    }
-    return false;
-}
-bool JackAssignment::needX7() const
-{
-    for (int i=1; i<=3; i++) {
-         const Atom *atom = atomAt(i);
-         if (atom && atom->needX7())
-             return true;
-    }
-    return false;
-}
 void JackAssignment::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (int i=1; i<=3; i++) {

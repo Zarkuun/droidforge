@@ -16,8 +16,6 @@ QString AtomNumber::toString() const
 {
     float num = fraction ? 1.0 / number : number;
 
-    // TODO: Formatierung gemäß Typ, Optimierung
-    // bezüglich der Genauigkeit etc.
     if (numberType == ATOM_NUMBER_ONOFF) {
         return number == 0 ? "off" : "on";
     }

@@ -451,20 +451,6 @@ JackAssignment *PatchSection::jackAssignmentAt(const CursorPosition &pos)
     else
         return 0;
 }
-bool PatchSection::needG8() const
-{
-    for (qsizetype i=0; i<circuits.length(); i++)
-        if (circuits[i]->needG8())
-            return true;
-    return false;
-}
-bool PatchSection::needX7() const
-{
-    for (auto circuit: circuits)
-        if (circuit->needX7())
-            return true;
-    return false;
-}
 void PatchSection::swapControllerNumbers(int fromNumber, int toNumber)
 {
     for (auto circuit: circuits)

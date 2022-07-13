@@ -3,9 +3,6 @@
 
 #include "module.h"
 
-// TODO: Schwierigkeit, weil sowohl R als auch G
-// nicht bei 1 anfangen
-
 class ModuleX7 : public Module
 {
 public:

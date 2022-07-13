@@ -272,7 +272,6 @@ void PatchParser::parseCircuitLine(QString line, bool disabled)
 }
 void PatchParser::parseCircuit(QString name, bool disabled)
 {
-    // TODO: Hier die JSON-Datei verwenden?
     QString namel = name.toLower();
 
     static QRegularExpression e("^[a-z][a-z0-9]+$");

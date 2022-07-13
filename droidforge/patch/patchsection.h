@@ -80,8 +80,6 @@ public:
     JackAssignment *currentJackAssignment();
     const JackAssignment *currentJackAssignment() const;
     JackAssignment *jackAssignmentAt(const CursorPosition &pos);
-    bool needG8() const;
-    bool needX7() const;
     void swapControllerNumbers(int fromNumber, int toNumber);
     void shiftControllerNumbers(int number, int by);
     void collectRegisterAtoms(RegisterList &) const;

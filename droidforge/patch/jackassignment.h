@@ -39,8 +39,6 @@ public:
     QString getComment() const { return comment; };
     void setComment(const QString &c) { comment = c; };
     void changeJack(QString j) { jack = j; };
-    bool needG8() const;
-    bool needX7() const;
     void swapControllerNumbers(int fromNumber, int toNumber);
     void shiftControllerNumbers(int number, int by);
     void collectRegisterAtoms(RegisterList &) const;

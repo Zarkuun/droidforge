@@ -34,24 +34,35 @@ TODO für die erste Version:
 
 Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 ---------------------------------------------
+
 - Circuits per Drag-Drop vertauschen? Wirklich? Die Selektion verschieben?
   Könnte recht fummelig werden. Es gibt ja Cut&Paste. Reciht das ncht?
   Allenfalls könnte man Alt+Pfeil so machen, dass es die selektion
   verschiebt, wenn es eine gibt.
+
 - Move circuit up/down: Kann das nicht ins Kontextmenü? Dann würde man
   die Tastendrücke sehen.
+
 - Copy/Cut/Paste für Sektionen. Das wirkt sich allerdings auf das Clipboard
   aus. Ist wahrscheinlich an vielen Stellen dann relevant. Aber man
   würde es wirklich erwarten.
-- Speicherverbrauch der Circuit zusammenrechnen
+
+- Speicherverbrauch (RAM) der Circuit zusammenrechnen
+
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
+
 - Dieser Hintdialog. Den könnten wir noch noch viel öfter einsetzen...
+
 - Selektion mit Rahmen ziehen
+
 - Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc) (sollen wir das wirklich machen?)
+
 - Handcursor für Icons usw. die man klicken kann (da hat Qt
   aber komische Bugs).
+
 - Der AtomSelektor ist schon irgendwie nicht so geil.
   Kann ich das nicht besser machen?
+
 - Atomonliner: Das wär schon echt wichtig, wenn man außerhalb klicken
   könnte und das erkannt würde und der dann speichern würde. Oder
   auch z.B. wenn man eine Funktionstaste wie F9 drückt.
@@ -60,8 +71,10 @@ Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
   dass wir gerade onelinern. Und bei dem Closeevent dann ein editatom
   machen. Bisschen hässlich.
  Firmwareupgrade von master, M4 und X7 unterstützen
+
 - Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
   komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
+
 - Controllerhinzufügen: Oft hat man ja immer die gleichen Controller,
   die man braucht. Weil man ein Hardwarerack hat. Deswegen könnten wir
   eine Liste der Most recent racks bereitstellen. Und jedesmal wenn
