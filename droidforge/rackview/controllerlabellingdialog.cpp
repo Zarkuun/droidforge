@@ -81,7 +81,7 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
         numColumns = 2;
     else if (regType == REGISTER_POT && count > 4) // P10
         numColumns = 2;
-    else if (module->name() == "m4")
+    else if (module->getName() == "m4")
         numColumns = 4;
     else if (regType == REGISTER_POT) // P2B8, P4B2
         numColumns = 1;
@@ -99,7 +99,7 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
             column = 0;
             currentRow ++;
         }
-        else if ((module->name() == "p10" || module->name() == "s10") &&
+        else if ((module->getName() == "p10" || module->getName() == "s10") &&
                  num <= 3)
         {
             column = 0;

@@ -5,8 +5,9 @@
 #include <QPainter>
 #include <QGraphicsScene>
 
-Module::Module(const QString &faceplate)
-    : faceplateImage(":images/faceplates/" + faceplate)
+Module::Module(const QString &name)
+    : name(name)
+    , faceplateImage(":images/faceplates/" + name)
     , registerHilite{{0}}
     , registerLabels(0)
 {

@@ -7,7 +7,6 @@ class ModuleP2B8 : public Module
 {
 public:
     ModuleP2B8() : Module("p2b8") {}
-    QString name() const { return "p2b8"; }
     QString title() const { return "P2B8 Controller"; }
     float hp() const  { return 5; }
     unsigned numRegisters(QChar type) const;

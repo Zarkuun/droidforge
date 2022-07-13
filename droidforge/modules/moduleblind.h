@@ -7,7 +7,6 @@ class ModuleBlind : public Module
 {
 public:
     ModuleBlind() : Module("faceplate-blind-front") {  }
-    QString name() const { return "blind"; }
     QString faceplate() const { return "faceplate-blind-front"; }
     QString title() const { return "1HP Blind panel"; }
     float hp() const { return 1; }

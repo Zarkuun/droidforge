@@ -27,16 +27,17 @@ QT_END_NAMESPACE
 
 class Module : public QGraphicsItem
 {
+    QString name;
     QPixmap faceplateImage;
     int registerHilite[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE]; // 0: off, 1: used, 2: current
     const RegisterLabels *registerLabels; // points into current patch
 
 public:
     // TODO: use module name as argument. Make function name() non-virtual
-    Module(const QString &faceplate);
+    Module(const QString &name);
     void setLabels(const RegisterLabels *labels) { registerLabels = labels; };
     virtual ~Module();
-    virtual QString name() const = 0;
+    QString getName() const { return name; };
     virtual QString title() const = 0;
     virtual float hp() const = 0;
     // TODO: QChar loswerden und durch register_t ersetzen. Überall!

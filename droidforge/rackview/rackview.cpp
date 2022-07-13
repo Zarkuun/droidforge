@@ -450,7 +450,7 @@ void RackView::doubleClickOnItem(QGraphicsItem *item)
         AtomRegister ar;
         if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
             ar = AtomRegister(item->data(DATA_INDEX_REGISTER_NAME).toString());
-        editLabelling(module->name(), controllerIndex, ar);
+        editLabelling(module->getName(), controllerIndex, ar);
     }
 }
 

@@ -7,7 +7,6 @@ class ModuleS10 : public Module
 {
 public:
     ModuleS10() : Module("s10") {  }
-    QString name() const { return "s10";  }
     QString title() const  { return "S10 Controller";  }
     float hp() const  { return 5; }
     unsigned numRegisters(QChar type) const;
