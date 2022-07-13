@@ -72,9 +72,6 @@ QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
 }
 bool DroidFirmware::jackIsInput(QString circuit, QString jack) const
 {
-    // TODO: Wenn ein jack als input und output vorkommt,
-    // aber in einem als array, dann klappt die Erkennung
-    // hier nicht gut genug!
     QJsonValue jackinfo = findJack(circuit, "inputs", jack);
     return !jackinfo.isNull();
 }

@@ -58,14 +58,14 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     rackSplitter->addWidget(&rackView);
     rackSplitter->addWidget(sectionSplitter);
 
-    resize(800, 600); // TODO
     QSettings settings;
     if (settings.contains("mainwindow/position")) {
         move(settings.value("mainwindow/position").toPoint());
         resize(settings.value("mainwindow/size").toSize());
     }
-    if (settings.contains("mainwindow/splitposition"))
-        rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
+    else {
+        resize(MAIN_WIDTH, MAIN_HEIGHT);
+    }
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
     CONNECT_ACTION(ACTION_ABOUT, &MainWindow::about);
@@ -75,6 +75,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_RACK_RESET_ZOOM, &MainWindow::rackZoomReset);
     CONNECT_ACTION(ACTION_USER_MANUAL, &MainWindow::showUserManual);
     CONNECT_ACTION(ACTION_CIRCUIT_MANUAL, &MainWindow::showCircuitManual);
+    CONNECT_ACTION(ACTION_CLEAR_SETTINGS, &MainWindow::clearSettings);
 
     createMenus();
     createToolbar();
@@ -126,6 +127,16 @@ void MainWindow::moveEvent(QMoveEvent *)
     QSettings settings;
     settings.setValue("mainwindow/position", pos());
 }
+
+void MainWindow::showEvent(QShowEvent *)
+{
+    QSettings settings;
+    if (settings.contains("mainwindow/splitposition")) {
+        rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
+    }
+    else
+        rackZoomReset();
+}
 void MainWindow::createMenus()
 {
     createFileMenu();
@@ -172,9 +183,8 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, menu);
     ADD_ACTION(ACTION_UPLOAD_TO_DROID, menu);
     ADD_ACTION(ACTION_SAVE_TO_SD, menu);
+    ADD_ACTION(ACTION_CLEAR_SETTINGS, menu);
     ADD_ACTION(ACTION_QUIT, menu);
-
-
 }
 void MainWindow::createEditMenu()
 {
@@ -332,6 +342,28 @@ void MainWindow::showCircuitManual()
     const Circuit *circuit = section()->currentCircuit();
     if (circuit)
         the_manual->showCircuit(circuit->getName());
+}
+void MainWindow::clearSettings()
+{
+    QMessageBox box(
+                QMessageBox::Warning,
+                tr("Clear settings!"),
+                tr("Do you really want to clear all implicit settings like the "
+                   "sizes of dialog windows, you list of recent files, the "
+                   "zoom level and other similar things?"),
+                QMessageBox::Ok | QMessageBox::Cancel,
+                the_forge);
+    if (box.exec() == QMessageBox::Ok) {
+        QSettings settings;
+        settings.clear();
+        resize(MAIN_WIDTH, MAIN_HEIGHT);
+        QList<int> oldSizes = sectionSplitter->sizes();
+        int delta = PSM_NORMAL_WIDTH - oldSizes[0];
+        QList<int> newSizes = { oldSizes[0] + delta, oldSizes[1] - delta };
+        sectionSplitter->setSizes(newSizes);
+        patchSectionView.clearSettings();
+        rackZoomReset();
+    }
 }
 void MainWindow::updateWindowTitle()
 {

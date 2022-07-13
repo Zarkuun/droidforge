@@ -1310,6 +1310,11 @@ void PatchSectionView::updateCursor()
     else
         frameCursor.setVisible(false);
 }
+
+void PatchSectionView::clearSettings()
+{
+    setZoom(0);
+}
 void PatchSectionView::setMouseSelection(const CursorPosition &to)
 {
     section()->setMouseSelection(to);

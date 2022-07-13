@@ -32,6 +32,10 @@
 #define ZOOM_MIN                             -5
 #define ZOOM_MAX                             6
 
+// Main window
+#define MAIN_WIDTH                           1000
+#define MAIN_HEIGHT                          1000
+
 // Standard for all dialogs
 #define STANDARD_SPACING                     10
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
@@ -66,7 +70,7 @@
 #define RACV_SPLITTER_HANDLE_WIDTH           12
 #define RACV_MIN_HEIGHT                      100
 #define RACV_MAX_HEIGHT                      1000
-#define RACV_NORMAL_HEIGHT                   220
+#define RACV_NORMAL_HEIGHT                   280
 #define RACV_PIXEL_PER_HP                    87
 #define RACV_CONTROLLER_GAP                  (2 * RACV_PIXEL_PER_HP)
 #define RACV_MAIN_MARGIN                     30
@@ -101,6 +105,9 @@
 #define CSEL_CURSOR_WIDTH                    16
 
 // Patch section manager
+#define PSM_MINIMUM_WIDTH                    150
+#define PSM_MAXIMUM_WIDTH                    400
+#define PSM_NORMAL_WIDTH                     200
 #define PSM_SIDE_PADDING                     STANDARD_SPACING
 #define PSM_TOP_PADDING                      (STANDARD_SPACING / 2)
 #define PSM_VERTICAL_DISTANCE                (STANDARD_SPACING / 2)

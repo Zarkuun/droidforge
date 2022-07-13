@@ -2,9 +2,13 @@
 
 #include <QDir>
 
+CableColorizer *the_cable_colorizer;
+
+
 CableColorizer::CableColorizer()
     : ghostImage(0)
 {
+    the_cable_colorizer = this;
     loadImages();
     used = new bool[images.count()];
     clearAssignments();

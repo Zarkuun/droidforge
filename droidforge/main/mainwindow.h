@@ -68,6 +68,7 @@ protected:
     void closeEvent(QCloseEvent* event);
     void resizeEvent(QResizeEvent *);
     void moveEvent(QMoveEvent *);
+    void showEvent(QShowEvent *);
 
 private:
     void createMenus();
@@ -94,6 +95,7 @@ private slots:
     void rackZoomReset();
     void showUserManual();
     void showCircuitManual();
+    void clearSettings();
 
 signals:
     void allActionsAborted();

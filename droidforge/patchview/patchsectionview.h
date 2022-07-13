@@ -55,6 +55,7 @@ public:
     // void setCursorPosition(const CursorPosition &pos);
     const CursorPosition &getCursorPosition() const;
     void updateCursor();
+    void clearSettings();
 
 protected:
     void mousePressEvent(QMouseEvent *event);

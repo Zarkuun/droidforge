@@ -232,7 +232,6 @@ void CableStatusIndicator::setanimationPhase(float newanimationPhase)
 void CableStatusIndicator::updateStatus()
 {
     const Atom *atom = patch->currentAtom();
-    shout << "ATOM" << atom;
     if (atom && atom->isCable()) {
         AtomCable *ac = (AtomCable *)atom;
         QString name = ac->getCable();

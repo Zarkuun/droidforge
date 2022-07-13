@@ -31,8 +31,8 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     // of the scroll offset > 62.5% of one section height. I don't know why.
     // So for the while I simply shut off the scroll bar.
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setMinimumWidth(150);
-    setMaximumWidth(400);
+    setMinimumWidth(PSM_MINIMUM_WIDTH);
+    setMaximumWidth(PSM_MAXIMUM_WIDTH);
     setScene(new QGraphicsScene());
 
     scene()->setBackgroundBrush(QBrush(the_colorscheme->backgroundPixmap()));
@@ -50,8 +50,12 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
     connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionManager::modifyPatch);
 
+    int width;
     QSettings settings;
-    int width = settings.value("patchsectionmanager/size").toInt();
+    if (settings.contains("patchsectionmanager/size"))
+        width = settings.value("patchsectionmanager/size").toInt();
+    else
+        width = PSM_NORMAL_WIDTH;
     resize(width, height());
 }
 void PatchSectionManager::connectActions()

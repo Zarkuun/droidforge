@@ -1,3 +1,4 @@
+#include "globals.h"
 #include "parseexception.h"
 #include "mainwindow.h"
 #include "patch.h"
@@ -11,8 +12,6 @@
 #include <QDir>
 #include <QSettings>
 #include <QFile>
-
-CableColorizer *the_cable_colorizer;
 
 int main(int argc, char *argv[])
 {
@@ -43,18 +42,10 @@ int main(int argc, char *argv[])
         initialFilename = argv[1];
 
     CableColorizer cableColorizer;
-    the_cable_colorizer = &cableColorizer; // TODO: move to class
-
     PatchEditEngine thePatch;
     MainWindow mainWindow(&thePatch, initialFilename);
     mainWindow.show();
 
-    QSettings settings;
-    if (settings.contains("mainwindow/size"))
-        mainWindow.resize(settings.value("mainwindow/size").toSize());
-
-    if (settings.contains("mainwindow/position"))
-        mainWindow.move(settings.value("mainwindow/position").toPoint());
 
     return app.exec();
 }
