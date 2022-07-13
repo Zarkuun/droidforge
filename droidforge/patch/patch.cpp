@@ -489,9 +489,9 @@ void Patch::iterator::moveToFirstAtom()
     for (nSection = 0; nSection < patch->sections.size(); nSection++)
     {
         section = patch->sections[nSection];
-        for (nCircuit = 0; nCircuit < section->circuits.size(); nCircuit++)
+        for (nCircuit = 0; nCircuit < (int)section->numCircuits(); nCircuit++)
         {
-            circuit = section->circuits[nCircuit];
+            circuit = section->circuit(nCircuit);
             for (nJack=0; nJack<circuit->numJackAssignments(); nJack++)
             {
                 jackAssignment = circuit->jackAssignment(nJack);
@@ -537,9 +537,9 @@ bool Patch::iterator::advanceJack()
 bool Patch::iterator::advanceCircuit()
 {
     while (true) {
-        if (nCircuit+1 < section->circuits.size()) {
+        if (nCircuit+1 < (int)section->numCircuits()) {
             nCircuit ++;
-            circuit = section->circuits[nCircuit];
+            circuit = section->circuit(nCircuit);
             return true;
         }
         else if (!advanceSection())

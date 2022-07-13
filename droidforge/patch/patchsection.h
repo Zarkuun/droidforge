@@ -16,9 +16,9 @@ class PatchSection
     CursorPosition cursor;
     QString title;
     Selection *selection;
+    QList<Circuit *> circuits;
 
 public:
-    QList<Circuit *> circuits; // TODO: Make this private
 
     PatchSection(); // no title
     PatchSection(QString t);;

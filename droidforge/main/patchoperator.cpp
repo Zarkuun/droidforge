@@ -700,7 +700,7 @@ void PatchOperator::editCircuitSource()
     if (parsed) {
         int circuitIndex = section()->currentCircuitId();
         section()->deleteCircuit(circuitIndex);
-        for (auto circuit: parsed->section(0)->circuits)
+        for (auto circuit: parsed->section(0)->getCircuits())
             section()->insertCircuit(circuitIndex++, circuit->clone());
         section()->sanitizeCursor();
         patch->commit(tr("editing circuit source code"));

@@ -283,7 +283,7 @@ void PatchParser::parseCircuit(QString name, bool disabled)
 
     stripEmptyCommentLines();
     circuit = new Circuit(name, currentComment, disabled);
-    section->circuits.append(circuit);
+    section->addCircuit(circuit);
     currentComment.clear();
 }
 void PatchParser::stripEmptyCommentLines()

@@ -120,9 +120,9 @@ void PatchSectionView::buildPatchSection()
 
     int y = CIRV_TOP_PADDING;
     bool lastWasFolded = false;
-    for (qsizetype i=0; i<section()->circuits.size(); i++)
+    for (qsizetype i=0; i<section()->numCircuits(); i++)
     {
-        Circuit *circuit = section()->circuits[i];
+        Circuit *circuit = section()->circuit(i);
         // collapse folded circuits nearer together
         if (circuit->isFolded() && lastWasFolded)
             y = y - CIRV_BOTTOM_PADDING + CIRV_FOLDED_PADDING;
@@ -1187,7 +1187,7 @@ void PatchSectionView::renameCable()
 }
 bool PatchSectionView::isEmpty() const
 {
-    return section()->circuits.empty();
+    return section()->isEmpty();
 }
 void PatchSectionView::updateCircuits()
 {
