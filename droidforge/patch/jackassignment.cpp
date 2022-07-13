@@ -164,5 +164,5 @@ bool operator<(const JackAssignment &a, const JackAssignment &b)
     else if (a.jackType() > b.jackType())
         return false;
 
-    return numericStringLess(a.jack, b.jack); // TODO: button2 < button16
+    return numericStringLess(a.jack, b.jack);
 }

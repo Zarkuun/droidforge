@@ -335,7 +335,7 @@ QString Circuit::toString() const
         if (comment[i].isEmpty())
              s += "\n";
          else
-             s += "# " + comment[i] + "\n"; // TODO Multiline
+             s += "# " + comment[i] + "\n";
 
     if (disabled)
         s += "# ";

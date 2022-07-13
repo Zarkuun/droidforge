@@ -71,8 +71,6 @@ public:
     QString prefixOfJack(const QString &jackName);
 
     void changeCircuit(QString newCircuit);
-    bool needG8() const;
-    bool needX7() const;
     void swapControllerNumbers(int fromNumber, int toNumber);
     void shiftControllerNumbers(int number, int by);
     void collectRegisterAtoms(RegisterList &) const;

@@ -33,7 +33,6 @@ class Module : public QGraphicsItem
     const RegisterLabels *registerLabels; // points into current patch
 
 public:
-    // TODO: use module name as argument. Make function name() non-virtual
     Module(const QString &name);
     void setLabels(const RegisterLabels *labels) { registerLabels = labels; };
     virtual ~Module();

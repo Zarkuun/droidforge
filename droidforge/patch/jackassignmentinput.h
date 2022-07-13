@@ -5,16 +5,14 @@
 
 class JackAssignmentInput : public JackAssignment
 {
-    Atom *atomA; // mult 1
-    Atom *atomB; // mult 2
-    Atom *atomC; // add
+    Atom *atoms[3];
 
 public:
     JackAssignmentInput(QString jack, QString comment, QString valueString);
     JackAssignmentInput(QString jack, QString comment="");
     ~JackAssignmentInput();
     bool isInput() const { return true; };
-    Atom *getAtom(unsigned n) const;
+    Atom *getAtom(int index) { return atoms[index]; };
     const Atom *atomAt(int column) const;
     Atom *atomAt(int column);
     void replaceAtom(int column, Atom *newAtom);

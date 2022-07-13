@@ -9,94 +9,58 @@
 #include <QException>
 #include <QCoreApplication>
 
+#define NUM_ATOMS 3
+
 #define tr(s) QCoreApplication::translate("Patch", s)
 
 JackAssignmentInput::JackAssignmentInput(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
-    , atomA(0)
-    , atomB(0)
-    , atomC(0)
+    , atoms{0, 0, 0}
 {
     parseInputExpression(jack, valueString);
 }
 
 JackAssignmentInput::JackAssignmentInput(QString jack, QString comment)
     : JackAssignment(jack, comment)
-    , atomA(0)
-    , atomB(0)
-    , atomC(0)
+    , atoms{0, 0, 0}
 {
 }
 
 JackAssignmentInput::~JackAssignmentInput()
 {
-    if (atomA) delete atomA;
-    if (atomB) delete atomB;
-    if (atomC) delete atomC;
+    for (int i=0; i<NUM_ATOMS; i++)
+        if (atoms[i])
+            delete atoms[i];
 }
-
-Atom *JackAssignmentInput::getAtom(unsigned n) const
-{
-    if (n == 0)
-        return atomA;
-    else if (n == 1)
-        return atomB;
-    else
-        return atomC;
-}
-
 const Atom *JackAssignmentInput::atomAt(int column) const
 {
-    return getAtom(column - 1); // column is 1, 2 or 3
+    if (column > 0)
+        return atoms[column-1];
+    else
+        return 0;
 }
-
 Atom *JackAssignmentInput::atomAt(int column)
 {
-    return getAtom(column - 1); // column is 1, 2 or 3
+    if (column > 0)
+        return atoms[column-1];
+    else
+        return 0;
 }
-
-
 void JackAssignmentInput::replaceAtom(int column, Atom *newAtom)
 {
-    // TODO: Sollten wir nicht so ein Array der Atome machen, anstelle
-    // von a, b und c?
-    Atom *old;
-    if (column == 1) {
-        old = atomA;
-        atomA = newAtom;
-    }
-    else if (column == 2) {
-        old = atomB;
-        atomB = newAtom;
-    }
-    else {
-        old = atomC;
-        atomC = newAtom;
-    }
-    if (old)
-        delete old;
+    if (atoms[column-1])
+        delete atoms[column-1];
+    atoms[column-1] = newAtom;
 }
-
 void JackAssignmentInput::removeRegisterReferences(RegisterList &rl)
 {
-    // Atom A
-    if (isInRegisterList(rl, atomA)) {
-        delete atomA;
-        atomA = 0;
-    }
-
-    if (isInRegisterList(rl, atomB)) {
-        delete atomB;
-        atomB = 0;
-    }
-
-    if (isInRegisterList(rl, atomC)) {
-        delete atomC;
-        atomC = 0;
+    for (int i=0; i<NUM_ATOMS; i++) {
+        if (isInRegisterList(rl, atoms[i])) {
+            delete atoms[i];
+            atoms[i] = 0;
+        }
     }
 }
-
-
 bool JackAssignmentInput::isInRegisterList(const RegisterList &rl, Atom *atom)
 {
     if (!atom)
@@ -106,90 +70,71 @@ bool JackAssignmentInput::isInRegisterList(const RegisterList &rl, Atom *atom)
 
     return rl.contains(*(AtomRegister *)atom);
 }
-
-
 JackAssignment *JackAssignmentInput::clone() const
 {
     JackAssignmentInput *newas = new JackAssignmentInput(jack, comment);
     newas->disabled = disabled;
-    if (atomA)
-        newas->atomA = atomA->clone();
-    if (atomB)
-        newas->atomB = atomB->clone();
-    if (atomC)
-        newas->atomC = atomC->clone();
+    for (int i=0; i<NUM_ATOMS; i++)
+        if (atoms[i])
+            newas->atoms[i] = atoms[i]->clone();
     return newas;
 }
-
 void JackAssignmentInput::parseExpression(const QString &expression)
 {
     parseInputExpression(jack, expression);
 }
-
 QString JackAssignmentInput::valueToString() const
 {
     QString bOperator;
-    if (atomB && atomB->isNumber() && ((AtomNumber *)atomB)->isFraction())
+    if (atoms[1] && atoms[1]->isNumber() && ((AtomNumber *)atoms[1])->isFraction())
         bOperator = " / ";
     else
         bOperator = " * ";
 
     // Do more intelligent work for a nice transformation
     // into A * B + C
-    if (!atomA && !atomB && !atomC) // none defined
+    if (!atoms[0] && !atoms[1] && !atoms[2]) // none defined
         return "";
-    else if (atomA && !atomB && !atomC) // just A
-        return atomA->toString();
-    else if (!atomA && atomB && !atomC) // just B
-        return atomB->toString();
-    else if (!atomA && !atomB && atomC) // just C
-        return atomC->toString();
-    else if (atomA && atomB && !atomC) // just A and B
-        return atomA->toString() + bOperator + atomB->toString();
+    else if (atoms[0] && !atoms[1] && !atoms[2]) // just A
+        return atoms[0]->toString();
+    else if (!atoms[0] && atoms[1] && !atoms[2]) // just B
+        return atoms[1]->toString();
+    else if (!atoms[0] && !atoms[1] && atoms[2]) // just C
+        return atoms[2]->toString();
+    else if (atoms[0] && atoms[1] && !atoms[2]) // just A and B
+        return atoms[0]->toString() + bOperator + atoms[1]->toString();
     else { // C is defined, but not just C
         QString sc, op;
-        if (atomC->isNegatable()) {
-            sc = atomC->toNegatedString();
+        if (atoms[2]->isNegatable()) {
+            sc = atoms[2]->toNegatedString();
             op = " - ";
         }
         else {
-            sc = atomC->toString();
+            sc = atoms[2]->toString();
             op = " + ";
         }
-        if (atomA && !atomB && atomC) // just A and C
-            return atomA->toString() + op + sc;
-        else if (!atomA && atomB && atomC) // just B and C
-            return atomB->toString() + op + sc;
+        if (atoms[0] && !atoms[1] && atoms[2]) // just A and C
+            return atoms[0]->toString() + op + sc;
+        else if (!atoms[0] && atoms[1] && atoms[2]) // just B and C
+            return atoms[1]->toString() + op + sc;
         else
-            return atomA->toString() + bOperator + atomB->toString() + op + sc;
+            return atoms[0]->toString() + bOperator + atoms[1]->toString() + op + sc;
+    }
+}
+void JackAssignmentInput::collectCables(QStringList &cables) const
+{
+    for (int i=0; i<NUM_ATOMS; i++)
+        if (atoms[i] && atoms[i]->isCable())
+            cables.append(((AtomCable *)atoms[i])->getCable());
+}
+void JackAssignmentInput::findCableConnections(const QString &cable, int &asInput, int &) const
+{
+    for (int i=0; i<NUM_ATOMS; i++) {
+        if (atoms[i] && atoms[i]->isCable() && ((AtomCable *)atoms[i])->getCable() == cable)
+            asInput ++;
     }
 }
 
-void JackAssignmentInput::collectCables(QStringList &cables) const
-{
-    // TODO: Endlich atoms als Liste!!
-    if (atomA && atomA->isCable())
-        cables.append(((AtomCable *)atomA)->getCable());
-    if (atomB && atomB->isCable())
-        cables.append(((AtomCable *)atomB)->getCable());
-    if (atomC && atomC->isCable())
-        cables.append(((AtomCable *)atomC)->getCable());
-}
-
-void JackAssignmentInput::findCableConnections(const QString &cable, int &asInput, int &) const
-{
-    if (atomA && atomA->isCable() && ((AtomCable *)atomA)->getCable() == cable)
-        asInput ++;
-    if (atomB && atomB->isCable() && ((AtomCable *)atomB)->getCable() == cable)
-        asInput ++;
-    if (atomC && atomC->isCable() && ((AtomCable *)atomC)->getCable() == cable)
-        asInput ++;
-}
-
-
-// TODO: Kann man da nicht saubere REGEXe für die drei verschiedenen Arten
-// von Atom machen? Zahlen, Register, Kabel. Und dann das hier sauber verschachteln.
-// das mit dem [^*/+-] scheint mir ein ziemlich wackliger hack zu sein.
 #define RATOMA "[^*/+-]+"
 #define RATOMB "-[0-9][^*/+-]*"
 #define RATOM "(" RATOMA "|" RATOMB ")"
@@ -266,22 +211,22 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
             c = "-" + m.captured(3);
         }
         else {
-            atomA = new AtomInvalid(value);
+            atoms[0] = new AtomInvalid(value);
             return;
         }
 
-        atomA = parseInputAtom(a);
-        atomC = parseInputAtom(c);
+        atoms[0] = parseInputAtom(a);
+        atoms[2] = parseInputAtom(c);
         float bf = b.toFloat();
         if (bf == 0)
-            atomB = new AtomInvalid(b);
+            atoms[1] = new AtomInvalid(b);
         else
-            atomB = new AtomNumber(1.0 / bf, ATOM_NUMBER_NUMBER, true);
+            atoms[1] = new AtomNumber(1.0 / bf, ATOM_NUMBER_NUMBER, true);
         return;
     }
-    atomA = parseInputAtom(a);
-    atomB = parseInputAtom(b);
-    atomC = parseInputAtom(c);
+    atoms[0] = parseInputAtom(a);
+    atoms[1] = parseInputAtom(b);
+    atoms[2] = parseInputAtom(c);
 }
 
 Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
@@ -303,32 +248,24 @@ QList<PatchProblem *> JackAssignmentInput::collectProblems(const Patch *patch) c
 {
     QList<PatchProblem *>problems;
 
-    if (!atomA && !atomB && !atomC) {
+    if (!atoms[0] && !atoms[1] && !atoms[2]) {
         problems.append(
                     new PatchProblem(-1, 1, tr("You need to set a value for at least one of the three columns")));
     }
-    // TODO: Mach endlich ne Liste!!![
-    if (atomA) {
-        QString text = atomA->problemAsInput(patch);
-        if (text != "")
-            problems.append(new PatchProblem(-1, 1, text));
-    }
-    if (atomB) {
-        QString text = atomB->problemAsInput(patch);
-        if (text != "")
-            problems.append(new PatchProblem(-1, 2, text));
-    }
-    if (atomC) {
-        QString text = atomC->problemAsInput(patch);
-        if (text != "")
-            problems.append(new PatchProblem(-1, 3, text));
+
+    for (int i=0; i<NUM_ATOMS; i++) {
+        if (atoms[i]) {
+            QString text = atoms[i]->problemAsInput(patch);
+            if (text != "")
+                problems.append(new PatchProblem(-1, i+1, text));
+        }
     }
     return problems;
 }
 
 bool JackAssignmentInput::isUndefined() const
 {
-    return atomA == 0 && atomB == 0 && atomC == 0;
+    return atoms[0] == 0 && atoms[1] == 0 && atoms[2] == 0;
 }
 
 Atom *JackAssignmentInput::parseOnOff(QString s)
