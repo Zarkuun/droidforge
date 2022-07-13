@@ -11,7 +11,6 @@ Module::Module(const QString &faceplate)
     , registerLabels(0)
 {
 }
-
 Module::~Module()
 {
 }
@@ -179,8 +178,6 @@ AtomRegister Module::registerAtom(QChar type, unsigned number) const
 {
     return AtomRegister(type, controllerNumber(), number + numberOffset(type));
 }
-
-// TODO: Hier fehlt die Controllernummer!!!!!
 void Module::collectAllRegisters(RegisterList &rl, int number) const
 {
     for (unsigned i=0; i<NUM_REGISTER_TYPES; i++) {

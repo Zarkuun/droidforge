@@ -18,7 +18,6 @@ const QStringList &ModuleBuilder::allControllers()
     static const QStringList controllers{"p2b8", "p4b2", "b32", "p10", "s10", "m4"};
     return controllers;
 }
-
 Module *ModuleBuilder::buildModule(QString name, const RegisterLabels *labels)
 {
     Module *module;
@@ -46,12 +45,10 @@ Module *ModuleBuilder::buildModule(QString name, const RegisterLabels *labels)
         module->setLabels(labels);
     return module;
 }
-
 bool ModuleBuilder::controllerExists(QString name)
 {
     return allControllers().contains(name);
 }
-
 void ModuleBuilder::allRegistersOf(QString name, unsigned number, RegisterList &rl)
 {
     Module *m = buildModule(name);
