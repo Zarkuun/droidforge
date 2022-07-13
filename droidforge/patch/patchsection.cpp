@@ -72,12 +72,15 @@ QString PatchSection::getNonemptyTitle() const
 void PatchSection::deleteCurrentCircuit()
 {
     deleteCircuit(cursor.circuitNr);
+    cursor.row = ROW_CIRCUIT;
+    sanitizeCursor();
 }
 void PatchSection::deleteCircuit(int circuitNumber)
 {
     Circuit *c = circuits[circuitNumber];
     circuits.remove(circuitNumber);
     delete c;
+    cursor.row = ROW_CIRCUIT;
     sanitizeCursor();
 }
 void PatchSection::deleteCurrentJackAssignment()

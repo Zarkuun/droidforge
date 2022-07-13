@@ -1,5 +1,6 @@
 #include "patcheditengine.h"
 #include "tuning.h"
+#include "globals.h"
 
 #include <QTextStream>
 #include <QFile>
@@ -101,7 +102,13 @@ QString PatchEditEngine::nextRedoTitle() const
 }
 void PatchEditEngine::commitCursorPosition()
 {
-    Patch *lastPatch = versions.last()->getPatch();
+    // This function makes sure that after a undo the
+    // cursor also moves to the position it was just
+    // before the undone operation. Therefore, when the
+    // cursor is moved, we always need to modify the most
+    // previous commit in the undo history.
+    shout << "commitcp" << currentSection()->cursorPosition() << "RP" << redoPointer << "#V" << versions.size();
+    Patch *lastPatch = versions[redoPointer]->getPatch();
     lastPatch->switchCurrentSection(currentSectionIndex());
     if (!lastPatch->currentSection()->isEmpty())
         lastPatch->currentSection()->setCursor(currentSection()->cursorPosition());
@@ -111,7 +118,7 @@ void PatchEditEngine::commitFolding()
     // Copy the current folding state fron the current patch to the
     // last committed patch, in order to have undo bring back the
     // same folding state we had just before the undone operation.
-    Patch *lastPatch = versions.last()->getPatch();
+    Patch *lastPatch = versions[redoPointer]->getPatch();
     for (int i=0; i<numSections(); i++) {
         PatchSection *lastSection = lastPatch->section(i);
         PatchSection *thisSection = section(i);

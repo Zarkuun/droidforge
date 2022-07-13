@@ -1456,8 +1456,10 @@ void PatchSectionView::deleteCurrentCircuit()
 }
 void PatchSectionView::deleteMultipleCircuits(int from, int to)
 {
+    shout << "Ich delete from" << from << "to" << to;
     for (int i=to; i>=from; i--)
         section()->deleteCircuit(i);
+    shout << "cursor jetzt" << section()->cursorPosition();
     patch->commit(tr("deleting %1 circuits").arg(to - from + 1));
     emit patchModified();
 }
