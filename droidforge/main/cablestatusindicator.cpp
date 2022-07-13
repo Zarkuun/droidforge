@@ -14,7 +14,6 @@ CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *pare
     , PatchView(patch)
     , animation(this, "animationPhase")
 {
-    resize(400, 100); // TODO: Was ist hiermit?
     setMinimumWidth(CSI_WIDTH);
     setMaximumWidth(CSI_WIDTH);
 
@@ -42,8 +41,7 @@ void CableStatusIndicator::paintEvent(QPaintEvent *)
 
 void CableStatusIndicator::mousePressEvent(QMouseEvent *event)
 {
-    // TODO: Vom Status abhängig machen
-    if (event->button() == Qt::LeftButton)
+    if (!patch->isPatching() && event->button() == Qt::LeftButton)
         emit clicked();
 }
 
@@ -227,7 +225,7 @@ void CableStatusIndicator::setanimationPhase(float newanimationPhase)
 {
     animationPhase = newanimationPhase;
     update();
-    emit animationPhaseChanged(); // TODO: needed?
+    emit animationPhaseChanged();
 }
 
 void CableStatusIndicator::updateStatus()
@@ -240,7 +238,10 @@ void CableStatusIndicator::updateStatus()
         int numAsInput = 0;
         patch->findCableConnections(name, numAsInput, numAsOutput);
         set(name, numAsInput, numAsOutput);
-        setCursor(Qt::PointingHandCursor);
+        if (!patch->isPatching())
+            setCursor(Qt::PointingHandCursor);
+        else
+            unsetCursor();
     }
     else {
         clear();
