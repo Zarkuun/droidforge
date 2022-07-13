@@ -14,12 +14,9 @@ ALS NÄCHSTES:
 - Atomselector: Dort noch die Beschreibung des Jacks hinpacken
 
 BUGS:
-- Der Jackselector: Das Suchfeld kann den Focus verlieren.
 - Atomonliner: Ist manchmal total breit
 - Expand auf "value10", wenn es value1 nicht gibg, soll
   vielelicht doch value11 machen?
-- Bei Notebuttons geht LED match BUttons nicht!! Macht irgendeinen
-Unwsinn.
 - Im Applemenü ist überall von "droidforge" die Rede, klein. Warum?
 - App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
   -> Ich warte jetzt auf das Approval zum Developerprogram
