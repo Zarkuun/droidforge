@@ -22,10 +22,7 @@ CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *pare
     cableHilitePen.setColor(COLOR(CSI_CABLE_HILITE_COLOR));
     cableHilitePen.setWidth(1);
 
-    // TODO: mouse click soll signal machen bzw. direkt
-    // eine Aktion triggern (follow cable). Und eine Hand will ich
-    // sehen.
-    SET_ACTION_TRIGGER(ACTION_ADD_JACK, &CableStatusIndicator::clicked);
+    SET_ACTION_TRIGGER(ACTION_FOLLOW_CABLE, &CableStatusIndicator::clicked);
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &CableStatusIndicator::updateStatus);
