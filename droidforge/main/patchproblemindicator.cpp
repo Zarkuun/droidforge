@@ -65,7 +65,7 @@ void PatchProblemIndicator::updateStatus()
     if (numProblems) {
         setToolTip(tr("Your patch has %1 problems. You need to fix then "
                       "before you can load it to your master. Click here "
-                      "to jump to the first problem.").arg(numProblems));
+                      "to jump to the next problem.").arg(numProblems));
         setCursor(Qt::PointingHandCursor);
     }
     else {
@@ -73,6 +73,7 @@ void PatchProblemIndicator::updateStatus()
                       "to be loaded to your master."));
         unsetCursor();
     }
+    the_actions->action(ACTION_TOOLBAR_PROBLEMS)->setToolTip(toolTip());
     update();
 }
 
