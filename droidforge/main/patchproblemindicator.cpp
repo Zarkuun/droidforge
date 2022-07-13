@@ -4,6 +4,7 @@
 #include "patchoperator.h"
 #include "tuning.h"
 #include "updatehub.h"
+#include "iconbase.h"
 
 #include <QPainter>
 #include <QMouseEvent>
@@ -11,8 +12,6 @@
 PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *parent)
     : QWidget{parent}
     , PatchView(patch)
-    , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
-    , okImage(":images/icons/white/sentiment_very_satisfied.png") // TODO: Hilfsfunktion
     , numProblems(0)
     , currentProblem(0)
 {
@@ -44,7 +43,8 @@ void PatchProblemIndicator::paintEvent(QPaintEvent *)
                     imgHeight,
                     imgHeight);
 
-    painter.drawImage(warnRect, numProblems ? warningImage : okImage);
+    if (numProblems)
+        painter.drawImage(warnRect, IMAGE("warning"));
 
     float textLeft = warnRect.right() + STANDARD_SPACING;
     QRectF textRect(textLeft, 0, width() - textLeft, height());

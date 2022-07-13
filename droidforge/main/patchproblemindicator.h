@@ -8,8 +8,6 @@ class PatchProblemIndicator : public QWidget, PatchView
 {
     Q_OBJECT
 
-    QImage warningImage;
-    QImage okImage;
     unsigned numProblems;
     unsigned currentProblem;
 

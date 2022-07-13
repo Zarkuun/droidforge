@@ -47,6 +47,7 @@ public:
     void clearSelection();
     bool droidSDCardPresent() const { return sdCardPresent; };
     bool droidX7Present() const { return x7Present; };
+    bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
 
 protected:
     PatchSection *section() { return patch->currentSection(); };
@@ -90,9 +91,6 @@ private:
     Patch *editSource(QString oldSource);
     void showSource(QString source);
     bool saveAndCheck(QString path);
-
-public: // TODO: Spater wieder private machen
-    bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
 
 signals:
     void patchModified();

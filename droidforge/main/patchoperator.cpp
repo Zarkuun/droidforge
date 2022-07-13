@@ -292,8 +292,6 @@ void PatchOperator::loadFile(const QString &filePath, int how)
         box.setStandardButtons(QMessageBox::Cancel);
         box.setDefaultButton(QMessageBox::Cancel);
         box.setIcon(QMessageBox::Critical);
-        // TODO: Size of message box?
-        // box.setBaseSize(QSize(600, 220));
         box.exec();
     }
 }
@@ -322,10 +320,16 @@ void PatchOperator::exportSelection()
                 tr("DROID patch files (*.ini)"));
     if (!filePath.isEmpty()) {
         Patch *patch = section()->getSelectionAsPatch();
-        // TODO: Error if it failed
-        patch->saveToFile(filePath);
+        if (!patch->saveToFile(filePath))
+        {
+            QMessageBox::warning(
+                        the_forge,
+                        tr("Error"),
+                        tr("There was an error saving your selection to disk."));
+        }
+        else
+            addToRecentFiles(filePath);
         delete patch;
-        addToRecentFiles(filePath);
     }
 }
 void PatchOperator::save()
@@ -498,10 +502,6 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
             otherPatch->shiftControllerNumbers(-1, numExistingControllers);
         }
     }
-
-    // TODO: Hier gibt's nochn Bug. Beispiel. Ich hab im otherpatch I1, I2 und I3.
-    // Und im alten auch. Es wird aber nur I1->I4 gelegt. I2, und I3 sagt er kann
-    // er nicht.
 
     // Phase 2: Remap non-existing or conflicting registers.
     RegisterList availableRegisters;
