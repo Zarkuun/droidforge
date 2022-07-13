@@ -47,12 +47,12 @@ void JackSelector::keyPressed(int key)
 void JackSelector::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
-        handleMousePress(event->pos());
+        handleMousePress(event->pos(), false);
 }
 void JackSelector::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    handleMousePress(event->pos());
-    emit accepted();
+    if (event->button() == Qt::LeftButton)
+        handleMousePress(event->pos(), true);
 }
 QString JackSelector::getSelectedJack() const
 {
@@ -329,7 +329,7 @@ void JackSelector::selectCurrentJack(bool sel)
                 currentColumn == 0 ? JACKTYPE_INPUT : JACKTYPE_OUTPUT,
                 jv->isActive(currentSubjack));
 }
-bool JackSelector::handleMousePress(const QPointF &pos)
+bool JackSelector::handleMousePress(const QPointF &pos, bool doubleclick)
 {
     QGraphicsItem *item = this->itemAt(pos.x(), pos.y());
     if (!item)
@@ -358,6 +358,8 @@ bool JackSelector::handleMousePress(const QPointF &pos)
                     currentSubjack = 0;
 
                 selectCurrentJack(true);
+                if (doubleclick && jv->isActive(currentSubjack))
+                    emit accepted();
                 return true;
             }
         }

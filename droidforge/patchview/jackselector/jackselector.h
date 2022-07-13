@@ -37,7 +37,7 @@ private:
     JackView *currentJack();
     const JackView *currentJack() const;
     void selectCurrentJack(bool sel);
-    bool handleMousePress(const QPointF &pos);
+    bool handleMousePress(const QPointF &pos, bool doubleclick);
     void setCursor(QString current = "");
     void sanitizeCursorPosition();
 
