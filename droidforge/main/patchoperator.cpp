@@ -77,12 +77,9 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     else
         QTimer::singleShot(0, this, [this] () { this->newPatch();});
 
-    // TODO: There is a mac foundation function for getting called whenever a disk
-    // get's mounted. Use that rather than a timer. This is much faster and avoids
-    // nasty polling!
     QTimer *sdTimer = new QTimer(this);
     connect(sdTimer, &QTimer::timeout, this, &PatchOperator::updateSDAndX7State);
-    sdTimer->start(100);
+    sdTimer->start(SD_CHECK_INTERVAL);
 
     QClipboard *clipboard = QGuiApplication::clipboard();
     connect(clipboard, &QClipboard::dataChanged, this, &PatchOperator::globalClipboardChanged);
