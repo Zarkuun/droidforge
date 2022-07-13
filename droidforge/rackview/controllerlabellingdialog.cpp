@@ -1,21 +1,33 @@
 #include "controllerlabellingdialog.h"
 #include "modulebuilder.h"
 #include "registerlabelwidget.h"
+#include "globals.h"
 
 #include <QGridLayout>
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QPushButton>
 
-ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent)
+ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, const QPixmap *faceplate, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent)
     : Dialog("controllerlabelling/" + controllerType, parent)
     , labels(labels)
     , controllerType(controllerType)
     , controllerNumber(controllerNumber)
     , currentRow(0)
 {
-    mainLayout = new QGridLayout(this);
+    mainLayout = new QHBoxLayout(this);
+    shout << "A";
     setLayout(mainLayout);
+    shout << "B";
+
+    QLabel *faceplateLabel = new QLabel();
+    faceplateLabel->setPixmap(*faceplate);
+    // faceplateLabel->setText("HALLO");
+
+    gridLayout = new QGridLayout();
+    shout << "C";
+    mainLayout->addWidget(faceplateLabel);
+    mainLayout->addLayout(gridLayout);
 
     populate();
 
@@ -26,14 +38,17 @@ ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QSt
     buttonBox->addButton(clearButton, QDialogButtonBox::ActionRole);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-    mainLayout->setRowStretch(currentRow, 1000000000);
-    mainLayout->addWidget(buttonBox, currentRow + 1, 0, 1, -1);
+    gridLayout->setRowStretch(currentRow, 1000000000);
+    gridLayout->addWidget(buttonBox, currentRow + 1, 0, 1, -1);
 
     for (auto rlw: labelWidgets) {
         if (rlw->getAtom() == jumpTo)
             rlw->select();
     }
+
+    shout << "C";
 }
+
 
 void ControllerLabellingDialog::accept()
 {
@@ -59,7 +74,7 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
     if (!count)
         return;
 
-    mainLayout->addWidget(new QLabel(title, this), currentRow, 0, 1, -1);
+    gridLayout->addWidget(new QLabel(title, this), currentRow, 0, 1, -1);
     currentRow ++;
 
     if (regType == REGISTER_INPUT || regType == REGISTER_OUTPUT)
@@ -104,7 +119,7 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
 
         RegisterLabelWidget *rlw = new RegisterLabelWidget(atom, shorthand, description, this);
         labelWidgets.append(rlw);
-        mainLayout->addWidget(rlw, currentRow, column);
+        gridLayout->addWidget(rlw, currentRow, column);
         column ++;
     }
     currentRow++;

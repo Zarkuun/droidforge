@@ -7,6 +7,7 @@
 #include "registerlabelwidget.h"
 
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QList>
 
 class ControllerLabellingDialog : public Dialog
@@ -16,11 +17,12 @@ class ControllerLabellingDialog : public Dialog
     unsigned controllerNumber; // e.g. 2 for B2.4
     int currentRow;
     unsigned numColumns;
-    QGridLayout *mainLayout;
+    QHBoxLayout *mainLayout;
+    QGridLayout *gridLayout;
     QList<RegisterLabelWidget *> labelWidgets;
 
 public:
-    ControllerLabellingDialog(RegisterLabels &labels, QString controller, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent = nullptr);
+    ControllerLabellingDialog(RegisterLabels &labels, const QPixmap *faceplate, QString controller, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent = nullptr);
     void accept();
 
 private:
