@@ -41,9 +41,15 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     QRectF textRect(text_x, CICH_PADDING + CICH_TITLE_HEIGHT,
                     *circuitViewWidth - text_x - CICH_PADDING,
                     CICH_CIRCUIT_HEIGHT - CICH_TITLE_HEIGHT - 2 * CICH_PADDING - 2); // Hack
+
     // TODO: This ROW_CIRCUIT is a hack in order to avoid some pixels of a potential third line
     // to be visible. We rather need to check if the text would get a third line and
     // remove that line. And indicate the missing text with "..." or something.
+
+    // Ich müsste das wirklich komplett selbst machen. Mit Fontmetrics ausprobieren,
+    // wieviele Zeichen gehen, bis es rausragt. Dann bis zum letztern Space zurück.
+    // nächste Zeile machen. Wenns nicht reicht zurück und ... ausgegben.
+
     painter->setPen(COLOR(CICH_COLOR_DESCRIPTION));
     painter->drawText(textRect,
                       Qt::AlignTop | Qt::AlignLeft | Qt::TextWordWrap,

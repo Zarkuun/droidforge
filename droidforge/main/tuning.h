@@ -139,7 +139,8 @@
 #define CIRV_COLUMN_JACK_MINIMUM_WIDTH       110
 #define CIRV_COLUMN_ATOM_MINIMUM_WIDTH       80
 #define CIRV_COLUMN_OPERATOR_WIDTH           20
-
+#define CIRV_CABLEPLUG_HEIGHT                15
+#define CIRV_CABLEPLUG_TOP_MARGING           4
 // Circuit chooser (CICH)
 #define CICH_DIALOG_WIDTH                    890
 #define CICH_DIALOG_HEIGHT                   500

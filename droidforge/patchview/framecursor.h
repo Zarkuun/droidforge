@@ -17,7 +17,7 @@ class FrameCursor : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
 
-    float animationPhase; // TODO: Do I need this?
+    float animationPhase;
     QPropertyAnimation animation;
     cursor_mode_t mode;
     QRectF lastRect;
@@ -31,7 +31,7 @@ public:
     void startAnimation();
 
 signals:
-    void animationPhaseChanged(); // TODO: needed?
+    void animationPhaseChanged();
 
 private:
     Q_PROPERTY(float animationPhase READ getanimationPhase WRITE setanimationPhase NOTIFY animationPhaseChanged)

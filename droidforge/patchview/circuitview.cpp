@@ -123,7 +123,7 @@ void CircuitView::paintComment(QPainter *painter)
 }
 QRectF CircuitView::cellRect(int row, int column) const
 {
-    if (row == ROW_CIRCUIT) // TODO: Endlich makros für ROW_CIRCUIT und -1 !!
+    if (row == ROW_CIRCUIT)
         return headerRect();
     else if (row == -1)
         return commentRect();
@@ -150,9 +150,9 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
 {
     // TODO: Das hier aufraumen
     float aspect = the_cable_colorizer->imageAspect();
-    int imageHeight = 15;
+    int imageHeight = CIRV_CABLEPLUG_HEIGHT;
     int imageWidth = imageHeight * aspect;
-    int imageTop = 4;
+    int imageTop = CIRV_CABLEPLUG_TOP_MARGING;
 
     QRectF textRect(
                 rect.left() + CIRV_TEXT_SIDE_PADDING,
@@ -170,10 +170,6 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
             text = text.mid(1);
             QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
             QImage image = *the_cable_colorizer->imageForCable(text);
-            // TOOD: Das hier geht nicht. Denn der Hintergrund ist dann
-            // nicht mehr transparent
-            // if (circuit->isDisabled())
-            //     image = image.convertToFormat(QImage::Format_Grayscale16);
             if (circuit->isDisabled())
                 image = *the_cable_colorizer->ghostPlug();
 

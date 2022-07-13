@@ -39,7 +39,7 @@ QString NameChooseDialog::getName(const QString &title, const QString &label, QS
     dialog->lineEdit->setText(oldname);
     dialog->lineEdit->selectAll();
     dialog->setForceUpperCase(forceUpperCase);
-    // TODO: Avoid OK if new name is empty
+
     if (dialog->exec() == QDialog::Accepted)
         return dialog->lineEdit->text().trimmed();
     else

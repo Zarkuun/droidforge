@@ -176,7 +176,7 @@ void NumberSelector::getFocus()
         number = 1;
     }
     lineEdit->setFocus();
-    lineEdit->selectAll(); // TODO
+    lineEdit->selectAll();
 }
 
 void NumberSelector::installFocusFilter(QWidget *w)
