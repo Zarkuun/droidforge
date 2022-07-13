@@ -86,7 +86,7 @@ private:
     void integratePatch(const QString &aFilePath);
     bool isDroidVolume(const QFileInfo &fileinfo) const;
     void updateSDAndX7State();
-    QDir sdCardDir() const;
+    QString sdCardDir() const;
     Patch *editSource(QString oldSource);
     void showSource(QString source);
     bool saveAndCheck(QString path);

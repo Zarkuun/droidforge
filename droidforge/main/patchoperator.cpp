@@ -175,8 +175,8 @@ void PatchOperator::upload()
 }
 void PatchOperator::saveToSD()
 {
-    QDir dir = sdCardDir();
-    if (!dir.exists()) {
+    QString dirPath = sdCardDir();
+    if (dirPath == "") {
         QMessageBox::critical(
                     the_forge,
                     tr("Cannot find memory card"),
@@ -187,6 +187,7 @@ void PatchOperator::saveToSD()
         return;
     }
 
+    QDir dir(dirPath);
     QFileInfo droidIni(dir, DROID_PATCH_FILENAME);
     if (!patch->saveToFile(droidIni.absoluteFilePath()))
     {
@@ -197,12 +198,6 @@ void PatchOperator::saveToSD()
                     QMessageBox::Ok);
         return;
     }
-
-    // TODO: Der Krampf hier geht scheinbar nicht. Hier steht, wie es richtig
-    // geht unter Mac:
-    // https://developer.apple.com/library/archive/documentation/DriversKernelHardware/Conceptual/DiskArbitrationProgGuide/ManipulatingDisks/ManipulatingDisks.html
-    // Man kann aber den Krampf so fast wie er ist unter Linux verwenden.
-    // Vielleicht.
 
     QProcess process;
     QStringList arguments;
@@ -243,21 +238,20 @@ void PatchOperator::saveToSD()
     }
 }
 
-QDir PatchOperator::sdCardDir() const
+QString PatchOperator::sdCardDir() const
 {
+    // WINDOWS: deal with this
     QDir volumesDir("/Volumes");
-    QDir sdDir;
     for (const QFileInfo &file: volumesDir.entryInfoList()) {
         if (file.fileName().startsWith("."))
             continue;
         else if (!file.isDir())
             continue;
         else if (isDroidVolume(file)) {
-            sdDir = QDir(file.filePath());
-            return sdDir;
+            return file.filePath();
         }
     }
-    return QDir("/does/not/exist"); // TODO: hack
+    return "";
 }
 bool PatchOperator::isDroidVolume(const QFileInfo &fileinfo) const
 {
@@ -267,8 +261,7 @@ bool PatchOperator::isDroidVolume(const QFileInfo &fileinfo) const
 void PatchOperator::updateSDAndX7State()
 {
     bool oldSDState = sdCardPresent;
-    QDir sdDir = sdCardDir();
-    sdCardPresent = sdDir.exists();
+    sdCardPresent = sdCardDir() != "";
     if (oldSDState != sdCardPresent) {
         emit droidStateChanged();
         return;
