@@ -4,18 +4,14 @@
 
 #include <QPainter>
 
-// TODO: tuning.h
-const int DRI_CIRCLE_SIZE = 2.5 * RACV_PIXEL_PER_HP;
-
 QRectF DragRegisterIndicator::boundingRect() const
 {
-    QPoint safety(DRI_CIRCLE_SIZE, DRI_CIRCLE_SIZE);
+    QPoint safety(RACV_DRAG_CIRCLE_SIZE, RACV_DRAG_CIRCLE_SIZE);
     QRectF box = QRectF(QPoint(0, 0), endPos).normalized();
     return QRectF(box.topLeft() - safety, box.bottomRight() + safety);
 }
 void DragRegisterIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-
     QPen pen;
     pen.setWidth(4);
     pen.setCosmetic(true);
@@ -38,7 +34,7 @@ void DragRegisterIndicator::paint(QPainter *painter, const QStyleOptionGraphicsI
     }
     painter->setPen(pen);
 
-    QRectF a(-DRI_CIRCLE_SIZE/2, -DRI_CIRCLE_SIZE/2, DRI_CIRCLE_SIZE, DRI_CIRCLE_SIZE);
+    QRectF a(-RACV_DRAG_CIRCLE_SIZE/2, -RACV_DRAG_CIRCLE_SIZE/2, RACV_DRAG_CIRCLE_SIZE, RACV_DRAG_CIRCLE_SIZE);
     painter->drawEllipse(a);
     if (endPos.isNull())
         return;

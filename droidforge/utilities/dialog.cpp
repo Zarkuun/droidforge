@@ -15,23 +15,26 @@ Dialog::Dialog(QString id, QWidget *parent)
     if (settings.contains(id + "/position"))
         move(settings.value(id + "/position").toPoint());
 }
-
 void Dialog::resizeEvent(QResizeEvent *)
 {
     QSettings settings;
     settings.setValue(id + "/size", size());
 }
-
 void Dialog::moveEvent(QMoveEvent *)
 {
     QSettings settings;
     settings.setValue(id + "/position", pos());
 }
-
 void Dialog::keyPressEvent(QKeyEvent *event)
 {
     if (closeOnReturn && event->key() == Qt::Key_Return && event->modifiers() | Qt::ControlModifier)
         accept();
     else
         QDialog::keyPressEvent(event);
+}
+void Dialog::setDefaultSize(QSize s)
+{
+    QSettings settings;
+    if (!settings.contains(id + "/size"))
+        resize(s);
 }

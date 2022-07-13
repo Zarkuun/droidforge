@@ -10,8 +10,6 @@ class SourceCodeEditor : public Dialog
 {
     Q_OBJECT
 
-    // TODO: Größe irgendwie vorgeben?
-
     QDialogButtonBox *buttonBox;
     QTextEdit *textEdit;
     QString originalSource;

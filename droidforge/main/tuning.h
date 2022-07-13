@@ -83,6 +83,7 @@
 #define RACV_CONTROLLER_DRAG_WIDTH           4
 #define RACV_CONTROLLER_SNAP_DISTANCE        (1.8 * RACV_PIXEL_PER_HP)
 #define RACV_ARROW_HEAD_SIZE                 (0.6 * RACV_PIXEL_PER_HP)
+#define RACV_DRAG_CIRCLE_SIZE                (2.5 * RACV_PIXEL_PER_HP)
 
 #define CONTROL_LARGE_POT_SIZE               4.1
 #define CONTROL_SMALL_POT_SIZE               1.5
@@ -93,6 +94,10 @@
 #define CONTROL_RGBLED_SIZE                  2.1
 #define CONTROL_JACK_SIZE                    2.5
 #define CONTROL_EXTRA_SIZE                   7.8
+
+// Source code editor
+#define SCD_WIDTH                            600
+#define SCD_HEIGHT                           900
 
 // Rack label dialog
 #define RLD_MINIMUM_LABEL_WIDTH              150
@@ -141,6 +146,7 @@
 #define CIRV_COLUMN_OPERATOR_WIDTH           20
 #define CIRV_CABLEPLUG_HEIGHT                15
 #define CIRV_CABLEPLUG_TOP_MARGING           4
+
 // Circuit chooser (CICH)
 #define CICH_DIALOG_WIDTH                    890
 #define CICH_DIALOG_HEIGHT                   500

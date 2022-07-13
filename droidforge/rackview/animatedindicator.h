@@ -10,7 +10,7 @@ class AnimatedIndicator : public QObject, public QGraphicsItem
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)
 
-    float animationPhase; // TODO: Do I need this?
+    float animationPhase;
     QPropertyAnimation animation;
 
 public:

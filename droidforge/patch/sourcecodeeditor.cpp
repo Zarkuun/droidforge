@@ -1,4 +1,5 @@
 #include "sourcecodeeditor.h"
+#include "tuning.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -7,6 +8,7 @@ SourceCodeEditor::SourceCodeEditor(const QString &originalSource, QWidget *paren
     : Dialog{"sourcecode", parent}
     , originalSource(originalSource)
 {
+    setDefaultSize({SCD_WIDTH, SCD_HEIGHT});
     setWindowTitle(tr("Patch source code"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
