@@ -107,7 +107,6 @@ void PatchEditEngine::commitCursorPosition()
     // before the undone operation. Therefore, when the
     // cursor is moved, we always need to modify the most
     // previous commit in the undo history.
-    shout << "commitcp" << currentSection()->cursorPosition() << "RP" << redoPointer << "#V" << versions.size();
     Patch *lastPatch = versions[redoPointer]->getPatch();
     lastPatch->switchCurrentSection(currentSectionIndex());
     if (!lastPatch->currentSection()->isEmpty())
