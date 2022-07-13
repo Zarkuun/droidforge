@@ -41,6 +41,7 @@ private:
     QJsonValue findJackArray(QString circuit, QString whence, QString prefix) const;
     QString delatexify(QString s, bool html=false) const;
     void replaceLatexSymbols(QString &s) const;
+    QString jackTableAsString(const QMap<float, QString> &table) const;
 };
 
 extern DroidFirmware *the_firmware;

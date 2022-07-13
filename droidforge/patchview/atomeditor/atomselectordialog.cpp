@@ -56,6 +56,7 @@ Atom *AtomSelectorDialog::editAtom(const Patch *patch, const QString &circuit, c
     else {
         if (!outputAtomSelectorDialog)
             outputAtomSelectorDialog = new AtomSelectorDialog(JACKTYPE_OUTPUT);
+        outputAtomSelectorDialog->setCircuitAndJack(circuit, jack);
         dialog = outputAtomSelectorDialog;
     }
 

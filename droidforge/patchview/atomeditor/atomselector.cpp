@@ -6,17 +6,21 @@
 #include "globals.h"
 #include "numberselector.h"
 #include "inputoutputselector.h"
+#include "droidfirmware.h"
 
 #include <QGridLayout>
 #include <QPushButton>
 #include <QMouseEvent>
 #include <QLabel>
 #include <QTimer>
+#include <QScrollArea>
+#include <QScrollBar>
 
 AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     : QWidget{parent}
     , currentSelector(0)
     , numberSelector(0)
+    , jackType(jacktype)
 {
     if (jacktype == JACKTYPE_INPUT) {
         numberSelector = new NumberSelector(this);
@@ -40,26 +44,42 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
         layout->addWidget(button, 0, i);
         layout->addWidget(ss, 1, i);
     }
-}
 
+    // Description
+    labelDescription = new QLabel(this);
+    labelDescription->setWordWrap(true);
+    labelDescription->setTextFormat(Qt::RichText);
+    labelDescription->setStyleSheet(QString("QLabel { padding: 10px; }"));
+    labelDescription->setAlignment(Qt::AlignTop);
+
+    scrollArea = new QScrollArea();
+    // scrollArea->setBackgroundRole(QPalette::Dark);
+    scrollArea->setWidget(labelDescription);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea->setWidgetResizable(true);
+    layout->addWidget(scrollArea, 2, 0, 1, subSelectors.count());
+}
 void AtomSelector::setAllowFraction(bool af)
 {
     if (numberSelector)
         numberSelector->setAllowFraction(af);
 }
-
 void AtomSelector::setCircuitAndJack(QString circuit, QString jack)
 {
     if (numberSelector)
         numberSelector->setCircuitAndJack(circuit, jack);
-}
 
+    QString whence = jackType == JACKTYPE_INPUT ? "inputs" : "outputs";
+    QString description = the_firmware->jackDescriptionHTML(circuit, whence, jack);
+    labelDescription->setText(description);
+    scrollArea->verticalScrollBar()->adjustSize();
+}
 void AtomSelector::setPatch(const Patch *patch)
 {
     for (auto ss: subSelectors)
         ss->setPatch(patch);
 }
-
 void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
 {
     if (!atom) {
@@ -81,7 +101,6 @@ void AtomSelector::setAtom(const Patch *patch, const Atom *atom)
     }
     switchToSelector(sel);
 }
-
 Atom *AtomSelector::getAtom()
 {
     if (currentSelector)
@@ -89,7 +108,6 @@ Atom *AtomSelector::getAtom()
     else
         return 0; // should never happen
 }
-
 void AtomSelector::mousePressEvent(QMouseEvent *event)
 {
     for (qsizetype i=0; i<subSelectors.count(); i++) {
@@ -103,17 +121,14 @@ void AtomSelector::mousePressEvent(QMouseEvent *event)
     }
     event->ignore();
 }
-
 void AtomSelector::subselectorSelected(AtomSubSelector *ass)
 {
      currentSelector = ass;
 }
-
 void AtomSelector::switchToSelector(int index)
 {
     subSelectors[index]->getFocus();
 }
-
 void AtomSelector::commit()
 {
     emit comitted();

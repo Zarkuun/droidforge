@@ -8,6 +8,9 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QLabel>
+#include <QTextEdit>
+#include <QScrollArea>
 
 
 class AtomSelector : public QWidget
@@ -18,6 +21,9 @@ class AtomSelector : public QWidget
     NumberSelector *numberSelector;
     QList<AtomSubSelector *> subSelectors;
     QList<QPushButton *> buttons;
+    QLabel *labelDescription;
+    QScrollArea *scrollArea;
+    jacktype_t jackType;
 
 public:
     explicit AtomSelector(jacktype_t, QWidget *parent = nullptr);

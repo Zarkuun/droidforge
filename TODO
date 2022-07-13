@@ -11,14 +11,10 @@ ALS NÄCHSTES:
   NEE. Es ist der AtomOliner, der hier das Problem ist. Wenn
   man einfach nur tippt.
 
-- Atomselector: Dort noch die Beschreibung des Jacks hinpacken
-
 BUGS:
-- Im Applemenü ist überall von "droidforge" die Rede, klein. Warum?
 - App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
   -> Ich warte jetzt auf das Approval zum Developerprogram
 
- KEINE!
 
 TODO für die erste Version:
 

@@ -197,6 +197,8 @@ QStringList DroidFirmware::jackGroupsOfCircuit(QString circuit, QString whence, 
 }
 QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QString jack) const
 {
+    QString description;
+
     QJsonValue jackinfo = findJack(circuit, whence, jack);
     if (!jackinfo.isNull()) {
         QJsonObject info = jackinfo.toObject();
@@ -204,10 +206,34 @@ QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QStr
         int i = desc.indexOf("\\begin{tabular}");
         if (i >= 0)
             desc = desc.mid(0, i);
-        return delatexify(desc, true /* html */);
+        description = delatexify(desc, true /* html */);
     }
     else
-        return TR("Sorry, this parameter is not documented, yet.");
+        description = TR("Sorry, this parameter is not documented, yet.");
+
+    auto table = jackValueTable(circuit, whence, jack);
+    if (!table.empty())
+        description += jackTableAsString(table);
+    else
+        description += "<br>";
+
+    if (whence == "inputs" && the_firmware->jackHasDefaultvalue(circuit, jack)) {
+        float default_value = the_firmware->jackDefaultvalue(circuit, jack);
+        description += "<br>" + TR("Default value: %1").arg(default_value);
+    }
+    return description;
+}
+
+QString DroidFirmware::jackTableAsString(const QMap<float, QString> &table) const
+{
+    QString text = "<br><br>";
+    for (auto it = table.keyBegin(); it != table.keyEnd(); ++it)
+    {
+        float value = *it;
+        QString description = table[value];
+        text += QString::number(value) + ": " + description + "<br>";
+    }
+    return text;
 }
 QMap<float, QString> DroidFirmware::jackValueTable(QString circuit, QString whence, QString jack) const
 {

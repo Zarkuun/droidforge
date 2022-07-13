@@ -91,28 +91,5 @@ void JackChooseDialog::cursorMoved(QString jack, jacktype_t jacktype, bool onAct
 {
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(onActive);
     QString whence = jacktype == JACKTYPE_INPUT ? "inputs" : "outputs";
-    QString description = the_firmware->jackDescriptionHTML(circuit, whence, jack);
-    auto table = the_firmware->jackValueTable(circuit, whence, jack);
-    if (!table.empty())
-        description += jackTableAsString(table);
-    else
-        description += "<br>";
-
-    if (jacktype == JACKTYPE_INPUT && the_firmware->jackHasDefaultvalue(circuit, jack)) {
-        float default_value = the_firmware->jackDefaultvalue(circuit, jack);
-        description += "<br>" + tr("Default value: %1").arg(default_value);
-    }
-
-    labelDescription->setText(description);
-}
-QString JackChooseDialog::jackTableAsString(const QMap<float, QString> &table)
-{
-    QString text = "<br><br>";
-    for (auto it = table.keyBegin(); it != table.keyEnd(); ++it)
-    {
-        float value = *it;
-        QString description = table[value];
-        text += QString::number(value) + ": " + description + "<br>";
-    }
-    return text;
+    labelDescription->setText(the_firmware->jackDescriptionHTML(circuit, whence, jack));
 }
