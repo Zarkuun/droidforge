@@ -20,6 +20,7 @@
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001
 #define MAC_UMOUNT_TIMEOUT_MS                10000
+#define SD_CHECK_INTERVAL                    300  // ms
 #define MAX_DROID_INI                        64000 // from x7.h
 
 #define MAX_LENGTH_SHORTHAND                 5 // for register labels

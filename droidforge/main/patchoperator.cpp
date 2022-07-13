@@ -95,10 +95,10 @@ void PatchOperator::newPatch()
     setLastFilePath("");
     emit patchModified();
 }
-void PatchOperator::createRecentFileActions(QMenu *fileMenu)
+void PatchOperator::createRecentFileActions(QMenu *menu)
 {
+    menu->clear();
     PatchParser parser;
-    QMenu *menu = fileMenu->addMenu(tr("Open recent file"));
     QStringList recentFiles = getRecentFiles();
     for (qsizetype i=0; i<recentFiles.count(); i++) {
         Patch *patch = parser.parseFile(recentFiles[i]);
@@ -114,6 +114,7 @@ void PatchOperator::createRecentFileActions(QMenu *fileMenu)
             menu->addAction(action);
         }
     }
+    recentFilesMenu = menu;
 }
 bool PatchOperator::checkModified()
 {
@@ -339,10 +340,8 @@ void PatchOperator::save()
 {
     if (patch->getFilePath().isEmpty())
         saveAs();
-    else {
-        patch->save(patch->getFilePath());
-        emit patchModified(); // mod flag
-    }
+    else
+        saveAndCheck(patch->getFilePath());
 }
 void PatchOperator::saveAs()
 {
@@ -352,12 +351,24 @@ void PatchOperator::saveAs()
                 patch->getFilePath(),
                 tr("DROID patch files (*.ini)"));
     if (!newFilePath.isEmpty()) {
-        patch->save(newFilePath);
-        patch->setFilePath(newFilePath);
-        emit patchModified(); // mod flag
-        addToRecentFiles(newFilePath);
-        setLastFilePath(newFilePath);
+        if (saveAndCheck(newFilePath))
+            addToRecentFiles(newFilePath);
     }
+}
+bool PatchOperator::saveAndCheck(QString path)
+{
+    if (patch->save(path)) {
+        patch->setFilePath(path);
+        setLastFilePath(path);
+        emit patchModified(); // mod flag
+        return true;
+    }
+    else
+        QMessageBox::warning(
+                    the_forge,
+                    tr("Error"),
+                    tr("There was an error saving your patch to disk"));
+    return false;
 }
 void PatchOperator::openEnclosingFolder()
 {
@@ -426,6 +437,7 @@ void PatchOperator::addToRecentFiles(const QString &path)
         files.removeLast();
     QSettings settings;
     settings.setValue("recentfiles", files);
+    createRecentFileActions(recentFilesMenu);
 }
 void PatchOperator::loadPatch(const QString &aFilePath)
 {

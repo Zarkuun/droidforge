@@ -45,7 +45,5 @@ int main(int argc, char *argv[])
     PatchEditEngine thePatch;
     MainWindow mainWindow(&thePatch, initialFilename);
     mainWindow.show();
-
-
     return app.exec();
 }

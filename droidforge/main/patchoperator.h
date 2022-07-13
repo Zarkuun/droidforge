@@ -35,11 +35,12 @@ class PatchOperator : public QObject
     LinuxMIDIHost midiHost;
 #endif
 #endif
+    QMenu *recentFilesMenu;
 
 
 public:
     explicit PatchOperator(PatchEditEngine *patch, QString initialFilename);
-    void createRecentFileActions(QMenu *);
+    void createRecentFileActions(QMenu *menu);
     void loadFile(const QString &filename, int how);
     void quit();
     void jumpTo(int sectionIndex, const CursorPosition &pos);
@@ -88,6 +89,8 @@ private:
     QDir sdCardDir() const;
     Patch *editSource(QString oldSource);
     void showSource(QString source);
+    bool saveAndCheck(QString path);
+
 public: // TODO: Spater wieder private machen
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
 

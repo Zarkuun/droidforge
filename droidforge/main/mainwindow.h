@@ -52,6 +52,7 @@ class MainWindow : public QMainWindow, PatchView
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
+    QMenu *recentFilesMenu;
     QString initialFilename;
     QString filePath; // of loaded patch
     QSplitter *rackSplitter;

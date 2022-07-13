@@ -158,7 +158,8 @@ void MainWindow::createFileMenu()
 
     ADD_ACTION(ACTION_NEW, menu);
     ADD_ACTION(ACTION_OPEN, menu);
-    patchOperator.createRecentFileActions(menu);
+    recentFilesMenu = menu->addMenu(tr("Open recent file"));
+    patchOperator.createRecentFileActions(recentFilesMenu);
     ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, menu);
@@ -349,7 +350,7 @@ void MainWindow::clearSettings()
                 QMessageBox::Warning,
                 tr("Clear settings!"),
                 tr("Do you really want to clear all implicit settings like the "
-                   "sizes of dialog windows, you list of recent files, the "
+                   "sizes of dialog windows, your list of recent files, the "
                    "zoom level and other similar things?"),
                 QMessageBox::Ok | QMessageBox::Cancel,
                 the_forge);
@@ -363,20 +364,9 @@ void MainWindow::clearSettings()
         sectionSplitter->setSizes(newSizes);
         patchSectionView.clearSettings();
         rackZoomReset();
+        recentFilesMenu->clear();
     }
 }
-// void MainWindow::updateWindowTitle()
-// {
-//     // TODO: Mit signal ansetuern
-//     QString title;
-//     if (filePath.isEmpty())
-//         title = tr("(untitled patch)") + " - " + tr(APPLICATION_NAME);
-//     else
-//         title = filePath + " - " + tr(APPLICATION_NAME);
-//     if (patch->isModified())
-//         title += " (" + tr("modified") + ")";
-//     setWindowTitle(title);
-// }
 void MainWindow::updateStatusbarMessage()
 {
     QStringList infos;
