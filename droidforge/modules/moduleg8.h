@@ -6,7 +6,7 @@
 class ModuleG8 : public Module
 {
 public:
-    ModuleG8() : Module("G8") {}
+    ModuleG8() : Module("g8") {}
     QString name() const { return "g8"; }
     QString title() const { return "G8 Gates Expander"; }
     float hp() const { return 4; }

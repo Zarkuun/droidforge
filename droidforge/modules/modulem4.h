@@ -6,7 +6,7 @@
 class ModuleM4 : public Module
 {
 public:
-    ModuleM4() : Module("M4") {  }
+    ModuleM4() : Module("m4") {  }
     QString name() const { return "m4"; }
     QString title() const { return "M4 Motor Fader Unit";  }
     float hp() const { return 14; }

@@ -6,7 +6,7 @@
 class ModuleP10 : public Module
 {
 public:
-    ModuleP10() : Module("P10") {}
+    ModuleP10() : Module("p10") {}
     QString name() const { return "p10"; }
     QString title() const { return "P10 Controller"; }
     float hp() const { return 5; }

@@ -6,7 +6,7 @@
 class ModuleP4B2 : public Module
 {
 public:
-    ModuleP4B2() : Module("P4B2") { }
+    ModuleP4B2() : Module("p4b2") { }
     QString name() const { return "p4b2"; }
     QString title() const { return "P4B2 Controller"; }
     float hp() const { return 5; }

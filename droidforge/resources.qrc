@@ -305,15 +305,15 @@
         <file>images/icons/dark/folded.png</file>
         <file>images/icons/dark/ledmismatch.png</file>
         <file>images/icons/light/ledmismatch.png</file>
-        <file>images/faceplates/B32.png</file>
-        <file>images/faceplates/P2B8.png</file>
-        <file>images/faceplates/P10.png</file>
-        <file>images/faceplates/P4B2.png</file>
-        <file>images/faceplates/S10.png</file>
-        <file>images/faceplates/M4.png</file>
-        <file>images/faceplates/Master.png</file>
-        <file>images/faceplates/G8.png</file>
-        <file>images/faceplates/X7.png</file>
+        <file>images/faceplates/b32.png</file>
+        <file>images/faceplates/p2b8.png</file>
+        <file>images/faceplates/p10.png</file>
+        <file>images/faceplates/p4b2.png</file>
+        <file>images/faceplates/s10.png</file>
+        <file>images/faceplates/m4.png</file>
+        <file>images/faceplates/master.png</file>
+        <file>images/faceplates/g8.png</file>
+        <file>images/faceplates/x7.png</file>
         <file>images/circuits/motoquencer.png</file>
     </qresource>
 </RCC>

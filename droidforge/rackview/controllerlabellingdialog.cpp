@@ -8,7 +8,7 @@
 #include <QLabel>
 #include <QPushButton>
 
-ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, const QPixmap *faceplate, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent)
+ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent)
     : Dialog("controllerlabelling/" + controllerType, parent)
     , labels(labels)
     , controllerType(controllerType)
@@ -16,16 +16,16 @@ ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, con
     , currentRow(0)
 {
     mainLayout = new QHBoxLayout(this);
-    shout << "A";
+    mainLayout->setAlignment(Qt::AlignTop);
     setLayout(mainLayout);
-    shout << "B";
 
     QLabel *faceplateLabel = new QLabel();
-    faceplateLabel->setPixmap(*faceplate);
-    // faceplateLabel->setText("HALLO");
+    QPixmap faceplatePixmap(":images/faceplates/" + controllerType + ".png");
+    faceplateLabel->setPixmap(faceplatePixmap.scaledToHeight(450, Qt::SmoothTransformation));
+    faceplateLabel->setAlignment(Qt::AlignTop);
+    faceplateLabel->setStyleSheet(QString("QLabel { padding-top: 35px; }"));
 
     gridLayout = new QGridLayout();
-    shout << "C";
     mainLayout->addWidget(faceplateLabel);
     mainLayout->addLayout(gridLayout);
 

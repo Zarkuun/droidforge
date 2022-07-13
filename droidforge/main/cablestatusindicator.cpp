@@ -5,13 +5,13 @@
 #include "tuning.h"
 #include "updatehub.h"
 #include "editoractions.h"
+#include "iconbase.h"
 
 #include <QMouseEvent>
 
 CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *parent)
     : QWidget{parent}
     , PatchView(patch)
-    , warningImage(":images/icons/warning.png") // TODO: Zentral ablegen?
     , animation(this, "animationPhase")
 {
     resize(400, 100); // TODO: Was ist hiermit?
@@ -87,7 +87,7 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
                         leftPlugRect.top(),
                         imgHeight,
                         imgHeight);
-        painter.drawImage(warnRect, warningImage);
+        painter.drawImage(warnRect, IMAGE("warning"));
 
         QString problem;
         if (numAsOutput == 0)

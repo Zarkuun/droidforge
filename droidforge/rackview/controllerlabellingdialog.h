@@ -22,7 +22,7 @@ class ControllerLabellingDialog : public Dialog
     QList<RegisterLabelWidget *> labelWidgets;
 
 public:
-    ControllerLabellingDialog(RegisterLabels &labels, const QPixmap *faceplate, QString controller, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent = nullptr);
+    ControllerLabellingDialog(RegisterLabels &labels, QString controller, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent = nullptr);
     void accept();
 
 private:

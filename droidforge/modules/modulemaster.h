@@ -6,7 +6,7 @@
 class ModuleMaster : public Module
 {
 public:
-    ModuleMaster() : Module("Master") {  }
+    ModuleMaster() : Module("master") {  }
     QString name() const { return "master"; }
     QString title() const { return "DROID master"; }
     float hp() const { return 8; }

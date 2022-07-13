@@ -14,6 +14,8 @@ ALS NÄCHSTES:
 BUGS:
 - App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
   -> Ich warte jetzt auf das Approval zum Developerprogram
+- Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
+  Da muss ich ihm länger zeit geben.
 
 
 TODO für die erste Version:
@@ -26,8 +28,6 @@ TODO für die erste Version:
     - evtl. später noch Freitextsuche
 - Manual viewer: Noch ein bisschen aufpeppen oder so.
 - Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
-- Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
-  Da muss ich ihm länger zeit geben.
 - Man kann kein komplett leeres Patch auf den DROID hochladen.
 
 Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
