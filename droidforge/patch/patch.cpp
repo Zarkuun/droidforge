@@ -374,8 +374,9 @@ void Patch::updateProblems()
 }
 QString Patch::problemAt(int section, const CursorPosition &pos)
 {
+    CursorPosition realPos = sections[section]->canonizedCursorPosition(pos);
     for (auto problem: problems) {
-        if (problem->isAt(section, pos))
+        if (problem->isAt(section, realPos))
             return problem->getReason();
     }
     return "";

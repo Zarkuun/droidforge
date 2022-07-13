@@ -6,6 +6,7 @@
 #include "updatehub.h"
 #include "editoractions.h"
 #include "iconbase.h"
+#include "globals.h"
 
 #include <QMouseEvent>
 
@@ -65,9 +66,9 @@ void CableStatusIndicator::paintPatching(QPainter &painter)
 
 void CableStatusIndicator::paintCableInfo(QPainter &painter)
 {
-    if (cableName == "") {
+    if (cableName == "")
         return;
-    }
+
     painter.fillRect(rect(), COLOR(COLOR_STATUSBAR_BACKGROUND));
 
     float imgHeight = height() - 2 * CSI_IMAGE_MARGIN;
@@ -231,6 +232,7 @@ void CableStatusIndicator::setanimationPhase(float newanimationPhase)
 void CableStatusIndicator::updateStatus()
 {
     const Atom *atom = patch->currentAtom();
+    shout << "ATOM" << atom;
     if (atom && atom->isCable()) {
         AtomCable *ac = (AtomCable *)atom;
         QString name = ac->getCable();

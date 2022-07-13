@@ -42,6 +42,7 @@ public:
     void setCursorRowColumn(int row, int column);
     void setCursorColumn(int column);
     void sanitizeCursor();
+    CursorPosition canonizedCursorPosition(const CursorPosition &pos) const;
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
     void addNewCircuit(QString name, jackselection_t jackSelection);

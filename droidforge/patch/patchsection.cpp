@@ -203,6 +203,22 @@ void PatchSection::sanitizeCursor()
         cursor.row = ROW_CIRCUIT;
 
 }
+
+CursorPosition PatchSection::canonizedCursorPosition(const CursorPosition &pos) const
+{
+    if (pos.row < 0)
+        return pos;
+
+    Circuit *circuit = circuits[pos.circuitNr];
+    JackAssignment *ja = circuit->jackAssignment(pos.row);
+    if (ja->isInput())
+        return pos;
+    else {
+        CursorPosition can = pos;
+        can.column = qMin(pos.column, 1);
+        return can;
+    }
+}
 void PatchSection::moveCursorToNextCircuit()
 {
     if (cursor.circuitNr < circuits.size()-1) {
@@ -378,9 +394,10 @@ const Circuit *PatchSection::currentCircuit() const
 }
 const Atom *PatchSection::currentAtom() const
 {
+    CursorPosition can = canonizedCursorPosition(cursor);
     const Circuit *circuit = currentCircuit();
     if (circuit)
-        return circuit->atomAt(cursor.row, cursor.column);
+        return circuit->atomAt(can.row, can.column);
     else
         return 0;
 }

@@ -45,8 +45,6 @@ ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QSt
         if (rlw->getAtom() == jumpTo)
             rlw->select();
     }
-
-    shout << "C";
 }
 
 
