@@ -81,12 +81,13 @@ void Circuit::removeUndefinedJacks()
 QString Circuit::nextJackArrayName(const QString &jackName, bool isInput)
 {
     QString prefix = prefixOfJack(jackName);
+    unsigned thisIndex = jackName.mid(prefix.length()).toUInt();
     unsigned size = the_firmware->jackArraySize(name, prefix, isInput);
     if (size == 0)
         return "";
 
     QString next;
-    for (unsigned i=1; i<=size; i++) {
+    for (unsigned i=thisIndex + 1; i <= size; i++) {
         next = prefix + QString::number(i);
         if (!findJack(next))
             return next;

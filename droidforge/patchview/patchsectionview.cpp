@@ -509,15 +509,31 @@ void PatchSectionView::expandArray(bool max)
     Circuit *circuit = section()->currentCircuit();
     JackAssignment *ja = section()->currentJackAssignment();
     CursorPosition curPos = section()->cursorPosition();
-    Q_ASSERT(ja);
 
+    // Starting from the *current* index within the jack array find
+    // the next hole. Then add the new jack right after the last
+    // one before the hole (creating a sane sort order).
     while (true) {
-        QString next = circuit->nextJackArrayName(ja->jackName(), ja->jackType() == JACKTYPE_INPUT);
+        QString jackName = ja->jackName();
+        QString next = circuit->nextJackArrayName(jackName, ja->jackType() == JACKTYPE_INPUT);
         if (next == "")
             break;
 
         JackAssignment *newJa = ja->clone();
         newJa->setJackName(next);
+
+        // Insert the new jack right after that with the previous index.
+        QString prefix = circuit->prefixOfJack(jackName);
+        unsigned thisIndex = next.mid(prefix.length()).toUInt();
+        if (thisIndex > 1) {
+            QString prevName = prefix + QString::number(thisIndex - 1);
+            for (unsigned i=0; i<circuit->numJackAssignments(); i++) {
+                if (circuit->jackAssignment(i)->jackName() == prevName) {
+                    curPos.row = i;
+                    break;
+                }
+            }
+        }
 
         curPos.row++;
         circuit->insertJackAssignment(newJa, curPos.row);

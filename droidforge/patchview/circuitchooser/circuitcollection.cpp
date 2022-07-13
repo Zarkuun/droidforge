@@ -105,14 +105,21 @@ bool CircuitCollection::preselectCircuit(QString name)
 }
 bool CircuitCollection::handleMousePress(const QPoint &pos)
 {
-    for (auto item: items(pos)) {
+    // Qt 6.3 seems to have a bug here. This loop does not work reliably.
+    // Sometimes items(pos) is empty. Don't know why. And the manual loop
+    // seems to work find (checking the hitbox ourselves)
+    // for (auto item: items(pos)) {
+    for (auto item: items()) {
         if (item->data(DATA_INDEX_INDEX).isValid()) {
-            int index = item->data(DATA_INDEX_INDEX).toInt();
-            if (currentCircuit())
-                currentCircuit()->deselect();
-            selectedCircuit = index;
-            currentCircuit()->select();
-            return true;
+            QRectF hitbox = item->boundingRect().translated(item->pos());
+            if (hitbox.contains(pos)) {
+                int index = item->data(DATA_INDEX_INDEX).toInt();
+                if (currentCircuit())
+                    currentCircuit()->deselect();
+                selectedCircuit = index;
+                currentCircuit()->select();
+                return true;
+            }
         }
     }
     return false;

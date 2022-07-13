@@ -68,6 +68,7 @@ public:
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
     bool jackIsArray(int row) const;
+    QString prefixOfJack(const QString &jackName);
 
     void changeCircuit(QString newCircuit);
     bool needG8() const;
@@ -81,7 +82,6 @@ public:
 private:
     bool checkLEDMismatches(bool fixit);
     JackAssignment *findJack(const QString name);
-    QString prefixOfJack(const QString &jackName);
 };
 
 #endif // CIRCUIT_H
