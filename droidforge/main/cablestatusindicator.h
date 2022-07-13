@@ -16,7 +16,7 @@ class CableStatusIndicator : public QWidget, PatchView
     QPen cableHilitePen;
     QImage warningImage;
 
-    float animationPhase; // TODO: Do I need this?
+    float animationPhase;
     QPropertyAnimation animation;
 
     // Current state to be displayed
@@ -28,10 +28,6 @@ public:
     explicit CableStatusIndicator(PatchEditEngine *patch, QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
-
-    // TODO: Das set/clear besser mit Slot/Signal machen.
-    // PatchView oder SectionView->signal atomchanged...
-    // Das hier verbinden
     void set(QString name, int numAsInput, int numAsOutput);
     void clear();
     void updatePatchingAnimation();
