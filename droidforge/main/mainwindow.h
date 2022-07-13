@@ -80,7 +80,6 @@ private:
     void createHelpMenu();
     void createToolbar();
     void createStatusBar();
-    void updateWindowTitle();
     void updateStatusbarMessage();
     void rackZoom(int whence);
 

@@ -365,18 +365,18 @@ void MainWindow::clearSettings()
         rackZoomReset();
     }
 }
-void MainWindow::updateWindowTitle()
-{
-    // TODO: Mit signal ansetuern
-    QString title;
-    if (filePath.isEmpty())
-        title = tr("(untitled patch)") + " - " + tr(APPLICATION_NAME);
-    else
-        title = filePath + " - " + tr(APPLICATION_NAME);
-    if (patch->isModified())
-        title += " (" + tr("modified") + ")";
-    setWindowTitle(title);
-}
+// void MainWindow::updateWindowTitle()
+// {
+//     // TODO: Mit signal ansetuern
+//     QString title;
+//     if (filePath.isEmpty())
+//         title = tr("(untitled patch)") + " - " + tr(APPLICATION_NAME);
+//     else
+//         title = filePath + " - " + tr(APPLICATION_NAME);
+//     if (patch->isModified())
+//         title += " (" + tr("modified") + ")";
+//     setWindowTitle(title);
+// }
 void MainWindow::updateStatusbarMessage()
 {
     QStringList infos;
