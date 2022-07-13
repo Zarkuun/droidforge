@@ -345,7 +345,7 @@ Atom *JackAssignmentInput::parseNumber(QString s)
 {
     float factor = 1.0;
     atom_number_t at = ATOM_NUMBER_NUMBER;
-    if (s.endsWith("v")) {
+    if (s.endsWith("v") || s.endsWith("V")) {
         at = ATOM_NUMBER_VOLTAGE;
         factor = 0.1;
         s.chop(1);
