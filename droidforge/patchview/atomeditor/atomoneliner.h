@@ -16,6 +16,7 @@ class AtomOneliner : public QDialog
     jacktype_t jacktype;
     bool initialDeselect;
     int lastKey;
+    QRectF geometry;
 
     AtomOneliner(QWidget *parent = nullptr);
     void returnPressed();
@@ -27,8 +28,12 @@ public:
     Atom *getAtom();
     int getLastKey() const { return lastKey; };
 
+protected:
+    void showEvent(QShowEvent *);
+
 private slots:
     void keyPressed(int);
+    void setGeometry();
 };
 
 #endif // ATOMONELINER_H

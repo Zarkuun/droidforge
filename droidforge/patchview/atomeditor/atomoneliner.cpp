@@ -45,11 +45,17 @@ Atom *AtomOneliner::getAtom()
     else
         return new AtomInvalid(text);
 }
+
+void AtomOneliner::showEvent(QShowEvent *)
+{
+    setGeometry();
+}
 void AtomOneliner::keyPressed(int key)
 {
     lastKey = key;
     accept();
 }
+
 void AtomOneliner::selectionChanged()
 {
     // This hack avoids the initial "select all" feature
@@ -74,20 +80,24 @@ Atom *AtomOneliner::editAtom(QRectF geometry, const Patch *, jacktype_t jacktype
     else
         return 0;
 }
-bool AtomOneliner::edit(QRectF geometry, jacktype_t jt, QString start)
+bool AtomOneliner::edit(QRectF geo, jacktype_t jt, QString start)
 {
+    geometry = geo;
     jacktype = jt;
 
     QFont font = QApplication::font();
     font.setPixelSize(geometry.height() * 10 / 16);
     lineEdit->setFont(font);
 
-    move(geometry.topLeft().toPoint());
-    resize(geometry.width(), geometry.height());
     lineEdit->setFixedHeight(geometry.height());
     lineEdit->setFixedWidth(geometry.width());
     lineEdit->setText(start);
     initialDeselect = true;
     lineEdit->deselect();
     return exec() == QDialog::Accepted;
+}
+void AtomOneliner::setGeometry()
+{
+    move(geometry.topLeft().toPoint());
+    resize(geometry.width(), geometry.height());
 }
