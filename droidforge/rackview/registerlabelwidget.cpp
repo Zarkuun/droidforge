@@ -3,19 +3,22 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QFontDatabase>
 
 
 RegisterLabelWidget::RegisterLabelWidget(AtomRegister atom, const QString shortLabel, const QString longLabel, QWidget *parent)
     : QGroupBox{parent}
     , atom(atom)
 {
-    static QFont hackFont("Hack"); // TODO: more portable way for monospaced font. Or ship HACK.
 
     QGridLayout *layout = new QGridLayout(this);
     setLayout(layout);
 
     QLabel *label = new QLabel(atom.toString());
-    label->setFont(hackFont);
+    QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    fixedFont.setPointSize(12);
+
+    label->setFont(fixedFont);
     layout->addWidget(label, 0, 0);
 
     lineEditShort = new QLineEdit(this);

@@ -1216,7 +1216,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             ar.setRegisterType(REGISTER_LED);
     }
 
-    // The following "hack" is a conveniance feature for that case that
+    // The following is a conveniance feature for that case that
     // you want to use LEDs as inputs (as often done with buttons
     // or buttongroups). You click on the button and get e.g. B1.1.
     // Now if you click again, that changes to L1.1 (and later back again)

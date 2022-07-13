@@ -1,8 +1,10 @@
 #include "sourcecodeeditor.h"
+#include "globals.h"
 #include "tuning.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QFontDatabase>
 
 SourceCodeEditor::SourceCodeEditor(const QString &originalSource, QWidget *parent, bool readonly)
     : Dialog{"sourcecode", parent}
@@ -16,7 +18,9 @@ SourceCodeEditor::SourceCodeEditor(const QString &originalSource, QWidget *paren
 
     // Text editor
     textEdit = new QTextEdit();
-    textEdit->setFontFamily("Hack"); // TODO
+    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    textEdit->setFontFamily(fixedFont.family());
+
     textEdit->setText(originalSource);
     textEdit->moveCursor(QTextCursor::Start);
     textEdit->setReadOnly(readonly);
