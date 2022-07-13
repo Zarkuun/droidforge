@@ -128,9 +128,8 @@ bool PatchOperator::checkModified()
         int ret = box.exec();
         switch (ret) {
         case QMessageBox::Save:
-            // TODO: Check success of saving!
             save();
-            return true;
+            return !patch->isModified();
 
         case QMessageBox::Discard:
             return true;
