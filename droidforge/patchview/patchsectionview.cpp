@@ -641,12 +641,20 @@ void PatchSectionView::enableDisableObjects(bool enable)
 }
 void PatchSectionView::pasteCircuitsFromClipboard()
 {
-    int position = 0;
+    int insertPosition;
+    if (section()->isEmpty())
+        insertPosition = 0;
+    else if (section()->cursorPosition().row == ROW_CIRCUIT)
+        insertPosition = section()->cursorPosition().circuitNr;
+    else
+        insertPosition = section()->cursorPosition().circuitNr + 1;
+
+    section()->setCursor(CursorPosition(insertPosition,  ROW_CIRCUIT, 0));
+
     for (auto circuit: the_clipboard->getCircuits()) {
         Circuit *newCircuit = circuit->clone();
-        position = section()->isEmpty() ? 0 : section()->cursorPosition().circuitNr + 1;
-        section()->insertCircuit(position, newCircuit);
-        section()->setCursor(CursorPosition(position,  ROW_CIRCUIT, 0));
+        section()->insertCircuit(insertPosition, newCircuit);
+        insertPosition++;
     }
     patch->commit(tr("pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();

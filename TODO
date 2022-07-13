@@ -14,8 +14,6 @@ ALS NÄCHSTES:
 - Atomselector: Dort noch die Beschreibung des Jacks hinpacken
 
 BUGS:
-- Wenn ich einen Circuit Ausschneide, mit dem Cursor ganz hoch
-fahre und einfüge, kommt er trotzdem nicht als erstes
 - Der Jackselector: Das Suchfeld kann den Focus verlieren.
 - Atomonliner: Ist manchmal total breit
 - Expand auf "value10", wenn es value1 nicht gibg, soll
