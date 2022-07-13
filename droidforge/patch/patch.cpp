@@ -7,10 +7,6 @@
 
 #include <QFileInfo>
 
-// TODO: use index and number correctly
-// Controller number goes from 1 ... 16
-// Indices start at 0
-
 Patch::Patch()
     : sectionIndex(0)
 {
@@ -293,7 +289,6 @@ bool Patch::registerUsed(AtomRegister reg)
 }
 void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
 {
-    // TODO: Hardcode G8 and X7 here?
     ModuleBuilder::allRegistersOf("master", 0, rl);
     ModuleBuilder::allRegistersOf("g8", 0, rl);
     ModuleBuilder::allRegistersOf("x7", 0, rl);

@@ -185,8 +185,6 @@ QtApplication {
         "patchview/circuitchooser/circuitcollection.h",
         "patchview/circuitchooser/circuitinfoview.cpp",
         "patchview/circuitchooser/circuitinfoview.h",
-        "patchview/circuitchooser/circuittype.cpp",
-        "patchview/circuitchooser/circuittype.h",
         "patchview/jackselector/jackchoosedialog.cpp",
         "patchview/jackselector/jackchoosedialog.h",
         "patchview/jackselector/jackline.cpp",

@@ -78,7 +78,7 @@ void CircuitView::paintHeader(QPainter *painter)
     painter->fillRect(headerRect(), COLOR(CIRV_COLOR_CIRCUIT_NAME_BG));
     QRectF imageRect(headerRect().left(), headerRect().top(), CIRV_HEADER_HEIGHT, CIRV_HEADER_HEIGHT);
     if (circuit->isDisabled()) {
-        QImage disIcon = iconImage.convertToFormat(QImage::Format_Grayscale8);        painter->fillRect(imageRect, QColor(80, 80, 80, 160)); // TODO: COLOR MAKRO
+        QImage disIcon = iconImage.convertToFormat(QImage::Format_Grayscale8);
         painter->drawImage(imageRect.toRect(), disIcon);
     }
     else

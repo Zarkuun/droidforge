@@ -140,8 +140,6 @@ void JackAssignmentInput::findCableConnections(const QString &cable, int &asInpu
 #define RATOM "(" RATOMA "|" RATOMB ")"
 #define RNUMBER "(-?([0-9]+[.])?[0-9]+)"
 
-// TODO: -1*_postfader_input_tb+1 geht nicht
-
 void JackAssignmentInput::parseInputExpression(QString, QString valueString)
 {
     static QRegularExpression spaces("\\s");
@@ -158,9 +156,6 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
     static QRegularExpression form7("^" RATOM "[/]" RNUMBER "$");
     static QRegularExpression form8("^" RATOM "[/]" RNUMBER "[+]" RATOM "$");
     static QRegularExpression form9("^" RATOM "[/]" RNUMBER "[-]" RNUMBER "$");
-
-    // TODO: Hier fehlen noch ein paar Formen. Z.B. auch was mit
-    // Division
 
     QString a, b, c;
 
