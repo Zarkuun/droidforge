@@ -77,6 +77,9 @@ private slots:
     void fixLEDMismatch();
     void globalClipboardChanged();
 
+public slots:
+    void clearRecentFiles();
+
 private:
     bool checkModified();
     void setLastFilePath(const QString &path);

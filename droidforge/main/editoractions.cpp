@@ -32,6 +32,8 @@ void EditorActions::createActions()
 
     actions[ACTION_CLEAR_SETTINGS] = new QAction(tr("Restore factory settings"), this);
 
+    actions[ACTION_CLEAR_RECENT_FILES] = new QAction(tr("Clear list of recent files"), this);
+
     actions[ACTION_NEW] = new QAction(tr("&New..."), this);
     actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
     actions[ACTION_TOOLBAR_NEW] = new QAction(ICON("new"), tr("New"), this);

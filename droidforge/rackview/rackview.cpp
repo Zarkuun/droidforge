@@ -124,7 +124,6 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
    menu->addAction(tr("Edit labelling of controls"), this,
                    [this,controllerIndex,moduleType,areg] () {this->editLabelling(moduleType, controllerIndex, areg); });
 
-   shout << "REGISTER" << areg;
    if (!areg.isNull()) {
        QAction *action =  menu->addAction(tr("Find this control in your patch"), this,
                        [this,areg] () {this->findRegister(areg); });

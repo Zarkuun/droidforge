@@ -9,6 +9,7 @@
 #include <QAction>
 
 typedef enum {
+    ACTION_CLEAR_RECENT_FILES,
     ACTION_CLEAR_SETTINGS,
     ACTION_MOVE_SECTION_UP,
     ACTION_MOVE_SECTION_DOWN,
@@ -122,6 +123,7 @@ extern EditorActions *the_actions;
  * - The connect() is always be done by the class that receives
  *   the action signal, not by someone else.
 */
+#define ACTION(A)                      (the_actions->action(A))
 #define CONNECT_ACTION(A, FUNC)        connect(the_actions->action(A), &QAction::triggered, this, FUNC)
 #define SET_ACTION_TRIGGER(A, FUNC)    connect(this, FUNC, the_actions->action(A), &QAction::trigger)
 #define TRIGGER_ACTION(A)              the_actions->action(A)->trigger();

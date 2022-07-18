@@ -35,6 +35,7 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_TOOLBAR_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_OPEN, &PatchOperator::open);
+    CONNECT_ACTION(ACTION_CLEAR_RECENT_FILES, &PatchOperator::clearRecentFiles);
     CONNECT_ACTION(ACTION_TOOLBAR_OPEN, &PatchOperator::open);
     CONNECT_ACTION(ACTION_SAVE, &PatchOperator::save);
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE, &PatchOperator::save);
@@ -114,6 +115,9 @@ void PatchOperator::createRecentFileActions(QMenu *menu)
             menu->addAction(action);
         }
     }
+    menu->addSeparator();
+    ADD_ACTION(ACTION_CLEAR_RECENT_FILES, menu);
+    ACTION(ACTION_CLEAR_RECENT_FILES)->setEnabled(recentFiles.count() > 0);
     recentFilesMenu = menu;
 }
 bool PatchOperator::checkModified()
@@ -304,6 +308,13 @@ void PatchOperator::open()
                 the_forge, "", "", "DROID patches (*.ini)");
     if (!filePath.isEmpty())
         loadFile(filePath, FILE_MODE_LOAD);
+}
+void PatchOperator::clearRecentFiles()
+{
+    QSettings settings;
+    QStringList emptyList;
+    settings.setValue("recentfiles", emptyList);
+    createRecentFileActions(recentFilesMenu);
 }
 void PatchOperator::integrate()
 {

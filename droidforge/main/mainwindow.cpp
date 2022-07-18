@@ -160,6 +160,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_OPEN, menu);
     recentFilesMenu = menu->addMenu(tr("Open recent file"));
     patchOperator.createRecentFileActions(recentFilesMenu);
+
     ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, menu);
@@ -364,7 +365,7 @@ void MainWindow::clearSettings()
         sectionSplitter->setSizes(newSizes);
         patchSectionView.clearSettings();
         rackZoomReset();
-        recentFilesMenu->clear();
+        the_operator->clearRecentFiles();
     }
 }
 void MainWindow::updateStatusbarMessage()
