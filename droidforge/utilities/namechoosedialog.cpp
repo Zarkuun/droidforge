@@ -34,11 +34,11 @@ QString NameChooseDialog::getName(const QString &title, const QString &label, QS
     if (!dialog)
         dialog = new NameChooseDialog();
 
+    dialog->setForceUpperCase(forceUpperCase);
     dialog->setWindowTitle(title);
     dialog->label->setText(label);
     dialog->lineEdit->setText(oldname);
     dialog->lineEdit->selectAll();
-    dialog->setForceUpperCase(forceUpperCase);
 
     if (dialog->exec() == QDialog::Accepted)
         return dialog->lineEdit->text().trimmed();
