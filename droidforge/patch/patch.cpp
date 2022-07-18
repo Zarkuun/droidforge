@@ -287,6 +287,18 @@ bool Patch::registerUsed(AtomRegister reg)
     }
     return false;
 }
+
+bool Patch::controlUsed(AtomRegister reg)
+{
+    for (auto &atom: *this) {
+        if (atom->isRegister()) {
+            AtomRegister *areg = (AtomRegister *)atom;
+            if (areg->belongsTo(reg))
+                return true;
+        }
+    }
+    return false;
+}
 void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
 {
     ModuleBuilder::allRegistersOf("master", 0, rl);

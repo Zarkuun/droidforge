@@ -9,8 +9,10 @@ INSTALL_ROOT=droidforge/build/release-mac/install-root/usr/local/Applications
 APP_DIR="$INSTALL_ROOT/$NAME.app"
 DMG="$INSTALL_ROOT/$NAME.dmg"
 TARGET_INFO_PLIST=$APP_DIR/Contents/Info.plist
-LICENSE="droidforge/GNU GPL v3.txt"
+# LICENSE="droidforge/GNU GPL v3.txt"
 TARGET_LICENSE="$APP_DIR/Contents"
+# CERTIDENT=Z8A7223C2C
+CERTIDENT="Developer ID Application: Matthias Kettner"
 
 # First build the project
 
@@ -34,8 +36,8 @@ echo -n "Installing Info.plist..."
 cp -v Info.plist "$TARGET_INFO_PLIST"
 echo OK
 
-echo -m "Installing GPL License..."
-cp -v "$LICENSE" "$TARGET_LICENSE"
+# echo -m "Installing GPL License..."
+# cp -v "$LICENSE" "$TARGET_LICENSE"
 
 echo -n "Installing icon..."
 mkdir -p "$APP_DIR/Contents/Resources"
@@ -45,7 +47,7 @@ echo OK
 echo -n "Creating DMG..."
 rm -f "$DMG"
 pushd "$INSTALL_ROOT"
-macdeployqt "$NAME.app" -dmg
+macdeployqt "$NAME.app" -verbose=2 -dmg -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT
 echo OK
 popd
 

@@ -105,7 +105,7 @@ bool AtomRegister::belongsTo(AtomRegister &other) const
         return false;
     else if (num != other.num)
         return false;
-    else if (registerType == other.registerType)
+    else if (registerType == other.registerType) // identical
         return true;
     else if (registerType == REGISTER_BUTTON && other.registerType == REGISTER_LED)
         return true;

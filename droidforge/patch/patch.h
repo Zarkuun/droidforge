@@ -64,6 +64,7 @@ public:
     QString freshCableName() const;
     void collectUsedRegisterAtoms(RegisterList &) const;
     bool registerUsed(AtomRegister reg);
+    bool controlUsed(AtomRegister reg);
     void collectAvailableRegisterAtoms(RegisterList &) const;
     bool hasProblems() const { return problems.count() > 0; };
     unsigned numProblems() const { return problems.count(); };
