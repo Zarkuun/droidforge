@@ -126,7 +126,7 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
 
    shout << "REGISTER" << areg;
    if (!areg.isNull()) {
-       QAction *action =  menu->addAction(tr("Find this register in your patch"), this,
+       QAction *action =  menu->addAction(tr("Find this control in your patch"), this,
                        [this,areg] () {this->findRegister(areg); });
        action->setEnabled(patch->controlUsed(areg));
    }
