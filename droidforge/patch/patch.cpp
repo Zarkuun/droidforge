@@ -450,8 +450,17 @@ QString Patch::toString() const
     if (!s.isEmpty())
         s += "\n";
 
+    QString sectionPart;
     for (qsizetype i=0; i<sections.length(); i++)
-        s += sections[i]->toString();
+        sectionPart += sections[i]->toString();
+
+    // If the patch does not have a title and also no description,
+    // the first comment of the section part would be interpreted
+    // as title. In order to avoid that we introduce an empty line
+    // if that is the situation.
+    if (s.isEmpty() && sectionPart.startsWith("#"))
+        s += "\n";
+    s += sectionPart;
 
     while (s.endsWith("\n\n"))
         s.chop(1);

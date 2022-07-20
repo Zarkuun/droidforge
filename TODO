@@ -13,10 +13,6 @@ ALS NÄCHSTES:
   man einfach nur tippt.
 
 BUGS:
-- Patches ohne Titel mit einem Circuit, der gleich einen
-  Kommentar hat. Hier wird wohl die erste Zeile als Titel
-  geklaut. Wenigstens wenn wir das *speichern* müssen wir
-  es so speichern, dass es kein Problem gibt.
 - Problem wird nicht angezeigt wenn im Output column > 1 ist
 - Mausklick auf output kann column > 1 machen
 - App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
