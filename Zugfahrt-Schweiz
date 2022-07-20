@@ -12,4 +12,5 @@
 12. Fix: Man kann Unknownjackatome editieren
 13. Cleanup: currentAtom nicht verdoppeln
 14. Fix: Registerlabel immer bündig ausgeben
+15. Cleanup: Validator für die Labels
 

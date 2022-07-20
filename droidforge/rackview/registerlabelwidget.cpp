@@ -4,7 +4,8 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QFontDatabase>
-
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 RegisterLabelWidget::RegisterLabelWidget(AtomRegister atom, const QString shortLabel, const QString longLabel, QWidget *parent)
     : QGroupBox{parent}
@@ -20,8 +21,12 @@ RegisterLabelWidget::RegisterLabelWidget(AtomRegister atom, const QString shortL
     label->setFont(fixedFont);
     layout->addWidget(label, 0, 0);
 
+    QRegularExpression re("[^][]*");
+    QRegularExpressionValidator *validator = new QRegularExpressionValidator(re, this);
+
     lineEditShort = new QLineEdit(this);
     lineEditShort->setText(shortLabel);
+    lineEditShort->setValidator(validator);
     lineEditShort->setPlaceholderText(tr("short"));
     lineEditShort->setMaxLength(MAX_LENGTH_SHORTHAND);
     lineEditShort->setToolTip(tr("Short hand for the jack or control that will be "
@@ -30,6 +35,7 @@ RegisterLabelWidget::RegisterLabelWidget(AtomRegister atom, const QString shortL
 
     lineEditDescription = new QLineEdit(this);
     lineEditDescription->setText(longLabel);
+    lineEditDescription->setValidator(validator);
     lineEditDescription->setPlaceholderText(tr("full description"));
     layout->addWidget(lineEditDescription, 1, 0, 1, 2);
 
@@ -38,8 +44,7 @@ RegisterLabelWidget::RegisterLabelWidget(AtomRegister atom, const QString shortL
 
 void RegisterLabelWidget::updateLabels(RegisterLabels &labels)
 {
-    // TODO: validator instead of this [ and ] hack
-    QString shorthand = lineEditShort->text().trimmed().replace(']', ' ').replace('[', ' ');
+    QString shorthand = lineEditShort->text().trimmed();
     QString description = lineEditDescription->text().trimmed();
     if (shorthand != "" || description != "")
         labels[atom] = RegisterLabel{shorthand, description};
