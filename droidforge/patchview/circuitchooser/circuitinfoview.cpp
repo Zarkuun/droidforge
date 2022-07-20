@@ -2,8 +2,10 @@
 #include "colorscheme.h"
 #include "droidfirmware.h"
 #include "tuning.h"
+#include "globals.h"
 
 #include <QPainter>
+#include <QFontMetrics>
 
 
 CircuitInfoView::CircuitInfoView(QString circuit, QString description, unsigned *width)
@@ -24,6 +26,42 @@ void CircuitInfoView::select(bool sel)
     selected = sel;
     update();
 }
+void CircuitInfoView::paintMultilineText(QPainter *painter, unsigned text_x, unsigned text_y, unsigned width, unsigned numLines, QString text)
+{
+    QFontMetrics fm = painter->fontMetrics();
+    QStringList words = text.split(' ');
+    shout << words;
+
+    QStringList lines;
+
+    unsigned wordCounter = 0;
+    QString lineText;
+    while (wordCounter < words.count()) {
+        QString word = words[wordCounter++];
+        unsigned s = fm.horizontalAdvance(lineText + " " + word + "...");
+        shout << "Word is " << word << " -> " << s;
+        if (s > width) {
+            shout << "Line fertig: " << lineText;
+            lines.append(lineText);
+            lineText = 0;
+        }
+        if (lineText != "")
+            lineText += " ";
+        lineText += word;
+    }
+    if (lineText != "")
+        lines.append(lineText);
+
+    if (lines.count() > numLines)
+        lines[numLines-1] += "...";
+
+    QRectF textRect(text_x, text_y, width, CICH_TITLE_HEIGHT);
+
+    for (auto &line: lines.mid(0, numLines)) {
+        painter->drawText(textRect, Qt::AlignTop | Qt::AlignLeft, line);
+        textRect.translate(0, fm.lineSpacing());
+    }
+}
 void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     unsigned text_x = CICH_ICON_WIDTH + 2*CICH_PADDING + STANDARD_SPACING;
@@ -38,22 +76,8 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                       the_firmware->circuitTitle(circuit));
 
     // Description
-    QRectF textRect(text_x, CICH_PADDING + CICH_TITLE_HEIGHT,
-                    *circuitViewWidth - text_x - CICH_PADDING,
-                    CICH_CIRCUIT_HEIGHT - CICH_TITLE_HEIGHT - 2 * CICH_PADDING - 2); // Hack
-
-    // TODO: This -2 is a hack in order to avoid some pixels of a potential third line
-    // to be visible. We rather need to check if the text would get a third line and
-    // remove that line. And indicate the missing text with "..." or something.
-
-    // Ich müsste das wirklich komplett selbst machen. Mit Fontmetrics ausprobieren,
-    // wieviele Zeichen gehen, bis es rausragt. Dann bis zum letztern Space zurück.
-    // nächste Zeile machen. Wenns nicht reicht zurück und ... ausgegben.
-
     painter->setPen(COLOR(CICH_COLOR_DESCRIPTION));
-    painter->drawText(textRect,
-                      Qt::AlignTop | Qt::AlignLeft | Qt::TextWordWrap,
-                      the_firmware->circuitDescription(circuit));
+    paintMultilineText(painter, text_x, CICH_PADDING + CICH_TITLE_HEIGHT, *circuitViewWidth - text_x - CICH_PADDING, 2, the_firmware->circuitDescription(circuit));
 
     // Icon
     QImage image(QString(CIRCUIT_ICON_PATH +  circuit + CIRCUIT_ICON_SUFFIX));

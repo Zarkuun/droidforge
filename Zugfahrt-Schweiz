@@ -13,4 +13,6 @@
 13. Cleanup: currentAtom nicht verdoppeln
 14. Fix: Registerlabel immer bündig ausgeben
 15. Cleanup: Validator für die Labels
+16. Fix: Repaintglitch bei Registerhilites
+17. Fix: Saubere 2 Zeilen in Circuitbeschreibung
 

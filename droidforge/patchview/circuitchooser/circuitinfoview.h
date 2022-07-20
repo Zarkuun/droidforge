@@ -17,6 +17,9 @@ public:
     const QString &getCircuit() const { return circuit; };
     void select(bool selected = true);
     void deselect() { select(false); };
+
+private:
+    void paintMultilineText(QPainter *painter, unsigned text_x, unsigned text_y, unsigned width, unsigned lines, QString text);
 };
 
 #endif // CIRCUITINFOVIEW_H
