@@ -127,6 +127,8 @@ void Patch::moveControllerSmart(int fromIndex, int toIndex)
 }
 void Patch::removeController(int index)
 {
+    registerLabels.removeController(index + 1);
+    registerLabels.shiftControllerNumbers(index + 1, -1);
     shiftControllerNumbers(index + 1, -1);
     controllers.remove(index);
 }
@@ -434,7 +436,7 @@ void Patch::shiftControllerNumbers(int number, int by)
     for (auto atom: *this) {
         if (atom->isRegister()) {
             AtomRegister *areg = (AtomRegister *)atom;
-            areg->shiftControllerNumbers(number, -1);
+            areg->shiftControllerNumbers(number, by);
         }
     }
 }

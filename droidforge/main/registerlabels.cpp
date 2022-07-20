@@ -96,6 +96,36 @@ void RegisterLabels::swapControllerNumbers(unsigned fromnum, unsigned tonum)
     for (auto it = swapped.keyBegin(); it != swapped.keyEnd(); ++it)
         (*this)[*it] = swapped[*it];
 }
+
+void RegisterLabels::shiftControllerNumbers(int number, int by)
+{
+    QMap<AtomRegister, RegisterLabel> shifted;
+
+    for (auto it = keyBegin(); it != keyEnd(); ++it)
+    {
+        AtomRegister reg = *it;
+        RegisterLabel label = (*this)[reg];
+        reg.shiftControllerNumbers(number, by);
+        shifted[reg] = label;
+    }
+    clear();
+    for (auto it = shifted.keyBegin(); it != shifted.keyEnd(); ++it)
+        (*this)[*it] = shifted[*it];
+}
+
+void RegisterLabels::removeController(int number)
+{
+    QMap<AtomRegister, RegisterLabel> removed;
+    for (auto it = keyBegin(); it != keyEnd(); ++it)
+    {
+        AtomRegister reg = *it;
+        if (reg.controller() != number)
+            removed[reg] = (*this)[reg];
+    }
+    clear();
+    for (auto it = removed.keyBegin(); it != removed.keyEnd(); ++it)
+        (*this)[*it] = removed[*it];
+}
 QString RegisterLabels::toString(char reg, unsigned controller, const QString &title) const
 {
     QString s;

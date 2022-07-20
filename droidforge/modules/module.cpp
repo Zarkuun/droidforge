@@ -110,30 +110,48 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
     if (text == "")
         text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
 
-    QRectF r = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()), 1);
-    // r.adjust(-20, 0, 20, 0);
+    QRectF rr = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()), 1);
+    qreal mid = (rr.left() + rr.right()) / 2;
+    // painter->setPen(QColor(255, 0, 0));
+    // painter->drawRoundedRect(rr, 0, 0);
+
+    unsigned RACV_LABEL_WIDTH = RACV_PIXEL_PER_HP * 2;
+    unsigned RACV_LABEL_HEIGHT = RACV_PIXEL_PER_HP * 0.7;
+
+    QRectF r(mid - RACV_LABEL_WIDTH / 2, rr.bottom(),
+             RACV_LABEL_WIDTH, RACV_LABEL_HEIGHT);
+
+    painter->setPen(QColor(0, 0, 0));
+    painter->setBrush(QColor(255, 255, 255));
+    painter->drawRoundedRect(r, 10, 10);
     QFont font;
-    font.setPixelSize(100);
-    QFontMetrics fm(font);
-    QString testText = text;
-    if (text.size() == 1)
-        testText = "XX";
-    int refWidth = fm.horizontalAdvance(testText);
-    float scale = r.width() / refWidth;
-    font.setPixelSize(100 * scale);
-
-    if (labelNeedsBackground(atom.getRegisterType(), atom.getNumber())) {
-        painter->save();
-        painter->setBrush(COLOR(RACV_COLOR_LABEL_BG));
-        painter->setPen(Qt::NoPen);
-        painter->drawEllipse(r);
-        painter->restore();
-    }
-
-    // font.setPixelSize(RACV_PIXEL_PER_HP * fontSizes[text.size()] * r.width() / 130 );
+    font.setPixelSize(50);
     painter->setFont(font);
-
     painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
+
+    // // r.adjust(-20, 0, 20, 0);
+    // QFont font;
+    // font.setPixelSize(100);
+    // QFontMetrics fm(font);
+    // QString testText = text;
+    // if (text.size() == 1)
+    //     testText = "XX";
+    // int refWidth = fm.horizontalAdvance(testText);
+    // float scale = r.width() / refWidth;
+    // font.setPixelSize(100 * scale);
+
+    // if (labelNeedsBackground(atom.getRegisterType(), atom.getNumber())) {
+    //     painter->save();
+    //     painter->setBrush(COLOR(RACV_COLOR_LABEL_BG));
+    //     painter->setPen(Qt::NoPen);
+    //     painter->drawEllipse(r);
+    //     painter->restore();
+    // }
+
+    // // font.setPixelSize(RACV_PIXEL_PER_HP * fontSizes[text.size()] * r.width() / 130 );
+    // painter->setFont(font);
+
+    // painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
 }
 bool Module::haveRegister(AtomRegister atom)
 {

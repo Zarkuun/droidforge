@@ -19,6 +19,8 @@ public:
     QString toString() const;
     void swapRegisters(AtomRegister regA, AtomRegister regB);
     void swapControllerNumbers(unsigned fromnum, unsigned tonum);
+    void shiftControllerNumbers(int number, int by);
+    void removeController(int number);
 
 private:
     QString toString(char reg, unsigned controller, const QString &title=0) const;
