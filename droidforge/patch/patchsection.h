@@ -83,7 +83,7 @@ public:
     void swapControllerNumbers(int fromNumber, int toNumber);
     void shiftControllerNumbers(int number, int by);
     void collectRegisterAtoms(RegisterList &) const;
-    void remapRegister(AtomRegister from, AtomRegister to);
+    // void remapRegister(AtomRegister from, AtomRegister to);
     void removeRegisterReferences(RegisterList &rl);
 
 protected:

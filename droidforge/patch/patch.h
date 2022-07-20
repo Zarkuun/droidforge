@@ -146,7 +146,6 @@ public:
 
     auto begin() { return iterator(this); }
     auto end() { return iterator(); }
-
 };
 
 #endif // PATCH_H

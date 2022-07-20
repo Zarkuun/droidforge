@@ -274,7 +274,10 @@ QString Patch::freshCableName() const
 }
 void Patch::collectUsedRegisterAtoms(RegisterList &sl) const
 {
-    // TODO: Mit iterator
+    // We could use the iterator but that has no const
+    // version. Copying the whole iterator is no option.
+    // Maybe there is a way to do that with templates.
+    // If you feel like doing that, send me a pull request.
     for (auto section: sections)
         section->collectRegisterAtoms(sl);
 }
@@ -289,7 +292,6 @@ bool Patch::registerUsed(AtomRegister reg)
     }
     return false;
 }
-
 bool Patch::controlUsed(AtomRegister reg)
 {
     for (auto &atom: *this) {
@@ -393,9 +395,13 @@ bool Patch::registerAvailable(AtomRegister ar) const
 }
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
 {
-    // TODO: Ohne rekursion mit iterator!
-    for (auto section: sections)
-        section->remapRegister(from, to);
+    for (auto &atom: *this) {
+        if (atom->isRegister()) {
+            AtomRegister *reg = (AtomRegister *)atom;
+            if (*reg == from)
+                *reg = to;
+        }
+    }
 }
 void Patch::swapRegisters(AtomRegister regA, AtomRegister regB)
 {

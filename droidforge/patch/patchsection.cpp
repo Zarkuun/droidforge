@@ -468,11 +468,11 @@ void PatchSection::collectRegisterAtoms(RegisterList &sl) const
             circuit->collectRegisterAtoms(sl);
     }
 }
-void PatchSection::remapRegister(AtomRegister from, AtomRegister to)
-{
-    for (auto circuit: circuits)
-        circuit->remapRegister(from, to);
-}
+// void PatchSection::remapRegister(AtomRegister from, AtomRegister to)
+// {
+//     for (auto circuit: circuits)
+//         circuit->remapRegister(from, to);
+// }
 void PatchSection::removeRegisterReferences(RegisterList &rl)
 {
     for (auto circuit: circuits)

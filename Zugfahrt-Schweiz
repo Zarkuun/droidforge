@@ -2,4 +2,6 @@
 2. Fix: Speichern von Patches ohne Titel
 3. Cleanup: Quellcodedateien aufgeräumt
 4. QChar losgeworden und register_type_t eingesetzt
+5. Fix: Entfernen von Controllern hat belegte Register verwendet
+6. Cleanup: remapRegister mit iterator programmiert
 
