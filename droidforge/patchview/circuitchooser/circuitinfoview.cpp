@@ -42,7 +42,7 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                     *circuitViewWidth - text_x - CICH_PADDING,
                     CICH_CIRCUIT_HEIGHT - CICH_TITLE_HEIGHT - 2 * CICH_PADDING - 2); // Hack
 
-    // TODO: This ROW_CIRCUIT is a hack in order to avoid some pixels of a potential third line
+    // TODO: This -2 is a hack in order to avoid some pixels of a potential third line
     // to be visible. We rather need to check if the text would get a third line and
     // remove that line. And indicate the missing text with "..." or something.
 

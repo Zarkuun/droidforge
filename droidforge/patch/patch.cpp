@@ -509,7 +509,6 @@ QString Patch::toBare() const
 bool Patch::saveToFile(const QString filePath) const
 {
     QFile file(filePath);
-    // TODO: filename
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
           return false;
     QTextStream stream(&file);

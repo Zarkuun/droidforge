@@ -6,4 +6,5 @@
 6. Cleanup: remapRegister mit iterator programmiert
 7. Cleanup: shiftControllerNumbers mit iterator programmiert
 8. Cleanup: swapControllerNumbers mit iterator programmiert
+9. Fix: Problem und Infoicon nicht mehr übereinander
 

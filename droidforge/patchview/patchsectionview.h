@@ -93,7 +93,7 @@ private:
     JackAssignment *buildJackAssignment(const QString &jackName);
     QChar keyToChar(int key); // TODO: was soll das hier?
     void mousePress(QPoint pos, int button, bool doubleClock);
-    void createProblemMarkes();
+    void createProblemMarkers();
     void createInfoMarkers();
     void createFoldMarkers();
     void createLEDMismatchMarkers();

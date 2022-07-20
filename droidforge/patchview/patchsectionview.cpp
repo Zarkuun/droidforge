@@ -154,13 +154,13 @@ void PatchSectionView::createFoldMarkers()
         }
     }
 }
-void PatchSectionView::createProblemMarkes()
+void PatchSectionView::createProblemMarkers()
 {
     QSet<int> foldedProblemCircuits;
 
     for (auto problem: patch->allProblems())
     {
-        if (problem->getSection() == patch->currentSectionIndex()) { // TODO: HACK!!
+        if (problem->getSection() == patch->currentSectionIndex()) {
             const CursorPosition &pos = problem->getCursorPosition();
             Circuit *circuit = section()->circuit(pos.circuitNr);
             if (circuit->isFolded())
@@ -186,11 +186,8 @@ void PatchSectionView::createInfoMarkers()
         for (unsigned j=0; j<circuit->numJackAssignments(); j++) {
             const JackAssignment *ja = circuit->jackAssignment(j);
             QString comment = ja->getComment();
-            if (comment != "") {
-                // TODO: If both problem and info marker are present, they overlay
-                // each other quite uglyly.
+            if (comment != "")
                 placeMarker(CursorPosition(i, j, 0), ICON_MARKER_INFO, comment);
-            }
         }
     }
 }
@@ -252,6 +249,7 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
     CircuitView *cv = circuitViews[pos.circuitNr];
     QRectF rect = cv->cellRect(pos.row, pos.column);
 
+
     IconMarker *marker = new IconMarker(pos, type, toolTip);
     int offset;
     if (pos.row == ROW_CIRCUIT)
@@ -259,8 +257,19 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
     else
         offset = -rect.height();
     scene()->addItem(marker);
+
+    // If a jack (not an atom) has both a comment and a problem marker
+    // they would overlap. We fix this by moving the problem marker to
+    // the left if we see that there is a comment. If we once have more
+    // than two marker type we can think of something more sophisticated
+    // if we like.
+    JackAssignment *ja = section()->jackAssignmentAt(pos);
+    if (ja && ja->getComment() != "" && type == ICON_MARKER_PROBLEM)
+        offset -= rect.height();
+
     QPointF p(cv->pos().x() + rect.right() + offset,
               cv->pos().y() + rect.top());
+
     marker->setPos(p);
 }
 void PatchSectionView::deletePatchSection()
@@ -274,7 +283,7 @@ void PatchSectionView::rebuildPatchSection()
     deletePatchSection();
     buildPatchSection();
     createFoldMarkers();
-    createProblemMarkes();
+    createProblemMarkers();
     createInfoMarkers();
     createLEDMismatchMarkers();
     updateCursor();
