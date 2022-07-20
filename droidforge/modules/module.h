@@ -5,6 +5,7 @@
 #include "registerlabels.h"
 #include "registerlist.h"
 #include "mousedragger.h"
+#include "tuning.h"
 
 #include <QString>
 #include <QPixmap>
@@ -43,6 +44,8 @@ public:
     virtual unsigned numberOffset(register_type_t) const { return 0; };
     virtual QPointF registerPosition(register_type_t, unsigned) const = 0; // in HP
     virtual float registerSize(register_type_t, unsigned) const = 0; // in HP
+    virtual float labelDistance(register_type_t, unsigned) const { return 0; }; // in HP
+    virtual float labelWidth(register_type_t, unsigned) const { return RACV_SMALL_LABEL_WIDTH; };
     virtual bool labelNeedsBackground(register_type_t, unsigned) const { return false; };
     QRectF boundingRect() const override;
     QRectF moduleRect() const;

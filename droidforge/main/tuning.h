@@ -23,7 +23,7 @@
 #define SD_CHECK_INTERVAL                    300  // ms
 #define MAX_DROID_INI                        64000 // from x7.h
 
-#define MAX_LENGTH_SHORTHAND                 5 // for register labels
+#define MAX_LENGTH_SHORTHAND                 12 // for register labels
 #define MAX_RECENT_FILES                     10
 #define UNDO_HISTORY_SIZE                    1000
 #define MAX_NUM_CONTROLLERS                  32 // When parsing a patch
@@ -83,6 +83,10 @@
 #define RACV_CONTROLLER_SNAP_DISTANCE        (1.8 * RACV_PIXEL_PER_HP)
 #define RACV_ARROW_HEAD_SIZE                 (0.6 * RACV_PIXEL_PER_HP)
 #define RACV_DRAG_CIRCLE_SIZE                (2.5 * RACV_PIXEL_PER_HP)
+#define RACV_SMALL_LABEL_WIDTH               2.0
+#define RACV_LARGE_LABEL_WIDTH               4.3
+#define RACV_LABEL_HEIGHT                    (0.7 * RACV_PIXEL_PER_HP)
+
 
 #define CONTROL_LARGE_POT_SIZE               4.1
 #define CONTROL_SMALL_POT_SIZE               1.5

@@ -29,4 +29,20 @@ float ModuleP10::registerSize(register_type_t, unsigned number) const
 
 }
 
+float ModuleP10::labelDistance(register_type_t, unsigned number) const
+{
+    if (number <= 2)
+        return 0.5;
+    else
+        return 0.4;
+}
+
+float ModuleP10::labelWidth(register_type_t, unsigned number) const
+{
+    if (number <= 2)
+        return RACV_LARGE_LABEL_WIDTH;
+    else
+        return RACV_SMALL_LABEL_WIDTH;
+}
+
 

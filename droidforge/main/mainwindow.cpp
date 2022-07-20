@@ -270,6 +270,7 @@ void MainWindow::createViewMenu()
 
     menu->addSeparator();
 
+    ADD_ACTION(ACTION_HIDE_REGISTER_LABELS, menu);
     ADD_ACTION(ACTION_RACK_RESET_ZOOM, menu);
     ADD_ACTION(ACTION_RACK_ZOOM_IN, menu);
     ADD_ACTION(ACTION_RACK_ZOOM_OUT, menu);

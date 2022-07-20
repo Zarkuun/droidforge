@@ -36,3 +36,19 @@ float ModuleP2B8::registerSize(register_type_t type, unsigned) const
     else
         return CONTROL_BUTTON_SIZE;
 }
+
+float ModuleP2B8::labelDistance(register_type_t type, unsigned) const
+{
+    if (type == REGISTER_POT)
+        return 0.5;
+    else
+        return 0.17;
+}
+
+float ModuleP2B8::labelWidth(register_type_t type, unsigned) const
+{
+    if (type == REGISTER_POT)
+        return RACV_LARGE_LABEL_WIDTH;
+    else
+        return RACV_SMALL_LABEL_WIDTH;
+}

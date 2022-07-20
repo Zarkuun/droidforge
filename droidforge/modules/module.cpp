@@ -1,6 +1,7 @@
 #include "module.h"
 #include "colorscheme.h"
 #include "tuning.h"
+#include "editoractions.h"
 
 #include <QPainter>
 #include <QGraphicsScene>
@@ -90,6 +91,9 @@ void Module::paintRegisterLabels(QPainter *painter)
     if (!registerLabels)
         return;
 
+    if (ACTION(ACTION_HIDE_REGISTER_LABELS)->isChecked())
+        return;
+
     painter->setPen(COLOR(RACV_COLOR_REGISTER_LABEL));
     unsigned controller = controllerNumber();
 
@@ -110,16 +114,16 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
     if (text == "")
         text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
 
-    QRectF rr = registerRect(atom.getRegisterType(), atom.getNumber() - numberOffset(atom.getRegisterType()), 1);
+    register_type_t regtype = atom.getRegisterType();
+    unsigned regnum = atom.getNumber() - numberOffset(regtype);
+
+    QRectF rr = registerRect(regtype, regnum, 1);
     qreal mid = (rr.left() + rr.right()) / 2;
-    // painter->setPen(QColor(255, 0, 0));
-    // painter->drawRoundedRect(rr, 0, 0);
+    float dist = RACV_PIXEL_PER_HP * labelDistance(regtype, regnum);
+    float width = RACV_PIXEL_PER_HP * labelWidth(regtype, regnum);
 
-    unsigned RACV_LABEL_WIDTH = RACV_PIXEL_PER_HP * 2;
-    unsigned RACV_LABEL_HEIGHT = RACV_PIXEL_PER_HP * 0.7;
-
-    QRectF r(mid - RACV_LABEL_WIDTH / 2, rr.bottom(),
-             RACV_LABEL_WIDTH, RACV_LABEL_HEIGHT);
+    QRectF r(mid - width / 2, rr.bottom() + dist,
+             width, RACV_LABEL_HEIGHT);
 
     painter->setPen(QColor(0, 0, 0));
     painter->setBrush(QColor(255, 255, 255));
@@ -128,30 +132,6 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
     font.setPixelSize(50);
     painter->setFont(font);
     painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
-
-    // // r.adjust(-20, 0, 20, 0);
-    // QFont font;
-    // font.setPixelSize(100);
-    // QFontMetrics fm(font);
-    // QString testText = text;
-    // if (text.size() == 1)
-    //     testText = "XX";
-    // int refWidth = fm.horizontalAdvance(testText);
-    // float scale = r.width() / refWidth;
-    // font.setPixelSize(100 * scale);
-
-    // if (labelNeedsBackground(atom.getRegisterType(), atom.getNumber())) {
-    //     painter->save();
-    //     painter->setBrush(COLOR(RACV_COLOR_LABEL_BG));
-    //     painter->setPen(Qt::NoPen);
-    //     painter->drawEllipse(r);
-    //     painter->restore();
-    // }
-
-    // // font.setPixelSize(RACV_PIXEL_PER_HP * fontSizes[text.size()] * r.width() / 130 );
-    // painter->setFont(font);
-
-    // painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
 }
 bool Module::haveRegister(AtomRegister atom)
 {

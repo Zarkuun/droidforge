@@ -231,6 +231,10 @@ void EditorActions::createActions()
     actions[ACTION_FOLD_UNFOLD_ALL] = new QAction(tr("Fold / unfold all circuits"), this);
     actions[ACTION_FOLD_UNFOLD_ALL]->setShortcut(QKeySequence(tr("Shift+Space")));
 
+    actions[ACTION_HIDE_REGISTER_LABELS] = new QAction(tr("Hide register labels"), this);
+    actions[ACTION_HIDE_REGISTER_LABELS]->setShortcut(QKeySequence(tr("F8")));
+    actions[ACTION_HIDE_REGISTER_LABELS]->setCheckable(true);
+
     actions[ACTION_NEW_CONTROLLER] = new QAction(tr("New controller..."), this);
     actions[ACTION_NEW_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
     actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("add_controller"), tr("Controller"), this);

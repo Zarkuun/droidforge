@@ -127,7 +127,7 @@ void RegisterLabels::removeController(int number)
     for (auto it = keyBegin(); it != keyEnd(); ++it)
     {
         AtomRegister reg = *it;
-        if (reg.controller() != number)
+        if (reg.controller() != (unsigned)number)
             removed[reg] = (*this)[reg];
     }
     clear();
