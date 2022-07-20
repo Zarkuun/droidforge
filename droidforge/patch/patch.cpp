@@ -91,10 +91,6 @@ void Patch::integratePatch(const Patch *snippet)
         insertSection(index++, clonedSection);
     }
     sectionIndex = startIndex; // move user directly to new section
-
-    // TODO: If the section has no native name and it's a single
-    //       section, use the patch title instead
-    // TODO: Move used registers to free things if required
 }
 void Patch::reorderSections(int fromindex, int toindex)
 {
@@ -159,9 +155,11 @@ void Patch::moveRegistersToOtherControllers(int controllerIndex, RegisterList &r
 {
     unsigned controller = controllerIndex + 1;
 
-    // Get list of all registers.
     RegisterList allRegisters;
     collectAvailableRegisterAtoms(allRegisters);
+
+    RegisterList usedRegisters;
+    collectUsedRegisterAtoms(usedRegisters);
 
     RegisterList remapFrom;
     RegisterList remapTo;
@@ -173,15 +171,19 @@ void Patch::moveRegistersToOtherControllers(int controllerIndex, RegisterList &r
         // Loop through all candidate registers
         for (auto &candidate: allRegisters) {
             if (candidate.getController() == controller)
-                continue; // Don't remap to ourselves
-            // TODO: Fehlt da nicht ein check, ob das schon belegt ist?
+                continue; // Don't remap to the controller we want to free
+
+            if (toRemap.getRegisterType() != candidate.getRegisterType())
+                continue; // not suitable
+
+            if (usedRegisters.contains(candidate))
+                continue; // not free
+
             if (toRemap.getRegisterType() == candidate.getRegisterType())
-            // TODO: remapp G to I or O, but then we need to known
-            // wether G is used as an input or output.
             {
+                usedRegisters.append(candidate);
                 remapFrom.append(toRemap);
                 remapTo.append(candidate);
-                allRegisters.removeAll(candidate);
                 remapped.append(toRemap);
                 break;
             }

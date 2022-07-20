@@ -147,9 +147,6 @@ void MouseDragger::stopHovering()
 }
 int MouseDragger::doubleClickTime() const
 {
-    // TODO: This seems to output a wrong time, at least on Mac.
-    // It is always 400.
-    // return QGuiApplication::styleHints()->mouseDoubleClickInterval();
     return 200;
 }
 int MouseDragger::doubleClickDistance() const

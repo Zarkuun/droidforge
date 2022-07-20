@@ -30,6 +30,12 @@ TODO für die erste Version:
 - Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
 - Man kann kein komplett leeres Patch auf den DROID hochladen.
 
+- Die Doppelklickzeit vom Mac wird von den styleHints() nicht
+  korrekt zurückgegeben. Ist immer 400. Das ist auch sehr lang.
+  Deswegen verwende ich einfach so 200. Wir müssen eine Methode
+  finden, den echten Wert rauszubeikommen. Und das einbauen
+  in MouseDragger::doubleClickTime()
+
 Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 ---------------------------------------------
 
