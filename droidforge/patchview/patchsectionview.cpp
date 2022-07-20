@@ -1150,7 +1150,6 @@ void PatchSectionView::renameCable()
     if (!atom || !atom->isCable())
         return;
 
-    // TODO: Automatisch immer groß schreiben der Kabel
     QString oldName = ((AtomCable *)atom)->getCable();
     QString newName = NameChooseDialog::getName(
                 tr("Rename internal cable '%1'").arg(oldName),
@@ -1496,25 +1495,16 @@ void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
 {
     for (int i=to; i>=from; i--)
         section()->circuit(circuitNr)->deleteJackAssignment(i);
-    section()->sanitizeCursor(); // TODO: Das soll die Section selbst machen
+    section()->sanitizeCursor();
     patch->commit(tr("deleting %1 parameters").arg(to - from + 1));
     emit patchModified();
 }
 const Atom *PatchSectionView::currentAtom() const
 {
-    const JackAssignment *ja = section()->currentJackAssignment();
-    if (!ja)
-        return 0;
-    else {
-        int column = section()->cursorPosition().column;
-        if (!ja->isInput())
-            column = qMin(1, column);
-        return ja->atomAt(column);
-    }
+    return (const_cast<PatchSectionView *>(this))->currentAtom();
 }
 Atom *PatchSectionView::currentAtom()
 {
-    // TODO: Kann man hier nicht Copy & Paste vermeiden?
     JackAssignment *ja = section()->currentJackAssignment();
     if (!ja)
         return 0;
