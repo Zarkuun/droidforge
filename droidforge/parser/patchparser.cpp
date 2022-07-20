@@ -207,7 +207,8 @@ bool PatchParser::maybeParseRegisterComment(QString comment)
             shorthand = m2.captured(1);
             atomcomment = m2.captured(2);
         }
-        patch->addRegisterComment(registerName, controller, number, shorthand, atomcomment);
+        register_type_t registerType = registerName.toLatin1();
+        patch->addRegisterComment(registerType, controller, number, shorthand, atomcomment);
         return true;
     }
     else

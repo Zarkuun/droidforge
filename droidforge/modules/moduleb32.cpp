@@ -1,7 +1,7 @@
 #include "moduleb32.h"
 #include "tuning.h"
 
-unsigned ModuleB32::numRegisters(QChar type) const
+unsigned ModuleB32::numRegisters(register_type_t type) const
 {
     if (type == REGISTER_BUTTON || type == REGISTER_LED)
         return 32;
@@ -9,7 +9,7 @@ unsigned ModuleB32::numRegisters(QChar type) const
         return 0;
 }
 
-QPointF ModuleB32::registerPosition(QChar, unsigned number) const
+QPointF ModuleB32::registerPosition(register_type_t, unsigned number) const
 {
    unsigned row = (number - 1) / 4;
    unsigned column = (number - 1) % 4;
@@ -18,7 +18,7 @@ QPointF ModuleB32::registerPosition(QChar, unsigned number) const
                   row * 2.767 + 2.99);
 }
 
-float ModuleB32::registerSize(QChar, unsigned) const
+float ModuleB32::registerSize(register_type_t, unsigned) const
 {
     return CONTROL_BUTTON_SIZE;
 }

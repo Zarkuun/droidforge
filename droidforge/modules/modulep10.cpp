@@ -1,7 +1,7 @@
 #include "modulep10.h"
 #include "tuning.h"
 
-unsigned ModuleP10::numRegisters(QChar type) const
+unsigned ModuleP10::numRegisters(register_type_t type) const
 {
     if (type == REGISTER_POT)
         return 10;
@@ -9,7 +9,7 @@ unsigned ModuleP10::numRegisters(QChar type) const
         return 0;
 }
 
-QPointF ModuleP10::registerPosition(QChar, unsigned number) const
+QPointF ModuleP10::registerPosition(register_type_t, unsigned number) const
 {
     if (number <= 2)
         return QPointF(hp()/2, 4.91 * (number - 1) + 3.50);
@@ -20,7 +20,7 @@ QPointF ModuleP10::registerPosition(QChar, unsigned number) const
     }
 }
 
-float ModuleP10::registerSize(QChar, unsigned number) const
+float ModuleP10::registerSize(register_type_t, unsigned number) const
 {
     if (number <= 2)
         return CONTROL_LARGE_POT_SIZE;

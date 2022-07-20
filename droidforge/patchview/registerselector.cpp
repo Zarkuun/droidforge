@@ -4,7 +4,7 @@
 
 #include <QRegularExpressionValidator>
 
-RegisterSelector::RegisterSelector(bool isControl, QChar reg, QString regs, QWidget *parent)
+RegisterSelector::RegisterSelector(bool isControl, register_type_t reg, QString regs, QWidget *parent)
     : AtomSubSelector{parent}
     , isControl(isControl)
     , defaultRegisterType(reg)
@@ -34,7 +34,7 @@ RegisterSelector::RegisterSelector(bool isControl, QChar reg, QString regs, QWid
 }
 
 
-void RegisterSelector::addRegisterButton(QChar reg, QString label)
+void RegisterSelector::addRegisterButton(register_type_t reg, QString label)
 {
     QPushButton *button = new QPushButton(QString(reg) + ": " + label);
     buttons.append(button);
@@ -45,18 +45,18 @@ void RegisterSelector::addRegisterButton(QChar reg, QString label)
 }
 
 
-void RegisterSelector::setRegisterType(QChar reg)
+void RegisterSelector::setRegisterType(register_type_t reg)
 {
     registerType = reg;
-    labelRegister->setText(reg);
+    labelRegister->setText(QChar(reg));
 }
 
 
-void RegisterSelector::switchRegister(QChar c)
+void RegisterSelector::switchRegister(register_type_t c)
 {
     for (qsizetype i=0; i<buttons.count(); i++) {
         QPushButton *b = buttons[i];
-        if (b->text().startsWith(c)) {
+        if (b->text().startsWith(QChar(c))) {
             setRegisterType(c);
             return;
         }
@@ -140,7 +140,7 @@ void RegisterSelector::stripExtraChars(QLineEdit *edit)
     QString text = edit->text();
     QString stripped;
     for (qsizetype i=0; i<text.size(); i++) {
-        QChar c = text[i].toUpper();
+        register_type_t c = text[i].toUpper().toLatin1();
         if (isValidRegister(c)) {
             switchRegister(c);
             if (isControl) {
@@ -158,10 +158,10 @@ void RegisterSelector::stripExtraChars(QLineEdit *edit)
     edit->setText(stripped);
 }
 
-bool RegisterSelector::isValidRegister(QChar c)
+bool RegisterSelector::isValidRegister(register_type_t c)
 {
     for (qsizetype i=0; i<buttons.count(); i++) {
-        if (buttons[i]->text().startsWith(c))
+        if (buttons[i]->text().startsWith(QChar(c)))
             return true;
     }
     return false;

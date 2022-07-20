@@ -23,21 +23,12 @@ AtomRegister::AtomRegister(char t, unsigned c, unsigned n)
 {
 }
 
-AtomRegister::AtomRegister(QChar t, unsigned c, unsigned n)
-    : registerType(t.toLatin1())
-    , cont(c)
-    , num(n)
-{
-}
-
-
 AtomRegister::AtomRegister(const AtomRegister &ar)
 {
     registerType = ar.registerType;
     cont = ar.cont;
     num = ar.num;
 }
-
 AtomRegister::AtomRegister(const QString &s)
 {
     // Note: we allow invalid registers such as I0 here. It's easer
@@ -67,7 +58,6 @@ AtomRegister::AtomRegister(const QString &s)
         num = 0;
     }
 }
-
 AtomRegister AtomRegister::operator=(const AtomRegister &ar)
 {
     registerType = ar.registerType;
@@ -75,12 +65,10 @@ AtomRegister AtomRegister::operator=(const AtomRegister &ar)
     num = ar.num;
     return *this;
 }
-
 AtomRegister *AtomRegister::clone() const
 {
     return new AtomRegister(*this);
 }
-
 QString AtomRegister::toString() const
 {
     if (cont)
@@ -88,17 +76,14 @@ QString AtomRegister::toString() const
     else
         return registerType + QString::number(num);
 }
-
 QString AtomRegister::toDisplay() const
 {
     return QString(registerName(registerType)) + " " + toString();
 }
-
 bool AtomRegister::isNull() const
 {
     return registerType == 0;
 }
-
 bool AtomRegister::belongsTo(AtomRegister &other) const
 {
     if (cont != other.cont)
@@ -127,7 +112,6 @@ bool AtomRegister::belongsTo(AtomRegister &other) const
     else
         return false;
 }
-
 bool AtomRegister::needG8() const
 {
     return registerType == REGISTER_GATE
@@ -135,7 +119,6 @@ bool AtomRegister::needG8() const
            && num >= 1
            && num <= 8;
 }
-
 bool AtomRegister::needX7() const
 {
     return registerType == REGISTER_GATE
@@ -143,7 +126,6 @@ bool AtomRegister::needX7() const
            && num >= 9
             && num <= 12;
 }
-
 void AtomRegister::swapControllerNumbers(int fromController, int toController)
 {
     if ((int)cont == fromController)
@@ -151,18 +133,15 @@ void AtomRegister::swapControllerNumbers(int fromController, int toController)
     else if ((int)cont == toController)
         cont = fromController;
 }
-
 void AtomRegister::shiftControllerNumbers(int controller, int by)
 {
     if ((int)cont > controller)
         cont += by;
 }
-
 QString AtomRegister::problemAsInput(const Patch *patch) const
 {
     return generalProblem(patch);
 }
-
 QString AtomRegister::problemAsOutput(const Patch *patch) const
 {
     switch (registerType) {
@@ -177,7 +156,6 @@ QString AtomRegister::problemAsOutput(const Patch *patch) const
     }
     return generalProblem(patch);
 }
-
 QString AtomRegister::generalProblem(const Patch *patch) const
 {
     if (num <= 0)
@@ -190,24 +168,20 @@ QString AtomRegister::generalProblem(const Patch *patch) const
 
     return "";
 }
-
 QDebug &operator<<(QDebug &out, const AtomRegister &ar) {
     out << ar.toString();
     return out;
 }
-
 bool operator==(const AtomRegister &a, const AtomRegister &b)
 {
     return a.registerType == b.registerType
             && a.cont == b.cont
             && a.num == b.num;
 }
-
 bool operator!=(const AtomRegister &a, const AtomRegister &b)
 {
     return !(a == b);
 }
-
 bool operator<(const AtomRegister &a, const AtomRegister &b)
 {
     if (a.cont < b.cont)

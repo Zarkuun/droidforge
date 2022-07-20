@@ -149,9 +149,9 @@ void Patch::setDescription(const QString &d)
     if (d.endsWith("\n"))
         description.removeLast();
 }
-void Patch::addRegisterComment(QChar registerName, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
+void Patch::addRegisterComment(register_type_t registerType, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
 {
-    AtomRegister atom(registerName, controller, number);
+    AtomRegister atom(registerType, controller, number);
     RegisterLabel rc{shorthand, comment};
     registerLabels[atom] = rc;
 }
@@ -374,7 +374,7 @@ QString Patch::problemAt(int section, const CursorPosition &pos)
 }
 bool Patch::registerAvailable(AtomRegister ar) const
 {
-    char regType = ar.getRegisterType().toLatin1();
+    register_type_t regType = ar.getRegisterType();
     unsigned max;
 
     if (ar.isControl()) {

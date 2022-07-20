@@ -1,0 +1,5 @@
+1. Fix: Suche L/B/R in M4
+2. Fix: Speichern von Patches ohne Titel
+3. Cleanup: Quellcodedateien aufgeräumt
+4. QChar losgeworden und register_type_t eingesetzt
+

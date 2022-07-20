@@ -19,10 +19,10 @@ class RegisterSelector : public AtomSubSelector
     Q_OBJECT
 
     bool isControl;
-    QChar registerType;
+    register_type_t registerType;
     unsigned registerNumber;
     unsigned controllerNumber;
-    QChar defaultRegisterType;
+    register_type_t defaultRegisterType;
     QString allowedRegisters;
 
     QLineEdit *lineEditController;
@@ -33,7 +33,7 @@ class RegisterSelector : public AtomSubSelector
     QLabel *labelRegister;
 
 public:
-    RegisterSelector(bool isControl, QChar reg, QString regs, QWidget *parent = nullptr);
+    RegisterSelector(bool isControl, register_type_t reg, QString regs, QWidget *parent = nullptr);
     void getFocus();
     void setAtom(const Patch *, const Atom *atom);
     void clearAtom();
@@ -41,15 +41,15 @@ public:
     void installFocusFilter(QWidget *);
 
 protected:
-    void addRegisterButton(QChar reg, QString label);
-    void setRegisterType(QChar reg);
-    void switchRegister(QChar c);
+    void addRegisterButton(register_type_t reg, QString label);
+    void setRegisterType(register_type_t reg);
+    void switchRegister(register_type_t c);
 
 private:
     void setControllerNumber(unsigned controller);
     void setRegisterNumber(unsigned number);
     void stripExtraChars(QLineEdit *edit);
-    bool isValidRegister(QChar c);
+    bool isValidRegister(register_type_t c);
     QValidator *validator() const;
 
 private slots:

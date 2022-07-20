@@ -39,20 +39,19 @@ public:
     QString getName() const { return name; };
     virtual QString title() const = 0;
     virtual float hp() const = 0;
-    // TODO: QChar loswerden und durch register_t ersetzen. Überall!
-    virtual unsigned numRegisters(QChar) const { return 0; };
-    virtual unsigned numberOffset(QChar) const { return 0; };
-    virtual QPointF registerPosition(QChar, unsigned) const = 0; // in HP
-    virtual float registerSize(QChar, unsigned) const = 0; // in HP
-    virtual bool labelNeedsBackground(QChar, unsigned) const { return false; };
+    virtual unsigned numRegisters(register_type_t) const { return 0; };
+    virtual unsigned numberOffset(register_type_t) const { return 0; };
+    virtual QPointF registerPosition(register_type_t, unsigned) const = 0; // in HP
+    virtual float registerSize(register_type_t, unsigned) const = 0; // in HP
+    virtual bool labelNeedsBackground(register_type_t, unsigned) const { return false; };
     QRectF boundingRect() const override;
 
     bool isController() const;
     void clearHilites();
-    void hiliteRegisters(int usage, QChar type='\0', unsigned number=0);
+    void hiliteRegisters(int usage, register_type_t type=REGISTER_TYPE_NULL, unsigned number=0);
     const QPixmap *getFaceplateImage() const { return &faceplateImage; };
     AtomRegister *registerAt(const QPoint &pos) const;
-    AtomRegister registerAtom(QChar type, unsigned number) const;
+    AtomRegister registerAtom(register_type_t type, unsigned number) const;
     void collectAllRegisters(RegisterList &rl, int number=-1) const;
     unsigned controllerNumber() const;
     void createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex);
@@ -61,8 +60,8 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
-    void paintHiliteRegister(QPainter *painter, int usage, QChar type, unsigned number);
-    QRectF registerRect(QChar type, unsigned number, int usage) const;
+    void paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number);
+    QRectF registerRect(register_type_t type, unsigned number, int usage) const;
     void paintRegisterLabels(QPainter *painter);
     void paintRegisterHilites(QPainter *painter);
     bool haveRegister(AtomRegister atom);

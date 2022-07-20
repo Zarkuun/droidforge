@@ -1,7 +1,7 @@
 #include "moduleg8.h"
 #include "tuning.h"
 
-unsigned ModuleG8::numRegisters(QChar type) const
+unsigned ModuleG8::numRegisters(register_type_t type) const
 {
     if (type == REGISTER_GATE || type == REGISTER_RGB_LED)
         return 8;
@@ -9,7 +9,7 @@ unsigned ModuleG8::numRegisters(QChar type) const
         return 0;
 }
 
-unsigned ModuleG8::numberOffset(QChar type) const
+unsigned ModuleG8::numberOffset(register_type_t type) const
 {
     if (type == REGISTER_RGB_LED)
         return 16;
@@ -17,7 +17,7 @@ unsigned ModuleG8::numberOffset(QChar type) const
         return 0;
 }
 
-QPointF ModuleG8::registerPosition(QChar type, unsigned number) const
+QPointF ModuleG8::registerPosition(register_type_t type, unsigned number) const
 {
     int column = (number - 1) % 2;
     int row = (number - 1) / 2;
@@ -38,7 +38,7 @@ QPointF ModuleG8::registerPosition(QChar type, unsigned number) const
     return QPointF(x, y);
 }
 
-float ModuleG8::registerSize(QChar type, unsigned) const
+float ModuleG8::registerSize(register_type_t type, unsigned) const
 {
     if (type == REGISTER_RGB_LED)
         return CONTROL_RGBLED_SIZE;

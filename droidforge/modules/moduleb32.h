@@ -9,11 +9,11 @@ public:
     ModuleB32() : Module("b32") {}
     QString title() const { return "B32 Controller"; };
     float hp() const { return 10; };
-    unsigned numRegisters(QChar type) const;
+    unsigned numRegisters(register_type_t type) const;
 
 protected:
-    QPointF registerPosition(QChar type, unsigned number) const;
-    float registerSize(QChar type, unsigned number) const;
+    QPointF registerPosition(register_type_t type, unsigned number) const;
+    float registerSize(register_type_t type, unsigned number) const;
 };
 
 #endif // MODULEB32_H

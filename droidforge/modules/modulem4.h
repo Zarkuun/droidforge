@@ -9,11 +9,11 @@ public:
     ModuleM4() : Module("m4") {  }
     QString title() const { return "M4 Motor Fader Unit";  }
     float hp() const { return 14; }
-    unsigned numRegisters(QChar type) const;
+    unsigned numRegisters(register_type_t type) const;
 
 protected:
-    QPointF registerPosition(QChar type, unsigned number) const;
-    float registerSize(QChar type, unsigned number) const;
+    QPointF registerPosition(register_type_t type, unsigned number) const;
+    float registerSize(register_type_t type, unsigned number) const;
 };
 
 #endif // MODULEM4_H

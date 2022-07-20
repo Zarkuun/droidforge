@@ -29,7 +29,7 @@ unsigned Module::controllerNumber() const
 void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
-        QChar type = register_types[i];
+        register_type_t type = register_types[i];
         if (type == REGISTER_EXTRA || type == REGISTER_LED || type == REGISTER_NORMALIZE)
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
@@ -61,7 +61,7 @@ void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
 void Module::paintRegisterHilites(QPainter *painter)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
-        QChar type = register_types[i];
+        register_type_t type = register_types[i];
         for (unsigned j=0; j<numRegisters(type); j++) {
             if (registerHilite[i][j]) {
                 paintHiliteRegister(painter, registerHilite[i][j], type, j+1);
@@ -69,7 +69,7 @@ void Module::paintRegisterHilites(QPainter *painter)
         }
     }
 }
-void Module::paintHiliteRegister(QPainter *painter, int usage, QChar type, unsigned number)
+void Module::paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number)
 {
     QRectF r = registerRect(type, number, usage);
     QPen pen(COLOR(RACV_REGHILITES_PEN_COLOR));
@@ -138,7 +138,7 @@ bool Module::haveRegister(AtomRegister atom)
     bool have = atom.number() >= 1 + offset && atom.number() <= count + offset;
     return have;
 }
-void Module::hiliteRegisters(int usage, QChar type, unsigned number)
+void Module::hiliteRegisters(int usage, register_type_t type, unsigned number)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         if (type == register_types[i] || type == 0) {
@@ -150,7 +150,7 @@ void Module::hiliteRegisters(int usage, QChar type, unsigned number)
         }
     }
 }
-QRectF Module::registerRect(QChar type, unsigned number, int usage) const
+QRectF Module::registerRect(register_type_t type, unsigned number, int usage) const
 {
     QPointF posHP = registerPosition(type, number); // in HP, mid
     float size = registerSize(type, number) * RACV_PIXEL_PER_HP;
@@ -163,7 +163,7 @@ QRectF Module::registerRect(QChar type, unsigned number, int usage) const
 AtomRegister *Module::registerAt(const QPoint &pos) const
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
-        QChar type = register_types[i];
+        register_type_t type = register_types[i];
         if (type == REGISTER_EXTRA)
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
@@ -175,14 +175,14 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
     }
     return 0;
 }
-AtomRegister Module::registerAtom(QChar type, unsigned number) const
+AtomRegister Module::registerAtom(register_type_t type, unsigned number) const
 {
     return AtomRegister(type, controllerNumber(), number + numberOffset(type));
 }
 void Module::collectAllRegisters(RegisterList &rl, int number) const
 {
     for (unsigned i=0; i<NUM_REGISTER_TYPES; i++) {
-        QChar type = register_types[i];
+        register_type_t type = register_types[i];
         unsigned count = numRegisters(type);
         for (unsigned j=1; j<=count; j++) {
             if (number >= 1)

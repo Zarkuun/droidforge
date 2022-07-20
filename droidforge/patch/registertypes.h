@@ -3,6 +3,8 @@
 
 #define NUM_REGISTER_TYPES 10
 
+typedef char register_type_t;
+
 #define    REGISTER_INPUT     'I'
 #define    REGISTER_NORMALIZE 'N'
 #define    REGISTER_OUTPUT    'O'
@@ -14,7 +16,9 @@
 #define    REGISTER_RGB_LED   'R'
 #define    REGISTER_EXTRA     'X'
 
-extern const char register_types[];
-const char *registerName(char registerType);
+#define    REGISTER_TYPE_NULL '\0'
+
+extern const register_type_t register_types[];
+const char *registerName(register_type_t registerType);
 
 #endif // REGISTERTYPES_H

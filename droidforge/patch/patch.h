@@ -93,8 +93,7 @@ public:
     void addController(QString name) { controllers.append(name); };
     void removeController(int index);
     void setDescription(const QString &d);
-    void addRegisterComment(
-            QChar registerName,
+    void addRegisterComment(register_type_t registerType,
             unsigned controller,
             unsigned number,
             const QString &shorthand,

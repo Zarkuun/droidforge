@@ -9,12 +9,12 @@ public:
     ModuleMaster() : Module("master") {  }
     QString title() const { return "DROID master"; }
     float hp() const { return 8; }
-    unsigned numRegisters(QChar type) const;
+    unsigned numRegisters(register_type_t type) const;
 
 protected:
-    QPointF registerPosition(QChar type, unsigned number) const;
-    float registerSize(QChar type, unsigned number) const;
-    bool labelNeedsBackground(QChar, unsigned) const { return true; };
+    QPointF registerPosition(register_type_t type, unsigned number) const;
+    float registerSize(register_type_t type, unsigned number) const;
+    bool labelNeedsBackground(register_type_t, unsigned) const { return true; };
 };
 
 #endif // MODULEMASTER_H

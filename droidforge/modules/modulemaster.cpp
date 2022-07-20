@@ -2,7 +2,7 @@
 #include "tuning.h"
 
 
-unsigned ModuleMaster::numRegisters(QChar type) const
+unsigned ModuleMaster::numRegisters(register_type_t type) const
 {
     if (type == REGISTER_INPUT || type == REGISTER_OUTPUT || type == REGISTER_NORMALIZE)
         return 8;
@@ -14,7 +14,7 @@ unsigned ModuleMaster::numRegisters(QChar type) const
         return 0;
 }
 
-QPointF ModuleMaster::registerPosition(QChar type, unsigned number) const
+QPointF ModuleMaster::registerPosition(register_type_t type, unsigned number) const
 {
     int column = (number - 1) % 4;
     int row = (number - 1) / 4;
@@ -38,7 +38,7 @@ QPointF ModuleMaster::registerPosition(QChar type, unsigned number) const
     return QPointF(x, y);
 }
 
-float ModuleMaster::registerSize(QChar type, unsigned) const
+float ModuleMaster::registerSize(register_type_t type, unsigned) const
 {
     if (type == REGISTER_RGB_LED)
         return CONTROL_RGBLED_SIZE;

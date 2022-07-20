@@ -9,12 +9,12 @@ public:
     ModuleS10() : Module("s10") {  }
     QString title() const  { return "S10 Controller";  }
     float hp() const  { return 5; }
-    unsigned numRegisters(QChar type) const;
+    unsigned numRegisters(register_type_t type) const;
 
 protected:
-    QPointF registerPosition(QChar type, unsigned number) const;
-    float registerSize(QChar type, unsigned number) const;
-    bool labelNeedsBackground(QChar, unsigned) const { return true; };
+    QPointF registerPosition(register_type_t type, unsigned number) const;
+    float registerSize(register_type_t type, unsigned number) const;
+    bool labelNeedsBackground(register_type_t, unsigned) const { return true; };
 };
 
 #endif // MODULES10_H

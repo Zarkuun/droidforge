@@ -1,7 +1,6 @@
 #ifndef ATOMREGISTER_H
 #define ATOMREGISTER_H
 
-#include <QChar>
 #include <QDataStream>
 #include <QList>
 
@@ -10,14 +9,13 @@
 
 class AtomRegister : public Atom
 {
-    char registerType;
+    register_type_t registerType;
     uint8_t cont; // none: master,x7,g8,internal
     uint8_t num;
 
 public:
     AtomRegister();
     AtomRegister(char t, unsigned c, unsigned n);
-    AtomRegister(QChar t, unsigned c, unsigned n); // TODO: Get rid of this crap
     AtomRegister(const AtomRegister& ar);
     AtomRegister(const QString &s);
     AtomRegister operator=(const AtomRegister &ar);
@@ -34,8 +32,8 @@ public:
     unsigned getNumber() const { return num; }
     bool belongsTo(AtomRegister &other) const;
 
-    void setRegisterType(QChar t) { registerType = t.toLatin1(); };
-    QChar getRegisterType() const { return registerType; };
+    void setRegisterType(register_type_t t) { registerType = t; };
+    register_type_t getRegisterType() const { return registerType; };
     bool needG8() const;
     bool needX7() const;
     void swapControllerNumbers(int fromController, int toController);

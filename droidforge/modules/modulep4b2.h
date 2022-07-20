@@ -9,12 +9,12 @@ public:
     ModuleP4B2() : Module("p4b2") { }
     QString title() const { return "P4B2 Controller"; }
     float hp() const { return 5; }
-    unsigned numRegisters(QChar type) const;
-    bool labelNeedsBackground(QChar, unsigned) const;
+    unsigned numRegisters(register_type_t type) const;
+    bool labelNeedsBackground(register_type_t, unsigned) const;
 
 protected:
-    QPointF registerPosition(QChar type, unsigned number) const;
-    float registerSize(QChar type, unsigned number) const;
+    QPointF registerPosition(register_type_t type, unsigned number) const;
+    float registerSize(register_type_t type, unsigned number) const;
 };
 
 #endif // MODULEP4B2_H
