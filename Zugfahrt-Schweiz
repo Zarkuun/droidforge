@@ -11,4 +11,5 @@
 11. Fix: paste deaktivieren in leerer Sektion
 12. Fix: Man kann Unknownjackatome editieren
 13. Cleanup: currentAtom nicht verdoppeln
+14. Fix: Registerlabel immer bündig ausgeben
 

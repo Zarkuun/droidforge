@@ -260,7 +260,6 @@ void RackView::findRegister(AtomRegister reg)
     bool waitForNext = false;
     bool found = false;
 
-    // TODO: Vereinheitlichen mit followCable()
     // First try to find the next atom *after* the current
     Patch::iterator it = patch->begin();
     while (*it) {
