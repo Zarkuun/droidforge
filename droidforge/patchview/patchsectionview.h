@@ -80,6 +80,7 @@ private:
     void moveCursorUpDown(int whence);
     void moveCursorLeftRight(int whence);
     void moveCursorPageUpDown(int whence);
+    void moveCursorTab(int whence);
     void moveCursorHome();
     void moveCursorEnd();
     void editCircuit(int key);

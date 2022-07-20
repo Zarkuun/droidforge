@@ -166,6 +166,82 @@ void PatchSection::moveCursorRight()
     if (cursor.column > 3)
         cursor.column = 3;
 }
+
+void PatchSection::moveCursorForward()
+{
+    CursorPosition pos = cursorPosition();
+    while (true) {
+        if (!nextCursorPosition(pos))
+            return;
+        if (pos.row == ROW_COMMENT || pos.column >= 1)
+            break;
+    }
+    setCursor(pos);
+}
+
+bool PatchSection::nextCircuitCursorPosition(CursorPosition &pos) const
+{
+    if (pos.circuitNr + 1 < numCircuits())
+    {
+        pos.circuitNr ++;
+        pos.row = ROW_CIRCUIT;
+        pos.column = 0;
+        return true;
+    }
+    else
+        return false;
+}
+
+bool PatchSection::nextCursorPosition(CursorPosition &pos) const
+{
+    const Circuit *circuit = circuits[pos.circuitNr];
+
+    // Circuit without jack assignments
+    if (circuit->numJackAssignments() == 0)
+    {
+        if (pos.row == ROW_CIRCUIT && circuit->hasComment()) {
+            pos.row++;
+            return true;
+        }
+        else
+            return nextCircuitCursorPosition(pos);
+    }
+
+    // From header to comment or first jack assignment
+    if (pos.row == ROW_CIRCUIT) {
+        pos.row++;
+        if (!circuit->hasComment())
+            pos.row++;
+        return true;
+    }
+
+    // From comment to first jack assignment
+    if (pos.row == ROW_COMMENT) {
+        pos.row++;
+        return true;
+    }
+
+    // We have this jack assignment, because we start from
+    // a valid cursor position
+    const JackAssignment *ja = circuit->jackAssignment(pos.row);
+    unsigned numAtoms = ja->isInput() ? 3 : 1;
+    if (pos.column < numAtoms) {
+        pos.column ++;
+        return true;
+    }
+
+    pos.column = 1;
+    pos.row ++;
+    if (pos.row >= circuit->numJackAssignments())
+        return nextCircuitCursorPosition(pos);
+
+    return true;
+}
+
+void PatchSection::moveCursorBackward()
+{
+
+}
 void PatchSection::setCursorRow(int row)
 {
     cursor.row = row;

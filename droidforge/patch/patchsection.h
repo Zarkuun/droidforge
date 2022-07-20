@@ -38,6 +38,8 @@ public:
     void moveCursorDown();
     void moveCursorLeft();
     void moveCursorRight();
+    void moveCursorForward();
+    void moveCursorBackward();
     void setCursorRow(int row);
     void setCursorRowColumn(int row, int column);
     void setCursorColumn(int column);
@@ -83,7 +85,9 @@ public:
     void collectRegisterAtoms(RegisterList &) const;
     void removeRegisterReferences(RegisterList &rl);
 
-protected:
+private:
+    bool nextCursorPosition(CursorPosition &pos) const;
+    bool nextCircuitCursorPosition(CursorPosition &pos) const;
 };
 
 
