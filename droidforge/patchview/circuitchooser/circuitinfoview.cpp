@@ -15,8 +15,6 @@ CircuitInfoView::CircuitInfoView(QString circuit, QString description, unsigned 
     , circuitViewWidth(width)
 {
 }
-
-
 QRectF CircuitInfoView::boundingRect() const
 {
     return QRectF(0, 0, *circuitViewWidth, CICH_CIRCUIT_HEIGHT);
@@ -30,7 +28,6 @@ void CircuitInfoView::paintMultilineText(QPainter *painter, unsigned text_x, uns
 {
     QFontMetrics fm = painter->fontMetrics();
     QStringList words = text.split(' ');
-    shout << words;
 
     QStringList lines;
 
@@ -39,9 +36,7 @@ void CircuitInfoView::paintMultilineText(QPainter *painter, unsigned text_x, uns
     while (wordCounter < words.count()) {
         QString word = words[wordCounter++];
         unsigned s = fm.horizontalAdvance(lineText + " " + word + "...");
-        shout << "Word is " << word << " -> " << s;
         if (s > width) {
-            shout << "Line fertig: " << lineText;
             lines.append(lineText);
             lineText = 0;
         }

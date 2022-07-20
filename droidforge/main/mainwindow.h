@@ -77,7 +77,6 @@ private:
     void createEditMenu();
     void createSectionMenu();
     void createViewMenu();
-    void createRackMenu();
     void createHelpMenu();
     void createToolbar();
     void createStatusBar();

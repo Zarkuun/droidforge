@@ -146,8 +146,8 @@ void EditorActions::createActions()
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
     actions[ACTION_TOOLBAR_NEW_CIRCUIT] = new QAction(ICON("new_circuit"), tr("Circuit..."), this);
 
-    actions[ACTION_ADD_JACK] = new QAction(tr("&New parameter..."), this);
-    actions[ACTION_ADD_JACK]->setShortcut(QKeySequence(tr("Ctrl+N")));
+    actions[ACTION_NEW_JACK] = new QAction(tr("&New parameter..."), this);
+    actions[ACTION_NEW_JACK]->setShortcut(QKeySequence(tr("Ctrl+N")));
     actions[ACTION_TOOLBAR_ADD_JACK] = new QAction(ICON("add_jack"), tr("Parameter"), this);
 
     actions[ACTION_EDIT_VALUE] = new QAction(tr("&Edit element under cursor..."), this);
@@ -231,8 +231,8 @@ void EditorActions::createActions()
     actions[ACTION_FOLD_UNFOLD_ALL] = new QAction(tr("Fold / unfold all circuits"), this);
     actions[ACTION_FOLD_UNFOLD_ALL]->setShortcut(QKeySequence(tr("Shift+Space")));
 
-    actions[ACTION_ADD_CONTROLLER] = new QAction(tr("&Add controller module..."), this);
-    actions[ACTION_ADD_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
+    actions[ACTION_NEW_CONTROLLER] = new QAction(tr("New controller..."), this);
+    actions[ACTION_NEW_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
     actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("add_controller"), tr("Controller"), this);
 
     actions[ACTION_EDIT_CIRCUIT_SOURCE] = new QAction(tr("Edit circuit source code"), this);
@@ -300,7 +300,7 @@ void EditorActions::switchSection()
 
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION]->setEnabled(notAtFirstSection);
     actions[ACTION_MERGE_WITH_NEXT_SECTION]->setEnabled(notAtLastSection);
-    actions[ACTION_ADD_JACK]->setEnabled(hasCircuit);
+    actions[ACTION_NEW_JACK]->setEnabled(hasCircuit);
     actions[ACTION_TOOLBAR_ADD_JACK]->setEnabled(hasCircuit);
     actions[ACTION_EDIT_CIRCUIT_SOURCE]->setEnabled(hasCircuit);
     actions[ACTION_PREVIOUS_SECTION]->setEnabled(notAtFirstSection);

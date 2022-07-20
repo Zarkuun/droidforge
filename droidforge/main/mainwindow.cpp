@@ -140,7 +140,6 @@ void MainWindow::showEvent(QShowEvent *)
 void MainWindow::createMenus()
 {
     createFileMenu();
-    createRackMenu();
     createEditMenu();
     createSectionMenu();
     createViewMenu();
@@ -219,7 +218,8 @@ void MainWindow::createEditMenu()
     menu->addSeparator();
 
     ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
-    ADD_ACTION(ACTION_ADD_JACK, menu);
+    ADD_ACTION(ACTION_NEW_JACK, menu);
+    ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
     ADD_ACTION(ACTION_EDIT_VALUE, menu);
     ADD_ACTION(ACTION_FOLLOW_CABLE, menu);
     ADD_ACTION(ACTION_RENAME_CABLE, menu);
@@ -268,18 +268,13 @@ void MainWindow::createViewMenu()
     ADD_ACTION(ACTION_FOLD_UNFOLD, menu);
     ADD_ACTION(ACTION_FOLD_UNFOLD_ALL, menu);
 
-    menu->addSeparator(); // separates "Enter full screen" on Mac
-}
-void MainWindow::createRackMenu()
-{
-    QMenu *menu = menuBar()->addMenu(tr("&Rack"));
-    ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
-
     menu->addSeparator();
 
     ADD_ACTION(ACTION_RACK_RESET_ZOOM, menu);
     ADD_ACTION(ACTION_RACK_ZOOM_IN, menu);
     ADD_ACTION(ACTION_RACK_ZOOM_OUT, menu);
+
+    menu->addSeparator(); // separates "Enter full screen" on Mac
 }
 void MainWindow::createHelpMenu()
 {

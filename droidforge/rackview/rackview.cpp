@@ -34,7 +34,7 @@ RackView::RackView(PatchEditEngine *patch)
     setMouseTracking(true);
     initScene();
 
-    CONNECT_ACTION(ACTION_ADD_CONTROLLER, &RackView::addController);
+    CONNECT_ACTION(ACTION_NEW_CONTROLLER, &RackView::addController);
     CONNECT_ACTION(ACTION_TOOLBAR_ADD_CONTROLLER, &RackView::addController);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &RackView::abortAllActions);
 
@@ -107,7 +107,7 @@ void RackView::popupControllerContextMenu(int controllerIndex, QString moduleTyp
 {
    QMenu *menu = new QMenu(this);
    if (controllerIndex >= 0) {
-       ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
+       ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
        menu->addAction(tr("Remove this controller"), this,
                        [this,controllerIndex,moduleType] () {this->askRemoveController(controllerIndex); });
        if (controllerIndex > 0)
@@ -456,14 +456,14 @@ void RackView::doubleClickOnItem(QGraphicsItem *item)
 
 void RackView::doubleClickOnBackground()
 {
-    TRIGGER_ACTION(ACTION_ADD_CONTROLLER);
+    TRIGGER_ACTION(ACTION_NEW_CONTROLLER);
 }
 
 void RackView::openMenuOnBackground()
 {
     QMenu *menu = new QMenu(this);
     menu->setAttribute(Qt::WA_DeleteOnClose);
-    ADD_ACTION(ACTION_ADD_CONTROLLER, menu);
+    ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
     menu->popup(QCursor::pos());
 }
 

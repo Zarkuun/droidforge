@@ -1,5 +1,4 @@
 ALS NÄCHSTES:
-- Sollte die Tab-Taste nicht einfach zwischen den Zellen rumhüpfen?
 - Intuitiv falsch: Ich drücke = für Kabel. Dann mach ich direkt edit.
   Anstelle eines Kabelnamens kommt jetzt einfach ein garbled-Text.
   überhaupt das Verkabeln nochmal finetunen!
@@ -12,9 +11,13 @@ ALS NÄCHSTES:
   NEE. Es ist der AtomOliner, der hier das Problem ist. Wenn
   man einfach nur tippt.
 
+- Sollte die Tab-Taste nicht einfach zwischen den Zellen rumhüpfen?
+
 BUGS:
 - Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
   Da muss ich ihm länger zeit geben.
+  Außerdem braucht man da wohl eine Animation. Denn wenn das dauert, will
+  man sehen, dass er noch lebt!
 
 
 TODO für die erste Version:
@@ -50,7 +53,12 @@ Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 - Circuits per Drag-Drop vertauschen? Wirklich? Die Selektion verschieben?
   Könnte recht fummelig werden. Es gibt ja Cut&Paste. Reciht das ncht?
   Allenfalls könnte man Alt+Pfeil so machen, dass es die selektion
-  verschiebt, wenn es eine gibt.
+  verschiebt, wenn es eine gibt.o
+  Andererseits ist das das, was man erwartet und ich selbst hab's
+  schon ein paarmal versucht. Man könnte es auf einen Circuit beschränken.
+  Aber dann ist das ja auch schon fast wurst? Naja. Der mousedragger
+  braucht ja items zum Arbeiten, oder? Dann kann man einfach einzelne
+  Circuits verschieben.
 
 - Move circuit up/down: Kann das nicht ins Kontextmenü? Dann würde man
   die Tastendrücke sehen.

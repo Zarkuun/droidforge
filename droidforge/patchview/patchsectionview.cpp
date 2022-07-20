@@ -92,7 +92,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_DISABLE, &PatchSectionView::disableObjects);
     CONNECT_ACTION(ACTION_ENABLE, &PatchSectionView::enableObjects);
     CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
-    CONNECT_ACTION(ACTION_ADD_JACK, &PatchSectionView::addJack);
+    CONNECT_ACTION(ACTION_NEW_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_TOOLBAR_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     CONNECT_ACTION(ACTION_TOOLBAR_ADD_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
@@ -875,7 +875,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         menu->addSeparator();
 
         ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
-        ADD_ACTION(ACTION_ADD_JACK, menu);
+        ADD_ACTION(ACTION_NEW_JACK, menu);
 
         menu->addSeparator();
 
