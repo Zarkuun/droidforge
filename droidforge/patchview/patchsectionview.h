@@ -29,7 +29,6 @@ class PatchSectionView : public QGraphicsView, PatchView
     bool dragging;
 
     QList<CircuitView *>circuitViews;
-    AtomSelectorDialog *atomSelectorDialog; // TODO: Jede Section hat nen eigenen Dialog
     FrameCursor frameCursor;
 
 public:
@@ -38,7 +37,6 @@ public:
     bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);
     QString currentCircuitName() const;
-    QString getTitle() const { return "KEIN TITLE"; }; // TODO; { return section->getNonemptyTitle(); };
     QStringList usedJacks() const;
     void deleteCursorOrSelection();
     void editValue(int key);
@@ -89,7 +87,6 @@ private:
     void editValueByMouse(CursorPosition &pos);
     void editAtom(int key);
     JackAssignment *buildJackAssignment(const QString &jackName);
-    QChar keyToChar(int key); // TODO: was soll das hier?
     void mousePress(QPoint pos, int button, bool doubleClock);
     void createProblemMarkers();
     void createInfoMarkers();

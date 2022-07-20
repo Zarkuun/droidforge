@@ -37,7 +37,6 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     , zoomLevel(0)
     , zoomFactor(1.0)
     , dragging(false)
-    , atomSelectorDialog{}
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -76,8 +75,6 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
 PatchSectionView::~PatchSectionView()
 {
     deletePatchSection();
-    if (atomSelectorDialog)
-        delete atomSelectorDialog;
 }
 void PatchSectionView::connectActions()
 {
@@ -918,13 +915,6 @@ JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
         return new JackAssignmentOutput(name);
     else
         return new JackAssignmentUnknown(name);
-}
-QChar PatchSectionView::keyToChar(int key)
-{
-    if (key >= 0 && key <= 127)
-        return QChar(key);
-    else
-        return ' ';
 }
 void PatchSectionView::copyToClipboard()
 {
