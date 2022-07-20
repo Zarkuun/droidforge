@@ -65,33 +65,55 @@ void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
 }
 void Module::paintRegisterHilites(QPainter *painter)
 {
+    if (!ACTION(ACTION_SHOW_REGISTER_USAGE)->isChecked())
+        return;
+
+    paintRegisterHilites(painter, 1);
+    paintRegisterHilites(painter, 2);
+}
+void Module::paintRegisterHilites(QPainter *painter, int usage)
+{
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         register_type_t type = register_types[i];
         for (unsigned j=0; j<numRegisters(type); j++) {
-            if (registerHilite[i][j]) {
-                paintHiliteRegister(painter, registerHilite[i][j], type, j+1);
+            if (usage == registerHilite[i][j]) {
+                paintHiliteRegister(painter, usage, type, j+1);
             }
         }
     }
 }
 void Module::paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number)
 {
-    QRectF r = registerRect(type, number, usage);
-    QPen pen(COLOR(RACV_REGHILITES_PEN_COLOR));
-    pen.setWidth(10);
-    painter->setPen(pen);
-    painter->setBrush(usage == 2 ? COLOR(RACV_REGHILITES_BG) : COLOR(RACV_REGHILITES_INACTIVE_BG));
-    if (type == REGISTER_RGB_LED || type == REGISTER_EXTRA)
-        painter->drawRect(r);
-    else
-        painter->drawEllipse(r);
+    QRectF r = registerRect(type, number, 1); // usage);
+    QPen pen;
+
+    int d = 8;
+    int i=0;
+    while (r.width() >= 0 ) {
+        i++;
+        if (i%2 == 0)
+            pen.setColor(COLOR(RACV_REGHILITES_LESSER_PEN_COLOR));
+        else if (usage == 2)
+            pen.setColor(COLOR(RACV_REGHILITES_PEN_COLOR));
+        else
+            pen.setColor(QColor(0, 0, 0));
+
+        pen.setWidth(d);
+        painter->setPen(pen);
+        painter->setBrush(Qt::NoBrush);
+        if (type == REGISTER_RGB_LED || type == REGISTER_EXTRA)
+            painter->drawRect(r);
+        else
+            painter->drawEllipse(r);
+        r.adjust(d, d, -d, -d);
+    }
 }
 void Module::paintRegisterLabels(QPainter *painter)
 {
     if (!registerLabels)
         return;
 
-    if (ACTION(ACTION_HIDE_REGISTER_LABELS)->isChecked())
+    if (!ACTION(ACTION_SHOW_REGISTER_LABELS)->isChecked())
         return;
 
     painter->setPen(COLOR(RACV_COLOR_REGISTER_LABEL));

@@ -137,17 +137,14 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Rackview: register marker BG"), list);
     item->setData(1, RACV_REGMARKER_BACKGROUND);
 
-    item = new QListWidgetItem(tr("Rackview: register marker border"), list);
+    item = new QListWidgetItem(tr("Rackview: register marker"), list);
     item->setData(1, RACV_REGMARKER_PEN_COLOR);
 
-    item = new QListWidgetItem(tr("Rackview: register hilites BG"), list);
-    item->setData(1, RACV_REGHILITES_BG);
-
-    item = new QListWidgetItem(tr("Rackview: register hilites inactive BG"), list);
-    item->setData(1, RACV_REGHILITES_INACTIVE_BG);
-
-    item = new QListWidgetItem(tr("Rackview: register hilites border"), list);
+    item = new QListWidgetItem(tr("Rackview: register hilites"), list);
     item->setData(1, RACV_REGHILITES_PEN_COLOR);
+
+    item = new QListWidgetItem(tr("Rackview: register hilitesr lesser"), list);
+    item->setData(1, RACV_REGHILITES_LESSER_PEN_COLOR);
 
     item = new QListWidgetItem(tr("Rackview: register label"), list);
     item->setData(1, RACV_COLOR_REGISTER_LABEL);

@@ -37,7 +37,8 @@ RackView::RackView(PatchEditEngine *patch)
     CONNECT_ACTION(ACTION_NEW_CONTROLLER, &RackView::addController);
     CONNECT_ACTION(ACTION_TOOLBAR_ADD_CONTROLLER, &RackView::addController);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &RackView::abortAllActions);
-    CONNECT_ACTION(ACTION_HIDE_REGISTER_LABELS, &RackView::modifyPatch);
+    CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &RackView::modifyPatch);
+    CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &RackView::modifyPatch);
 
     connectDragger();
 
