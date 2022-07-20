@@ -107,14 +107,23 @@ bool AtomRegister::belongsTo(AtomRegister &other) const
         return false;
     else if (registerType == other.registerType) // identical
         return true;
-    else if (registerType == REGISTER_BUTTON && other.registerType == REGISTER_LED)
+
+    // Buttons and their LEDs (and in the M4 also the RGB registers)
+    else if ((registerType == REGISTER_BUTTON
+             || registerType == REGISTER_LED
+             || registerType == REGISTER_RGB_LED) &&
+            (other.registerType == REGISTER_BUTTON
+                  || other.registerType == REGISTER_LED
+                  || other.registerType == REGISTER_RGB_LED) )
         return true;
-    else if (registerType == REGISTER_LED && other.registerType == REGISTER_BUTTON)
-        return true;
+
+
+    // Inputs of the master and their normalizations
     else if (registerType == REGISTER_INPUT && other.registerType == REGISTER_NORMALIZE)
         return true;
     else if (registerType == REGISTER_NORMALIZE && other.registerType == REGISTER_INPUT)
         return true;
+
     else
         return false;
 }

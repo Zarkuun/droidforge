@@ -1,4 +1,5 @@
 ALS NÄCHSTES:
+- Sollte die Tab-Taste nicht einfach zwischen den Zellen rumhüpfen?
 - Intuitiv falsch: Ich drücke = für Kabel. Dann mach ich direkt edit.
   Anstelle eines Kabelnamens kommt jetzt einfach ein garbled-Text.
   überhaupt das Verkabeln nochmal finetunen!
@@ -12,10 +13,6 @@ ALS NÄCHSTES:
   man einfach nur tippt.
 
 BUGS:
-- Hab auf einem M4 eine L-belegt. Ich kann nach dem Register
-  aber nicht suchen. Er sucht vielleicht nach B oder R oder
-  sowas. -> Das muss noch in belongsTo repariert werden.
-  Beim M4 speziell R und L und B.
 - Patches ohne Titel mit einem Circuit, der gleich einen
   Kommentar hat. Hier wird wohl die erste Zeile als Titel
   geklaut. Wenigstens wenn wir das *speichern* müssen wir
