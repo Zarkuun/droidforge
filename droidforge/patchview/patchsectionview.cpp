@@ -20,6 +20,7 @@
 #include "updatehub.h"
 #include "jackchoosedialog.h"
 #include "patchview.h"
+#include "hintdialog.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -933,6 +934,12 @@ void PatchSectionView::startPatching()
 {
     patch->startPatching();
     emit patchingChanged();
+    HintDialog::hint("start_patching",
+      tr("You are going to create an internal patch connection from the current\n"
+         "parameter to some other parameter of another circuit. Move the cursor\n"
+         "to the target location and press Enter to create a connection.\n\n"
+         "Make sure that every cable is connected to exactly one output parameter\n"
+         "and to one or more input parameters."));
 }
 void PatchSectionView::finishPatching()
 {

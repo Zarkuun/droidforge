@@ -14,9 +14,10 @@ PatchIntegrationDialog::PatchIntegrationDialog(QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
 
-    HintDialog::hint("foo", tr("The patch that you are going to integrate contains controller definitions. If you add them to your patch\n"
-                    "(and actually have those controllers) I make sure that all controller numbers are change accordingly so that\n"
-                    "the integrated patch will work."));
+    HintDialog::hint("integrate_patch",
+       tr("The patch that you are going to integrate contains controller definitions. If you add them to your patch\n"
+          "(and actually have those controllers) I make sure that all controller numbers are change accordingly so that\n"
+          "the integrated patch will work."));
 
     labelControllers = new QLabel();
     checkboxUseControllers = new QCheckBox(tr("Integrate these controller definitions"));
