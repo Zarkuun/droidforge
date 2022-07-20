@@ -384,27 +384,27 @@ void RackView::removeModule(int controllerIndex)
 }
 void RackView::updateRegisterHilites()
 {
-    const Circuit *circuit = section()->currentCircuit();
-    if (!circuit)
-        return;
-
-    RegisterList currentRegisters;
-    CursorPosition cursor = section()->cursorPosition();
-    if (cursor.row == ROW_CIRCUIT || cursor.row == ROW_COMMENT) // Circuit selected
-        circuit->collectRegisterAtoms(currentRegisters);
-    else {
-        const JackAssignment *ja = circuit->jackAssignment(cursor.row);
-        if (cursor.column == 0)
-            ja->collectRegisterAtoms(currentRegisters);
-        else {
-            const Atom *atom = ja->atomAt(cursor.column);
-            if (atom && atom->isRegister())
-                currentRegisters.append(*(AtomRegister *)atom);
-        }
-    }
-
     RegisterList usedRegisters;
     patch->collectUsedRegisterAtoms(usedRegisters);
+
+    RegisterList currentRegisters;
+    const Circuit *circuit = section()->currentCircuit();
+    if (circuit)
+    {
+        CursorPosition cursor = section()->cursorPosition();
+        if (cursor.row == ROW_CIRCUIT || cursor.row == ROW_COMMENT) // Circuit selected
+            circuit->collectRegisterAtoms(currentRegisters);
+        else {
+            const JackAssignment *ja = circuit->jackAssignment(cursor.row);
+            if (cursor.column == 0)
+                ja->collectRegisterAtoms(currentRegisters);
+            else {
+                const Atom *atom = ja->atomAt(cursor.column);
+                if (atom && atom->isRegister())
+                    currentRegisters.append(*(AtomRegister *)atom);
+            }
+        }
+    }
 
     for (auto module: modules) {
         unsigned controller = 0;
