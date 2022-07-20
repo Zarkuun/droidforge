@@ -901,15 +901,6 @@ void PatchSectionView::resizeEvent(QResizeEvent *)
 {
     rebuildPatchSection();
 }
-void PatchSectionView::showEvent(QShowEvent *)
-{
-    // updateCableIndicator(); Was macht das Hier/??
-}
-PatchView *PatchSectionView::patchView()
-{
-    // TODO: Das hier ist der Megahack.
-    return (PatchView *)parent()->parent();
-}
 JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
 {
     Circuit *circuit = currentCircuit();
@@ -1060,7 +1051,7 @@ void PatchSectionView::editJack(int key)
 }
 QString PatchSectionView::currentCircuitName() const
 {
-    // TODO: Wenn es keinen current circuit gibt.
+    // We assume that there is a current circuit!
     return currentCircuit()->getName();
 }
 QStringList PatchSectionView::usedJacks() const
@@ -1101,14 +1092,12 @@ void PatchSectionView::editAtom(int key)
 
     Circuit *circuit = currentCircuit();
     JackAssignment *ja = circuit->jackAssignment(section()->cursorPosition().row);
-    if (ja->jackType() == JACKTYPE_UNKNOWN)
-        return; // TODO: Edit unknown data anyway?
 
     CursorPosition curPos = section()->cursorPosition();
     const Atom *atom = ja->atomAt(curPos.column);
     Atom *newAtom;
 
-    if (key != 0) {
+    if (key != 0 || ja->jackType() == JACKTYPE_UNKNOWN) {
         QRectF cursor = currentCircuitView()->cellRect(curPos.row, curPos.column).translated(currentCircuitView()->pos());
         QPointF topleftRelativeToScene = cursor.topLeft();
         QPointF botrightRelativeToScene = cursor.bottomRight();

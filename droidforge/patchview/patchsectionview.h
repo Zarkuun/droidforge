@@ -61,11 +61,9 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
-    void showEvent(QShowEvent *event);
 
 private:
     bool handleKeyPress(int key, int modifiers);
-    PatchView *patchView();
     void updateCableIndicator();
     CursorPosition *cursorAtMousePosition(QPoint pos) const;
     void setMouseSelection(const CursorPosition &to);
