@@ -1,24 +1,27 @@
 1. Fix: Suche L/B/R in M4
 2. Fix: Speichern von Patches ohne Titel
-3. Cleanup: Quellcodedateien aufgeräumt
-4. Cleanup: QChar losgeworden und register_type_t eingesetzt
-5. Fix: Entfernen von Controllern hat belegte Register verwendet
-6. Cleanup: remapRegister mit iterator programmiert
-7. Cleanup: shiftControllerNumbers mit iterator programmiert
-8. Cleanup: swapControllerNumbers mit iterator programmiert
-9. Fix: Problem und Infoicon nicht mehr übereinander
-10. Fix: Registerhilites bei leeren Sektionen aktualisieren
-11. Fix: paste deaktivieren in leerer Sektion
-12. Fix: Man kann Unknownjackatome editieren
-13. Cleanup: currentAtom nicht verdoppeln
-14. Fix: Registerlabel immer bündig ausgeben
-15. Cleanup: Validator für die Labels
-16. Fix: Repaintglitch bei Registerhilites
-17. Fix: Saubere 2 Zeilen in Circuitbeschreibung
-18. Improve: Rackmenü abgeschafft.
-19. Improve: Zeige Ghostplug während des Patchens
-20. Fix: Labels von entferntem Controller entfernen
-21. Fix: Labels nach einem entfernten Controller verschieben
-22. Fix: Labels auch korrekt remappen (zusammen mit dem Registern)
-23. Improve: Neue Darstellung der Registerlabels
-24. Improve: Neue Darstellung der Hilites
+3. Fix: Problem und Infoicon nicht mehr übereinander
+4. Fix: Registerhilites bei leeren Sektionen aktualisieren
+5. Fix: paste deaktivieren in leerer Sektion
+6. Fix: Man kann Unknownjackatome editieren
+7. Fix: Repaintglitch bei Registerhilites
+8. Fix: Saubere 2 Zeilen in Circuitbeschreibung
+9. Fix: Labels von entferntem Controller entfernen
+10. Fix: Labels nach einem entfernten Controller verschieben
+11. Fix: Labels auch korrekt remappen (zusammen mit dem Registern)
+12. Fix: Registerlabel immer bündig ausgeben
+13. Fix: Entfernen von Controllern hat belegte Register verwendet
+
+1. Cleanup: Quellcodedateien aufgeräumt
+2. Cleanup: QChar losgeworden und register_type_t eingesetzt
+3. Cleanup: remapRegister mit iterator programmiert
+4. Cleanup: shiftControllerNumbers mit iterator programmiert
+5. Cleanup: swapControllerNumbers mit iterator programmiert
+6. Cleanup: currentAtom nicht verdoppeln
+7. Cleanup: Validator für die Labels
+
+1. Improvement: Rackmenü abgeschafft.
+2. Improvement: Zeige Ghostplug während des Patchens
+3. Improvement: Neue Darstellung der Registerlabels
+4. Improvement: Neue Darstellung der Hilites
+5. Improvement: Tab und Backtab geht
