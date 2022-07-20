@@ -88,6 +88,7 @@ public:
 private:
     bool nextCursorPosition(CursorPosition &pos) const;
     bool nextCircuitCursorPosition(CursorPosition &pos) const;
+    bool previousCursorPosition(CursorPosition &pos) const;
 };
 
 

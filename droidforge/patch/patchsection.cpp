@@ -178,20 +178,6 @@ void PatchSection::moveCursorForward()
     }
     setCursor(pos);
 }
-
-bool PatchSection::nextCircuitCursorPosition(CursorPosition &pos) const
-{
-    if (pos.circuitNr + 1 < numCircuits())
-    {
-        pos.circuitNr ++;
-        pos.row = ROW_CIRCUIT;
-        pos.column = 0;
-        return true;
-    }
-    else
-        return false;
-}
-
 bool PatchSection::nextCursorPosition(CursorPosition &pos) const
 {
     const Circuit *circuit = circuits[pos.circuitNr];
@@ -237,10 +223,83 @@ bool PatchSection::nextCursorPosition(CursorPosition &pos) const
 
     return true;
 }
-
+bool PatchSection::nextCircuitCursorPosition(CursorPosition &pos) const
+{
+    if (pos.circuitNr + 1 < numCircuits())
+    {
+        pos.circuitNr ++;
+        pos.row = ROW_CIRCUIT;
+        pos.column = 0;
+        return true;
+    }
+    else
+        return false;
+}
 void PatchSection::moveCursorBackward()
 {
+    CursorPosition pos = cursorPosition();
+    while (true) {
+        if (!previousCursorPosition(pos))
+            return;
+        if (pos.row == ROW_COMMENT || pos.column >= 1)
+            break;
+    }
+    setCursor(pos);
+}
+bool PatchSection::previousCursorPosition(CursorPosition &pos) const
+{
+    if (pos.column > 0) {
+        pos.column--;
+        return true;
+    }
 
+    const Circuit *circuit = circuits[pos.circuitNr];
+
+    if (pos.row > 0) {
+        pos.row--;
+        const JackAssignment *ja = circuit->jackAssignment(pos.row);
+        pos.column = ja->isInput() ? 3 : 1;
+        return true;
+    }
+
+    // We start at row 0? Either to comment or header
+    if (pos.row == 0) {
+        if (circuit->hasComment())
+            pos.row = ROW_COMMENT;
+        else
+            pos.row = ROW_CIRCUIT;
+        return true;
+    }
+
+    // We start at comment -> go to header
+    if (pos.row == ROW_COMMENT) {
+        pos.row = ROW_CIRCUIT;
+        return true;
+    }
+
+    // We start at header -> previous circuit
+    if (pos.circuitNr == 0)
+        return false;
+
+    pos.circuitNr--;
+    circuit = circuits[pos.circuitNr];
+
+    if (circuit->numJackAssignments()) {
+        pos.row = circuit->numJackAssignments() - 1;
+        const JackAssignment *ja = circuit->jackAssignment(pos.row);
+        pos.column = ja->isInput() ? 3 : 1;
+        return true;
+    }
+    else if (circuit->hasComment()) {
+        pos.row = ROW_COMMENT;
+        pos.column = 0;
+        return true;
+    }
+    else {
+        pos.row = ROW_CIRCUIT;
+        pos.column = 0;
+        return true;
+    }
 }
 void PatchSection::setCursorRow(int row)
 {
