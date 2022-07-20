@@ -49,6 +49,14 @@ QString RegisterLabels::toString() const
     }
     return s;
 }
+
+void RegisterLabels::remapRegister(AtomRegister from, AtomRegister to)
+{
+    if (contains(from)) {
+        (*this)[to] = (*this)[from];
+        remove(from);
+    }
+}
 void RegisterLabels::swapRegisters(AtomRegister regA, AtomRegister regB)
 {
     RegisterLabel labA, labB;

@@ -17,6 +17,7 @@ class RegisterLabels : public QMap<AtomRegister, RegisterLabel>
 {
 public:
     QString toString() const;
+    void remapRegister(AtomRegister from, AtomRegister to);
     void swapRegisters(AtomRegister regA, AtomRegister regB);
     void swapControllerNumbers(unsigned fromnum, unsigned tonum);
     void shiftControllerNumbers(int number, int by);

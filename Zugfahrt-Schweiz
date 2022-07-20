@@ -19,3 +19,4 @@
 19. Zeige Ghostplug während des Patchens
 20. Labels von entferntem Controller entfernen
 21. Labels nach einem entfernten Controller verschieben
+22. Labels auch korrekt remappen (zusammen mit dem Registern)

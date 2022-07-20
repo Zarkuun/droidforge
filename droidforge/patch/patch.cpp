@@ -403,6 +403,7 @@ void Patch::remapRegister(AtomRegister from, AtomRegister to)
                 *reg = to;
         }
     }
+    registerLabels.remapRegister(from, to);
 }
 void Patch::swapRegisters(AtomRegister regA, AtomRegister regB)
 {
