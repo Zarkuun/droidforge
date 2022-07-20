@@ -1,7 +1,7 @@
 1. Fix: Suche L/B/R in M4
 2. Fix: Speichern von Patches ohne Titel
 3. Cleanup: Quellcodedateien aufgeräumt
-4. QChar losgeworden und register_type_t eingesetzt
+4. Cleanup: QChar losgeworden und register_type_t eingesetzt
 5. Fix: Entfernen von Controllern hat belegte Register verwendet
 6. Cleanup: remapRegister mit iterator programmiert
 7. Cleanup: shiftControllerNumbers mit iterator programmiert
@@ -15,8 +15,8 @@
 15. Cleanup: Validator für die Labels
 16. Fix: Repaintglitch bei Registerhilites
 17. Fix: Saubere 2 Zeilen in Circuitbeschreibung
-18. Rackmenü abgeschafft.
-19. Zeige Ghostplug während des Patchens
-20. Labels von entferntem Controller entfernen
-21. Labels nach einem entfernten Controller verschieben
-22. Labels auch korrekt remappen (zusammen mit dem Registern)
+18. Improve: Rackmenü abgeschafft.
+19. Improve: Zeige Ghostplug während des Patchens
+20. Fix: Labels von entferntem Controller entfernen
+21. Fix: Labels nach einem entfernten Controller verschieben
+22. Fix: Labels auch korrekt remappen (zusammen mit dem Registern)
