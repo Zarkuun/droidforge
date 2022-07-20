@@ -432,7 +432,7 @@ void PatchSectionView::moveCursor()
 }
 void PatchSectionView::changePatching()
 {
-    updateCursor();
+    rebuildPatchSection(); // remove gray plug if patching was aborted
 }
 void PatchSectionView::newCircuit()
 {

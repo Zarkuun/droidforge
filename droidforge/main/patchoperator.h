@@ -48,6 +48,8 @@ public:
     bool droidSDCardPresent() const { return sdCardPresent; };
     bool droidX7Present() const { return x7Present; };
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
+    bool isPatching() const { return patch->isPatching(); };
+    bool isPatchingFrom(const CursorPosition &pos) const;
 
 protected:
     PatchSection *section() { return patch->currentSection(); };

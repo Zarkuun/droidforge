@@ -44,11 +44,11 @@ public:
     void commitFolding();
 
     bool isPatching() const { return patching; };
+    bool isPatchingFrom(const CursorPosition &pos) const;
     void startPatching();
     void stopPatching();
     PatchSection *getPatchingStartSection();
     const CursorPosition &getPatchingStartPosition() { return patchingStartPosition; };
-
 
 private:
     void clearVersions();

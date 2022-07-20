@@ -128,6 +128,10 @@ void PatchEditEngine::commitFolding()
         }
     }
 }
+bool PatchEditEngine::isPatchingFrom(const CursorPosition &pos) const
+{
+    return isPatching() && patchingStartSection == currentSectionIndex() && patchingStartPosition == pos;
+}
 void PatchEditEngine::startPatching()
 {
     patching = true;

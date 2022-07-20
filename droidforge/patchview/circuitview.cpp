@@ -7,6 +7,7 @@
 #include "jackassignmentunknown.h"
 #include "tuning.h"
 #include "cablecolorizer.h"
+#include "patchoperator.h"
 
 #include <QPainter>
 #include <QFontMetrics>
@@ -146,11 +147,11 @@ void CircuitView::paintJacks(QPainter *painter)
     for (qsizetype row=0; row<circuit->numJackAssignments(); row++)
         paintJack(painter, circuit->jackAssignment(row), row);
 }
-void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput)
+
+void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput, int row, int column)
 {
-    float aspect = the_cable_colorizer->imageAspect();
     int imageHeight = CIRV_CABLEPLUG_HEIGHT;
-    int imageWidth = imageHeight * aspect;
+    int imageWidth = imageHeight * the_cable_colorizer->imageAspect();
     int imageTop = CIRV_CABLEPLUG_TOP_MARGING;
 
     QRectF textRect(
@@ -161,12 +162,18 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
 
     painter->setPen(textcolor);
 
+    CursorPosition pos(circuitNumber, row, column);
+    bool isPatchingFromHere =  the_operator->isPatchingFrom(pos);
+    QRectF r = textRect;
+    QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
+    QImage ghostPlug = *the_cable_colorizer->ghostPlug();
+    if (!isInput)
+        ghostPlug = ghostPlug.mirrored(true, false);
+
     if (atom) {
         QString text(tr(atom->toDisplay().toLatin1()));
-        QRectF r = textRect;
         if (atom->isCable()) {
             text = text.mid(1);
-            QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
             QImage image = *the_cable_colorizer->imageForCable(text);
             if (circuit->isDisabled())
                 image = *the_cable_colorizer->ghostPlug();
@@ -177,8 +184,13 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 painter->drawImage(imageRect, image.mirrored(true, false));
             r = r.translated(imageWidth + STANDARD_SPACING, 0);
         }
-        painter->drawText(r, Qt::AlignVCenter, text);
+        else if (isPatchingFromHere)
+            painter->drawImage(imageRect, ghostPlug);
+        else
+            painter->drawText(r, Qt::AlignVCenter, text);
     }
+    else if (isPatchingFromHere)
+        painter->drawImage(imageRect, ghostPlug);
 }
 void CircuitView::paintLines(QPainter *painter)
 {
@@ -266,7 +278,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
         JackAssignmentInput *jai = (JackAssignmentInput *)ja;
         for (int a=0; a<3; a++) {
             QRectF ar = atomRect(row, a+1);
-            paintAtom(painter, ar,  atomColor, jai->getAtom(a), true);
+            paintAtom(painter, ar,  atomColor, jai->getAtom(a), true, row, a+1);
             if (*selection && (*selection)->atomSelected(circuitNumber, row, a+1))
                 painter->fillRect(ar, COLOR(CIRV_COLOR_SELECTION));
         }
@@ -287,13 +299,13 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
         if (ja->jackType() == JACKTYPE_OUTPUT)
         {
             JackAssignmentOutput *jao = (JackAssignmentOutput *)ja;
-            paintAtom(painter, ar, atomColor, jao->getAtom(), false);
+            paintAtom(painter, ar, atomColor, jao->getAtom(), false, row, 1);
         }
         else  // UNKNOWN
         {
             JackAssignmentUnknown *jau = (JackAssignmentUnknown *)ja;
             AtomInvalid atom(jau->valueToString());
-            paintAtom(painter, ar, atomColor, &atom, false);
+            paintAtom(painter, ar, atomColor, &atom, false, row, 1);
         }
         if (*selection && (*selection)->atomSelected(circuitNumber, row, 1))
             painter->fillRect(ar, COLOR(CIRV_COLOR_SELECTION));

@@ -1,16 +1,4 @@
 ALS NÄCHSTES:
-- Intuitiv falsch: Ich drücke = für Kabel. Dann mach ich direkt edit.
-  Anstelle eines Kabelnamens kommt jetzt einfach ein garbled-Text.
-  überhaupt das Verkabeln nochmal finetunen!
-  Vielleicht muss in die Zelle, wo man = gedrückt hat, auch so eine
-  graues Kabel rein oder so.
-
-  Und wenn man im =-Modus ist, sollte Enter einfach das gleiche
-  sein, wie nochmal =.
-
-  NEE. Es ist der AtomOliner, der hier das Problem ist. Wenn
-  man einfach nur tippt.
-
 - Sollte die Tab-Taste nicht einfach zwischen den Zellen rumhüpfen?
 
 BUGS:

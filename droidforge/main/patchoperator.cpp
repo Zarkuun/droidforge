@@ -660,6 +660,10 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
     }
     return true;
 }
+bool PatchOperator::isPatchingFrom(const CursorPosition &pos) const
+{
+    return patch->isPatchingFrom(pos);
+}
 void PatchOperator::configureColors()
 {
     if (the_colorscheme->isVisible())
