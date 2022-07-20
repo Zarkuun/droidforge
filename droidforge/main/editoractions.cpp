@@ -307,12 +307,13 @@ void EditorActions::switchSection()
     actions[ACTION_NEXT_SECTION]->setEnabled(notAtLastSection);
     actions[ACTION_MOVE_SECTION_UP]->setEnabled(notAtFirstSection);
     actions[ACTION_MOVE_SECTION_DOWN]->setEnabled(notAtLastSection);
+    updatePasteAction();
     moveCursor();
     changeSelection();
 }
 void EditorActions::changeClipboard()
 {
-    actions[ACTION_PASTE]->setEnabled(!the_clipboard->isEmpty());
+    updatePasteAction();
     actions[ACTION_PASTE_SMART]->setEnabled(the_clipboard->numCircuits());
     actions[ACTION_PASTE_AS_SECTION]->setEnabled(the_clipboard->numCircuits());
 }
@@ -400,6 +401,13 @@ void EditorActions::updateDisablingActions()
     actions[ACTION_DISABLE]->setEnabled(somethingEnabled);
     actions[ACTION_ENABLE]->setEnabled(somethingDisabled && !somethingEnabled);
 
+}
+
+void EditorActions::updatePasteAction()
+{
+    // Cannot paste non-circuits into empty section
+    actions[ACTION_PASTE]->setEnabled(!the_clipboard->isEmpty()
+      && !(the_clipboard->numCircuits() == 0 && section()->isEmpty()));
 }
 void EditorActions::changePatching()
 {

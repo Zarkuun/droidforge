@@ -480,11 +480,8 @@ void PatchSectionView::paste()
 {
     if (the_clipboard->numCircuits())
         pasteCircuitsFromClipboard();
-    else if (isEmpty()) {
-        // TODO: updateActions in mainwindow soll paste deaktivieren, wenn
-        // dieser Fall da ist.
+    else if (isEmpty())
         return;
-    }
     else if (the_clipboard->isComment())
         pasteCommentFromClipboard();
     else if (the_clipboard->numJacks())

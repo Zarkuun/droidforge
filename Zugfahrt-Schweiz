@@ -7,4 +7,6 @@
 7. Cleanup: shiftControllerNumbers mit iterator programmiert
 8. Cleanup: swapControllerNumbers mit iterator programmiert
 9. Fix: Problem und Infoicon nicht mehr übereinander
+10. Fix: Registerhilites bei leeren Sektionen aktualisieren 
+11. Fix: paste deaktivieren in leerer Sektion
 

@@ -115,6 +115,7 @@ private slots:
 private:
     void createActions();
     void updateDisablingActions();
+    void updatePasteAction();
 };
 
 extern EditorActions *the_actions;
