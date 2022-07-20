@@ -39,10 +39,7 @@ public:
     QString getComment() const { return comment; };
     void setComment(const QString &c) { comment = c; };
     void changeJack(QString j) { jack = j; };
-    void swapControllerNumbers(int fromNumber, int toNumber);
-    void shiftControllerNumbers(int number, int by);
     void collectRegisterAtoms(RegisterList &) const;
-    void remapRegister(AtomRegister from, AtomRegister to);
 
     virtual ~JackAssignment();
     virtual JackAssignment *clone() const = 0;

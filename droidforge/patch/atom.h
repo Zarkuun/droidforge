@@ -24,8 +24,6 @@ public:
     virtual bool isInvalid() const { return false; };
     virtual bool needG8() const { return false; };
     virtual bool needX7() const { return false; };
-    virtual void swapControllerNumbers(int, int) {};
-    virtual void shiftControllerNumbers(int, int) {};
     virtual QString problemAsInput(const Patch *patch) const = 0;
     virtual QString problemAsOutput(const Patch *patch) const = 0;
 };

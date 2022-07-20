@@ -70,22 +70,6 @@ JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString li
     return ja;
 
 }
-void JackAssignment::swapControllerNumbers(int fromNumber, int toNumber)
-{
-    for (int i=1; i<=3; i++) {
-         Atom *atom = atomAt(i);
-         if (atom)
-             atom->swapControllerNumbers(fromNumber, toNumber);
-    }
-}
-void JackAssignment::shiftControllerNumbers(int number, int by)
-{
-    for (int i=1; i<=3; i++) {
-         Atom *atom = atomAt(i);
-         if (atom)
-             atom->shiftControllerNumbers(number, by);
-    }
-}
 void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
 {
     for (int i=1; i<=3; i++) {
@@ -93,17 +77,6 @@ void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
          if (atom && atom->isRegister()) {
              AtomRegister *ar = (AtomRegister *)atom;
              sl.append(*ar);
-         }
-    }
-}
-void JackAssignment::remapRegister(AtomRegister from, AtomRegister to)
-{
-    for (int i=1; i<=3; i++) {
-         const Atom *atom = atomAt(i);
-         if (atom && atom->isRegister()) {
-             AtomRegister *ar = (AtomRegister *)atom;
-             if (*ar == from)
-                 replaceAtom(i, to.clone());
          }
     }
 }

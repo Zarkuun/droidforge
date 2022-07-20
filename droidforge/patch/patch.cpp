@@ -127,8 +127,7 @@ void Patch::moveControllerSmart(int fromIndex, int toIndex)
 }
 void Patch::removeController(int index)
 {
-    for (auto section: sections)
-        section->shiftControllerNumbers(index + 1, -1);
+    shiftControllerNumbers(index + 1, -1);
     controllers.remove(index);
 }
 void Patch::addDescriptionLine(const QString &line)
@@ -423,14 +422,21 @@ void Patch::removeRegisterReferences(RegisterList &rl)
 }
 void Patch::swapControllerNumbers(int fromNumber, int toNumber)
 {
-    for (auto section: sections)
-        section->swapControllerNumbers(fromNumber, toNumber);
+    for (auto atom: *this) {
+        if (atom->isRegister()) {
+            AtomRegister *areg = (AtomRegister *)atom;
+            areg->swapControllerNumbers(fromNumber, toNumber);
+        }
+    }
 }
 void Patch::shiftControllerNumbers(int number, int by)
 {
-    for (auto section: sections)
-        section->shiftControllerNumbers(number, by);
-
+    for (auto atom: *this) {
+        if (atom->isRegister()) {
+            AtomRegister *areg = (AtomRegister *)atom;
+            areg->shiftControllerNumbers(number, -1);
+        }
+    }
 }
 QString Patch::toString() const
 {

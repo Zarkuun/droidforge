@@ -451,16 +451,6 @@ JackAssignment *PatchSection::jackAssignmentAt(const CursorPosition &pos)
     else
         return 0;
 }
-void PatchSection::swapControllerNumbers(int fromNumber, int toNumber)
-{
-    for (auto circuit: circuits)
-        circuit->swapControllerNumbers(fromNumber, toNumber);
-}
-void PatchSection::shiftControllerNumbers(int number, int by)
-{
-    for (auto circuit: circuits)
-        circuit->shiftControllerNumbers(number, by);
-}
 void PatchSection::collectRegisterAtoms(RegisterList &sl) const
 {
     for (auto circuit: circuits) {
@@ -468,11 +458,6 @@ void PatchSection::collectRegisterAtoms(RegisterList &sl) const
             circuit->collectRegisterAtoms(sl);
     }
 }
-// void PatchSection::remapRegister(AtomRegister from, AtomRegister to)
-// {
-//     for (auto circuit: circuits)
-//         circuit->remapRegister(from, to);
-// }
 void PatchSection::removeRegisterReferences(RegisterList &rl)
 {
     for (auto circuit: circuits)

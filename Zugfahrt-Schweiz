@@ -4,4 +4,6 @@
 4. QChar losgeworden und register_type_t eingesetzt
 5. Fix: Entfernen von Controllern hat belegte Register verwendet
 6. Cleanup: remapRegister mit iterator programmiert
+7. Cleanup: shiftControllerNumbers mit iterator programmiert
+8. Cleanup: swapControllerNumbers mit iterator programmiert
 

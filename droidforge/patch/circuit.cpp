@@ -300,27 +300,12 @@ void Circuit::changeCircuit(QString newCircuit)
     jackAssignments.clear();
     jackAssignments = newJacks;
 }
-void Circuit::swapControllerNumbers(int fromNumber, int toNumber)
-{
-    for (auto ja: jackAssignments)
-        ja->swapControllerNumbers(fromNumber, toNumber);
-}
-void Circuit::shiftControllerNumbers(int number, int by)
-{
-    for (auto ja: jackAssignments)
-        ja->shiftControllerNumbers(number, by);
-}
 void Circuit::collectRegisterAtoms(RegisterList &sl) const
 {
     for (auto ja: jackAssignments) {
         if (!ja->isDisabled())
             ja->collectRegisterAtoms(sl);
     }
-}
-void Circuit::remapRegister(AtomRegister from, AtomRegister to)
-{
-    for (auto ja: jackAssignments)
-        ja->remapRegister(from, to);
 }
 void Circuit::removeRegisterReferences(RegisterList &rl)
 {

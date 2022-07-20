@@ -80,10 +80,7 @@ public:
     JackAssignment *currentJackAssignment();
     const JackAssignment *currentJackAssignment() const;
     JackAssignment *jackAssignmentAt(const CursorPosition &pos);
-    void swapControllerNumbers(int fromNumber, int toNumber);
-    void shiftControllerNumbers(int number, int by);
     void collectRegisterAtoms(RegisterList &) const;
-    // void remapRegister(AtomRegister from, AtomRegister to);
     void removeRegisterReferences(RegisterList &rl);
 
 protected:
