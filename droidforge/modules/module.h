@@ -45,6 +45,7 @@ public:
     virtual float registerSize(register_type_t, unsigned) const = 0; // in HP
     virtual bool labelNeedsBackground(register_type_t, unsigned) const { return false; };
     QRectF boundingRect() const override;
+    QRectF moduleRect() const;
 
     bool isController() const;
     void clearHilites();

@@ -79,7 +79,6 @@
 #define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)
 #define RACV_REGMARKER_EXTRA_DIAMETER        30
 #define RACV_REGMARKER_PEN_WIDTH             10
-#define RACV_REGMARKER_PEN_STYLE             Qt::DotLine
 #define RACV_CONTROLLER_DRAG_WIDTH           4
 #define RACV_CONTROLLER_SNAP_DISTANCE        (1.8 * RACV_PIXEL_PER_HP)
 #define RACV_ARROW_HEAD_SIZE                 (0.6 * RACV_PIXEL_PER_HP)

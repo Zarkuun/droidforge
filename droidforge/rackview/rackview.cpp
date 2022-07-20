@@ -318,8 +318,8 @@ void RackView::refreshModules()
 
     QPointF margin(RACV_MAIN_MARGIN, RACV_MAIN_MARGIN);
     QRectF bounding(
-                modules.first()->boundingRect().topLeft() - margin,
-                modules.last()->boundingRect().bottomRight());
+                modules.first()->moduleRect().topLeft() - margin,
+                modules.last()->moduleRect().bottomRight());
     scene()->setSceneRect(bounding);
     ensureVisible(bounding);
 }
@@ -540,7 +540,7 @@ void RackView::dragController(QGraphicsItem *startItem, QGraphicsItem *, QPoint 
 
     Module *module = modules[moduleIndex];
     dragControllerIndicator->abortAnimation();
-    dragControllerIndicator->setControllerRect(module->boundingRect().translated(module->pos()));
+    dragControllerIndicator->setControllerRect(module->moduleRect().translated(module->pos()));
     dragControllerIndicator->setInsertPos(indicatorPos, ip >= 0);
     dragControllerIndicator->setVisible(true);
     dragControllerIndicator->update();
@@ -597,7 +597,7 @@ int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insert
                 *insertSnap = left;
                 return i;
             }
-            float right = left + module->boundingRect().width();
+            float right = left + module->moduleRect().width();
             if (fromIndex != i+1 && qAbs(right - x) < RACV_CONTROLLER_SNAP_DISTANCE) {
                 *insertSnap = right;
                 return i + 1;

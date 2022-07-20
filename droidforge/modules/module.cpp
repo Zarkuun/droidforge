@@ -48,11 +48,15 @@ void Module::clearHilites()
 }
 QRectF Module::boundingRect() const
 {
+    return moduleRect().adjusted(-RACV_PIXEL_PER_HP, 0, RACV_PIXEL_PER_HP, 0);
+}
+QRectF Module::moduleRect() const
+{
     return QRectF(0, 0, hp() * RACV_PIXEL_PER_HP, RACV_MODULE_HEIGHT);
 }
 void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    QRect r = boundingRect().toRect();
+    QRect r = moduleRect().toRect();
     painter->drawPixmap(r, faceplateImage);
 
     paintRegisterHilites(painter);
@@ -153,9 +157,9 @@ void Module::hiliteRegisters(int usage, register_type_t type, unsigned number)
 QRectF Module::registerRect(register_type_t type, unsigned number, int usage) const
 {
     QPointF posHP = registerPosition(type, number); // in HP, mid
-    float size = registerSize(type, number) * RACV_PIXEL_PER_HP;
-    if (usage == 1)
-        size = size * 2 / 3;
+    float size = registerSize(type, number) * RACV_PIXEL_PER_HP * 2 / 3;
+    if (usage == 2)
+        size = size * 5 / 4;
     QPointF pos(posHP.x() * RACV_PIXEL_PER_HP - size/2,
                 posHP.y() * RACV_PIXEL_PER_HP - size/2);
     return QRectF(pos, QSize(size, size));

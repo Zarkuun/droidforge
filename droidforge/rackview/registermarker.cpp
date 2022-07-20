@@ -7,10 +7,8 @@
 RegisterMarker::RegisterMarker()
      : animation(this, "animationPhase")
 {
-    // TODO: Nicht ovn ellipse ableiten. SElbst malen. die ist kaputt
     QPen pen;
     pen.setWidth(RACV_REGMARKER_PEN_WIDTH);
-    // pen.setStyle(RACV_REGMARKER_PEN_STYLE);
     pen.setColor(COLOR(RACV_REGMARKER_PEN_COLOR));
     setPen(pen);
     setBrush(COLOR(RACV_REGMARKER_BACKGROUND));
@@ -30,8 +28,6 @@ float RegisterMarker::getanimationPhase() const
 
 void RegisterMarker::setanimationPhase(float newAnimationPhase)
 {
-    // if (qFuzzyCompare(animationPhase, newAnimationPhase))
-    //     return;
     animationPhase = newAnimationPhase;
 
     float d = diameter * (animationPhase * 0.2 + 1);
