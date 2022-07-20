@@ -13,16 +13,13 @@ ALS NÄCHSTES:
   man einfach nur tippt.
 
 BUGS:
-- Problem wird nicht angezeigt wenn im Output column > 1 ist
-- Mausklick auf output kann column > 1 machen
-- App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
-  -> Ich warte jetzt auf das Approval zum Developerprogram
 - Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
   Da muss ich ihm länger zeit geben.
 
 
 TODO für die erste Version:
 
+- App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
 - Das "Weitersuchen" ist sehr umständlich. Wir brauchen eine
   zentrale Suchlogik mit:
     - Probleme
