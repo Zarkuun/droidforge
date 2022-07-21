@@ -589,18 +589,25 @@ void RackView::stopDraggingController(QGraphicsItem *startItem, QPoint pos)
 
 int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insertSnap) const
 {
+
     for (auto module: modules) {
         if (module->data(DATA_INDEX_CONTROLLER_INDEX).isValid()) {
             int i = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
             if (i == fromIndex)
                 continue;
+            int snap_distance = RACV_CONTROLLER_SNAP_DISTANCE;
+            // Make it easier to drag it to the utter right
+            if (i == patch->numControllers() - 1 && x > module->boundingRect().right()) {
+                snap_distance *= 3;
+            }
+
             float left = module->pos().x();
-            if (fromIndex != i-1 && qAbs(left - x) < RACV_CONTROLLER_SNAP_DISTANCE) {
+            if (fromIndex != i-1 && qAbs(left - x) < snap_distance) {
                 *insertSnap = left;
                 return i;
             }
             float right = left + module->moduleRect().width();
-            if (fromIndex != i+1 && qAbs(right - x) < RACV_CONTROLLER_SNAP_DISTANCE) {
+            if (fromIndex != i+1 && qAbs(right - x) < snap_distance) {
                 *insertSnap = right;
                 return i + 1;
             }

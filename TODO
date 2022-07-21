@@ -10,15 +10,6 @@ TODO für die erste Version:
 
 - App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
 
-- Das "Weitersuchen" ist sehr umständlich. Wir brauchen eine
-  zentrale Suchlogik mit:
-    - Probleme
-    - Kabel
-    - Register
-    - evtl. später noch Freitextsuche
-    Dabei muss dann auch der Code von findRegister() und followCable()
-    vereinheitlicht werden.
-
 - Manual viewer: Noch ein bisschen aufpeppen oder so.
 
 - Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
