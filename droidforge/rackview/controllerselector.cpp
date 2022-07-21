@@ -85,7 +85,7 @@ void ControllerSelector::placeCursor()
         QString name = controllers[i];
         Module *module = ModuleBuilder::buildModule(name);
         if (name == selectedController) {
-            cursor->setRect(module->boundingRect().translated(x, 0)
+            cursor->setRect(module->moduleRect().translated(x, 0)
                             .adjusted(-CSEL_CURSOR_WIDTH,
                                       -CSEL_CURSOR_WIDTH,
                                        CSEL_CURSOR_WIDTH,
