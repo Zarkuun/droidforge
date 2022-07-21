@@ -6,13 +6,6 @@ WINDOWS:
 - Installationspaket:
   https://doc.qt.io/qtinstallerframework/ifw-tutorial.html
 
-BUGS:
-- Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
-  Da muss ich ihm länger zeit geben.
-  Außerdem braucht man da wohl eine Animation. Denn wenn das dauert, will
-  man sehen, dass er noch lebt!
-
-
 TODO für die erste Version:
 
 - App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
