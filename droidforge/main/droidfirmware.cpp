@@ -56,6 +56,10 @@ unsigned DroidFirmware::circuitManualPage(QString circuit) const
 {
     return circuits[circuit].toObject()["manual"].toInt();
 }
+unsigned DroidFirmware::circuitRamSize(QString circuit) const
+{
+    return circuits[circuit].toObject()["ramsize"].toInt();
+}
 QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
 {
     // Some circuits have array like pitch1...pitch16. In the DROID patch,

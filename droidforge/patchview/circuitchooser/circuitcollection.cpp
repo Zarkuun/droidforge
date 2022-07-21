@@ -134,14 +134,13 @@ void CircuitCollection::loadCircuitCategory(QString category, QString search)
     int index = 0;
     for (qsizetype i=0; i<circuitNames.size(); i++) {
         QString circuit = circuitNames[i];
-        QString description = the_firmware->circuitDescription(circuit);
         if (!search.isEmpty()
             && !circuit.contains(search, Qt::CaseInsensitive))
             // && !description.contains(search, Qt::CaseInsensitive))
         {
             continue;
         }
-        CircuitInfoView *civ = new CircuitInfoView(circuit, description, &circuitViewWidth);
+        CircuitInfoView *civ = new CircuitInfoView(circuit, &circuitViewWidth);
         circuits.append(civ);
         numCircuits ++;
         if (i == selectedCircuit)

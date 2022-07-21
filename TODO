@@ -8,6 +8,12 @@ WINDOWS:
 
 TODO für die erste Version:
 
+- Speicherverbrauch (RAM) der Circuit zusammenrechnen. Dazu brauche ich noch
+  den zur Firmware passenden freien Speicher. Und dann z.B. ein Statusbardings
+  machen, dass die Ramsize anzeigt. Mit einem Balken. Und auch die Größe des
+  aktuellen Circuits, wenn der Cursor drüber steht. Und dann noch ein Problemchecker,
+  der beim ersten Circuit, der nicht mehr reinpasst, einen Fehler draufpappt.
+
 - App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
 
 - Manual viewer: Noch ein bisschen aufpeppen oder so.
@@ -40,8 +46,6 @@ Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 - Copy/Cut/Paste für Sektionen. Das wirkt sich allerdings auf das Clipboard
   aus. Ist wahrscheinlich an vielen Stellen dann relevant. Aber man
   würde es wirklich erwarten.
-
-- Speicherverbrauch (RAM) der Circuit zusammenrechnen
 
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
 

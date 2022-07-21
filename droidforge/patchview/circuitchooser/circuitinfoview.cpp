@@ -8,9 +8,8 @@
 #include <QFontMetrics>
 
 
-CircuitInfoView::CircuitInfoView(QString circuit, QString description, unsigned *width)
+CircuitInfoView::CircuitInfoView(QString circuit, unsigned *width)
     : circuit(circuit)
-    , description(description)
     , selected(false)
     , circuitViewWidth(width)
 {
@@ -71,8 +70,14 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                       the_firmware->circuitTitle(circuit));
 
     // Description
+    QString description = the_firmware->circuitDescription(circuit);
+    unsigned ramsize = the_firmware->circuitRamSize(circuit);
+    QString ramString = QString::number(ramsize) + " " + TR("bytes");
     painter->setPen(COLOR(CICH_COLOR_DESCRIPTION));
-    paintMultilineText(painter, text_x, CICH_PADDING + CICH_TITLE_HEIGHT, *circuitViewWidth - text_x - CICH_PADDING, 2, the_firmware->circuitDescription(circuit));
+    paintMultilineText(painter, text_x, CICH_PADDING + CICH_TITLE_HEIGHT, *circuitViewWidth - text_x - CICH_PADDING, 2, description);
+    QRect ramsizeRect(*circuitViewWidth - 300, CICH_PADDING, 300 - CICH_PADDING, CICH_TITLE_HEIGHT);
+    painter->setPen(COLOR(CICH_RAMSIZE_COLOR));
+    painter->drawText(ramsizeRect, Qt::AlignRight, ramString);
 
     // Icon
     QImage image(QString(CIRCUIT_ICON_PATH +  circuit + CIRCUIT_ICON_SUFFIX));

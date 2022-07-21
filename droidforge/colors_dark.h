@@ -46,6 +46,7 @@ void loadColorsDark()
     colors_dark.insert(451, QColor(255, 255, 255, 255));
     colors_dark.insert(452, QColor(73, 73, 73, 255));
     colors_dark.insert(453, QColor(33, 34, 33, 255));
+    colors_dark.insert(454, QColor(133, 133, 133, 255));
     colors_dark.insert(50, QColor(255, 64, 255, 255));
     colors_dark.insert(500, QColor(0, 0, 0, 70));
     colors_dark.insert(501, QColor(133, 133, 133, 255));

@@ -231,6 +231,9 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Circuit chooser: description"), list);
     item->setData(1, CICH_COLOR_DESCRIPTION);
 
+    item = new QListWidgetItem(tr("Circuit chooser: ram size"), list);
+    item->setData(1, CICH_RAMSIZE_COLOR);
+
     item = new QListWidgetItem(tr("Circuit chooser: circuit BG"), list);
     item->setData(1, CICH_COLOR_CIRCUIT_BACKGROUND);
 
