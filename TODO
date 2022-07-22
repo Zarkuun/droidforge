@@ -1,3 +1,11 @@
+WINDOWS:
+- Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
+  Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
+- MIDI
+- PDF / Manual (dafuer brauchen wir wohl den Visual C Compiler)
+- Installationspaket:
+  https://doc.qt.io/qtinstallerframework/ifw-tutorial.html
+
 BUGS:
 - Wenn man X7-Sd arbeitet: Timeout while trying to safely eject the SD card.
   Da muss ich ihm länger zeit geben.

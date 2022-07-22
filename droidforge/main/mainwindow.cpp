@@ -12,7 +12,9 @@
 #include "patchview.h"
 #include "colorscheme.h"
 #include "patchoperator.h"
+#ifdef HAVE_PDF
 #include "usermanual.h"
+#endif
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -73,8 +75,10 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_RACK_ZOOM_IN, &MainWindow::rackZoomIn);
     CONNECT_ACTION(ACTION_RACK_ZOOM_OUT, &MainWindow::rackZoomOut);
     CONNECT_ACTION(ACTION_RACK_RESET_ZOOM, &MainWindow::rackZoomReset);
+#ifdef HAVE_PDF
     CONNECT_ACTION(ACTION_USER_MANUAL, &MainWindow::showUserManual);
     CONNECT_ACTION(ACTION_CIRCUIT_MANUAL, &MainWindow::showCircuitManual);
+#endif
     CONNECT_ACTION(ACTION_CLEAR_SETTINGS, &MainWindow::clearSettings);
 
     createMenus();
@@ -182,7 +186,9 @@ void MainWindow::createFileMenu()
     menu->addSeparator();
 
     ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, menu);
+#ifdef HAVE_MIDI
     ADD_ACTION(ACTION_UPLOAD_TO_DROID, menu);
+#endif
     ADD_ACTION(ACTION_SAVE_TO_SD, menu);
     ADD_ACTION(ACTION_CLEAR_SETTINGS, menu);
     ADD_ACTION(ACTION_QUIT, menu);
@@ -282,8 +288,10 @@ void MainWindow::createHelpMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&Help"));
     ADD_ACTION(ACTION_ABOUT, menu);
+#ifdef HAVE_PDF
     ADD_ACTION(ACTION_USER_MANUAL, menu);
     ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
+#endif
 
     menu->addSeparator();
 
@@ -312,7 +320,9 @@ void MainWindow::createToolbar()
     ADD_ACTION(ACTION_TOOLBAR_ADD_CONTROLLER, toolbar);
     toolbar->addSeparator();
     ADD_ACTION(ACTION_TOOLBAR_PROBLEMS, toolbar);
+#ifdef HAVE_MIDI
     ADD_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, toolbar);
+#endif
     ADD_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, toolbar);
 }
 void MainWindow::splitterMoved()
@@ -332,6 +342,7 @@ void MainWindow::rackZoomReset()
 {
     rackZoom(0);
 }
+#ifdef HAVE_PDF
 void MainWindow::showUserManual()
 {
     the_manual->show();
@@ -342,6 +353,7 @@ void MainWindow::showCircuitManual()
     if (circuit)
         the_manual->showCircuit(circuit->getName());
 }
+#endif
 void MainWindow::clearSettings()
 {
     QMessageBox box(

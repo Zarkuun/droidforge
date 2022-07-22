@@ -28,8 +28,10 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     the_operator = this;
 
     CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
+#ifdef HAVE_MIDI
     CONNECT_ACTION(ACTION_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, &PatchOperator::upload);
+#endif
     CONNECT_ACTION(ACTION_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
@@ -163,6 +165,7 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
     else
         emit cursorMoved();
 }
+#ifdef HAVE_MIDI
 void PatchOperator::upload()
 {
     if (patch->isModified())
@@ -177,6 +180,7 @@ void PatchOperator::upload()
                     QMessageBox::Ok);
     }
 }
+#endif
 void PatchOperator::saveToSD()
 {
     QString dirPath = sdCardDir();
@@ -271,10 +275,12 @@ void PatchOperator::updateSDAndX7State()
         return;
     }
 
+#ifdef HAVE_MIDI
     bool oldX7State = x7Present;
     x7Present = midiHost.x7Connected();
     if (oldX7State != x7Present)
         emit droidStateChanged();
+#endif
 }
 void PatchOperator::loadFile(const QString &filePath, int how)
 {

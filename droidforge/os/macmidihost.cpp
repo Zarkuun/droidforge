@@ -1,3 +1,5 @@
+#include <QtGlobal>
+#ifdef Q_OS_MAC
 #include "macmidihost.h"
 #include "globals.h"
 
@@ -114,3 +116,4 @@ unsigned MacMIDIHost::prepareSysexMessage(const Patch *patch)
     int totalLen = write - &sysexBuffer[0];
     return totalLen;
 }
+#endif

@@ -48,7 +48,9 @@ private:
 private slots:
     void searchChanged(QString text);
     void saveSettings();
+#ifdef HAVE_MIDI
     void showManual();
+#endif
     void keyPressed(int key);
 };
 

@@ -6,7 +6,9 @@
 #include "updatehub.h"
 #include "clipboard.h"
 #include "colorscheme.h"
+#ifdef HAVE_PDF
 #include "usermanual.h"
+#endif
 
 #include <QApplication>
 #include <QDir>
@@ -32,7 +34,9 @@ int main(int argc, char *argv[])
 
     UpdateHub updateHub; // signal hub, to avoid n:m connections
     Clipboard clipboard; // must be global to all windows
+#ifdef HAVE_PDF
     UserManual userManual;
+#endif
     ColorScheme colorscheme;
     if (colorscheme.isDevelopment())
         colorscheme.dumpHeaderFile();

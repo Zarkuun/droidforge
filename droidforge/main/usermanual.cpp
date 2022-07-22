@@ -1,3 +1,4 @@
+#ifdef HAVE_PDF
 #include "usermanual.h"
 #include "globals.h"
 #include "pageselector.h"
@@ -73,3 +74,4 @@ void UserManual::showCircuit(const QString &circuit)
     show();
     jumpToPage(the_firmware->circuitManualPage(circuit));
 }
+#endif

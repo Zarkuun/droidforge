@@ -5,6 +5,8 @@
 
 #ifdef Q_OS_MAC
     #define ZERO_WIDTH_SPACE QString::fromUtf8("\u200C")
+    #define HAVE_PDF 1
+    #define HAVE_MIDI 1
 #else
     #define ZERO_WIDTH_SPACE QString("")
 #endif

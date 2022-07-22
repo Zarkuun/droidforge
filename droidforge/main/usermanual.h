@@ -1,6 +1,10 @@
 #ifndef USERMANUAL_H
 #define USERMANUAL_H
 
+#include <QtGlobal>
+
+#ifdef Q_OS_MACOS
+
 #include <dialog.h>
 #include <QPdfDocument>
 #include <QPdfView>
@@ -26,4 +30,5 @@ private slots:
 
 extern UserManual *the_manual;
 
+#endif
 #endif // USERMANUAL_H

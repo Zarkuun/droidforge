@@ -4,15 +4,10 @@
 #include "patcheditengine.h"
 #include "editoractions.h"
 #include "patchparser.h"
+#include "os.h"
 
-#ifdef Q_OS_MACOS
-#include "macmidihost.h"
-#else
-#ifdef Q_OS_WIN
-#include "windowsmidihost.h"
-#else
-#include "linuxmidihost.h"
-#endif
+#ifdef HAVE_MIDI
+#include "midihost.h"
 #endif
 
 #include <QObject>
@@ -26,14 +21,8 @@ class PatchOperator : public QObject
     PatchParser parser;
     bool sdCardPresent;
     bool x7Present;
-#ifdef Q_OS_MACOS
-    MacMIDIHost midiHost;
-#else
-#ifdef Q_OS_WIN
-    WindowsMIDIHost midiHost;
-#else
-    LinuxMIDIHost midiHost;
-#endif
+#ifdef HAVE_MIDI
+    MIDIHost midiHost;
 #endif
     QMenu *recentFilesMenu;
 
@@ -57,7 +46,9 @@ protected:
 
 private slots:
     void abortAllActions();
+#ifdef HAVE_MIDI
     void upload();
+#endif
     void saveToSD();
     void newPatch();
     void open();

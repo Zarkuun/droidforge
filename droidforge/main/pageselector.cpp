@@ -1,3 +1,4 @@
+#ifdef HAVE_PDF
 #include "pageselector.h"
 #include "globals.h"
 
@@ -102,3 +103,5 @@ void PageSelector::handleKeyPress(int key)
         return;
     }
 }
+
+#endif

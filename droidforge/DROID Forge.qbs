@@ -2,12 +2,12 @@ import qbs.FileInfo
 
 QtApplication {
     Depends { name: "Qt.widgets" }
-    Depends { name: "Qt.pdfwidgets" }
+//    Depends { name: "Qt.pdfwidgets" }
 
-    cpp.frameworks: [
-        "CoreMIDI",
-        "CoreFoundation",
-    ]
+//    cpp.frameworks: [
+//        "CoreMIDI",
+//        "CoreFoundation",
+//    ]
 
     cpp.defines: [
         // You can make your code fail to compile if it uses deprecated APIs.
@@ -41,6 +41,8 @@ QtApplication {
         "main/dragsectionindicator.h",
         "main/editoractions.cpp",
         "main/editoractions.h",
+        "os/midihost.h",
+        "os/windowsmidihost.h",
         "utilities/iconbase.cpp",
         "utilities/iconbase.h",
         "main/patchoperator.cpp",
