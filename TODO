@@ -6,6 +6,11 @@ WINDOWS:
 - Installationspaket:
   https://doc.qt.io/qtinstallerframework/ifw-tutorial.html
 
+MAC:
+- Ich musste jetzt für Windows die mac-Frameworks deaktivieren.
+  Ich muss im *qbs bedingte Anweisungen reinmachen, die nur auf
+  dem Mac greifen.
+
 TODO für die erste Version:
 
 - Speicherverbrauch (RAM) der Circuit zusammenrechnen. Dazu brauche ich noch
