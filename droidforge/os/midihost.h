@@ -2,8 +2,9 @@
 #define MIDIHOST_H
 
 #include <QtGlobal>
+#include "os.h"
 
-#ifdef Q_MAC_OS
+#ifdef Q_OS_MAC
 #include "macmidihost.h"
 #define MIDIHost MacMIDIHost
 #endif

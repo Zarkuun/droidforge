@@ -211,7 +211,7 @@ bool PatchSection::nextCursorPosition(CursorPosition &pos) const
     // a valid cursor position
     const JackAssignment *ja = circuit->jackAssignment(pos.row);
     unsigned numAtoms = ja->isInput() ? 3 : 1;
-    if (pos.column < numAtoms) {
+    if (pos.column < (int)numAtoms) {
         pos.column ++;
         return true;
     }
@@ -225,7 +225,7 @@ bool PatchSection::nextCursorPosition(CursorPosition &pos) const
 }
 bool PatchSection::nextCircuitCursorPosition(CursorPosition &pos) const
 {
-    if (pos.circuitNr + 1 < numCircuits())
+    if (pos.circuitNr + 1 < (int)numCircuits())
     {
         pos.circuitNr ++;
         pos.row = ROW_CIRCUIT;

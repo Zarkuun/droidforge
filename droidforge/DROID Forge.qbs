@@ -2,12 +2,19 @@ import qbs.FileInfo
 
 QtApplication {
     Depends { name: "Qt.widgets" }
-//    Depends { name: "Qt.pdfwidgets" }
+    Depends { name: "Qt.pdfwidgets" }
 
-//    cpp.frameworks: [
-//        "CoreMIDI",
-//        "CoreFoundation",
-//    ]
+    // Current PDF viewer and MIDI are only supported on
+    // Mac. Also the -framwework option (cpp.framework) is
+    // only available on Mac
+    Properties {
+        condition: qbs.targetOS.contains("macos")
+
+        cpp.frameworks: [
+            "CoreMIDI",
+            "CoreFoundation",
+        ]
+    }
 
     cpp.defines: [
         // You can make your code fail to compile if it uses deprecated APIs.

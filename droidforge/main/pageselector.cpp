@@ -1,3 +1,4 @@
+#include "os.h"
 #ifdef HAVE_PDF
 #include "pageselector.h"
 #include "globals.h"

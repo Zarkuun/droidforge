@@ -4,6 +4,7 @@
 #include "circuitcollection.h"
 #include "dialog.h"
 #include "circuit.h"
+#include "os.h"
 #include "keycapturelineedit.h"
 
 #include <QComboBox>
@@ -48,7 +49,7 @@ private:
 private slots:
     void searchChanged(QString text);
     void saveSettings();
-#ifdef HAVE_MIDI
+#ifdef HAVE_PDF
     void showManual();
 #endif
     void keyPressed(int key);
