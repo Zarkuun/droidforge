@@ -87,6 +87,9 @@ private:
     Patch *editSource(QString oldSource);
     void showSource(QString source);
     bool saveAndCheck(QString path);
+#ifdef Q_OS_WIN
+    bool ejectSDWindows(char driveLetter);
+#endif
 
 signals:
     void patchModified();
