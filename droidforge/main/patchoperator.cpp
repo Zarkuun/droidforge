@@ -14,6 +14,7 @@
 #include <QProcess>
 #include <QTimer>
 #include <QClipboard>
+#include <QStorageInfo>
 
 // #include <CoreMIDI/MIDIServices.h>
 
@@ -245,32 +246,33 @@ void PatchOperator::saveToSD()
         emit droidStateChanged();
     }
 }
-
 QString PatchOperator::sdCardDir() const
 {
-    // WINDOWS: deal with this
-    QDir volumesDir("/Volumes");
-    for (const QFileInfo &file: volumesDir.entryInfoList()) {
-        if (file.fileName().startsWith("."))
-            continue;
-        else if (!file.isDir())
-            continue;
-        else if (isDroidVolume(file)) {
-            return file.filePath();
+    shout << "STORAGES";
+    foreach (const QStorageInfo &storage, QStorageInfo::mountedVolumes()) {
+        shout << storage.rootPath();
+        if (storage.isValid() && storage.isReady() && !storage.isReadOnly()) {
+            if (isDroidVolume(storage.rootPath())) {
+                shout << storage.rootPath() << "is as droid volumne";
+                return storage.rootPath();
+            }
         }
     }
     return "";
 }
-bool PatchOperator::isDroidVolume(const QFileInfo &fileinfo) const
+bool PatchOperator::isDroidVolume(const QString &rootPath) const
 {
-    QDir dir(fileinfo.filePath());
-    return dir.exists("DROIRDCAL.BIN") || dir.exists("DROIDSTA.BIN");
+    QDir dir(rootPath);
+    return dir.exists("DROIDCAL.BIN") || dir.exists("DROIDSTA.BIN");
 }
 void PatchOperator::updateSDAndX7State()
 {
     bool oldSDState = sdCardPresent;
     sdCardPresent = sdCardDir() != "";
+    shout << "present" << sdCardPresent;
+
     if (oldSDState != sdCardPresent) {
+        shout << "present changed";
         emit droidStateChanged();
         return;
     }

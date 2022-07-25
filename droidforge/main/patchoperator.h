@@ -81,7 +81,7 @@ private:
     QStringList getRecentFiles();
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);
-    bool isDroidVolume(const QFileInfo &fileinfo) const;
+    bool isDroidVolume(const QString &rootPath) const;
     void updateSDAndX7State();
     QString sdCardDir() const;
     Patch *editSource(QString oldSource);

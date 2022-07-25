@@ -2,7 +2,10 @@ import qbs.FileInfo
 
 QtApplication {
     Depends { name: "Qt.widgets" }
-    Depends { name: "Qt.pdfwidgets" }
+    Depends {
+        condition: qbs.targetOS.contains("macos")
+        name: "Qt.pdfwidgets"
+    }
 
     // Current PDF viewer and MIDI are only supported on
     // Mac. Also the -framwework option (cpp.framework) is
