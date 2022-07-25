@@ -27,7 +27,7 @@
 // #include <winioctl.h>
 // #include <cfgmgr32.h>
 // #include <fileapi.h>
-bool usbDriveEject(const QString letter)
+bool PatchOperator::ejectSDWindows(const QString letter)
 {
     QString device_path = QStringLiteral("%1:\\").arg(letter);
     QString error_string;
@@ -85,14 +85,9 @@ bool usbDriveEject(const QString letter)
         return false;
     }
     CloseHandle(handleDevice);
-    shout << "EJECTED :_)";
     return true;
 }
 
-bool PatchOperator::ejectSDWindows(char DriveLetter)
-{
-    return usbDriveEject(QString(DriveLetter));
-}
 #endif
 
 PatchOperator *the_operator = 0;
@@ -286,7 +281,7 @@ void PatchOperator::saveToSD()
     }
 
 #ifdef Q_OS_WIN
-    if (ejectSDWindows(dir.absolutePath()[0].toLatin1()))
+    if (ejectSDWindows(dir.absolutePath().mid(0, 1)))
     {
         sdCardPresent = false;
         emit droidStateChanged();
@@ -341,12 +336,9 @@ void PatchOperator::saveToSD()
 }
 QString PatchOperator::sdCardDir() const
 {
-    shout << "STORAGES";
     foreach (const QStorageInfo &storage, QStorageInfo::mountedVolumes()) {
-        shout << storage.rootPath();
         if (storage.isValid() && storage.isReady() && !storage.isReadOnly()) {
             if (isDroidVolume(storage.rootPath())) {
-                shout << storage.rootPath() << "is as droid volumne";
                 return storage.rootPath();
             }
         }
@@ -362,10 +354,8 @@ void PatchOperator::updateSDAndX7State()
 {
     bool oldSDState = sdCardPresent;
     sdCardPresent = sdCardDir() != "";
-    shout << "present" << sdCardPresent;
 
     if (oldSDState != sdCardPresent) {
-        shout << "present changed";
         emit droidStateChanged();
         return;
     }

@@ -88,7 +88,7 @@ private:
     void showSource(QString source);
     bool saveAndCheck(QString path);
 #ifdef Q_OS_WIN
-    bool ejectSDWindows(char driveLetter);
+    bool ejectSDWindows(const QString letter);
 #endif
 
 signals:
