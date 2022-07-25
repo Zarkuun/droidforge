@@ -1,6 +1,6 @@
 #include "editoractions.h"
-#include "globals.h"
 #include "iconbase.h"
+#include "globals.h"
 #include "patchoperator.h"
 #include "updatehub.h"
 #include "clipboard.h"
@@ -50,7 +50,7 @@ void EditorActions::createActions()
     actions[ACTION_TOOLBAR_SAVE] = new QAction(ICON("save"), tr("Save"), this);
 
     actions[ACTION_SAVE_AS] = new QAction(tr("Save &as..."), this);
-    actions[ACTION_SAVE_AS]->setShortcuts(QKeySequence::SaveAs);
+    actions[ACTION_SAVE_AS]->setShortcut(QKeySequence(tr("Ctrl+Shift+S")));
 
     actions[ACTION_EXPORT_SELECTION] = new QAction(tr("E&xport selection as patch..."), this);
     actions[ACTION_EXPORT_SELECTION]->setEnabled(false);
@@ -63,7 +63,7 @@ void EditorActions::createActions()
 
     actions[ACTION_SAVE_TO_SD] = new QAction(tr("Save to DROID microSD card"), this);
     actions[ACTION_SAVE_TO_SD]->setShortcut(QKeySequence(tr("F10")));
-   actions[ACTION_TOOLBAR_SAVE_TO_SD] = new QAction(ICON("save_to_sd"), tr("Save to SD"), this);
+    actions[ACTION_TOOLBAR_SAVE_TO_SD] = new QAction(ICON("save_to_sd"), tr("Save to SD"), this);
 
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS
