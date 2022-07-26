@@ -17,15 +17,11 @@ int WindowsMIDIHost::findX7Device() const
 {
     MIDIOUTCAPS caps;
     UINT nMidiDeviceNum = midiOutGetNumDevs();
-    shout << "Devices found: " << nMidiDeviceNum;
     for (unsigned int i = 0; i < nMidiDeviceNum; ++i) {
         midiOutGetDevCaps(i, &caps, sizeof(MIDIOUTCAPS));
         QString name = QString::fromWCharArray(caps.szPname);
-        shout << "MIDI devcie:" << name;
-        if (name.contains("X7")) {
-            shout << "FOUND!";
+        if (name.contains("X7"))
             return i;
-        }
     }
     return -1;
 }
@@ -65,14 +61,9 @@ QString WindowsMIDIHost::sendPatch(const Patch *patch)
 
         /* Unprepare the buffer and MIDIHDR */
         while (MIDIERR_STILLPLAYING == midiOutUnprepareHeader(handle, &midiHdr, sizeof(MIDIHDR)))
-        {
-            shout << ".";
             QThread::msleep(100);
-        }
     }
 
     midiOutClose(handle);
-    shout << "Bis hierher kein Fehler";
     return "";
-
 }

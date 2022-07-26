@@ -8,8 +8,6 @@ WINDOWS:
   Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
   die Betriebssysteme brauche.
 
-- MIDI
-
 - Installationspaket:
   Geht, aber noch verfeinern.
   Ich kompiliere jetzt mit MSVC. Das nochmal probieren, anpassen

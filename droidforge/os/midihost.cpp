@@ -25,8 +25,8 @@ unsigned MIDIHost::prepareSysexMessage(const Patch *patch)
     unsigned offset = 5;
     uint8_t *write = &sysexBuffer[5];
     while (i < droidini.size()) {
-        // Hack for MacOS that is missing one byte every 255 bytes
-        if (offset == SYSEX_MAX_CHUNK) {
+        // Hack for MacOS that is missing one byte every 255 bytes.
+        if (needLostBytesHack() && offset == SYSEX_MAX_CHUNK) {
             *write++ = ' ';
             offset = 0;
         }

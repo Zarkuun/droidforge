@@ -17,6 +17,9 @@ public:
     bool x7Connected() const override;
     QString sendPatch(const Patch *patch) override;
 
+protected:
+    virtual bool needLostBytesHack() const override { return true; };
+
 private:
     MIDIEndpointRef findX7() const;
 };
