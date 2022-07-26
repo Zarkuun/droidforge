@@ -6,8 +6,12 @@
 #include "patchparser.h"
 #include "os.h"
 
-#ifdef HAVE_MIDI
-#include "midihost.h"
+#ifdef Q_OS_MAC
+#include "macmidihost.h"
+#define OurMIDIHost MacMIDIHost
+#else
+#include "windowsmidihost.h"
+#define OurMIDIHost WinMIDIHost
 #endif
 
 #include <QObject>
@@ -22,7 +26,7 @@ class PatchOperator : public QObject
     bool sdCardPresent;
     bool x7Present;
 #ifdef HAVE_MIDI
-    MIDIHost midiHost;
+    OurMIDIHost midiHost;
 #endif
     QMenu *recentFilesMenu;
 

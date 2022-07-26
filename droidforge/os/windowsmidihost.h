@@ -1,20 +1,17 @@
 #ifndef WINDOWSMIDIHOST_H
 #define WINDOWSMIDIHOST_H
 
-#include "patch.h"
-#include "tuning.h"
+#include "midihost.h"
 
 #include <stdint.h>
 #include <QString>
 
-class WindowsMIDIHost
+class WindowsMIDIHost : public MIDIHost
 {
-    uint8_t sysexBuffer[MAX_DROID_INI + 16 + 1000 /* test */];
-
 public:
     WindowsMIDIHost() {};
-    bool x7Connected() const { return false; }
-    QString sendPatch(const Patch *patch) { return ""; };
+    bool x7Connected() const override;
+    QString sendPatch(const Patch *patch) override;
 };
 
 #endif // WINDOWSMIDIHOST_H

@@ -3,7 +3,7 @@ import qbs.FileInfo
 QtApplication {
     Depends { name: "Qt.widgets" }
     Depends {
-        condition: qbs.targetOS.contains("macos")
+        // condition: qbs.targetOS.contains("macos")
         name: "Qt.pdfwidgets"
     }
 
@@ -41,8 +41,12 @@ QtApplication {
     ]
 
     files: [
+        "os/midihost.cpp",
+        "os/midihost.h",
         "os/macmidihost.cpp",
         "os/macmidihost.h",
+        "os/windowsmidihost.cpp",
+        "os/windowsmidihost.h",
         "main/cablestatusindicator.cpp",
         "main/cablestatusindicator.h",
         "main/colorscheme.cpp",
@@ -51,8 +55,6 @@ QtApplication {
         "main/dragsectionindicator.h",
         "main/editoractions.cpp",
         "main/editoractions.h",
-        "os/midihost.h",
-        "os/windowsmidihost.h",
         "utilities/iconbase.cpp",
         "utilities/iconbase.h",
         "main/patchoperator.cpp",

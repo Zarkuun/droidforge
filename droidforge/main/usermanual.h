@@ -2,8 +2,9 @@
 #define USERMANUAL_H
 
 #include <QtGlobal>
+#include "os.h"
 
-#ifdef Q_OS_MACOS
+#ifdef HAVE_PDF
 
 #include <dialog.h>
 #include <QPdfDocument>

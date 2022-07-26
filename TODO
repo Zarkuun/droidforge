@@ -1,11 +1,16 @@
 WINDOWS:
+
 - Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
   Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
   Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
   die Betriebssysteme brauche.
+
 - MIDI
+
 - PDF / Manual (dafuer brauchen wir wohl den Visual C Compiler)
+
 - Installationspaket:
+  Geht, aber noch verfeinern.
   https://www.walletfox.com/course/qtinstallerframeworkexample.php
   https://download.qt.io/official_releases/qt-installer-framework/4.4.1/
   https://doc.qt.io/qtinstallerframework/ifw-tutorial.html

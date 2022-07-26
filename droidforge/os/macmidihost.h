@@ -1,29 +1,24 @@
 #ifndef MACMIDIHOST_H
 #define MACMIDIHOST_H
 
-#include "patch.h"
-#include "tuning.h"
-
-#include <stdint.h>
+#include "midihost.h"
 #include <QString>
 #include <CoreMIDI/MIDIServices.h>
 #include <CoreFoundation/CFRunLoop.h>
 
 
-class MacMIDIHost
+class MacMIDIHost : public MIDIHost
 {
     MIDIPortRef   outputPortRef;
     MIDIClientRef clientRef;
-    Byte sysexBuffer[MAX_DROID_INI + 16 + 1000 /* test */];
 
 public:
     MacMIDIHost();
-    bool x7Connected() const;
-    QString sendPatch(const Patch *patch);
-    MIDIEndpointRef findX7() const;
+    bool x7Connected() const override;
+    QString sendPatch(const Patch *patch) override;
 
 private:
-    unsigned prepareSysexMessage(const Patch *patch);
+    MIDIEndpointRef findX7() const;
 };
 
 #endif // MACMIDIHOST_H

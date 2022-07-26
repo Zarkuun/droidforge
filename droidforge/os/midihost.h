@@ -3,10 +3,21 @@
 
 #include <QtGlobal>
 #include "os.h"
+#include "patch.h"
+#include "tuning.h"
 
-#ifdef Q_OS_MAC
-#include "macmidihost.h"
-#define MIDIHost MacMIDIHost
-#endif
+class MIDIHost
+{
+    uint8_t sysexBuffer[MAX_DROID_INI + 16 + 1000 /* test */]; // TODO:Korrekte Groesse
+
+public:
+    MIDIHost();
+    virtual bool x7Connected() const = 0;
+    virtual QString sendPatch(const Patch *patch) = 0;
+
+protected:
+    unsigned prepareSysexMessage(const Patch *patch);
+};
+
 
 #endif // MIDIHOST_H
