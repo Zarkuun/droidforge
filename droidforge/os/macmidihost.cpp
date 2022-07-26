@@ -50,7 +50,7 @@ QString MacMIDIHost::sendPatch(const Patch *patch)
 
     bzero(&req, sizeof(req));
     req.destination = endpointRef;
-    req.data = sysexBuffer;
+    req.data = sysexData();
     req.bytesToSend = sysexLength;
     req.complete = false; // Wird von außen gesetzt?
     req.completionProc = sysex_complete; // Callback

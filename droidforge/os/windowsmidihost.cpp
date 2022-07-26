@@ -1,3 +1,5 @@
+#include "os.h"
+#ifdef Q_OS_WIN
 #include <windows.h>
 #include "windowsmidihost.h"
 #include "globals.h"
@@ -67,3 +69,4 @@ QString WindowsMIDIHost::sendPatch(const Patch *patch)
     midiOutClose(handle);
     return "";
 }
+#endif
