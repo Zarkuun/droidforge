@@ -9,6 +9,7 @@ Dialog::Dialog(QString id, QWidget *parent)
     , id(id)
     , closeOnReturn(true)
 {
+    setDefaultSize(QSize(1000, 770));
     QSettings settings;
     if (settings.contains(id + "/size"))
         resize(settings.value(id + "/size").toSize());
