@@ -1,8 +1,5 @@
 WINDOWS:
 
-- Die Groesse vom PDF-Viewer wird nicht persistiert. Und sie ist
-  sowieso viel zu klein.
-
 - Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
   Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
   Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer

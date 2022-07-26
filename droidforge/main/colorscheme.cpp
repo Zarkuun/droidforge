@@ -29,7 +29,6 @@ ColorScheme::ColorScheme(QWidget *parent)
     QLabel label("am I in the dark?");
     int text_hsv_value = label.palette().color(QPalette::WindowText).value();
     int bg_hsv_value = label.palette().color(QPalette::Window).value();
-    shout << "text" << text_hsv_value << "bg" << bg_hsv_value;
     dark = text_hsv_value > bg_hsv_value;
 #endif
 
