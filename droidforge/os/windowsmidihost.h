@@ -12,6 +12,9 @@ public:
     WindowsMIDIHost() {};
     bool x7Connected() const override;
     QString sendPatch(const Patch *patch) override;
+
+private:
+    int findX7Device() const;
 };
 
 #endif // WINDOWSMIDIHOST_H

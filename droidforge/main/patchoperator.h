@@ -11,7 +11,7 @@
 #define OurMIDIHost MacMIDIHost
 #else
 #include "windowsmidihost.h"
-#define OurMIDIHost WinMIDIHost
+#define OurMIDIHost WindowsMIDIHost
 #endif
 
 #include <QObject>

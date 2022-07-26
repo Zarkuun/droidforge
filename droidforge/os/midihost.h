@@ -16,6 +16,7 @@ public:
     virtual QString sendPatch(const Patch *patch) = 0;
 
 protected:
+    uint8_t *sysexData() { return &sysexBuffer[0]; };
     unsigned prepareSysexMessage(const Patch *patch);
 };
 
