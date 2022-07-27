@@ -9,12 +9,15 @@
 
 AtomNumber *AtomNumber::clone() const
 {
-    return new AtomNumber(number, numberType, fraction);
+    return new AtomNumber(number, numberType);
 }
 
 QString AtomNumber::toString() const
 {
-    float num = fraction ? 1.0 / number : number;
+    if (numberType == ATOM_NUMBER_FRACTION)
+        return QString::number(1.0 / number);
+
+    float num = number;
 
     if (numberType == ATOM_NUMBER_ONOFF) {
         return number == 0 ? "off" : "on";
@@ -36,7 +39,7 @@ QString AtomNumber::toString() const
 
 QString AtomNumber::toDisplay() const
 {
-    if (fraction)
+    if (numberType == ATOM_NUMBER_FRACTION)
         return "1 / " + toString();
     else
         return toString();
@@ -49,7 +52,7 @@ bool AtomNumber::isNegatable() const
 
 QString AtomNumber::toNegatedString() const
 {
-    AtomNumber n(-number, numberType, fraction);
+    AtomNumber n(-number, numberType);
     return n.toString();
 }
 

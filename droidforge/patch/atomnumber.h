@@ -7,7 +7,8 @@ typedef enum {
     ATOM_NUMBER_NUMBER,
     ATOM_NUMBER_VOLTAGE,
     ATOM_NUMBER_PERCENTAGE,
-    ATOM_NUMBER_ONOFF
+    ATOM_NUMBER_ONOFF,
+    ATOM_NUMBER_FRACTION,
 } atom_number_t;
 
 
@@ -15,15 +16,14 @@ class AtomNumber : public Atom
 {
     float number; // 1V is 0.1. For 1/4 is 0.25, not 4
     atom_number_t numberType;
-    bool fraction; // true -> output as 1/X fraction (only for Atom B)
 
 public:
-    AtomNumber(float n, atom_number_t t, bool fraction)
-        : number(n), numberType(t), fraction(fraction) {};
+    AtomNumber(float n, atom_number_t t)
+        : number(n), numberType(t) {};
     float getNumber() const { return number; };
     atom_number_t getType() const { return numberType; };
+    bool isFraction() const { return numberType == ATOM_NUMBER_FRACTION; };
     AtomNumber *clone() const;
-    bool isFraction() const { return fraction; };
     QString toString() const;
     QString toDisplay() const;
     bool isNegatable() const;

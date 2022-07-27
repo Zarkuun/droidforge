@@ -386,7 +386,7 @@ void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
     for (auto &jackName: ei) {
         auto ja = new JackAssignmentInput(jackName);
         if (the_firmware->jackHasDefaultvalue(name, jackName)) {
-            AtomNumber *an = new AtomNumber(the_firmware->jackDefaultvalue(name, jackName), ATOM_NUMBER_NUMBER, false);
+            AtomNumber *an = new AtomNumber(the_firmware->jackDefaultvalue(name, jackName), ATOM_NUMBER_NUMBER);
             ja->replaceAtom(1, an);
         }
         circuit->addJackAssignment(ja);

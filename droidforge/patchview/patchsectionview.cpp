@@ -911,7 +911,7 @@ JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
         auto ja = new JackAssignmentInput(name);
         if (the_firmware->jackHasDefaultvalue(circuitName, name)) {
             float default_value = the_firmware->jackDefaultvalue(circuitName, name);
-            AtomNumber *an = new AtomNumber(default_value, ATOM_NUMBER_NUMBER, false);
+            AtomNumber *an = new AtomNumber(default_value, ATOM_NUMBER_NUMBER);
             ja->replaceAtom(1, an);
         }
         return ja;

@@ -54,7 +54,7 @@ private slots:
     void switchToVoltage();
     void switchToPercentage();
     void switchToOnOff();
-    void toggleFraction(bool checked);
+    void switchToFraction();
     void openTable();
 };
 

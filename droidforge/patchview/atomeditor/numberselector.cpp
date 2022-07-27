@@ -11,6 +11,8 @@
 #include <QHBoxLayout>
 #include <QComboBox>
 
+#define ONE_OVER_ZERO 99999
+
 NumberSelector::NumberSelector(QWidget *parent)
     : AtomSubSelector{parent}
     , number(0.0)
@@ -29,12 +31,11 @@ NumberSelector::NumberSelector(QWidget *parent)
     // Buttons for switching between different units
     QGridLayout *buttonBox = new QGridLayout();
     buttonTable = new QPushButton(tr("Table"), this);
-    buttonFraction = new QPushButton(tr("1 / X"), this);
-    buttonFraction->setCheckable(true);
     buttonNumber = new QPushButton("➞ " + tr("#"), this);
     buttonVoltage = new QPushButton("➞ " + tr("V"), this);
     buttonPercentage = new QPushButton("➞ " + tr("%"), this);
     buttonOnOff = new QPushButton("➞ " + tr("□ / ▣"), this);
+    buttonFraction = new QPushButton(tr("1 / X"), this);
     buttonBox->addWidget(buttonTable, 0, 0, 1, 2);
     buttonBox->addWidget(buttonNumber, 1, 0);
     buttonBox->addWidget(buttonVoltage, 1, 1);
@@ -50,7 +51,7 @@ NumberSelector::NumberSelector(QWidget *parent)
     connect(lineEdit, &QLineEdit::textEdited, this, &NumberSelector::lineEdited);
     connect(buttonTable, &QPushButton::pressed, this, &NumberSelector::openTable);
     connect(buttonNumber, &QPushButton::pressed, this, &NumberSelector::switchToNumber);
-    connect(buttonFraction, &QPushButton::toggled, this, &NumberSelector::toggleFraction);
+    connect(buttonFraction, &QPushButton::pressed, this, &NumberSelector::switchToFraction);
     connect(buttonVoltage, &QPushButton::pressed, this, &NumberSelector::switchToVoltage);
     connect(buttonPercentage, &QPushButton::pressed, this, &NumberSelector::switchToPercentage);
     connect(buttonOnOff, &QPushButton::pressed, this, &NumberSelector::switchToOnOff);
@@ -138,6 +139,8 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonVoltage->setEnabled(true);
         buttonPercentage->setEnabled(true);
         buttonOnOff->setEnabled(true);
+        buttonFraction->setEnabled(true);
+        labelFraction->setVisible(false);
         unitName = "";
         break;
 
@@ -146,6 +149,8 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonVoltage->setEnabled(false);
         buttonPercentage->setEnabled(true);
         buttonOnOff->setEnabled(true);
+        buttonFraction->setEnabled(true);
+        labelFraction->setVisible(false);
         unitName = tr("V");
         break;
 
@@ -155,6 +160,8 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonVoltage->setEnabled(true);
         buttonPercentage->setEnabled(false);
         buttonOnOff->setEnabled(true);
+        buttonFraction->setEnabled(true);
+        labelFraction->setVisible(false);
         break;
 
     case ATOM_NUMBER_ONOFF:
@@ -162,6 +169,18 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonVoltage->setEnabled(true);
         buttonPercentage->setEnabled(true);
         buttonOnOff->setEnabled(false);
+        buttonFraction->setEnabled(true);
+        labelFraction->setVisible(false);
+        unitName = "";
+        break;
+
+    case ATOM_NUMBER_FRACTION:
+        buttonNumber->setEnabled(true);
+        buttonVoltage->setEnabled(true);
+        buttonPercentage->setEnabled(true);
+        buttonOnOff->setEnabled(true);
+        buttonFraction->setEnabled(false);
+        labelFraction->setVisible(true);
         unitName = "";
         break;
     }
@@ -191,18 +210,21 @@ Atom *NumberSelector::getAtom() const
         value /= 10;
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
         value /= 100;
-
-    bool frac = false;
-    if (buttonFraction->isChecked()) {
-        frac = true;
-        value = 1.0 / value;
+    else if (numberType == ATOM_NUMBER_FRACTION) {
+        if (value == 0)
+            value = ONE_OVER_ZERO;
+        else
+            value = 1.0 / value;
     }
-    return new AtomNumber(value, numberType, frac);
+
+    return new AtomNumber(value, numberType);
 }
 
 QString NumberSelector::niceNumber(float v)
 {
-    QString s = QString::number(v, 'f', 6);
+    int intDigits = QString::number(unsigned(qAbs(v))).length();
+
+    QString s = QString::number(v, 'f', qMax(2, 6 - intDigits));
     if (!s.contains("."))
         return s; // Can this happen?
 
@@ -253,6 +275,8 @@ void NumberSelector::switchToNumber()
         number /= 10;
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
         number /= 100;
+    else if (numberType == ATOM_NUMBER_FRACTION)
+        number = (number == 0) ? ONE_OVER_ZERO : 1.0 / number;
     setNumberType(ATOM_NUMBER_NUMBER);
     lineEdit->setText(niceNumber(number));
     lineEdit->setFocus();
@@ -265,6 +289,8 @@ void NumberSelector::switchToVoltage()
         number *= 10;
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
         number /= 10;
+    else if (numberType == ATOM_NUMBER_FRACTION)
+        number = (number == 0) ? ONE_OVER_ZERO : 10.0 / number;
     setNumberType(ATOM_NUMBER_VOLTAGE);
     lineEdit->setText(niceNumber(number));
     lineEdit->setFocus();
@@ -277,6 +303,8 @@ void NumberSelector::switchToPercentage()
         number *= 100;
     else if (numberType == ATOM_NUMBER_VOLTAGE)
         number *= 10;
+    else if (numberType == ATOM_NUMBER_FRACTION)
+        number = (number == 0) ? ONE_OVER_ZERO : 100.0 / number;
     setNumberType(ATOM_NUMBER_PERCENTAGE);
     lineEdit->setText(niceNumber(number));
     lineEdit->setFocus();
@@ -288,25 +316,26 @@ void NumberSelector::switchToOnOff()
         number /= 10;
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
         number /= 100;
+    else if (numberType == ATOM_NUMBER_FRACTION)
+        number = (number == 0) ? ONE_OVER_ZERO : 1.0 / number;
     number = number > BOOLEAN_VALUE_THRESHOLD ? 1 : 0;
     setNumberType(ATOM_NUMBER_ONOFF);
     lineEdit->setText(number ? "on" : "off");
     lineEdit->setFocus();
 }
 
-void NumberSelector::toggleFraction(bool checked)
+void NumberSelector::switchToFraction()
 {
-    if (number == 0.0) {
-        buttonFraction->setChecked(false);
-        labelFraction->setVisible(false);
-        checked = false;
-    }
-    else {
-        number = 1.0 / number;
-        lineEdit->setText(niceNumber(number));
-        lineEdit->setFocus();
-    }
-    labelFraction->setVisible(checked);
+    if (numberType == ATOM_NUMBER_NUMBER ||
+        numberType == ATOM_NUMBER_ONOFF)
+        number = (number == 0) ? ONE_OVER_ZERO : 1.0 / number;
+    else if (numberType == ATOM_NUMBER_VOLTAGE)
+        number = (number == 0) ? ONE_OVER_ZERO : 10.0 / number;
+    else if (numberType == ATOM_NUMBER_PERCENTAGE)
+        number = (number == 0) ? ONE_OVER_ZERO : 100.0 / number;
+    setNumberType(ATOM_NUMBER_FRACTION);
+    lineEdit->setText(niceNumber(number));
+    lineEdit->setFocus();
 }
 
 void NumberSelector::openTable()

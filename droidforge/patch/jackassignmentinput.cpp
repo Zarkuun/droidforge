@@ -216,7 +216,7 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
         if (bf == 0)
             atoms[1] = new AtomInvalid(b);
         else
-            atoms[1] = new AtomNumber(1.0 / bf, ATOM_NUMBER_NUMBER, true);
+            atoms[1] = new AtomNumber(1.0 / bf, ATOM_NUMBER_FRACTION);
         return;
     }
     atoms[0] = parseInputAtom(a);
@@ -266,9 +266,9 @@ bool JackAssignmentInput::isUndefined() const
 Atom *JackAssignmentInput::parseOnOff(QString s)
 {
     if (s == "on")
-        return new AtomNumber(1.0, ATOM_NUMBER_ONOFF, false);
+        return new AtomNumber(1.0, ATOM_NUMBER_ONOFF);
     else if (s == "off")
-        return new AtomNumber(0.0, ATOM_NUMBER_ONOFF, false);
+        return new AtomNumber(0.0, ATOM_NUMBER_ONOFF);
     else
         return 0;
 }
@@ -292,5 +292,5 @@ Atom *JackAssignmentInput::parseNumber(QString s)
     if (!ok)
         return 0;
     else
-        return new AtomNumber(number * factor, at, false);
+        return new AtomNumber(number * factor, at);
 }

@@ -1,3 +1,6 @@
+BUGS:
+ - Fraction: 1 / 0 kann man hinschreiben. Was macht eigentlich DROID danit?
+
 WINDOWS:
 
 - Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
