@@ -171,23 +171,24 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
         ghostPlug = ghostPlug.mirrored(true, false);
 
     if (atom) {
-        QString text(tr(atom->toDisplay().toLatin1()));
-        if (atom->isCable()) {
-            text = text.mid(1);
-            QImage image = *the_cable_colorizer->imageForCable(text);
-            if (circuit->isDisabled())
-                image = *the_cable_colorizer->ghostPlug();
-
-            if (isInput)
-                painter->drawImage(imageRect, image);
-            else
-                painter->drawImage(imageRect, image.mirrored(true, false));
-            r = r.translated(imageWidth + STANDARD_SPACING, 0);
-        }
-        else if (isPatchingFromHere)
+        if (isPatchingFromHere)
             painter->drawImage(imageRect, ghostPlug);
-        else
+        else {
+            QString text(tr(atom->toDisplay().toLatin1()));
+            if (atom->isCable()) {
+                text = text.mid(1);
+                QImage image = *the_cable_colorizer->imageForCable(text);
+                if (circuit->isDisabled())
+                    image = *the_cable_colorizer->ghostPlug();
+
+                if (isInput)
+                    painter->drawImage(imageRect, image);
+                else
+                    painter->drawImage(imageRect, image.mirrored(true, false));
+                r = r.translated(imageWidth + STANDARD_SPACING, 0);
+            }
             painter->drawText(r, Qt::AlignVCenter, text);
+        }
     }
     else if (isPatchingFromHere)
         painter->drawImage(imageRect, ghostPlug);
