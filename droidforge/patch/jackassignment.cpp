@@ -106,13 +106,12 @@ bool numericStringLess(const QString &a, const QString &b)
         return true;
     else if (a[0] == b[0])
         return numericStringLess(a.mid(1), b.mid(1));
-
-    if (a[0].isDigit() && !b[0].isDigit())
+    else if (a[0].isDigit() && !b[0].isDigit())
         return false;
     else if (!a[0].isDigit() && b[0].isDigit())
         return true;
     else if (!a[0].isDigit() && !b[0].isDigit())
-        return numericStringLess(a.mid(1), b.mid(1));
+        return a[0] < b[0];
 
     // OK. Now we have two digits. We do not compare the digits
     // but the number that is constructed by all following digits
