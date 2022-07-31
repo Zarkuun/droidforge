@@ -5,7 +5,7 @@
 #ifdef QT_DEBUG
 #define APPLICATION_VERSION                  ("SNAPSHOT " __DATE__)
 #else
-#define APPLICATION_VERSION                  "0.2"
+#define APPLICATION_VERSION                  "0.3"
 #endif
 #define LICENSE_URL                          "https://www.gnu.org/licenses/gpl.txt"
 

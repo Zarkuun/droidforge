@@ -4,12 +4,12 @@ set -e
 set -v
 
 VERSION=0.2
-WORKDIR=hirn3
-PACDIR=$(pwd)/winpackbasedir2
+WORKDIR=deploy-tmp-dir
+PACDIR=$(pwd)/winpackbasedir
 DATADIR="$PACDIR/packages/de.dmmdm.droidforge/data"
 METADIR="$PACDIR/packages/de.dmmdm.droidforge/meta"
-BUILDDIR=build-release
-WINDEPLOYQT="/C/Qt/6.3.1/mingw_64/bin/windeployqt.exe"
+BUILDDIR=droidforge/build-release
+WINDEPLOYQT="/C/Qt/6.3.1/msvc2019_64/bin/windeployqt.exe"
 BINARYCREATOR="/C/Qt/QtIFW-4.4.1/bin/binarycreator.exe"
 echo "Bitte das Release bauen und enter druecken"
 read
@@ -20,7 +20,9 @@ cp -v "$BUILDDIR/desktop/install-root/bin/DROID Forge.exe" "$WORKDIR"
 cd "$WORKDIR"
 $WINDEPLOYQT "DROID Forge.exe"
 cd ..
-cp -v mingwlibs/* "$WORKDIR"
+
+# This was needed when the compiler mingw was used
+# cp -v mingwlibs/* "$WORKDIR"
 
 
 echo "Creating package for Windows in $PACDIR..."
@@ -93,7 +95,7 @@ QMAKE_EXTRA_COMPILERS += example
 
 OTHER_FILES = README
 
-win32:RC_ICONS += droidforge.ico
+win32:RC_ICONS += droidforge-win-icon.png
 EOF
 
 

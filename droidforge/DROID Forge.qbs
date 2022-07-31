@@ -7,9 +7,9 @@ QtApplication {
         name: "Qt.pdfwidgets"
     }
 
-    Group {
+    Properties {
         condition: qbs.targetOS.contains("windows")
-        cpp.dynamicLibraries: [ "Winmm" ]
+        cpp.dynamicLibraries: [ "winmm" ]
     }
 
     // Current PDF viewer and MIDI are only supported on
