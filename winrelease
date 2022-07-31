@@ -3,7 +3,7 @@
 set -e
 set -v
 
-VERSION=0.2
+VERSION=$(./version)
 WORKDIR=deploy-tmp-dir
 PACDIR=$(pwd)/winpackbasedir
 DATADIR="$PACDIR/packages/de.dmmdm.droidforge/data"
@@ -11,8 +11,6 @@ METADIR="$PACDIR/packages/de.dmmdm.droidforge/meta"
 BUILDDIR=droidforge/build-release
 WINDEPLOYQT="/C/Qt/6.3.1/msvc2019_64/bin/windeployqt.exe"
 BINARYCREATOR="/C/Qt/QtIFW-4.4.1/bin/binarycreator.exe"
-echo "Bitte das Release bauen und enter druecken"
-read
 
 rm -rf "$WORKDIR"
 mkdir -p "$WORKDIR"
@@ -37,19 +35,19 @@ cp "droidforge/GNU GPL v3.txt" "$PACDIR/packages/de.dmmdm.droidforge/meta"
 cat <<EOF > "$PACDIR/config/config.xml"
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-    <Name>DROID Forge</Name>
+    <Name>DROID Forge $VERSION</Name>
     <Version>$VERSION</Version>
     <Title>DROID Forge $VERSION Installer</Title>
     <Publisher>Der Mann mit der Maschine</Publisher>
     <StartMenuDir>DROID Forge</StartMenuDir>
-    <TargetDir>@HomeDir@/DROID Forge</TargetDir>
+    <TargetDir>@HomeDir@/DROID Forge $VERSION</TargetDir>
 </Installer>
 EOF
 
 cat << EOF > "$METADIR/package.xml"
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>DROID Forge</DisplayName>
+    <DisplayName>DROID Forge $VERSION</DisplayName>
     <Description>Create patches for your DROID master from Der Mann mit der Maschine</Description>
     <Version>$VERSION</Version>
     <ReleaseDate>$(date +%Y-%m-%d)</ReleaseDate>
