@@ -8,12 +8,7 @@ WINDOWS:
   Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
   die Betriebssysteme brauche.
 
-- Installationspaket:
-  Geht, aber noch verfeinern.
-  Ich kompiliere jetzt mit MSVC. Das nochmal probieren, anpassen
-  https://www.walletfox.com/course/qtinstallerframeworkexample.php
-  https://download.qt.io/official_releases/qt-installer-framework/4.4.1/
-  https://doc.qt.io/qtinstallerframework/ifw-tutorial.html
+- Das Icon wird noch nicht genommen.
 
 MAC:
 - Ich musste jetzt für Windows die mac-Frameworks deaktivieren.
