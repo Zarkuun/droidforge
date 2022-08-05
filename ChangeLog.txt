@@ -1,0 +1,3 @@
+0.4:
+	FIX: avoid numbers like 1.123e-5
+	FIX: don't convert numbers like 0.000000001 to 0 anymore
