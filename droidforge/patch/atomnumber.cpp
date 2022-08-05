@@ -1,6 +1,7 @@
 #include "atomnumber.h"
 #include "tuning.h"
 #include "patchproblem.h"
+#include "globals.h"
 
 #include <QCoreApplication>
 
@@ -15,7 +16,7 @@ AtomNumber *AtomNumber::clone() const
 QString AtomNumber::toString() const
 {
     if (numberType == ATOM_NUMBER_FRACTION)
-        return QString::number(1.0 / number);
+        return niceNumber(1.0 / number);
 
     float num = number;
 
@@ -34,7 +35,7 @@ QString AtomNumber::toString() const
         factor = 10;
         suffix = "V";
     }
-    return QString::number(num * factor) + suffix;
+    return niceNumber(num * factor) + suffix;
 }
 
 QString AtomNumber::toDisplay() const
@@ -66,6 +67,16 @@ QString AtomNumber::problemAsOutput(const Patch *) const
     return tr("You cannot use a fixed number for an output parameter");
 }
 
+QString AtomNumber::niceNumber(float num)
+{
+    QString numString = QString::number(num, 'f', 9);
+    while (numString.contains('.') && numString.endsWith('0'))
+        numString.chop(1);
+    if (numString.endsWith('.'))
+        numString.chop(1);
+    return numString;
+}
+
 QString AtomNumber::toFractionString(float number) const
 {
     if (number < 0)
@@ -90,9 +101,9 @@ QString AtomNumber::toFractionString(float number) const
         float mid = (float)mid_p / (float)mid_q;
         if (qAbs(number - mid) <= maxError) {
             if (reci)
-                return QString("%1/%2").arg(mid_q).arg(mid_p);
+                return QString("%1/%2").arg(mid_q).arg(niceNumber(mid_p));
             else
-                return QString("%1/%2").arg(mid_p).arg(mid_q);
+                return QString("%1/%2").arg(mid_p).arg(niceNumber(mid_q));
         }
         else if (number > mid) {
             left_p = mid_p;

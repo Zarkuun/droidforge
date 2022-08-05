@@ -31,6 +31,7 @@ public:
     bool isNumber() const { return true; };
     QString problemAsInput(const Patch *patch) const;
     QString problemAsOutput(const Patch *patch) const;
+    static QString niceNumber(float n);
 
 private:
     QString toFractionString(float number) const;
