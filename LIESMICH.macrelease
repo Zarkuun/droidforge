@@ -1,0 +1,41 @@
+
+Das hier hab ich gemacht:
+[main!] mk:~/git/droidforge$ PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin/
+[main!] mk:~/git/droidforge$ notarytool store-credentials --apple-id "mk@mathias-kettner.de" --team-id "Z8A7223C2C"
+
+This process stores your credentials securely in the Keychain. You reference these credentials later using a profile name.
+
+Profile name:
+DROIDFORGE
+App-specific password for mk@mathias-kettner.de: (Hier hab ich das nnji-... Dings eingetippt,
+welches aus meinem keypassx kommt)
+Validating your credentials...
+Success. Credentials validated.
+Credentials saved to Keychain.
+To use them, specify `--keychain-profile "DROIDFORGE"`
+
+Jetzt probiere ich mit dem notarytool das zu notarisieren. Allerdings war
+im Beispiel von einem *.pkg die Rede. Und ich hab ein DMG. Was soll ich machen?
+Auf pkg umstellen?
+
+Hier ist ein Beispiel (allerdings für ein Kommandozeilentool, das wohl nicht
+einfach nach /Applications geschoben wird)
+
+% pkgbuild --root "hello 2021-mm-dd hh-mm-ss/Products" \
+           --identifier "com.example.hello" \
+           --version "1.0" \
+           --install-location "/" \
+           --sign "Developer ID Installer: Name (ABCD123456)" \
+           hello-1.0.pkg
+
+[main!] mk:~/git/droidforge$ notarytool submit DROID\ Forge\ 0.3.dmg --keychain-profile "DROIDFORGE" --wait
+Conducting pre-submission checks for DROID Forge 0.3.dmg and initiating connection to the Apple notary service...
+Submission ID received
+  id: d701a65f-2a19-49ae-8b65-b698342ff446
+ Upload progress:  6,81 % (13,4 MB of 197 MB)
+
+IMPORTANT Sign your disk image with a code signing identity, not an installer signing identity.
+
+To download a log file that contains any errors or warnings that occurred during notarization, use notarytool with the log command:
+% xcrun notarytool log 2efe2717-52ef-43a5-96dc-0797e4ca1041 --keychain-profile "AC_PASSWORD" developer_log.json
+

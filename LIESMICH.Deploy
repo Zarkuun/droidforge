@@ -45,3 +45,35 @@ Man kann die Info.plist mit Xcode editieren.
 Und das Icon nach Ressources legen. Das scheint zu funktionierne.
 Zumindest ist das Icon jetzt in Alt-Tab zu sehen!
 
+
+# echo -n "Creating DMG"
+# rm -rf "$DMGDIR"
+# mkdir -p "$DMGDIR"
+# cp -pr "$APP_DIR" "$DMGDIR"
+# ln -s /Applications "$DMGDIR"
+# hdiutil create -volname "droid-forge" -srcfolder "$DMGDIR" -ov -format UDZO "$DMGNAME"
+# echo OK
+
+
+# Achtung: Das Applicationssepcific Passwort ist bereits in der Keychain.
+# Es heisst dort DROIDFORGE und verweist auf eine Apple-ID Application
+# specific passwort mit dem Namen ebenfalls "DROIDFORGE". Wenn hier also
+# der Dialog zur Passworteingabe aufpoppt, muss man das Macbook-Login-
+# Passwort eingeben. Denn das schaltet die Keychain frei.
+
+# Toll. Jetzt muss man warten bis es fertig ist. Und darauf pollen.
+# Dazu braucht man aber die UUID, die altool ausgibt. Wie sollte in der
+# letzten Zeile rauskommen mit "RequestUUID = 1ef41853-1b05-4b39-bd8c-12a0d1264647"
+
+# Pollen:
+# xcrun altool --notarization-info "1ef41853-1b05-4b39-bd8c-12a0d1264647" --username "mk@mathias-kettner.de" --password "@keychain:DROIDFORGE"
+
+# Aus der Ausgabe holt man "Status Message".
+# Wenn hier "Package Invalid" steht, ist man im Arsch.
+
+
+# Das hier ist auch gut:
+# [main!] mk:~/git/droidforge$ security find-identity -p basic -v
+#  1) 064243B392FECF9138987D2842A4F983BF181C45 "Developer ID Application: Matthias Kettner (Z8A7223C2C)"
+
+# Ich hab die

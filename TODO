@@ -11,9 +11,8 @@ WINDOWS:
 - Das Icon wird noch nicht genommen.
 
 MAC:
-- Ich musste jetzt für Windows die mac-Frameworks deaktivieren.
-  Ich muss im *qbs bedingte Anweisungen reinmachen, die nur auf
-  dem Mac greifen.
+- Es werden die Frameworks für x86 und arm beidermassen mitgeliefert.
+  Kann man da die x86 löschen? Das bläst alles total auf.
 
 TODO für die erste Version:
 

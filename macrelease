@@ -1,18 +1,23 @@
 #!/bin/bash
 set -e
 
+PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin/
+
+VERSION=$(./version)
 NAME="DROID Forge"
 QT_DIR=~/Qt/6.3.1
 PATH=$PATH:$QT_DIR/macos/bin
 APP_ICON=droidforge/droidforge.icns
 INSTALL_ROOT=droidforge/build/release-mac/install-root/usr/local/Applications
 APP_DIR="$INSTALL_ROOT/$NAME.app"
-DMG="$INSTALL_ROOT/$NAME.dmg"
+# DMGDIR=dmgbase
+DMGNAME="$NAME $VERSION.dmg"
 TARGET_INFO_PLIST=$APP_DIR/Contents/Info.plist
 # LICENSE="droidforge/GNU GPL v3.txt"
 TARGET_LICENSE="$APP_DIR/Contents"
 # CERTIDENT=Z8A7223C2C
-CERTIDENT="Developer ID Application: Matthias Kettner"
+# CERTIDENT="Developer ID Application: Matthias Kettner"
+CERTIDENT="Developer ID Application: Matthias Kettner (Z8A7223C2C)"
 
 # First build the project
 
@@ -44,11 +49,23 @@ mkdir -p "$APP_DIR/Contents/Resources"
 cp -v "$APP_ICON" "$APP_DIR/Contents/Resources"
 echo OK
 
-echo -n "Creating DMG..."
-rm -f "$DMG"
+echo -n "Adding all dependencies and sign (with macdeployqt)..."
 pushd "$INSTALL_ROOT"
-macdeployqt "$NAME.app" -verbose=2 -dmg -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT
+macdeployqt "$NAME.app" -verbose=2 -dmg -hardened-runtime -timestamp -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT
 echo OK
 popd
 
-mv -v "$INSTALL_ROOT/$NAME.dmg" .
+mv -v "$INSTALL_ROOT/$NAME.dmg" "$DMGNAME"
+
+echo -n "Signing DMG"...
+codesign -vvv -f --options runtime --timestamp -s "Developer ID" "$DMGNAME"
+echo OK
+
+echo -n "Notarizing this thing..."
+notarytool submit "$DMGNAME" --keychain-profile "DROIDFORGE" --wait
+echo OK
+
+echo -n "Stapling..."
+stapler staple "$DMGNAME"
+echo OK
+

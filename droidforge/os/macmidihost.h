@@ -6,7 +6,6 @@
 #include <CoreMIDI/MIDIServices.h>
 #include <CoreFoundation/CFRunLoop.h>
 
-
 class MacMIDIHost : public MIDIHost
 {
     MIDIPortRef   outputPortRef;

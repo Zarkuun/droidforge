@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QThread>
 
+
 bool sysexOngoing = false;
 
 void sysex_complete(MIDISysexSendRequest *)

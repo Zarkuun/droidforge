@@ -2,10 +2,7 @@ import qbs.FileInfo
 
 QtApplication {
     Depends { name: "Qt.widgets" }
-    Depends {
-        // condition: qbs.targetOS.contains("macos")
-        name: "Qt.pdfwidgets"
-    }
+    Depends { name: "Qt.pdfwidgets" }
 
     Properties {
         condition: qbs.targetOS.contains("windows")
