@@ -11,7 +11,7 @@ public:
     JackAssignmentOutput(QString jack, QString comment, QString valueString);
     JackAssignmentOutput(QString jack, QString comment="");
     ~JackAssignmentOutput();
-    Atom *getAtom() const;;
+    Atom *getAtom() const;
     QString valueToString() const;
     bool isOutput() const { return true; };
     const Atom *atomAt(int a) const { return a == 1 ? atom : 0; };

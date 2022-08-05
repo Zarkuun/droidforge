@@ -21,7 +21,7 @@ class PatchSection
 public:
 
     PatchSection(); // no title
-    PatchSection(QString t);;
+    PatchSection(QString t);
     ~PatchSection();
     PatchSection *clone() const;
     QString toString() const;
@@ -66,7 +66,7 @@ public:
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     const CursorPosition &cursorPosition() const { return cursor; };
-    void setCursor(const CursorPosition &pos);;
+    void setCursor(const CursorPosition &pos);
     Circuit *currentCircuit();
     const Circuit *currentCircuit() const;
     int currentCircuitId() const { return cursor.circuitNr; };

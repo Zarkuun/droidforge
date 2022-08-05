@@ -19,6 +19,8 @@ QtApplication {
             "CoreMIDI",
             "CoreFoundation",
         ]
+
+        cpp.cxxFlags: [ "-pedantic" ]
     }
 
     cpp.defines: [
