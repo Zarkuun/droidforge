@@ -43,9 +43,6 @@ public:
     void getFocus();
     void installFocusFilter(QWidget *);
 
-private:
-    QString niceNumber(float v);
-
 signals:
 
 private slots:

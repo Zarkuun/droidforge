@@ -97,7 +97,7 @@ void NumberSelector::setAtom(const Patch *, const Atom *atom)
                 number *= 10;
             else if (numberType == ATOM_NUMBER_PERCENTAGE)
                 number *= 100;
-            lineEdit->setText(niceNumber(number));
+            lineEdit->setText(AtomNumber::niceNumber(number));
         }
     }
 }
@@ -220,20 +220,6 @@ Atom *NumberSelector::getAtom() const
     return new AtomNumber(value, numberType);
 }
 
-QString NumberSelector::niceNumber(float v)
-{
-    int intDigits = QString::number(unsigned(qAbs(v))).length();
-
-    QString s = QString::number(v, 'f', qMax(2, 6 - intDigits));
-    if (!s.contains("."))
-        return s; // Can this happen?
-
-    while (s.endsWith("0"))
-        s.chop(1);
-    if (s.endsWith("."))
-        s.chop(1);
-    return s;
-}
 
 void NumberSelector::lineEdited(QString text)
 {
@@ -278,7 +264,7 @@ void NumberSelector::switchToNumber()
     else if (numberType == ATOM_NUMBER_FRACTION)
         number = (number == 0) ? ONE_OVER_ZERO : 1.0 / number;
     setNumberType(ATOM_NUMBER_NUMBER);
-    lineEdit->setText(niceNumber(number));
+    lineEdit->setText(AtomNumber::niceNumber(number));
     lineEdit->setFocus();
 }
 
@@ -292,7 +278,7 @@ void NumberSelector::switchToVoltage()
     else if (numberType == ATOM_NUMBER_FRACTION)
         number = (number == 0) ? ONE_OVER_ZERO : 10.0 / number;
     setNumberType(ATOM_NUMBER_VOLTAGE);
-    lineEdit->setText(niceNumber(number));
+    lineEdit->setText(AtomNumber::niceNumber(number));
     lineEdit->setFocus();
 }
 
@@ -306,7 +292,7 @@ void NumberSelector::switchToPercentage()
     else if (numberType == ATOM_NUMBER_FRACTION)
         number = (number == 0) ? ONE_OVER_ZERO : 100.0 / number;
     setNumberType(ATOM_NUMBER_PERCENTAGE);
-    lineEdit->setText(niceNumber(number));
+    lineEdit->setText(AtomNumber::niceNumber(number));
     lineEdit->setFocus();
 }
 
@@ -334,7 +320,7 @@ void NumberSelector::switchToFraction()
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
         number = (number == 0) ? ONE_OVER_ZERO : 100.0 / number;
     setNumberType(ATOM_NUMBER_FRACTION);
-    lineEdit->setText(niceNumber(number));
+    lineEdit->setText(AtomNumber::niceNumber(number));
     lineEdit->setFocus();
 }
 
@@ -345,7 +331,7 @@ void NumberSelector::openTable()
     if (ret == QDialog::Accepted) {
         number = jvtd.getSelectedValue();
         setNumberType(ATOM_NUMBER_NUMBER);
-        lineEdit->setText(niceNumber(number));
+        lineEdit->setText(AtomNumber::niceNumber(number));
         lineEdit->setFocus();
     }
 }

@@ -69,7 +69,7 @@ QString AtomNumber::problemAsOutput(const Patch *) const
 
 QString AtomNumber::niceNumber(float num)
 {
-    QString numString = QString::number(num, 'f', 9);
+    QString numString = QString::number(num, 'f', NUMBER_DIGITS);
     while (numString.contains('.') && numString.endsWith('0'))
         numString.chop(1);
     if (numString.endsWith('.'))
