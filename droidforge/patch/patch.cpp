@@ -394,6 +394,13 @@ bool Patch::registerAvailable(AtomRegister ar) const
 
     return ar.getNumber() >= 1 && ar.getNumber() <= max;
 }
+unsigned Patch::memoryFootprint() const
+{
+    unsigned memory = 0;
+    for (auto section: sections)
+        memory += section->memoryFootprint();
+    return memory;
+}
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
 {
     for (auto &atom: *this) {

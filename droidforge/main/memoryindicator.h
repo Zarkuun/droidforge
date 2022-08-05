@@ -7,6 +7,8 @@
 class MemoryIndicator : public QWidget, PatchView
 {
     Q_OBJECT
+    unsigned memoryNeeded;
+    unsigned memoryAvailable;
 
 public:
     explicit MemoryIndicator(PatchEditEngine *patch, QWidget *parent = nullptr);

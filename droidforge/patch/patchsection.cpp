@@ -598,3 +598,10 @@ void PatchSection::removeRegisterReferences(RegisterList &rl)
     for (auto circuit: circuits)
         circuit->removeRegisterReferences(rl);
 }
+unsigned PatchSection::memoryFootprint() const
+{
+    unsigned memory = 0;
+    for (auto circuit: circuits)
+        memory += circuit->memoryFootprint();
+    return memory;
+}

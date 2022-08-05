@@ -73,6 +73,7 @@ public:
     const QList<PatchProblem *> &allProblems() const { return problems; };
     const PatchProblem *problem(unsigned nr) { return problems[nr]; };
     bool registerAvailable(AtomRegister ar) const;
+    unsigned memoryFootprint() const;
 
     // Modifications
     void addDescriptionLine(const QString &line);

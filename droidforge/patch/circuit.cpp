@@ -55,6 +55,10 @@ QString Circuit::prefixOfJack(const QString &jackName)
     }
     return jackName;
 }
+unsigned Circuit::memoryFootprint() const
+{
+    return the_firmware->circuitMemoryFootprint(name);
+}
 const JackAssignment *Circuit::findJack(const QString name) const
 {
     for (auto ja: jackAssignments)

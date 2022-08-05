@@ -15,9 +15,10 @@ class DroidFirmware
 public:
     DroidFirmware();
     QString version() const;
+    unsigned availableMemory() const;
     bool circuitExists(QString circuit) const;
     unsigned circuitManualPage(QString circuit) const;
-    unsigned circuitRamSize(QString circuit) const;
+    unsigned circuitMemoryFootprint(QString circuit) const;
     QString canonizeJackName(QString circuit, QString jack) const;
     bool jackIsInput(QString circuit, QString jack) const;
     bool jackIsOutput(QString circuit, QString jack) const;

@@ -84,6 +84,7 @@ public:
     JackAssignment *jackAssignmentAt(const CursorPosition &pos);
     void collectRegisterAtoms(RegisterList &) const;
     void removeRegisterReferences(RegisterList &rl);
+    unsigned memoryFootprint() const;
 
 private:
     bool nextCursorPosition(CursorPosition &pos) const;

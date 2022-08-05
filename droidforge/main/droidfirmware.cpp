@@ -48,6 +48,10 @@ QString DroidFirmware::version() const
 {
     return json["firmware_version"].toString();
 }
+unsigned DroidFirmware::availableMemory() const
+{
+    return json["available_memory"].toInt();
+}
 bool DroidFirmware::circuitExists(QString circuit) const
 {
     return circuits.keys().contains(circuit);
@@ -56,7 +60,7 @@ unsigned DroidFirmware::circuitManualPage(QString circuit) const
 {
     return circuits[circuit].toObject()["manual"].toInt();
 }
-unsigned DroidFirmware::circuitRamSize(QString circuit) const
+unsigned DroidFirmware::circuitMemoryFootprint(QString circuit) const
 {
     return circuits[circuit].toObject()["ramsize"].toInt();
 }
