@@ -19,17 +19,43 @@ MemoryIndicator::MemoryIndicator(PatchEditEngine *patch, QWidget *parent)
 }
 void MemoryIndicator::paintEvent(QPaintEvent *)
 {
-    setToolTip("");
     QPainter painter(this);
     painter.fillRect(rect(), COLOR(COLOR_STATUSBAR_BACKGROUND));
 
+    float used = float(memoryNeeded) / float(memoryAvailable);
+    unsigned perc = 100 * used;
+    QRectF barRect = rect().adjusted(2, 1, -2, -1);
+
+    if (memoryNeeded <= memoryAvailable) {
+        painter.fillRect(barRect, COLOR(MI_COLOR_BAR));
+        QRectF barRectUsed(barRect.left(), barRect.top(), qMin(1.0, used) * barRect.width(), barRect.height());
+        painter.fillRect(barRectUsed, COLOR(MI_COLOR_BAR_USED));
+    }
+    else {
+        painter.fillRect(barRect, COLOR(MI_COLOR_BAR_FULL));
+    }
+    painter.setPen(COLOR(MI_COLOR_BAR_BORDER));
+    painter.drawRect(barRect);
+
+
     QRectF textRect = rect();
-    unsigned memoryAvailable = the_firmware->availableMemory();
-    QString text = tr("%1 / %2").arg(memoryNeeded).arg(memoryAvailable);
+    QString text = tr("%1%").arg(perc);
+    painter.setPen(COLOR(MI_COLOR_TEXT));
     painter.drawText(textRect, text, Qt::AlignVCenter | Qt::AlignCenter);
 }
 void MemoryIndicator::updateStatus()
 {
+    memoryAvailable = the_firmware->availableMemory();
     memoryNeeded = patch->memoryFootprint();
+    QString tooltip = tr("Your circuits need %1 bytes of memory.").arg(memoryNeeded);
+    if (memoryNeeded <= memoryAvailable) {
+        unsigned perc = memoryNeeded * 100 / memoryAvailable;
+        tooltip += " " + tr("That is %1% of the avaiable memory (%2 bytes)").arg(perc).arg(memoryAvailable);
+    }
+    else {
+        tooltip += " " + tr("That is %1 bytes more than there is available! "
+                            "Try to remove some circuits.").arg(memoryNeeded - memoryAvailable);
+    }
+    setToolTip(tooltip);
     update();
 }

@@ -278,6 +278,21 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Cable status: marker text"), list);
     item->setData(1, CSI_MARKER_TEXT_COLOR);
 
+    item = new QListWidgetItem(tr("Memory Indicator: Bar background"), list);
+    item->setData(1, MI_COLOR_BAR);
+
+    item = new QListWidgetItem(tr("Memory Indicator: Bar border"), list);
+    item->setData(1, MI_COLOR_BAR_BORDER);
+
+    item = new QListWidgetItem(tr("Memory Indicator: Used part of bar"), list);
+    item->setData(1, MI_COLOR_BAR_USED);
+
+    item = new QListWidgetItem(tr("Memory Indicator: Bar 100% full"), list);
+    item->setData(1, MI_COLOR_BAR_FULL);
+
+    item = new QListWidgetItem(tr("Memory Indicator: Text on bar"), list);
+    item->setData(1, MI_COLOR_TEXT);
+
     colorDialog = new QColorDialog(this);
     colorDialog->setOption(QColorDialog::ShowAlphaChannel);
     colorDialog->setOption(QColorDialog::NoButtons);
