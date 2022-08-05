@@ -45,6 +45,8 @@ QtApplication {
     ]
 
     files: [
+        "main/memoryindicator.cpp",
+        "main/memoryindicator.h",
         "os/midihost.cpp",
         "os/midihost.h",
         "os/macmidihost.cpp",

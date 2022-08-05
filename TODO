@@ -1,6 +1,3 @@
-BUGS:
- - Fraction: 1 / 0 kann man hinschreiben. Was macht eigentlich DROID damit?
-
 WINDOWS:
 
 - Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
@@ -10,10 +7,6 @@ WINDOWS:
 
 - Das Icon wird noch nicht genommen.
 
-MAC:
-- Es werden die Frameworks für x86 und arm beidermassen mitgeliefert.
-  Kann man da die x86 löschen? Das bläst alles total auf.
-
 TODO für die erste Version:
 
 - Speicherverbrauch (RAM) der Circuit zusammenrechnen. Dazu brauche ich noch
@@ -21,8 +14,6 @@ TODO für die erste Version:
   machen, dass die Ramsize anzeigt. Mit einem Balken. Und auch die Größe des
   aktuellen Circuits, wenn der Cursor drüber steht. Und dann noch ein Problemchecker,
   der beim ersten Circuit, der nicht mehr reinpasst, einen Fehler draufpappt.
-
-- App muss signiert werden. Vorher: xattr -cr /Applications/Signal.app
 
 - Manual viewer: Noch ein bisschen aufpeppen oder so.
 

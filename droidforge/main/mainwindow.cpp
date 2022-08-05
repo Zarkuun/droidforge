@@ -33,6 +33,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     , rackView(patch)
     , patchSectionView(patch)
     , patchSectionManager(patch)
+    , memoryIndicator(patch)
     , cableStatusIndicator(patch)
     , patchProblemIndicator(patch)
 {
@@ -302,6 +303,7 @@ void MainWindow::createStatusBar()
     statusbar = new QStatusBar(this);
     setStatusBar(statusbar);
     statusbar->addPermanentWidget(&cableStatusIndicator);
+    statusbar->addPermanentWidget(&memoryIndicator);
     statusbar->addPermanentWidget(&patchProblemIndicator);
     statusbar->addPermanentWidget(&clipboardIndicator);
 }
