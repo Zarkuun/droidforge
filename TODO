@@ -1,25 +1,27 @@
-WINDOWS:
+BUGS:
 
-- Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
+- Der Speicherverbrauch von X7 und den Controllern wird nicht
+  berücksichtigt. Wie kann ich das simulieren? Sollen die einfach
+  im Puffer untergehen?
+
+SCHÖNHEITSDINGE:
+
+- Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
   Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
   Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
   die Betriebssysteme brauche.
 
-- Das Icon wird noch nicht genommen.
+- Windows: Das Icon wird noch nicht genommen.
+
+- Mac: Das DMG hat kein Icon.
+
+- Mac: Kann man die Application-Link in das DMG bekommen?
 
 TODO für die erste Version:
-
-- Speicherverbrauch (RAM) der Circuit zusammenrechnen. Dazu brauche ich noch
-  den zur Firmware passenden freien Speicher. Und dann z.B. ein Statusbardings
-  machen, dass die Ramsize anzeigt. Mit einem Balken. Und auch die Größe des
-  aktuellen Circuits, wenn der Cursor drüber steht. Und dann noch ein Problemchecker,
-  der beim ersten Circuit, der nicht mehr reinpasst, einen Fehler draufpappt.
 
 - Manual viewer: Noch ein bisschen aufpeppen oder so.
 
 - Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
-
-- Man kann kein komplett leeres Patch auf den DROID hochladen.
 
 - Die Doppelklickzeit vom Mac wird von den styleHints() nicht
   korrekt zurückgegeben. Ist immer 400. Das ist auch sehr lang.
@@ -59,9 +61,6 @@ Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 
 - Handcursor für Icons usw. die man klicken kann (da hat Qt
   aber komische Bugs).
-
-- Der AtomSelektor ist schon irgendwie nicht so geil.
-  Kann ich das nicht besser machen?
 
 - Atomonliner: Das wär schon echt wichtig, wenn man außerhalb klicken
   könnte und das erkannt würde und der dann speichern würde. Oder

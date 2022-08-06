@@ -89,9 +89,11 @@ void PageSelector::pageNumberEdited()
 void PageSelector::handleKeyPress(int key)
 {
     switch (key) {
+    case Qt::Key_Left:
     case Qt::Key_Up:
         pageNavigation->goToPreviousPage();
         return;
+    case Qt::Key_Right:
     case Qt::Key_Down:
     case Qt::Key_Space:
         pageNavigation->goToNextPage();

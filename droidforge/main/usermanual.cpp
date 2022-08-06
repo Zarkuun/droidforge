@@ -57,7 +57,6 @@ void UserManual::jumpToPage(unsigned nr)
 {
     pageNavigation->setCurrentPage(nr-1);
 }
-
 void UserManual::openExternally()
 {
     auto dirs = QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
@@ -74,5 +73,11 @@ void UserManual::showCircuit(const QString &circuit)
 {
     show();
     jumpToPage(the_firmware->circuitManualPage(circuit));
+}
+
+void UserManual::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+        event->ignore();
 }
 #endif

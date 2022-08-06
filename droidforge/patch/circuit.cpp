@@ -57,7 +57,7 @@ QString Circuit::prefixOfJack(const QString &jackName)
 }
 unsigned Circuit::memoryFootprint() const
 {
-    return the_firmware->circuitMemoryFootprint(name);
+    return isDisabled() ? 0 : the_firmware->circuitMemoryFootprint(name);
 }
 const JackAssignment *Circuit::findJack(const QString name) const
 {

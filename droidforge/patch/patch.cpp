@@ -331,6 +331,7 @@ void Patch::updateProblems()
         delete problem;
     problems.clear();
 
+    // Collect problems locally in the sections
     int sectionNr=0;
     for (auto section: sections) {
         auto sectionProblems = section->collectProblems(this);
@@ -366,6 +367,29 @@ void Patch::updateProblems()
         }
         else
             usedOutputs.append(*reg);
+    }
+
+    // Check memory consumption of circuits
+    unsigned usedMemory = 0;
+    unsigned availableMemory = the_firmware->availableMemory();
+    unsigned sectionIndex = 0;
+    for (auto section: sections) {
+        unsigned circuitNr = 0;
+        for (auto circuit: section->getCircuits()) {
+            if (!circuit->isDisabled()) {
+                if (usedMemory + circuit->memoryFootprint() > availableMemory) {
+                    PatchProblem *prob = new PatchProblem(
+                                ROW_CIRCUIT, 0,
+                                TR("This circuit exceeds the available memory."));
+                    prob->setCircuit(circuitNr);
+                    prob->setSection(sectionIndex);
+                    problems.append(prob);
+                }
+                usedMemory += circuit->memoryFootprint();
+            }
+            circuitNr++;
+        }
+        sectionIndex++;
     }
 }
 QString Patch::problemAt(int section, const CursorPosition &pos)

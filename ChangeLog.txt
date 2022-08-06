@@ -1,3 +1,11 @@
 0.4:
-	FIX: avoid numbers like 1.123e-5
-	FIX: don't convert numbers like 0.000000001 to 0 anymore
+    Bug fixes:
+	* FIX: avoid numbers like 1.123e-5
+	* FIX: don't convert numbers like 0.000000001 to 0 anymore
+	* FIX: Manual viewer: do not open external viewer when pressing enter
+
+	Features:
+	* Manual viewer: cursor left and right now also work for page switching
+	* Status bar: new element for showing the memory consumption of your patch
+	* Patch: create a "problem" on circuits that exceed the available DROID memory
+

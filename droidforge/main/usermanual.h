@@ -22,6 +22,9 @@ public:
     UserManual(QWidget *parent = nullptr);
     void showCircuit(const QString &circuit);
 
+protected:
+    void keyPressEvent(QKeyEvent *) override;
+
 private:
     void jumpToPage(unsigned nr);
 
