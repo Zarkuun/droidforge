@@ -1,4 +1,18 @@
-Mario Paler:
+BUGS:
+
+- Die Seitenzahlen sind alle auf 0. Ich muss irgendwie einen besseren
+  Weg finden, um die ins JSON zu bekommen. Ich glaub, wenn man mal einfach
+  irgendwo F11 macht, ist alles 0. Ich brauch ein Skript, was die JSON-Datei
+  zuverlässig erzeugt. Und die Seitenzahlen müssen aus der TOC-Datei sofort
+  irgendwo ausgelagert werden, dann man das ganze Handbuch maket.
+    Mario: Rechtsklick auf einen beliebigen Parameter + Klick „user manual of circuit“
+    (CMD+M) führt mich nur zum Handbuch, also es öffnet nur die Datei, doch führt
+    nicht direkt zum jeweiligen Circuit… ist das gewollt? Ich erwarte eigentlich,
+    dass er mich direkt zum entsprechenden Abschnitt im Benutzerhandbuch führt 
+
+- Bei Mario geht das Keypad nicht (Zahleneingabe)
+
+Mario Paler sofort:
 
 - die Bilder von den Controllern sehen pixelig aus (geringe Auflösung,
 anscheinend keine Vektor-Dateien) z.B. die Skalierung funktioniert nicht gut,
@@ -26,6 +40,8 @@ du die Probleme unten rechts bereits anzeigst!
 - Ich empfehle deine optische Zierblende als „Dummy Controller“ bzw. visuelle
 Trennlinie zu integrieren 
 
+Mario Paler später:
+
 - Pro Tools nutzt eine kleine Menüstruktur, um mehrere Controller gleichzeitig
 auszuwählen… Sowas würde ich persönlich nicht schlecht finden, als Option
 hinzuzufügen, um Zeit zu sparen, wenn du viele Controller hinzufügen möchtest 
@@ -34,11 +50,6 @@ hinzuzufügen, um Zeit zu sparen, wenn du viele Controller hinzufügen möchtest
 zu wechseln, um z.B. sich etwas rüber zu kopieren oder nachzulesen… evtl. noch
 die Möglichkeit zwei Fenster parallel (nebeneinander) sich anzeigen zu lassen
 (Fenster 1 = Patch 1, Fenster 2 = Patch 2) 
-
-- Rechtsklick auf einen beliebigen Parameter + Klick „user manual of circuit“
-(CMD+M) führt mich nur zum Handbuch, also es öffnet nur die Datei, doch führt
-nicht direkt zum jeweiligen Circuit… ist das gewollt? Ich erwarte eigentlich,
-dass er mich direkt zum entsprechenden Abschnitt im Benutzerhandbuch führt 
 
 - Ich würde es noch sehr cool finden, wenn du eine „Section Library“ hinzufügen
 würdest, also man die Sections abspeichern kann, um schnell auf sie zuzugreifen…
