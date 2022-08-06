@@ -1,3 +1,56 @@
+Mario Paler:
+
+- die Bilder von den Controllern sehen pixelig aus (geringe Auflösung,
+anscheinend keine Vektor-Dateien) z.B. die Skalierung funktioniert nicht gut,
+wenn du das ganze Fenster sehr viel kleiner machst 
+
+- Die einzelnen farbigen „Stopp-Schilder“ in der Parameter-Section sehen sehr
+pixelig aus
+
+- Es wäre super, wenn die Shortcuts jeweils als Move-Over-Effect über dem
+eigentlichen Objekt angezeigt werden würden, also ich bewege den Mauszeiger über
+das Controller Icon und bekomme ein Popup angezeigt, indem der passende Shortcut
+angezeigt wird. …so wie beim Rechtsklick in den Hintergrund 
+
+- Bitte füge beim „Activate!“ Icon noch eine Message im Mouse-Over-Effect hinzu,
+warum der Button grau ist und nicht benutzt werden kann… „You have still X
+problems to solve before you can activate your patch!“, zusätzlich noch gelb
+einfärben oder ein ähnlichen Indikator…
+
+- Das Problem-Icon ist sehr cool! Ich liebe den Mouse-Over-Effect („Dein Patch
+hat 5 Probleme…“) —> kannst du die Zahl (wie viele Probleme der Patch gerade
+hat) noch direkt in das Icon (in der Sidebar) integrieren? Das wäre mega! Ideal
+wäre noch eine farbliche Veränderung (rot oder gelb). Ich finde auch super, dass
+du die Probleme unten rechts bereits anzeigst!
+
+- Ich empfehle deine optische Zierblende als „Dummy Controller“ bzw. visuelle
+Trennlinie zu integrieren 
+
+- Pro Tools nutzt eine kleine Menüstruktur, um mehrere Controller gleichzeitig
+auszuwählen… Sowas würde ich persönlich nicht schlecht finden, als Option
+hinzuzufügen, um Zeit zu sparen, wenn du viele Controller hinzufügen möchtest 
+
+- Ich bin großer Fan von Tableisten, um zwischen mehreren DROID Patches schnell
+zu wechseln, um z.B. sich etwas rüber zu kopieren oder nachzulesen… evtl. noch
+die Möglichkeit zwei Fenster parallel (nebeneinander) sich anzeigen zu lassen
+(Fenster 1 = Patch 1, Fenster 2 = Patch 2) 
+
+- Rechtsklick auf einen beliebigen Parameter + Klick „user manual of circuit“
+(CMD+M) führt mich nur zum Handbuch, also es öffnet nur die Datei, doch führt
+nicht direkt zum jeweiligen Circuit… ist das gewollt? Ich erwarte eigentlich,
+dass er mich direkt zum entsprechenden Abschnitt im Benutzerhandbuch führt 
+
+- Ich würde es noch sehr cool finden, wenn du eine „Section Library“ hinzufügen
+würdest, also man die Sections abspeichern kann, um schnell auf sie zuzugreifen…
+letztendlich könnte dass der Bereich für Snippets sein. 
+
+- Ich würde gerne einzelne Circuits mit einem Links-Mausklick selektieren und
+verschieben können 
+
+- Bezüglich des „lookup this module in the shop“ Feature —> Idee: „buy this
+(module) setup in the shop“, um das gesamte Controller-Setup zu kaufen (packt
+dann alle ausgewählten Controller in den Warenkorb)
+
 BUGS:
 
 - Der Speicherverbrauch von X7 und den Controllern wird nicht

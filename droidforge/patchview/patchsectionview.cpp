@@ -1361,8 +1361,11 @@ void PatchSectionView::instantCableTo(const CursorPosition &to)
 }
 void PatchSectionView::updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after)
 {
-    section()->updateKeyboardSelection(before, after);
-    emit selectionChanged();
+    if (!section()->isEmpty())
+    {
+        section()->updateKeyboardSelection(before, after);
+        emit selectionChanged();
+    }
 }
 CircuitView *PatchSectionView::currentCircuitView()
 {
