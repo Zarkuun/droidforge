@@ -1243,20 +1243,20 @@ void PatchSectionView::clockTick()
         QRectF cursorRect(c.left(), c.top() - CURSOR_VISIBILITY_MARGIN,
                           c.width(), c.height() + 2 * CURSOR_VISIBILITY_MARGIN);
         QRectF portRect = viewport()->contentsRect();
-
         QRectF sceneRect = mapToScene(portRect.toRect()).boundingRect();
 
         int visibleTop = sceneRect.top();
         int visibleBottom = sceneRect.bottom();
-
         int cursorTop = c.top() - CURSOR_VISIBILITY_MARGIN;
         int cursorBottom = c.bottom() + CURSOR_VISIBILITY_MARGIN;
 
         int dir;
 
+        // The top of the cursor is above the visible area?
+        // The lets move up.
         if (cursorTop < visibleTop)
             dir = cursorTop - visibleTop;
-        else if (cursorBottom > visibleBottom)
+        else if (cursorBottom > visibleBottom && cursorTop - visibleTop > CURSOR_VISIBILITY_MARGIN)
             dir = cursorBottom - visibleBottom;
         else {
             dir = 0;
@@ -1305,7 +1305,6 @@ void PatchSectionView::updateCursor()
     else
         frameCursor.setVisible(false);
 }
-
 void PatchSectionView::clearSettings()
 {
     setZoom(0);
@@ -1315,7 +1314,6 @@ void PatchSectionView::setMouseSelection(const CursorPosition &to)
     section()->setMouseSelection(to);
     emit selectionChanged();
 }
-
 void PatchSectionView::instantCopyTo(const CursorPosition &to)
 {
     if (to.row < 0 || to.column <= 0) // not on an atom
@@ -1600,7 +1598,6 @@ void PatchSectionView::moveCursorUpDown(int whence)
         section()->moveCursorUp();
     emit cursorMoved();
 }
-
 void PatchSectionView::moveCursorTab(int whence)
 {
     if (isEmpty())
