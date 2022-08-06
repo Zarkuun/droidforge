@@ -21,11 +21,11 @@ CERTIDENT="Developer ID Application: Matthias Kettner (Z8A7223C2C)"
 
 # First build the project
 
-echo "Cleaning old build..."
-rm -rf "$APP_DIR"
-echo "Now do the Release-build in QtCreator and press enter!"
-read
-echo "Continuing..."
+# echo "Cleaning old build..."
+# rm -rf "$APP_DIR"
+# echo "Now do the Release-build in QtCreator and press enter!"
+# read
+# echo "Continuing..."
 
 
 if [ ! -e "$APP_DIR" ] ; then
