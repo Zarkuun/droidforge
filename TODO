@@ -51,6 +51,12 @@ verschieben können 
 (module) setup in the shop“, um das gesamte Controller-Setup zu kaufen (packt
 dann alle ausgewählten Controller in den Warenkorb)
 
+
+Marios Featurevorschläge:
+
+- Mario Paler: - New Feature: Auto-Save after X minutes, inklusive Backup-Files,
+um einen Zwischenstand zurückzusetzen, wenn ein Programmabbruch erfolgt
+
 BUGS:
 
 - Der Speicherverbrauch von X7 und den Controllern wird nicht

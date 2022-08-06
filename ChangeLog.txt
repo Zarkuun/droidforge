@@ -8,6 +8,8 @@
     * FIX: Various parameters where missing when adding all remaining parameters
 	       with "Add remaining parameters" (found by @Mario Paler)
 	* FIX: Fix crash when doing shift cursor in empty section (found by @Mario Paler)
+	* FIX: Fix empty labelling dialog when using popup menu on button / jack (found
+	       by @Mario Paler)
 
 	Features:
 	* Manual viewer: cursor left and right now also work for page switching

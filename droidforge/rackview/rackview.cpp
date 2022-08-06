@@ -107,37 +107,37 @@ void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
 }
 void RackView::popupControllerContextMenu(int controllerIndex, QString moduleType, AtomRegister areg)
 {
-   QMenu *menu = new QMenu(this);
-   if (controllerIndex >= 0) {
-       ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
-       menu->addAction(tr("Remove this controller"), this,
-                       [this,controllerIndex,moduleType] () {this->askRemoveController(controllerIndex); });
-       if (controllerIndex > 0)
-           menu->addAction(tr("Move by one position to the left"), this,
-                           [this,controllerIndex] () {this->swapControllers(controllerIndex, controllerIndex-1); });
-       if (controllerIndex+1 < patch->numControllers())
-           menu->addAction(tr("Move by one position to the right"), this,
-                           [this,controllerIndex] () {this->swapControllers(controllerIndex, controllerIndex+1); });
-       if (controllersRegistersUsed(controllerIndex) && numControllers() >= 2)
-           menu->addAction(tr("Move used controls and LEDs to other controllers"),
-                           this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
-   }
+    QMenu *menu = new QMenu(this);
+    if (controllerIndex >= 0) {
+        ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
+        menu->addAction(tr("Remove this controller"), this,
+                        [this,controllerIndex,moduleType] () {this->askRemoveController(controllerIndex); });
+        if (controllerIndex > 0)
+            menu->addAction(tr("Move by one position to the left"), this,
+                            [this,controllerIndex] () {this->swapControllers(controllerIndex, controllerIndex-1); });
+        if (controllerIndex+1 < patch->numControllers())
+            menu->addAction(tr("Move by one position to the right"), this,
+                            [this,controllerIndex] () {this->swapControllers(controllerIndex, controllerIndex+1); });
+        if (controllersRegistersUsed(controllerIndex) && numControllers() >= 2)
+            menu->addAction(tr("Move used controls and LEDs to other controllers"),
+                            this, [this,controllerIndex,moduleType] () {this->remapControls(moduleType, controllerIndex); });
+    }
 
-   menu->addAction(tr("Edit labelling of controls"), this,
-                   [this,controllerIndex,moduleType,areg] () {this->editLabelling(moduleType, controllerIndex, areg); });
+    menu->addAction(tr("Edit labelling of controls"), this,
+                    [this,controllerIndex,moduleType,areg] () {this->editLabelling(moduleType, controllerIndex, areg); });
 
-   if (!areg.isNull()) {
-       QAction *action =  menu->addAction(tr("Find this control in your patch"), this,
-                       [this,areg] () {this->findRegister(areg); });
-       action->setEnabled(patch->controlUsed(areg));
-   }
+    if (!areg.isNull()) {
+        QAction *action =  menu->addAction(tr("Find this control in your patch"), this,
+                                           [this,areg] () {this->findRegister(areg); });
+        action->setEnabled(patch->controlUsed(areg));
+    }
 
-   menu->addSeparator();
+    menu->addSeparator();
 
-   menu->addAction(tr("Lookup this module in the shop"), this,
-                   [this,moduleType] () {this->purchaseController(moduleType); });
-   menu->setAttribute(Qt::WA_DeleteOnClose);
-   menu->popup(QCursor::pos());
+    menu->addAction(tr("Lookup this module in the shop"), this,
+                    [this,moduleType] () {this->purchaseController(moduleType); });
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->popup(QCursor::pos());
 }
 void RackView::askRemoveController(int controllerIndex)
 {
@@ -471,13 +471,16 @@ void RackView::openMenuOnBackground()
 
 void RackView::openMenuOnItem(QGraphicsItem *item)
 {
+    Module *module = modules[item->data(DATA_INDEX_MODULE_INDEX).toInt()];
+    QString moduleName = module->getName();
+
     QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
     int index = v.isValid() ? v.toInt() : -1;
     AtomRegister areg;
     if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
         areg = item->data(DATA_INDEX_REGISTER_NAME).toString();
 
-                        popupControllerContextMenu(index, item->data(DATA_INDEX_MODULE_NAME).toString(), areg);
+    popupControllerContextMenu(index, moduleName, areg);
 }
 
 void RackView::hoverIn(QGraphicsItem *item)
