@@ -8,4 +8,5 @@
 	* Manual viewer: cursor left and right now also work for page switching
 	* Status bar: new element for showing the memory consumption of your patch
 	* Patch: create a "problem" on circuits that exceed the available DROID memory
+	* Installer: Add link to "Applications" for an easy drag & drop installation
 

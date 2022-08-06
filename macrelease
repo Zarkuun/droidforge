@@ -10,22 +10,30 @@ PATH=$PATH:$QT_DIR/macos/bin
 APP_ICON=droidforge/droidforge.icns
 INSTALL_ROOT=droidforge/build/release-mac/install-root/usr/local/Applications
 APP_DIR="$INSTALL_ROOT/$NAME.app"
-# DMGDIR=dmgbase
+EXECUTABLE="$APP_DIR/Contents/MacOS/$NAME"
+DMGDIR="dmg.root"
 DMGNAME="$NAME $VERSION.dmg"
 TARGET_INFO_PLIST=$APP_DIR/Contents/Info.plist
 # LICENSE="droidforge/GNU GPL v3.txt"
 TARGET_LICENSE="$APP_DIR/Contents"
-# CERTIDENT=Z8A7223C2C
-# CERTIDENT="Developer ID Application: Matthias Kettner"
 CERTIDENT="Developer ID Application: Matthias Kettner (Z8A7223C2C)"
+LOGFILE=$(pwd)/macrelease.log
+OK=$(echo -e "\033[32mOK\033[0m")
+
+rm -f "$LOGFILE"
 
 # First build the project
 
-# echo "Cleaning old build..."
-# rm -rf "$APP_DIR"
-# echo "Now do the Release-build in QtCreator and press enter!"
-# read
-# echo "Continuing..."
+echo -n "Cleaning old build..."
+rm -rf "$APP_DIR"
+echo $OK
+
+echo -n "Now do the Release-build in QtCreator."
+while [ ! -e "$EXECUTABLE" ] ; do
+    echo -n .
+    sleep 1
+done
+echo $OK
 
 
 if [ ! -e "$APP_DIR" ] ; then
@@ -35,37 +43,56 @@ fi
 
 echo -n "Fixing rpath..."
 install_name_tool -add_rpath @loader_path/../Frameworks "$APP_DIR/Contents/MacOS/$NAME"
-echo OK
+echo $OK
 
 echo -n "Installing Info.plist..."
-cp -v Info.plist "$TARGET_INFO_PLIST"
-echo OK
+cp Info.plist "$TARGET_INFO_PLIST"
+echo $OK
 
 # echo -m "Installing GPL License..."
 # cp -v "$LICENSE" "$TARGET_LICENSE"
 
 echo -n "Installing icon..."
 mkdir -p "$APP_DIR/Contents/Resources"
-cp -v "$APP_ICON" "$APP_DIR/Contents/Resources"
-echo OK
+cp "$APP_ICON" "$APP_DIR/Contents/Resources"
+echo $OK
 
 echo -n "Adding all dependencies and sign (with macdeployqt)..."
-pushd "$INSTALL_ROOT"
-macdeployqt "$NAME.app" -verbose=2 -dmg -hardened-runtime -timestamp -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT
-echo OK
-popd
+pushd "$INSTALL_ROOT" >/dev/null
+# macdeployqt "$NAME.app" -verbose=2 -dmg -hardened-runtime -timestamp -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT >> $LOGFILE 2>&1
+macdeployqt "$NAME.app" -verbose=2 -hardened-runtime -timestamp -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT >> $LOGFILE 2>&1
+echo $OK
+popd >/dev/null
 
-mv -v "$INSTALL_ROOT/$NAME.dmg" "$DMGNAME"
+echo -n "Creating DMG contents in $DMGDIR..."
+rm -rf "$DMGDIR"
+mkdir "$DMGDIR"
+ln -sf /Applications "$DMGDIR/Applications"
+mkdir "$DMGDIR/.background"
+cp "DMG Background.png" "$DMGDIR/.background"
+mv "$APP_DIR" "$DMGDIR"
+cp _DS_Store "$DMGDIR/.DS_Store"
+echo $OK
+
+# Das mit dem Backgroundimage klappt noch nicht
+
+echo -n "Creating DMG..."
+hdiutil create -volname "$NAME" -srcfolder "$DMGDIR" -ov -format UDZO "$DMGNAME" >> "$LOGFILE" 2>&1
+echo $OK
 
 echo -n "Signing DMG"...
-codesign -vvv -f --options runtime --timestamp -s "Developer ID" "$DMGNAME"
-echo OK
+codesign -vvv -f --options runtime --timestamp -s "Developer ID" "$DMGNAME" >> "$LOGFILE" 2>&1
+echo $OK
 
 echo -n "Notarizing this thing..."
-notarytool submit "$DMGNAME" --keychain-profile "DROIDFORGE" --wait
-echo OK
+notarytool submit "$DMGNAME" --keychain-profile "DROIDFORGE" --wait >> "$LOGFILE" 2>&1
+echo $OK
+
+echo -n "Status: "
+grep '^  status: ' "$LOGFILE"
+grep -q '^ status: Accepted' "$LOGFILE"
 
 echo -n "Stapling..."
-stapler staple "$DMGNAME"
-echo OK
+stapler staple "$DMGNAME" >> "$LOGFILE" 2>&1
+echo $OK
 

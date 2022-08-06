@@ -2,3 +2,4 @@ build-*
 *.dmg
 .*.swp
 LIESMICH.github
+macrelease.log
