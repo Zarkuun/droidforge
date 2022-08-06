@@ -5,6 +5,8 @@
 	* FIX: Manual viewer: do not open external viewer when pressing enter
 	* FIX: Fix cursor jumping glitch when comment of a circuit is larger than
 	       the patch screen (found by @Mario Paler)
+    * FIX: Various parameters where missing when adding all remaining parameters
+	       with "Add remaining parameters" (found by @Mario Paler)
 
 	Features:
 	* Manual viewer: cursor left and right now also work for page switching

@@ -171,8 +171,15 @@ QStringList DroidFirmware::jacksOfCircuit(QString circuit, QString whence, jacks
         // essential is 0, 1 or 2 (0 = none, 1 = typical, 2 = essential)
         // jackSelection is 0 -> all, ... 3 -> none
         if (essential >= jackSelection) {
-            if (jackinfo.contains("essential_count")) {
-                int count = jackinfo["essential_count"].toInt(1);
+            int count;
+            if (jackSelection != JACKSELECTION_FULL && jackinfo.contains("essential_count"))
+                count = jackinfo["essential_count"].toInt(1);
+            else if (jackinfo.contains("count"))
+                count = jackinfo["count"].toInt(1);
+            else
+                count = 0;
+
+            if (count > 0) {
                 for (int i=1; i<=count; i++) {
                     QString name = jackinfo["prefix"].toString() + QString::number(i);
                     result.append(name);
