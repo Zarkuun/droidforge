@@ -10,35 +10,7 @@ BUGS:
     nicht direkt zum jeweiligen Circuit… ist das gewollt? Ich erwarte eigentlich,
     dass er mich direkt zum entsprechenden Abschnitt im Benutzerhandbuch führt 
 
-Mario Paler sofort:
-
-Mario Paler später:
-
-- Pro Tools nutzt eine kleine Menüstruktur, um mehrere Controller gleichzeitig
-auszuwählen… Sowas würde ich persönlich nicht schlecht finden, als Option
-hinzuzufügen, um Zeit zu sparen, wenn du viele Controller hinzufügen möchtest 
-
-- Ich bin großer Fan von Tableisten, um zwischen mehreren DROID Patches schnell
-zu wechseln, um z.B. sich etwas rüber zu kopieren oder nachzulesen… evtl. noch
-die Möglichkeit zwei Fenster parallel (nebeneinander) sich anzeigen zu lassen
-(Fenster 1 = Patch 1, Fenster 2 = Patch 2) 
-
-- Ich würde es noch sehr cool finden, wenn du eine „Section Library“ hinzufügen
-würdest, also man die Sections abspeichern kann, um schnell auf sie zuzugreifen…
-letztendlich könnte dass der Bereich für Snippets sein. 
-
-- Ich würde gerne einzelne Circuits mit einem Links-Mausklick selektieren und
-verschieben können 
-
-- Bezüglich des „lookup this module in the shop“ Feature —> Idee: „buy this
-(module) setup in the shop“, um das gesamte Controller-Setup zu kaufen (packt
-dann alle ausgewählten Controller in den Warenkorb)
-
-
 Marios Featurevorschläge:
-
-- Mario Paler: - New Feature: Auto-Save after X minutes, inklusive Backup-Files,
-um einen Zwischenstand zurückzusetzen, wenn ein Programmabbruch erfolgt
 
 BUGS:
 
@@ -85,6 +57,9 @@ TODO für die erste Version:
 
 Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
 ---------------------------------------------
+- Mario Paler: - New Feature: Auto-Save after X minutes, inklusive Backup-Files,
+  um einen Zwischenstand zurückzusetzen, wenn ein Programmabbruch erfolgt
+
 - Circuits per Drag-Drop vertauschen? Wirklich? Die Selektion verschieben?
   Könnte recht fummelig werden. Es gibt ja Cut&Paste. Reciht das ncht?
   Allenfalls könnte man Alt+Pfeil so machen, dass es die selektion
@@ -94,6 +69,8 @@ Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
   Aber dann ist das ja auch schon fast wurst? Naja. Der mousedragger
   braucht ja items zum Arbeiten, oder? Dann kann man einfach einzelne
   Circuits verschieben.
+  Mario Paler dazu: Ich würde gerne einzelne Circuits mit einem Links-Mausklick
+  selektieren und verschieben können 
 
 - Eine SD-Karte initialisieren. Mit dem Zeugs, dass der MAC schneller
   ist und sowas. Und dass sie DROID heisst und ne driod.ini drauf is.
@@ -132,11 +109,15 @@ Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
   die man braucht. Weil man ein Hardwarerack hat. Deswegen könnten wir
   eine Liste der Most recent racks bereitstellen. Und jedesmal wenn
   man deployt, wird diese aktualisiert (nach QSettings)
+  Mario Paler schreibt dau: Pro Tools nutzt eine kleine Menüstruktur, um mehrere Controller gleichzeitig
+  auszuwählen… Sowas würde ich persönlich nicht schlecht finden, als Option
+  hinzuzufügen, um Zeit zu sparen, wenn du viele Controller hinzufügen möchtest 
+
 
 Größere Dinge für die nächste Version:
 ------------------------------------------------------------------
 - Mehrere Dateien gleichzeitig auf haben
-- Patch library
+- Patch library (auch für private Patches und Snippets)
   Idee: Suche alle Patches, für die in meinem aktuellen Patch noch "Platz"
   ist (Button, Controller, etc.)
 - Discord-Integration

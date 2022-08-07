@@ -11,6 +11,8 @@
 	* FIX: Fix empty labelling dialog when using popup menu on button / jack (found
 	       by @Mario Paler)
     * FIX: Keypad now also works for direct number entry (found be @Mario Paler)
+	* FIX: Updated user manual and fixed page numbers of circuits
+
 
 	Features:
 	* Manual viewer: cursor left and right now also work for page switching
