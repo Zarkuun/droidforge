@@ -16,6 +16,7 @@ QRectF DragControllerIndicator::boundingRect() const
 
 void DragControllerIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QRectF pr = paintRect();
 
     QPen pen;

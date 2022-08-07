@@ -24,6 +24,7 @@ QRectF IconMarker::boundingRect() const
 
 void IconMarker::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QRectF r(3, 3, size()-6, size()-6);
     // painter->setRenderHint(QPainter::Antialiasing);
             //| QPainter::SmoothPixmapTransform);

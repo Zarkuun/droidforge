@@ -1,11 +1,13 @@
 #ifndef REGISTERMARKER_H
 #define REGISTERMARKER_H
 
+#include "smoothellipseitem.h"
+
 #include <QGraphicsEllipseItem>
 #include <QPropertyAnimation>
 #include <QObject>
 
-class RegisterMarker : public QObject, public QGraphicsEllipseItem
+class RegisterMarker : public QObject, public SmoothEllipseItem
 {
     Q_OBJECT
 

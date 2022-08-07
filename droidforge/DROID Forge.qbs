@@ -63,6 +63,8 @@ QtApplication {
         "main/dragsectionindicator.h",
         "main/editoractions.cpp",
         "main/editoractions.h",
+        "rackview/smoothellipseitem.cpp",
+        "rackview/smoothellipseitem.h",
         "utilities/iconbase.cpp",
         "utilities/iconbase.h",
         "main/patchoperator.cpp",

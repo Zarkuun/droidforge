@@ -3,6 +3,7 @@
 #include "tuning.h"
 
 #include <QPen>
+#include <QPainter>
 
 RegisterMarker::RegisterMarker()
      : animation(this, "animationPhase")

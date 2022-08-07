@@ -13,6 +13,8 @@
     * FIX: Keypad now also works for direct number entry (found be @Mario Paler)
 	* FIX: Updated user manual and fixed page numbers of circuits
 	* FIX: Allow to close user manual with Escacpe key (as with all dialogs)
+	* FIX: Make rendering of register marker circles and arrows smooth, avoid
+	       pixels.
 
 
 	Features:

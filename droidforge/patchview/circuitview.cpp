@@ -64,6 +64,7 @@ unsigned CircuitView::minimumWidth()
 }
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     paintHeader(painter);
     if (!isFolded()) {
         if (circuit->hasComment())

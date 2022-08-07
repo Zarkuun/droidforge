@@ -23,6 +23,7 @@ QRectF JackLine::boundingRect() const
 
 void JackLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QColor color;
     if (!isSelected)
         color = COLOR(JSEL_COLOR_LINE);

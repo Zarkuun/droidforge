@@ -58,6 +58,7 @@ void CircuitInfoView::paintMultilineText(QPainter *painter, unsigned text_x, uns
 }
 void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     unsigned text_x = CICH_ICON_WIDTH + 2*CICH_PADDING + STANDARD_SPACING;
     painter->fillRect(boundingRect(), COLOR(CICH_COLOR_CIRCUIT_BACKGROUND));
 

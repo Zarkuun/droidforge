@@ -18,6 +18,7 @@ QRectF JackCircuitView::boundingRect() const
 
 void JackCircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QRectF textrect(0, 0, JSEL_CIRCUIT_WIDTH, JSEL_CIRCUIT_TEXT_HEIGHT);
     painter->fillRect(boundingRect(), COLOR(JSEL_COLOR_CIRCUIT_BACKGROUND));
     painter->setPen(COLOR(JSEL_COLOR_LINE));

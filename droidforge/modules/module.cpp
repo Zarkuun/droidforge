@@ -1,5 +1,6 @@
 #include "module.h"
 #include "colorscheme.h"
+#include "globals.h"
 #include "tuning.h"
 #include "editoractions.h"
 
@@ -57,8 +58,10 @@ QRectF Module::moduleRect() const
 }
 void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QRect r = moduleRect().toRect();
     painter->drawPixmap(r, faceplateImage);
+    shout << faceplateImage.devicePixelRatio();
 
     paintRegisterHilites(painter);
     paintRegisterLabels(painter);

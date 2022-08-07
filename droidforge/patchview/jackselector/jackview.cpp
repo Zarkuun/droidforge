@@ -52,6 +52,7 @@ bool JackView::isActive(int subJack) const
 }
 void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     // QFontMetrics fm(painter.font());
     // tw = fm.width(sx);
 
