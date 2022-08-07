@@ -9,7 +9,7 @@
 #include "modulep10.h"
 #include "modules10.h"
 #include "modulem4.h"
-#include "moduleinvalid.h"
+#include "modulebling.h"
 
 #include <QStringList>
 
@@ -40,7 +40,7 @@ Module *ModuleBuilder::buildModule(QString name, const RegisterLabels *labels)
     else if (name == "b32")
         module = new ModuleB32();
     else
-        module = new ModuleInvalid();
+        module = new ModuleBling();
     if (labels)
         module->setLabels(labels);
     return module;

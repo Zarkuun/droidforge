@@ -313,6 +313,7 @@ void RackView::refreshModules()
     addModule("master");
     addModule("g8");
     addModule("x7");
+    addModule("bling");
     x += RACV_CONTROLLER_GAP;
 
     for (qsizetype i=0; i<patch->numControllers(); i++)

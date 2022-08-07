@@ -74,7 +74,7 @@
 #define RACV_MAX_HEIGHT                      1000
 #define RACV_NORMAL_HEIGHT                   280
 #define RACV_PIXEL_PER_HP                    87
-#define RACV_CONTROLLER_GAP                  (2 * RACV_PIXEL_PER_HP)
+#define RACV_CONTROLLER_GAP                  0 // (2 * RACV_PIXEL_PER_HP)
 #define RACV_MAIN_MARGIN                     30
 #define RACK_MODULE_MARGIN                   5
 #define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)

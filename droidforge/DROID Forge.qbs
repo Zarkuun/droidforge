@@ -47,6 +47,8 @@ QtApplication {
     files: [
         "main/memoryindicator.cpp",
         "main/memoryindicator.h",
+        "modules/modulebling.cpp",
+        "modules/modulebling.h",
         "os/midihost.cpp",
         "os/midihost.h",
         "os/macmidihost.cpp",
@@ -138,8 +140,6 @@ QtApplication {
         "modules/modulebuilder.h",
         "modules/moduleg8.cpp",
         "modules/moduleg8.h",
-        "modules/moduleinvalid.cpp",
-        "modules/moduleinvalid.h",
         "modules/modulem4.cpp",
         "modules/modulem4.h",
         "modules/modulemaster.cpp",
