@@ -428,8 +428,38 @@ void EditorActions::changePatching()
 }
 void EditorActions::changeDroidState()
 {
-    actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems() && the_operator->droidX7Present());
-    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems() && the_operator->droidX7Present());
-    actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent());
-    actions[ACTION_TOOLBAR_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent());
+    updateUploadAction(ACTION_UPLOAD_TO_DROID);
+    updateUploadAction(ACTION_TOOLBAR_UPLOAD_TO_DROID);
+    updateSaveToSDAction(ACTION_SAVE_TO_SD);
+    updateSaveToSDAction(ACTION_TOOLBAR_SAVE_TO_SD);
+}
+void EditorActions::updateUploadAction(action_t action)
+{
+    QString tooltip;
+    bool enabled = false;
+    if (patch->hasProblems())
+        tooltip = tr("Your patch has problems. You cannot activate your patch unless you have fixed them.");
+    else if (!the_operator->droidX7Present())
+        tooltip = tr("No DROID X7 MIDI device was detected. Attach your X7 via USB and push the switch to the right.");
+    else {
+        tooltip = tr("Upload and activate your patch via MIDI");
+        enabled = true;
+    }
+    actions[action]->setEnabled(enabled);
+    actions[action]->setToolTip(tooltip);
+}
+void EditorActions::updateSaveToSDAction(action_t action)
+{
+    QString tooltip;
+    bool enabled = false;
+    if (patch->hasProblems())
+        tooltip = tr("Your patch has problems. You cannot activate your patch unless you have fixed them.");
+    else if (!the_operator->droidX7Present())
+        tooltip = tr("No DROID SD card was detected. Insert your SD card that was already in use by your DROID master.");
+    else {
+        tooltip = tr("Write your patch to your DROID sd card and eject the card.");
+        enabled = true;
+    }
+    actions[action]->setEnabled(enabled);
+    actions[action]->setToolTip(tooltip);
 }

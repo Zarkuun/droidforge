@@ -16,4 +16,6 @@
 	* Status bar: new element for showing the memory consumption of your patch
 	* Patch: create a "problem" on circuits that exceed the available DROID memory
 	* Installer: Add link to "Applications" for an easy drag & drop installation
+	* Toolbar: Add hover information for the two activation icons (MIDI + SD) that
+	  explains the reason why it is deactivated.
 

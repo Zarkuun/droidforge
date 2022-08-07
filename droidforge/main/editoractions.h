@@ -119,6 +119,8 @@ private:
     void createActions();
     void updateDisablingActions();
     void updatePasteAction();
+    void updateUploadAction(action_t action);
+    void updateSaveToSDAction(action_t action);
 };
 
 extern EditorActions *the_actions;
