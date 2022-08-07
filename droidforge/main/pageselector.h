@@ -3,8 +3,6 @@
 
 #include "os.h"
 
-#ifdef HAVE_PDF
-
 #include "keycapturelineedit.h"
 
 #include <QWidget>
@@ -37,5 +35,4 @@ private slots:
     void handleKeyPress(int key);
 };
 
-#endif
 #endif // PAGESELECTOR_H

@@ -4,9 +4,7 @@
 #include "droidfirmware.h"
 #include "globals.h"
 #include "tuning.h"
-#ifdef HAVE_PDF
 #include "usermanual.h"
-#endif
 
 #include <QGridLayout>
 #include <QAction>
@@ -63,11 +61,9 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-#ifdef HAVE_PDF
     QPushButton *manualButton = new QPushButton(tr("Manual"));
     connect(manualButton, &QPushButton::clicked, this, &CircuitChooseDialog::showManual);
     buttonBox->addButton(manualButton, QDialogButtonBox::ActionRole);
-#endif
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
@@ -93,12 +89,10 @@ jackselection_t CircuitChooseDialog::getJackSelection() const
 }
 void CircuitChooseDialog::keyPressEvent(QKeyEvent *event)
 {
-#ifdef HAVE_PDF
     if (event->key() == Qt::Key_M && (event->modifiers() & Qt::ControlModifier)) {
         showManual();
         return;
     }
-#endif
     if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_Z)
         lineEditSearch->insert(event->text());
     else if (event->key() == Qt::Key_Backspace)
@@ -196,13 +190,10 @@ void CircuitChooseDialog::saveSettings()
     QSettings settings;
     settings.setValue("circuitchooser/startjacks", startJacksBox->currentIndex());
 }
-#ifdef HAVE_PDF
 void CircuitChooseDialog::showManual()
 {
     the_manual->showCircuit(getSelectedCircuit());
 }
-#endif
-
 void CircuitChooseDialog::keyPressed(int key)
 {
     CircuitCollection *collection = (CircuitCollection *)tabWidget->currentWidget();

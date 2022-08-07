@@ -867,9 +867,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 
         menu->addSeparator();
 
-#ifdef HAVE_PDF
         ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
-#endif
         ADD_ACTION(ACTION_SORT_JACKS, menu);
         ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
         ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);

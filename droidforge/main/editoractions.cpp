@@ -55,11 +55,9 @@ void EditorActions::createActions()
     actions[ACTION_EXPORT_SELECTION] = new QAction(tr("E&xport selection as patch..."), this);
     actions[ACTION_EXPORT_SELECTION]->setEnabled(false);
 
-#ifdef HAVE_MIDI
     actions[ACTION_UPLOAD_TO_DROID] = new QAction(tr("Activate in master via USB to X7"), this);
     actions[ACTION_UPLOAD_TO_DROID]->setShortcut(QKeySequence(tr("F9")));
     actions[ACTION_TOOLBAR_UPLOAD_TO_DROID] = new QAction(ICON("upload_to_droid"), tr("Activate!"), this);
-#endif
 
     actions[ACTION_SAVE_TO_SD] = new QAction(tr("Save to DROID microSD card"), this);
     actions[ACTION_SAVE_TO_SD]->setShortcut(QKeySequence(tr("F10")));
@@ -259,13 +257,11 @@ void EditorActions::createActions()
     actions[ACTION_BARE_PATCH_SOURCE] = new QAction(tr("Show bare patch source"), this);
     actions[ACTION_BARE_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Alt+Ctrl+U")));
 
-#ifdef HAVE_PDF
     actions[ACTION_USER_MANUAL] = new QAction(tr("User manual"), this);
     actions[ACTION_USER_MANUAL]->setShortcuts({QKeySequence(tr("Shift+Ctrl+M")), QKeySequence(tr("F1"))});
 
     actions[ACTION_CIRCUIT_MANUAL] = new QAction(tr("User manual of circuit"), this);
     actions[ACTION_CIRCUIT_MANUAL]->setShortcut(QKeySequence(tr("Ctrl+M")));
-#endif
 
     for (auto action: actions)
          action->setShortcutVisibleInContextMenu(true);
@@ -367,9 +363,7 @@ void EditorActions::moveCursor()
     actions[ACTION_FOLD_UNFOLD]->setEnabled(circuit);
     actions[ACTION_FOLD_UNFOLD_ALL]->setEnabled(circuit);
     actions[ACTION_START_PATCHING]->setEnabled(section()->cursorPosition().column >= 1 && !patch->isPatching());
-#ifdef HAVE_PDF
     actions[ACTION_CIRCUIT_MANUAL]->setEnabled(circuit);
-#endif
 }
 void EditorActions::updateDisablingActions()
 {
@@ -434,10 +428,8 @@ void EditorActions::changePatching()
 }
 void EditorActions::changeDroidState()
 {
-#ifdef HAVE_MIDI
     actions[ACTION_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems() && the_operator->droidX7Present());
     actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setEnabled(!patch->hasProblems() && the_operator->droidX7Present());
-#endif
     actions[ACTION_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent());
     actions[ACTION_TOOLBAR_SAVE_TO_SD]->setEnabled(!patch->hasProblems() && the_operator->droidSDCardPresent());
 }

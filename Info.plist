@@ -11,7 +11,7 @@
 	<key>CFBundleExecutable</key>
 	<string>DROID Forge</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.example.droidforge</string>
+	<string>de.dmmdm.droidforge</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

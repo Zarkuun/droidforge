@@ -1,5 +1,4 @@
 #include "os.h"
-#ifdef HAVE_PDF
 #include "usermanual.h"
 #include "globals.h"
 #include "pageselector.h"
@@ -82,4 +81,3 @@ void UserManual::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
         event->ignore();
 }
-#endif

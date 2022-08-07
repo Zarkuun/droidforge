@@ -4,8 +4,6 @@
 #include <QtGlobal>
 #include "os.h"
 
-#ifdef HAVE_PDF
-
 #include <dialog.h>
 #include <QPdfDocument>
 #include <QPdfView>
@@ -34,5 +32,4 @@ private slots:
 
 extern UserManual *the_manual;
 
-#endif
 #endif // USERMANUAL_H

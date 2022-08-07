@@ -25,9 +25,7 @@ class PatchOperator : public QObject
     PatchParser parser;
     bool sdCardPresent;
     bool x7Present;
-#ifdef HAVE_MIDI
     OurMIDIHost midiHost;
-#endif
     QMenu *recentFilesMenu;
 
 
@@ -50,9 +48,7 @@ protected:
 
 private slots:
     void abortAllActions();
-#ifdef HAVE_MIDI
     void upload();
-#endif
     void saveToSD();
     void newPatch();
     void open();

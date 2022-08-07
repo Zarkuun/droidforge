@@ -94,10 +94,8 @@ private slots:
     void rackZoomIn();
     void rackZoomOut();
     void rackZoomReset();
-#ifdef HAVE_PDF
     void showUserManual();
     void showCircuitManual();
-#endif
     void clearSettings();
 
 signals:
