@@ -78,4 +78,6 @@ void UserManual::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
         event->ignore();
+    else if (event->key() == Qt::Key_Escape)
+        hide();
 }
