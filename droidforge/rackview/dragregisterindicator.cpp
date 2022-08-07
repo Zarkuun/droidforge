@@ -14,8 +14,8 @@ void DragRegisterIndicator::paint(QPainter *painter, const QStyleOptionGraphicsI
 {
     painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QPen pen;
-    pen.setWidth(4);
-    pen.setCosmetic(true);
+    pen.setWidth(RACV_REGISTER_DRAG_WIDTH);
+    // pen.setCosmetic(true);
     pen.setJoinStyle(Qt::MiterJoin);
 
     if (!hits || endPos.isNull()) {

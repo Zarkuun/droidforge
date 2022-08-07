@@ -12,6 +12,7 @@ Module::Module(const QString &name)
     , faceplateImage(":images/faceplates/" + name)
     , registerHilite{{0}}
     , registerLabels(0)
+    , pixelHeight(400)
 {
 }
 Module::~Module()
@@ -60,8 +61,10 @@ void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
 {
     painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QRect r = moduleRect().toRect();
-    painter->drawPixmap(r, faceplateImage);
-    shout << faceplateImage.devicePixelRatio();
+
+    // TODO: Das hier auf Windows ausprobieren und eventuell cachen
+    QImage scaledImage = faceplateImage.scaledToHeight(pixelHeight, Qt::SmoothTransformation);
+    painter->drawImage(r, scaledImage);
 
     paintRegisterHilites(painter);
     paintRegisterLabels(painter);

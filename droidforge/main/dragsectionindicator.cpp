@@ -25,7 +25,6 @@ void DragSectionIndicator::paint(QPainter *painter, const QStyleOptionGraphicsIt
     pen.setColor(hits
                 ? COLOR(RACV_COLOR_DRAGARROW)
                 : COLOR(RACV_COLOR_DRAGARROW_UNLOCKED));
-    pen.setCosmetic(true);
     pen.setJoinStyle(Qt::MiterJoin);
     pen.setWidth(PSM_SECTION_DRAG_WIDTH);
     painter->setPen(pen);

@@ -15,6 +15,8 @@
 	* FIX: Allow to close user manual with Escacpe key (as with all dialogs)
 	* FIX: Make rendering of register marker circles and arrows smooth, avoid
 	       pixels.
+	* FIX: Fix too wide lines when dragging things on low resolution screens
+	* FIX: Make controllers look smooth on low resolution screens
 
 
 	Features:

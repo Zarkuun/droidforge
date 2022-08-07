@@ -28,11 +28,11 @@ class RackView : public QGraphicsView, PatchView
 
 public:
     explicit RackView(PatchEditEngine *patch);
-    void resizeEvent(QResizeEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
     void initScene();
 
 private:
@@ -57,6 +57,7 @@ private:
     void stopDraggingRegister(QGraphicsItem *startItem, QGraphicsItem *item);
     void stopDraggingController(QGraphicsItem *startItem, QPoint pos);
     int snapControllerInsertPosition(int fromIndex, float x, float *insertSnap) const;
+    void updateModuleHeights();
 
 public slots:
     void abortAllActions();

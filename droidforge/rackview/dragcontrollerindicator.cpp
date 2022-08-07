@@ -23,7 +23,7 @@ void DragControllerIndicator::paint(QPainter *painter, const QStyleOptionGraphic
     pen.setColor(hits
                 ? COLOR(RACV_COLOR_DRAGARROW)
                 : COLOR(RACV_COLOR_DRAGARROW_UNLOCKED));
-    pen.setCosmetic(true);
+    // pen.setCosmetic(true);
     pen.setJoinStyle(Qt::MiterJoin);
     pen.setWidth(RACV_CONTROLLER_DRAG_WIDTH);
     painter->setPen(pen);

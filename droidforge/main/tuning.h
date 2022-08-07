@@ -80,7 +80,8 @@
 #define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)
 #define RACV_REGMARKER_EXTRA_DIAMETER        30
 #define RACV_REGMARKER_PEN_WIDTH             10
-#define RACV_CONTROLLER_DRAG_WIDTH           4
+#define RACV_CONTROLLER_DRAG_WIDTH           12
+#define RACV_REGISTER_DRAG_WIDTH             12
 #define RACV_CONTROLLER_SNAP_DISTANCE        (1.8 * RACV_PIXEL_PER_HP)
 #define RACV_ARROW_HEAD_SIZE                 (0.6 * RACV_PIXEL_PER_HP)
 #define RACV_DRAG_CIRCLE_SIZE                (2.5 * RACV_PIXEL_PER_HP)
@@ -124,7 +125,7 @@
 #define PSM_SECTION_HEIGHT                   22
 #define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
 #define PSM_IMAGE_MARGIN                     4
-#define PSM_SECTION_DRAG_WIDTH               4
+#define PSM_SECTION_DRAG_WIDTH               2
 #define PSM_ARROW_HEAD_SIZE                  6
 #define PSM_SECTION_SNAP_DISTANCE            ((PSM_SECTION_HEIGHT / 2) - 1)
 

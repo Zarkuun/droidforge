@@ -9,6 +9,7 @@
 
 #include <QString>
 #include <QPixmap>
+#include <QImage>
 #include <QGraphicsItem>
 #include <QPoint>
 
@@ -29,12 +30,14 @@ QT_END_NAMESPACE
 class Module : public QGraphicsItem
 {
     QString name;
-    QPixmap faceplateImage;
+    QImage faceplateImage;
     int registerHilite[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE]; // 0: off, 1: used, 2: current
     const RegisterLabels *registerLabels; // points into current patch
+    unsigned pixelHeight;
 
 public:
     Module(const QString &name);
+    void setPixelHeight(unsigned height) { pixelHeight = height; };
     void setLabels(const RegisterLabels *labels) { registerLabels = labels; };
     virtual ~Module();
     QString getName() const { return name; };
@@ -53,7 +56,8 @@ public:
     bool isController() const;
     void clearHilites();
     void hiliteRegisters(int usage, register_type_t type=REGISTER_TYPE_NULL, unsigned number=0);
-    const QPixmap *getFaceplateImage() const { return &faceplateImage; };
+    const QImage *getFaceplateImage() const { return &faceplateImage; };
+    // const QPixmap *getFaceplatePixmap() const { return &faceplatePixmap; };
     AtomRegister *registerAt(const QPoint &pos) const;
     AtomRegister registerAtom(register_type_t type, unsigned number) const;
     void collectAllRegisters(RegisterList &rl, int number=-1) const;

@@ -325,6 +325,7 @@ void RackView::refreshModules()
                 modules.last()->moduleRect().bottomRight());
     scene()->setSceneRect(bounding);
     ensureVisible(bounding);
+    updateModuleHeights();
 }
 void RackView::initScene()
 {
@@ -355,6 +356,7 @@ void RackView::connectDragger()
 void RackView::updateSize()
 {
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+    updateModuleHeights();
 }
 void RackView::addModule(const QString &name, int controllerIndex)
 {
@@ -618,6 +620,13 @@ int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insert
         }
     }
     return -1;
+}
+
+void RackView::updateModuleHeights()
+{
+    for (auto module: modules)
+        module->setPixelHeight(height() - 13); // This 13 is empirical. Other numbers make pixel artefacts
+
 }
 void RackView::abortDragging()
 {
