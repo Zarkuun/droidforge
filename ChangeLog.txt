@@ -18,4 +18,5 @@
 	* Installer: Add link to "Applications" for an easy drag & drop installation
 	* Toolbar: Add hover information for the two activation icons (MIDI + SD) that
 	  explains the reason why it is deactivated.
+	* Toolbar: Make problem icon colored, so you see it immediately
 
