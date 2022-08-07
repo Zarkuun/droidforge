@@ -327,7 +327,8 @@ bool PatchSectionView::handleKeyPress(int key, int modifiers)
     // All keys that are used for entering a value popup the atom selector
     // preselected accordingly. Make sure that they are only valid
     // if no modified is pressed.
-    if ( ((modifiers | Qt::ShiftModifier) == Qt::ShiftModifier)
+    const int allowedModifiers = Qt::ShiftModifier | Qt::KeypadModifier;
+    if ( ((modifiers | allowedModifiers) == allowedModifiers)
         && ((key >= Qt::Key_A && key <= Qt::Key_Z)
         || key == Qt::Key_Underscore
         || (key >= Qt::Key_0 && key <= Qt::Key_9)
