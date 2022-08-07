@@ -14,13 +14,13 @@ typedef enum {
 
 class AtomNumber : public Atom
 {
-    float number; // 1V is 0.1. For 1/4 is 0.25, not 4
+    double number; // 1V is 0.1. For 1/4 is 0.25, not 4
     atom_number_t numberType;
 
 public:
-    AtomNumber(float n, atom_number_t t)
+    AtomNumber(double n, atom_number_t t)
         : number(n), numberType(t) {};
-    float getNumber() const { return number; };
+    double getNumber() const { return number; };
     atom_number_t getType() const { return numberType; };
     bool isFraction() const { return numberType == ATOM_NUMBER_FRACTION; };
     AtomNumber *clone() const;
@@ -31,10 +31,10 @@ public:
     bool isNumber() const { return true; };
     QString problemAsInput(const Patch *patch) const;
     QString problemAsOutput(const Patch *patch) const;
-    static QString niceNumber(float n);
+    static QString niceNumber(double n);
 
 private:
-    QString toFractionString(float number) const;
+    QString toFractionString(double number) const;
 
 };
 

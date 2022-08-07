@@ -24,7 +24,7 @@ class NumberSelector : public AtomSubSelector
     QPushButton *buttonVoltage;
     QPushButton *buttonPercentage;
     QPushButton *buttonOnOff;
-    float number; // 1V is 1, not 0.1 here!
+    double number; // 1V is 1, not 0.1 here!
     atom_number_t numberType;
 
     QString circuit;

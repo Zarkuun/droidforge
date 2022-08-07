@@ -19,7 +19,7 @@
 #define IMAGE_PATH_TEMPLATE                  ":images/icons/%1.png"
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001
-#define NUMBER_DIGITS                        25
+#define NUMBER_DIGITS                        15
 #define MAC_UMOUNT_TIMEOUT_MS                25000 // ms
 #define SD_CHECK_INTERVAL                    300  // ms
 #define MAX_DROID_INI                        64000 // from x7.h

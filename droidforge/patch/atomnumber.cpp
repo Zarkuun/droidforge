@@ -18,13 +18,13 @@ QString AtomNumber::toString() const
     if (numberType == ATOM_NUMBER_FRACTION)
         return niceNumber(1.0 / number);
 
-    float num = number;
+    double num = number;
 
     if (numberType == ATOM_NUMBER_ONOFF) {
         return number == 0 ? "off" : "on";
     }
 
-    float factor = 1.0;
+    double factor = 1.0;
     QString suffix = "";
 
     if (numberType == ATOM_NUMBER_PERCENTAGE) {
@@ -67,9 +67,11 @@ QString AtomNumber::problemAsOutput(const Patch *) const
     return tr("You cannot use a fixed number for an output parameter");
 }
 
-QString AtomNumber::niceNumber(float num)
+QString AtomNumber::niceNumber(double num)
 {
-    QString numString = QString::number(num, 'f', NUMBER_DIGITS);
+    int l = num == 0 ? 0 : log10(abs(num));
+    int precision = NUMBER_DIGITS - l;
+    QString numString = QString::number(num, 'f', precision);
     while (numString.contains('.') && numString.endsWith('0'))
         numString.chop(1);
     if (numString.endsWith('.'))
@@ -77,7 +79,7 @@ QString AtomNumber::niceNumber(float num)
     return numString;
 }
 
-QString AtomNumber::toFractionString(float number) const
+QString AtomNumber::toFractionString(double number) const
 {
     if (number < 0)
         return "-" + toFractionString(-number);
@@ -93,12 +95,12 @@ QString AtomNumber::toFractionString(float number) const
     unsigned right_p = 1;
     unsigned right_q = 1;
 
-    float maxError = FRACTION_PRECISION;
+    double maxError = FRACTION_PRECISION;
 
     while (true) {
         unsigned mid_p = left_p + right_p;
         unsigned mid_q = left_q + right_q;
-        float mid = (float)mid_p / (float)mid_q;
+        double mid = (double)mid_p / (double)mid_q;
         if (qAbs(number - mid) <= maxError) {
             if (reci)
                 return QString("%1/%2").arg(mid_q).arg(niceNumber(mid_p));

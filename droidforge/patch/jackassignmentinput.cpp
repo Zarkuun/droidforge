@@ -275,7 +275,7 @@ Atom *JackAssignmentInput::parseOnOff(QString s)
 
 Atom *JackAssignmentInput::parseNumber(QString s)
 {
-    float factor = 1.0;
+    double factor = 1.0;
     atom_number_t at = ATOM_NUMBER_NUMBER;
     if (s.endsWith("v") || s.endsWith("V")) {
         at = ATOM_NUMBER_VOLTAGE;
@@ -288,7 +288,7 @@ Atom *JackAssignmentInput::parseNumber(QString s)
         s.chop(1);
     }
     bool ok = false;
-    float number = s.toFloat(&ok);
+    double number = s.toDouble(&ok);
     if (!ok)
         return 0;
     else

@@ -70,8 +70,6 @@ void UserManual::openExternally()
 }
 void UserManual::showCircuit(const QString &circuit)
 {
-    shout << "Man zu circuit" << circuit;
-    shout << "Das sollte sein auf Seite" << the_firmware->circuitManualPage(circuit);
     show();
     jumpToPage(the_firmware->circuitManualPage(circuit));
 }
