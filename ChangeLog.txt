@@ -1,3 +1,7 @@
+0.5:
+    Bug fixes:
+	* FIX: Crash when deleting the problem before the last problem (found
+	       by @nohumans)
 0.4:
     Bug fixes:
 	* FIX: avoid numbers like 1.123e-5

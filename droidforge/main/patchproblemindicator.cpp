@@ -82,6 +82,8 @@ void PatchProblemIndicator::jumpToNextProblem()
     if (patch->numProblems() == 0)
         return;
 
+    if (currentProblem >= patch->numProblems())
+        currentProblem = 0;
     const PatchProblem *problem = patch->problem(currentProblem++);
     if (currentProblem >= patch->numProblems())
         currentProblem = 0;
