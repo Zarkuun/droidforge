@@ -1,3 +1,5 @@
+TODO Aufteilene in TODO Und LIESMICH.Ideen
+
 IDEEN:
  - Bei Enter eine Zeile tiefer gehen. Bei Shift-Enter eine rauf (ist
    wohl bei Excel so)
@@ -24,12 +26,8 @@ BUGS:
 
 SCHÖNHEITSDINGE:
 
-- Mario sagt (works for me, aber): die Bilder von den Controllern sehen pixelig aus (geringe Auflösung,
-  anscheinend keine Vektor-Dateien) z.B. die Skalierung funktioniert nicht gut,
-  wenn du das ganze Fenster sehr viel kleiner machst 
-
 - Mario sagt (works for me, aber): - Die einzelnen farbigen „Stopp-Schilder“ in der Parameter-Section sehen sehr
-  pixelig aus
+  pixelig aus. Das könnte ich nochmal untersuchen.
 
 - Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
   Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
