@@ -1,7 +1,8 @@
 0.5:
     Bug fixes:
-	* FIX: Crash when deleting the problem before the last problem (found
+	* FIX: Fixed crash when deleting the problem before the last problem (found
 	       by @nohumans)
+	* FIX: Fixed crash when cutting an empty cell (found by @Mario Paler)
 0.4:
     Bug fixes:
 	* FIX: avoid numbers like 1.123e-5

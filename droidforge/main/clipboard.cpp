@@ -131,7 +131,8 @@ QString Clipboard::toString() const
         return text;
 
     for (auto atom: atoms)
-        text += atom->toString();
+        if (atom)
+            text += atom->toString();
     if (text != "")
         return text;
 
