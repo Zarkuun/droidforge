@@ -3,6 +3,9 @@
 	* FIX: Fixed crash when deleting the problem before the last problem (found
 	       by @nohumans)
 	* FIX: Fixed crash when cutting an empty cell (found by @Mario Paler)
+	* FIX: Fix bug where a double click on a module (not on a jack/control)
+	       opens a labelling dialog where the existing labels are missing
+		   (found by @Mario Paler)
 0.4:
     Bug fixes:
 	* FIX: avoid numbers like 1.123e-5

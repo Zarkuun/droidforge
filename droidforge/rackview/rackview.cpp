@@ -105,7 +105,7 @@ void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
     patch->commit(tr("Exchanging registers '%1' and '%2'").arg(regA.toString()).arg(regB.toString()));
     emit patchModified();
 }
-void RackView::popupControllerContextMenu(int controllerIndex, QString moduleType, AtomRegister areg)
+void RackView::popupModuleContextMenu(int controllerIndex, QString moduleType, AtomRegister areg)
 {
     QMenu *menu = new QMenu(this);
     if (controllerIndex >= 0) {
@@ -451,7 +451,12 @@ void RackView::doubleClickOnItem(QGraphicsItem *item)
 {
     if (item->data(DATA_INDEX_MODULE_INDEX).isValid()) {
         Module *module = modules[item->data(DATA_INDEX_MODULE_INDEX).toInt()];
-        int controllerIndex = item->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
+        if (module->getName() == "bling")
+            return;
+        bool ok;
+        int controllerIndex = item->data(DATA_INDEX_CONTROLLER_INDEX).toInt(&ok);
+        if (!ok)
+            controllerIndex = -1;
         AtomRegister ar;
         if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
             ar = AtomRegister(item->data(DATA_INDEX_REGISTER_NAME).toString());
@@ -476,6 +481,8 @@ void RackView::openMenuOnItem(QGraphicsItem *item)
 {
     Module *module = modules[item->data(DATA_INDEX_MODULE_INDEX).toInt()];
     QString moduleName = module->getName();
+    if (moduleName == "bling")
+        return;
 
     QVariant v = item->data(DATA_INDEX_CONTROLLER_INDEX);
     int index = v.isValid() ? v.toInt() : -1;
@@ -483,7 +490,7 @@ void RackView::openMenuOnItem(QGraphicsItem *item)
     if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
         areg = item->data(DATA_INDEX_REGISTER_NAME).toString();
 
-    popupControllerContextMenu(index, moduleName, areg);
+    popupModuleContextMenu(index, moduleName, areg);
 }
 
 void RackView::hoverIn(QGraphicsItem *item)

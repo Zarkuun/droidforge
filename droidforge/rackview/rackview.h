@@ -42,7 +42,7 @@ private:
     void removeModule(int controllerIndex);
     RegisterList findCurrentRegisters() const;
     void updateSize();
-    void popupControllerContextMenu(int controller, QString name, AtomRegister areg);
+    void popupModuleContextMenu(int controller, QString name, AtomRegister areg);
     void popupBackgroundContextMenu();
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);

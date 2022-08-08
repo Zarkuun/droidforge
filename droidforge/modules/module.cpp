@@ -51,7 +51,7 @@ void Module::clearHilites()
 }
 QRectF Module::boundingRect() const
 {
-    return moduleRect().adjusted(-RACV_PIXEL_PER_HP, 0, RACV_PIXEL_PER_HP, 0);
+    return moduleRect().adjusted(-20, 0, 20, 0);
 }
 QRectF Module::moduleRect() const
 {
