@@ -71,7 +71,7 @@ QString AtomNumber::niceNumber(double num)
 {
     int l = num == 0 ? 0 : log10(abs(num));
     int precision = NUMBER_DIGITS - l;
-    QString numString = QString::number(num, 'f', precision);
+    QString numString = QString::number(num, 'd', precision);
     while (numString.contains('.') && numString.endsWith('0'))
         numString.chop(1);
     if (numString.endsWith('.'))

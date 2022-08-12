@@ -205,7 +205,7 @@ void NumberSelector::installFocusFilter(QWidget *w)
 
 Atom *NumberSelector::getAtom() const
 {
-    float value = number;
+    double value = number;
     if (numberType == ATOM_NUMBER_VOLTAGE)
         value /= 10;
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
@@ -226,13 +226,13 @@ void NumberSelector::lineEdited(QString text)
     if (text.endsWith("V", Qt::CaseInsensitive)) {
         text.chop(1);
         lineEdit->setText(text);
-        number = text.toFloat();
+        number = text.toDouble();
         setNumberType(ATOM_NUMBER_VOLTAGE);
     }
     else if (text.endsWith("%")) {
         text.chop(1);
         lineEdit->setText(text);
-        number = text.toFloat();
+        number = text.toDouble();
         setNumberType(ATOM_NUMBER_PERCENTAGE);
     }
     else if (text.toLower() == "on") {
@@ -251,7 +251,7 @@ void NumberSelector::lineEdited(QString text)
         setNumberType(ATOM_NUMBER_NUMBER);
     }
     else {
-        number = text.toFloat();
+        number = text.toDouble();
     }
 }
 
