@@ -9,6 +9,10 @@
 	* FIX: Fix number precision bug where 0.3 gets converted into 0.30000001773773
 	* FIX: Fix two undo messages (bogus "%s" in message)
 
+	Features:
+	* Fast copy: command + mouse click on a cell copies that cell's content
+	       to the cursor position (previously it was vice versa)
+
 0.4:
     Bug fixes:
 	* FIX: avoid numbers like 1.123e-5
@@ -28,7 +32,6 @@
 	       pixels.
 	* FIX: Fix too wide lines when dragging things on low resolution screens
 	* FIX: Make controllers look smooth on low resolution screens
-
 
 	Features:
 	* Manual viewer: cursor left and right now also work for page switching

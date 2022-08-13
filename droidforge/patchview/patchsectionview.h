@@ -65,7 +65,7 @@ private:
     void updateCableIndicator();
     CursorPosition *cursorAtMousePosition(QPoint pos) const;
     void setMouseSelection(const CursorPosition &to);
-    void instantCopyTo(const CursorPosition &to);
+    void instantCopyFrom(const CursorPosition &from);
     void instantCableTo(const CursorPosition &to);
     void updateKeyboardSelection(const CursorPosition &before, const CursorPosition &after);
     void handleLeftMousePress(const CursorPosition &curPos);

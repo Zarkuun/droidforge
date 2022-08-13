@@ -802,7 +802,7 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
     if (QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)
         setMouseSelection(curPos);
     else if (QGuiApplication::keyboardModifiers() & Qt::ControlModifier)
-        instantCopyTo(curPos);
+        instantCopyFrom(curPos);
     else if (QGuiApplication::keyboardModifiers() & Qt::AltModifier)
         instantCableTo(curPos);
 
@@ -1313,22 +1313,21 @@ void PatchSectionView::setMouseSelection(const CursorPosition &to)
     section()->setMouseSelection(to);
     emit selectionChanged();
 }
-void PatchSectionView::instantCopyTo(const CursorPosition &to)
+void PatchSectionView::instantCopyFrom(const CursorPosition &from)
 {
-    if (to.row < 0 || to.column <= 0) // not on an atom
+    if (from.row < 0 || from.column <= 0) // not on an atom
         return;
 
-    const Atom *atom = currentAtom();
-    const Atom *targetAtom = section()->atomAt(to);
-    if (atom == targetAtom) // do not copy onto itself
+    else if (from == section()->cursorPosition()) // on same cell
         return;
 
-    if (!atom) // Won't copy empty cell
-        return;
+    const Atom *sourceAtom = section()->atomAt(from);
+    if (!sourceAtom)
+        return; // source is empty
 
-    JackAssignment *ja = section()->jackAssignmentAt(to);
-    ja->replaceAtom(to.column, atom->clone());
-    patch->commit(tr("copying '%1'").arg(atom->toString()));
+    JackAssignment *ja = currentJackAssignment();
+    ja->replaceAtom(section()->cursorPosition().column, sourceAtom->clone());
+    patch->commit(tr("copying '%1'").arg(sourceAtom->toString()));
     emit patchModified();
 }
 void PatchSectionView::instantCableTo(const CursorPosition &to)
