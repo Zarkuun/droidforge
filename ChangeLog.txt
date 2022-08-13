@@ -8,6 +8,7 @@
 		   (found by @Mario Paler)
 	* FIX: Fix number precision bug where 0.3 gets converted into 0.30000001773773
 	* FIX: Fix two undo messages (bogus "%s" in message)
+	* FIX: Fix detecting if SD card is present (enabling of SD card icon)
 
 	Features:
 	* Fast copy: command + mouse click on a cell copies that cell's content

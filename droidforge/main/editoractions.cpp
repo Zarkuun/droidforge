@@ -454,7 +454,7 @@ void EditorActions::updateSaveToSDAction(action_t action)
     bool enabled = false;
     if (patch->hasProblems())
         tooltip = tr("Your patch has problems. You cannot activate your patch unless you have fixed them.");
-    else if (!the_operator->droidX7Present())
+    else if (!the_operator->droidSDCardPresent())
         tooltip = tr("No DROID SD card was detected. Insert your SD card that was already in use by your DROID master.");
     else {
         tooltip = tr("Write your patch to your DROID sd card and eject the card.");

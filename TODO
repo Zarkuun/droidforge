@@ -1,13 +1,3 @@
-BUG:
-  - Save to SD ist immer aktiv, auch wenn keien DROID-Karte da ist.
-
-TODO Aufteilene in TODO Und LIESMICH.Ideen
-
-
-IDEEN:
- - Bei Enter eine Zeile tiefer gehen. Bei Shift-Enter eine rauf (ist
-   wohl bei Excel so)
-
 BUGS:
 
 - Die Seitenzahlen sind alle auf 0. Ich muss irgendwie einen besseren
@@ -20,15 +10,9 @@ BUGS:
     nicht direkt zum jeweiligen Circuit… ist das gewollt? Ich erwarte eigentlich,
     dass er mich direkt zum entsprechenden Abschnitt im Benutzerhandbuch führt 
 
-Marios Featurevorschläge:
-
-BUGS:
-
 - Der Speicherverbrauch von X7 und den Controllern wird nicht
   berücksichtigt. Wie kann ich das simulieren? Sollen die einfach
   im Puffer untergehen?
-
-SCHÖNHEITSDINGE:
 
 - Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
   Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
@@ -39,62 +23,16 @@ SCHÖNHEITSDINGE:
 
 - Mac: Das DMG hat kein Icon.
 
-- Mac: Hintergrundbild für den DMG-Installer
-
 - Mac: Das Info.plist nochmal genau durchgehen, ob alles passt.
   Da sind auch verschiedene Versionsnummern drin. Und die Frage ist,
   ob man <key>NSHighResolutionCapable</key>
   <string>True</string> braucht
-
-TODO für die erste Version:
-
-- Manual viewer: Noch ein bisschen aufpeppen oder so.
-
-- Nochmal checken: Seitenzahlen im Manual. Stimmnen die noch?
 
 - Die Doppelklickzeit vom Mac wird von den styleHints() nicht
   korrekt zurückgegeben. Ist immer 400. Das ist auch sehr lang.
   Deswegen verwende ich einfach so 200. Wir müssen eine Methode
   finden, den echten Wert rauszubeikommen. Und das einbauen
   in MouseDragger::doubleClickTime()
-
-Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
----------------------------------------------
-- Mario Paler: - New Feature: Auto-Save after X minutes, inklusive Backup-Files,
-  um einen Zwischenstand zurückzusetzen, wenn ein Programmabbruch erfolgt
-
-- Circuits per Drag-Drop vertauschen? Wirklich? Die Selektion verschieben?
-  Könnte recht fummelig werden. Es gibt ja Cut&Paste. Reciht das ncht?
-  Allenfalls könnte man Alt+Pfeil so machen, dass es die selektion
-  verschiebt, wenn es eine gibt.o
-  Andererseits ist das das, was man erwartet und ich selbst hab's
-  schon ein paarmal versucht. Man könnte es auf einen Circuit beschränken.
-  Aber dann ist das ja auch schon fast wurst? Naja. Der mousedragger
-  braucht ja items zum Arbeiten, oder? Dann kann man einfach einzelne
-  Circuits verschieben.
-  Mario Paler dazu: Ich würde gerne einzelne Circuits mit einem Links-Mausklick
-  selektieren und verschieben können 
-
-- Eine SD-Karte initialisieren. Mit dem Zeugs, dass der MAC schneller
-  ist und sowas. Und dass sie DROID heisst und ne driod.ini drauf is.
-
-- Move circuit up/down: Kann das nicht ins Kontextmenü? Dann würde man
-  die Tastendrücke sehen.
-
-- Copy/Cut/Paste für Sektionen. Das wirkt sich allerdings auf das Clipboard
-  aus. Ist wahrscheinlich an vielen Stellen dann relevant. Aber man
-  würde es wirklich erwarten.
-
-- Releasepaket für Apple, wo man das Icon so rüberziehen kann
-
-- Dieser Hintdialog. Den könnten wir noch noch viel öfter einsetzen...
-
-- Selektion mit Rahmen ziehen
-
-- Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc) (sollen wir das wirklich machen?)
-
-- Handcursor für Icons usw. die man klicken kann (da hat Qt
-  aber komische Bugs).
 
 - Atomonliner: Das wär schon echt wichtig, wenn man außerhalb klicken
   könnte und das erkannt würde und der dann speichern würde. Oder
@@ -105,22 +43,3 @@ Kleinere Features, die das ganze abrunden, vor dem ersten echten Release:
   machen. Bisschen hässlich.
  Firmwareupgrade von master, M4 und X7 unterstützen
 
-- Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
-  komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
-
-- Controllerhinzufügen: Oft hat man ja immer die gleichen Controller,
-  die man braucht. Weil man ein Hardwarerack hat. Deswegen könnten wir
-  eine Liste der Most recent racks bereitstellen. Und jedesmal wenn
-  man deployt, wird diese aktualisiert (nach QSettings)
-  Mario Paler schreibt dau: Pro Tools nutzt eine kleine Menüstruktur, um mehrere Controller gleichzeitig
-  auszuwählen… Sowas würde ich persönlich nicht schlecht finden, als Option
-  hinzuzufügen, um Zeit zu sparen, wenn du viele Controller hinzufügen möchtest 
-
-
-Größere Dinge für die nächste Version:
-------------------------------------------------------------------
-- Mehrere Dateien gleichzeitig auf haben
-- Patch library (auch für private Patches und Snippets)
-  Idee: Suche alle Patches, für die in meinem aktuellen Patch noch "Platz"
-  ist (Button, Controller, etc.)
-- Discord-Integration
