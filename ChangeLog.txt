@@ -12,7 +12,10 @@
 
 	Features:
 	* Fast copy: command + mouse click on a cell copies that cell's content
-	       to the cursor position (previously it was vice versa)
+	  to the cursor position (previously it was vice versa)
+	* Edit cell: After editing the contents of a cell (via direct typing
+	  or via the cell editor) the cursor moves one row down (if there
+	  is one more in the current circuit)
 
 0.4:
     Bug fixes:

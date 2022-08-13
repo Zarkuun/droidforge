@@ -37,9 +37,9 @@ BUGS:
 - Atomonliner: Das wär schon echt wichtig, wenn man außerhalb klicken
   könnte und das erkannt würde und der dann speichern würde. Oder
   auch z.B. wenn man eine Funktionstaste wie F9 drückt.
-  Das ginge vielleicht, wenn man den modal macht und sobald er den Focus
-  verliert ihn beendet. Dazu müssen wir uns aber irgendwo merken,
-  dass wir gerade onelinern. Und bei dem Closeevent dann ein editatom
-  machen. Bisschen hässlich.
- Firmwareupgrade von master, M4 und X7 unterstützen
+
+  Ich glaube das geht nur, wenn wir die Eingabe ganz selbst programmieren
+  oder zumindest versuchen, anstelle des Dialogs ein Widget zu platzieren.
+  Welches dann auch mitscrollt, wenn man mit dem Mausrad den Ausschnitt
+  verschiebt.
 

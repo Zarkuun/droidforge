@@ -1117,6 +1117,8 @@ void PatchSectionView::editAtom(int key)
     if (newAtom != 0 && newAtom != atom) {
         ja->replaceAtom(section()->cursorPosition().column, newAtom);
         patch->commit(tr("changing parameter '%1'").arg(ja->jackName()));
+        if (section()->cursorPosition().row + 1 < currentCircuit()->numJackAssignments())
+            section()->moveCursorDown();
         emit patchModified();
     }
     if (lastKey) {
