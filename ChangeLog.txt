@@ -7,6 +7,8 @@
 	       opens a labelling dialog where the existing labels are missing
 		   (found by @Mario Paler)
 	* FIX: Fix number precision bug where 0.3 gets converted into 0.30000001773773
+	* FIX: Fix two undo messages (bogus "%s" in message)
+
 0.4:
     Bug fixes:
 	* FIX: avoid numbers like 1.123e-5

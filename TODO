@@ -1,3 +1,6 @@
+BUG:
+  - Save to SD ist immer aktiv, auch wenn keien DROID-Karte da ist.
+
 TODO Aufteilene in TODO Und LIESMICH.Ideen
 
 - Cmd+Click soll was *holen* nicht *hinschieben*
@@ -27,9 +30,6 @@ BUGS:
   im Puffer untergehen?
 
 SCHÖNHEITSDINGE:
-
-- Mario sagt (works for me, aber): - Die einzelnen farbigen „Stopp-Schilder“ in der Parameter-Section sehen sehr
-  pixelig aus. Das könnte ich nochmal untersuchen.
 
 - Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
   Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.

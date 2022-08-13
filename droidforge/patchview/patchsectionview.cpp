@@ -1045,7 +1045,7 @@ void PatchSectionView::editJack(int key)
         }
         else
             currentJackAssignment()->changeJack(name);
-        patch->commit(tr("replacing parameter with '%s'").arg(name));
+        patch->commit(tr("replacing parameter with '%1'").arg(name));
         emit patchModified();
     }
 }
@@ -1562,7 +1562,7 @@ void PatchSectionView::editCircuit(int key)
     if (!newCircuit.isEmpty() && oldCircuit != newCircuit)
     {
         currentCircuit()->changeCircuit(newCircuit);
-        patch->commit(tr("changing circuit type to '%s'").arg(newCircuit));
+        patch->commit(tr("changing circuit type to '%1'").arg(newCircuit));
         emit patchModified();
     }
 }
