@@ -38,8 +38,6 @@ IDEEN:
 - Releasepaket für Apple, wo man das Icon so rüberziehen kann
   Und mit Hintergrundbild.
 
-- Symbole für die Parametertypen (Gate, Trigger, V/Oct, CV, etc) (sollen wir das wirklich machen?)
-
 - Registrieren von "*.ini"-Dateien auf dem Mac. Ist sehr
   komplex. Hier ist ein Link: https://stackoverflow.com/questions/435175/how-to-associate-file-type-with-macos-x-app-without-launching-it-first
 
