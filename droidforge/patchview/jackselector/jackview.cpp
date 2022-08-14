@@ -20,7 +20,6 @@ JackView::JackView(QString circuit, QString jack, const QStringList *usedJacks, 
 
     symbol = the_firmware->jackTypeSymbol(circuit, jack, isInput);
     arraySize = the_firmware->jackArraySize(circuit, jack, isInput);
-    shout << "jack is " << jack << "size" << arraySize;
     if (isArray()) {
         active = false;
         for (qsizetype i=0; i<arraySize; i++) {

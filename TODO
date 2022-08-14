@@ -1,35 +1,12 @@
 BUGS:
 
-- Der Speicherverbrauch von X7 und den Controllern wird nicht
-  berücksichtigt. Wie kann ich das simulieren? Sollen die einfach
-  im Puffer untergehen?
-  Oder gescheit: Auf die gleich Art, wie wir die Circuits messen,
-  den Speicherverbrauch der Controller messen. Sollte ja gleich einfach
-  sein. Ich brauch das auch nicht automatisch. Kann man von Hand
-  in module.h eintragen oder sonstwo anders. Problem ist nur der
-  X7. Ich glaub der muss im Puffer untergehen.
-
-  Insgesamt muss ich testen, ob ich Patches zuverlässig deployen
-  kann, wenn der Speicherverbrauch <= 100% ist.
-
-- Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
-  Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
-  Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
-  die Betriebssysteme brauche.
-
 TODO:
 
-- Die Seitenzahlen sind alle auf 0. Ich muss irgendwie einen besseren
-  Weg finden, um die ins JSON zu bekommen. Ich glaub, wenn man mal einfach
-  irgendwo F11 macht, ist alles 0. Ich brauch ein Skript, was die JSON-Datei
-  zuverlässig erzeugt. Und die Seitenzahlen müssen aus der TOC-Datei sofort
-  irgendwo ausgelagert werden, dann man das ganze Handbuch maket.
-    Mario: Rechtsklick auf einen beliebigen Parameter + Klick „user manual of circuit“
-    (CMD+M) führt mich nur zum Handbuch, also es öffnet nur die Datei, doch führt
-    nicht direkt zum jeweiligen Circuit… ist das gewollt? Ich erwarte eigentlich,
-    dass er mich direkt zum entsprechenden Abschnitt im Benutzerhandbuch führt 
+- Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
+  verheiraten. Hat eine Forge immer genau eine Firmware? Dann müssten wir die Forge
+  eigentlich immer gleichzeitig rausbringen.
+  Release erzeugen. Dann die JSON-Datei übertragen und die Forge auch erzeugen.
 
-- Windows: Das Icon wird noch nicht genommen.
 
 - Mac: Das DMG hat kein Icon.
 
@@ -43,3 +20,13 @@ TODO:
   Deswegen verwende ich einfach so 200. Wir müssen eine Methode
   finden, den echten Wert rauszubeikommen. Und das einbauen
   in MouseDragger::doubleClickTime()
+
+WINDOWS:
+
+- Windows: Das Icon wird noch nicht genommen.
+
+- Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
+  Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
+  Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
+  die Betriebssysteme brauche.
+

@@ -423,6 +423,11 @@ unsigned Patch::memoryFootprint() const
     unsigned memory = 0;
     for (auto section: sections)
         memory += section->memoryFootprint();
+
+    for (const QString &controller: controllers)
+        memory += the_firmware->controllerMemoryFootprint(controller);
+    memory += the_firmware->controllerMemoryFootprint("x7");
+
     return memory;
 }
 void Patch::remapRegister(AtomRegister from, AtomRegister to)

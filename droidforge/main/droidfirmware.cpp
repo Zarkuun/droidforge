@@ -42,6 +42,7 @@ DroidFirmware::DroidFirmware()
         json = QJsonDocument::fromJson(content);
         file.close();
         circuits = json["circuits"].toObject();
+        controllers = json["controllers"].toObject();
     }
 }
 QString DroidFirmware::version() const
@@ -63,6 +64,10 @@ unsigned DroidFirmware::circuitManualPage(QString circuit) const
 unsigned DroidFirmware::circuitMemoryFootprint(QString circuit) const
 {
     return circuits[circuit].toObject()["ramsize"].toInt();
+}
+unsigned DroidFirmware::controllerMemoryFootprint(QString controller) const
+{
+    return controllers[controller].toObject()["ramsize"].toInt();
 }
 QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
 {
