@@ -20,6 +20,7 @@
 	  is one more in the current circuit)
 	* Parameter chooser: Add information about the type of CV a parameter
 	  expects or outputs.
+	* Mac DMG: Create background image for DMG installer (not final yet)
 
 0.4:
     Bug fixes:

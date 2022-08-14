@@ -46,7 +46,7 @@ install_name_tool -add_rpath @loader_path/../Frameworks "$APP_DIR/Contents/MacOS
 echo $OK
 
 echo -n "Installing Info.plist..."
-cp Info.plist "$TARGET_INFO_PLIST"
+sed "s/DROIDFORGEVERSION/$VERSION/g" Info.plist > "$TARGET_INFO_PLIST"
 echo $OK
 
 # echo -m "Installing GPL License..."
@@ -76,9 +76,16 @@ echo $OK
 
 # Das mit dem Backgroundimage klappt noch nicht
 
-echo -n "Creating DMG..."
-hdiutil create -volname "$NAME" -srcfolder "$DMGDIR" -ov -format UDZO "$DMGNAME" >> "$LOGFILE" 2>&1
+echo -n "Creating DMG with dmgcanvas..."
+dmgcanvas DROID\ Forge.dmgCanvas "$DMGNAME" -setTextString version "$NAME $VERSION" >> $LOGFILE 2>&1
 echo $OK
+
+## echo "STOP HIER!! Das ist ein Test"
+## exit 0
+## 
+## echo -n "Creating DMG..."
+## hdiutil create -volname "$NAME" -srcfolder "$DMGDIR" -ov -format UDZO "$DMGNAME" >> "$LOGFILE" 2>&1
+## echo $OK
 
 echo -n "Signing DMG"...
 codesign -vvv -f --options runtime --timestamp -s "Developer ID" "$DMGNAME" >> "$LOGFILE" 2>&1
@@ -90,7 +97,7 @@ echo $OK
 
 echo -n "Status: "
 grep '^  status: ' "$LOGFILE"
-grep -q '^ status: Accepted' "$LOGFILE"
+grep -q '^  status: Accepted' "$LOGFILE"
 
 echo -n "Stapling..."
 stapler staple "$DMGNAME" >> "$LOGFILE" 2>&1

@@ -7,13 +7,8 @@ TODO:
   eigentlich immer gleichzeitig rausbringen.
   Release erzeugen. Dann die JSON-Datei übertragen und die Forge auch erzeugen.
 
-
-- Mac: Das DMG hat kein Icon.
-
-- Mac: Das Info.plist nochmal genau durchgehen, ob alles passt.
-  Da sind auch verschiedene Versionsnummern drin. Und die Frage ist,
-  ob man <key>NSHighResolutionCapable</key>
-  <string>True</string> braucht
+- Mac: Das DMG hat kein Icon. Mit "Info" kann man ein Icon reindraggen
+  (links oben). Ich weiß aber nicht, ob man danach nochmal notarizen muss.
 
 - Die Doppelklickzeit vom Mac wird von den styleHints() nicht
   korrekt zurückgegeben. Ist immer 400. Das ist auch sehr lang.
