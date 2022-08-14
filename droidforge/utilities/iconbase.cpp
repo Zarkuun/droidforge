@@ -15,12 +15,10 @@ const QIcon &IconBase::getIcon(const QString &name)
     }
     return icons[name];
 }
-
 const QIcon &IconBase::icon(const QString &name)
 {
     return the_iconbase.getIcon(name);
 }
-
 const QImage &IconBase::getImage(const QString &name)
 {
     if (!images.contains(name)) {
@@ -29,8 +27,24 @@ const QImage &IconBase::getImage(const QString &name)
     }
     return images[name];
 }
+const QImage &IconBase::getJackTypeSymbol(const QString &name)
+{
+    if (!jackTypeSymbols.contains(name)) {
+        QImage jackTypeSymbol(QString(JACK_TYPE_SYMBOLS_PATH_TEMPLATE)
+                   .arg(the_colorscheme->isDark() ? "dark" : "light",
+                        name));
+        jackTypeSymbols[name] = jackTypeSymbol.scaledToHeight(JSEL_JACK_HEIGHT, Qt::SmoothTransformation);
 
+    }
+    return jackTypeSymbols[name];
+}
 const QImage &IconBase::image(const QString &name)
 {
     return the_iconbase.getImage(name);
+}
+
+const QImage &IconBase::jackTypeSymbol(const QString &name)
+{
+    return the_iconbase.getJackTypeSymbol(name);
+
 }

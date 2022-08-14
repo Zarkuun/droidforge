@@ -17,6 +17,7 @@
 #define CIRCUIT_ICON_PATH                    ":images/circuits/"
 #define ICON_PATH_TEMPLATE                   ":images/icons/%1/%2.png"
 #define IMAGE_PATH_TEMPLATE                  ":images/icons/%1.png"
+#define JACK_TYPE_SYMBOLS_PATH_TEMPLATE      ":images/jacktypes/%1/%2.png"
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001
 #define NUMBER_DIGITS                        15
@@ -169,7 +170,8 @@
 #define JSEL_DESCRIPTION_WIDTH               200
 #define JSEL_JACK_HEIGHT                     22
 #define JSEL_CIRCUIT_TEXT_HEIGHT             22
-#define JSEL_JACK_WIDTH                      120
+#define JSEL_JACK_WIDTH                      152
+#define JSEL_SYMBOL_WIDTH                    (JSEL_JACK_WIDTH / 4)
 #define JSEL_JACK_HORIZONTAL_PADDING         STANDARD_SPACING
 #define JSEL_JACK_VERTICAL_PADDING           2
 #define JSEL_JACK_SPACING                    STANDARD_SPACING

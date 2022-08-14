@@ -16,6 +16,8 @@
 	* Edit cell: After editing the contents of a cell (via direct typing
 	  or via the cell editor) the cursor moves one row down (if there
 	  is one more in the current circuit)
+	* Parameter chooser: Add information about the type of CV a parameter
+	  expects or outputs.
 
 0.4:
     Bug fixes:

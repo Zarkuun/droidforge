@@ -103,13 +103,7 @@ bool DroidFirmware::jackIsArray(QString circuit, QString jack) const
 }
 unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isInput) const
 {
-    QJsonValue jackinfo;
-
-    if (isInput)
-        jackinfo = findJackArray(circuit, "inputs", prefix);
-    else
-        jackinfo = findJackArray(circuit, "outputs", prefix);
-
+    QJsonValue jackinfo = findJackArray(circuit, isInput ? "inputs" : "outputs", prefix);
     if (jackinfo.isNull())
         return 0;
 
@@ -118,6 +112,18 @@ unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isIn
         return jackinfo["count"].toInt(1);
     else
         return 0;
+}
+QString DroidFirmware::jackTypeSymbol(QString circuit, QString prefix, bool isInput) const
+{
+    const char *whence = isInput ? "inputs" : "outputs";
+    QJsonValue jackinfo = findJack(circuit, whence, prefix);
+    if (jackinfo.isNull())
+        jackinfo = findJackArray(circuit, whence, prefix);
+    if (jackinfo.isNull())
+        return "";
+
+    QJsonObject ji = jackinfo.toObject();
+    return ji["type"].toString();
 }
 QStringList DroidFirmware::circuitsOfCategory(QString category) const
 {
@@ -231,8 +237,11 @@ QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QStr
 
     if (whence == "inputs" && the_firmware->jackHasDefaultvalue(circuit, jack)) {
         float default_value = the_firmware->jackDefaultvalue(circuit, jack);
-        description += "<br>" + TR("Default value: %1").arg(default_value);
+        description += "<br>" + TR("Default value: %1").arg(default_value) + "<br>";
     }
+
+    QString symbol = jackTypeSymbol(circuit, jack, whence == "inputs");
+    description += "<br>" + jackTypeExplanation(symbol, whence == "inputs");
     return description;
 }
 
@@ -246,6 +255,49 @@ QString DroidFirmware::jackTableAsString(const QMap<float, QString> &table) cons
         text += QString::number(value) + ": " + description + "<br>";
     }
     return text;
+}
+
+QString DroidFirmware::jackTypeExplanation(QString symbol, bool isInput) const
+{
+    if (isInput) {
+        if (symbol == "cv")
+            return TR("This input accepts any types of CV, may it be continous or stepped.");
+        else if (symbol == "integer")
+            return TR("This input expects integer numbers like 0, 1, 2 and so on. Other values are rounded to the nearest integer number.");
+        else if (symbol == "stepped")
+            return TR("This input expects stepped CVs.");
+        else if (symbol == "voltperoctave")
+            return TR("This input interpretes CV on a 1 Volt per octave basis.");
+        else if (symbol == "trigger")
+            return TR("This input looks just for positive trigger edges, i.e. when the value goes from below 1V to 1V or above. It does not take into account the length of gate.");
+        else if (symbol == "gate")
+            return TR("This input just distinguishes between the state \"low\", which is everyting below 1V and \"high\" which is at 1V or above.");
+        else if (symbol == "bipolar")
+            return TR("This input expects a value between 0.0 and 1.0. The value 0.5 is special and means the neutral or center position. Negative input values are converted to 0.0. Values about 1.0 are regarded as 1.0.");
+        else if (symbol == "fraction")
+            return TR("This input expects a value between 0.0 and 1.0 (or 0% and 100%). Negative input values are converted to 0.0. Values about 1.0 are regarded as 1.0");
+
+    }
+    else {
+        if (symbol == "cv")
+            return TR("This output outputs arbitrary types of CV values.");
+        else if (symbol == "integer")
+            return TR("This output ouputs integer number likes 0, 1, 2 and so on.");
+        else if (symbol == "stepped")
+            return TR("This output outputs stepped CV values.");
+        else if (symbol == "voltperoctave")
+            return TR("The CV values of this output adher to a precise 1 Volt per octave scheme. You can use them to control the pitch of oscillators.");
+        else if (symbol == "trigger")
+            return TR("This output sends short triggers with a length of 10 ms and a value of 1.0 (10 V).");
+        else if (symbol == "gate")
+            return TR("This output sends either 0.0 or 1.0 (10 V).");
+        else if (symbol == "bipolar")
+            return TR("This output sends a value between 0.0 and 1.0");
+        else if (symbol == "fraction")
+            return TR("This output sends a value between 0.0 and 1.0");
+    }
+
+    return "ARGL:" + symbol;
 }
 QMap<float, QString> DroidFirmware::jackValueTable(QString circuit, QString whence, QString jack) const
 {

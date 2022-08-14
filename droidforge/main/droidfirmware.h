@@ -24,6 +24,7 @@ public:
     bool jackIsOutput(QString circuit, QString jack) const;
     bool jackIsArray(QString circuit, QString jack) const;
     unsigned jackArraySize(QString circuit, QString prefix, bool isInput) const;
+    QString jackTypeSymbol(QString circuit, QString prefix, bool isInput) const;
     QStringList circuitsOfCategory(QString category) const;
     QString circuitDescription(QString circuit) const;
     QString circuitTitle(QString circuit) const;
@@ -44,6 +45,7 @@ private:
     QString delatexify(QString s, bool html=false) const;
     void replaceLatexSymbols(QString &s) const;
     QString jackTableAsString(const QMap<float, QString> &table) const;
+    QString jackTypeExplanation(QString symbol, bool isInput) const;
 };
 
 extern DroidFirmware *the_firmware;

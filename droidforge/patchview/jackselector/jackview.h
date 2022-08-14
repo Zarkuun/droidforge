@@ -16,6 +16,7 @@ class JackView : public QGraphicsItem
     bool isSelected;
     int subjack;
     JackLine *jackLine;
+    QString symbol;
     bool activeSubjacks[MAX_NUM_SUBJACKS];
 
 public:

@@ -1,5 +1,24 @@
 BUGS:
 
+- Der Speicherverbrauch von X7 und den Controllern wird nicht
+  berücksichtigt. Wie kann ich das simulieren? Sollen die einfach
+  im Puffer untergehen?
+  Oder gescheit: Auf die gleich Art, wie wir die Circuits messen,
+  den Speicherverbrauch der Controller messen. Sollte ja gleich einfach
+  sein. Ich brauch das auch nicht automatisch. Kann man von Hand
+  in module.h eintragen oder sonstwo anders. Problem ist nur der
+  X7. Ich glaub der muss im Puffer untergehen.
+
+  Insgesamt muss ich testen, ob ich Patches zuverlässig deployen
+  kann, wenn der Speicherverbrauch <= 100% ist.
+
+- Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
+  Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
+  Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
+  die Betriebssysteme brauche.
+
+TODO:
+
 - Die Seitenzahlen sind alle auf 0. Ich muss irgendwie einen besseren
   Weg finden, um die ins JSON zu bekommen. Ich glaub, wenn man mal einfach
   irgendwo F11 macht, ist alles 0. Ich brauch ein Skript, was die JSON-Datei
@@ -9,15 +28,6 @@ BUGS:
     (CMD+M) führt mich nur zum Handbuch, also es öffnet nur die Datei, doch führt
     nicht direkt zum jeweiligen Circuit… ist das gewollt? Ich erwarte eigentlich,
     dass er mich direkt zum entsprechenden Abschnitt im Benutzerhandbuch führt 
-
-- Der Speicherverbrauch von X7 und den Controllern wird nicht
-  berücksichtigt. Wie kann ich das simulieren? Sollen die einfach
-  im Puffer untergehen?
-
-- Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
-  Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
-  Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
-  die Betriebssysteme brauche.
 
 - Windows: Das Icon wird noch nicht genommen.
 
@@ -33,13 +43,3 @@ BUGS:
   Deswegen verwende ich einfach so 200. Wir müssen eine Methode
   finden, den echten Wert rauszubeikommen. Und das einbauen
   in MouseDragger::doubleClickTime()
-
-- Atomonliner: Das wär schon echt wichtig, wenn man außerhalb klicken
-  könnte und das erkannt würde und der dann speichern würde. Oder
-  auch z.B. wenn man eine Funktionstaste wie F9 drückt.
-
-  Ich glaube das geht nur, wenn wir die Eingabe ganz selbst programmieren
-  oder zumindest versuchen, anstelle des Dialogs ein Widget zu platzieren.
-  Welches dann auch mitscrollt, wenn man mit dem Mausrad den Ausschnitt
-  verschiebt.
-

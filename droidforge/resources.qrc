@@ -316,5 +316,21 @@
         <file>images/faceplates/x7.png</file>
         <file>images/circuits/motoquencer.png</file>
         <file>images/faceplates/bling.png</file>
+        <file>images/jacktypes/dark/bipolar.png</file>
+        <file>images/jacktypes/dark/cv.png</file>
+        <file>images/jacktypes/dark/fraction.png</file>
+        <file>images/jacktypes/dark/gate.png</file>
+        <file>images/jacktypes/dark/integer.png</file>
+        <file>images/jacktypes/dark/stepped.png</file>
+        <file>images/jacktypes/dark/trigger.png</file>
+        <file>images/jacktypes/dark/voltperoctave.png</file>
+        <file>images/jacktypes/light/bipolar.png</file>
+        <file>images/jacktypes/light/cv.png</file>
+        <file>images/jacktypes/light/fraction.png</file>
+        <file>images/jacktypes/light/gate.png</file>
+        <file>images/jacktypes/light/integer.png</file>
+        <file>images/jacktypes/light/stepped.png</file>
+        <file>images/jacktypes/light/trigger.png</file>
+        <file>images/jacktypes/light/voltperoctave.png</file>
     </qresource>
 </RCC>

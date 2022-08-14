@@ -224,6 +224,12 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Parameter selector: description BG"), list);
     item->setData(1, JSEL_COLOR_DESCRIPTION_BACKGROUND);
 
+    item = new QListWidgetItem(tr("Parameter selector: input symbol BG"), list);
+    item->setData(1, JSEL_COLOR_SYMBOL_INPUT);
+
+    item = new QListWidgetItem(tr("Parameter selector: output symbol BG"), list);
+    item->setData(1, JSEL_COLOR_SYMBOL_OUTPUT);
+
     item = new QListWidgetItem(tr("Circuit chooser: title"), list);
     item->setData(1, CICH_COLOR_TITLE);
 

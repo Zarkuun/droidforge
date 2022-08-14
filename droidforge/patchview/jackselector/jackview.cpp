@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "tuning.h"
 #include "droidfirmware.h"
+#include "iconbase.h"
 
 #include <QPainter>
 
@@ -17,7 +18,9 @@ JackView::JackView(QString circuit, QString jack, const QStringList *usedJacks, 
     else if (onlyType == JACKTYPE_OUTPUT && isInput)
         allowedByOnlyType = false;
 
+    symbol = the_firmware->jackTypeSymbol(circuit, jack, isInput);
     arraySize = the_firmware->jackArraySize(circuit, jack, isInput);
+    shout << "jack is " << jack << "size" << arraySize;
     if (isArray()) {
         active = false;
         for (qsizetype i=0; i<arraySize; i++) {
@@ -57,17 +60,21 @@ void JackView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     // tw = fm.width(sx);
 
     QRectF rect = boundingRect();
+    QRectF symbolRect( rect.left(), rect.top(), JSEL_SYMBOL_WIDTH, JSEL_JACK_HEIGHT);
+    QRect textRect(JSEL_JACK_HORIZONTAL_PADDING + JSEL_SYMBOL_WIDTH,
+                   JSEL_JACK_VERTICAL_PADDING,
+                   JSEL_JACK_WIDTH - JSEL_SYMBOL_WIDTH - JSEL_JACK_HORIZONTAL_PADDING,
+                   JSEL_JACK_HEIGHT - 2 * JSEL_JACK_VERTICAL_PADDING);
+
     painter->setPen(COLOR(JSEL_COLOR_LINE));
     painter->fillRect(rect, COLOR(JSEL_COLOR_JACK_BACKGROUND));
     painter->drawRect(rect);
+    painter->fillRect(symbolRect, COLOR(isInput ? JSEL_COLOR_SYMBOL_INPUT : JSEL_COLOR_SYMBOL_OUTPUT));
+    painter->drawRect(symbolRect);
+    painter->drawImage(symbolRect, IconBase::jackTypeSymbol(symbol));
     QColor activeColor = isInput ? COLOR(CIRV_COLOR_INPUT_JACK) : COLOR(CIRV_COLOR_OUTPUT_JACK);
     painter->setPen(active ? activeColor : COLOR(JSEL_COLOR_JACK_INACTIVE));
-    painter->drawText(
-                QRect(JSEL_JACK_HORIZONTAL_PADDING,
-                      JSEL_JACK_VERTICAL_PADDING,
-                      JSEL_JACK_WIDTH,
-                      JSEL_JACK_HEIGHT - 2 * JSEL_JACK_VERTICAL_PADDING),
-                      jack);
+    painter->drawText(textRect, jack);
 
     if (arraySize) {
         for (int i=0; i<(int)arraySize; i++) {
