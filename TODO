@@ -1,6 +1,10 @@
 BUGS:
 - Labels, die zu lang sind, sollen nicht in die zweite Zeile umbrechen,
   sondern abgeschnitten werden.
+- Doppelklick auf Jackname soll den Kommentardialog aufmachen, nicht die Funktioun
+  zum Taushen des Jacks.
+- Wenn man ein Info auf einem Jack hat und eine Warnung auf Column 1 (Input) wird
+  das problem eins zu weit links ausgegeben
 
 TODO:
 

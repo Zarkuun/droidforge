@@ -44,7 +44,7 @@ void PatchProblemIndicator::paintEvent(QPaintEvent *)
                     imgHeight);
 
     if (numProblems)
-        painter.drawImage(warnRect, IMAGE("warning"));
+        painter.drawImage(warnRect, IMAGE("problemsmall"));
 
     float textLeft = warnRect.right() + STANDARD_SPACING;
     QRectF textRect(textLeft, 0, width() - textLeft, height());

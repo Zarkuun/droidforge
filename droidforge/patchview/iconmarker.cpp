@@ -25,7 +25,7 @@ QRectF IconMarker::boundingRect() const
 void IconMarker::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
-    QRectF r(3, 3, size()-6, size()-6);
+    QRectF r(4, 4, size()-8, size()-8);
     // painter->setRenderHint(QPainter::Antialiasing);
             //| QPainter::SmoothPixmapTransform);
     painter->drawImage(r, image);
@@ -35,7 +35,7 @@ QString IconMarker::iconName() const
 {
     QString t;
     switch (type) {
-    case ICON_MARKER_PROBLEM:     t = "warning"; break;
+    case ICON_MARKER_PROBLEM:     t = "problemsmall"; break;
     case ICON_MARKER_INFO:        t = "info"; break;
     case ICON_MARKER_LEDMISMATCH: t = "%1/ledmismatch"; break;
     case ICON_MARKER_FOLDED:      t = "%1/folded"; break;

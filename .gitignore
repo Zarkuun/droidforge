@@ -3,3 +3,4 @@ build-*
 .*.swp
 LIESMICH.github
 macrelease.log
+dmg.root

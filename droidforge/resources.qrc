@@ -332,5 +332,6 @@
         <file>images/jacktypes/light/stepped.png</file>
         <file>images/jacktypes/light/trigger.png</file>
         <file>images/jacktypes/light/voltperoctave.png</file>
+        <file>images/icons/problemsmall.png</file>
     </qresource>
 </RCC>
