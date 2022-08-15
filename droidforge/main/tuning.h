@@ -177,7 +177,7 @@
 #define JSEL_JACK_SPACING                    STANDARD_SPACING
 #define JSEL_CIRCUIT_WIDTH                   150
 #define JSEL_CIRCUIT_HEIGHT                  200
-#define JSEL_CIRCUIT_ICON_WIDTH              80
+#define JSEL_CIRCUIT_ICON_WIDTH              100
 #define JSEL_SCROLL_MARGIN                   50
 #define JSEL_VERTICAL_PADDING                STANDARD_SPACING
 

@@ -52,14 +52,15 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
 
     // Layout
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(jackSelector, 0, 0, 2, 2);
-    mainLayout->addWidget(labelDescription, 0, 2);
-    mainLayout->addWidget(labelJackType, 1, 2);
+    mainLayout->addWidget(jackSelector, 0, 0, 2, 3);
+    mainLayout->addWidget(labelDescription, 0, 3);
+    mainLayout->addWidget(labelJackType, 1, 3);
     mainLayout->addWidget(searchLabel, 2, 0);
     mainLayout->addWidget(lineEditSearch, 2, 1);
-    mainLayout->addWidget(buttonBox, 2, 2);
-    mainLayout->setColumnStretch(0, 1);
+    mainLayout->addWidget(buttonBox, 2, 3);
+    mainLayout->setColumnStretch(0, 0);
     mainLayout->setColumnStretch(1, 0);
+    mainLayout->setColumnStretch(2, 1);
     setLayout(mainLayout);
 
     connect(jackSelector, &JackSelector::cursorMoved, this, &JackChooseDialog::cursorMoved);
