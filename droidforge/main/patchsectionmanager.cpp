@@ -370,12 +370,16 @@ void PatchSectionManager::rebuildGraphics()
     titleViews.clear();
 
     // Add title
-    QGraphicsTextItem *text = scene()->addText(tr("Sections"));
-    int textWidth = text->boundingRect().width();
-    text->setPos((viewport()->width() - textWidth) / 2, 0);
-    text->setDefaultTextColor(COLOR(PSM_COLOR_TITLE));
+    QRectF titleRect(PSM_SIDE_PADDING, PSM_TOP_PADDING,
+                            viewport()->width() - 2 * PSM_SIDE_PADDING,
+                            CIRV_HEADER_HEIGHT);
+    // scene()->addRect(titleRect, QColor(255, 255, 255));
+    // QGraphicsTextItem *text = scene()->addText(tr("SECTIONS"));
+    // int textWidth = text->boundingRect().width();
+    // text->setPos((viewport()->width() - textWidth) / 2, 12);
+    // text->setDefaultTextColor(COLOR(PSM_COLOR_TITLE));
 
-    int y = text->boundingRect().bottom() + PSM_TOP_PADDING;
+    int y = 11; // titleRect.bottom() + 5;
     int width = viewport()->width() - 2 * PSM_SIDE_PADDING;
 
     for (qsizetype i=0; i<patch->numSections(); i++) {

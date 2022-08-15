@@ -319,10 +319,11 @@ void RackView::refreshModules()
     for (qsizetype i=0; i<patch->numControllers(); i++)
         addModule(patch->controller(i), i);
 
-    QPointF margin(RACV_MAIN_MARGIN, RACV_MAIN_MARGIN);
+    QPointF topMargin(RACV_MAIN_TOP_MARGIN, RACV_MAIN_TOP_MARGIN);
+    QPointF bottomMargin(RACV_MAIN_TOP_MARGIN, RACV_MAIN_TOP_MARGIN);
     QRectF bounding(
-                modules.first()->moduleRect().topLeft() - margin,
-                modules.last()->moduleRect().bottomRight());
+                modules.first()->moduleRect().topLeft() - topMargin,
+                modules.last()->moduleRect().bottomRight() + bottomMargin);
     scene()->setSceneRect(bounding);
     ensureVisible(bounding);
     updateModuleHeights();

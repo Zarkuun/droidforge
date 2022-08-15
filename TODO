@@ -11,6 +11,7 @@ BUGS:
 - "Edit input parameter": Den Zusatztext über den Jacktyp hier auch nochmal anzeigen.
   Eventuell auch das Logo.
 - Edit input parameter: Der Kabelselector soll die Breite bekommen, die dazukommt.
+- Rackview bottom margin ist zu groß. Einsrtellung wirkt nicht.
 
 TODO:
 

@@ -47,7 +47,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     rackSplitter = new QSplitter(this);
     setCentralWidget(rackSplitter);
     rackSplitter->setOrientation(Qt::Vertical);
-    rackSplitter->setHandleWidth(RACV_SPLITTER_HANDLE_WIDTH);
+    rackSplitter->setHandleWidth(SPLITTER_HANDLE_WIDTH);
 
     sectionSplitter = new QSplitter(rackSplitter);
     sectionSplitter->setOrientation(Qt::Horizontal);
@@ -55,6 +55,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     sectionSplitter->addWidget(&patchSectionView);
     sectionSplitter->setStretchFactor(0, 0);
     sectionSplitter->setStretchFactor(1, 1);
+    sectionSplitter->setHandleWidth(SPLITTER_HANDLE_WIDTH);
 
     rackSplitter->addWidget(&rackView);
     rackSplitter->addWidget(sectionSplitter);
@@ -134,6 +135,7 @@ void MainWindow::showEvent(QShowEvent *)
     QSettings settings;
     if (settings.contains("mainwindow/splitposition")) {
         rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
+        rackSplitter->setHandleWidth(SPLITTER_HANDLE_WIDTH);
     }
     else
         rackZoomReset();

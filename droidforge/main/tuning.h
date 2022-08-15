@@ -13,7 +13,7 @@
 #define DROID_PATCH_FILENAME                 "droid.ini"
 #define SHOP_PRODUCTS_URL                    "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"
-#define SECTION_DEFAULT_NAME                 TR("Untitled")
+#define SECTION_DEFAULT_NAME                 TR("Untitled section")
 #define CIRCUIT_ICON_PATH                    ":images/circuits/"
 #define ICON_PATH_TEMPLATE                   ":images/icons/%1/%2.png"
 #define IMAGE_PATH_TEMPLATE                  ":images/icons/%1.png"
@@ -43,6 +43,7 @@
 #define STANDARD_SPACING                     10
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
 #define ASSUMED_SCROLLBAR_WIDTH              40
+#define SPLITTER_HANDLE_WIDTH                 8
 
 // Patch problem indicator
 #define PPI_WIDTH                            130
@@ -70,13 +71,13 @@
 #define CSI_ANIMATION_DURATION               1000
 
 // Rack view
-#define RACV_SPLITTER_HANDLE_WIDTH           12
 #define RACV_MIN_HEIGHT                      100
 #define RACV_MAX_HEIGHT                      1000
 #define RACV_NORMAL_HEIGHT                   280
 #define RACV_PIXEL_PER_HP                    87
 #define RACV_CONTROLLER_GAP                  0 // (2 * RACV_PIXEL_PER_HP)
-#define RACV_MAIN_MARGIN                     30
+#define RACV_MAIN_TOP_MARGIN                 40
+#define RACV_MAIN_BOTTOM_MARGIN              -20
 #define RACK_MODULE_MARGIN                   5
 #define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)
 #define RACV_REGMARKER_EXTRA_DIAMETER        30
@@ -121,10 +122,10 @@
 #define PSM_MAXIMUM_WIDTH                    400
 #define PSM_NORMAL_WIDTH                     200
 #define PSM_SIDE_PADDING                     STANDARD_SPACING
-#define PSM_TOP_PADDING                      (STANDARD_SPACING / 2)
+#define PSM_TOP_PADDING                      11
 #define PSM_VERTICAL_DISTANCE                (STANDARD_SPACING / 2)
-#define PSM_SECTION_HEIGHT                   22
-#define PSM_TEXT_PADDING                     (STANDARD_SPACING / 2)
+#define PSM_SECTION_HEIGHT                   CIRV_HEADER_HEIGHT
+#define PSM_TEXT_PADDING                     4
 #define PSM_IMAGE_MARGIN                     4
 #define PSM_SECTION_DRAG_WIDTH               2
 #define PSM_ARROW_HEAD_SIZE                  6
@@ -135,11 +136,11 @@
 #define PSV_SCROLL_SPEED                     0.2
 
 // Circuit view (in section view)
-#define CIRV_TOP_PADDING                     (2 * STANDARD_SPACING)
+#define CIRV_TOP_PADDING                     11 // (2 * STANDARD_SPACING)
 #define CIRV_BOTTOM_PADDING                  CIRV_TOP_PADDING
 #define CIRV_FOLDED_PADDING                  (STANDARD_SPACING / 2)
 #define CIRV_FOLDING_COMMENT_INDENT          200
-#define CIRV_SIDE_PADDING                    (2 * STANDARD_SPACING)
+#define CIRV_SIDE_PADDING                    11 // (2 * STANDARD_SPACING)
 #define CIRV_COMMENT_PADDING                 (0.5 * STANDARD_SPACING)
 #define CIRV_TEXT_SIDE_PADDING               7
 #define CIRV_COMMENT_LINE_HEIGHT             18
