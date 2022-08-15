@@ -5,4 +5,5 @@ rm -rf cableicons
 mkdir cableicons
 cp cables/*png cableicons
 cd cableicons
-sips -c 14 27 --cropOffset 0 8 *.png
+# sips -c 14 27 --cropOffset 0 8 *.png
+sips -c 112 216 --cropOffset 0 64 *.png

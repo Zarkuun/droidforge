@@ -100,5 +100,7 @@ void CableSelector::itemDoubleClicked()
 void CableSelector::updateIcon()
 {
     const QImage *image = the_cable_colorizer->imageForCable(lineEdit->text());
-    labelIcon->setPixmap(QPixmap::fromImage(*image));
+    QImage scaled = *image;
+    scaled = scaled.scaled(59, 14);
+    labelIcon->setPixmap(QPixmap::fromImage(scaled));
 }

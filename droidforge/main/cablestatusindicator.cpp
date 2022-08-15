@@ -83,7 +83,7 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
                         leftPlugRect.top(),
                         imgHeight,
                         imgHeight);
-        painter.drawImage(warnRect, IMAGE("warning"));
+        painter.drawImage(warnRect, IMAGE("problemsmall"));
 
         QString problem;
         if (numAsOutput == 0)

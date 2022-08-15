@@ -5,8 +5,13 @@ BUGS:
   zum Taushen des Jacks.
 - Wenn man ein Info auf einem Jack hat und eine Warnung auf Column 1 (Input) wird
   das problem eins zu weit links ausgegeben
+- Text in der Statusbar: wenn dieser vom I oder vom Problem kommt, sollte das
+  Icon davor stehen.
+- Die Miniicons in der Dropdownliste im Cableselector sind noch die knalligen
 
 TODO:
+
+- Hilfemenü: Link zu Discord einbauen.
 
 - Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
   verheiraten. Hat eine Forge immer genau eine Firmware? Dann müssten wir die Forge

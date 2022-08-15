@@ -34,6 +34,6 @@ void PatchSectionTitleView::paint(QPainter *painter, const QStyleOptionGraphicsI
                         PSM_IMAGE_MARGIN,
                         imgHeight,
                         imgHeight);
-        painter->drawImage(warnRect, IMAGE("warning"));
+        painter->drawImage(warnRect, IMAGE("problemsmall"));
     }
 }
