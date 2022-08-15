@@ -43,7 +43,10 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
         connect(button, &QPushButton::pressed, this, [this, i]() { this->switchToSelector(i); });
         layout->addWidget(button, 0, i);
         layout->addWidget(ss, 1, i);
+        layout->setColumnStretch(i, 0);
     }
+
+    layout->setColumnStretch(subSelectors.count() - 1, 100);
 
     // Description
     labelDescription = new QLabel(this);

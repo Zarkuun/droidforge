@@ -8,7 +8,8 @@
 CableSelector::CableSelector(QWidget *parent)
     : AtomSubSelector{parent}
 {
-    setFixedWidth(2 * ASEL_SUBSELECTOR_WIDTH);
+    setMinimumWidth(2 * ASEL_SUBSELECTOR_WIDTH);
+    // setFixedWidth(2 * ASEL_SUBSELECTOR_WIDTH);
 
     QGridLayout *mainLayout = new QGridLayout(this);
 

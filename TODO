@@ -8,6 +8,9 @@ BUGS:
 - Text in der Statusbar: wenn dieser vom I oder vom Problem kommt, sollte das
   Icon davor stehen.
 - Die Miniicons in der Dropdownliste im Cableselector sind noch die knalligen
+- "Edit input parameter": Den Zusatztext über den Jacktyp hier auch nochmal anzeigen.
+  Eventuell auch das Logo.
+- Edit input parameter: Der Kabelselector soll die Breite bekommen, die dazukommt.
 
 TODO:
 
