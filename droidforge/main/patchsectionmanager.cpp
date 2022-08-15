@@ -35,7 +35,8 @@ PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent
     setMaximumWidth(PSM_MAXIMUM_WIDTH);
     setScene(new QGraphicsScene());
 
-    scene()->setBackgroundBrush(QBrush(the_colorscheme->backgroundPixmap()));
+    // scene()->setBackgroundBrush(QBrush(the_colorscheme->backgroundPixmap()));
+    scene()->setBackgroundBrush(QBrush(COLOR(COLOR_PATCH_BACKGROUND)));
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setMouseTracking(true);
 

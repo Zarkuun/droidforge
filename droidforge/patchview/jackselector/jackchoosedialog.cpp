@@ -22,7 +22,19 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     labelDescription->setMinimumWidth(JSEL_DESCRIPTION_WIDTH);
     labelDescription->setMaximumWidth(JSEL_DESCRIPTION_WIDTH);
     labelDescription->setTextFormat(Qt::RichText);
+    labelDescription->setAlignment(Qt::AlignTop);
     labelDescription->setStyleSheet(
+       QString("QLabel { padding: 10px; background-color : #%1; color: #%2; }")
+                .arg(COLOR(JSEL_COLOR_DESCRIPTION_BACKGROUND).name(),
+                     COLOR(JSEL_COLOR_DESCRIPTION).name()));
+
+    labelJackType = new QLabel(this);
+    labelJackType->setWordWrap(true);
+    labelJackType->setMinimumWidth(JSEL_DESCRIPTION_WIDTH);
+    labelJackType->setMaximumWidth(JSEL_DESCRIPTION_WIDTH);
+    labelJackType->setTextFormat(Qt::RichText);
+    labelJackType->setAlignment(Qt::AlignBottom);
+    labelJackType->setStyleSheet(
        QString("QLabel { padding: 10px; background-color : #%1; color: #%2; }")
                 .arg(COLOR(JSEL_COLOR_DESCRIPTION_BACKGROUND).name(),
                      COLOR(JSEL_COLOR_DESCRIPTION).name()));
@@ -40,11 +52,12 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
 
     // Layout
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(jackSelector, 0, 0, 1, 2);
+    mainLayout->addWidget(jackSelector, 0, 0, 2, 2);
     mainLayout->addWidget(labelDescription, 0, 2);
-    mainLayout->addWidget(searchLabel, 1, 0);
-    mainLayout->addWidget(lineEditSearch, 1, 1);
-    mainLayout->addWidget(buttonBox, 1, 2);
+    mainLayout->addWidget(labelJackType, 1, 2);
+    mainLayout->addWidget(searchLabel, 2, 0);
+    mainLayout->addWidget(lineEditSearch, 2, 1);
+    mainLayout->addWidget(buttonBox, 2, 2);
     mainLayout->setColumnStretch(0, 1);
     mainLayout->setColumnStretch(1, 0);
     setLayout(mainLayout);
@@ -92,4 +105,5 @@ void JackChooseDialog::cursorMoved(QString jack, jacktype_t jacktype, bool onAct
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(onActive);
     QString whence = jacktype == JACKTYPE_INPUT ? "inputs" : "outputs";
     labelDescription->setText(the_firmware->jackDescriptionHTML(circuit, whence, jack));
+    labelJackType->setText(the_firmware->jackTypeDescriptionHTML(circuit, whence, jack));
 }

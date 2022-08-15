@@ -7,11 +7,11 @@ void loadColorsDark()
     colors_dark.insert(100, QColor(255, 255, 255, 255));
     colors_dark.insert(101, QColor(56, 146, 28, 255));
     colors_dark.insert(102, QColor(255, 38, 0, 255));
-    colors_dark.insert(103, QColor(4, 51, 255, 255));
+    colors_dark.insert(103, QColor(0, 214, 255, 255));
     colors_dark.insert(104, QColor(255, 255, 255, 131));
     colors_dark.insert(105, QColor(151, 151, 151, 255));
-    colors_dark.insert(201, QColor(0, 207, 255, 255));
-    colors_dark.insert(202, QColor(240, 87, 57, 255));
+    colors_dark.insert(201, QColor(0, 208, 255, 255));
+    colors_dark.insert(202, QColor(255, 91, 76, 255));
     colors_dark.insert(203, QColor(97, 88, 29, 255));
     colors_dark.insert(301, QColor(255, 255, 255, 0));
     colors_dark.insert(302, QColor(255, 255, 255, 255));
@@ -20,7 +20,7 @@ void loadColorsDark()
     colors_dark.insert(305, QColor(243, 243, 243, 128));
     colors_dark.insert(307, QColor(0, 0, 0, 255));
     colors_dark.insert(308, QColor(222, 222, 222, 93));
-    colors_dark.insert(320, QColor(115, 255, 138, 255));
+    colors_dark.insert(320, QColor(205, 179, 134, 255));
     colors_dark.insert(321, QColor(201, 201, 201, 255));
     colors_dark.insert(322, QColor(255, 0, 0, 255));
     colors_dark.insert(350, QColor(43, 43, 43, 255));
@@ -32,7 +32,7 @@ void loadColorsDark()
     colors_dark.insert(356, QColor(44, 44, 44, 255));
     colors_dark.insert(357, QColor(255, 255, 255, 255));
     colors_dark.insert(358, QColor(255, 255, 255, 255));
-    colors_dark.insert(40, QColor(34, 34, 34, 255));
+    colors_dark.insert(40, QColor(36, 36, 36, 255));
     colors_dark.insert(400, QColor(121, 121, 121, 255));
     colors_dark.insert(401, QColor(24, 25, 25, 255));
     colors_dark.insert(402, QColor(34, 34, 34, 255));
@@ -41,7 +41,7 @@ void loadColorsDark()
     colors_dark.insert(405, QColor(205, 205, 205, 255));
     colors_dark.insert(408, QColor(0, 0, 0, 255));
     colors_dark.insert(409, QColor(191, 191, 191, 255));
-    colors_dark.insert(41, QColor(20, 20, 20, 255));
+    colors_dark.insert(41, QColor(28, 28, 28, 255));
     colors_dark.insert(410, QColor(27, 27, 27, 255));
     colors_dark.insert(411, QColor(28, 28, 28, 255));
     colors_dark.insert(450, QColor(255, 255, 255, 255));
@@ -50,9 +50,9 @@ void loadColorsDark()
     colors_dark.insert(453, QColor(33, 34, 33, 255));
     colors_dark.insert(454, QColor(133, 133, 133, 255));
     colors_dark.insert(50, QColor(255, 64, 255, 255));
-    colors_dark.insert(500, QColor(0, 0, 0, 70));
+    colors_dark.insert(500, QColor(42, 42, 42, 255));
     colors_dark.insert(501, QColor(133, 133, 133, 255));
-    colors_dark.insert(51, QColor(135, 135, 135, 20));
+    colors_dark.insert(51, QColor(130, 130, 130, 20));
     colors_dark.insert(52, QColor(55, 55, 55, 255));
     colors_dark.insert(53, QColor(46, 46, 46, 255));
     colors_dark.insert(54, QColor(172, 172, 172, 5));
@@ -72,7 +72,7 @@ void loadColorsDark()
     colors_dark.insert(63, QColor(162, 162, 162, 255));
     colors_dark.insert(70, QColor(200, 200, 200, 255));
     colors_dark.insert(71, QColor(255, 255, 255, 12));
-    colors_dark.insert(81, QColor(42, 42, 42, 255));
+    colors_dark.insert(81, QColor(41, 41, 41, 255));
     colors_dark.insert(82, QColor(40, 40, 40, 255));
     colors_dark.insert(83, QColor(255, 255, 255, 255));
     colors_dark.insert(90, QColor(30, 30, 30, 255));

@@ -244,10 +244,13 @@ QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QStr
         float default_value = the_firmware->jackDefaultvalue(circuit, jack);
         description += "<br>" + TR("Default value: %1").arg(default_value) + "<br>";
     }
-
-    QString symbol = jackTypeSymbol(circuit, jack, whence == "inputs");
-    description += "<br>" + jackTypeExplanation(symbol, whence == "inputs");
     return description;
+}
+
+QString DroidFirmware::jackTypeDescriptionHTML(QString circuit, QString whence, QString jack) const
+{
+    QString symbol = jackTypeSymbol(circuit, jack, whence == "inputs");
+    return jackTypeExplanation(symbol, whence == "inputs");
 }
 
 QString DroidFirmware::jackTableAsString(const QMap<float, QString> &table) const

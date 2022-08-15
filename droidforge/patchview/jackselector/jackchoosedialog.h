@@ -18,6 +18,7 @@ class JackChooseDialog : public Dialog
     JackSelector *jackSelector;
     KeyCaptureLineEdit *lineEditSearch;
     QLabel *labelDescription;
+    QLabel *labelJackType;
 
 public:
     JackChooseDialog(QWidget *parent = nullptr);

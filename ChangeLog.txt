@@ -23,6 +23,8 @@
 	* Mac DMG: Create background image for DMG installer (not final yet)
 	* Labels: Move labels of controls above the controls (were below)
 	* Plugs: Better colors for cable plugs
+	* Icons: New colors for circuit icons
+	* Colors: Small adaption to various colors and backgrounds
 
 0.4:
     Bug fixes:

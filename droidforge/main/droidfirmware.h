@@ -35,6 +35,7 @@ public:
     QStringList jacksOfCircuit(QString circuit, QString whence, jackselection_t) const;
     QStringList jackGroupsOfCircuit(QString circuit, QString whence, QString search) const;
     QString jackDescriptionHTML(QString circuit, QString whence, QString jack) const;
+    QString jackTypeDescriptionHTML(QString circuit, QString whence, QString jack) const;
     QMap<float, QString> jackValueTable(QString circuit, QString whence, QString jack) const;
     bool jackHasDefaultvalue(QString circuit, QString jack) const;
     float jackDefaultvalue(QString circuit, QString jack) const;
