@@ -47,3 +47,8 @@ float ModuleMaster::registerSize(register_type_t type, unsigned) const
     else
         return CONTROL_JACK_SIZE;
 }
+
+float ModuleMaster::labelDistance(register_type_t, unsigned) const
+{
+    return -2.45;
+}

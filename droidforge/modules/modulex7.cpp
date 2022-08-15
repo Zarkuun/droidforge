@@ -42,6 +42,11 @@ float ModuleX7::registerSize(register_type_t type, unsigned) const
 
 }
 
+float ModuleX7::labelDistance(register_type_t, unsigned) const
+{
+    return -2.45;
+}
+
 unsigned ModuleX7::numberOffset(register_type_t type) const
 {
     if (type == REGISTER_GATE)

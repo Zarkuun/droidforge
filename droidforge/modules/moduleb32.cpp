@@ -25,5 +25,5 @@ float ModuleB32::registerSize(register_type_t, unsigned) const
 
 float ModuleB32::labelDistance(register_type_t, unsigned) const
 {
-    return 0.15;
+    return -2.62;
 }

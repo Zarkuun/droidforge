@@ -40,9 +40,9 @@ float ModuleP2B8::registerSize(register_type_t type, unsigned) const
 float ModuleP2B8::labelDistance(register_type_t type, unsigned) const
 {
     if (type == REGISTER_POT)
-        return 0.5;
+        return -4.00;
     else
-        return 0.17;
+        return -2.62;
 }
 
 float ModuleP2B8::labelWidth(register_type_t type, unsigned) const

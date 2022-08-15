@@ -21,6 +21,7 @@
 	* Parameter chooser: Add information about the type of CV a parameter
 	  expects or outputs.
 	* Mac DMG: Create background image for DMG installer (not final yet)
+	* Labels: Move labels of controls above the controls (were below)
 
 0.4:
     Bug fixes:

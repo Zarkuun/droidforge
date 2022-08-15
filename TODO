@@ -1,4 +1,6 @@
 BUGS:
+- Labels, die zu lang sind, sollen nicht in die zweite Zeile umbrechen,
+  sondern abgeschnitten werden.
 
 TODO:
 

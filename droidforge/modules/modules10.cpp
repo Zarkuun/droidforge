@@ -31,9 +31,9 @@ float ModuleS10::registerSize(register_type_t, unsigned number) const
 float ModuleS10::labelDistance(register_type_t, unsigned number) const
 {
     if (number <= 2)
-        return 0.5;
+        return -4.00;
     else
-        return 0.47;
+        return -2.31;
 }
 
 float ModuleS10::labelWidth(register_type_t, unsigned number) const
