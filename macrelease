@@ -36,11 +36,6 @@ done
 echo $OK
 
 
-if [ ! -e "$APP_DIR" ] ; then
-    echo "$APP_DIR missing. Please build release in Qt creator."
-    exit 1
-fi
-
 echo -n "Fixing rpath..."
 install_name_tool -add_rpath @loader_path/../Frameworks "$APP_DIR/Contents/MacOS/$NAME"
 echo $OK
