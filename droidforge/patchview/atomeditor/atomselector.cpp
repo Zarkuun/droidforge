@@ -54,6 +54,7 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     labelDescription->setTextFormat(Qt::RichText);
     labelDescription->setStyleSheet(QString("QLabel { padding: 10px; }"));
     labelDescription->setAlignment(Qt::AlignTop);
+    labelDescription->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     scrollArea = new QScrollArea();
     // scrollArea->setBackgroundRole(QPalette::Dark);

@@ -5,6 +5,9 @@
 	* FIX: Fix values like 0.2000000234324 when adding a new circuit
 	       with typical example (default values of input jacks)
 
+	Features:
+	* Cell editor: Make description of parameter selectable
+
 0.5:
     Bug fixes:
 	* FIX: Fixed crash when deleting the problem before the last problem (found
