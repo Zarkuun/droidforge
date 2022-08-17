@@ -12,6 +12,8 @@ BUGS:
   Eventuell auch das Logo.
 - Edit input parameter: Der Kabelselector soll die Breite bekommen, die dazukommt.
 - Rackview bottom margin ist zu groß. Einsrtellung wirkt nicht.
+- Ich kopiere was und kann nicht in eine Outputzeile pasten, weil der Cursor
+  unsichtbar auf Spalte 2 steht
 
 
 TODO:
