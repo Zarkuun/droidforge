@@ -16,6 +16,12 @@ BUGS:
 
 TODO:
 
+- Doch vielleicht einbauen, das man ein Rack speichern kann (Rackview:
+  "Save rack..."). Und das in einem Menü dann direkt holen kann.
+  Oder was weiß ich.
+- Wenn man durch Mehrfachklicken aus einem B ein L macht, dann soll ein
+  Hint kommen.
+
 - Eventuell die Hilitefarbe des Registers an die Farbe vom aktuellen Circuit
   anpassen.
 

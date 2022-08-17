@@ -804,7 +804,7 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
     else if (QGuiApplication::keyboardModifiers() & Qt::ControlModifier)
         instantCopyFrom(curPos);
     else if (QGuiApplication::keyboardModifiers() & Qt::AltModifier)
-        instantCableTo(curPos);
+        instantCableFrom(curPos);
 
     else {
         the_operator->clearSelection();
@@ -909,7 +909,7 @@ JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
     if (the_firmware->jackIsInput(circuitName, name)) {
         auto ja = new JackAssignmentInput(name);
         if (the_firmware->jackHasDefaultvalue(circuitName, name)) {
-            float default_value = the_firmware->jackDefaultvalue(circuitName, name);
+            double default_value = the_firmware->jackDefaultvalue(circuitName, name);
             AtomNumber *an = new AtomNumber(default_value, ATOM_NUMBER_NUMBER);
             ja->replaceAtom(1, an);
         }
@@ -1339,19 +1339,19 @@ void PatchSectionView::instantCopyFrom(const CursorPosition &from)
     patch->commit(tr("copying '%1'").arg(sourceAtom->toString()));
     emit patchModified();
 }
-void PatchSectionView::instantCableTo(const CursorPosition &to)
+void PatchSectionView::instantCableFrom(const CursorPosition &from)
 {
-    if (to.row < 0 || to.column <= 0) // not on an atom
+    if (from.row < 0 || from.column <= 0) // not on an atom
         return;
 
     const Atom *atom = currentAtom();
-    const Atom *targetAtom = section()->atomAt(to);
+    const Atom *sourceAtom = section()->atomAt(from);
 
     QString cableName;
-    if (atom && atom->isCable())
+    if (sourceAtom && sourceAtom->isCable())
+        cableName = ((AtomCable *)sourceAtom)->getCable();
+    else if (atom && atom->isCable())
         cableName = ((AtomCable *)atom)->getCable();
-    else if (targetAtom && targetAtom->isCable())
-        cableName = ((AtomCable *)targetAtom)->getCable();
     else
         cableName = patch->freshCableName();
 
@@ -1359,9 +1359,11 @@ void PatchSectionView::instantCableTo(const CursorPosition &to)
 
     auto pos = section()->cursorPosition();
 
+    // Add the cable both to from and to me. If from is empty,
+    // the direction will be reversed.
     currentJackAssignment()->replaceAtom(pos.column, cable.clone());
-    JackAssignment *ja = section()->jackAssignmentAt(to);
-    ja->replaceAtom(to.column, cable.clone());
+    JackAssignment *ja = section()->jackAssignmentAt(from);
+    ja->replaceAtom(from.column, cable.clone());
     patch->commit(tr("creating cable '%1'").arg(cableName));
     emit patchModified();
 
