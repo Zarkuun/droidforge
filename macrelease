@@ -5,6 +5,11 @@ PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin/
 
 VERSION=$(./version)
 NAME="DROID Forge"
+if [ $(uname -m) = arm64 ] ; then
+    HARDWARE=M1
+else
+    HARDWARE=Intel
+fi
 QT_DIR=~/Qt/6.3.1
 PATH=$PATH:$QT_DIR/macos/bin
 APP_ICON=droidforge/droidforge.icns
@@ -12,9 +17,8 @@ INSTALL_ROOT=droidforge/build/release-mac/install-root/usr/local/Applications
 APP_DIR="$INSTALL_ROOT/$NAME.app"
 EXECUTABLE="$APP_DIR/Contents/MacOS/$NAME"
 DMGDIR="dmg.root"
-DMGNAME="$NAME $VERSION.dmg"
+DMGNAME="$NAME $VERSION $HARDWARE.dmg"
 TARGET_INFO_PLIST=$APP_DIR/Contents/Info.plist
-# LICENSE="droidforge/GNU GPL v3.txt"
 TARGET_LICENSE="$APP_DIR/Contents"
 CERTIDENT="Developer ID Application: Matthias Kettner (Z8A7223C2C)"
 LOGFILE=$(pwd)/macrelease.log
