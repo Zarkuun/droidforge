@@ -13,6 +13,7 @@ BUGS:
 - Edit input parameter: Der Kabelselector soll die Breite bekommen, die dazukommt.
 - Rackview bottom margin ist zu groß. Einsrtellung wirkt nicht.
 
+
 TODO:
 
 - Eventuell die Hilitefarbe des Registers an die Farbe vom aktuellen Circuit

@@ -1,4 +1,7 @@
 0.6:
+    Bug fixes:
+	* FIX: Leaving a direct cell editing with cursor down would skip
+		   two lines.
 
 0.5:
     Bug fixes:

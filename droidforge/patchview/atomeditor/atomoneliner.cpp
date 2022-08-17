@@ -45,7 +45,6 @@ Atom *AtomOneliner::getAtom()
     else
         return new AtomInvalid(text);
 }
-
 void AtomOneliner::showEvent(QShowEvent *)
 {
     setGeometry();
@@ -55,7 +54,6 @@ void AtomOneliner::keyPressed(int key)
     lastKey = key;
     accept();
 }
-
 void AtomOneliner::selectionChanged()
 {
     // This hack avoids the initial "select all" feature

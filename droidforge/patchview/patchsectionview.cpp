@@ -1084,6 +1084,7 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 void PatchSectionView::editAtom(int key)
 {
     int lastKey = 0;
+    bool usedOneliner;
 
     if (key == 0 && patch->isPatching()) {
         finishPatching();
@@ -1098,6 +1099,7 @@ void PatchSectionView::editAtom(int key)
     Atom *newAtom;
 
     if (key != 0 || ja->jackType() == JACKTYPE_UNKNOWN) {
+        usedOneliner = true;
         QRectF cursor = currentCircuitView()->cellRect(curPos.row, curPos.column).translated(currentCircuitView()->pos());
         QPointF topleftRelativeToScene = cursor.topLeft();
         QPointF botrightRelativeToScene = cursor.bottomRight();
@@ -1111,14 +1113,19 @@ void PatchSectionView::editAtom(int key)
         QString start(c);
         newAtom = AtomOneliner::editAtom(geometry, patch, ja->jackType(), start, lastKey);
     }
-    else
+    else {
+        usedOneliner = false;
         newAtom = AtomSelectorDialog::editAtom(patch, circuit->getName(), ja->jackName(), ja->jackType(), curPos.column == 2, atom);
+    }
 
     if (newAtom != 0 && newAtom != atom) {
         ja->replaceAtom(section()->cursorPosition().column, newAtom);
         patch->commit(tr("changing parameter '%1'").arg(ja->jackName()));
-        if (section()->cursorPosition().row + 1 < currentCircuit()->numJackAssignments())
-            section()->moveCursorDown();
+        if (lastKey == Qt::Key_Return) {
+            if (section()->cursorPosition().row + 1 < currentCircuit()->numJackAssignments())
+                section()->moveCursorDown();
+            lastKey = 0;
+        }
         emit patchModified();
     }
     if (lastKey) {
