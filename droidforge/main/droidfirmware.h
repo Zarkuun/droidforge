@@ -36,9 +36,9 @@ public:
     QStringList jackGroupsOfCircuit(QString circuit, QString whence, QString search) const;
     QString jackDescriptionHTML(QString circuit, QString whence, QString jack) const;
     QString jackTypeDescriptionHTML(QString circuit, QString whence, QString jack) const;
-    QMap<float, QString> jackValueTable(QString circuit, QString whence, QString jack) const;
+    QMap<double, QString> jackValueTable(QString circuit, QString whence, QString jack) const;
     bool jackHasDefaultvalue(QString circuit, QString jack) const;
-    float jackDefaultvalue(QString circuit, QString jack) const;
+    double jackDefaultvalue(QString circuit, QString jack) const;
     unsigned numControllerRegisters(const QString &controller, char registerType) const;
     unsigned numGlobalRegisters(char registerType) const;
 
@@ -47,7 +47,7 @@ private:
     QJsonValue findJackArray(QString circuit, QString whence, QString prefix) const;
     QString delatexify(QString s, bool html=false) const;
     void replaceLatexSymbols(QString &s) const;
-    QString jackTableAsString(const QMap<float, QString> &table) const;
+    QString jackTableAsString(const QMap<double, QString> &table) const;
     QString jackTypeExplanation(QString symbol, bool isInput) const;
 };
 

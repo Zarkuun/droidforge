@@ -241,7 +241,7 @@ QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QStr
         description += "<br>";
 
     if (whence == "inputs" && the_firmware->jackHasDefaultvalue(circuit, jack)) {
-        float default_value = the_firmware->jackDefaultvalue(circuit, jack);
+        double default_value = the_firmware->jackDefaultvalue(circuit, jack);
         description += "<br>" + TR("Default value: %1").arg(default_value) + "<br>";
     }
     return description;
@@ -253,12 +253,12 @@ QString DroidFirmware::jackTypeDescriptionHTML(QString circuit, QString whence, 
     return jackTypeExplanation(symbol, whence == "inputs");
 }
 
-QString DroidFirmware::jackTableAsString(const QMap<float, QString> &table) const
+QString DroidFirmware::jackTableAsString(const QMap<double, QString> &table) const
 {
     QString text = "<br><br>";
     for (auto it = table.keyBegin(); it != table.keyEnd(); ++it)
     {
-        float value = *it;
+        double value = *it;
         QString description = table[value];
         text += QString::number(value) + ": " + description + "<br>";
     }
@@ -307,9 +307,9 @@ QString DroidFirmware::jackTypeExplanation(QString symbol, bool isInput) const
 
     return "ARGL:" + symbol;
 }
-QMap<float, QString> DroidFirmware::jackValueTable(QString circuit, QString whence, QString jack) const
+QMap<double, QString> DroidFirmware::jackValueTable(QString circuit, QString whence, QString jack) const
 {
-    QMap<float, QString> table;
+    QMap<double, QString> table;
     QJsonValue jackinfo = findJack(circuit, whence, jack);
     if (!jackinfo.isNull()) {
         QString desc = jackinfo.toObject()["description"].toString();
@@ -323,7 +323,7 @@ QMap<float, QString> DroidFirmware::jackValueTable(QString circuit, QString when
 
             QString value = match.captured(1);
             QString description = delatexify(match.captured(2));
-            table[value.toFloat()] = description;
+            table[value.toDouble()] = description;
         }
     }
     return table;
@@ -340,11 +340,11 @@ bool DroidFirmware::jackHasDefaultvalue(QString circuit, QString jack) const
     else
         return false;
 }
-float DroidFirmware::jackDefaultvalue(QString circuit, QString jack) const
+double DroidFirmware::jackDefaultvalue(QString circuit, QString jack) const
 {
     QJsonValue jackinfo = findJack(circuit, "inputs", jack);
     QString s = jackinfo.toObject()["default"].toString();
-    return s.toFloat();
+    return s.toDouble();
 }
 unsigned DroidFirmware::numGlobalRegisters(char registerType) const
 {

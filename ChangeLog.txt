@@ -2,6 +2,8 @@
     Bug fixes:
 	* FIX: Leaving a direct cell editing with cursor down would skip
 		   two lines.
+	* FIX: Fix values like 0.2000000234324 when adding a new circuit
+	       with typical example (default values of input jacks)
 
 0.5:
     Bug fixes:
