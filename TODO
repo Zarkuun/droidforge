@@ -14,6 +14,12 @@ BUGS:
 - Rackview bottom margin ist zu groß. Einsrtellung wirkt nicht.
 - Ich kopiere was und kann nicht in eine Outputzeile pasten, weil der Cursor
   unsichtbar auf Spalte 2 steht
+- Analog: Enter auf einem Output bringt den aktuellen Wert nicht in den
+  Selektor wenn cursor auf Spalte 2 steht
+- Jack chooser: Wenn wegen eines Filters keine Outputs da sind, und ich
+  bin in einem Arrayinput mit 8 Inputs, kann ich in der rechtesten
+  Spalte weiter nach rechts fahren und der Cursor geht dann irgendwo
+  ins verborgene.
 
 
 TODO:
@@ -23,6 +29,9 @@ TODO:
   Oder was weiß ich.
 - Wenn man durch Mehrfachklicken aus einem B ein L macht, dann soll ein
   Hint kommen.
+- Wenn ich auf einer Zell mit einem Register stehe und ? drücke, soll
+  ich zu allen anderen Registern weiterhüpfen, die verwandt sind.
+  Damit kann man dann auch die angefangene Suche fortsetzen
 
 - Eventuell die Hilitefarbe des Registers an die Farbe vom aktuellen Circuit
   anpassen.
