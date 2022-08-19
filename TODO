@@ -1,6 +1,4 @@
 BUGS:
-- Text in der Statusbar: wenn dieser vom I oder vom Problem kommt, sollte das
-  Icon davor stehen.
 - Die Miniicons in der Dropdownliste im Cableselector sind noch die knalligen
 - "Edit input parameter": Den Zusatztext über den Jacktyp hier auch nochmal anzeigen.
   Eventuell auch das Logo.
@@ -20,10 +18,10 @@ BUGS:
   die erste Zeile vom Kommentar weg (wird wohl als Title gewertet)
 - Bug: Duplicate usage of O2 in einer Zeile, die auskomentiert ist.
 
-- Vanillasequencer: Laden verliert das +__MENU_ROOT!
-
 TODO:
 
+- Text in der Statusbar: wenn dieser vom I oder vom Problem kommt, sollte das
+  Icon davor stehen.
 - Doch vielleicht einbauen, das man ein Rack speichern kann (Rackview:
   "Save rack..."). Und das in einem Menü dann direkt holen kann.
   Oder was weiß ich.

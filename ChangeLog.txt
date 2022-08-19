@@ -6,8 +6,10 @@
 	       with typical example (default values of input jacks)
 	* FIX: Don't wrap text in control labels if it's too long
 	* FIX: Fix misaligned problem marker if parameter has a comment
+	* FIX: Fix parsing of "root = I1 / 120 + 18"
 
 	Features:
+	* Support for magenta-12
 	* Cell editor: Make description of parameter selectable
 	* Patch view: double click on parameter name edits parameter comment
 	  (information) instead of a change of the parameter (that can still

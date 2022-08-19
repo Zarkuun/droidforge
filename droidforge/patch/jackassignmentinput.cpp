@@ -198,12 +198,12 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
         else if ((m = form8.match(value)).hasMatch()) {
             a = m.captured(1);
             b = m.captured(2);
-            c = m.captured(3);
+            c = m.captured(4);
         }
         else if ((m = form9.match(value)).hasMatch()) {
             a = m.captured(1);
             b = m.captured(2);
-            c = "-" + m.captured(3);
+            c = "-" + m.captured(4);
         }
         else {
             atoms[0] = new AtomInvalid(value);
