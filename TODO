@@ -1,6 +1,4 @@
 BUGS:
-- Wenn man ein Info auf einem Jack hat und eine Warnung auf Column 1 (Input) wird
-  das problem eins zu weit links ausgegeben
 - Text in der Statusbar: wenn dieser vom I oder vom Problem kommt, sollte das
   Icon davor stehen.
 - Die Miniicons in der Dropdownliste im Cableselector sind noch die knalligen

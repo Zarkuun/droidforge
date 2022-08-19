@@ -5,6 +5,7 @@
 	* FIX: Fix values like 0.2000000234324 when adding a new circuit
 	       with typical example (default values of input jacks)
 	* FIX: Don't wrap text in control labels if it's too long
+	* FIX: Fix misaligned problem marker if parameter has a comment
 
 	Features:
 	* Cell editor: Make description of parameter selectable

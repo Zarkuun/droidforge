@@ -247,7 +247,6 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
     CircuitView *cv = circuitViews[pos.circuitNr];
     QRectF rect = cv->cellRect(pos.row, pos.column);
 
-
     IconMarker *marker = new IconMarker(pos, type, toolTip);
     int offset;
     if (pos.row == ROW_CIRCUIT)
@@ -262,7 +261,7 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
     // than two marker type we can think of something more sophisticated
     // if we like.
     JackAssignment *ja = section()->jackAssignmentAt(pos);
-    if (ja && ja->getComment() != "" && type == ICON_MARKER_PROBLEM)
+    if (ja && ja->getComment() != "" && pos.column == 0 && type == ICON_MARKER_PROBLEM)
         offset -= rect.height();
 
     QPointF p(cv->pos().x() + rect.right() + offset,
@@ -288,12 +287,10 @@ void PatchSectionView::rebuildPatchSection()
 }
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 {
-    shout << "EINS" << event;
     return handleKeyPress(event->key(), event->modifiers());
 }
 bool PatchSectionView::handleKeyPress(int key, int modifiers)
 {
-    shout << "THE KEY" << key;
     // If any other modifier than shift is pressed, ignore
     // the movement keys.
     if (modifiers & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier))
@@ -1068,8 +1065,6 @@ void PatchSectionView::editValue(int key)
 {
     if (isEmpty())
         return;
-
-    shout << key;
 
     int row = section()->cursorPosition().row;
     int column = section()->cursorPosition().column;
