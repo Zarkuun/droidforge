@@ -814,7 +814,9 @@ void PatchOperator::editSectionSource()
 }
 void PatchOperator::editCircuitSource()
 {
-    Patch *parsed = editSource(section()->currentCircuit()->toString());
+    // Add one empty line, otherwise we will loose the first comment
+    // line of the circuit if it has any
+    Patch *parsed = editSource("\n" + section()->currentCircuit()->toString());
     if (parsed) {
         int circuitIndex = section()->currentCircuitId();
         section()->deleteCircuit(circuitIndex);

@@ -9,6 +9,8 @@
 	* FIX: Fix parsing of "root = I1 / 120 + 18"
 	* FIX: Don't show problem for duplicate usage of output when the
 	       line is disabled
+	* FIX: Avoid loosing the first comment line a circuit when editing
+	       the circuit's source code with Cmd+U
 
 	Features:
 	* Support for magenta-12
