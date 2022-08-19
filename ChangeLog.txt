@@ -11,6 +11,8 @@
 	       line is disabled
 	* FIX: Avoid loosing the first comment line a circuit when editing
 	       the circuit's source code with Cmd+U
+	* FIX: Don't jump to end of text when editing in the mids of
+	       a cable name (when creating or renaming cables)
 
 	Features:
 	* Support for magenta-12

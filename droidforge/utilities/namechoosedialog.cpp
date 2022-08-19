@@ -48,6 +48,9 @@ QString NameChooseDialog::getName(const QString &title, const QString &label, QS
 
 void NameChooseDialog::changeText(const QString &)
 {
-   if (forceUpper)
+   if (forceUpper) {
+       int curPos = lineEdit->cursorPosition();
        lineEdit->setText(lineEdit->text().toUpper());
+       lineEdit->setCursorPosition(curPos);
+   }
 }

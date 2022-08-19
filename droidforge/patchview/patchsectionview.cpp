@@ -1090,7 +1090,7 @@ void PatchSectionView::editAtom(int key)
 {
     int lastKey = 0;
 
-    if (key == 0 && patch->isPatching()) {
+    if ((key == 0 || key == Qt::Key_Return) && patch->isPatching()) {
         finishPatching();
         return;
     }
@@ -1112,7 +1112,7 @@ void PatchSectionView::editAtom(int key)
         QPoint botrightInScreen = mapToGlobal(botrightRelativeToView);
         QRectF geometry(topleftInScreen, botrightInScreen);
 
-        QChar c(key);
+        QChar c((key > 0 && key < 127) ? key : 0);
         QString start(c);
         newAtom = AtomOneliner::editAtom(geometry, patch, ja->jackType(), start, lastKey);
     }

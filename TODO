@@ -12,8 +12,6 @@ BUGS:
   bin in einem Arrayinput mit 8 Inputs, kann ich in der rechtesten
   Spalte weiter nach rechts fahren und der Cursor geht dann irgendwo
   ins verborgene.
-- Kabel umbenennen: Ich kann nicht in der Mitte vom Kabel editieren,
-  denn der Cursor spring immer an das Ende, nach jedem Zeichen
 
 TODO:
 
