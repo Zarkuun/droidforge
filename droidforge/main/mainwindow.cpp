@@ -159,6 +159,7 @@ void MainWindow::createFileMenu()
     QMenu *menu = menuBar()->addMenu(tr("&File"));
 
     ADD_ACTION(ACTION_NEW, menu);
+    ADD_ACTION(ACTION_NEW_WITH_SAME_RACK, menu);
     ADD_ACTION(ACTION_OPEN, menu);
     recentFilesMenu = menu->addMenu(tr("Open recent file"));
     patchOperator.createRecentFileActions(recentFilesMenu);

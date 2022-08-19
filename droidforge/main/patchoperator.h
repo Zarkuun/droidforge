@@ -51,6 +51,7 @@ private slots:
     void upload();
     void saveToSD();
     void newPatch();
+    void newPatchWithSameRack();
     void open();
     void integrate();
     void exportSelection();

@@ -7,6 +7,9 @@
 
 	Features:
 	* Cell editor: Make description of parameter selectable
+	* Menu: New action "New with same rack...". This is like "New..." but
+	  keeps all controllers in place. The short cut of "New..." and the
+	  toolbar icon now call this action.
 
 0.5:
     Bug fixes:

@@ -106,7 +106,8 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
-    CONNECT_ACTION(ACTION_TOOLBAR_NEW, &PatchOperator::newPatch);
+    CONNECT_ACTION(ACTION_NEW_WITH_SAME_RACK, &PatchOperator::newPatchWithSameRack);
+    CONNECT_ACTION(ACTION_TOOLBAR_NEW, &PatchOperator::newPatchWithSameRack);
     CONNECT_ACTION(ACTION_OPEN, &PatchOperator::open);
     CONNECT_ACTION(ACTION_CLEAR_RECENT_FILES, &PatchOperator::clearRecentFiles);
     CONNECT_ACTION(ACTION_TOOLBAR_OPEN, &PatchOperator::open);
@@ -166,6 +167,22 @@ void PatchOperator::newPatch()
     patch->startFromScratch();
     patch->addSection(new PatchSection());
     patch->commit(tr("creating new patch"));
+    setLastFilePath("");
+    emit patchModified();
+}
+void PatchOperator::newPatchWithSameRack()
+{
+    if (!checkModified())
+        return;
+
+    QStringList controllers = patch->allControllers();
+
+    patch->startFromScratch();
+    for (auto controller: controllers)
+        patch->addController(controller);
+
+    patch->addSection(new PatchSection());
+    patch->commit(tr("creating new patch with same rack"));
     setLastFilePath("");
     emit patchModified();
 }

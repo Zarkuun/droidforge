@@ -26,6 +26,7 @@ BUGS:
   die erste Zeile vom Kommentar weg (wird wohl als Title gewertet)
 - Bug: Duplicate usage of O2 in einer Zeile, die auskomentiert ist.
 
+- Vanillasequencer: Laden verliert das +__MENU_ROOT!
 
 TODO:
 

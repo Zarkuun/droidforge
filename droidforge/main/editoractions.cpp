@@ -35,8 +35,11 @@ void EditorActions::createActions()
     actions[ACTION_CLEAR_RECENT_FILES] = new QAction(tr("Clear list of recent files"), this);
 
     actions[ACTION_NEW] = new QAction(tr("&New..."), this);
-    actions[ACTION_NEW]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
+    actions[ACTION_NEW_WITH_SAME_RACK] = new QAction(tr("&New with same rack..."), this);
+    actions[ACTION_NEW_WITH_SAME_RACK]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
+
     actions[ACTION_TOOLBAR_NEW] = new QAction(ICON("new"), tr("New"), this);
+    actions[ACTION_TOOLBAR_NEW]->setToolTip(tr("New patch with same rack configuration"));
 
     actions[ACTION_CONFIGURE_COLORS] = new QAction(tr("Edit colors"), this);
     actions[ACTION_CONFIGURE_COLORS]->setShortcut(QKeySequence(tr("F7")));
