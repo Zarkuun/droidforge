@@ -159,7 +159,7 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
     QFont font;
     font.setPixelSize(50);
     painter->setFont(font);
-    painter->drawText(r, text, Qt::AlignCenter | Qt::AlignVCenter);
+    painter->drawText(r, Qt::TextSingleLine | Qt::AlignCenter | Qt::AlignVCenter, text);
 }
 bool Module::haveRegister(AtomRegister atom)
 {
