@@ -22,8 +22,9 @@ BUGS:
   ins verborgene.
 - Kabel umbenennen: Ich kann nicht in der Mitte vom Kabel editieren,
   denn der Cursor spring immer an das Ende, nach jedem Zeichen
-- Wenn ich einen Circuit mit CMD-U im Sourcecode editiere, geht 
+- Wenn ich einen Circuit mit CMD-U im Sourcecode editiere, geht
   die erste Zeile vom Kommentar weg (wird wohl als Title gewertet)
+- Bug: Duplicate usage of O2 in einer Zeile, die auskomentiert ist.
 
 
 TODO:
