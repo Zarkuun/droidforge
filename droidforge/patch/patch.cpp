@@ -356,17 +356,22 @@ void Patch::updateProblems()
             reg->getRegisterType() != REGISTER_NORMALIZE)
             continue;
 
-
-        if (usedOutputs.contains(*reg)) {
-            const CursorPosition &pos = it.cursorPosition();
-            PatchProblem *prob = new PatchProblem(pos.row, pos.column,
-                                                  TR("Duplicate usage of %1 as output").arg(reg->toString()));
-            prob->setCircuit(pos.circuitNr);
-            prob->setSection(it.sectionIndex());
-            problems.append(prob);
+        const CursorPosition &pos = it.cursorPosition();
+        const PatchSection *sec = section(it.sectionIndex());
+        const Circuit *circuit = sec->circuit(pos.circuitNr);
+        const JackAssignment *ja = circuit->jackAssignment(pos.row);
+        if (!ja->isDisabled())
+        {
+            if (usedOutputs.contains(*reg)) {
+                PatchProblem *prob = new PatchProblem(pos.row, pos.column,
+                                                      TR("Duplicate usage of %1 as output").arg(reg->toString()));
+                prob->setCircuit(pos.circuitNr);
+                prob->setSection(it.sectionIndex());
+                problems.append(prob);
+            }
+            else
+                usedOutputs.append(*reg);
         }
-        else
-            usedOutputs.append(*reg);
     }
 
     // Check memory consumption of circuits

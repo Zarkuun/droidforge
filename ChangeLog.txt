@@ -7,6 +7,8 @@
 	* FIX: Don't wrap text in control labels if it's too long
 	* FIX: Fix misaligned problem marker if parameter has a comment
 	* FIX: Fix parsing of "root = I1 / 120 + 18"
+	* FIX: Don't show problem for duplicate usage of output when the
+	       line is disabled
 
 	Features:
 	* Support for magenta-12
