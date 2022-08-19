@@ -126,6 +126,7 @@ public slots:
     void moveCursor();
     void changePatching();
 
+    void editValueByShortcut();
     void newCircuit();
     void addJack();
     void zoomReset();

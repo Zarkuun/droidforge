@@ -111,6 +111,7 @@ void MainWindow::modifyPatch()
 }
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    shout << "Mainwindow key" << event;
     if (!patchSectionView.handleKeyPress(event))
         event->ignore();
 }

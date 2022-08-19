@@ -96,7 +96,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_NEW_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_TOOLBAR_NEW_CIRCUIT, &PatchSectionView::newCircuit);
     CONNECT_ACTION(ACTION_TOOLBAR_ADD_JACK, &PatchSectionView::addJack);
-    CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValue);
+    CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValueByShortcut);
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchSectionView::editCircuitComment);
     CONNECT_ACTION(ACTION_EDIT_JACK_COMMENT, &PatchSectionView::editJackComment);
     CONNECT_ACTION(ACTION_RENAME_CABLE, &PatchSectionView::renameCable);
@@ -288,10 +288,12 @@ void PatchSectionView::rebuildPatchSection()
 }
 bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 {
+    shout << "EINS" << event;
     return handleKeyPress(event->key(), event->modifiers());
 }
 bool PatchSectionView::handleKeyPress(int key, int modifiers)
 {
+    shout << "THE KEY" << key;
     // If any other modifier than shift is pressed, ignore
     // the movement keys.
     if (modifiers & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier))
@@ -1023,7 +1025,7 @@ void PatchSectionView::followCable()
 }
 void PatchSectionView::editJack(int key)
 {
-    if (key)
+    if (key != Qt::Key_Return)
         return; // direct editing currently not implemented
 
     JackAssignment *ja = currentJackAssignment();
@@ -1058,10 +1060,16 @@ QStringList PatchSectionView::usedJacks() const
 {
     return currentCircuitView()->usedJacks();
 }
+void PatchSectionView::editValueByShortcut()
+{
+    editValue(Qt::Key_Return);
+}
 void PatchSectionView::editValue(int key)
 {
     if (isEmpty())
         return;
+
+    shout << key;
 
     int row = section()->cursorPosition().row;
     int column = section()->cursorPosition().column;
@@ -1070,6 +1078,8 @@ void PatchSectionView::editValue(int key)
         editCircuit(key);
     else if (row == ROW_COMMENT)
         editCircuitComment(key);
+    else if (column == 0 && key == 0)
+        editJackComment();
     else if (column == 0)
         editJack(key);
     else
@@ -1084,7 +1094,6 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 void PatchSectionView::editAtom(int key)
 {
     int lastKey = 0;
-    bool usedOneliner;
 
     if (key == 0 && patch->isPatching()) {
         finishPatching();
@@ -1099,7 +1108,6 @@ void PatchSectionView::editAtom(int key)
     Atom *newAtom;
 
     if (key != 0 || ja->jackType() == JACKTYPE_UNKNOWN) {
-        usedOneliner = true;
         QRectF cursor = currentCircuitView()->cellRect(curPos.row, curPos.column).translated(currentCircuitView()->pos());
         QPointF topleftRelativeToScene = cursor.topLeft();
         QPointF botrightRelativeToScene = cursor.bottomRight();
@@ -1114,7 +1122,6 @@ void PatchSectionView::editAtom(int key)
         newAtom = AtomOneliner::editAtom(geometry, patch, ja->jackType(), start, lastKey);
     }
     else {
-        usedOneliner = false;
         newAtom = AtomSelectorDialog::editAtom(patch, circuit->getName(), ja->jackName(), ja->jackType(), curPos.column == 2, atom);
     }
 

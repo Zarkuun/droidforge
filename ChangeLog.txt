@@ -8,6 +8,9 @@
 
 	Features:
 	* Cell editor: Make description of parameter selectable
+	* Patch view: double click on parameter name edits parameter comment
+	  (information) instead of a change of the parameter (that can still
+	  be done with Enter)
 	* Menu: New action "New with same rack...". This is like "New..." but
 	  keeps all controllers in place. The short cut of "New..." and the
 	  toolbar icon now call this action.

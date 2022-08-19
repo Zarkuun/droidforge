@@ -28,6 +28,7 @@ void Dialog::moveEvent(QMoveEvent *)
 }
 void Dialog::keyPressEvent(QKeyEvent *event)
 {
+    shout << "DIALOGKEUY " << event;
     if (closeOnReturn && event->key() == Qt::Key_Return && event->modifiers() | Qt::ControlModifier)
         accept();
     else
