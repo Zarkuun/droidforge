@@ -15,6 +15,9 @@
 	       a cable name (when creating or renaming cables)
 	* FIX: Fix size of vertical separator bar and paddings
 	* FIX: cable section list now makes use of available width
+	* FIX: Fix various bugs when the cursor is in the 2nd or 3rd
+	       cell of an input parameter and is then moved up or down
+		   to an output parameter.
 
 	Features:
 	* Support for magenta-12
