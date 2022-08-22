@@ -20,8 +20,6 @@ public:
     void setAllowFraction(bool allowFraction);
     void setCircuitAndJack(QString circuit, QString jack);
     static Atom *editAtom(const Patch *patch, const QString &circuit, const QString &jack, jacktype_t, bool allowFraction, const Atom *atom);
-    // void keyPressEvent(QKeyEvent *event);
-    // bool eventFilter(QObject *o, QEvent *e);
 
 };
 

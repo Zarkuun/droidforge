@@ -1,7 +1,9 @@
 #include "atomselectordialog.h"
 #include "atomselector.h"
+#include "globals.h"
 
 #include <QGridLayout>
+#include <QVBoxLayout>
 #include <QKeyEvent>
 
 AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
@@ -21,9 +23,9 @@ AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-    QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(atomSelector, 0, 0, 1, -1);
-    mainLayout->addWidget(buttonBox, 1, 1);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(atomSelector);
+    mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);
 }
 

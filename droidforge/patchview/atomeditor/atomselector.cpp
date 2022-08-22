@@ -9,6 +9,8 @@
 #include "droidfirmware.h"
 
 #include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QPushButton>
 #include <QMouseEvent>
 #include <QLabel>
@@ -32,21 +34,20 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     subSelectors.append(cs);
     connect(cs, &CableSelector::committed, this, &AtomSelector::commit);
 
-    QGridLayout *layout = new QGridLayout(this);
-    setLayout(layout);
-
+    auto mainLayout = new QVBoxLayout(this);
+    auto selectorLayout = new QGridLayout; // (mainLayout);
     for (qsizetype i=0; i<subSelectors.count(); i++) {
         AtomSubSelector *ss = subSelectors[i];
         connect(ss, &AtomSubSelector::gotSelected, this, &AtomSelector::subselectorSelected);
         ss->installFocusFilter(ss);
         QPushButton *button = new QPushButton(ss->title());
         connect(button, &QPushButton::pressed, this, [this, i]() { this->switchToSelector(i); });
-        layout->addWidget(button, 0, i);
-        layout->addWidget(ss, 1, i);
-        layout->setColumnStretch(i, 0);
+        selectorLayout->addWidget(button, 0, i);
+        selectorLayout->addWidget(ss, 1, i);
     }
 
-    layout->setColumnStretch(subSelectors.count() - 1, 100);
+    setLayout(mainLayout);
+    mainLayout->addLayout(selectorLayout);
 
     // Description
     labelDescription = new QLabel(this);
@@ -57,12 +58,14 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     labelDescription->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     scrollArea = new QScrollArea();
-    // scrollArea->setBackgroundRole(QPalette::Dark);
     scrollArea->setWidget(labelDescription);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     scrollArea->setWidgetResizable(true);
-    layout->addWidget(scrollArea, 2, 0, 1, subSelectors.count());
+    mainLayout->addWidget(scrollArea);
+
+    mainLayout->setStretch(0, 10);
+    mainLayout->setStretch(1, 3);
 }
 void AtomSelector::setAllowFraction(bool af)
 {
@@ -125,6 +128,7 @@ void AtomSelector::mousePressEvent(QMouseEvent *event)
     }
     event->ignore();
 }
+
 void AtomSelector::subselectorSelected(AtomSubSelector *ass)
 {
      currentSelector = ass;
