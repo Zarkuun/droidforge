@@ -47,6 +47,7 @@ public:
     virtual QString valueToString() const = 0;
     virtual bool isInput() const { return false; };
     virtual bool isOutput() const { return false; };
+    virtual int numColumns() const { return 1; };
     virtual const Atom *atomAt(int column) const = 0;
     virtual Atom *atomAt(int column) = 0;
     virtual void replaceAtom(int column, Atom *newAtom) = 0;

@@ -13,6 +13,7 @@ public:
     ~JackAssignmentInput();
     bool isInput() const { return true; };
     Atom *getAtom(int index) { return atoms[index]; };
+    virtual int numColumns() const { return 3; };
     const Atom *atomAt(int column) const;
     Atom *atomAt(int column);
     void replaceAtom(int column, Atom *newAtom);

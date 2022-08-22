@@ -348,6 +348,7 @@ void Patch::updateProblems()
     for (auto it = begin(); it != end(); ++it)
     {
         const Atom *atom = *it;
+        shout << atom->toString();
         if (!atom->isRegister() || !it.isOutput())
             continue;
 
@@ -586,7 +587,7 @@ bool Patch::iterator::advance()
 {
     while (true) {
         nAtom ++;
-        if (nAtom > 3) {
+        if (nAtom > jackAssignment->numColumns()) {
             if  (!advanceJack()) { // sets nAtom to 0
                 atom = 0;
                 return false;
