@@ -266,6 +266,8 @@ void JackSelector::moveCursorHomeEnd(int whence)
 void JackSelector::moveCursorLeftRight(int whence)
 {
     JackView *jv = currentJack();
+
+    // Navigate within a jack array
     if (jv && jv->isArray()) {
         int col = currentSubjack % 4;
         int width = qMin(4, (int)jv->getArraySize());
@@ -278,9 +280,13 @@ void JackSelector::moveCursorLeftRight(int whence)
     }
 
     if (whence == -1 && currentColumn == 0)
-        return;
+        return; // already left, cannot go further
     else if (whence == 1 && currentColumn == 1)
-        return;
+        return; // already right, cannot go further
+    else if (whence == -1 && jackViews[0].count() == 0)
+        return; // left column empty (probably due to filter)
+    else if (whence == 1 && jackViews[1].count() == 0)
+        return; // right column empty (probably due to filter)
 
     selectCurrentJack(false);
     currentSubjack = 0;

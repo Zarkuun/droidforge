@@ -348,7 +348,6 @@ void Patch::updateProblems()
     for (auto it = begin(); it != end(); ++it)
     {
         const Atom *atom = *it;
-        shout << atom->toString();
         if (!atom->isRegister() || !it.isOutput())
             continue;
 

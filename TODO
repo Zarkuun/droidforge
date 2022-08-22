@@ -1,8 +1,4 @@
 BUGS:
-- Jack chooser: Wenn wegen eines Filters keine Outputs da sind, und ich
-  bin in einem Arrayinput mit 8 Inputs, kann ich in der rechtesten
-  Spalte weiter nach rechts fahren und der Cursor geht dann irgendwo
-  ins verborgene.
 
 
 TODO:
