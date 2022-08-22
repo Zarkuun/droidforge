@@ -1,21 +1,21 @@
-BUGS:
-
-
 TODO:
 - Mac: theme umschalten soll direkt wirken
+
 - "Edit input parameter": Den Zusatztext über den Jacktyp hier auch nochmal anzeigen.
-  Eventuell auch das Logo.
+   Eventuell auch das Logo.
+
 - Text in der Statusbar: wenn dieser vom I oder vom Problem kommt, sollte das
   Icon davor stehen.
-- Doch vielleicht einbauen, das man ein Rack speichern kann (Rackview:
-  "Save rack..."). Und das in einem Menü dann direkt holen kann.
-  Oder was weiß ich.
+
 - Wenn ich auf einer Zell mit einem Register stehe und ? drücke, soll
   ich zu allen anderen Registern weiterhüpfen, die verwandt sind.
   Damit kann man dann auch die angefangene Suche fortsetzen
 
 - Eventuell die Hilitefarbe des Registers an die Farbe vom aktuellen Circuit
   anpassen.
+
+- View menu: Show X7 only when used
+  Show G8 only when used
 
 - Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
   verheiraten. Hat eine Forge immer genau eine Firmware? Dann müssten wir die Forge
