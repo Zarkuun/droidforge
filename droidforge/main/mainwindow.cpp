@@ -76,6 +76,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_RACK_ZOOM_OUT, &MainWindow::rackZoomOut);
     CONNECT_ACTION(ACTION_RACK_RESET_ZOOM, &MainWindow::rackZoomReset);
     CONNECT_ACTION(ACTION_USER_MANUAL, &MainWindow::showUserManual);
+    CONNECT_ACTION(ACTION_DISCORD, &MainWindow::showDiscord);
     CONNECT_ACTION(ACTION_CIRCUIT_MANUAL, &MainWindow::showCircuitManual);
     CONNECT_ACTION(ACTION_CLEAR_SETTINGS, &MainWindow::clearSettings);
 
@@ -288,6 +289,7 @@ void MainWindow::createHelpMenu()
     ADD_ACTION(ACTION_ABOUT, menu);
     ADD_ACTION(ACTION_USER_MANUAL, menu);
     ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
+    ADD_ACTION(ACTION_DISCORD, menu);
 
     menu->addSeparator();
 
@@ -452,6 +454,11 @@ void MainWindow::about()
                         .arg(APPLICATION_VERSION, firmware_version));
 }
 
+void MainWindow::showDiscord()
+{
+    QDesktopServices::openUrl(QUrl(DISCORD_URL));
+
+}
 void MainWindow::showLicense()
 {
     QDesktopServices::openUrl(QUrl(LICENSE_URL));

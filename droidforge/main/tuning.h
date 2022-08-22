@@ -8,6 +8,7 @@
 #define APPLICATION_VERSION                  "0.6"
 #endif
 #define LICENSE_URL                          "https://www.gnu.org/licenses/gpl.txt"
+#define DISCORD_URL                          "https://discord.com/invite/9TUcRmH"
 
 #define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors_%1.h"
 #define DROID_PATCH_FILENAME                 "droid.ini"

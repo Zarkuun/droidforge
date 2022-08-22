@@ -17,8 +17,6 @@ TODO:
 - Eventuell die Hilitefarbe des Registers an die Farbe vom aktuellen Circuit
   anpassen.
 
-- Hilfemenü: Link zu Discord einbauen.
-
 - Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
   verheiraten. Hat eine Forge immer genau eine Firmware? Dann müssten wir die Forge
   eigentlich immer gleichzeitig rausbringen.

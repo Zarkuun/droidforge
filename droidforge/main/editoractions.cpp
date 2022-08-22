@@ -28,6 +28,7 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
 void EditorActions::createActions()
 {
     actions[ACTION_ABOUT] = new QAction(tr("About DROID Forge"), this);
+    actions[ACTION_DISCORD] = new QAction(tr("Discord community"));
     actions[ACTION_LICENSE] = new QAction(tr("DROID Forge license"), this);
 
     actions[ACTION_CLEAR_SETTINGS] = new QAction(tr("Restore factory settings"), this);
@@ -260,7 +261,7 @@ void EditorActions::createActions()
     actions[ACTION_BARE_PATCH_SOURCE] = new QAction(tr("Show bare patch source"), this);
     actions[ACTION_BARE_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Alt+Ctrl+U")));
 
-    actions[ACTION_USER_MANUAL] = new QAction(tr("User manual"), this);
+    actions[ACTION_USER_MANUAL] = new QAction(tr("DROID user manual"), this);
     actions[ACTION_USER_MANUAL]->setShortcuts({QKeySequence(tr("Shift+Ctrl+M")), QKeySequence(tr("F1"))});
 
     actions[ACTION_CIRCUIT_MANUAL] = new QAction(tr("User manual of circuit"), this);

@@ -87,6 +87,7 @@ private:
 
 private slots:
     void about();
+    void showDiscord();
     void showLicense();
     void modifyPatch();
     void cursorMoved();

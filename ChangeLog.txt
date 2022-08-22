@@ -31,6 +31,7 @@
 	  keeps all controllers in place. The short cut of "New..." and the
 	  toolbar icon now call this action.
 	* Add hint when clicking two times a row on a button
+	* Help menu: Add link to Discord community
 
 0.5:
     Bug fixes:
