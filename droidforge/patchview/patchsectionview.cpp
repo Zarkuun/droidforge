@@ -1230,6 +1230,13 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
         if (a && a->isRegister()) {
             const AtomRegister *arx = (AtomRegister *)a;
             if (*arx == ar && ar.getRegisterType() == REGISTER_BUTTON) {
+                HintDialog::hint("click_button_led",
+                  tr("You just clicked on button %1 to assign that button\n"
+                     "to the input parameter \"%2\" in your patch. But that\n"
+                     "button was already assigned or you clicked two times in a row.\n\n"
+                     "Clicking a button a second time you changes the reference to\n"
+                     "the button into the LED in that button. Using an LED as input\n"
+                     "is allowed and can sometimes be useful.").arg(ar.toString()).arg(ja->jackName()));
                 ar.setRegisterType(REGISTER_LED);
             }
         }

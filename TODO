@@ -5,14 +5,11 @@ TODO:
 - Mac: theme umschalten soll direkt wirken
 - "Edit input parameter": Den Zusatztext über den Jacktyp hier auch nochmal anzeigen.
   Eventuell auch das Logo.
-
 - Text in der Statusbar: wenn dieser vom I oder vom Problem kommt, sollte das
   Icon davor stehen.
 - Doch vielleicht einbauen, das man ein Rack speichern kann (Rackview:
   "Save rack..."). Und das in einem Menü dann direkt holen kann.
   Oder was weiß ich.
-- Wenn man durch Mehrfachklicken aus einem B ein L macht, dann soll ein
-  Hint kommen.
 - Wenn ich auf einer Zell mit einem Register stehe und ? drücke, soll
   ich zu allen anderen Registern weiterhüpfen, die verwandt sind.
   Damit kann man dann auch die angefangene Suche fortsetzen
