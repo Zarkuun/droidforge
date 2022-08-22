@@ -76,8 +76,7 @@
 #define RACV_NORMAL_HEIGHT                   280
 #define RACV_PIXEL_PER_HP                    87
 #define RACV_CONTROLLER_GAP                  0 // (2 * RACV_PIXEL_PER_HP)
-#define RACV_MAIN_TOP_MARGIN                 40
-#define RACV_MAIN_BOTTOM_MARGIN              -20
+#define RACV_PADDING_MARGIN                 STANDARD_SPACING
 #define RACK_MODULE_MARGIN                   5
 #define RACV_MODULE_HEIGHT                   (12.8 * RACV_PIXEL_PER_HP / 0.508)
 #define RACV_REGMARKER_EXTRA_DIAMETER        30

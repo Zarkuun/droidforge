@@ -319,13 +319,11 @@ void RackView::refreshModules()
     for (qsizetype i=0; i<patch->numControllers(); i++)
         addModule(patch->controller(i), i);
 
-    QPointF topMargin(RACV_MAIN_TOP_MARGIN, RACV_MAIN_TOP_MARGIN);
-    QPointF bottomMargin(RACV_MAIN_TOP_MARGIN, RACV_MAIN_TOP_MARGIN);
     QRectF bounding(
-                modules.first()->moduleRect().topLeft() - topMargin,
-                modules.last()->moduleRect().bottomRight() + bottomMargin);
+                modules.first()->moduleRect().topLeft(),
+                modules.last()->moduleRect().bottomRight());
     scene()->setSceneRect(bounding);
-    ensureVisible(bounding);
+
     updateModuleHeights();
 }
 void RackView::initScene()
@@ -634,6 +632,13 @@ void RackView::updateModuleHeights()
 {
     for (auto module: modules)
         module->setPixelHeight(height() - 13); // This 13 is empirical. Other numbers make pixel artefacts
+    int padding = height() * RACV_PADDING_MARGIN / 320;
+    setStyleSheet(QString("QGraphicsView { padding-left: %1px; padding-top: %1px; padding-bottom: %2px; background-color: %3; }")
+                  .arg(padding)
+                  .arg(padding - 5)
+                  .arg(COLOR(COLOR_RACK_BACKGROUND).name())
+                  );
+
 
 }
 void RackView::abortDragging()

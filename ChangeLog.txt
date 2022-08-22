@@ -13,6 +13,7 @@
 	       the circuit's source code with Cmd+U
 	* FIX: Don't jump to end of text when editing in the mids of
 	       a cable name (when creating or renaming cables)
+	* FIX: Fix size of vertical separator bar and paddings
 
 	Features:
 	* Support for magenta-12

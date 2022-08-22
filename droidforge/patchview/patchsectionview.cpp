@@ -1102,7 +1102,7 @@ void PatchSectionView::editAtom(int key)
     const Atom *atom = ja->atomAt(curPos.column);
     Atom *newAtom;
 
-    if (key != 0 || ja->jackType() == JACKTYPE_UNKNOWN) {
+    if ((key != 0 && key != Qt::Key_Return) || ja->jackType() == JACKTYPE_UNKNOWN) {
         QRectF cursor = currentCircuitView()->cellRect(curPos.row, curPos.column).translated(currentCircuitView()->pos());
         QPointF topleftRelativeToScene = cursor.topLeft();
         QPointF botrightRelativeToScene = cursor.bottomRight();
