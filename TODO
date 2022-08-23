@@ -31,6 +31,12 @@ TODO:
   finden, den echten Wert rauszubeikommen. Und das einbauen
   in MouseDragger::doubleClickTime()
 
+- Kann man was machen, dass die Schrift nicht aus der Spalte ragt? Oder
+  dass man die Spaltenbreiten anpassen kann?
+
+- Größere Sektionen machen die Forge langsamer. Sagt jpizzo. Auf seinem altem
+  Mac. Generell müssen wir mal bisschen die Performance debuggen und verbessern.
+
 WINDOWS:
 
 - Windows: Das Icon wird noch nicht genommen.
