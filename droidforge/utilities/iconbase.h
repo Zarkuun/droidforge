@@ -14,6 +14,7 @@ class IconBase
     const QIcon &getIcon(const QString &name);
     const QImage &getImage(const QString &name);
     const QImage &getJackTypeSymbol(const QString &name);
+    const QPixmap &jackTypeSymbolPixmap(const QString &name);
 
 public:
     static const QIcon &icon(const QString &name);

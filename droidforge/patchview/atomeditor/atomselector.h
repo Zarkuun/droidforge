@@ -22,6 +22,8 @@ class AtomSelector : public QWidget
     QList<AtomSubSelector *> subSelectors;
     QList<QPushButton *> buttons;
     QLabel *labelDescription;
+    QLabel *labelJackType;
+    QLabel *labelJackTypeIcon;
     QScrollArea *scrollArea;
     jacktype_t jackType;
 

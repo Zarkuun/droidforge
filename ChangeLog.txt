@@ -4,6 +4,9 @@
 	       and immediately switch colors in the Forge, as well (might also work
 		   on Windows, but not tested yet).
 
+	Features:
+	* Cell editor: add icon and description of parameter type (CV, gate, etc.)
+
 0.6:
     Bug fixes:
 	* FIX: Leaving a direct cell editing with cursor down would skip

@@ -31,12 +31,10 @@ CableSelector::CableSelector(QWidget *parent)
     connect(listWidget, &QListWidget::currentRowChanged, this, &CableSelector::cableSelected);
     connect(listWidget, &QListWidget::itemDoubleClicked, this, &CableSelector::itemDoubleClicked);
 }
-
 bool CableSelector::handlesAtom(const Atom *atom) const
 {
     return atom->isCable();
 }
-
 void CableSelector::setPatch(const Patch *patch)
 {
     listWidget->clear();
@@ -47,7 +45,6 @@ void CableSelector::setPatch(const Patch *patch)
         listWidget->addItem(item);
     }
 }
-
 void CableSelector::setAtom(const Patch *patch, const Atom *atom)
 {
     cable = ((const AtomCable *)atom)->getCable();
@@ -55,36 +52,30 @@ void CableSelector::setAtom(const Patch *patch, const Atom *atom)
     int index = cables.indexOf(cable);
     listWidget->setCurrentRow(index);
 }
-
 void CableSelector::clearAtom()
 {
     lineEdit->setText("");
     cable = "";
 }
-
 Atom *CableSelector::getAtom() const
 {
     return new AtomCable(lineEdit->text());
 }
-
 void CableSelector::getFocus()
 {
     lineEdit->setFocus();
 }
-
 void CableSelector::installFocusFilter(QWidget *w)
 {
     lineEdit->installEventFilter(w);
     listWidget->installEventFilter(w);
 }
-
 void CableSelector::cableEdited(QString text)
 {
     if (text != text.toUpper())
         lineEdit->setText(text.toUpper());
     updateIcon();
 }
-
 void CableSelector::cableSelected(int row)
 {
     if (row >= 0) {
@@ -92,12 +83,10 @@ void CableSelector::cableSelected(int row)
         updateIcon();
     }
 }
-
 void CableSelector::itemDoubleClicked()
 {
     emit committed();
 }
-
 void CableSelector::updateIcon()
 {
     const QImage *image = the_cable_colorizer->imageForCable(lineEdit->text());

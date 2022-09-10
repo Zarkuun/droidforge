@@ -28,19 +28,14 @@ AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
     mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);
 }
-
 void AtomSelectorDialog::setAllowFraction(bool allowFraction)
 {
     atomSelector->setAllowFraction(allowFraction);
 }
-
 void AtomSelectorDialog::setCircuitAndJack(QString circuit, QString jack)
 {
     atomSelector->setCircuitAndJack(circuit, jack);
 }
-
-
-// static
 Atom *AtomSelectorDialog::editAtom(const Patch *patch, const QString &circuit, const QString &jack, jacktype_t jacktype, bool allowFraction, const Atom *atom)
 {
     static AtomSelectorDialog *inputAtomSelectorDialog = 0;

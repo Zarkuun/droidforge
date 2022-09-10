@@ -184,6 +184,7 @@
 
 // Atom selector
 #define ASEL_SUBSELECTOR_WIDTH               150
+#define ASEL_JACKTYPE_WIDTH                  40
 
 // Atom selector one liner
 #define ASON_X_OFFSET                        13

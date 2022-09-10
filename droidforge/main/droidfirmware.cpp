@@ -25,7 +25,6 @@ QRegularExpression regVspace("\\\\vspace{[^}]*}");
 QRegularExpression regJacktable("\\\\jacktablerow{" GROUP "}{" GROUP "}");
 QRegularExpression regJacktableE("\\\\jacktablerowE{" GROUP "}{" GROUP "}{" GROUP "}");
 QRegularExpression regSup("\\^([2-9])");
-
 DroidFirmware *the_firmware = 0;
 
 DroidFirmware::DroidFirmware()
@@ -246,13 +245,16 @@ QString DroidFirmware::jackDescriptionHTML(QString circuit, QString whence, QStr
     }
     return description;
 }
-
 QString DroidFirmware::jackTypeDescriptionHTML(QString circuit, QString whence, QString jack) const
 {
     QString symbol = jackTypeSymbol(circuit, jack, whence == "inputs");
     return jackTypeExplanation(symbol, whence == "inputs");
 }
 
+QString DroidFirmware::jackTypeSymbol(QString circuit, QString whence, QString jack) const
+{
+    return jackTypeSymbol(circuit, jack, whence == "inputs");
+}
 QString DroidFirmware::jackTableAsString(const QMap<double, QString> &table) const
 {
     QString text = "<br><br>";
@@ -264,7 +266,6 @@ QString DroidFirmware::jackTableAsString(const QMap<double, QString> &table) con
     }
     return text;
 }
-
 QString DroidFirmware::jackTypeExplanation(QString symbol, bool isInput) const
 {
     if (isInput) {
@@ -277,7 +278,7 @@ QString DroidFirmware::jackTypeExplanation(QString symbol, bool isInput) const
         else if (symbol == "voltperoctave")
             return TR("This input interpretes CV on a 1 Volt per octave basis.");
         else if (symbol == "trigger")
-            return TR("This input looks just for positive trigger edges, i.e. when the value goes from below 1V to 1V or above. It does not take into account the length of gate.");
+            return TR("This input looks just for positive trigger edges, i.e. when the value goes from below 1V to 1V or above. It does not take into account the length of the gate.");
         else if (symbol == "gate")
             return TR("This input just distinguishes between the state \"low\", which is everyting below 1V and \"high\" which is at 1V or above.");
         else if (symbol == "bipolar")

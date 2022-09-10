@@ -38,6 +38,11 @@ const QImage &IconBase::getJackTypeSymbol(const QString &name)
     }
     return jackTypeSymbols[name];
 }
+
+const QPixmap &IconBase::jackTypeSymbolPixmap(const QString &name)
+{
+
+}
 const QImage &IconBase::image(const QString &name)
 {
     return the_iconbase.getImage(name);

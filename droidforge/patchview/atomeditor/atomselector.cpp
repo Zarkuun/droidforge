@@ -2,11 +2,14 @@
 #include "atomnumber.h"
 #include "atomregister.h"
 #include "cableselector.h"
+#include "colorscheme.h"
 #include "controlselector.h"
 #include "globals.h"
 #include "numberselector.h"
 #include "inputoutputselector.h"
 #include "droidfirmware.h"
+#include "iconbase.h"
+#include "tuning.h"
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -64,8 +67,25 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     scrollArea->setWidgetResizable(true);
     mainLayout->addWidget(scrollArea);
 
+    // Jack type
+    QHBoxLayout *typeLayout = new QHBoxLayout();
+    labelJackType = new QLabel(this);
+    labelJackType->setWordWrap(true);
+    labelJackType->setWordWrap(true);
+    labelJackType->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
+    labelJackTypeIcon = new QLabel(this);
+    mainLayout->addWidget(labelJackTypeIcon);
+
+    typeLayout->addWidget(labelJackTypeIcon);
+    typeLayout->addWidget(labelJackType);
+    typeLayout->setStretch(0, 0);
+    typeLayout->setStretch(1, 1);
+    mainLayout->addLayout(typeLayout);
+
     mainLayout->setStretch(0, 10);
     mainLayout->setStretch(1, 3);
+    mainLayout->setStretch(1, 0);
 }
 void AtomSelector::setAllowFraction(bool af)
 {
@@ -78,8 +98,15 @@ void AtomSelector::setCircuitAndJack(QString circuit, QString jack)
         numberSelector->setCircuitAndJack(circuit, jack);
 
     QString whence = jackType == JACKTYPE_INPUT ? "inputs" : "outputs";
-    QString description = the_firmware->jackDescriptionHTML(circuit, whence, jack);
-    labelDescription->setText(description);
+    labelDescription->setText(the_firmware->jackDescriptionHTML(circuit, whence, jack));
+    labelJackType->setText(the_firmware->jackTypeDescriptionHTML(circuit, whence, jack));
+    // auto icon = IconBase::jackTypeSymbol("cv");
+    QString jackType = the_firmware->jackTypeSymbol(circuit, whence, jack);
+    QPixmap jackTypeSymbol(QString(JACK_TYPE_SYMBOLS_PATH_TEMPLATE)
+               .arg(the_colorscheme->isDark() ? "dark" : "light",
+                    jackType));
+
+    labelJackTypeIcon->setPixmap(jackTypeSymbol.scaledToWidth(ASEL_JACKTYPE_WIDTH, Qt::SmoothTransformation));
     scrollArea->verticalScrollBar()->adjustSize();
 }
 void AtomSelector::setPatch(const Patch *patch)
