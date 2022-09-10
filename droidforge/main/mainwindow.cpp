@@ -84,10 +84,16 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     createToolbar();
     createStatusBar();
 
+    // Detect application palette changs
+    installEventFilter(this);
+
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &MainWindow::modifyPatch);
     connect(the_hub, &UpdateHub::sectionSwitched, this, &MainWindow::cursorMoved);
     connect(the_hub, &UpdateHub::cursorMoved, this, &MainWindow::cursorMoved);
+
+    // Event that we create
+    connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
 
     // Some special connections that do not deal with update events
     connect(&rackView, &RackView::registerClicked, &patchSectionView, &PatchSectionView::clickOnRegister);
@@ -140,6 +146,14 @@ void MainWindow::showEvent(QShowEvent *)
     }
     else
         rackZoomReset();
+}
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::ApplicationPaletteChange) {
+        the_colorscheme->darkLightSwitch();
+        emit patchModified();
+    }
+    return QObject::eventFilter(obj, event);
 }
 void MainWindow::createMenus()
 {

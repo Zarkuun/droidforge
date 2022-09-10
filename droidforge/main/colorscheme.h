@@ -94,6 +94,7 @@ class ColorScheme : public Dialog
 
 public:
     ColorScheme(QWidget *parent = nullptr);
+    void darkLightSwitch();
     QColor color(int index);
     void setColor(int index, const QColor &color);
     void hideEvent(QHideEvent *);

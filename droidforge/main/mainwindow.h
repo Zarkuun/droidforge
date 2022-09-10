@@ -67,11 +67,12 @@ public:
     ~MainWindow();
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
-    void closeEvent(QCloseEvent* event);
-    void resizeEvent(QResizeEvent *);
-    void moveEvent(QMoveEvent *);
-    void showEvent(QShowEvent *);
+    void keyPressEvent(QKeyEvent *event) override;
+    void closeEvent(QCloseEvent* event) override;
+    void resizeEvent(QResizeEvent *) override;
+    void moveEvent(QMoveEvent *) override;
+    void showEvent(QShowEvent *) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     void createMenus();
@@ -101,5 +102,6 @@ private slots:
 
 signals:
     void allActionsAborted();
+    void patchModified();
 };
 #endif // MAINWINDOW_H
