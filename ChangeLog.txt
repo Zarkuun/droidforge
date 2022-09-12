@@ -6,6 +6,7 @@
 
 	Features:
 	* Cell editor: add icon and description of parameter type (CV, gate, etc.)
+	* Statusbar: add information (comment) or problem icon
 
 0.6:
     Bug fixes:

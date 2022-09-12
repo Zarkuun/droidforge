@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "iconbase.h"
 #include "mainwindow.h"
 #include "parseexception.h"
 #include "patch.h"
@@ -312,7 +313,12 @@ void MainWindow::createHelpMenu()
 void MainWindow::createStatusBar()
 {
     statusbar = new QStatusBar(this);
+    statusbarText = new QLabel("Das ist die Meldung");
+    statusbarIcon = new QLabel("i");
+    statusbarIcon->setStyleSheet("QLabel { margin-left: 5px; }");
     setStatusBar(statusbar);
+    statusbar->addPermanentWidget(statusbarIcon);
+    statusbar->addPermanentWidget(statusbarText, 1);
     statusbar->addPermanentWidget(&cableStatusIndicator);
     statusbar->addPermanentWidget(&memoryIndicator);
     statusbar->addPermanentWidget(&patchProblemIndicator);
@@ -389,14 +395,17 @@ void MainWindow::clearSettings()
 void MainWindow::updateStatusbarMessage()
 {
     QStringList infos;
+    QPixmap icon;
 
     int sectionNr = patch->currentSectionIndex();
     auto pos = section()->cursorPosition();
 
     // Problems
     QString problem = patch->problemAt(sectionNr, pos);
-    if (problem != "")
+    if (problem != "") {
         infos.append(problem);
+        icon = PIXMAP("problemsmall");
+    }
 
     // Jack comments
     if (pos.column == 0) // Information
@@ -404,6 +413,7 @@ void MainWindow::updateStatusbarMessage()
         auto ja = section()->currentJackAssignment();
         if (ja && ja->getComment() != "") {
             infos.append(ja->getComment());
+            icon = PIXMAP("info");
         }
     }
 
@@ -419,10 +429,15 @@ void MainWindow::updateStatusbarMessage()
     }
 
     QString message = infos.join(", ");
-    if (message != "")
-        statusbar->showMessage(message);
-    else
-        statusbar->clearMessage();
+    if (message != "") {
+        statusbarText->setText(message);
+        statusbarIcon->setPixmap(icon.scaledToHeight(statusbar->height() - 10, Qt::SmoothTransformation));
+    }
+    else {
+        statusbarText->clear();
+        statusbarIcon->clear();
+    }
+
 }
 void MainWindow::rackZoom(int whence)
 {

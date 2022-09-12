@@ -22,6 +22,7 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QVBoxLayout>
+#include <QLabel>
 
 class PatchEditEngine;
 
@@ -50,6 +51,8 @@ class MainWindow : public QMainWindow, PatchView
     ClipboardIndicator clipboardIndicator;
 
     QStatusBar *statusbar;
+    QLabel *statusbarText;
+    QLabel *statusbarIcon;
     QWidget *centralwidget;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;

@@ -1,13 +1,7 @@
 TODO:
-- Text in der Statusbar: wenn dieser vom I oder vom Problem kommt, sollte das
-  Icon davor stehen.
-
 - Wenn ich auf einer Zell mit einem Register stehe und ? drücke, soll
   ich zu allen anderen Registern weiterhüpfen, die verwandt sind.
   Damit kann man dann auch die angefangene Suche fortsetzen
-
-- Eventuell die Hilitefarbe des Registers an die Farbe vom aktuellen Circuit
-  anpassen.
 
 - View menu: Show X7 only when used
   Show G8 only when used

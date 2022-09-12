@@ -27,6 +27,15 @@ const QImage &IconBase::getImage(const QString &name)
     }
     return images[name];
 }
+
+const QPixmap &IconBase::getPixmap(const QString &name)
+{
+    if (!pixmaps.contains(name)) {
+        QPixmap pixmap(QString(IMAGE_PATH_TEMPLATE).arg(name));
+        pixmaps[name] = pixmap;
+    }
+    return pixmaps[name];
+}
 const QImage &IconBase::getJackTypeSymbol(const QString &name)
 {
     if (!jackTypeSymbols.contains(name)) {
@@ -38,16 +47,14 @@ const QImage &IconBase::getJackTypeSymbol(const QString &name)
     }
     return jackTypeSymbols[name];
 }
-
-const QPixmap &IconBase::jackTypeSymbolPixmap(const QString &name)
-{
-
-}
 const QImage &IconBase::image(const QString &name)
 {
     return the_iconbase.getImage(name);
 }
-
+const QPixmap &IconBase::pixmap(const QString &name)
+{
+    return the_iconbase.getPixmap(name);
+}
 const QImage &IconBase::jackTypeSymbol(const QString &name)
 {
     return the_iconbase.getJackTypeSymbol(name);
