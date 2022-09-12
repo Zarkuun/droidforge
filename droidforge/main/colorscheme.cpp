@@ -354,7 +354,6 @@ void ColorScheme::colorChanged(const QColor &color)
 void ColorScheme::dumpHeaderFile()
 {
     QString filename = QString(COLOR_DEFINITION_FILE).arg(dark ? "dark" : "light");
-    shout << "Creating " << filename;
 
     // First put all colors into the settings that are not
     // contained there. This is neccessary if someone is developing

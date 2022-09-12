@@ -623,8 +623,6 @@ void Patch::iterator::moveToFirstAtom()
 }
 bool Patch::iterator::advance()
 {
-    if (onlyEnabled)
-        shout << "JA";
     while (true) {
         nAtom ++;
         if (nAtom > jackAssignment->numColumns()) {

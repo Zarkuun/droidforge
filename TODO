@@ -3,9 +3,6 @@ TODO:
   ich zu allen anderen Registern weiterhüpfen, die verwandt sind.
   Damit kann man dann auch die angefangene Suche fortsetzen
 
-- View menu: Show X7 only when used
-  Show G8 only when used
-
 - Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
   verheiraten. Hat eine Forge immer genau eine Firmware? Dann müssten wir die Forge
   eigentlich immer gleichzeitig rausbringen.

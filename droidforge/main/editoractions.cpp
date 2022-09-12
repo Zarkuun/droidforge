@@ -5,6 +5,8 @@
 #include "updatehub.h"
 #include "clipboard.h"
 
+#include <QSettings>
+
 EditorActions *the_actions = 0;
 
 EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
@@ -41,6 +43,8 @@ void EditorActions::updateIcons()
 
 void EditorActions::createActions()
 {
+    QSettings settings;
+
     actions[ACTION_ABOUT] = new QAction(tr("About DROID Forge"), this);
     actions[ACTION_DISCORD] = new QAction(tr("Discord community"));
     actions[ACTION_LICENSE] = new QAction(tr("DROID Forge license"), this);
@@ -261,11 +265,11 @@ void EditorActions::createActions()
 
     actions[ACTION_SHOW_G8_ON_DEMAND] = new QAction(tr("Show G8 only when used"), this);
     actions[ACTION_SHOW_G8_ON_DEMAND]->setCheckable(true);
-    actions[ACTION_SHOW_G8_ON_DEMAND]->setChecked(false); // TODO: persisence
+    actions[ACTION_SHOW_G8_ON_DEMAND]->setChecked(settings.value("show_g8_on_demand").toBool());
 
     actions[ACTION_SHOW_X7_ON_DEMAND] = new QAction(tr("Show X7 only when used"), this);
     actions[ACTION_SHOW_X7_ON_DEMAND]->setCheckable(true);
-    actions[ACTION_SHOW_X7_ON_DEMAND]->setChecked(false); // TODO: persisence
+    actions[ACTION_SHOW_X7_ON_DEMAND]->setChecked(settings.value("show_x7_on_demand").toBool());
 
     actions[ACTION_NEW_CONTROLLER] = new QAction(tr("New controller..."), this);
     actions[ACTION_NEW_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));

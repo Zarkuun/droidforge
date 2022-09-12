@@ -62,6 +62,7 @@ private:
 public slots:
     void abortAllActions();
     void modifyPatch();
+    void toggleDemandShowing();
     void updateRegisterHilites();
     void addController();
 

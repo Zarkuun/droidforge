@@ -39,8 +39,8 @@ RackView::RackView(PatchEditEngine *patch)
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &RackView::abortAllActions);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &RackView::modifyPatch);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &RackView::modifyPatch);
-    CONNECT_ACTION(ACTION_SHOW_G8_ON_DEMAND, &RackView::modifyPatch);
-    CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, &RackView::modifyPatch);
+    CONNECT_ACTION(ACTION_SHOW_G8_ON_DEMAND, &RackView::toggleDemandShowing);
+    CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, &RackView::toggleDemandShowing);
 
     connectDragger();
 
@@ -53,13 +53,19 @@ RackView::RackView(PatchEditEngine *patch)
     connect(the_hub, &UpdateHub::sectionSwitched, this, &RackView::updateRegisterHilites);
     connect(the_hub, &UpdateHub::cursorMoved, this, &RackView::updateRegisterHilites);
 }
-
 void RackView::modifyPatch()
 {
     scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
     refreshModules();
     updateRegisterHilites();
     dragger.cancel();
+}
+void RackView::toggleDemandShowing()
+{
+    QSettings settings;
+    settings.setValue("show_g8_on_demand", ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked());
+    settings.setValue("show_x7_on_demand", ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked());
+    modifyPatch();
 }
 void RackView::resizeEvent(QResizeEvent *)
 {
