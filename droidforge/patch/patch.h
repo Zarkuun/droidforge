@@ -74,6 +74,8 @@ public:
     const PatchProblem *problem(unsigned nr) { return problems[nr]; };
     bool registerAvailable(AtomRegister ar) const;
     unsigned memoryFootprint() const;
+    bool needsG8();
+    bool needsX7();
 
     // Modifications
     void addDescriptionLine(const QString &line);
@@ -116,6 +118,7 @@ public:
     class iterator {
         Atom *atom; // is 0 at end of iteration, otherwise never
         Patch *patch;
+        bool onlyEnabled;
         int nSection; // always points to valid section
         int nCircuit; // always points to valid circuit
         int nJack; // always points to valid jack
@@ -127,8 +130,10 @@ public:
         JackAssignment *jackAssignment; // always reflects nJack
 
     public:
-        iterator(Patch *p) : patch(p) { moveToFirstAtom(); }
-        iterator() : atom(0), patch(0) {}
+        iterator(Patch *p, bool onlyEnabled)
+            : patch(p)
+            , onlyEnabled(onlyEnabled) { moveToFirstAtom(); }
+        iterator() : atom(0), patch(0), onlyEnabled(false) {}
         bool advance();
         bool isOutput() const { return jackAssignment->isOutput(); };
         Atom *&operator*() { return atom; }
@@ -145,7 +150,8 @@ public:
         bool advanceJack();
     };
 
-    auto begin() { return iterator(this); }
+    auto begin() { return iterator(this, false); }
+    auto beginEnabled() { return iterator(this, true); }
     auto end() { return iterator(); }
 };
 

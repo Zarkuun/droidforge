@@ -59,6 +59,10 @@ unsigned Circuit::memoryFootprint() const
 {
     return isDisabled() ? 0 : the_firmware->circuitMemoryFootprint(name);
 }
+bool Circuit::needsX7() const
+{
+    return the_firmware->circuitNeedsX7(name);
+}
 const JackAssignment *Circuit::findJack(const QString name) const
 {
     for (auto ja: jackAssignments)

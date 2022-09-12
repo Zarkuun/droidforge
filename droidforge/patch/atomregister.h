@@ -34,8 +34,8 @@ public:
 
     void setRegisterType(register_type_t t) { registerType = t; };
     register_type_t getRegisterType() const { return registerType; };
-    bool needG8() const;
-    bool needX7() const;
+    bool needsG8() const;
+    bool needsX7() const;
     void swapControllerNumbers(int fromController, int toController);
     void shiftControllerNumbers(int controller, int by);
     QString problemAsInput(const Patch *patch) const;

@@ -39,6 +39,8 @@ RackView::RackView(PatchEditEngine *patch)
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &RackView::abortAllActions);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &RackView::modifyPatch);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &RackView::modifyPatch);
+    CONNECT_ACTION(ACTION_SHOW_G8_ON_DEMAND, &RackView::modifyPatch);
+    CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, &RackView::modifyPatch);
 
     connectDragger();
 
@@ -211,7 +213,6 @@ void RackView::removeController(int controllerIndex)
     patch->commit(tr("removing %1 controller").arg(name));
     emit patchModified();
 }
-
 QPoint RackView::itemPosition(const QGraphicsItem *item, QPoint def)
 {
     if (!item)
@@ -311,8 +312,10 @@ void RackView::refreshModules()
     }
     x = 0;
     addModule("master");
-    addModule("g8");
-    addModule("x7");
+    if (!ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked() || patch->needsG8())
+        addModule("g8");
+    if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
+        addModule("x7");
     addModule("bling");
     x += RACV_CONTROLLER_GAP;
 

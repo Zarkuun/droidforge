@@ -605,3 +605,11 @@ unsigned PatchSection::memoryFootprint() const
         memory += circuit->memoryFootprint();
     return memory;
 }
+bool PatchSection::needsX7() const
+{
+    for (auto circuit: circuits) {
+        if (!circuit->isDisabled() && circuit->needsX7())
+            return true;
+    }
+    return false;
+}

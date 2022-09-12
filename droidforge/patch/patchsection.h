@@ -85,6 +85,7 @@ public:
     void collectRegisterAtoms(RegisterList &) const;
     void removeRegisterReferences(RegisterList &rl);
     unsigned memoryFootprint() const;
+    bool needsX7() const;
 
 private:
     bool nextCursorPosition(CursorPosition &pos) const;

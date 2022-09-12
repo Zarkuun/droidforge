@@ -112,19 +112,37 @@ bool AtomRegister::belongsTo(AtomRegister &other) const
     else
         return false;
 }
-bool AtomRegister::needG8() const
+bool AtomRegister::needsG8() const
 {
-    return registerType == REGISTER_GATE
+    if (registerType == REGISTER_GATE
            && cont == 0
            && num >= 1
-           && num <= 8;
+           && num <= 8)
+        return true;
+
+    if (registerType == REGISTER_RGB_LED
+            && cont == 0
+            && num >= 17
+            && num <= 24)
+        return true;
+
+    return false;
 }
-bool AtomRegister::needX7() const
+bool AtomRegister::needsX7() const
 {
-    return registerType == REGISTER_GATE
+    if (registerType == REGISTER_GATE
            && cont == 0
            && num >= 9
-            && num <= 12;
+           && num <= 12)
+        return true;
+
+    if (registerType == REGISTER_RGB_LED
+            && cont == 0
+            && num >= 25
+            && num <= 32)
+        return true;
+
+    return false;
 }
 void AtomRegister::swapControllerNumbers(int fromController, int toController)
 {

@@ -70,6 +70,7 @@ public:
     bool jackIsArray(int row) const;
     QString prefixOfJack(const QString &jackName);
     unsigned memoryFootprint() const;
+    bool needsX7() const;
 
     void changeCircuit(QString newCircuit);
     void collectRegisterAtoms(RegisterList &) const;

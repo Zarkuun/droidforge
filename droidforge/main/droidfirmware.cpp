@@ -360,6 +360,13 @@ unsigned DroidFirmware::numGlobalRegisters(char registerType) const
     }
 
 }
+bool DroidFirmware::circuitNeedsX7(QString circuit) const
+{
+    return     circuit == "midiin"
+            || circuit == "midiout"
+            || circuit == "midithrough"
+            || circuit == "firefacecontrol";
+}
 unsigned DroidFirmware::numControllerRegisters(const QString &module, char registerType) const
 {
     if (module == "p4b2") {

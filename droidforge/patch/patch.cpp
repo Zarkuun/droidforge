@@ -435,6 +435,39 @@ unsigned Patch::memoryFootprint() const
 
     return memory;
 }
+bool Patch::needsG8()
+{
+    for (auto it = beginEnabled(); it != this->end(); ++it)
+    {
+        auto &atom = *it;
+        if (atom->isRegister()) {
+            AtomRegister *reg = (AtomRegister *)atom;
+            if (reg->needsG8())
+                return true;
+        }
+    }
+    return false;
+}
+bool Patch::needsX7()
+{
+    // First check for G9, G10, G11, G12
+    // and the R registers of the X7
+    for (auto it = beginEnabled(); it != this->end(); ++it)
+    {
+        auto &atom = *it;
+        if (atom->isRegister()) {
+            AtomRegister *reg = (AtomRegister *)atom;
+            if (reg->needsX7())
+                return true;
+        }
+    }
+
+    for (auto section: sections)
+        if (section->needsX7())
+            return true;
+
+    return false;
+}
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
 {
     for (auto &atom: *this) {
@@ -570,9 +603,15 @@ void Patch::iterator::moveToFirstAtom()
         for (nCircuit = 0; nCircuit < (int)section->numCircuits(); nCircuit++)
         {
             circuit = section->circuit(nCircuit);
+            if (onlyEnabled && circuit->isDisabled())
+                continue;
+
             for (nJack=0; nJack<circuit->numJackAssignments(); nJack++)
             {
                 jackAssignment = circuit->jackAssignment(nJack);
+                if (onlyEnabled && jackAssignment->isDisabled())
+                    continue;
+
                 for (nAtom=1; nAtom<=3; nAtom++) {
                     atom = jackAssignment->atomAt(nAtom);
                     if (atom)
@@ -584,6 +623,8 @@ void Patch::iterator::moveToFirstAtom()
 }
 bool Patch::iterator::advance()
 {
+    if (onlyEnabled)
+        shout << "JA";
     while (true) {
         nAtom ++;
         if (nAtom > jackAssignment->numColumns()) {
@@ -605,7 +646,10 @@ bool Patch::iterator::advanceJack()
         if (nJack+1 < circuit->numJackAssignments()) {
             nJack ++;
             jackAssignment = circuit->jackAssignment(nJack);
-            return true;
+            if (onlyEnabled && jackAssignment->isDisabled())
+                return advanceJack();
+            else
+                return true;
         }
         else if (!advanceCircuit())
             return false;
@@ -618,7 +662,10 @@ bool Patch::iterator::advanceCircuit()
         if (nCircuit+1 < (int)section->numCircuits()) {
             nCircuit ++;
             circuit = section->circuit(nCircuit);
-            return true;
+            if (onlyEnabled && circuit->isDisabled())
+                return advanceCircuit();
+            else
+                return true;
         }
         else if (!advanceSection())
             return false;

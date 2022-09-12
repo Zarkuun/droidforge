@@ -137,7 +137,6 @@ void MainWindow::moveEvent(QMoveEvent *)
     QSettings settings;
     settings.setValue("mainwindow/position", pos());
 }
-
 void MainWindow::showEvent(QShowEvent *)
 {
     QSettings settings;
@@ -293,6 +292,11 @@ void MainWindow::createViewMenu()
 
     ADD_ACTION(ACTION_SHOW_REGISTER_LABELS, menu);
     ADD_ACTION(ACTION_SHOW_REGISTER_USAGE, menu);
+    ADD_ACTION(ACTION_SHOW_G8_ON_DEMAND, menu);
+    ADD_ACTION(ACTION_SHOW_X7_ON_DEMAND, menu);
+
+    menu->addSeparator();
+
     ADD_ACTION(ACTION_RACK_RESET_ZOOM, menu);
     ADD_ACTION(ACTION_RACK_ZOOM_IN, menu);
     ADD_ACTION(ACTION_RACK_ZOOM_OUT, menu);
