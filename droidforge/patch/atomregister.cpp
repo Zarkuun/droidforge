@@ -84,7 +84,7 @@ bool AtomRegister::isNull() const
 {
     return registerType == 0;
 }
-bool AtomRegister::belongsTo(AtomRegister &other) const
+bool AtomRegister::isRelatedTo(const AtomRegister &other) const
 {
     if (cont != other.cont)
         return false;

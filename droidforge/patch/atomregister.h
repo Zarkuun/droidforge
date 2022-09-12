@@ -30,7 +30,7 @@ public:
     unsigned number() const { return num; };
     unsigned getController() const { return cont; }
     unsigned getNumber() const { return num; }
-    bool belongsTo(AtomRegister &other) const;
+    bool isRelatedTo(const AtomRegister &other) const;
 
     void setRegisterType(register_type_t t) { registerType = t; };
     register_type_t getRegisterType() const { return registerType; };

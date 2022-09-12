@@ -1,7 +1,9 @@
 TODO:
-- Wenn ich auf einer Zell mit einem Register stehe und ? drücke, soll
-  ich zu allen anderen Registern weiterhüpfen, die verwandt sind.
-  Damit kann man dann auch die angefangene Suche fortsetzen
+
+- Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
+  Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
+  Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
+  die Betriebssysteme brauche.
 
 - Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
   verheiraten. Hat eine Forge immer genau eine Firmware? Dann müssten wir die Forge
@@ -22,15 +24,21 @@ TODO:
 
 - Größere Sektionen machen die Forge langsamer. Sagt jpizzo. Auf seinem altem
   Mac. Generell müssen wir mal bisschen die Performance debuggen und verbessern.
+  Meine Erkenntnis aus Instruments-Profiler:
+  Fast alle Zeit geht in drawText() drauf. Das ist intern zu 50% shapeText()
+  und 50% drawTextItem.
+  Können wir nicht eine eigene Funktion machen, welche die Texte in den
+  Jacks und Atoms cacht? Also in eine Pixmpa rendert und einfach die
+  anzeigt. Farbe, Größe und Text bilden einen key in ein Array von
+  Pixmaps, welche dann einfach verwendet werden und 1:1 reingeklatscht.
+  Bei einer Änderung der Zoomstufe wird er Cache gelöscht. Ah. Dann können
+  wir auch die Größe rauslassen. Die ist immer gleich. Farbe brauchen wir
+  allerdings.
+
+
 
 - Kann man im PDF-Reader ein Zoom einbauen?
 
 WINDOWS:
 
 - Windows: Das Icon wird noch nicht genommen.
-
-- Windows: Etliche Shortcuts gehen nicht, z.B. Save as... Aber auch sachen mit der
-  Windowstaste, wo dann irgende Windowspezialfunktion aufpoppt.
-  Konnte sein, dass ich hier doch teils unterschiedliche Shortcuts fuer
-  die Betriebssysteme brauche.
-

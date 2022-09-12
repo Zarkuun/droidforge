@@ -8,6 +8,8 @@
 	* Cell editor: add icon and description of parameter type (CV, gate, etc.)
 	* Statusbar: add information (comment) or problem icon
 	* Rack view: new option to show G8 or X7 just when they are used by the patch
+	* Find related control: New menu action (and shortcut ?) for jumping around
+	  between all references to the same button/led/whatever.
 
 0.6:
     Bug fixes:

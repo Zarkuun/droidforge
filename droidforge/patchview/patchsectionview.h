@@ -150,6 +150,7 @@ public slots:
     void finishPatching();
     void abortPatching();
     void followCable();
+    void followRegister();
     void editJackComment();
 
 private slots:

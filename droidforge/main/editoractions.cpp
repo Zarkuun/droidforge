@@ -178,6 +178,9 @@ void EditorActions::createActions()
     actions[ACTION_FOLLOW_CABLE] = new QAction(tr("&Follow internal cable"), this);
     actions[ACTION_FOLLOW_CABLE]->setShortcut(QKeySequence(tr("?")));
 
+    actions[ACTION_FOLLOW_REGISTER] = new QAction(tr("&Find related control"), this);
+    actions[ACTION_FOLLOW_REGISTER]->setShortcut(QKeySequence(tr("?")));
+
     actions[ACTION_RENAME_CABLE] = new QAction(tr("&Rename internal cable"), this);
     actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+R")));
 
@@ -374,6 +377,7 @@ void EditorActions::moveCursor()
     actions[ACTION_EDIT_VALUE]->setEnabled(circuit);
     actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
+    actions[ACTION_FOLLOW_REGISTER]->setEnabled(atom && atom->isRegister());
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(circuit);
     actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
     actions[ACTION_SORT_JACKS]->setEnabled(circuit);

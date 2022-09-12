@@ -275,7 +275,7 @@ void RackView::findRegister(AtomRegister reg)
         Atom *atom = *it;
         if (atom == currentAtom)
             waitForNext = true;
-        else if (waitForNext && atom->isRegister() && reg.belongsTo(*((AtomRegister *)atom))) {
+        else if (waitForNext && atom->isRegister() && reg.isRelatedTo(*((AtomRegister *)atom))) {
             found = true;
             break;
         }
@@ -287,7 +287,7 @@ void RackView::findRegister(AtomRegister reg)
         it = patch->begin();
         while (*it && *it != currentAtom) {
             Atom *atom = *it;
-            if (atom->isRegister() && reg.belongsTo(*((AtomRegister *)atom))) {
+            if (atom->isRegister() && reg.isRelatedTo(*((AtomRegister *)atom))) {
                 found = true;
                 break;
             }

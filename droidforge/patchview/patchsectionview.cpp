@@ -109,6 +109,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_FINISH_PATCHING, &PatchSectionView::finishPatching);
     CONNECT_ACTION(ACTION_ABORT_PATCHING, &PatchSectionView::abortPatching);
     CONNECT_ACTION(ACTION_FOLLOW_CABLE, &PatchSectionView::followCable);
+    CONNECT_ACTION(ACTION_FOLLOW_REGISTER, &PatchSectionView::followRegister);
 }
 void PatchSectionView::buildPatchSection()
 {
@@ -864,9 +865,11 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION_IF_ENABLED(ACTION_START_PATCHING, menu);
         ADD_ACTION_IF_ENABLED(ACTION_FINISH_PATCHING, menu);
         ADD_ACTION_IF_ENABLED(ACTION_ABORT_PATCHING, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_CABLE, menu);
 
         menu->addSeparator();
 
+        ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_REGISTER, menu);
         ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
         ADD_ACTION(ACTION_SORT_JACKS, menu);
         ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
@@ -891,7 +894,6 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 
         ADD_ACTION(ACTION_FOLD_UNFOLD, menu);
         ADD_ACTION(ACTION_FOLD_UNFOLD_ALL, menu);
-        ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_CABLE, menu);
     }
 
     menu->setAttribute(Qt::WA_DeleteOnClose);
@@ -1019,6 +1021,50 @@ void PatchSectionView::followCable()
         return;
 
     the_operator->jumpTo(it.sectionIndex(), it.cursorPosition());
+}
+void PatchSectionView::followRegister()
+{
+    const Atom *currentAtom = patch->currentAtom();
+    Q_ASSERT(currentAtom && currentAtom->isRegister());
+    const AtomRegister *areg = (const AtomRegister *)currentAtom;
+
+    bool waitForNext = false;
+    bool found = false;
+
+    // First try to find the next atom *after* the current
+    Patch::iterator it = patch->begin();
+    while (*it) {
+        const Atom *atom = *it;
+        if (atom == currentAtom)
+            waitForNext = true;
+        else if (waitForNext
+                 && atom->isRegister()
+                 && ((const AtomRegister *)atom)->isRelatedTo(*areg)) {
+            found = true;
+            break;
+        }
+        ++it;
+    }
+
+    // Now try from the start of the patch
+    if (!found) {
+        it = patch->begin();
+        while (*it && *it != currentAtom) {
+            Atom *atom = *it;
+            if (atom->isRegister()
+                 && ((const AtomRegister *)atom)->isRelatedTo(*areg)) {
+                found = true;
+                break;
+            }
+            ++it;
+        }
+    }
+
+    if (!found)
+        return;
+
+    the_operator->jumpTo(it.sectionIndex(), it.cursorPosition());
+
 }
 void PatchSectionView::editJack(int key)
 {
