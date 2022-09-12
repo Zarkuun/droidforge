@@ -152,6 +152,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::ApplicationPaletteChange) {
         the_colorscheme->darkLightSwitch();
+        the_actions->updateIcons();
         emit patchModified();
     }
     return QObject::eventFilter(obj, event);
@@ -430,8 +431,8 @@ void MainWindow::updateStatusbarMessage()
 
     QString message = infos.join(", ");
     if (message != "") {
-        statusbarText->setText(message);
         statusbarIcon->setPixmap(icon.scaledToHeight(statusbar->height() - 10, Qt::SmoothTransformation));
+        statusbarText->setText(message);
     }
     else {
         statusbarText->clear();

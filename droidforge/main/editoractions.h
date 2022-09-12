@@ -107,6 +107,7 @@ class EditorActions : public QObject, PatchView
 public:
     explicit EditorActions(PatchEditEngine *patch, QObject *parent = nullptr);
     QAction *action(action_t action) { return actions[action]; };
+    void updateIcons();
 
 private slots:
     void modifyPatch();

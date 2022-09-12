@@ -8,7 +8,6 @@
         <file>images/circuits/spring.png</file>
         <file>images/circuits/transient.png</file>
         <file>images/icons/warning.png</file>
-        <file>images/rackbackground.png</file>
         <file>images/circuits/copy.png</file>
         <file>images/circuits/mixer.png</file>
         <file>images/circuits/compare.png</file>
@@ -123,7 +122,6 @@
         <file>images/cables/ghost.png</file>
         <file>images/circuits/math.png</file>
         <file>images/circuits/logic.png</file>
-        <file>images/icons/info.png</file>
         <file>images/circuits/sequencer.png</file>
         <file>images/circuits/algoquencer.png</file>
         <file>images/circuits/euklid.png</file>
@@ -281,8 +279,6 @@
         <file>images/cableicons/yellow-6.png</file>
         <file>images/cableicons/yellow-7.png</file>
         <file>images/cableicons/yellow-8.png</file>
-        <file>images/background_dark.png</file>
-        <file>images/background_light.png</file>
         <file>images/icons/dark/add_controller.png</file>
         <file>images/icons/dark/add_jack.png</file>
         <file>images/icons/dark/new.png</file>
@@ -332,6 +328,11 @@
         <file>images/jacktypes/light/stepped.png</file>
         <file>images/jacktypes/light/trigger.png</file>
         <file>images/jacktypes/light/voltperoctave.png</file>
-        <file>images/icons/problemsmall.png</file>
+        <file>images/icons/dark/info.png</file>
+        <file>images/icons/dark/problemsmall.png</file>
+        <file>images/icons/light/info.png</file>
+        <file>images/icons/light/problemsmall.png</file>
+        <file>images/icons/dark/background.png</file>
+        <file>images/icons/light/background.png</file>
     </qresource>
 </RCC>

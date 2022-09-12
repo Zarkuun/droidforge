@@ -25,6 +25,20 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
     connect(the_hub, &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
 }
 
+void EditorActions::updateIcons()
+{
+    // Is called after a dark/light switch in order to use the correct
+    // icons for the new theme
+    actions[ACTION_TOOLBAR_NEW]->setIcon(ICON("new"));
+    actions[ACTION_TOOLBAR_OPEN]->setIcon(ICON("open"));
+    actions[ACTION_TOOLBAR_SAVE]->setIcon(ICON("save"));
+    actions[ACTION_TOOLBAR_NEW_CIRCUIT]->setIcon(ICON("new_circuit"));
+    actions[ACTION_TOOLBAR_ADD_JACK]->setIcon(ICON("add_jack"));
+    actions[ACTION_TOOLBAR_ADD_CONTROLLER]->setIcon(ICON("add_controller"));
+    actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setIcon(ICON("upload_to_droid"));
+    actions[ACTION_TOOLBAR_SAVE_TO_SD]->setIcon(ICON("save_to_sd"));
+}
+
 void EditorActions::createActions()
 {
     actions[ACTION_ABOUT] = new QAction(tr("About DROID Forge"), this);

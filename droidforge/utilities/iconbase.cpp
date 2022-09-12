@@ -22,7 +22,9 @@ const QIcon &IconBase::icon(const QString &name)
 const QImage &IconBase::getImage(const QString &name)
 {
     if (!images.contains(name)) {
-        QImage image(QString(IMAGE_PATH_TEMPLATE).arg(name));
+        QImage image(QString(ICON_PATH_TEMPLATE)
+                   .arg(the_colorscheme->isDark() ? "dark" : "light",
+                        name));
         images[name] = image;
     }
     return images[name];
@@ -31,7 +33,9 @@ const QImage &IconBase::getImage(const QString &name)
 const QPixmap &IconBase::getPixmap(const QString &name)
 {
     if (!pixmaps.contains(name)) {
-        QPixmap pixmap(QString(IMAGE_PATH_TEMPLATE).arg(name));
+        QPixmap pixmap(QString(ICON_PATH_TEMPLATE)
+                   .arg(the_colorscheme->isDark() ? "dark" : "light",
+                        name));
         pixmaps[name] = pixmap;
     }
     return pixmaps[name];
@@ -46,6 +50,13 @@ const QImage &IconBase::getJackTypeSymbol(const QString &name)
 
     }
     return jackTypeSymbols[name];
+}
+void IconBase::flushCaches()
+{
+    icons.clear();
+    pixmaps.clear();
+    images.clear();
+    jackTypeSymbols.clear();
 }
 const QImage &IconBase::image(const QString &name)
 {

@@ -17,7 +17,6 @@
 #define SECTION_DEFAULT_NAME                 TR("Untitled section")
 #define CIRCUIT_ICON_PATH                    ":images/circuits/"
 #define ICON_PATH_TEMPLATE                   ":images/icons/%1/%2.png"
-#define IMAGE_PATH_TEMPLATE                  ":images/icons/%1.png"
 #define JACK_TYPE_SYMBOLS_PATH_TEMPLATE      ":images/jacktypes/%1/%2.png"
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001

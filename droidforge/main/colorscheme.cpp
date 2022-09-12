@@ -1,5 +1,6 @@
 #include "colorscheme.h"
 #include "globals.h"
+#include "iconbase.h"
 #include "tuning.h"
 
 ColorScheme *the_colorscheme = 0;
@@ -301,10 +302,8 @@ void ColorScheme::darkLightSwitch()
     }
 #endif
 
-    background = QPixmap(dark ?
-                        ":images/background_dark.png" :
-                        ":images/background_light.png")
-                  .scaledToHeight(BACKGROUND_PIXMAP_HEIGHT);
+    the_iconbase.flushCaches();
+    background = PIXMAP("background").scaledToHeight(BACKGROUND_PIXMAP_HEIGHT);
 
     if (dark)
         colors = &colors_dark;

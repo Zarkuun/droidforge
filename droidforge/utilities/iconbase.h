@@ -19,11 +19,14 @@ class IconBase
     const QImage &getJackTypeSymbol(const QString &name);
 
 public:
+    void flushCaches();
     static const QIcon &icon(const QString &name);
     static const QImage &image(const QString &name);
     static const QPixmap &pixmap(const QString &name);
     static const QImage &jackTypeSymbol(const QString &name);
 };
+
+extern IconBase the_iconbase;
 
 #define ICON(i) IconBase::icon(i)
 #define IMAGE(i) IconBase::image(i)
