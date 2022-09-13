@@ -50,7 +50,7 @@ void MemoryIndicator::updateStatus()
     QString tooltip = tr("Your circuits and controllers need %1 bytes of memory.").arg(memoryNeeded);
     if (memoryNeeded <= memoryAvailable) {
         unsigned perc = memoryNeeded * 100 / memoryAvailable;
-        tooltip += " " + tr("That is %1% of the avaiable memory or %2 bytes.").arg(perc).arg(memoryAvailable);
+        tooltip += " " + tr("That is %1% of the avaiable memory. You have %2 bytes left.").arg(perc).arg(memoryAvailable - memoryNeeded);
     }
     else {
         tooltip += " " + tr("That is %1 bytes more than there is available! "

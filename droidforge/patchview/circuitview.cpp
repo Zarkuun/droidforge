@@ -158,7 +158,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
     QRectF textRect(
                 rect.left() + CIRV_TEXT_SIDE_PADDING,
                 rect.y(),
-                rect.width() - 2 * CIRV_TEXT_SIDE_PADDING,
+                rect.width() - 1 * CIRV_TEXT_SIDE_PADDING,
                 rect.height());
 
     painter->setPen(textcolor);
@@ -187,6 +187,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 else
                     painter->drawImage(imageRect, image.mirrored(true, false));
                 r = r.translated(imageWidth + STANDARD_SPACING, 0);
+                r.setWidth(r.width() - imageWidth - STANDARD_SPACING);
             }
             painter->drawText(r, Qt::AlignVCenter, text);
         }

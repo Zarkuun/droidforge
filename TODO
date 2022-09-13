@@ -10,18 +10,6 @@ TODO:
   eigentlich immer gleichzeitig rausbringen.
   Release erzeugen. Dann die JSON-Datei übertragen und die Forge auch erzeugen.
 
-- Mac: Das DMG hat kein Icon. Mit "Info" kann man ein Icon reindraggen
-  (links oben). Ich weiß aber nicht, ob man danach nochmal notarizen muss.
-
-- Die Doppelklickzeit vom Mac wird von den styleHints() nicht
-  korrekt zurückgegeben. Ist immer 400. Das ist auch sehr lang.
-  Deswegen verwende ich einfach so 200. Wir müssen eine Methode
-  finden, den echten Wert rauszubeikommen. Und das einbauen
-  in MouseDragger::doubleClickTime()
-
-- Kann man was machen, dass die Schrift nicht aus der Spalte ragt? Oder
-  dass man die Spaltenbreiten anpassen kann?
-
 - Größere Sektionen machen die Forge langsamer. Sagt jpizzo. Auf seinem altem
   Mac. Generell müssen wir mal bisschen die Performance debuggen und verbessern.
   Meine Erkenntnis aus Instruments-Profiler:
@@ -35,9 +23,6 @@ TODO:
   wir auch die Größe rauslassen. Die ist immer gleich. Farbe brauchen wir
   allerdings.
 
-
-
-- Kann man im PDF-Reader ein Zoom einbauen?
 
 WINDOWS:
 
