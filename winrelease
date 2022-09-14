@@ -93,7 +93,7 @@ QMAKE_EXTRA_COMPILERS += example
 
 OTHER_FILES = README
 
-win32:RC_ICONS += droidforge-win-icon.png
+win32:RC_ICONS += droidforge-win-icon.ico
 EOF
 
 
