@@ -17,6 +17,7 @@
 	  between all references to the same button/led/whatever.
 	* Shortcuts: Change keyboard shortcuts for section commands so that
 	  they also work on Windows
+	* Windows: Make menu items selectable with Alt key combinations
 
 0.6:
     Bug fixes:
