@@ -334,5 +334,6 @@
         <file>images/icons/light/problemsmall.png</file>
         <file>images/icons/dark/background.png</file>
         <file>images/icons/light/background.png</file>
+        <file>images/droidforge-icon.png</file>
     </qresource>
 </RCC>
