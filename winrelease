@@ -100,3 +100,5 @@ EOF
 cd "$PACDIR"
 $BINARYCREATOR --offline-only --config config/config.xml -p packages ../droid-installer-$VERSION.exe
 
+rm -rf "$WORKDIR" "$PACDIR"
+

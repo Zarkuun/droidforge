@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     app.setApplicationDisplayName(APPLICATION_NAME);
     app.setOrganizationName("Der Mann mit der Maschine");
     app.setOrganizationDomain("dmmdm.de");
+    app.setWindowIcon(QIcon(":droidforge.icns"));
 
     // Create and change to user's patch directory
     QDir dir = QDir::homePath();
