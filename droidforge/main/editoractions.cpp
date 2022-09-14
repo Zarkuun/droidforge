@@ -113,17 +113,17 @@ void EditorActions::createActions()
     actions[ACTION_REDO] = new QAction(tr("&Redo"), this);
     actions[ACTION_REDO]->setShortcuts(QKeySequence::Redo);
 
-    actions[ACTION_CUT] = new QAction(tr("C&ut"), this);
+    actions[ACTION_CUT] = new QAction(tr("&Cut"), this);
     actions[ACTION_CUT]->setShortcuts(QKeySequence::Cut);
 
-    actions[ACTION_COPY] = new QAction(tr("&Copy"), this);
+    actions[ACTION_COPY] = new QAction(tr("C&opy"), this);
     actions[ACTION_COPY]->setShortcuts(QKeySequence::Copy);
 
     actions[ACTION_PASTE] = new QAction(tr("&Paste"), this);
     actions[ACTION_PASTE]->setShortcuts(QKeySequence::Paste);
     actions[ACTION_PASTE]->setEnabled(false); // enabled by clipboard
 
-    actions[ACTION_PASTE_SMART] = new QAction(tr("&Paste smart"), this);
+    actions[ACTION_PASTE_SMART] = new QAction(tr("Paste &smart"), this);
     actions[ACTION_PASTE_SMART]->setShortcut(QKeySequence(tr("Shift+Ctrl+V")));
     actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
 
@@ -131,28 +131,28 @@ void EditorActions::createActions()
     actions[ACTION_PASTE_AS_SECTION]->setShortcut(QKeySequence("Ctrl+Alt+V"));
     actions[ACTION_PASTE_AS_SECTION]->setEnabled(false);
 
-    actions[ACTION_EXPAND_ARRAY] = new QAction(tr("Expand parameter array by one"), this);
+    actions[ACTION_EXPAND_ARRAY] = new QAction(tr("&Expand parameter array by one"), this);
     actions[ACTION_EXPAND_ARRAY]->setShortcut(QKeySequence(tr("Ctrl+E")));
 
-    actions[ACTION_EXPAND_ARRAY_MAX] = new QAction(tr("Expand parameter array to max"), this);
+    actions[ACTION_EXPAND_ARRAY_MAX] = new QAction(tr("Expand parameter array to ma&x"), this);
     actions[ACTION_EXPAND_ARRAY_MAX]->setShortcut(QKeySequence(tr("Shift+Ctrl+E")));
 
-    actions[ACTION_ADD_MISSING_JACKS] = new QAction(tr("Add remaining parameters"), this);
+    actions[ACTION_ADD_MISSING_JACKS] = new QAction(tr("Add &remaining parameters"), this);
     actions[ACTION_ADD_MISSING_JACKS]->setShortcut(QKeySequence(tr("Ctrl+R")));
 
-    actions[ACTION_REMOVE_UNDEFINED_JACKS] = new QAction(tr("Remove undefined parameters"), this);
+    actions[ACTION_REMOVE_UNDEFINED_JACKS] = new QAction(tr("&Remove undefined parameters"), this);
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setShortcut(QKeySequence(tr("Shift+Ctrl+R")));
 
-    actions[ACTION_FIX_LED_MISMATCH] = new QAction(tr("Fix button/LED mismatches"), this);
+    actions[ACTION_FIX_LED_MISMATCH] = new QAction(tr("F&ix button/LED mismatches"), this);
     actions[ACTION_FIX_LED_MISMATCH]->setShortcut(QKeySequence(tr("Ctrl+L")));
 
-    actions[ACTION_SELECT_ALL] = new QAction(tr("Select all"), this);
+    actions[ACTION_SELECT_ALL] = new QAction(tr("Select &all"), this);
     actions[ACTION_SELECT_ALL]->setShortcut(QKeySequence(tr("Ctrl+A")));
 
-    actions[ACTION_MOVE_CIRCUIT_UP] = new QAction(tr("Move circuit up"), this);
+    actions[ACTION_MOVE_CIRCUIT_UP] = new QAction(tr("&Move circuit up"), this);
     actions[ACTION_MOVE_CIRCUIT_UP]->setShortcut(QKeySequence(tr("Shift+Ctrl+Up")));
 
-    actions[ACTION_MOVE_CIRCUIT_DOWN] = new QAction(tr("Move circuit down"), this);
+    actions[ACTION_MOVE_CIRCUIT_DOWN] = new QAction(tr("Mo&ve circuit down"), this);
     actions[ACTION_MOVE_CIRCUIT_DOWN]->setShortcut(QKeySequence(tr("Shift+Ctrl+Down")));
 
     actions[ACTION_DISABLE] = new QAction(tr("&Disable"), this);
@@ -161,27 +161,27 @@ void EditorActions::createActions()
     actions[ACTION_ENABLE] = new QAction(tr("&Enable"), this);
     actions[ACTION_ENABLE]->setShortcut(QKeySequence(tr("#")));
 
-    actions[ACTION_SORT_JACKS] = new QAction(tr("Sort parameters"), this);
+    actions[ACTION_SORT_JACKS] = new QAction(tr("&Sort parameters"), this);
     actions[ACTION_SORT_JACKS]->setShortcut(QKeySequence(tr("Alt+Ctrl+S")));
 
     actions[ACTION_NEW_CIRCUIT] = new QAction(tr("&New circuit..."), this);
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
     actions[ACTION_TOOLBAR_NEW_CIRCUIT] = new QAction(ICON("new_circuit"), tr("Circuit..."), this);
 
-    actions[ACTION_NEW_JACK] = new QAction(tr("&New parameter..."), this);
+    actions[ACTION_NEW_JACK] = new QAction(tr("Ne&w parameter..."), this);
     actions[ACTION_NEW_JACK]->setShortcut(QKeySequence(tr("Ctrl+N")));
     actions[ACTION_TOOLBAR_ADD_JACK] = new QAction(ICON("add_jack"), tr("Parameter"), this);
 
-    actions[ACTION_EDIT_VALUE] = new QAction(tr("&Edit element under cursor..."), this);
+    actions[ACTION_EDIT_VALUE] = new QAction(tr("Edit element under cursor..."), this);
     actions[ACTION_EDIT_VALUE]->setShortcuts({ QKeySequence(tr("Enter")),
                                     QKeySequence(tr("Return"))});
-    actions[ACTION_FOLLOW_CABLE] = new QAction(tr("&Follow internal cable"), this);
+    actions[ACTION_FOLLOW_CABLE] = new QAction(tr("Follow internal cable"), this);
     actions[ACTION_FOLLOW_CABLE]->setShortcut(QKeySequence(tr("?")));
 
-    actions[ACTION_FOLLOW_REGISTER] = new QAction(tr("&Find related control"), this);
+    actions[ACTION_FOLLOW_REGISTER] = new QAction(tr("Find related control"), this);
     actions[ACTION_FOLLOW_REGISTER]->setShortcut(QKeySequence(tr("?")));
 
-    actions[ACTION_RENAME_CABLE] = new QAction(tr("&Rename internal cable"), this);
+    actions[ACTION_RENAME_CABLE] = new QAction(tr("Rename internal cable"), this);
     actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+Ctrl+R")));
 
     actions[ACTION_START_PATCHING] = new QAction(tr("Start creating internal cable"), this);
@@ -197,7 +197,7 @@ void EditorActions::createActions()
     actions[ACTION_ABORT_ALL_ACTIONS] = new QAction(tr("Abort all actions"), this);
     actions[ACTION_ABORT_ALL_ACTIONS]->setShortcut(QKeySequence(tr("Escape")));
 
-    actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit comment..."), this);
+    actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit co&mment..."), this);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
 
     actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit parameter info..."), this);
@@ -274,7 +274,7 @@ void EditorActions::createActions()
     actions[ACTION_SHOW_X7_ON_DEMAND]->setCheckable(true);
     actions[ACTION_SHOW_X7_ON_DEMAND]->setChecked(settings.value("show_x7_on_demand").toBool());
 
-    actions[ACTION_NEW_CONTROLLER] = new QAction(tr("New controller..."), this);
+    actions[ACTION_NEW_CONTROLLER] = new QAction(tr("New con&troller..."), this);
     actions[ACTION_NEW_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
     actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("add_controller"), tr("Controller"), this);
 
