@@ -2,8 +2,11 @@
     Bug fixes:
 	* FIX: Mac: automatically detect dark/light mode switch of system preferences
 	       and immediately switch colors in the Forge, as well (might also work
-		   on Windows, but not tested yet).
+	       on Windows, but not tested yet).
 	* FIX: Fix text in cell overlapping to next cell
+	* FIX: Fix too large initial size of dialogs
+	* FIX: Fix too large font size of internal cable statusbar information on
+               Windows
 
 	Features:
 	* Cell editor: add icon and description of parameter type (CV, gate, etc.)

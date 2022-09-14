@@ -1,6 +1,8 @@
 #ifndef TUNING_H
 #define TUNING_H
 
+#include "os.h"
+
 #define APPLICATION_NAME                     "DROID Forge"
 #ifdef QT_DEBUG
 #define APPLICATION_VERSION                  ("SNAPSHOT " __DATE__)
@@ -61,14 +63,20 @@
 #define CSI_MAX_NAME_WIDTH                   150
 #define CSI_SIDE_PADDING                     STANDARD_SPACING
 #define CSI_CABLE_THICKNESS                  0.4
-#define CSI_LABEL_FONT_SIZE                  12
 #define CSI_MARKER_WIDTH                     20
 #define CSI_MARKER_DISTANCE                  STANDARD_SPACING
-#define CSI_MARKER_FONT_SIZE                 9
 #define CSI_MARKER_LETTER_SPACING            95
 #define CSI_NAME_PADDING                     STANDARD_SPACING
 #define CSI_ANIMATION_RANGE                  20
 #define CSI_ANIMATION_DURATION               1000
+
+#ifdef Q_OS_WIN
+#define CSI_MARKER_FONT_SIZE                 6
+#define CSI_LABEL_FONT_SIZE                  8
+#else
+#define CSI_MARKER_FONT_SIZE                 9
+#define CSI_LABEL_FONT_SIZE                  12
+#endif
 
 // Rack view
 #define RACV_MIN_HEIGHT                      100

@@ -216,7 +216,7 @@ void EditorActions::createActions()
     actions[ACTION_MOVE_SECTION_DOWN]->setShortcut(QKeySequence(tr("Meta+Shift+Down")));
 
     actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("New section..."), this);
-    actions[ACTION_NEW_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+N")));
+    actions[ACTION_NEW_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+N")));
 
     actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("Duplicate section..."), this);
     actions[ACTION_DUPLICATE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+D")));
