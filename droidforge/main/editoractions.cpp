@@ -49,12 +49,12 @@ void EditorActions::createActions()
     actions[ACTION_DISCORD] = new QAction(tr("Discord community"));
     actions[ACTION_LICENSE] = new QAction(tr("DROID Forge license"), this);
 
-    actions[ACTION_CLEAR_SETTINGS] = new QAction(tr("Restore factory settings"), this);
+    actions[ACTION_CLEAR_SETTINGS] = new QAction(tr("&Restore factory settings"), this);
 
     actions[ACTION_CLEAR_RECENT_FILES] = new QAction(tr("Clear list of recent files"), this);
 
     actions[ACTION_NEW] = new QAction(tr("&New..."), this);
-    actions[ACTION_NEW_WITH_SAME_RACK] = new QAction(tr("&New with same rack..."), this);
+    actions[ACTION_NEW_WITH_SAME_RACK] = new QAction(tr("New &with same rack..."), this);
     actions[ACTION_NEW_WITH_SAME_RACK]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
 
     actions[ACTION_TOOLBAR_NEW] = new QAction(ICON("new"), tr("New"), this);
@@ -284,10 +284,10 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_SECTION_SOURCE] = new QAction(tr("Edit section source code"), this);
     actions[ACTION_EDIT_SECTION_SOURCE]->setShortcut(QKeySequence(tr("Alt+U")));
 
-    actions[ACTION_EDIT_PATCH_SOURCE] = new QAction(tr("Edit patch source code"), this);
+    actions[ACTION_EDIT_PATCH_SOURCE] = new QAction(tr("&Edit patch source code"), this);
     actions[ACTION_EDIT_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Shift+Ctrl+U")));
 
-    actions[ACTION_BARE_PATCH_SOURCE] = new QAction(tr("Show bare patch source"), this);
+    actions[ACTION_BARE_PATCH_SOURCE] = new QAction(tr("Show &bare patch source"), this);
     actions[ACTION_BARE_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Alt+Ctrl+U")));
 
     actions[ACTION_USER_MANUAL] = new QAction(tr("DROID user manual"), this);
