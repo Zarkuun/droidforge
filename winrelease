@@ -97,8 +97,9 @@ win32:RC_ICONS += droidforge-win-icon.ico
 EOF
 
 
-cd "$PACDIR"
+pushd "$PACDIR"
 $BINARYCREATOR --offline-only --config config/config.xml -p packages ../droid-installer-$VERSION.exe
+popd
 
 rm -rf "$WORKDIR" "$PACDIR"
 
