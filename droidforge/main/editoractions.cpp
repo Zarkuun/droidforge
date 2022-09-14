@@ -45,9 +45,9 @@ void EditorActions::createActions()
 {
     QSettings settings;
 
-    actions[ACTION_ABOUT] = new QAction(tr("About DROID Forge"), this);
-    actions[ACTION_DISCORD] = new QAction(tr("Discord community"));
-    actions[ACTION_LICENSE] = new QAction(tr("DROID Forge license"), this);
+    actions[ACTION_ABOUT] = new QAction(tr("&About DROID Forge"), this);
+    actions[ACTION_DISCORD] = new QAction(tr("&Discord community"));
+    actions[ACTION_LICENSE] = new QAction(tr("DROID Forge &license"), this);
 
     actions[ACTION_CLEAR_SETTINGS] = new QAction(tr("&Restore factory settings"), this);
 
@@ -127,7 +127,7 @@ void EditorActions::createActions()
     actions[ACTION_PASTE_SMART]->setShortcut(QKeySequence(tr("Shift+Ctrl+V")));
     actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
 
-    actions[ACTION_PASTE_AS_SECTION] = new QAction(tr("Paste as new section"), this);
+    actions[ACTION_PASTE_AS_SECTION] = new QAction(tr("&Paste as new section"), this);
     actions[ACTION_PASTE_AS_SECTION]->setShortcut(QKeySequence("Ctrl+Alt+V"));
     actions[ACTION_PASTE_AS_SECTION]->setEnabled(false);
 
@@ -203,74 +203,74 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit parameter info..."), this);
     actions[ACTION_EDIT_JACK_COMMENT]->setShortcut(QKeySequence(tr("Alt+I")));
 
-    actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Go to previous section"));
+    actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("&Go to previous section"));
     actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Up")));
 
-    actions[ACTION_NEXT_SECTION] = new QAction(tr("Go to next section"));
+    actions[ACTION_NEXT_SECTION] = new QAction(tr("G&o to next section"));
     actions[ACTION_NEXT_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Down")));
 
-    actions[ACTION_MOVE_SECTION_UP] = new QAction(tr("Move by one position up"));
+    actions[ACTION_MOVE_SECTION_UP] = new QAction(tr("Move by one position &up"));
     actions[ACTION_MOVE_SECTION_UP]->setShortcut(QKeySequence(tr("Alt+Up")));
 
-    actions[ACTION_MOVE_SECTION_DOWN] = new QAction(tr("Move by one position down"));
+    actions[ACTION_MOVE_SECTION_DOWN] = new QAction(tr("Move by one position do&wn"));
     actions[ACTION_MOVE_SECTION_DOWN]->setShortcut(QKeySequence(tr("Alt+Down")));
 
-    actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("New section..."), this);
+    actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("&New section..."), this);
     actions[ACTION_NEW_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+N")));
 
-    actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("Duplicate section..."), this);
+    actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("&Duplicate section..."), this);
     actions[ACTION_DUPLICATE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+D")));
 
-    actions[ACTION_RENAME_PATCH_SECTION] = new QAction(tr("Rename section..."), this);
+    actions[ACTION_RENAME_PATCH_SECTION] = new QAction(tr("&Rename section..."), this);
     actions[ACTION_RENAME_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+R")));
 
-    actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("Delete section"), this);
+    actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("D&elete section"), this);
     actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+Backspace")));
 
-    actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("Merge with previous section"));
+    actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("&Merge with previous section"));
 
-    actions[ACTION_MERGE_WITH_NEXT_SECTION] = new QAction(tr("Merge with next section"));
-    actions[ACTION_MERGE_ALL_SECTIONS] = new QAction(tr("Merge all sections into one"));
+    actions[ACTION_MERGE_WITH_NEXT_SECTION] = new QAction(tr("Merge with ne&xt section"));
+    actions[ACTION_MERGE_ALL_SECTIONS] = new QAction(tr("Merge &all sections into one"));
 
-    actions[ACTION_RESET_ZOOM] = new QAction(tr("Normal font size"), this);
+    actions[ACTION_RESET_ZOOM] = new QAction(tr("&Normal font size"), this);
     actions[ACTION_RESET_ZOOM]->setShortcut(QKeySequence(tr("Ctrl+0")));
 
-    actions[ACTION_ZOOM_IN] = new QAction(tr("Increase font size"), this);
+    actions[ACTION_ZOOM_IN] = new QAction(tr("&Increase font size"), this);
     actions[ACTION_ZOOM_IN]->setShortcuts(QKeySequence::ZoomIn);
 
-    actions[ACTION_ZOOM_OUT] = new QAction(tr("Decrease font size"), this);
+    actions[ACTION_ZOOM_OUT] = new QAction(tr("&Decrease font size"), this);
     actions[ACTION_ZOOM_OUT]->setShortcuts(QKeySequence::ZoomOut);
 
-    actions[ACTION_RACK_RESET_ZOOM] = new QAction(tr("Normal rack size"), this);
+    actions[ACTION_RACK_RESET_ZOOM] = new QAction(tr("N&ormal rack size"), this);
     actions[ACTION_RACK_RESET_ZOOM]->setShortcut(QKeySequence(tr("Alt+Ctrl+0")));
 
-    actions[ACTION_RACK_ZOOM_IN] = new QAction(tr("Increase rack size"), this);
+    actions[ACTION_RACK_ZOOM_IN] = new QAction(tr("Increase ra&ck size"), this);
     actions[ACTION_RACK_ZOOM_IN]->setShortcut(QKeySequence(tr("Alt+Ctrl+=")));
 
-    actions[ACTION_RACK_ZOOM_OUT] = new QAction(tr("Decrease rack size"), this);
+    actions[ACTION_RACK_ZOOM_OUT] = new QAction(tr("Decrease rac&k size"), this);
     actions[ACTION_RACK_ZOOM_OUT]->setShortcut(QKeySequence(tr("Alt+Ctrl+-")));
 
-    actions[ACTION_FOLD_UNFOLD] = new QAction(tr("Fold / unfold circuit"), this);
+    actions[ACTION_FOLD_UNFOLD] = new QAction(tr("&Fold / unfold circuit"), this);
     actions[ACTION_FOLD_UNFOLD]->setShortcut(QKeySequence(tr("Space")));
 
-    actions[ACTION_FOLD_UNFOLD_ALL] = new QAction(tr("Fold / unfold all circuits"), this);
+    actions[ACTION_FOLD_UNFOLD_ALL] = new QAction(tr("Fold / unfold &all circuits"), this);
     actions[ACTION_FOLD_UNFOLD_ALL]->setShortcut(QKeySequence(tr("Shift+Space")));
 
-    actions[ACTION_SHOW_REGISTER_LABELS] = new QAction(tr("Show register labels"), this);
+    actions[ACTION_SHOW_REGISTER_LABELS] = new QAction(tr("Show &register labels"), this);
     actions[ACTION_SHOW_REGISTER_LABELS]->setShortcut(QKeySequence(tr("F3")));
     actions[ACTION_SHOW_REGISTER_LABELS]->setCheckable(true);
     actions[ACTION_SHOW_REGISTER_LABELS]->setChecked(true);
 
-    actions[ACTION_SHOW_REGISTER_USAGE] = new QAction(tr("Show used registers"), this);
+    actions[ACTION_SHOW_REGISTER_USAGE] = new QAction(tr("Sho&w used registers"), this);
     actions[ACTION_SHOW_REGISTER_USAGE]->setShortcut(QKeySequence(tr("F4")));
     actions[ACTION_SHOW_REGISTER_USAGE]->setCheckable(true);
     actions[ACTION_SHOW_REGISTER_USAGE]->setChecked(true);
 
-    actions[ACTION_SHOW_G8_ON_DEMAND] = new QAction(tr("Show G8 only when used"), this);
+    actions[ACTION_SHOW_G8_ON_DEMAND] = new QAction(tr("Show &G8 only when used"), this);
     actions[ACTION_SHOW_G8_ON_DEMAND]->setCheckable(true);
     actions[ACTION_SHOW_G8_ON_DEMAND]->setChecked(settings.value("show_g8_on_demand").toBool());
 
-    actions[ACTION_SHOW_X7_ON_DEMAND] = new QAction(tr("Show X7 only when used"), this);
+    actions[ACTION_SHOW_X7_ON_DEMAND] = new QAction(tr("Show &X7 only when used"), this);
     actions[ACTION_SHOW_X7_ON_DEMAND]->setCheckable(true);
     actions[ACTION_SHOW_X7_ON_DEMAND]->setChecked(settings.value("show_x7_on_demand").toBool());
 
@@ -281,7 +281,7 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_CIRCUIT_SOURCE] = new QAction(tr("Edit circuit source code"), this);
     actions[ACTION_EDIT_CIRCUIT_SOURCE]->setShortcut(QKeySequence(tr("Ctrl+U")));
 
-    actions[ACTION_EDIT_SECTION_SOURCE] = new QAction(tr("Edit section source code"), this);
+    actions[ACTION_EDIT_SECTION_SOURCE] = new QAction(tr("Edit section &source code"), this);
     actions[ACTION_EDIT_SECTION_SOURCE]->setShortcut(QKeySequence(tr("Alt+U")));
 
     actions[ACTION_EDIT_PATCH_SOURCE] = new QAction(tr("&Edit patch source code"), this);
@@ -290,10 +290,10 @@ void EditorActions::createActions()
     actions[ACTION_BARE_PATCH_SOURCE] = new QAction(tr("Show &bare patch source"), this);
     actions[ACTION_BARE_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Alt+Ctrl+U")));
 
-    actions[ACTION_USER_MANUAL] = new QAction(tr("DROID user manual"), this);
+    actions[ACTION_USER_MANUAL] = new QAction(tr("DROID user &manual"), this);
     actions[ACTION_USER_MANUAL]->setShortcuts({QKeySequence(tr("Shift+Ctrl+M")), QKeySequence(tr("F1"))});
 
-    actions[ACTION_CIRCUIT_MANUAL] = new QAction(tr("User manual of circuit"), this);
+    actions[ACTION_CIRCUIT_MANUAL] = new QAction(tr("User manual of &circuit"), this);
     actions[ACTION_CIRCUIT_MANUAL]->setShortcut(QKeySequence(tr("Ctrl+M")));
 
     for (auto action: actions)
