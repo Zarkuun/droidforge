@@ -225,7 +225,11 @@ void EditorActions::createActions()
     actions[ACTION_RENAME_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+R")));
 
     actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("D&elete section"), this);
+#ifdef Q_OS_WIN
+    actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+Delete")));
+#else
     actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+Backspace")));
+#endif
 
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("&Merge with previous section"));
 
