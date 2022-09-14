@@ -7,6 +7,7 @@
 	* FIX: Fix too large initial size of dialogs
 	* FIX: Fix too large font size of internal cable statusbar information on
                Windows
+	* FIX: Get rid of bogus "Meta" shortcut key on Windows
 
 	Features:
 	* Cell editor: add icon and description of parameter type (CV, gate, etc.)
@@ -14,6 +15,8 @@
 	* Rack view: new option to show G8 or X7 just when they are used by the patch
 	* Find related control: New menu action (and shortcut ?) for jumping around
 	  between all references to the same button/led/whatever.
+	* Shortcuts: Change keyboard shortcuts for section commands so that
+	  they also work on Windows
 
 0.6:
     Bug fixes:

@@ -128,7 +128,7 @@ void EditorActions::createActions()
     actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
 
     actions[ACTION_PASTE_AS_SECTION] = new QAction(tr("Paste as new section"), this);
-    actions[ACTION_PASTE_AS_SECTION]->setShortcut(QKeySequence("Meta+V"));
+    actions[ACTION_PASTE_AS_SECTION]->setShortcut(QKeySequence("Ctrl+Alt+V"));
     actions[ACTION_PASTE_AS_SECTION]->setEnabled(false);
 
     actions[ACTION_EXPAND_ARRAY] = new QAction(tr("Expand parameter array by one"), this);
@@ -162,7 +162,7 @@ void EditorActions::createActions()
     actions[ACTION_ENABLE]->setShortcut(QKeySequence(tr("#")));
 
     actions[ACTION_SORT_JACKS] = new QAction(tr("Sort parameters"), this);
-    actions[ACTION_SORT_JACKS]->setShortcut(QKeySequence(tr("Meta+S")));
+    actions[ACTION_SORT_JACKS]->setShortcut(QKeySequence(tr("Alt+Ctrl+S")));
 
     actions[ACTION_NEW_CIRCUIT] = new QAction(tr("&New circuit..."), this);
     actions[ACTION_NEW_CIRCUIT]->setShortcut(QKeySequence(tr("Shift+Ctrl+N")));
@@ -182,7 +182,7 @@ void EditorActions::createActions()
     actions[ACTION_FOLLOW_REGISTER]->setShortcut(QKeySequence(tr("?")));
 
     actions[ACTION_RENAME_CABLE] = new QAction(tr("&Rename internal cable"), this);
-    actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+R")));
+    actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+Ctrl+R")));
 
     actions[ACTION_START_PATCHING] = new QAction(tr("Start creating internal cable"), this);
     actions[ACTION_START_PATCHING]->setShortcut(QKeySequence(tr("=")));
@@ -201,7 +201,7 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
 
     actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit parameter info..."), this);
-    actions[ACTION_EDIT_JACK_COMMENT]->setShortcut(QKeySequence(tr("Alt+C")));
+    actions[ACTION_EDIT_JACK_COMMENT]->setShortcut(QKeySequence(tr("Alt+I")));
 
     actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("Go to previous section"));
     actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Up")));
@@ -210,22 +210,22 @@ void EditorActions::createActions()
     actions[ACTION_NEXT_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Down")));
 
     actions[ACTION_MOVE_SECTION_UP] = new QAction(tr("Move by one position up"));
-    actions[ACTION_MOVE_SECTION_UP]->setShortcut(QKeySequence(tr("Meta+Shift+Up")));
+    actions[ACTION_MOVE_SECTION_UP]->setShortcut(QKeySequence(tr("Alt+Up")));
 
     actions[ACTION_MOVE_SECTION_DOWN] = new QAction(tr("Move by one position down"));
-    actions[ACTION_MOVE_SECTION_DOWN]->setShortcut(QKeySequence(tr("Meta+Shift+Down")));
+    actions[ACTION_MOVE_SECTION_DOWN]->setShortcut(QKeySequence(tr("Alt+Down")));
 
     actions[ACTION_NEW_PATCH_SECTION] = new QAction(tr("New section..."), this);
     actions[ACTION_NEW_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+N")));
 
     actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("Duplicate section..."), this);
-    actions[ACTION_DUPLICATE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+D")));
+    actions[ACTION_DUPLICATE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+D")));
 
     actions[ACTION_RENAME_PATCH_SECTION] = new QAction(tr("Rename section..."), this);
-    actions[ACTION_RENAME_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+R")));
+    actions[ACTION_RENAME_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+R")));
 
     actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("Delete section"), this);
-    actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Meta+Backspace")));
+    actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+Backspace")));
 
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("Merge with previous section"));
 
@@ -282,7 +282,7 @@ void EditorActions::createActions()
     actions[ACTION_EDIT_CIRCUIT_SOURCE]->setShortcut(QKeySequence(tr("Ctrl+U")));
 
     actions[ACTION_EDIT_SECTION_SOURCE] = new QAction(tr("Edit section source code"), this);
-    actions[ACTION_EDIT_SECTION_SOURCE]->setShortcut(QKeySequence(tr("Meta+U")));
+    actions[ACTION_EDIT_SECTION_SOURCE]->setShortcut(QKeySequence(tr("Alt+U")));
 
     actions[ACTION_EDIT_PATCH_SOURCE] = new QAction(tr("Edit patch source code"), this);
     actions[ACTION_EDIT_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Shift+Ctrl+U")));
