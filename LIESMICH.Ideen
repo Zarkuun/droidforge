@@ -4,6 +4,10 @@ ABRUNDUNG:
 - Handcursor für Icons usw. die man klicken kann (da hat Qt
   aber komische Bugs).
 
+- Autosave / restore. Man speichert ab und zu in einer speziellen Datei
+  den aktuellen Patch. Diese Datei löscht man, wenn die Forge normal
+  beendet wird. Wenn die Forge startet und die Datei ist da, kann man
+  einen Restore von dem Patch machen. Bzw. er wird einfach aufgemacht.
 
 IDEEN:
 - Doch vielleicht einbauen, das man ein Rack speichern kann (Rackview:
