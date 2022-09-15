@@ -79,6 +79,8 @@ echo -n "Creating DMG with dmgcanvas..."
 dmgcanvas DROID\ Forge.dmgCanvas "$DMGNAME" -setTextString version "$NAME $VERSION" >> $LOGFILE 2>&1
 echo $OK
 
+
+
 ## echo "STOP HIER!! Das ist ein Test"
 ## exit 0
 ## 
