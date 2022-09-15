@@ -11,6 +11,7 @@ METADIR="$PACDIR/packages/de.dmmdm.droidforge/meta"
 BUILDDIR=droidforge/build-release
 WINDEPLOYQT="/C/Qt/6.3.1/msvc2019_64/bin/windeployqt.exe"
 BINARYCREATOR="/C/Qt/QtIFW-4.4.1/bin/binarycreator.exe"
+TARGETEXE="DROID Forge $VERSION Windows.exe"
 
 rm -rf "$WORKDIR"
 mkdir -p "$WORKDIR"
@@ -98,7 +99,7 @@ EOF
 
 
 pushd "$PACDIR"
-$BINARYCREATOR --offline-only --config config/config.xml -p packages ../droid-installer-$VERSION.exe
+$BINARYCREATOR --offline-only --config config/config.xml -p packages ../"$TARGETEXE"
 popd
 
 rm -rf "$WORKDIR" "$PACDIR"
