@@ -1,3 +1,8 @@
+BUG:
+
+- Crash by drumsequencer.ini, weil BD = irgendwas im Kommentar als auskommentierte Zeile
+  gewertet wird, aber noch kein Circuit da ist.
+
 TODO:
 
 - Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
