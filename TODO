@@ -1,7 +1,7 @@
 BUG:
 
-- Crash by drumsequencer.ini, weil BD = irgendwas im Kommentar als auskommentierte Zeile
-  gewertet wird, aber noch kein Circuit da ist.
+- Doppeclick Section: neue Sektion soll unten kommen
+
 
 TODO:
 

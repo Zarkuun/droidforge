@@ -6,6 +6,7 @@
 	* FIX: When double clicking on the background, the new circuit will now be placed
 	  nearest to the click. That way you can easily decide where to insert a new
 	  circuit. Before it was always on the top (reported by @odessa)
+	* FIX: Fix missing icons for button/LED mismatch (bulb) and folded circuit
 
 0.7:
     Bug fixes:
