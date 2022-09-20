@@ -7,6 +7,8 @@
 	  nearest to the click. That way you can easily decide where to insert a new
 	  circuit. Before it was always on the top (reported by @odessa)
 	* FIX: Fix missing icons for button/LED mismatch (bulb) and folded circuit
+	* FIX: Fix cursor moving to unchartered territory when adding a jack while the
+	  circuit is folded.
 
 0.7:
     Bug fixes:

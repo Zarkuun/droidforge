@@ -226,7 +226,6 @@ bool Circuit::checkLEDMismatches(bool fixit)
             ja->jackName() == "buttonup" ||
             ja->jackName() == "buttondown")
         {
-            shout << "checking" << ja->toString();
             Atom *atom = ja->atomAt(1);
             if (!atom || !atom->isRegister())
                 continue;

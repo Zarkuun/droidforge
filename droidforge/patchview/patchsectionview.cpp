@@ -489,9 +489,12 @@ void PatchSectionView::addJack()
     if (index < 0)
         index = 0;
 
-    currentCircuit()->insertJackAssignment(buildJackAssignment(name), index);
-    section()->setCursorRow(index);
-    section()->setCursorColumn(1);
+    Circuit *circuit = currentCircuit();
+    circuit->insertJackAssignment(buildJackAssignment(name), index);
+    if (!circuit->isFolded()) {
+        section()->setCursorRow(index);
+        section()->setCursorColumn(1);
+    }
     patch->commit(tr("adding new parameter '%1'").arg(name));
     emit patchModified();
 }
