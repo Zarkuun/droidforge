@@ -1,3 +1,8 @@
+0.8:
+	Bug fixes:
+	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason
+	  was a comment like "# BD = bass drum" in the global comment section (reported
+	  and nailed down by @Brian (The Aefonic)
 0.7:
     Bug fixes:
 	* FIX: Mac: automatically detect dark/light mode switch of system preferences

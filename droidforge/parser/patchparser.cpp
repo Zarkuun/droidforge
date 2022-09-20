@@ -122,11 +122,13 @@ void PatchParser::parseCommentLine(QString line)
         return;
     }
 
-    // Or maybe a disabled jack line?
-    QRegularExpressionMatch m = disabledJackLine.match(comment);
-    if (m.hasMatch()) {
-        parseJackLine(circuit, comment, true /* disabled */);
-        return;
+    // Or maybe a disabled jack line? (If there *is* already a circuit ongoing)
+    if (circuit) {
+        QRegularExpressionMatch m = disabledJackLine.match(comment);
+        if (m.hasMatch()) {
+            parseJackLine(circuit, comment, true /* disabled */);
+            return;
+        }
     }
 
     // Comments like "# ------------" start (or end) section headers
