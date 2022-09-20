@@ -2,7 +2,11 @@
 	Bug fixes:
 	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason
 	  was a comment like "# BD = bass drum" in the global comment section (reported
-	  and nailed down by @Brian (The Aefonic)
+	  and nailed down by @Brian (The Aefonic))
+	* FIX: When double clicking on the background, the new circuit will now be placed
+	  nearest to the click. That way you can easily decide where to insert a new
+	  circuit. Before it was always on the top (reported by @odessa)
+
 0.7:
     Bug fixes:
 	* FIX: Mac: automatically detect dark/light mode switch of system preferences

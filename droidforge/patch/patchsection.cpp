@@ -368,10 +368,12 @@ void PatchSection::moveCursorToPreviousCircuit()
     else if (cursor.circuitNr > 0)
         cursor.circuitNr --;
 }
-void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection)
+void PatchSection::addNewCircuit(QString name, jackselection_t jackSelection, int position)
 {
     int newPosition;
-    if (!circuits.isEmpty()) {
+    if (position != -1)
+        newPosition = position;
+    else if (!circuits.isEmpty()) {
         newPosition = cursorPosition().circuitNr;
         if (cursorPosition().row != ROW_CIRCUIT)
             newPosition ++;

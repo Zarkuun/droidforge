@@ -47,7 +47,7 @@ public:
     CursorPosition canonizedCursorPosition(const CursorPosition &pos) const;
     void moveCursorToNextCircuit();
     void moveCursorToPreviousCircuit();
-    void addNewCircuit(QString name, jackselection_t jackSelection);
+    void addNewCircuit(QString name, jackselection_t jackSelection, int position=-1);
     void insertCircuit(int pos, Circuit *circuit);
     void addCircuit(Circuit *circuit);
     bool allCircuitsFolded() const;

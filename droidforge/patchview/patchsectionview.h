@@ -118,6 +118,8 @@ private:
     void editJackCommentAt(const CursorPosition &pos);
     void enableDisableObjects(bool enable);
     void handleRightMousePress(const CursorPosition *curPos);
+    void newCircuitAt(int position);
+    int getInsertPosition(int ypos);
 
 public slots:
     void modifyPatch();
@@ -127,7 +129,7 @@ public slots:
     void changePatching();
 
     void editValueByShortcut();
-    void newCircuit();
+    void newCircuitAtCursor();
     void addJack();
     void zoomReset();
     void zoomIn();

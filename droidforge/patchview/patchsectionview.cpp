@@ -31,7 +31,7 @@
 #include <QTimer>
 #include <QScrollBar>
 
-#define DATA_INDEX_CIRCUIT 0
+#define DATA_INDEX_CIRCUIT_NR 0
 
 PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     : PatchView(initialPatch) // patch is never ever 0!
@@ -92,9 +92,9 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_SORT_JACKS, &PatchSectionView::sortJacks);
     CONNECT_ACTION(ACTION_DISABLE, &PatchSectionView::disableObjects);
     CONNECT_ACTION(ACTION_ENABLE, &PatchSectionView::enableObjects);
-    CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuit);
+    CONNECT_ACTION(ACTION_NEW_CIRCUIT, &PatchSectionView::newCircuitAtCursor);
     CONNECT_ACTION(ACTION_NEW_JACK, &PatchSectionView::addJack);
-    CONNECT_ACTION(ACTION_TOOLBAR_NEW_CIRCUIT, &PatchSectionView::newCircuit);
+    CONNECT_ACTION(ACTION_TOOLBAR_NEW_CIRCUIT, &PatchSectionView::newCircuitAtCursor);
     CONNECT_ACTION(ACTION_TOOLBAR_ADD_JACK, &PatchSectionView::addJack);
     CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValueByShortcut);
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchSectionView::editCircuitComment);
@@ -131,7 +131,7 @@ void PatchSectionView::buildPatchSection()
                     section()->getSelectionPointer(),
                     circuitWidth,
                     fontMetrics().lineSpacing());
-        cv->setData(DATA_INDEX_CIRCUIT, true);
+        cv->setData(DATA_INDEX_CIRCUIT_NR, i);
         circuitViews.append(cv);
         scene->addItem(cv);
         cv->setPos(CIRV_SIDE_PADDING, y);
@@ -355,7 +355,7 @@ CursorPosition *PatchSectionView::cursorAtMousePosition(QPoint pos) const
 
     CircuitView *cv = 0;
     for (auto item: items(pos)) {
-        if (item->data(DATA_INDEX_CIRCUIT).isValid()) {
+        if (item->data(DATA_INDEX_CIRCUIT_NR).isValid()) {
             cv = (CircuitView *)item;
             break;
         }
@@ -406,10 +406,33 @@ void PatchSectionView::mousePress(QPoint pos, int button, bool doubleClick)
         handleRightMousePress(0);
     else {
         the_operator->clearSelection();
-        if (doubleClick)
-            TRIGGER_ACTION(ACTION_NEW_CIRCUIT);
+        if (doubleClick) {
+            int circuitNr = getInsertPosition(mapToScene(pos).y());
+            newCircuitAt(circuitNr);
+        }
     }
     delete curPos;
+}
+int PatchSectionView::getInsertPosition(int ypos)
+{
+    int bestDistance = 99999999;
+    int bestCircuit = -1;
+
+    if (ypos >= sceneRect().bottom())
+        return section()->numCircuits();
+
+    for (auto item: items()) {
+        if (item->data(DATA_INDEX_CIRCUIT_NR).isValid()) {
+            CircuitView *cv = (CircuitView *)item;
+            int pos = cv->pos().y();
+            int dist = abs(ypos - pos);
+            if (dist < bestDistance) {
+                bestCircuit = item->data(DATA_INDEX_CIRCUIT_NR).toInt();
+                bestDistance = dist;
+            }
+        }
+    }
+    return bestCircuit;
 }
 void PatchSectionView::changeSelection()
 {
@@ -438,12 +461,16 @@ void PatchSectionView::changePatching()
 {
     rebuildPatchSection(); // remove gray plug if patching was aborted
 }
-void PatchSectionView::newCircuit()
+void PatchSectionView::newCircuitAtCursor()
+{
+    newCircuitAt(-1);
+}
+void PatchSectionView::newCircuitAt(int position)
 {
     jackselection_t jackSelection;
     QString name = CircuitChooseDialog::chooseCircuit(jackSelection);
     if (name != "") {
-        section()->addNewCircuit(name, jackSelection);
+        section()->addNewCircuit(name, jackSelection, position);
         patch->commit(tr("adding new '%1' circuit").arg(name));
         emit patchModified();
     }
