@@ -436,7 +436,10 @@ void MainWindow::updateStatusbarMessage()
 
     QString message = infos.join(", ");
     if (message != "") {
-        statusbarIcon->setPixmap(icon.scaledToHeight(statusbar->height() - 10, Qt::SmoothTransformation));
+        if (!icon.isNull())
+            statusbarIcon->setPixmap(icon.scaledToHeight(statusbar->height() - 10, Qt::SmoothTransformation));
+        else
+            statusbarIcon->setPixmap(icon);
         statusbarText->setText(message);
     }
     else {

@@ -5,6 +5,8 @@ BUG:
 
 TODO:
 
+- Mario Paler: fixe Tastenkombinationen für Circuits und Controller
+
 - Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
   verheiraten. Hat eine Forge immer genau eine Firmware? Dann müssten wir die Forge
   eigentlich immer gleichzeitig rausbringen.
