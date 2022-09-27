@@ -9,7 +9,12 @@ ABRUNDUNG:
   beendet wird. Wenn die Forge startet und die Datei ist da, kann man
   einen Restore von dem Patch machen. Bzw. er wird einfach aufgemacht.
 
+- Unterstützung von 2 X7 irgendwie
+
 IDEEN:
+- Eine Speicherstatistik (Tortendiagram oder was weiß ich) über die
+  verwendeten Circuits.
+
 - Doch vielleicht einbauen, das man ein Rack speichern kann (Rackview:
   "Save rack..."). Und das in einem Menü dann direkt holen kann.
   Oder was weiß ich.
