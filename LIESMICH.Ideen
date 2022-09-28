@@ -12,6 +12,16 @@ ABRUNDUNG:
 - Unterstützung von 2 X7 irgendwie
 
 IDEEN:
+- Globale Einstellungen für den DROID-Circuit. Also die LED-Brightness
+  und die M4-Einstellungen, um genau zu sein. Die werden dann einfach
+  kurzerhand dazugedichtet, wenn man deployt. Aber nur dann. Nicht
+  beim Speichern oder so. Und der droid-Circuit kommt an den Schluss,
+  so dass die Zeilennummern nicht durcheinandern kommen
+
+- Eine Einstellung, dass man nicht vorhandene Parameter nicht
+  als Problem wertet. Damit kann man dann deployen mit von Hand
+  eingetragenen Parametern.
+
 - Eine Speicherstatistik (Tortendiagram oder was weiß ich) über die
   verwendeten Circuits.
 
