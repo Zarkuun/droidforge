@@ -1,6 +1,6 @@
 BUGS:
 
-- Doppeclick Section: neue Sektion soll unten kommen
+- Doppelclick Section: neue Sektion soll unten kommen
 
 - Man kann 1/120 nicht in ein Atom eingeben, aber mit dem Atomedit schon
 
@@ -13,6 +13,9 @@ BUGS:
 - Mit einem paste von einer Zeile kann man in einem gefoldeten
   Circuit mit dem Cursor zu tief runterfahren (hab ich das nicht
   schon gefixt gehabt??)
+
+- Es gibt wohl ein Speicherloch. Die Forge ist bei einem auf 120GB
+  angewachsen.
 
 
 TODO:
