@@ -11,6 +11,10 @@ ABRUNDUNG:
 
 - Unterstützung von 2 X7 irgendwie
 
+- Auch die maximale Patchgröße kann man überschreiten. Also sollte
+  man auch den Verbrauch in dieser Kategorie anzeigen. Gibt es noch
+  weitere Dinge?
+
 IDEEN:
 - Globale Einstellungen für den DROID-Circuit. Also die LED-Brightness
   und die M4-Einstellungen, um genau zu sein. Die werden dann einfach
