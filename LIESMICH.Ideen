@@ -16,6 +16,12 @@ ABRUNDUNG:
   weitere Dinge?
 
 IDEEN:
+- Section: save as patch...
+
+- Man könnte eine globale Option machen, mit der die Patchkabel
+  beim Deployen automatisch so umbenannt werden, dass sie minimale
+  Namen haben. Das spart dann an der maximalen Länge von Patches.
+
 - Globale Einstellungen für den DROID-Circuit. Also die LED-Brightness
   und die M4-Einstellungen, um genau zu sein. Die werden dann einfach
   kurzerhand dazugedichtet, wenn man deployt. Aber nur dann. Nicht
