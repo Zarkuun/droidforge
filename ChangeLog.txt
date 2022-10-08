@@ -2,6 +2,7 @@
 	Bug fixes:
 	* FIX: Fix titles of source code editor windows: make clear what's edited.
 	* FIX: Fix window suddenly getting wider in certain situations.
+	* FIX: Add new sections at the end when double clicking
 
 0.8:
 	Bug fixes:

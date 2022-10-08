@@ -247,12 +247,19 @@ void PatchSectionManager::mergeSections(int indexa, int indexb)
 }
 void PatchSectionManager::newSectionAfterCurrent()
 {
-    int index = patch->currentSectionIndex();
+    newSectionAtIndex(patch->currentSectionIndex() + 1);
+}
+void PatchSectionManager::newSectionAtEnd()
+{
+    newSectionAtIndex(patch->numSections());
+}
+void PatchSectionManager::newSectionAtIndex(int index)
+{
     QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"));
     if (newname.isEmpty())
         return;
 
-    patch->insertSection(index + 1, new PatchSection(newname));
+    patch->insertSection(index, new PatchSection(newname));
     patch->commit(tr("adding new patch section '%1'").arg(newname));
     emit patchModified();
 }
@@ -304,7 +311,7 @@ void PatchSectionManager::doubleClickOnItem(QGraphicsItem *item)
 }
 void PatchSectionManager::doubleClickOnBackground()
 {
-    TRIGGER_ACTION(ACTION_NEW_PATCH_SECTION);
+    newSectionAtEnd();
 }
 void PatchSectionManager::openMenuOnBackground()
 {

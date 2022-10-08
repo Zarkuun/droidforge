@@ -36,6 +36,7 @@ private:
     void mergeSections(int indexa, int indexb);
     int clickedSectionIndex(QMouseEvent *event);
     int snapSectionInsertPosition(int fromIndex, float y, float *insertSnap) const;
+    void newSectionAtIndex(int index);
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -54,6 +55,7 @@ public slots:
     void mergeWithPreviousSection();
     void mergeWithNextSection();
     void newSectionAfterCurrent();
+    void newSectionAtEnd();
     void pasteAsSection();
     void mergeAllSections();
     void moveSectionUp();
