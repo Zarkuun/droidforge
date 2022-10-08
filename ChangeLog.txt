@@ -3,6 +3,8 @@
 	* FIX: Fix titles of source code editor windows: make clear what's edited.
 	* FIX: Fix window suddenly getting wider in certain situations.
 	* FIX: Add new sections at the end when double clicking
+	* FIX: Fix copy & paste of fractions like 1/120, which are allowed in the third
+	       column
 
 0.8:
 	Bug fixes:

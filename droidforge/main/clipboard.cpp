@@ -17,18 +17,15 @@ Clipboard::Clipboard()
     if (the_clipboard == 0)
         the_clipboard = this;
 }
-
 Clipboard::Clipboard(const QList<Circuit *>cs)
 {
     for (auto circuit: cs)
         circuits.append(circuit->clone());
 }
-
 Clipboard::~Clipboard()
 {
     clear();
 }
-
 void Clipboard::copyFromSelection(const Selection *sel, const PatchSection *section)
 {
     const CursorPosition &from = sel->fromPos();
@@ -58,7 +55,6 @@ void Clipboard::copyFromSelection(const Selection *sel, const PatchSection *sect
 
     ignoreNextGlobalClipboardChange = true;
 }
-
 bool Clipboard::isEmpty() const
 {
     return circuits.isEmpty()
@@ -66,17 +62,14 @@ bool Clipboard::isEmpty() const
             && atoms.isEmpty()
             && comment.isEmpty();
 }
-
 unsigned Clipboard::numCircuits() const
 {
     return circuits.size();
 }
-
 bool Clipboard::isComment() const
 {
     return !comment.isEmpty();
 }
-
 Patch *Clipboard::getAsPatch() const
 {
     Patch *patch = new Patch();
@@ -86,14 +79,12 @@ Patch *Clipboard::getAsPatch() const
     patch->addSection(ps);
     return patch;
 }
-
 void Clipboard::copyToGlobalClipboard() const
 {
     QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->setText(toString());
 
 }
-
 void Clipboard::copyFromGlobalClipboard()
 {
     if (ignoreNextGlobalClipboardChange) {
@@ -114,7 +105,6 @@ void Clipboard::copyFromGlobalClipboard()
     }
 
 }
-
 QString Clipboard::toString() const
 {
     QString text;
@@ -132,7 +122,7 @@ QString Clipboard::toString() const
 
     for (auto atom: atoms)
         if (atom)
-            text += atom->toString();
+            text += atom->toDisplay();
     if (text != "")
         return text;
 
@@ -142,17 +132,14 @@ QString Clipboard::toString() const
     else
         return "";
 }
-
 unsigned Clipboard::numJacks() const
 {
     return jackAssignments.size();
 }
-
 unsigned Clipboard::numAtoms() const
 {
     return atoms.size();
 }
-
 void Clipboard::clear()
 {
     for (auto circuit: circuits)

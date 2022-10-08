@@ -2,8 +2,6 @@ BUGS:
 
 - Man kann 1/120 nicht in ein Atom eingeben, aber mit dem Atomedit schon
 
-- Man kann so eine 1/120-Zelle nicht kopieren, bzw. wird dann 120 draus
-
 - der AtomEditor: die Cable bekommen jetzt die komplette neue Höhe
   und für die Beschreibun gist der Platz viel zu klein. Und teils kommt
   dann nichtmal ne Scrollbar, so dass man nicht alles sieht.

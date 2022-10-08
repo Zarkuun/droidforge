@@ -7,12 +7,10 @@
 
 #define tr(s) QCoreApplication::translate("Patch", s)
 
-
 AtomNumber *AtomNumber::clone() const
 {
     return new AtomNumber(number, numberType);
 }
-
 QString AtomNumber::toString() const
 {
     if (numberType == ATOM_NUMBER_FRACTION)
@@ -37,7 +35,6 @@ QString AtomNumber::toString() const
     }
     return niceNumber(num * factor) + suffix;
 }
-
 QString AtomNumber::toDisplay() const
 {
     if (numberType == ATOM_NUMBER_FRACTION)
@@ -45,28 +42,23 @@ QString AtomNumber::toDisplay() const
     else
         return toString();
 }
-
 bool AtomNumber::isNegatable() const
 {
     return number < 0 && numberType != ATOM_NUMBER_ONOFF;
 }
-
 QString AtomNumber::toNegatedString() const
 {
     AtomNumber n(-number, numberType);
     return n.toString();
 }
-
 QString AtomNumber::problemAsInput(const Patch *) const
 {
     return "";
 }
-
 QString AtomNumber::problemAsOutput(const Patch *) const
 {
     return tr("You cannot use a fixed number for an output parameter");
 }
-
 QString AtomNumber::niceNumber(double num)
 {
     int l = num == 0 ? 0 : log10(abs(num));
@@ -78,7 +70,6 @@ QString AtomNumber::niceNumber(double num)
         numString.chop(1);
     return numString;
 }
-
 QString AtomNumber::toFractionString(double number) const
 {
     if (number < 0)

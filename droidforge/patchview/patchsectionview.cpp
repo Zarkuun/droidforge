@@ -762,11 +762,24 @@ void PatchSectionView::pasteAtomsFromClipboard()
         if (atom) {
             QString asString = atom->toString();
             if (ja->isOutput())
-                newAtom = JackAssignmentOutput::parseOutputAtom(asString);
-            else if (ja->isInput())
-                newAtom = JackAssignmentInput::parseInputAtom(asString);
+                newAtom = JackAssignmentOutput::parseOutputAtom(atom->toString());
+            else if (ja->isInput()) {
+                if (atom->isNumber()) {
+                    const AtomNumber *an = (const AtomNumber *)atom;
+                    if (an->isFraction()) {
+                        if (column == 2)
+                            newAtom = atom->clone();
+                        else
+                            newAtom = new AtomNumber(an->getNumber(), ATOM_NUMBER_NUMBER);
+                    }
+                    else
+                        newAtom = atom->clone();
+                }
+                else
+                    newAtom = atom->clone();
+            }
             else
-                newAtom = new AtomInvalid(asString);
+                newAtom = new AtomInvalid(atom->toDisplay());
         }
         ja->replaceAtom(column, newAtom);
         section()->setCursorColumn(column);
