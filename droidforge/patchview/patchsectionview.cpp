@@ -1204,6 +1204,13 @@ void PatchSectionView::editAtom(int key)
         QChar c((key > 0 && key < 127) ? key : 0);
         QString start(c);
         newAtom = AtomOneliner::editAtom(geometry, patch, ja->jackType(), start, lastKey);
+        if (newAtom && newAtom->isNumber() && ((AtomNumber *)newAtom)->isFraction()
+                && curPos.column != 2)
+        {
+            Atom *n = new AtomNumber(((AtomNumber *)newAtom)->getNumber(), ATOM_NUMBER_NUMBER);
+            delete newAtom;
+            newAtom = n;
+        }
     }
     else {
         newAtom = AtomSelectorDialog::editAtom(patch, circuit->getName(), ja->jackName(), ja->jackType(), curPos.column == 2, atom);

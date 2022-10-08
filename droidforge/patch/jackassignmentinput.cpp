@@ -223,7 +223,6 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
     atoms[1] = parseInputAtom(b);
     atoms[2] = parseInputAtom(c);
 }
-
 Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
 {
     if (atom == "")
@@ -236,9 +235,24 @@ Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
         return parseNumber(atom);
     else
         return parseRegister(atom);
-
 }
-
+Atom *JackAssignmentInput::parseInputFraction(const QString &s)
+{
+    QString withoutSpace = s;
+    withoutSpace.replace(" ", "");
+    if (withoutSpace.startsWith("1/")) {
+        bool ok = false;
+        double n = withoutSpace.mid(2).toDouble(&ok);
+        if (n == 0)
+            return 0;
+        else if (ok)
+            return  new AtomNumber(1.0 / n, ATOM_NUMBER_FRACTION);
+        else
+            return 0;
+    }
+    else
+        return 0;
+}
 QList<PatchProblem *> JackAssignmentInput::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *>problems;
@@ -257,12 +271,10 @@ QList<PatchProblem *> JackAssignmentInput::collectProblems(const Patch *patch) c
     }
     return problems;
 }
-
 bool JackAssignmentInput::isUndefined() const
 {
     return atoms[0] == 0 && atoms[1] == 0 && atoms[2] == 0;
 }
-
 Atom *JackAssignmentInput::parseOnOff(QString s)
 {
     if (s == "on")
@@ -272,7 +284,6 @@ Atom *JackAssignmentInput::parseOnOff(QString s)
     else
         return 0;
 }
-
 Atom *JackAssignmentInput::parseNumber(QString s)
 {
     double factor = 1.0;

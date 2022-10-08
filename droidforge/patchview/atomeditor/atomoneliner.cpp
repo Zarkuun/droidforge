@@ -38,8 +38,15 @@ void AtomOneliner::returnPressed()
 Atom *AtomOneliner::getAtom()
 {
     QString text = lineEdit->text();
-    if (jacktype == JACKTYPE_INPUT)
-        return JackAssignmentInput::parseInputAtom(text);
+    if (jacktype == JACKTYPE_INPUT) {
+        Atom *a = JackAssignmentInput::parseInputAtom(text);
+        if (a)
+            return a;
+        else
+            return
+                JackAssignmentInput::parseInputFraction(text);
+    }
+
     else if (jacktype == JACKTYPE_OUTPUT)
         return JackAssignmentOutput::parseOutputAtom(text);
     else

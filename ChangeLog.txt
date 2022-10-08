@@ -5,6 +5,8 @@
 	* FIX: Add new sections at the end when double clicking
 	* FIX: Fix copy & paste of fractions like 1/120, which are allowed in the third
 	       column
+    * FIX: You now can enter fractions of the form 1/X into in input cell also
+	       directly, without the dialog
 
 0.8:
 	Bug fixes:
