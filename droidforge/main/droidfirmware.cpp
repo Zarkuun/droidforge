@@ -43,6 +43,10 @@ DroidFirmware::DroidFirmware()
         circuits = json["circuits"].toObject();
         controllers = json["controllers"].toObject();
     }
+
+    // Activate the following line for checking all circuit jack descriptions
+    // for LaTeX artefacts that should not be there
+    // checkAllDescriptions();
 }
 QString DroidFirmware::version() const
 {
@@ -250,7 +254,6 @@ QString DroidFirmware::jackTypeDescriptionHTML(QString circuit, QString whence, 
     QString symbol = jackTypeSymbol(circuit, jack, whence == "inputs");
     return jackTypeExplanation(symbol, whence == "inputs");
 }
-
 QString DroidFirmware::jackTypeSymbol(QString circuit, QString whence, QString jack) const
 {
     return jackTypeSymbol(circuit, jack, whence == "inputs");
@@ -366,6 +369,22 @@ bool DroidFirmware::circuitNeedsX7(QString circuit) const
             || circuit == "midiout"
             || circuit == "midithrough"
             || circuit == "firefacecontrol";
+}
+
+void DroidFirmware::checkAllDescriptions() const
+{
+    for (auto& circuitname: circuits.keys()) {
+        for (auto whence: { "inputs", "output" }) {
+            QJsonArray inputs = circuits[circuitname].toObject()[whence].toArray();
+            for (auto input: inputs) {
+                QJsonObject jackinfo = input.toObject();
+                QString jack = jackinfo["name"].toString();
+                QString desc = jackDescriptionHTML(circuitname, whence, jack);
+                if (desc.contains("\\"))
+                    shout << circuitname << "." << jack << "\n" << desc;
+            }
+        }
+    }
 }
 unsigned DroidFirmware::numControllerRegisters(const QString &module, char registerType) const
 {

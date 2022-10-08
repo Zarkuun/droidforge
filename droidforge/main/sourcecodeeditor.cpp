@@ -6,12 +6,12 @@
 #include <QPushButton>
 #include <QFontDatabase>
 
-SourceCodeEditor::SourceCodeEditor(const QString &originalSource, QWidget *parent, bool readonly)
+SourceCodeEditor::SourceCodeEditor(const QString &title, const QString &originalSource, QWidget *parent, bool readonly)
     : Dialog{"sourcecode", parent}
     , originalSource(originalSource)
 {
     setDefaultSize({SCD_WIDTH, SCD_HEIGHT});
-    setWindowTitle(tr("Patch source code"));
+    setWindowTitle(title);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);

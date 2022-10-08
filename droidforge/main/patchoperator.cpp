@@ -791,7 +791,7 @@ void PatchOperator::moveCircuitDown()
 }
 void PatchOperator::editPatchSource()
 {
-    Patch *parsed = editSource(patch->toString());
+    Patch *parsed = editSource(tr("Patch source code"), patch->toString());
     if (parsed) {
         parsed->cloneInto(patch);
         patch->commit(tr("editing patch source code"));
@@ -801,7 +801,8 @@ void PatchOperator::editPatchSource()
 }
 void PatchOperator::editSectionSource()
 {
-    Patch *parsed = editSource(section()->toString());
+    QString title = tr("Source code of section '%1'").arg(patch->currentSection()->getNonemptyTitle());
+    Patch *parsed = editSource(title, section()->toString());
     if (parsed) {
         int sectionIndex = patch->currentSectionIndex();
         patch->removeSection(sectionIndex);
@@ -816,7 +817,7 @@ void PatchOperator::editCircuitSource()
 {
     // Add one empty line, otherwise we will loose the first comment
     // line of the circuit if it has any
-    Patch *parsed = editSource("\n" + section()->currentCircuit()->toString());
+    Patch *parsed = editSource(tr("Circuit source code"), "\n" + section()->currentCircuit()->toString());
     if (parsed) {
         int circuitIndex = section()->currentCircuitId();
         section()->deleteCircuit(circuitIndex);
@@ -830,7 +831,7 @@ void PatchOperator::editCircuitSource()
 }
 void PatchOperator::barePatchSource()
 {
-    showSource(patch->toCleanString());
+    showSource(tr("Patch source without comments"), patch->toCleanString());
 }
 void PatchOperator::fixLEDMismatch()
 {
@@ -844,9 +845,9 @@ void PatchOperator::globalClipboardChanged()
     the_clipboard->copyFromGlobalClipboard();
     emit clipboardChanged();
 }
-Patch *PatchOperator::editSource(QString oldSource)
+Patch *PatchOperator::editSource(const QString &title, QString oldSource)
 {
-    SourceCodeEditor editor(oldSource, the_forge, false /* readonly */);
+    SourceCodeEditor editor(title, oldSource, the_forge, false /* readonly */);
     PatchParser parser;
     while (true) {
         if (!editor.edit())
@@ -866,9 +867,9 @@ Patch *PatchOperator::editSource(QString oldSource)
         }
     }
 }
-void PatchOperator::showSource(QString source)
+void PatchOperator::showSource(const QString &title, QString source)
 {
-    SourceCodeEditor editor(source, the_forge, true /* readonly */);
+    SourceCodeEditor editor(title, source, the_forge, true /* readonly */);
     editor.exec();
 }
 void PatchOperator::clearSelection()

@@ -85,8 +85,8 @@ private:
     bool isDroidVolume(const QString &rootPath) const;
     void updateSDAndX7State();
     QString sdCardDir() const;
-    Patch *editSource(QString oldSource);
-    void showSource(QString source);
+    Patch *editSource(const QString &title, QString oldSource);
+    void showSource(const QString &title, QString source);
     bool saveAndCheck(QString path);
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);

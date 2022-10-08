@@ -1,3 +1,7 @@
+0.9:
+	Bug fixes:
+	* FIX: Fix titles of source code editor windows: make clear what's edited.
+
 0.8:
 	Bug fixes:
 	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason

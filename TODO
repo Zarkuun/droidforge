@@ -1,10 +1,6 @@
 BUGS:
 
-- Titel vom Dialog von CMD U soll nicht "Patch source code" sein,
-  sondern "Circuit source code".
-
-- Ich mach das Fenster so klein wie es geht. Dann fahre
-  ich den Cursor in ein Output-Parameterfeld. Und schwupp,
+- Ich mach das Fenster so klein wie es geht. Dann fahre ich den Cursor in ein Output-Parameterfeld. Und schwupp,
   schon wird es größer!
 
 - Doppelclick Section: neue Sektion soll unten kommen
