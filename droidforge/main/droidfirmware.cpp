@@ -381,7 +381,7 @@ void DroidFirmware::checkAllDescriptions() const
                 QString jack = jackinfo["name"].toString();
                 QString desc = jackDescriptionHTML(circuitname, whence, jack);
                 if (desc.contains("\\"))
-                    shout << circuitname << "." << jack << "\n" << desc;
+                    qDebug() << circuitname << "." << jack << "\n" << desc;
             }
         }
     }

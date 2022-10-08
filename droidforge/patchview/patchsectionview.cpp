@@ -72,7 +72,6 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     connect(timer, &QTimer::timeout, this, &PatchSectionView::clockTick);
     timer->start(10);
 }
-
 PatchSectionView::~PatchSectionView()
 {
     deletePatchSection();
@@ -825,6 +824,7 @@ void PatchSectionView::setZoom(int zoom)
     transform.scale(zoomFactor, zoomFactor);
     setTransform(transform);
     rebuildPatchSection();
+
     setMinimumWidth(CircuitView::minimumWidth() * zoomFactor + ASSUMED_SCROLLBAR_WIDTH);
 }
 void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)

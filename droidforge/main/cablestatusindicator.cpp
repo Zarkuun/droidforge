@@ -39,13 +39,11 @@ void CableStatusIndicator::paintEvent(QPaintEvent *)
     else
         paintCableInfo(painter);
 }
-
 void CableStatusIndicator::mousePressEvent(QMouseEvent *event)
 {
     if (!patch->isPatching() && event->button() == Qt::LeftButton)
         emit clicked();
 }
-
 void CableStatusIndicator::paintPatching(QPainter &painter)
 {
     painter.fillRect(rect(), COLOR(COLOR_STATUSBAR_BACKGROUND));
@@ -63,7 +61,6 @@ void CableStatusIndicator::paintPatching(QPainter &painter)
     painter.drawImage(rightPlugRect, *plugImage);
     painter.drawImage(leftPlugRect, mirroredPlugImage);
 }
-
 void CableStatusIndicator::paintCableInfo(QPainter &painter)
 {
     if (cableName == "")
@@ -129,7 +126,6 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
     // Finally print the name of the cable on top of all
     paintLabel(painter, (width() - problemMarkerWidth) / 2 + problemMarkerWidth, cableName);
 }
-
 void CableStatusIndicator::paintLabel(QPainter &painter, int xpos, QString text)
 {
     const QFont &font = painter.font();
@@ -150,7 +146,6 @@ void CableStatusIndicator::paintLabel(QPainter &painter, int xpos, QString text)
     painter.drawText(nameRect, text, Qt::AlignVCenter | Qt::AlignCenter);
 
 }
-
 void CableStatusIndicator::paintMarker(QPainter &painter, int xpos, QColor border, QColor fill, int number)
 {
     painter.save();
@@ -177,8 +172,6 @@ void CableStatusIndicator::paintMarker(QPainter &painter, int xpos, QColor borde
                 Qt::AlignVCenter | Qt::AlignCenter);
     painter.restore();
 }
-
-
 void CableStatusIndicator::paintCable(QPainter &painter, int left, int right)
 {
     // First paint the "cable"
@@ -191,7 +184,6 @@ void CableStatusIndicator::paintCable(QPainter &painter, int left, int right)
     painter.drawLine(left, height()/2 - 1, right, height()/2 - 1);
     painter.restore();
 }
-
 void CableStatusIndicator::set(QString name, int numAsIn, int numAsOut)
 {
     numAsInput = numAsIn;
@@ -199,13 +191,11 @@ void CableStatusIndicator::set(QString name, int numAsIn, int numAsOut)
     cableName = name;
     update();
 }
-
 void CableStatusIndicator::clear()
 {
     cableName = "";
     update();
 }
-
 void CableStatusIndicator::updatePatchingAnimation()
 {
     if (patch->isPatching()) {
@@ -221,14 +211,12 @@ void CableStatusIndicator::updatePatchingAnimation()
         animation.stop();
     update();
 }
-
 void CableStatusIndicator::setanimationPhase(float newanimationPhase)
 {
     animationPhase = newanimationPhase;
     update();
     emit animationPhaseChanged();
 }
-
 void CableStatusIndicator::updateStatus()
 {
     const Atom *atom = patch->currentAtom();
@@ -243,17 +231,18 @@ void CableStatusIndicator::updateStatus()
             setCursor(Qt::PointingHandCursor);
         else
             unsetCursor();
+        setVisible(true);
     }
     else {
         clear();
         unsetCursor();
+        setVisible(false);
     }
 }
-
 void CableStatusIndicator::changePatching()
 {
     updateStatus();
     updatePatchingAnimation();
+    if (patch->isPatching())
+        setVisible(true);
 }
-
-// Status, ob ich grad verkable

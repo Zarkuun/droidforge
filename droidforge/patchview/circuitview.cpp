@@ -31,7 +31,6 @@ CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selecti
     jackColumnWidth = CIRV_COLUMN_JACK_MINIMUM_WIDTH + sparePerColumn;
     atomColumnWidth = CIRV_COLUMN_ATOM_MINIMUM_WIDTH + sparePerColumn;
 }
-
 float CircuitView::commentHeight() const
 {
     if (circuit->hasComment())
@@ -148,7 +147,6 @@ void CircuitView::paintJacks(QPainter *painter)
     for (qsizetype row=0; row<circuit->numJackAssignments(); row++)
         paintJack(painter, circuit->jackAssignment(row), row);
 }
-
 void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput, int row, int column)
 {
     int imageHeight = CIRV_CABLEPLUG_HEIGHT;
