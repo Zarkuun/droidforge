@@ -310,12 +310,17 @@ void RackView::swapControllers(int fromindex, int toindex)
 void RackView::refreshModules()
 {
     modules.clear();
-    for (auto item: scene()->items())
-    {
-        if (item->data(DATA_INDEX_MODULE_NAME).isValid() ||
-            item->data(DATA_INDEX_REGISTER_NAME).isValid())
-            scene()->removeItem(item);
-    }
+    scene()->clear();
+
+    // for (auto item: scene()->items())
+    // {
+    //     if (item->data(DATA_INDEX_MODULE_NAME).isValid() ||
+    //         item->data(DATA_INDEX_REGISTER_NAME).isValid())
+    //     {
+    //         scene()->removeItem(item);
+    //         delete item;
+    //     }
+    // }
     x = 0;
     addModule("master");
     if (!ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked() || patch->needsG8())

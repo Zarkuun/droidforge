@@ -7,6 +7,7 @@
 	       column
     * FIX: You now can enter fractions of the form 1/X into in input cell also
 	       directly, without the dialog
+	* FIX: Fixed memory leak that made the Forge more and more RAM.
 
 0.8:
 	Bug fixes:

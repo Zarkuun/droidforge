@@ -139,7 +139,8 @@ void PatchSectionView::buildPatchSection()
     }
     QRectF totalRect(0, 0, totalWidth, y);
     scene->setSceneRect(totalRect);
-    scene->addItem(&frameCursor);
+    frameCursor = new FrameCursor();
+    scene->addItem(frameCursor); // owned by the scene now
     updateCursor();
     setScene(scene);
 }
@@ -271,9 +272,9 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
 }
 void PatchSectionView::deletePatchSection()
 {
-    for (unsigned i=0; i<circuitViews.size(); i++)
-        delete circuitViews[i];
+    scene()->clear();
     circuitViews.clear();
+    frameCursor = 0;
 }
 void PatchSectionView::rebuildPatchSection()
 {
@@ -1352,7 +1353,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
 void PatchSectionView::clockTick()
 {
     if (needScrollbarAdaption) {
-        QRectF c = frameCursor.boundingRect();
+        QRectF c = frameCursor->boundingRect();
         QRectF cursorRect(c.left(), c.top() - CURSOR_VISIBILITY_MARGIN,
                           c.width(), c.height() + 2 * CURSOR_VISIBILITY_MARGIN);
         QRectF portRect = viewport()->contentsRect();
@@ -1401,22 +1402,22 @@ void PatchSectionView::updateCursor()
 
         if (currentCircuit()->isDisabled() ||
                 (currentJackAssignment() && currentJackAssignment()->isDisabled()))
-            frameCursor.setMode(CURSOR_DISABLED);
+            frameCursor->setMode(CURSOR_DISABLED);
         else if (patch->isPatching())
-            frameCursor.setMode(CURSOR_PATCHING);
+            frameCursor->setMode(CURSOR_PATCHING);
         else if (patch->problemAt(patch->currentSectionIndex(), pos) != "")
-            frameCursor.setMode(CURSOR_PROBLEM);
+            frameCursor->setMode(CURSOR_PROBLEM);
         else
-            frameCursor.setMode(CURSOR_NORMAL);
+            frameCursor->setMode(CURSOR_NORMAL);
 
         QRectF cellRect = currentCircuitView()->cellRect(pos.row, pos.column);
-        frameCursor.setRect(cellRect.translated(currentCircuitView()->pos()));
-        frameCursor.startAnimation();
-        frameCursor.setVisible(true);
+        frameCursor->setRect(cellRect.translated(currentCircuitView()->pos()));
+        frameCursor->startAnimation();
+        frameCursor->setVisible(true);
         needScrollbarAdaption = true;
     }
     else
-        frameCursor.setVisible(false);
+        frameCursor->setVisible(false);
 }
 void PatchSectionView::clearSettings()
 {

@@ -8,11 +8,14 @@ BUGS:
   Circuit mit dem Cursor zu tief runterfahren (hab ich das nicht
   schon gefixt gehabt??)
 
-- Es gibt wohl ein Speicherloch. Die Forge ist bei einem auf 120GB
-  angewachsen.
+- Ich glaub ich brauch wirklich das Autosave bevor ich auf die 1.0
+  gehe. Irgendein Crash lauert da noch.
+
 
 
 TODO:
+
+- Unter Linux mit valgrind nochmal nach Speicherlöchern suchen
 
 - Mario Paler: fixe Tastenkombinationen für Circuits und Controller
 

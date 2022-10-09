@@ -29,7 +29,7 @@ class PatchSectionView : public QGraphicsView, PatchView
     bool dragging;
 
     QList<CircuitView *>circuitViews;
-    FrameCursor frameCursor;
+    FrameCursor *frameCursor;
 
 public:
     PatchSectionView(PatchEditEngine *initialPatch);
