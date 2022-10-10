@@ -11,6 +11,19 @@ BUGS:
 - Ich glaub ich brauch wirklich das Autosave bevor ich auf die 1.0
   gehe. Irgendein Crash lauert da noch.
 
+- Verschiedene Crashes. Ich glaube, ich bin bei den beiden
+  GraphicScenes RackView und PatchSectionView noch nicht sauber.
+  Der Zustand von allen Items muss immer genau definiert sein.
+  Soll ich überhaupt Pointer auf die Items aufbewahren?
+  Sind irgendwo noch explizite deletes? Oder kann man vielleicht
+  Items so machen, dass sie nicht deleted werden und doch persistent
+  global halten. Solche, wo es einen Pointer drauf gibt.
+
+- Auch die anderen GraphicScene geradeziehen, was das delete
+  betrifft. Die Items werden alle von clear() deleted.
+
+- Die Größe von X1 im Rackview ist zu klein
+
 
 
 TODO:

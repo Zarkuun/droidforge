@@ -49,7 +49,7 @@ private:
     void updateDragIndicator(QPointF startPos, QPointF endPos, bool hits, bool suitable);
     bool registersSuitableForSwapping(AtomRegister a, AtomRegister b);
     void swapRegisters(AtomRegister regA, AtomRegister regB);
-    void refreshModules();
+    void refreshScene();
     void removeController(int controllerIndex);
     QPoint itemPosition(const QGraphicsItem *item, QPoint def=QPoint(0,0));
     void dragRegister(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos);
