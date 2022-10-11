@@ -32,6 +32,9 @@ RackView::RackView(PatchEditEngine *patch)
     // QPixmap background(":images/background.png");
     // QBrush brush(background.scaledToHeight(1200));
     setMouseTracking(true);
+    dragRegisterIndicator = new DragRegisterIndicator;
+    registerMarker = new RegisterMarker;
+    dragControllerIndicator = new DragControllerIndicator;
     initScene();
 
     CONNECT_ACTION(ACTION_NEW_CONTROLLER, &RackView::addController);
@@ -310,14 +313,17 @@ void RackView::swapControllers(int fromindex, int toindex)
 void RackView::refreshScene()
 {
     modules.clear();
+    if (dragRegisterIndicator->scene())
+        scene()->removeItem(dragRegisterIndicator);
+    if (registerMarker->scene())
+        scene()->removeItem(registerMarker);
+    if (dragControllerIndicator->scene())
+        scene()->removeItem(dragControllerIndicator);
     scene()->clear();
 
-    registerMarker = new RegisterMarker;
     scene()->addItem(registerMarker);
-    dragRegisterIndicator = new DragRegisterIndicator;
     dragRegisterIndicator->setVisible(false);
     scene()->addItem(dragRegisterIndicator);
-    dragControllerIndicator = new DragControllerIndicator;
     dragControllerIndicator->setVisible(false);
     scene()->addItem(dragControllerIndicator);
 
@@ -574,7 +580,8 @@ void RackView::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, Q
         &&   item->data(DATA_INDEX_REGISTER_NAME).isValid())
         stopDraggingRegister(startItem, item);
 
-    else if (startItem->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
+    else if (!startItem->data(DATA_INDEX_REGISTER_NAME).isValid()
+          && startItem->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
         stopDraggingController(startItem, pos);
 
     dragRegisterIndicator->setVisible(false);

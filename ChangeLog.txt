@@ -12,6 +12,8 @@
 	* FIX: Fix cursor hanging "in the air" when pasting a parameter line
 	  into a folded circuit
 	* FIX: Fix size of marker for used X1 register
+	* FIX: Don't swap controllers when you drag a button/pot into an empty
+	       space of another controller.
 
 	Features:
 	* Do an automatic backup of your patch whenever it is modified. If the Forge
