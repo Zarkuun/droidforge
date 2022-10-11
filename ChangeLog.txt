@@ -11,6 +11,7 @@
 	* FIX: Minor layout fixes in value selection dialog
 	* FIX: Fix cursor hanging "in the air" when pasting a parameter line
 	  into a folded circuit
+	* FIX: Fix size of marker for used X1 register
 
 	Features:
 	* Do an automatic backup of your patch whenever it is modified. If the Forge

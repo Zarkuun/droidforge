@@ -11,9 +11,6 @@ BUGS:
 - Auch die anderen GraphicScene geradeziehen, was das delete
   betrifft. Die Items werden alle von clear() deleted.
 
-- Die Größe von X1 im Rackview ist zu klein
-
-
 
 TODO:
 

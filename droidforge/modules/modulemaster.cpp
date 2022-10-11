@@ -32,8 +32,8 @@ QPointF ModuleMaster::registerPosition(register_type_t type, unsigned number) co
             y += 0.37;
         x = column * 1.775 + 1.35;
     }
-    else {
-        return QPointF(4.0, 8.55);
+    else { // X1
+        return QPointF(4.0, 8.70);
     }
     return QPointF(x, y);
 }

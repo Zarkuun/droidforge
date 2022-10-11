@@ -107,7 +107,7 @@
 #define CONTROL_M4_TOUCH_SIZE                2.2
 #define CONTROL_RGBLED_SIZE                  2.1
 #define CONTROL_JACK_SIZE                    2.5
-#define CONTROL_EXTRA_SIZE                   7.8
+#define CONTROL_EXTRA_SIZE                   11.5
 
 // Source code editor
 #define SCD_WIDTH                            600
