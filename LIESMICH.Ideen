@@ -1,4 +1,7 @@
 ABRUNDUNG:
+- Man könnte nochaml versuchen, das Icon unter windows zu fixen.
+  Also das in Windows. Dass das geht.
+
 - Rackview: Das update dauert teils schon sehr lang. Und das macht
   dann alles andere auch langsamer. Könnten wir nicht wenigstens die
   Module selbst nicht immer neu zeichnen? Wir könnten das doch irgendwie
@@ -20,6 +23,9 @@ ABRUNDUNG:
 - Auch die maximale Patchgröße kann man überschreiten. Also sollte
   man auch den Verbrauch in dieser Kategorie anzeigen. Gibt es noch
   weitere Dinge?
+
+- Sobald die Linuxversion da ist, könnte man mal mit valgrind Speicherlöcher
+  suchen.
 
 IDEEN:
 - Section: save as patch...

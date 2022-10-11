@@ -1,24 +1,10 @@
-BUGS:
+TODO für die 1.0:
 
-- Verschiedene Crashes. Ich glaube, ich bin bei den beiden
-  GraphicScenes RackView und PatchSectionView noch nicht sauber.
-  Der Zustand von allen Items muss immer genau definiert sein.
-  Soll ich überhaupt Pointer auf die Items aufbewahren?
-  Sind irgendwo noch explizite deletes? Oder kann man vielleicht
-  Items so machen, dass sie nicht deleted werden und doch persistent
-  global halten. Solche, wo es einen Pointer drauf gibt.
-
-- Auch die anderen GraphicScene geradeziehen, was das delete
-  betrifft. Die Items werden alle von clear() deleted.
-
+- Nix
 
 TODO:
-
-- Unter Linux mit valgrind nochmal nach Speicherlöchern suchen
 
 - Wir müssen noch entscheiden, wie wir die Forge-Releases mit den Firmware-Releases
   verheiraten. Hat eine Forge immer genau eine Firmware? Dann müssten wir die Forge
   eigentlich immer gleichzeitig rausbringen.
   Release erzeugen. Dann die JSON-Datei übertragen und die Forge auch erzeugen.
-
-- Windows: Das Icon wird noch nicht genommen.
