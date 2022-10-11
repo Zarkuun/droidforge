@@ -65,6 +65,8 @@ QtApplication {
         "main/editoractions.h",
         "rackview/smoothellipseitem.cpp",
         "rackview/smoothellipseitem.h",
+        "utilities/ellipsislabel.cpp",
+        "utilities/ellipsislabel.h",
         "utilities/iconbase.cpp",
         "utilities/iconbase.h",
         "main/patchoperator.cpp",

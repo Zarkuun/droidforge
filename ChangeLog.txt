@@ -8,6 +8,7 @@
     * FIX: You now can enter fractions of the form 1/X into in input cell also
 	       directly, without the dialog
 	* FIX: Fixed memory leak that made the Forge more and more RAM.
+	* FIX: Minor layout fixes in value selection dialog
 
     Features:
 	* Do an automatic backup of your patch whenever it is modified. If the Forge

@@ -5,6 +5,7 @@
 #include "atomsubselector.h"
 #include "numberselector.h"
 #include "patch.h"
+#include "ellipsislabel.h"
 
 #include <QWidget>
 #include <QPushButton>
@@ -22,7 +23,7 @@ class AtomSelector : public QWidget
     QList<AtomSubSelector *> subSelectors;
     QList<QPushButton *> buttons;
     QLabel *labelDescription;
-    QLabel *labelJackType;
+    EllipsisLabel *labelJackType;
     QLabel *labelJackTypeIcon;
     QScrollArea *scrollArea;
     jacktype_t jackType;

@@ -69,9 +69,8 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
 
     // Jack type
     QHBoxLayout *typeLayout = new QHBoxLayout();
-    labelJackType = new QLabel(this);
-    labelJackType->setWordWrap(true);
-    labelJackType->setWordWrap(true);
+    labelJackType = new EllipsisLabel(this);
+    labelJackType->setMinimumWidth(100);
     labelJackType->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     labelJackTypeIcon = new QLabel(this);
@@ -83,9 +82,9 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     typeLayout->setStretch(1, 1);
     mainLayout->addLayout(typeLayout);
 
-    mainLayout->setStretch(0, 10);
-    mainLayout->setStretch(1, 3);
-    mainLayout->setStretch(1, 0);
+    mainLayout->setStretch(0, 10); // Atom selectors
+    mainLayout->setStretch(1, 7);  // Description
+    mainLayout->setStretch(1, 0);  // Jack type
 }
 void AtomSelector::setAllowFraction(bool af)
 {
@@ -98,7 +97,9 @@ void AtomSelector::setCircuitAndJack(QString circuit, QString jack)
         numberSelector->setCircuitAndJack(circuit, jack);
 
     QString whence = jackType == JACKTYPE_INPUT ? "inputs" : "outputs";
-    labelDescription->setText(the_firmware->jackDescriptionHTML(circuit, whence, jack));
+    QString desc = the_firmware->jackDescriptionHTML(circuit, whence, jack);
+    shout << desc;
+    labelDescription->setText(desc);
     labelJackType->setText(the_firmware->jackTypeDescriptionHTML(circuit, whence, jack));
     // auto icon = IconBase::jackTypeSymbol("cv");
     QString jackType = the_firmware->jackTypeSymbol(circuit, whence, jack);
