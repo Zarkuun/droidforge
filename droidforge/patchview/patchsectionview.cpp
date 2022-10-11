@@ -741,7 +741,8 @@ void PatchSectionView::pasteJacksFromClipboard()
             jaReparsed->setDisabled(true); // not allowed to paste enabled jacks into disabled circuit
 
         circuit->insertJackAssignment(jaReparsed, index);
-        section()->setCursorRow(index);
+        if (!circuit->isFolded())
+            section()->setCursorRow(index);
         index++;
     }
     patch->commit(tr("pasting %1 parameters").arg(jas.count()));
