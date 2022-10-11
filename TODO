@@ -8,9 +8,6 @@ BUGS:
   Circuit mit dem Cursor zu tief runterfahren (hab ich das nicht
   schon gefixt gehabt??)
 
-- Ich glaub ich brauch wirklich das Autosave bevor ich auf die 1.0
-  gehe. Irgendein Crash lauert da noch.
-
 - Verschiedene Crashes. Ich glaube, ich bin bei den beiden
   GraphicScenes RackView und PatchSectionView noch nicht sauber.
   Der Zustand von allen Items muss immer genau definiert sein.

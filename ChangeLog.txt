@@ -9,6 +9,11 @@
 	       directly, without the dialog
 	* FIX: Fixed memory leak that made the Forge more and more RAM.
 
+    Features:
+	* Do an automatic backup of your patch whenever it is modified. If the Forge
+	  or your computer crashes, you can restore that backup (you will be asked).
+
+
 0.8:
 	Bug fixes:
 	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason

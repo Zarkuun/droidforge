@@ -387,12 +387,12 @@ void PatchOperator::loadFile(const QString &filePath, int how)
         return;
 
     // Use auto backup file if present
-    QString backupname = backupFilePath(filePath);
+    QString backupPath = backupFilePath(filePath);
     bool restore = false;
     if (how == FILE_MODE_LOAD)
     {
-        QFileInfo info(backupname);
-        if (info.exists()) {
+        QFileInfo info(backupPath);
+        if (info.exists() && info.size() > 0) {
             QString date = info.birthTime().toString();
             int reply = QMessageBox::question(
                         the_forge,
@@ -405,14 +405,14 @@ void PatchOperator::loadFile(const QString &filePath, int how)
                            "Date: %3\n\n"
                            "Do you want to to restore that backup? If you choose "
                            "\"No\", I will delete that backup and go ahead.\n")
-                        .arg(backupname).arg(info.size()).arg(date),
+                        .arg(backupPath).arg(info.size()).arg(date),
                         QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
                         QMessageBox::Yes);
             if (reply == QMessageBox::Cancel)
                 return;
             else if (reply == QMessageBox::No)
             {
-                QFile backup(backupname);
+                QFile backup(backupPath);
                 backup.remove();
             }
             else
@@ -426,13 +426,14 @@ void PatchOperator::loadFile(const QString &filePath, int how)
             loadPatch(filePath);
             if (restore) {
                 try {
-                    restoreBackup(backupname);
+                    restore = false;
+                    restoreBackup(backupPath);
                 }
                 catch (ParseException &e) {
                     QMessageBox::critical(
                                 the_forge,
-                                tr("Parse error. The backup cannot be restored."),
-                                e.toString(),
+                                tr("Cannot restore backup"),
+                                tr("Parse error in the backup file. The backup cannot be restored. I will use the original file."),
                                 QMessageBox::Ok);
                 }
             }
@@ -442,6 +443,24 @@ void PatchOperator::loadFile(const QString &filePath, int how)
         emit patchModified();
     }
     catch (ParseException &e) {
+        // If the loading of the file has not worked, but we have a backup,
+        // we rename the backup into the actual file name and try again
+        if (restore) { // initial load has not worked
+            QFile b(backupPath);
+            QFile f(filePath);
+            f.remove();
+            if (b.rename(f.fileName())) {
+                try {
+                    loadPatch(filePath);
+                    emit patchModified();
+                    return;
+                }
+                catch (ParseException &innerE) {
+                    e = innerE;
+                }
+            }
+        }
+
         QMessageBox box;
         box.setText(MainWindow::tr("Cannot load ") + filePath);
         box.setInformativeText(e.toString());
@@ -638,14 +657,12 @@ void PatchOperator::createBackup()
 {
     QString backupname = backupFilePath(patch->getFilePath());
     patch->saveToFile(backupname);
-    shout << "created " << backupname;
 }
 void PatchOperator::removeBackup()
 {
     QString backupname = backupFilePath(patch->getFilePath());
     QFile file(backupname);
-    if (file.remove())
-        shout << "removed " << backupname;
+    file.remove();
 }
 void PatchOperator::integratePatch(const QString &aFilePath)
 {
@@ -927,10 +944,8 @@ void PatchOperator::modifyPatch()
 {
     if (patch->isModified())
         createBackup();
-    else {
-        shout << "KOMISCH. Nicht modified";
+    else
         removeBackup();
-    }
 }
 Patch *PatchOperator::editSource(const QString &title, QString oldSource)
 {
