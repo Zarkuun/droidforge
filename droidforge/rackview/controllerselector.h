@@ -18,6 +18,8 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void moveCursor(int whence);
+    void moveCursorHome();
+    void moveCursorEnd();
 
 private:
     void placeCursor();

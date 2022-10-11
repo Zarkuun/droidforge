@@ -55,6 +55,10 @@ void ControllerChooseDialog::keyPressEvent(QKeyEvent *event)
         controllerSelector->moveCursor(-1);
     else if (event->key() == Qt::Key_Right)
        controllerSelector->moveCursor(1);
+    else if (event->key() == Qt::Key_Home)
+       controllerSelector->moveCursorHome();
+    else if (event->key() == Qt::Key_End)
+       controllerSelector->moveCursorEnd();
     else
         Dialog::keyPressEvent(event);
 }

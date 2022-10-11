@@ -16,6 +16,7 @@
 	Features:
 	* Do an automatic backup of your patch whenever it is modified. If the Forge
 	  or your computer crashes, you can restore that backup (you will be asked).
+	* Support the keys Home and End in the controller selection dialog.
 
 
 0.8:

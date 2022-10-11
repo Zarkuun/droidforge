@@ -111,3 +111,14 @@ void ControllerSelector::moveCursor(int whence)
     selectedController = controllers[(sel + whence + count) % count];
     placeCursor();
 }
+void ControllerSelector::moveCursorHome()
+{
+    selectedController = ModuleBuilder::allControllers().first();
+    placeCursor();
+}
+
+void ControllerSelector::moveCursorEnd()
+{
+    selectedController = ModuleBuilder::allControllers().last();
+    placeCursor();
+}
