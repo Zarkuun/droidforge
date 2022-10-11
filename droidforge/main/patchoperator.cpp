@@ -144,6 +144,9 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     connect(this, &PatchOperator::droidStateChanged, the_hub, &UpdateHub::changeDroidState);
     connect(this, &PatchOperator::patchingChanged, the_hub, &UpdateHub::changePatching);
 
+    // Event that we are interested in
+    connect(the_hub, &UpdateHub::patchModified, this, &PatchOperator::modifyPatch);
+
     QSettings settings;
     if (initialFilename == "" && settings.contains("lastfile"))
         initialFilename = settings.value("lastfile").toString();
@@ -380,16 +383,63 @@ void PatchOperator::updateSDAndX7State()
 }
 void PatchOperator::loadFile(const QString &filePath, int how)
 {
-    if (FILE_MODE_LOAD && !checkModified())
+    if (how == FILE_MODE_LOAD && !checkModified())
         return;
+
+    // Use auto backup file if present
+    QString backupname = backupFilePath(filePath);
+    bool restore = false;
+    if (how == FILE_MODE_LOAD)
+    {
+        QFileInfo info(backupname);
+        if (info.exists()) {
+            QString date = info.birthTime().toString();
+            int reply = QMessageBox::question(
+                        the_forge,
+                        tr("Auto backup detected"),
+                        tr("There is an automatic backup file of the patch that you "
+                           "are going to load. Maybe the Forge or your computer crashed "
+                           "last time.\n\n"
+                           "Path: %1\n"
+                           "Size: %2 bytes\n"
+                           "Date: %3\n\n"
+                           "Do you want to to restore that backup? If you choose "
+                           "\"No\", I will delete that backup and go ahead.\n")
+                        .arg(backupname).arg(info.size()).arg(date),
+                        QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
+                        QMessageBox::Yes);
+            if (reply == QMessageBox::Cancel)
+                return;
+            else if (reply == QMessageBox::No)
+            {
+                QFile backup(backupname);
+                backup.remove();
+            }
+            else
+                restore = true;
+        }
+    }
 
     try {
         addToRecentFiles(filePath);
-        if (how == FILE_MODE_LOAD)
+        if (how == FILE_MODE_LOAD) {
             loadPatch(filePath);
+            if (restore) {
+                try {
+                    restoreBackup(backupname);
+                }
+                catch (ParseException &e) {
+                    QMessageBox::critical(
+                                the_forge,
+                                tr("Parse error. The backup cannot be restored."),
+                                e.toString(),
+                                QMessageBox::Ok);
+                }
+            }
+        }
         else
             integratePatch(filePath);
-
+        emit patchModified();
     }
     catch (ParseException &e) {
         QMessageBox box;
@@ -408,8 +458,10 @@ void PatchOperator::open()
 
     QString filePath = QFileDialog::getOpenFileName(
                 the_forge, "", "", "DROID patches (*.ini)");
-    if (!filePath.isEmpty())
+
+    if (!filePath.isEmpty()) {
         loadFile(filePath, FILE_MODE_LOAD);
+    }
 }
 void PatchOperator::clearRecentFiles()
 {
@@ -469,7 +521,8 @@ bool PatchOperator::saveAndCheck(QString path)
     if (patch->save(path)) {
         patch->setFilePath(path);
         setLastFilePath(path);
-        emit patchModified(); // mod flag
+        emit patchModified(); // mod flag has changed
+        removeBackup();
         return true;
     }
     else
@@ -479,7 +532,10 @@ bool PatchOperator::saveAndCheck(QString path)
                     tr("There was an error saving your patch to disk"));
     return false;
 }
-
+QString PatchOperator::backupFilePath(QString path)
+{
+    return path + ".save";
+}
 void PatchOperator::openEnclosingFolder()
 {
     QFileInfo fileinfo(patch->getFilePath());
@@ -567,7 +623,29 @@ void PatchOperator::loadPatch(const QString &aFilePath)
 
     patch->commit(tr("loading patch"));
     setLastFilePath(aFilePath);
+}
+void PatchOperator::restoreBackup(const QString &backupPath)
+{
+    Patch backupPatch;
+    parser.parseFile(backupPath, &backupPatch); // throws exception
+    backupPatch.cloneInto(patch);
+    if (patch->numSections() == 0)
+        patch->addSection(new PatchSection());
+    patch->commit(tr("restoring backup"));
     emit patchModified();
+}
+void PatchOperator::createBackup()
+{
+    QString backupname = backupFilePath(patch->getFilePath());
+    patch->saveToFile(backupname);
+    shout << "created " << backupname;
+}
+void PatchOperator::removeBackup()
+{
+    QString backupname = backupFilePath(patch->getFilePath());
+    QFile file(backupname);
+    if (file.remove())
+        shout << "removed " << backupname;
 }
 void PatchOperator::integratePatch(const QString &aFilePath)
 {
@@ -844,6 +922,15 @@ void PatchOperator::globalClipboardChanged()
 {
     the_clipboard->copyFromGlobalClipboard();
     emit clipboardChanged();
+}
+void PatchOperator::modifyPatch()
+{
+    if (patch->isModified())
+        createBackup();
+    else {
+        shout << "KOMISCH. Nicht modified";
+        removeBackup();
+    }
 }
 Patch *PatchOperator::editSource(const QString &title, QString oldSource)
 {

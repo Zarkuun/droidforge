@@ -70,6 +70,7 @@ private slots:
     void barePatchSource();
     void fixLEDMismatch();
     void globalClipboardChanged();
+    void modifyPatch();
 
 public slots:
     void clearRecentFiles();
@@ -88,9 +89,14 @@ private:
     Patch *editSource(const QString &title, QString oldSource);
     void showSource(const QString &title, QString source);
     bool saveAndCheck(QString path);
+    QString backupFilePath(QString path);
+    void restoreBackup(const QString &backupPath);
+    void createBackup();
+    void removeBackup();
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);
 #endif
+
 
 signals:
     void patchModified();

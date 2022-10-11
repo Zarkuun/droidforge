@@ -1,4 +1,10 @@
 ABRUNDUNG:
+- Rackview: Das update dauert teils schon sehr lang. Und das macht
+  dann alles andere auch langsamer. Könnten wir nicht wenigstens die
+  Module selbst nicht immer neu zeichnen? Wir könnten das doch irgendwie
+  cachen? Wir merken uns die Modulkonfiguration und malen nur neu, wenn
+  die sich wirklich geändert hat.
+
 - Dieser Hintdialog. Den könnten wir noch noch viel öfter einsetzen...
 
 - Handcursor für Icons usw. die man klicken kann (da hat Qt
