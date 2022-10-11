@@ -1,5 +1,14 @@
-0.9:
+0.8:
 	Bug fixes:
+	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason
+	  was a comment like "# BD = bass drum" in the global comment section (reported
+	  and nailed down by @Brian (The Aefonic))
+	* FIX: When double clicking on the background, the new circuit will now be placed
+	  nearest to the click. That way you can easily decide where to insert a new
+	  circuit. Before it was always on the top (reported by @odessa)
+	* FIX: Fix missing icons for button/LED mismatch (bulb) and folded circuit
+	* FIX: Fix cursor moving to unchartered territory when adding a jack while the
+	  circuit is folded.
 	* FIX: Fix titles of source code editor windows: make clear what's edited.
 	* FIX: Fix window suddenly getting wider in certain situations.
 	* FIX: Add new sections at the end when double clicking
@@ -19,19 +28,6 @@
 	* Do an automatic backup of your patch whenever it is modified. If the Forge
 	  or your computer crashes, you can restore that backup (you will be asked).
 	* Support the keys Home and End in the controller selection dialog.
-
-
-0.8:
-	Bug fixes:
-	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason
-	  was a comment like "# BD = bass drum" in the global comment section (reported
-	  and nailed down by @Brian (The Aefonic))
-	* FIX: When double clicking on the background, the new circuit will now be placed
-	  nearest to the click. That way you can easily decide where to insert a new
-	  circuit. Before it was always on the top (reported by @odessa)
-	* FIX: Fix missing icons for button/LED mismatch (bulb) and folded circuit
-	* FIX: Fix cursor moving to unchartered territory when adding a jack while the
-	  circuit is folded.
 
 0.7:
     Bug fixes:
