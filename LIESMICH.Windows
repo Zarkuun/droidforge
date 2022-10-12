@@ -1,9 +1,0 @@
-Schritte zum Erstellen der Windowsversion
-
-1. git pull
-2. In QT Creator aufmachen
-3. Auf Release umstellen.
-   Das dauert ne Weile
-4. Mit dem Hammer bauen
-   Das dauert jetzt ewig
-5. ./winrelease aufrufen
