@@ -48,9 +48,6 @@ echo -n "Installing Info.plist..."
 sed "s/DROIDFORGEVERSION/$VERSION/g" Info.plist > "$TARGET_INFO_PLIST"
 echo $OK
 
-# echo -m "Installing GPL License..."
-# cp -v "$LICENSE" "$TARGET_LICENSE"
-
 echo -n "Installing icon..."
 mkdir -p "$APP_DIR/Contents/Resources"
 cp "$APP_ICON" "$APP_DIR/Contents/Resources"
@@ -58,7 +55,6 @@ echo $OK
 
 echo -n "Adding all dependencies and sign (with macdeployqt)..."
 pushd "$INSTALL_ROOT" >/dev/null
-# macdeployqt "$NAME.app" -verbose=2 -dmg -hardened-runtime -timestamp -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT >> $LOGFILE 2>&1
 macdeployqt "$NAME.app" -verbose=2 -hardened-runtime -timestamp -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT >> $LOGFILE 2>&1
 echo $OK
 popd >/dev/null
@@ -67,26 +63,13 @@ echo -n "Creating DMG contents in $DMGDIR..."
 rm -rf "$DMGDIR"
 mkdir "$DMGDIR"
 ln -sf /Applications "$DMGDIR/Applications"
-# mkdir "$DMGDIR/.background"
-# cp "DMG Background.png" "$DMGDIR/.background"
 mv "$APP_DIR" "$DMGDIR"
 cp _DS_Store "$DMGDIR/.DS_Store"
 echo $OK
 
-# Das mit dem Backgroundimage klappt noch nicht
-
 echo -n "Creating DMG with dmgcanvas..."
-dmgcanvas DROID\ Forge.dmgCanvas "$DMGNAME" -setTextString version "$NAME $VERSION" >> $LOGFILE 2>&1
+dmgcanvas DROID\ Forge.dmgCanvas "$DMGNAME" >> $LOGFILE 2>&1
 echo $OK
-
-
-
-## echo "STOP HIER!! Das ist ein Test"
-## exit 0
-## 
-## echo -n "Creating DMG..."
-## hdiutil create -volname "$NAME" -srcfolder "$DMGDIR" -ov -format UDZO "$DMGNAME" >> "$LOGFILE" 2>&1
-## echo $OK
 
 echo -n "Signing DMG"...
 codesign -vvv -f --options runtime --timestamp -s "Developer ID" "$DMGNAME" >> "$LOGFILE" 2>&1
