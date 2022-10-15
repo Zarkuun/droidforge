@@ -20,10 +20,6 @@ cd "$WORKDIR"
 $WINDEPLOYQT "DROID Forge.exe"
 cd ..
 
-# This was needed when the compiler mingw was used
-# cp -v mingwlibs/* "$WORKDIR"
-
-
 echo "Creating package for Windows in $PACDIR..."
 rm -rf "$PACDIR"
 mkdir -vp "$DATADIR" "$METADIR" "$PACDIR/config"
