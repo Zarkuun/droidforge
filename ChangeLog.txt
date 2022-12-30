@@ -2,6 +2,8 @@
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the page
 	  numbers.
+	* FIX: Fix crash when deleting contents of a cell of an undefined parameter
+	  (found by @Michael Gerdau)
 
 	Features:
 	* Make white label areas wider, so that more text fits in (suggested by

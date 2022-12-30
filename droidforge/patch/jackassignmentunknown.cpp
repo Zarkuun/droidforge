@@ -31,7 +31,10 @@ Atom *JackAssignmentUnknown::atomAt(int)
 
 void JackAssignmentUnknown::replaceAtom(int, Atom *newAtom)
 {
-    atom = new AtomInvalid(newAtom->toString());
+    QString text = "";
+    if (newAtom)
+        text = newAtom->toString();
+    atom = new AtomInvalid(text);
 }
 
 void JackAssignmentUnknown::parseExpression(const QString &expression)
