@@ -1,6 +1,9 @@
-0.9:
+1.1:
+	Bug fixes:
+	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the page
+	  numbers.
 
-0.8:
+1.0:
 	Bug fixes:
 	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason
 	  was a comment like "# BD = bass drum" in the global comment section (reported
