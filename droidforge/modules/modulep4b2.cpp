@@ -43,7 +43,7 @@ float ModuleP4B2::labelDistance(register_type_t type, unsigned) const
 float ModuleP4B2::labelWidth(register_type_t type, unsigned) const
 {
     if (type == REGISTER_POT)
-        return RACV_LARGE_LABEL_WIDTH;
+        return RACV_POT_LABEL_WIDTH;
     else
-        return RACV_SMALL_LABEL_WIDTH;
+        return RACV_BUTTON_LABEL_WIDTH;
 }

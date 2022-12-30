@@ -94,8 +94,9 @@
 #define RACV_CONTROLLER_SNAP_DISTANCE        (1.8 * RACV_PIXEL_PER_HP)
 #define RACV_ARROW_HEAD_SIZE                 (0.6 * RACV_PIXEL_PER_HP)
 #define RACV_DRAG_CIRCLE_SIZE                (2.5 * RACV_PIXEL_PER_HP)
-#define RACV_SMALL_LABEL_WIDTH               2.0
-#define RACV_LARGE_LABEL_WIDTH               4.3
+#define RACV_BUTTON_LABEL_WIDTH              2.43
+#define RACV_JACK_LABEL_WIDTH                1.93
+#define RACV_POT_LABEL_WIDTH                 4.8
 #define RACV_LABEL_HEIGHT                    (0.7 * RACV_PIXEL_PER_HP)
 
 

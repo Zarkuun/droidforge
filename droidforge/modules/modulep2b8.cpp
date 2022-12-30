@@ -10,13 +10,10 @@ unsigned ModuleP2B8::numRegisters(register_type_t type) const
     else
         return 0;
 }
-
 bool ModuleP2B8::labelNeedsBackground(register_type_t type, unsigned) const
 {
     return type == REGISTER_POT;
 }
-
-
 QPointF ModuleP2B8::registerPosition(register_type_t type, unsigned number) const
 {
     if (type == REGISTER_POT) {
@@ -28,7 +25,6 @@ QPointF ModuleP2B8::registerPosition(register_type_t type, unsigned number) cons
         return QPointF(column * 2.5 + 1.27, row * 2.97 + 13.43);
     }
 }
-
 float ModuleP2B8::registerSize(register_type_t type, unsigned) const
 {
     if (type == REGISTER_POT)
@@ -36,7 +32,6 @@ float ModuleP2B8::registerSize(register_type_t type, unsigned) const
     else
         return CONTROL_BUTTON_SIZE;
 }
-
 float ModuleP2B8::labelDistance(register_type_t type, unsigned) const
 {
     if (type == REGISTER_POT)
@@ -44,11 +39,10 @@ float ModuleP2B8::labelDistance(register_type_t type, unsigned) const
     else
         return -2.62;
 }
-
 float ModuleP2B8::labelWidth(register_type_t type, unsigned) const
 {
     if (type == REGISTER_POT)
-        return RACV_LARGE_LABEL_WIDTH;
+        return RACV_POT_LABEL_WIDTH;
     else
-        return RACV_SMALL_LABEL_WIDTH;
+        return RACV_BUTTON_LABEL_WIDTH;
 }

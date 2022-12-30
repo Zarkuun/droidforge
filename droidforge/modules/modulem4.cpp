@@ -40,3 +40,8 @@ float ModuleM4::labelDistance(register_type_t type, unsigned) const
     else
         return -2.35;
 }
+
+float ModuleM4::labelWidth(register_type_t, unsigned) const
+{
+    return 3.4;
+}

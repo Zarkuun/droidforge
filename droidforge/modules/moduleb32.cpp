@@ -8,7 +8,6 @@ unsigned ModuleB32::numRegisters(register_type_t type) const
     else
         return 0;
 }
-
 QPointF ModuleB32::registerPosition(register_type_t, unsigned number) const
 {
    unsigned row = (number - 1) / 4;
@@ -17,12 +16,10 @@ QPointF ModuleB32::registerPosition(register_type_t, unsigned number) const
    return QPointF(column * 2.50 + 1.258,
                   row * 2.767 + 2.99);
 }
-
 float ModuleB32::registerSize(register_type_t, unsigned) const
 {
     return CONTROL_BUTTON_SIZE;
 }
-
 float ModuleB32::labelDistance(register_type_t, unsigned) const
 {
     return -2.62;

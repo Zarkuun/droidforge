@@ -3,6 +3,10 @@
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the page
 	  numbers.
 
+	Features:
+	* Make white label areas wider, so that more text fits in (suggested by
+	  @Second_Breakfast)
+
 1.0:
 	Bug fixes:
 	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason
