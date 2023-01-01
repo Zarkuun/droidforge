@@ -5,9 +5,10 @@
 	* FIX: Fix crash when deleting contents of a cell of an undefined parameter
 	  (found by @Michael Gerdau)
 
-	Features:
+	Clean up:
 	* Make white label areas wider, so that more text fits in (suggested by
 	  @Second_Breakfast)
+	* Rename "recent files" to "recent patches"
 
 1.0:
 	Bug fixes:
