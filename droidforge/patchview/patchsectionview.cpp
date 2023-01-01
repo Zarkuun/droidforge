@@ -1237,7 +1237,7 @@ void PatchSectionView::editCircuitComment(int key)
     Circuit *circuit = currentCircuit();
 
     QString oldComment;
-    if (key)
+    if (key && key != Qt::Key_Return)
         oldComment = QString(QChar(key));
     else
         oldComment = circuit->getComment();

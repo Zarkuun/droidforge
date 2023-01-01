@@ -4,6 +4,7 @@
 	  numbers.
 	* FIX: Fix crash when deleting contents of a cell of an undefined parameter
 	  (found by @Michael Gerdau)
+	* FIX: Fix crash when hitting enter on a circuit comment
 
 	Clean up:
 	* Make white label areas wider, so that more text fits in (suggested by
