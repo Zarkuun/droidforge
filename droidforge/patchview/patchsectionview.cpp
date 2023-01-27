@@ -67,6 +67,7 @@ PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
     connect(the_hub, &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
     connect(the_hub, &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
     connect(the_hub, &UpdateHub::patchingChanged, this, &PatchSectionView::changePatching);
+    CONNECT_ACTION(ACTION_TEXT_MODE, &PatchSectionView::modifyPatch);
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PatchSectionView::clockTick);
@@ -245,15 +246,23 @@ void PatchSectionView::editJackComment()
 }
 void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip)
 {
+    bool text_mode = ACTION(ACTION_TEXT_MODE)->isChecked();
+
     CircuitView *cv = circuitViews[pos.circuitNr];
     QRectF rect = cv->cellRect(pos.row, pos.column);
 
     IconMarker *marker = new IconMarker(pos, type, toolTip);
-    int offset;
-    if (pos.row == ROW_CIRCUIT)
-        offset = cv->nextHeaderMarkerOffset();
+    int x_offset, y_offset = 0;
+
+    if (pos.row == ROW_CIRCUIT) {
+        x_offset = cv->nextHeaderMarkerOffset();
+        if (text_mode) {
+            x_offset -= 4;
+            y_offset -= 2;
+        }
+    }
     else
-        offset = -rect.height();
+        x_offset = -rect.height();
     scene()->addItem(marker);
 
     // If a jack (not an atom) has both a comment and a problem marker
@@ -263,10 +272,17 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
     // if we like.
     JackAssignment *ja = section()->jackAssignmentAt(pos);
     if (ja && ja->getComment() != "" && pos.column == 0 && type == ICON_MARKER_PROBLEM)
-        offset -= rect.height();
+        x_offset -= rect.height();
 
-    QPointF p(cv->pos().x() + rect.right() + offset,
-              cv->pos().y() + rect.top());
+    if (text_mode) {
+        x_offset -= 3;
+        y_offset -= 3.5;
+    }
+
+    QPointF p(cv->pos().x() + rect.right() + x_offset,
+              cv->pos().y() + rect.top() + y_offset);
+
+
 
     marker->setPos(p);
 }
@@ -280,9 +296,10 @@ void PatchSectionView::rebuildPatchSection()
 {
     deletePatchSection();
     buildPatchSection();
-    createFoldMarkers();
-    createProblemMarkers();
+    if (!ACTION(ACTION_TEXT_MODE)->isChecked())
+        createFoldMarkers();
     createInfoMarkers();
+    createProblemMarkers();
     createLEDMismatchMarkers();
     updateCursor();
 }

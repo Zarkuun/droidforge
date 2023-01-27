@@ -35,6 +35,7 @@ public:
     QString toBare() const;
     QString getName() const { return name; };
     QString getComment() const;
+    QString getCommentWithHashes() const;
     bool isDisabled() const { return disabled; };
     bool isFolded() const { return folded; };
     void toggleFold() { folded = !folded; };

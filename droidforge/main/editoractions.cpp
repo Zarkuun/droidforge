@@ -25,6 +25,10 @@ EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
     connect(the_hub, &UpdateHub::cursorMoved, this, &EditorActions::moveCursor);
     connect(the_hub, &UpdateHub::patchingChanged, this, &EditorActions::changePatching);
     connect(the_hub, &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
+
+    CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &EditorActions::persistViewToggles);
+    CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &EditorActions::persistViewToggles);
+    CONNECT_ACTION(ACTION_TEXT_MODE, &EditorActions::persistViewToggles);
 }
 
 void EditorActions::updateIcons()
@@ -263,12 +267,17 @@ void EditorActions::createActions()
     actions[ACTION_SHOW_REGISTER_LABELS] = new QAction(tr("Show &register labels"), this);
     actions[ACTION_SHOW_REGISTER_LABELS]->setShortcut(QKeySequence(tr("F3")));
     actions[ACTION_SHOW_REGISTER_LABELS]->setCheckable(true);
-    actions[ACTION_SHOW_REGISTER_LABELS]->setChecked(true);
+    actions[ACTION_SHOW_REGISTER_LABELS]->setChecked(settings.value("show_register_labels", true).toBool());
 
     actions[ACTION_SHOW_REGISTER_USAGE] = new QAction(tr("Sho&w used registers"), this);
     actions[ACTION_SHOW_REGISTER_USAGE]->setShortcut(QKeySequence(tr("F4")));
     actions[ACTION_SHOW_REGISTER_USAGE]->setCheckable(true);
-    actions[ACTION_SHOW_REGISTER_USAGE]->setChecked(true);
+    actions[ACTION_SHOW_REGISTER_USAGE]->setChecked(settings.value("show_register_usage", true).toBool());
+
+    actions[ACTION_TEXT_MODE] = new QAction(tr("Simplified text mode"), this);
+    actions[ACTION_TEXT_MODE]->setShortcut(QKeySequence(tr("F5")));
+    actions[ACTION_TEXT_MODE]->setCheckable(true);
+    actions[ACTION_TEXT_MODE]->setChecked(settings.value("simplified_text_mode", false).toBool());
 
     actions[ACTION_SHOW_G8_ON_DEMAND] = new QAction(tr("Show &G8 only when used"), this);
     actions[ACTION_SHOW_G8_ON_DEMAND]->setCheckable(true);
@@ -500,4 +509,11 @@ void EditorActions::updateSaveToSDAction(action_t action)
     }
     actions[action]->setEnabled(enabled);
     actions[action]->setToolTip(tooltip);
+}
+void EditorActions::persistViewToggles()
+{
+    QSettings settings;
+    settings.setValue("show_register_labels", actions[ACTION_SHOW_REGISTER_LABELS]->isChecked());
+    settings.setValue("show_register_usage", actions[ACTION_SHOW_REGISTER_USAGE]->isChecked());
+    settings.setValue("simplified_text_mode", actions[ACTION_TEXT_MODE]->isChecked());
 }

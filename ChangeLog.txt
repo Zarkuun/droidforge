@@ -1,17 +1,31 @@
 1.1:
+	New features:
+	* New "Text mode" view option. In this mode all decorations, icons, lines,
+	  etc are omitted from the patch view, the font is monospaced and everything
+	  looks much like a raw Droid patch. The whole way you edit the patch is
+	  still the same as in normal mode.
+	* The settings "show register labels" and "show register usage" are now
+	  saved and not reset every time you start the Forge.
+
 	Bug fixes:
-	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the page
-	  numbers.
+	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
+	  with the wrong page numbers.
 	* FIX: Fix crash when deleting contents of a cell of an undefined parameter
 	  (found by @Michael Gerdau)
 	* FIX: Fix crash when hitting enter on a circuit comment
 
-	Clean up:
+	Clean ups:
 	* Make white label areas wider, so that more text fits in (suggested by
 	  @Second_Breakfast)
 	* Rename "recent files" to "recent patches"
 
+
 1.0:
+	New features:
+	* Do an automatic backup of your patch whenever it is modified. If the Forge
+	  or your computer crashes, you can restore that backup (you will be asked).
+	* Support the keys Home and End in the controller selection dialog.
+
 	Bug fixes:
 	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason
 	  was a comment like "# BD = bass drum" in the global comment section (reported
@@ -36,11 +50,6 @@
 	* FIX: Fix size of marker for used X1 register
 	* FIX: Don't swap controllers when you drag a button/pot into an empty
 	       space of another controller.
-
-	Features:
-	* Do an automatic backup of your patch whenever it is modified. If the Forge
-	  or your computer crashes, you can restore that backup (you will be asked).
-	* Support the keys Home and End in the controller selection dialog.
 
 0.7:
     Bug fixes:

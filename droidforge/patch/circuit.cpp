@@ -376,6 +376,16 @@ QString Circuit::getComment() const
     else
         return comment.join('\n') + "\n";
 }
+QString Circuit::getCommentWithHashes() const
+{
+    if (comment.empty())
+        return "";
+    QString text = "";
+    for (auto& line: comment) {
+        text += "# " + line + "\n";
+    }
+    return text;
+}
 void Circuit::setDisabledWithJacks(bool d)
 {
     disabled = d;

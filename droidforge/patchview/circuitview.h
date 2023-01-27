@@ -21,6 +21,7 @@ class CircuitView : public QObject, public QGraphicsItem
     QPixmap icon;
     QImage  iconImage;
     int markerOffset;
+    QFont fixedFont;
 
 public:
     CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const *selection, float width, unsigned lineHeight);
@@ -36,6 +37,7 @@ public:
     int nextHeaderMarkerOffset();
 
 private:
+    bool textMode() const;
     bool isFolded() const { return circuit->isFolded(); };
     void paintJacks(QPainter *painter);
     void paintJack(QPainter *painter, JackAssignment *ja, unsigned row);
@@ -48,6 +50,8 @@ private:
     void paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput, int row, int column);
     // geometry helpers
     float totalHeight() const;
+    float headerHeight() const;
+    float jackHeight() const;
     float commentHeight() const;
     float columnWidth(int c) const;
     float column123Width() const;

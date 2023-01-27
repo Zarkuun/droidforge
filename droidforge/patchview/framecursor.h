@@ -21,6 +21,7 @@ class FrameCursor : public QObject, public QGraphicsRectItem
     QPropertyAnimation animation;
     cursor_mode_t mode;
     QRectF lastRect;
+    QColor color;
 
 public:
     FrameCursor();
@@ -35,6 +36,7 @@ signals:
 
 private:
     Q_PROPERTY(float animationPhase READ getanimationPhase WRITE setanimationPhase NOTIFY animationPhaseChanged)
+    bool textMode() const;
 };
 
 #endif // FRAMECURSOR_H

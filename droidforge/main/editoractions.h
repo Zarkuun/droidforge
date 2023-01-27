@@ -16,6 +16,7 @@ typedef enum {
     ACTION_UPLOAD_TO_DROID,
     ACTION_SHOW_REGISTER_LABELS,
     ACTION_SHOW_REGISTER_USAGE,
+    ACTION_TEXT_MODE,
     ACTION_SHOW_G8_ON_DEMAND,
     ACTION_SHOW_X7_ON_DEMAND,
     ACTION_CLEAR_RECENT_FILES,
@@ -127,6 +128,7 @@ private:
     void updatePasteAction();
     void updateUploadAction(action_t action);
     void updateSaveToSDAction(action_t action);
+    void persistViewToggles();
 };
 
 extern EditorActions *the_actions;
