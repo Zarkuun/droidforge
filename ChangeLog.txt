@@ -18,6 +18,8 @@
 	* Make white label areas wider, so that more text fits in (suggested by
 	  @Second_Breakfast)
 	* Rename "recent files" to "recent patches"
+	* Replaced app icon by a version contributed by @Harrison (thanks for your nice icon,
+	  Harrison!)
 
 
 1.0:
