@@ -54,7 +54,7 @@ UserManual::UserManual(QWidget *parent)
 }
 void UserManual::jumpToPage(unsigned nr)
 {
-    pageNavigator->jump(nr, QPointF(0,0));
+    pageNavigator->jump(nr - 1, QPointF(0,0));
 }
 void UserManual::openExternally()
 {
