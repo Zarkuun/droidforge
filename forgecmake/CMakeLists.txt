@@ -228,6 +228,7 @@ usermanual.cpp
 usermanual.h
 windowsmidihost.cpp
 windowsmidihost.h
+resources.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

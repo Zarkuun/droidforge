@@ -1,0 +1,2 @@
+#!/bin/bash
+cp -v ~/Google\ Drive/Der\ Mann\ mit\ der\ Maschine/Marketing/Faceplategrafiken/*.png .
