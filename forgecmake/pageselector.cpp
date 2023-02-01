@@ -5,12 +5,13 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPdfPageNavigation>
+#include <QPdfPageNavigator>
 #include <QToolButton>
 
-PageSelector::PageSelector(QWidget *parent)
+PageSelector::PageSelector(int pageCount, QWidget *parent)
     : QWidget(parent)
-    , pageNavigation(nullptr)
+    , pageCount(pageCount)
+    , pageNavigator(nullptr)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
@@ -23,7 +24,7 @@ PageSelector::PageSelector(QWidget *parent)
     lineEditPage->setMaximumWidth(50);
 
     labelPageCount = new QLabel(this);
-    labelPageCount->setText("0");
+    labelPageCount->setText(QString::number(pageCount));
 
     buttonNext = new QToolButton(this);
     buttonNext->setText(">");
@@ -35,73 +36,89 @@ PageSelector::PageSelector(QWidget *parent)
     layout->addWidget(buttonNext);
     layout->addStretch(1);
 }
-
-void PageSelector::setPageNavigation(QPdfPageNavigation *pageNav)
+void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav)
 {
-    pageNavigation = pageNav;
+    pageNavigator = pageNav;
 
-    connect(buttonPrev, &QToolButton::clicked, pageNavigation, &QPdfPageNavigation::goToPreviousPage);
-    connect(pageNavigation, &QPdfPageNavigation::canGoToPreviousPageChanged, buttonPrev, &QToolButton::setEnabled);
+    connect(buttonPrev, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::back);
+    connect(pageNavigator, &QPdfPageNavigator::backAvailableChanged, buttonPrev, &QToolButton::setEnabled);
 
-    connect(pageNavigation, &QPdfPageNavigation::currentPageChanged, this, &PageSelector::onCurrentPageChanged);
-    connect(pageNavigation, &QPdfPageNavigation::pageCountChanged, this, [this](int pageCount){ labelPageCount->setText(QString::fromLatin1("/ %1").arg(pageCount)); });
+    connect(pageNavigator, &QPdfPageNavigator::currentPageChanged, this, &PageSelector::onCurrentPageChanged);
+    // connect(pageNavigator, &QPdfPageNavigator::pageCountChanged, this, [this](int pageCount){ labelPageCount->setText(QString::fromLatin1("/ %1").arg(pageCount)); });
 
     connect(lineEditPage, &QLineEdit::editingFinished, this, &PageSelector::pageNumberEdited);
     connect(lineEditPage, &KeyCaptureLineEdit::keyPressed, this, &PageSelector::handleKeyPress);
 
-    connect(buttonNext, &QToolButton::clicked, pageNavigation, &QPdfPageNavigation::goToNextPage);
-    connect(pageNavigation, &QPdfPageNavigation::canGoToNextPageChanged, buttonNext, &QToolButton::setEnabled);
+    connect(buttonNext, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::forward);
+    connect(pageNavigator, &QPdfPageNavigator::forwardAvailableChanged, buttonNext, &QToolButton::setEnabled);
 
-    onCurrentPageChanged(pageNavigation->currentPage());
+    onCurrentPageChanged(pageNavigator->currentPage());
 }
+void PageSelector::goToPage(int page, bool withHistory)
+{
+    shout << "goto page" << page;
+    if (page > pageCount) {
+        page = pageCount;
+        lineEditPage->setText(QString::number(page));
+    }
+    else if (page < 1) {
+        page = 1;
+        lineEditPage->setText("1");
+    }
 
+    if (withHistory)
+        pageNavigator->jump(page - 1, QPointF(0, 0), 1.0);
+    else
+        pageNavigator->update(page -1, QPointF(0, 0), 1.0);
+}
 void PageSelector::onCurrentPageChanged(int page)
 {
-    if (!pageNavigation)
+    if (!pageNavigator)
         return;
 
-    if (pageNavigation->pageCount() == 0)
+    if (pageCount == 0)
         lineEditPage->setText(QString::number(0));
     else
         lineEditPage->setText(QString::number(page + 1));
     lineEditPage->selectAll();
 }
-
 void PageSelector::pageNumberEdited()
 {
-    if (!pageNavigation)
+    if (!pageNavigator)
         return;
 
     const QString text = lineEditPage->text();
     bool ok = false;
     const int pageNumber = text.toInt(&ok);
+    goToPage(pageNumber, true);
 
     if (!ok)
-        onCurrentPageChanged(pageNavigation->currentPage());
+        onCurrentPageChanged(pageNavigator->currentPage());
     else {
-        pageNavigation->setCurrentPage(qBound(0, pageNumber - 1, pageNavigation->pageCount() - 1));
         lineEditPage->selectAll();
     }
 }
-
-
 void PageSelector::handleKeyPress(int key)
 {
     switch (key) {
     case Qt::Key_Left:
     case Qt::Key_Up:
-        pageNavigation->goToPreviousPage();
+        shout << "left/up";
+        goToPage(pageNavigator->currentPage(), false);
         return;
     case Qt::Key_Right:
     case Qt::Key_Down:
     case Qt::Key_Space:
-        pageNavigation->goToNextPage();
+        shout << "right/down/space";
+        goToPage(pageNavigator->currentPage() + 2, false);
         return;
     case Qt::Key_Home:
-        pageNavigation->setCurrentPage(1);
+        shout << "home";
+        goToPage(1, true);
         return;
     case Qt::Key_End:
-        pageNavigation->setCurrentPage(pageNavigation->pageCount());
+        shout << "end";
+        goToPage(pageCount, true);
         return;
     }
 }

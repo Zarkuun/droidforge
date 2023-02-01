@@ -11,7 +11,7 @@ QT_BEGIN_NAMESPACE
 class QLabel;
 class QLineEdit;
 class QPdfDocument;
-class QPdfPageNavigation;
+class QPdfPageNavigator;
 class QToolButton;
 QT_END_NAMESPACE
 
@@ -19,15 +19,17 @@ class PageSelector : public QWidget
 {
     Q_OBJECT
 
-    QPdfPageNavigation *pageNavigation;
+    QPdfPageNavigator *pageNavigator;
     KeyCaptureLineEdit *lineEditPage;
     QLabel *labelPageCount;
     QToolButton *buttonPrev;
     QToolButton *buttonNext;
+    int pageCount;
 
 public:
-    explicit PageSelector(QWidget *parent = nullptr);
-    void setPageNavigation(QPdfPageNavigation *pageNavigation);
+    explicit PageSelector(int pageCount, QWidget *parent = nullptr);
+    void setPageNavigator(QPdfPageNavigator *pageNavigator);
+    void goToPage(int page, bool withHistory);
 
 private slots:
     void onCurrentPageChanged(int page);

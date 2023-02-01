@@ -6,7 +6,7 @@
 
 #include <QGridLayout>
 #include <QPdfBookmarkModel>
-#include <QPdfPageNavigation>
+#include <QPdfPageNavigator>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QKeyEvent>
@@ -26,18 +26,21 @@ UserManual::UserManual(QWidget *parent)
 
     setCloseOnReturn(false);
 
+    // Load the PDF document
+    QString filename = ":droid-manual.pdf";
+    document.load(filename);
+
     // PDF Widget
     pdfView = new QPdfView();
     pdfView->setDocument(&document);
-    // pdfView->setPageMode(QPdfView::PageMode::MultiPage);
+    pdfView->setPageMode(QPdfView::PageMode::MultiPage);
     pdfView->setZoomMode(QPdfView::ZoomMode::FitInView);
     pdfView->setFocusPolicy(Qt::NoFocus);
     pdfView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    PageSelector *pageSelector = new PageSelector(this);
-    pageNavigation = pdfView->pageNavigation();
-    pageNavigation->setDocument(&document);
-    pageSelector->setPageNavigation(pageNavigation);
+    PageSelector *pageSelector = new PageSelector(document.pageCount(), this);
+    pageNavigator = pdfView->pageNavigator();
+    pageSelector->setPageNavigator(pageNavigator);
 
     // Buttons
     QPushButton *buttonExternal = new QPushButton(tr("Open in viewer"));
@@ -48,13 +51,10 @@ UserManual::UserManual(QWidget *parent)
     mainLayout->addWidget(pdfView, 0, 0, 1, 2);
     mainLayout->addWidget(pageSelector, 1, 0);
     mainLayout->addWidget(buttonExternal, 1, 1);
-
-    QString filename = ":droid-manual.pdf";
-    document.load(filename);
 }
 void UserManual::jumpToPage(unsigned nr)
 {
-    pageNavigation->setCurrentPage(nr-1);
+    pageNavigator->jump(nr, QPointF(0,0));
 }
 void UserManual::openExternally()
 {
