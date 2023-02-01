@@ -40,6 +40,7 @@ UserManual::UserManual(QWidget *parent)
 
     PageSelector *pageSelector = new PageSelector(document.pageCount(), this);
     pageNavigator = pdfView->pageNavigator();
+    pageNavigator->clear();
     pageSelector->setPageNavigator(pageNavigator);
 
     // Buttons
@@ -51,6 +52,7 @@ UserManual::UserManual(QWidget *parent)
     mainLayout->addWidget(pdfView, 0, 0, 1, 2);
     mainLayout->addWidget(pageSelector, 1, 0);
     mainLayout->addWidget(buttonExternal, 1, 1);
+
 }
 void UserManual::jumpToPage(unsigned nr)
 {
@@ -73,7 +75,6 @@ void UserManual::showCircuit(const QString &circuit)
     show();
     jumpToPage(the_firmware->circuitManualPage(circuit));
 }
-
 void UserManual::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)

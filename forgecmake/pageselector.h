@@ -24,6 +24,8 @@ class PageSelector : public QWidget
     QLabel *labelPageCount;
     QToolButton *buttonPrev;
     QToolButton *buttonNext;
+    QToolButton *buttonBack;
+    QToolButton *buttonForward;
     int pageCount;
 
 public:
@@ -35,6 +37,8 @@ private slots:
     void onCurrentPageChanged(int page);
     void pageNumberEdited();
     void handleKeyPress(int key);
+    void previousPage();
+    void nextPage();
 };
 
 #endif // PAGESELECTOR_H

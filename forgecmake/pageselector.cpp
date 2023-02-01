@@ -30,18 +30,32 @@ PageSelector::PageSelector(int pageCount, QWidget *parent)
     buttonNext->setText(">");
     buttonNext->setEnabled(true);
 
+    buttonBack = new QToolButton(this);
+    buttonBack->setText(tr("Back"));
+    buttonBack->setEnabled(false);
+    buttonForward = new QToolButton(this);
+    buttonForward->setText(tr("Forward"));
+    buttonForward->setEnabled(false);
+
     layout->addWidget(buttonPrev);
     layout->addWidget(lineEditPage);
     layout->addWidget(labelPageCount);
     layout->addWidget(buttonNext);
+    layout->addStretch(1);
+    layout->addWidget(buttonBack);
+    layout->addWidget(buttonForward);
     layout->addStretch(1);
 }
 void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav)
 {
     pageNavigator = pageNav;
 
-    connect(buttonPrev, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::back);
-    connect(pageNavigator, &QPdfPageNavigator::backAvailableChanged, buttonPrev, &QToolButton::setEnabled);
+    connect(buttonPrev, &QToolButton::clicked, this, &PageSelector::previousPage);
+    connect(buttonNext, &QToolButton::clicked, this, &PageSelector::nextPage);
+    connect(buttonBack, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::back);
+    connect(buttonForward, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::forward);
+    connect(pageNavigator, &QPdfPageNavigator::backAvailableChanged, buttonBack, &QToolButton::setEnabled);
+    connect(pageNavigator, &QPdfPageNavigator::forwardAvailableChanged, buttonForward, &QToolButton::setEnabled);
 
     connect(pageNavigator, &QPdfPageNavigator::currentPageChanged, this, &PageSelector::onCurrentPageChanged);
     // connect(pageNavigator, &QPdfPageNavigator::pageCountChanged, this, [this](int pageCount){ labelPageCount->setText(QString::fromLatin1("/ %1").arg(pageCount)); });
@@ -49,14 +63,12 @@ void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav)
     connect(lineEditPage, &QLineEdit::editingFinished, this, &PageSelector::pageNumberEdited);
     connect(lineEditPage, &KeyCaptureLineEdit::keyPressed, this, &PageSelector::handleKeyPress);
 
-    connect(buttonNext, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::forward);
     connect(pageNavigator, &QPdfPageNavigator::forwardAvailableChanged, buttonNext, &QToolButton::setEnabled);
 
     onCurrentPageChanged(pageNavigator->currentPage());
 }
 void PageSelector::goToPage(int page, bool withHistory)
 {
-    shout << "goto page" << page;
     if (page > pageCount) {
         page = pageCount;
         lineEditPage->setText(QString::number(page));
@@ -65,7 +77,6 @@ void PageSelector::goToPage(int page, bool withHistory)
         page = 1;
         lineEditPage->setText("1");
     }
-
     if (withHistory)
         pageNavigator->jump(page - 1, QPointF(0, 0), 1.0);
     else
@@ -103,22 +114,27 @@ void PageSelector::handleKeyPress(int key)
     switch (key) {
     case Qt::Key_Left:
     case Qt::Key_Up:
-        shout << "left/up";
-        goToPage(pageNavigator->currentPage(), false);
+        previousPage();
         return;
     case Qt::Key_Right:
     case Qt::Key_Down:
     case Qt::Key_Space:
-        shout << "right/down/space";
-        goToPage(pageNavigator->currentPage() + 2, false);
+        nextPage();
         return;
     case Qt::Key_Home:
-        shout << "home";
         goToPage(1, true);
         return;
     case Qt::Key_End:
-        shout << "end";
         goToPage(pageCount, true);
         return;
     }
+}
+void PageSelector::previousPage()
+{
+    goToPage(pageNavigator->currentPage(), false);
+}
+
+void PageSelector::nextPage()
+{
+    goToPage(pageNavigator->currentPage() + 2, false);
 }
