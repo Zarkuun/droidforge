@@ -1,2 +1,2 @@
 #!/bin/bash
-sed -n '/_VERSION *"/s/.*"\(.*\)".*/\1/p' < droidforge/tuning.h
+sed -n '/_VERSION *"/s/.*"\(.*\)".*/\1/p' < droidforge/main/tuning.h

@@ -7,15 +7,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>DroidForge</string>
+	<string>DROID Forge</string>
 	<key>CFBundleExecutable</key>
-	<string>DroidForge</string>
+	<string>DROID Forge</string>
 	<key>CFBundleIdentifier</key>
 	<string>de.dmmdm.droidforge</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>DroidForge</string>
+	<string>DROID Forge</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
