@@ -44,7 +44,6 @@ void EditorActions::updateIcons()
     actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setIcon(ICON("upload_to_droid"));
     actions[ACTION_TOOLBAR_SAVE_TO_SD]->setIcon(ICON("save_to_sd"));
 }
-
 void EditorActions::createActions()
 {
     QSettings settings;
@@ -206,6 +205,10 @@ void EditorActions::createActions()
 
     actions[ACTION_EDIT_JACK_COMMENT] = new QAction(tr("Edit parameter info..."), this);
     actions[ACTION_EDIT_JACK_COMMENT]->setShortcut(QKeySequence(tr("Alt+I")));
+
+    actions[ACTION_EDIT_LABEL] = new QAction(tr("Edit label..."), this);
+    actions[ACTION_EDIT_LABEL]->setShortcut(QKeySequence(tr("Ctrl+L")));
+    actions[ACTION_EDIT_LABEL]->setEnabled(false);
 
     actions[ACTION_PREVIOUS_SECTION] = new QAction(tr("&Go to previous section"));
     actions[ACTION_PREVIOUS_SECTION]->setShortcut(QKeySequence(tr("Ctrl+Up")));
@@ -393,6 +396,7 @@ void EditorActions::moveCursor()
     actions[ACTION_FOLLOW_REGISTER]->setEnabled(atom && atom->isRegister());
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(circuit);
     actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
+    actions[ACTION_EDIT_LABEL]->setEnabled(atom && atom->canHaveLabel());
     actions[ACTION_SORT_JACKS]->setEnabled(circuit);
 
     actions[ACTION_MOVE_CIRCUIT_UP]->setEnabled(circuit && section()->currentCircuitId() > 0);
@@ -459,7 +463,6 @@ void EditorActions::updateDisablingActions()
     actions[ACTION_ENABLE]->setEnabled(somethingDisabled && !somethingEnabled);
 
 }
-
 void EditorActions::updatePasteAction()
 {
     // Cannot paste non-circuits into empty section

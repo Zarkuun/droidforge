@@ -24,6 +24,8 @@ public:
     QString toDisplay() const;
     bool isNull() const;
     bool isRegister() const { return true; };
+    bool canHaveLabel() const;
+    AtomRegister relatedRegisterWithLabel() const;
     bool isControl() { return cont > 0; };
     bool isOnMasterG8X7() { return cont == 0; };
     unsigned controller() const { return cont; };

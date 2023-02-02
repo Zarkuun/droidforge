@@ -99,6 +99,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_EDIT_VALUE, &PatchSectionView::editValueByShortcut);
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchSectionView::editCircuitComment);
     CONNECT_ACTION(ACTION_EDIT_JACK_COMMENT, &PatchSectionView::editJackComment);
+    CONNECT_ACTION(ACTION_EDIT_LABEL, &PatchSectionView::editLabel);
     CONNECT_ACTION(ACTION_RENAME_CABLE, &PatchSectionView::renameCable);
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
@@ -243,6 +244,30 @@ void PatchSectionView::editJackCommentAt(const CursorPosition &pos)
 void PatchSectionView::editJackComment()
 {
     editJackCommentAt(section()->cursorPosition());
+}
+void PatchSectionView::editLabel()
+{
+    const Atom *atom = currentAtom();
+    if (!atom || !atom->canHaveLabel())
+        return; // should be handled by enabling, but better play save
+
+    const AtomRegister *ar = (const AtomRegister *)atom;
+    AtomRegister lr = ar->relatedRegisterWithLabel();
+
+    RegisterLabel label = patch->registerLabel(lr);
+    QString oldName = label.shorthand;
+    QString newName = NameChooseDialog::getName(
+                tr("Edit label for register '%1'").arg(atom->toString()),
+                tr("Label:"),
+                oldName,
+                false /* force upper case */);
+    if (newName == oldName)
+        return;
+
+    label.shorthand = newName;
+    patch->setRegisterLabel(lr, label);
+    patch->commit(tr("editing register label"));
+    emit patchModified();
 }
 void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip)
 {
@@ -950,6 +975,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION_IF_ENABLED(ACTION_EDIT_VALUE, menu);
         ADD_ACTION_IF_ENABLED(ACTION_EDIT_CIRCUIT_COMMENT, menu);
         ADD_ACTION_IF_ENABLED(ACTION_EDIT_JACK_COMMENT, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_EDIT_LABEL, menu);
         ADD_ACTION_IF_ENABLED(ACTION_EDIT_CIRCUIT_SOURCE, menu);
 
         menu->addSeparator();

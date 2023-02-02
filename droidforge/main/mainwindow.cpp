@@ -249,6 +249,7 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_FOLLOW_REGISTER, menu);
     ADD_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, menu);
     ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
+    ADD_ACTION(ACTION_EDIT_LABEL, menu);
     ADD_ACTION(ACTION_EDIT_CIRCUIT_SOURCE, menu);
 }
 void MainWindow::createSectionMenu()

@@ -1,4 +1,4 @@
-1.1:
+1.1beta1:
 	New features:
 	* New "Text mode" view option. In this mode all decorations, icons, lines,
 	  etc are omitted from the patch view, the font is monospaced and everything
@@ -6,6 +6,9 @@
 	  still the same as in normal mode.
 	* The settings "show register labels" and "show register usage" are now
 	  saved and not reset every time you start the Forge.
+	* When you cursor is on a register like input, output, button, pot or LED,
+	  you can now directly set a label for that register with Command+L or
+	  with the Edit/Popup menu.
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue

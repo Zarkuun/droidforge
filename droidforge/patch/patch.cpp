@@ -212,6 +212,10 @@ RegisterLabel Patch::registerLabel(AtomRegister atom) const
     else
         return RegisterLabel();
 }
+void Patch::setRegisterLabel(AtomRegister atom, RegisterLabel label)
+{
+    registerLabels[atom] = label;
+}
 const Circuit *Patch::currentCircuit() const
 {
     return currentSection()->currentCircuit();

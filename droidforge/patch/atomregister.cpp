@@ -84,6 +84,26 @@ bool AtomRegister::isNull() const
 {
     return registerType == 0;
 }
+bool AtomRegister::canHaveLabel() const
+{
+    return registerType == REGISTER_BUTTON
+             || registerType == REGISTER_POT
+             || registerType == REGISTER_LED
+             || registerType == REGISTER_SWITCH
+             || registerType == REGISTER_INPUT
+             || registerType == REGISTER_NORMALIZE
+             || registerType == REGISTER_OUTPUT
+            || registerType == REGISTER_GATE;
+}
+AtomRegister AtomRegister::relatedRegisterWithLabel() const
+{
+    if (registerType == REGISTER_NORMALIZE)
+        return AtomRegister(REGISTER_INPUT, cont, num);
+    else if (registerType == REGISTER_LED)
+        return AtomRegister(REGISTER_BUTTON, cont, num);
+    else
+        return *this;
+}
 bool AtomRegister::isRelatedTo(const AtomRegister &other) const
 {
     if (cont != other.cont)

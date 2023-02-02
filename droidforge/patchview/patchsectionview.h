@@ -154,6 +154,7 @@ public slots:
     void followCable();
     void followRegister();
     void editJackComment();
+    void editLabel();
 
 private slots:
     void clockTick();
