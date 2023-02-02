@@ -4,7 +4,7 @@ set -e
 PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin/
 
 VERSION=$(./version)
-NAME="DROID Forge"
+NAME="DroidForge"
 if [ $(uname -m) = arm64 ] ; then
     HARDWARE=M1
 else
@@ -13,7 +13,7 @@ fi
 QT_DIR=~/Qt/6.3.1
 PATH=$PATH:$QT_DIR/macos/bin
 APP_ICON=droidforge/droidforge.icns
-INSTALL_ROOT=droidforge/build/release-mac/install-root/usr/local/Applications
+INSTALL_ROOT=build/release-mac
 APP_DIR="$INSTALL_ROOT/$NAME.app"
 EXECUTABLE="$APP_DIR/Contents/MacOS/$NAME"
 DMGDIR="dmg.root"
@@ -33,6 +33,7 @@ rm -rf "$APP_DIR"
 echo $OK
 
 echo -n "Now do the Release-build in QtCreator."
+echo -n "waiting for $EXECUTABLE..."
 while [ ! -e "$EXECUTABLE" ] ; do
     echo -n .
     sleep 1
@@ -68,7 +69,7 @@ cp _DS_Store "$DMGDIR/.DS_Store"
 echo $OK
 
 echo -n "Creating DMG with dmgcanvas..."
-dmgcanvas DROID\ Forge.dmgCanvas "$DMGNAME" >> $LOGFILE 2>&1
+dmgcanvas DroidForge.dmgCanvas "$DMGNAME" >> $LOGFILE 2>&1
 echo $OK
 
 echo -n "Signing DMG"...
