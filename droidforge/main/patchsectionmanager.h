@@ -56,6 +56,7 @@ public slots:
     void mergeWithNextSection();
     void newSectionAfterCurrent();
     void newSectionAtEnd();
+    void saveSectionAsPatch();
     void pasteAsSection();
     void mergeAllSections();
     void moveSectionUp();

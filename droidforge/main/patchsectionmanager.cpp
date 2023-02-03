@@ -3,6 +3,7 @@
 #include "colorscheme.h"
 #include "globals.h"
 #include "patchoperator.h"
+#include "mainwindow.h"
 #include "tuning.h"
 #include "updatehub.h"
 #include "editoractions.h"
@@ -15,6 +16,8 @@
 #include <QResizeEvent>
 #include <QMenu>
 #include <QPalette>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #define DATA_INDEX_SECTION_INDEX 0
 
@@ -62,6 +65,7 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_PREVIOUS_SECTION, &PatchSectionManager::switchBackward);
     CONNECT_ACTION(ACTION_NEXT_SECTION, &PatchSectionManager::switchForward);
     CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchSectionManager::newSectionAfterCurrent);
+    CONNECT_ACTION(ACTION_SAVE_SECTION, &PatchSectionManager::saveSectionAsPatch);
     CONNECT_ACTION(ACTION_PASTE_AS_SECTION, &PatchSectionManager::pasteAsSection);
     CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchSectionManager::duplicateSection);
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchSectionManager::deleteSection);
@@ -90,6 +94,7 @@ void PatchSectionManager::popupSectionMenu(int index)
     QMenu *menu = new QMenu(this);
     menu->setAttribute(Qt::WA_DeleteOnClose);
     ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_SAVE_SECTION, menu);
     ADD_ACTION(ACTION_PASTE_AS_SECTION, menu);
     if (index >= 0) {
         ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
@@ -253,6 +258,34 @@ void PatchSectionManager::newSectionAtEnd()
 {
     newSectionAtIndex(patch->numSections());
 }
+void PatchSectionManager::saveSectionAsPatch()
+{
+    const PatchSection *section = patch->currentSection();
+    QString newFilePath = QFileDialog::getSaveFileName(
+                the_forge,
+                tr("Save section as patch to new file"),
+                section->getTitle(),
+                tr("DROID patch files (*.ini)"));
+
+    if (newFilePath == "")
+        return; // aborted
+
+    QString sectionSource = section->toString();
+    Patch sectionPatch;
+    PatchParser parser;
+    parser.parseString(sectionSource, &sectionPatch);
+    if (section->getTitle() != "")
+        sectionPatch.setTitle(section->getTitle());
+
+    if (sectionPatch.saveToFile(newFilePath))
+        the_operator->addToRecentFiles(newFilePath);
+    else {
+        QMessageBox::warning(
+                    the_forge,
+                    tr("Error"),
+                    tr("There was an error saving your patch to disk"));
+    }
+}
 void PatchSectionManager::newSectionAtIndex(int index)
 {
     QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"));
@@ -319,7 +352,9 @@ void PatchSectionManager::openMenuOnBackground()
 }
 void PatchSectionManager::openMenuOnItem(QGraphicsItem *item)
 {
-    popupSectionMenu(item->data(DATA_INDEX_SECTION_INDEX).toInt());
+    int index = item->data(DATA_INDEX_SECTION_INDEX).toInt();
+    switchToSection(index);
+    popupSectionMenu(index);
 }
 void PatchSectionManager::hoverIn(QGraphicsItem *)
 {

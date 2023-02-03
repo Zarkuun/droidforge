@@ -41,6 +41,7 @@ public:
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
     bool isPatching() const { return patch->isPatching(); };
     bool isPatchingFrom(const CursorPosition &pos) const;
+    void addToRecentFiles(const QString &path);
 
 protected:
     PatchSection *section() { return patch->currentSection(); };
@@ -79,7 +80,6 @@ private:
     bool checkModified();
     void setLastFilePath(const QString &path);
     void openDirInFinder(const QString &filename);
-    void addToRecentFiles(const QString &path);
     QStringList getRecentFiles();
     void loadPatch(const QString &aFilePath);
     void integratePatch(const QString &aFilePath);

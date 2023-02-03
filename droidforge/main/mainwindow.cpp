@@ -256,6 +256,7 @@ void MainWindow::createSectionMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&Section"));
     ADD_ACTION(ACTION_NEW_PATCH_SECTION, menu);
+    ADD_ACTION(ACTION_SAVE_SECTION, menu);
     ADD_ACTION(ACTION_PASTE_AS_SECTION, menu);
     ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
     ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);

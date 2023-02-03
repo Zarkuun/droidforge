@@ -98,7 +98,6 @@ void AtomSelector::setCircuitAndJack(QString circuit, QString jack)
 
     QString whence = jackType == JACKTYPE_INPUT ? "inputs" : "outputs";
     QString desc = the_firmware->jackDescriptionHTML(circuit, whence, jack);
-    shout << desc;
     labelDescription->setText(desc);
     labelJackType->setText(the_firmware->jackTypeDescriptionHTML(circuit, whence, jack));
     // auto icon = IconBase::jackTypeSymbol("cv");

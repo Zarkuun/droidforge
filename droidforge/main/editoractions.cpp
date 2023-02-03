@@ -243,6 +243,11 @@ void EditorActions::createActions()
     actions[ACTION_MERGE_WITH_NEXT_SECTION] = new QAction(tr("Merge with ne&xt section"));
     actions[ACTION_MERGE_ALL_SECTIONS] = new QAction(tr("Merge &all sections into one"));
 
+    actions[ACTION_SAVE_SECTION] = new QAction(tr("Save section as patch..."));
+#ifdef Q_OS_MACOS
+    actions[ACTION_SAVE_SECTION]->setShortcut(QKeySequence(tr("Alt+S")));
+#endif
+
     actions[ACTION_RESET_ZOOM] = new QAction(tr("&Normal font size"), this);
     actions[ACTION_RESET_ZOOM]->setShortcut(QKeySequence(tr("Ctrl+0")));
 
