@@ -9,6 +9,9 @@
 	* When you cursor is on a register like input, output, button, pot or LED,
 	  you can now directly set a label for that register with Command+L or
 	  with the Edit/Popup menu.
+	* New view option "Show master on the right side". This will display all
+	  modules in reversed order, for those of you that have mounted the controllers
+	  from right to left.
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue

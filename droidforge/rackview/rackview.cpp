@@ -30,8 +30,6 @@ RackView::RackView(PatchEditEngine *patch)
     QGraphicsScene *thescene = new QGraphicsScene();
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setScene(thescene);
-    // QPixmap background(":images/background.png");
-    // QBrush brush(background.scaledToHeight(1200));
     setMouseTracking(true);
     dragRegisterIndicator = new DragRegisterIndicator;
     registerMarker = new RegisterMarker;
@@ -402,14 +400,8 @@ void RackView::addModule(const QString &name, int controllerIndex)
     modules.append(module);
     if (controllerIndex >= 0)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
-    // if (ACTION(ACTION_RIGHT_TO_LEFT)->isChecked()) {
-    //     x -= module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
-    //     module->setPos(x + 2 * module->hp(), 0); //RACV_TOP_MARGIN);
-    // }
-    // else {
-        module->setPos(x, 0); //RACV_TOP_MARGIN);
-        x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
-    // }
+    module->setPos(x, 0); //RACV_TOP_MARGIN);
+    x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
     module->createRegisterItems(scene(), modules.count() - 1, controllerIndex);
 }
 unsigned RackView::numControllers() const
@@ -643,7 +635,7 @@ void RackView::stopDraggingController(QGraphicsItem *startItem, QPoint pos)
 
 int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insertSnap) const
 {
-
+    bool rtl = ACTION(ACTION_RIGHT_TO_LEFT)->isChecked();
     for (auto module: modules) {
         if (module->data(DATA_INDEX_CONTROLLER_INDEX).isValid()) {
             int i = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt();
@@ -651,18 +643,27 @@ int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insert
                 continue;
             int snap_distance = RACV_CONTROLLER_SNAP_DISTANCE;
             // Make it easier to drag it to the utter right
-            if (i == patch->numControllers() - 1 && x > module->boundingRect().right()) {
+            if (i == patch->numControllers() - 1 && x > module->boundingRect().right())
                 snap_distance *= 3;
-            }
 
             float left = module->pos().x();
-            if (fromIndex != i-1 && qAbs(left - x) < snap_distance) {
-                *insertSnap = left;
+            float right = left + module->moduleRect().width();
+            float side_a, side_b;
+            if (rtl) {
+                side_a = right;
+                side_b = left;
+            }
+            else {
+                side_a = left;
+                side_b = right;
+            }
+
+            if (fromIndex != i-1 && qAbs(side_a - x) < snap_distance) {
+                *insertSnap = side_a;
                 return i;
             }
-            float right = left + module->moduleRect().width();
-            if (fromIndex != i+1 && qAbs(right - x) < snap_distance) {
-                *insertSnap = right;
+            if (fromIndex != i+1 && qAbs(side_b - x) < snap_distance) {
+                *insertSnap = side_b;
                 return i + 1;
             }
         }
