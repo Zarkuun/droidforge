@@ -66,6 +66,9 @@ void EditorActions::createActions()
     actions[ACTION_CONFIGURE_COLORS] = new QAction(tr("Edit colors"), this);
     actions[ACTION_CONFIGURE_COLORS]->setShortcut(QKeySequence(tr("F7")));
 
+    actions[ACTION_PREFERENCES] = new QAction(tr("Preferences"), this);
+    actions[ACTION_PREFERENCES]->setShortcut(QKeySequence(tr("Ctrl+Comma")));
+
     actions[ACTION_OPEN] = new QAction(tr("&Open..."), this);
     actions[ACTION_OPEN]->setShortcuts(QKeySequence::Open);
     actions[ACTION_TOOLBAR_OPEN] = new QAction(ICON("open"), tr("Open"), this);

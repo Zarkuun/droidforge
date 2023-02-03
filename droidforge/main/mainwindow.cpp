@@ -14,6 +14,7 @@
 #include "colorscheme.h"
 #include "patchoperator.h"
 #include "usermanual.h"
+#include "preferencesdialog.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -73,6 +74,7 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
 
     CONNECT_ACTION(ACTION_ABOUT, &MainWindow::about);
     CONNECT_ACTION(ACTION_LICENSE, &MainWindow::showLicense);
+    CONNECT_ACTION(ACTION_PREFERENCES, &MainWindow::editPreferences);
     CONNECT_ACTION(ACTION_RACK_ZOOM_IN, &MainWindow::rackZoomIn);
     CONNECT_ACTION(ACTION_RACK_ZOOM_OUT, &MainWindow::rackZoomOut);
     CONNECT_ACTION(ACTION_RACK_RESET_ZOOM, &MainWindow::rackZoomReset);
@@ -194,6 +196,7 @@ void MainWindow::createFileMenu()
     menu->addSeparator();
 
     ADD_ACTION(ACTION_PATCH_PROPERTIES, menu);
+    ADD_ACTION(ACTION_PREFERENCES, menu);
     ADD_ACTION(ACTION_EDIT_PATCH_SOURCE, menu);
     ADD_ACTION(ACTION_BARE_PATCH_SOURCE, menu);
     if (the_colorscheme->isDevelopment())
@@ -471,7 +474,6 @@ void MainWindow::rackZoom(int whence)
     currentSizes[1] = totalsize - currentSizes[0];
     rackSplitter->setSizes(currentSizes);
 }
-
 void MainWindow::about()
 {
     QString firmware_version = the_firmware->version();
@@ -495,11 +497,13 @@ void MainWindow::about()
                            "If not, see <https://www.gnu.org/licenses/>. ")
                         .arg(APPLICATION_VERSION, firmware_version));
 }
-
+void MainWindow::editPreferences()
+{
+    PreferencesDialog::editPreferences();
+}
 void MainWindow::showDiscord()
 {
     QDesktopServices::openUrl(QUrl(DISCORD_URL));
-
 }
 void MainWindow::showLicense()
 {

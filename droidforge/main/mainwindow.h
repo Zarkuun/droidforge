@@ -91,6 +91,7 @@ private:
 
 private slots:
     void about();
+    void editPreferences();
     void showDiscord();
     void showLicense();
     void modifyPatch();
