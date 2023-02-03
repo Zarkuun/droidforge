@@ -290,6 +290,10 @@ void EditorActions::createActions()
     actions[ACTION_SHOW_X7_ON_DEMAND]->setCheckable(true);
     actions[ACTION_SHOW_X7_ON_DEMAND]->setChecked(settings.value("show_x7_on_demand").toBool());
 
+    actions[ACTION_RIGHT_TO_LEFT] = new QAction(tr("Show master on the right side"), this);
+    actions[ACTION_RIGHT_TO_LEFT]->setCheckable(true);
+    actions[ACTION_RIGHT_TO_LEFT]->setChecked(settings.value("right_to_left").toBool());
+
     actions[ACTION_NEW_CONTROLLER] = new QAction(tr("New con&troller..."), this);
     actions[ACTION_NEW_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
     actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("add_controller"), tr("Controller"), this);

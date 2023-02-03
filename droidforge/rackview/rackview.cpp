@@ -25,6 +25,7 @@ RackView::RackView(PatchEditEngine *patch)
     setFocusPolicy(Qt::NoFocus);
     setMinimumHeight(RACV_MIN_HEIGHT);
     setMaximumHeight(RACV_MAX_HEIGHT);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QGraphicsScene *thescene = new QGraphicsScene();
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -42,8 +43,9 @@ RackView::RackView(PatchEditEngine *patch)
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &RackView::abortAllActions);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &RackView::modifyPatch);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &RackView::modifyPatch);
-    CONNECT_ACTION(ACTION_SHOW_G8_ON_DEMAND, &RackView::toggleDemandShowing);
-    CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, &RackView::toggleDemandShowing);
+    CONNECT_ACTION(ACTION_SHOW_G8_ON_DEMAND, &RackView::toggleDisplayOptions);
+    CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, &RackView::toggleDisplayOptions);
+    CONNECT_ACTION(ACTION_RIGHT_TO_LEFT, &RackView::toggleDisplayOptions);
 
     connectDragger();
 
@@ -63,12 +65,14 @@ void RackView::modifyPatch()
     updateRegisterHilites();
     dragger.cancel();
 }
-void RackView::toggleDemandShowing()
+void RackView::toggleDisplayOptions()
 {
     QSettings settings;
     settings.setValue("show_g8_on_demand", ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked());
     settings.setValue("show_x7_on_demand", ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked());
+    settings.setValue("right_to_left", ACTION(ACTION_RIGHT_TO_LEFT)->isChecked());
     modifyPatch();
+    updateSize();
 }
 void RackView::resizeEvent(QResizeEvent *)
 {
@@ -328,20 +332,35 @@ void RackView::refreshScene()
     scene()->addItem(dragControllerIndicator);
 
     x = 0;
-    addModule("master");
-    if (!ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked() || patch->needsG8())
-        addModule("g8");
-    if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
-        addModule("x7");
-    addModule("bling");
-    x += RACV_CONTROLLER_GAP;
+    if (ACTION(ACTION_RIGHT_TO_LEFT)->isChecked())
+    {
+        for (int i=patch->numControllers()-1; i>=0; i--)
+            addModule(patch->controller(i), i);
+        addModule("bling");
+        x += RACV_CONTROLLER_GAP;
+        if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
+            addModule("x7");
+        if (!ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked() || patch->needsG8())
+            addModule("g8");
+        addModule("master");
+    }
+    else {
+        addModule("master");
+        if (!ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked() || patch->needsG8())
+            addModule("g8");
+        if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
+            addModule("x7");
+        addModule("bling");
+        x += RACV_CONTROLLER_GAP;
 
-    for (qsizetype i=0; i<patch->numControllers(); i++)
-        addModule(patch->controller(i), i);
+        for (qsizetype i=0; i<patch->numControllers(); i++)
+            addModule(patch->controller(i), i);
+    }
 
-    QRectF bounding(
-                modules.first()->moduleRect().topLeft(),
-                modules.last()->moduleRect().bottomRight());
+    QRectF bounding;
+    bounding = QRectF(
+                0, 0,
+                x,  modules.first()->moduleRect().height());
     scene()->setSceneRect(bounding);
 
     updateModuleHeights();
@@ -366,6 +385,10 @@ void RackView::connectDragger()
 }
 void RackView::updateSize()
 {
+    if (ACTION(ACTION_RIGHT_TO_LEFT)->isChecked())
+        setAlignment(Qt::AlignRight);
+    else
+        setAlignment(Qt::AlignLeft);
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
     updateModuleHeights();
 }
@@ -379,9 +402,15 @@ void RackView::addModule(const QString &name, int controllerIndex)
     modules.append(module);
     if (controllerIndex >= 0)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
-    module->setPos(x, 0); //RACV_TOP_MARGIN);
+    // if (ACTION(ACTION_RIGHT_TO_LEFT)->isChecked()) {
+    //     x -= module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
+    //     module->setPos(x + 2 * module->hp(), 0); //RACV_TOP_MARGIN);
+    // }
+    // else {
+        module->setPos(x, 0); //RACV_TOP_MARGIN);
+        x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
+    // }
     module->createRegisterItems(scene(), modules.count() - 1, controllerIndex);
-    x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
 }
 unsigned RackView::numControllers() const
 {

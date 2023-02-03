@@ -20,7 +20,7 @@ class RackView : public QGraphicsView, PatchView
     Q_OBJECT
 
     QList<Module *> modules;
-    unsigned x;
+    int x;
     RegisterMarker *registerMarker;
     DragRegisterIndicator *dragRegisterIndicator;
     DragControllerIndicator *dragControllerIndicator;
@@ -62,7 +62,7 @@ private:
 public slots:
     void abortAllActions();
     void modifyPatch();
-    void toggleDemandShowing();
+    void toggleDisplayOptions();
     void updateRegisterHilites();
     void addController();
 

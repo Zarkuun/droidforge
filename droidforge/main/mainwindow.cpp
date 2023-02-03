@@ -297,6 +297,7 @@ void MainWindow::createViewMenu()
     ADD_ACTION(ACTION_TEXT_MODE, menu);
     ADD_ACTION(ACTION_SHOW_G8_ON_DEMAND, menu);
     ADD_ACTION(ACTION_SHOW_X7_ON_DEMAND, menu);
+    ADD_ACTION(ACTION_RIGHT_TO_LEFT, menu);
 
     menu->addSeparator();
 
