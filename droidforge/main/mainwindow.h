@@ -70,6 +70,8 @@ class MainWindow : public QMainWindow, PatchView
 public:
     MainWindow(PatchEditEngine *patch, QString initialFilename);
     ~MainWindow();
+    // TODO: This is so sick
+    bool searchActive() const;
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

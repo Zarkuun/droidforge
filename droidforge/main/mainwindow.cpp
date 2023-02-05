@@ -109,6 +109,11 @@ MainWindow::~MainWindow()
 {
     delete patch;
 }
+
+bool MainWindow::searchActive() const
+{
+    return findPanel.isEnabled();
+}
 void MainWindow::modifyPatch()
 {
     QFileInfo fi(patch->getFilePath());
@@ -413,11 +418,13 @@ void MainWindow::clearSettings()
 }
 void MainWindow::showFindPanel()
 {
+    findPanel.setEnabled(true);
     findPanel.show();
 }
 void MainWindow::abortAllActions()
 {
     findPanel.hide();
+    findPanel.setEnabled(false);
 }
 void MainWindow::updateStatusbarMessage()
 {

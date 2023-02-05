@@ -19,7 +19,7 @@ public:
 
 protected:
     virtual void showEvent(QShowEvent *) override;
-    // bool eventFilter(QObject *obj, QEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     // void handleKeyPress(int key);

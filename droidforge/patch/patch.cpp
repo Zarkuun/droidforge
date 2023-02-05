@@ -240,7 +240,52 @@ void Patch::setCursorTo(int section, const CursorPosition &pos)
 void Patch::moveCursorForward()
 {
     shout << "Fordward from" <<  sectionIndex, currentSection()->cursorPosition();
+    // Move the cursor to the next possible atom, jack, circuit, whatever
+    CursorPosition pos = currentSection()->cursorPosition();
+    int circuitNr = pos.circuitNr;
+    int row = pos.row;
+    int column = pos.column;
+    if (row == ROW_CIRCUIT) {
+        if (currentCircuit()->hasComment())
+            row = ROW_COMMENT;
+        else
+            row = 0;
+        column = 0;
+    }
+    else if (row == ROW_COMMENT) {
+        row = 0;
+        column = 0;
+    }
+    else {
+        JackAssignment *ja = currentSection()->currentJackAssignment();
+        column ++;
+        if (column > ja->numColumns()) {
+            row ++;
+            column = 0;
+        }
+    }
 
+    if (row >= currentCircuit()->numJackAssignments()) {
+        circuitNr ++;
+        row = ROW_CIRCUIT;
+        column = 0;
+    }
+
+    if (circuitNr >= currentSection()->numCircuits()) {
+        circuitNr = 0;
+        row = ROW_CIRCUIT;
+        column = 0;
+        sectionIndex++;
+    }
+
+    if (sectionIndex >= numSections()) {
+        circuitNr = 0;
+        row = ROW_CIRCUIT;
+        column = 0;
+        sectionIndex = 0;
+    }
+
+    currentSection()->setCursor(CursorPosition(circuitNr, row, column));
     shout << "... to" <<  sectionIndex, currentSection()->cursorPosition();
 }
 void Patch::moveCursorBackward()

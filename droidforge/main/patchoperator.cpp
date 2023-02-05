@@ -494,6 +494,31 @@ void PatchOperator::search(QString text, int direction)
 {
     shoutfunc;
     shout << "Ich suche nach " << text << "in" << direction;
+
+    int startSectionIndex = patch->currentSectionIndex();
+    CursorPosition startPos = patch->currentSection()->cursorPosition();
+
+    while (true) {
+        if (direction == 1)
+            patch->moveCursorForward();
+        else
+            patch->moveCursorBackward();
+        int nextSectionIndex = patch->currentSectionIndex();
+        CursorPosition nextPos = patch->currentSection()->cursorPosition();
+        if (nextSectionIndex == startSectionIndex && nextPos == startPos) {
+            shout << "Back to start";
+            break;
+        }
+
+        else if (patch->currentSection()->searchHit(text)) {
+            shout << "found";
+            if (patch->currentSectionIndex() != startSectionIndex)
+                emit sectionSwitched();
+            else
+                emit cursorMoved();
+            break;
+        }
+    }
 }
 void PatchOperator::integrate()
 {

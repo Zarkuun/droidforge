@@ -615,3 +615,10 @@ bool PatchSection::needsX7() const
     }
     return false;
 }
+
+bool PatchSection::searchHit(const QString &text)
+{
+    shout << "hit for " << text << "?";
+    return true;
+    // return false;
+}

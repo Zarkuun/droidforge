@@ -335,7 +335,7 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 }
 bool PatchSectionView::handleKeyPress(int key, int modifiers)
 {
-    shout << "KEY" << key << modifiers;
+    shout << "PatchSectionView bekommt KEY" << key << modifiers;
     // If any other modifier than shift is pressed, ignore
     // the movement keys.
     if (modifiers & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier))
@@ -358,7 +358,8 @@ bool PatchSectionView::handleKeyPress(int key, int modifiers)
     case Qt::Key_Tab:       moveCursorTab(1);         moved = true; break;
     case Qt::Key_Backtab:   moveCursorTab(-1);        shiftHeld = false; moved = true; break;
     case Qt::Key_Return:
-    case Qt::Key_Enter:     editValue(Qt::Key_Return); break;
+    case Qt::Key_Enter:     if (!the_forge->searchActive())
+                                editValue(Qt::Key_Return); break;
     }
 
     if (moved) {

@@ -86,6 +86,7 @@ public:
     void removeRegisterReferences(RegisterList &rl);
     unsigned memoryFootprint() const;
     bool needsX7() const;
+    bool searchHit(const QString &text);
 
 private:
     bool nextCursorPosition(CursorPosition &pos) const;

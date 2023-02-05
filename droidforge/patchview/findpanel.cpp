@@ -38,6 +38,12 @@ void FindPanel::showEvent(QShowEvent *)
     searchField->selectAll();
     searchField->setFocus();
 }
+
+bool FindPanel::eventFilter(QObject *, QEvent *event)
+{
+    shout << event;
+    return false;
+}
 void FindPanel::doSearch(int direction)
 {
     searchField->selectAll();
@@ -48,6 +54,7 @@ void FindPanel::doSearch(int direction)
 void FindPanel::searchForward()
 {
     doSearch(1);
+    shout << "SUCH IST ZUENDE";
 }
 void FindPanel::searchBackward()
 {
