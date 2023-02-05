@@ -21,6 +21,7 @@
 	* FIX: Fix crash when hitting enter on a circuit comment
 	* FIX: When opening the popup menu on a section, select that section so
 	  the menu action is performed on the clicked section
+	* FIX: Correctly load patches with a number like ".3" instead of "0.3".
 
 	Clean ups:
 	* Make white label areas wider, so that more text fits in (suggested by

@@ -231,7 +231,7 @@ Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
         return parseCable(atom);
     else if (atom == "on" || atom == "off")
         return parseOnOff(atom);
-    else if (atom[0].isDigit() || atom[0] == '-')
+    else if (atom[0].isDigit() || atom[0] == '-' || atom[0] == '.')
         return parseNumber(atom);
     else
         return parseRegister(atom);
