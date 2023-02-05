@@ -489,6 +489,12 @@ void PatchOperator::clearRecentFiles()
     settings.setValue("recentfiles", emptyList);
     createRecentFileActions(recentFilesMenu);
 }
+
+void PatchOperator::search(QString text, int direction)
+{
+    shoutfunc;
+    shout << "Ich suche nach " << text << "in" << direction;
+}
 void PatchOperator::integrate()
 {
     QString filePath = QFileDialog::getOpenFileName(the_forge);

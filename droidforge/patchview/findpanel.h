@@ -23,12 +23,14 @@ protected:
 
 private:
     // void handleKeyPress(int key);
+    void doSearch(int direction);
 
 private slots:
     void searchForward();
     void searchBackward();
 
 signals:
+    void search(QString text, int direction);
 
 };
 

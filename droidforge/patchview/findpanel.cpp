@@ -38,13 +38,18 @@ void FindPanel::showEvent(QShowEvent *)
     searchField->selectAll();
     searchField->setFocus();
 }
-void FindPanel::searchForward()
+void FindPanel::doSearch(int direction)
 {
     searchField->selectAll();
-    shoutfunc;
+    QString text = searchField->text().trimmed();
+    if (text != "")
+        emit search(text, direction);
+}
+void FindPanel::searchForward()
+{
+    doSearch(1);
 }
 void FindPanel::searchBackward()
 {
-    searchField->selectAll();
-    shoutfunc;
+    doSearch(-1);
 }

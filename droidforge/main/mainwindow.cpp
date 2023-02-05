@@ -341,6 +341,7 @@ void MainWindow::createStatusBar()
     statusbar->addPermanentWidget(&clipboardIndicator);
     findPanel.hide();
     statusbar->addPermanentWidget(&findPanel);
+    connect(&findPanel, &FindPanel::search, the_operator, &PatchOperator::search);
 }
 void MainWindow::createToolbar()
 {

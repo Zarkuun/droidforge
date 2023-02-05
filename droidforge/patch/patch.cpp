@@ -237,6 +237,17 @@ void Patch::setCursorTo(int section, const CursorPosition &pos)
     sectionIndex = section;
     currentSection()->setCursor(pos);
 }
+void Patch::moveCursorForward()
+{
+    shout << "Fordward from" <<  sectionIndex, currentSection()->cursorPosition();
+
+    shout << "... to" <<  sectionIndex, currentSection()->cursorPosition();
+}
+void Patch::moveCursorBackward()
+{
+    shout << "FEHLT!";
+    return;
+}
 void Patch::setTitle(const QString &newTitle)
 {
     title = newTitle;

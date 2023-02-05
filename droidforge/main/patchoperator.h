@@ -75,6 +75,7 @@ private slots:
 
 public slots:
     void clearRecentFiles();
+    void search(QString text, int direction);
 
 private:
     bool checkModified();
