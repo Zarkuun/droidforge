@@ -13,6 +13,7 @@
 #include "memoryindicator.h"
 #include "cablestatusindicator.h"
 #include "patchproblemindicator.h"
+#include "findpanel.h"
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -49,6 +50,7 @@ class MainWindow : public QMainWindow, PatchView
     CableStatusIndicator cableStatusIndicator;
     PatchProblemIndicator patchProblemIndicator;
     ClipboardIndicator clipboardIndicator;
+    FindPanel findPanel;
 
     QStatusBar *statusbar;
     QLabel *statusbarText;
@@ -103,6 +105,8 @@ private slots:
     void showUserManual();
     void showCircuitManual();
     void clearSettings();
+    void showFindPanel();
+    void abortAllActions();
 
 signals:
     void allActionsAborted();

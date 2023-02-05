@@ -82,6 +82,8 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_DISCORD, &MainWindow::showDiscord);
     CONNECT_ACTION(ACTION_CIRCUIT_MANUAL, &MainWindow::showCircuitManual);
     CONNECT_ACTION(ACTION_CLEAR_SETTINGS, &MainWindow::clearSettings);
+    CONNECT_ACTION(ACTION_FIND, &MainWindow::showFindPanel);
+    CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &MainWindow::abortAllActions);
 
     createMenus();
     createToolbar();
@@ -249,6 +251,7 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_START_PATCHING, menu);
     ADD_ACTION(ACTION_FINISH_PATCHING, menu);
     ADD_ACTION(ACTION_ABORT_PATCHING, menu);
+    ADD_ACTION(ACTION_FIND, menu);
     ADD_ACTION(ACTION_FOLLOW_REGISTER, menu);
     ADD_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, menu);
     ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
@@ -336,6 +339,8 @@ void MainWindow::createStatusBar()
     statusbar->addPermanentWidget(&memoryIndicator);
     statusbar->addPermanentWidget(&patchProblemIndicator);
     statusbar->addPermanentWidget(&clipboardIndicator);
+    findPanel.hide();
+    statusbar->addPermanentWidget(&findPanel);
 }
 void MainWindow::createToolbar()
 {
@@ -404,6 +409,14 @@ void MainWindow::clearSettings()
         rackZoomReset();
         the_operator->clearRecentFiles();
     }
+}
+void MainWindow::showFindPanel()
+{
+    findPanel.show();
+}
+void MainWindow::abortAllActions()
+{
+    findPanel.hide();
 }
 void MainWindow::updateStatusbarMessage()
 {

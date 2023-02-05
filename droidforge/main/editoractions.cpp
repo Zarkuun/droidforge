@@ -179,13 +179,16 @@ void EditorActions::createActions()
     actions[ACTION_TOOLBAR_ADD_JACK] = new QAction(ICON("add_jack"), tr("Parameter"), this);
 
     actions[ACTION_EDIT_VALUE] = new QAction(tr("Edit element under cursor..."), this);
-    actions[ACTION_EDIT_VALUE]->setShortcuts({ QKeySequence(tr("Enter")),
-                                    QKeySequence(tr("Return"))});
+    // actions[ACTION_EDIT_VALUE]->setShortcuts({ QKeySequence(tr("Enter")),
+    //                                 QKeySequence(tr("Return"))});
     actions[ACTION_FOLLOW_CABLE] = new QAction(tr("Follow internal cable"), this);
     actions[ACTION_FOLLOW_CABLE]->setShortcut(QKeySequence(tr("?")));
 
     actions[ACTION_FOLLOW_REGISTER] = new QAction(tr("Find related control"), this);
     actions[ACTION_FOLLOW_REGISTER]->setShortcut(QKeySequence(tr("?")));
+
+    actions[ACTION_FIND] = new QAction(tr("Find..."), this);
+    actions[ACTION_FIND]->setShortcut(QKeySequence(tr("Ctrl+F")));
 
     actions[ACTION_RENAME_CABLE] = new QAction(tr("Rename internal cable"), this);
     actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+Ctrl+R")));

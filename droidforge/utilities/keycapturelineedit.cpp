@@ -17,7 +17,8 @@ void KeyCaptureLineEdit::keyPressEvent(QKeyEvent *event)
         || key == Qt::Key_Right
         || key == Qt::Key_Home
         || key == Qt::Key_End
-        || key == Qt::Key_Space)
+        || key == Qt::Key_Space
+    )
     {
        emit keyPressed(event->key());
     }

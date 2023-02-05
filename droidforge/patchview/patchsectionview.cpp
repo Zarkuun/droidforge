@@ -109,6 +109,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_START_PATCHING, &PatchSectionView::startPatching);
     CONNECT_ACTION(ACTION_FINISH_PATCHING, &PatchSectionView::finishPatching);
     CONNECT_ACTION(ACTION_ABORT_PATCHING, &PatchSectionView::abortPatching);
+    CONNECT_ACTION(ACTION_FIND, &PatchSectionView::find);
     CONNECT_ACTION(ACTION_FOLLOW_CABLE, &PatchSectionView::followCable);
     CONNECT_ACTION(ACTION_FOLLOW_REGISTER, &PatchSectionView::followRegister);
 }
@@ -334,6 +335,7 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 }
 bool PatchSectionView::handleKeyPress(int key, int modifiers)
 {
+    shout << "KEY" << key << modifiers;
     // If any other modifier than shift is pressed, ignore
     // the movement keys.
     if (modifiers & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier))
@@ -355,6 +357,8 @@ bool PatchSectionView::handleKeyPress(int key, int modifiers)
     case Qt::Key_Backspace: deleteCursorOrSelection(); return true;
     case Qt::Key_Tab:       moveCursorTab(1);         moved = true; break;
     case Qt::Key_Backtab:   moveCursorTab(-1);        shiftHeld = false; moved = true; break;
+    case Qt::Key_Return:
+    case Qt::Key_Enter:     editValue(Qt::Key_Return); break;
     }
 
     if (moved) {
@@ -1154,6 +1158,10 @@ void PatchSectionView::followRegister()
     the_operator->jumpTo(it.sectionIndex(), it.cursorPosition());
 
 }
+void PatchSectionView::find()
+{
+    shout << "FIND";
+}
 void PatchSectionView::editJack(int key)
 {
     if (key != Qt::Key_Return)
@@ -1193,6 +1201,7 @@ QStringList PatchSectionView::usedJacks() const
 }
 void PatchSectionView::editValueByShortcut()
 {
+    shout << "Das hier kann weg";
     editValue(Qt::Key_Return);
 }
 void PatchSectionView::editValue(int key)

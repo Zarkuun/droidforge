@@ -65,6 +65,8 @@ QtApplication {
         "main/dragsectionindicator.h",
         "main/editoractions.cpp",
         "main/editoractions.h",
+        "patchview/findpanel.cpp",
+        "patchview/findpanel.h",
         "rackview/smoothellipseitem.cpp",
         "rackview/smoothellipseitem.h",
         "utilities/ellipsislabel.cpp",
