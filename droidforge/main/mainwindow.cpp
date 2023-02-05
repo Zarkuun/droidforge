@@ -104,7 +104,6 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     connect(&rackView, &RackView::registerClicked, &patchSectionView, &PatchSectionView::clickOnRegister);
     connect(the_colorscheme, &ColorScheme::changed, the_hub, &UpdateHub::patchModified);
 }
-
 MainWindow::~MainWindow()
 {
     delete patch;

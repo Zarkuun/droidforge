@@ -618,7 +618,28 @@ bool PatchSection::needsX7() const
 
 bool PatchSection::searchHit(const QString &text)
 {
-    shout << "hit for " << text << "?";
-    return true;
-    // return false;
+    if (isEmpty())
+        return false;
+
+    QString refText;
+    CursorPosition pos = cursorPosition();
+    if (pos.row == ROW_CIRCUIT)
+        refText = currentCircuit()->getName();
+    else if (pos.row == ROW_COMMENT)
+        refText = currentCircuit()->getComment();
+    else {
+        JackAssignment *ja = currentJackAssignment();
+        if (pos.column == 0)
+            refText = ja->jackName() + " " + ja->getComment();
+        else {
+            const Atom *atom = ja->atomAt(pos.column);
+            if (!atom)
+                return false;
+            else
+                refText = atom->toDisplay();
+        }
+    }
+
+    shout << "Is " << text << "in" << refText << "?";
+    return refText.contains(text, Qt::CaseInsensitive);
 }
