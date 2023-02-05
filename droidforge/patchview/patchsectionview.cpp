@@ -335,7 +335,6 @@ bool PatchSectionView::handleKeyPress(QKeyEvent *event)
 }
 bool PatchSectionView::handleKeyPress(int key, int modifiers)
 {
-    shout << "PatchSectionView bekommt KEY" << key << modifiers;
     // If any other modifier than shift is pressed, ignore
     // the movement keys.
     if (modifiers & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier))
@@ -1159,10 +1158,6 @@ void PatchSectionView::followRegister()
     the_operator->jumpTo(it.sectionIndex(), it.cursorPosition());
 
 }
-void PatchSectionView::find()
-{
-    shout << "FIND";
-}
 void PatchSectionView::editJack(int key)
 {
     if (key != Qt::Key_Return)
@@ -1202,7 +1197,6 @@ QStringList PatchSectionView::usedJacks() const
 }
 void PatchSectionView::editValueByShortcut()
 {
-    shout << "Das hier kann weg";
     editValue(Qt::Key_Return);
 }
 void PatchSectionView::editValue(int key)

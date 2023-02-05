@@ -19,7 +19,7 @@ class Patch
     QList<PatchSection *> sections;
 
     // Part of the versioned state for user convenience
-    qsizetype sectionIndex; // part of cursor position
+    int sectionIndex; // part of cursor position
 
     QList<PatchProblem *> problems; // This is just a cache
 

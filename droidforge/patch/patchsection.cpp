@@ -640,6 +640,5 @@ bool PatchSection::searchHit(const QString &text)
         }
     }
 
-    shout << "Is " << text << "in" << refText << "?";
     return refText.contains(text, Qt::CaseInsensitive);
 }

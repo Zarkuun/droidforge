@@ -41,7 +41,6 @@ void FindPanel::showEvent(QShowEvent *)
 
 bool FindPanel::eventFilter(QObject *, QEvent *event)
 {
-    shout << event;
     return false;
 }
 void FindPanel::doSearch(int direction)
@@ -54,7 +53,6 @@ void FindPanel::doSearch(int direction)
 void FindPanel::searchForward()
 {
     doSearch(1);
-    shout << "SUCH IST ZUENDE";
 }
 void FindPanel::searchBackward()
 {

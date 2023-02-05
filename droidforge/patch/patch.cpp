@@ -239,7 +239,6 @@ void Patch::setCursorTo(int section, const CursorPosition &pos)
 }
 void Patch::moveCursorForward()
 {
-    shout << "Fordward from" <<  sectionIndex, currentSection()->cursorPosition();
     // Move the cursor to the next possible atom, jack, circuit, whatever
     CursorPosition pos = currentSection()->cursorPosition();
     int circuitNr = pos.circuitNr;
@@ -271,7 +270,7 @@ void Patch::moveCursorForward()
         column = 0;
     }
 
-    if (circuitNr >= currentSection()->numCircuits()) {
+    if (circuitNr >= (int) currentSection()->numCircuits()) {
         circuitNr = 0;
         row = ROW_CIRCUIT;
         column = 0;
@@ -286,11 +285,54 @@ void Patch::moveCursorForward()
     }
 
     currentSection()->setCursor(CursorPosition(circuitNr, row, column));
-    shout << "... to" <<  sectionIndex, currentSection()->cursorPosition();
 }
 void Patch::moveCursorBackward()
 {
-    shout << "FEHLT!";
+    // Move the cursor to the previous possible atom, jack, circuit, whatever
+    CursorPosition pos = currentSection()->cursorPosition();
+    int circuitNr = pos.circuitNr;
+    int row = pos.row;
+    int column = pos.column;
+
+    if (row == ROW_CIRCUIT) {
+        circuitNr--;
+        if (circuitNr < 0) {
+            sectionIndex --;
+            if (sectionIndex < 0)
+                sectionIndex = numSections() - 1;
+            circuitNr = currentSection()->numCircuits() - 1;
+        }
+        const Circuit *circuit = currentSection()->circuit(circuitNr);
+        row = circuit->numJackAssignments() - 1;
+        if (row >= 0) {
+            const JackAssignment *ja = circuit->jackAssignment(row);
+            column = ja->numColumns();
+        }
+    }
+    else if (row == ROW_COMMENT) {
+        row --;
+        column = 0;
+    }
+    else {
+        // JackAssignment *ja = currentSection()->currentJackAssignment();
+        column --;
+        if (column < 0) {
+            row --;
+            if (row < 0) {
+                const Circuit *circuit = currentSection()->currentCircuit();
+                column = 0;
+                if (!circuit->hasComment() && row == ROW_COMMENT)
+                    row--;
+            }
+            else {
+                const Circuit *circuit = currentSection()->circuit(circuitNr);
+                const JackAssignment *ja = circuit->jackAssignment(row);
+                column = ja->numColumns();
+            }
+        }
+    }
+
+    currentSection()->setCursor(CursorPosition(circuitNr, row, column));
     return;
 }
 void Patch::setTitle(const QString &newTitle)
