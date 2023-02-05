@@ -31,7 +31,8 @@ public:
     QString toString() const;
     QString toCleanString() const;
     QString toBare() const;
-    bool saveToFile(const QString filePath) const;
+    QString toCompressed() const;
+    bool saveToFile(const QString filePath, bool bare = false) const;
 
     // Simple access functions
     const QString &getTitle() const { return title; }
@@ -107,12 +108,14 @@ public:
     void swapRegisters(AtomRegister regA, AtomRegister regB);
     void removeRegisterReferences(RegisterList &rl);
     void renameCable(const QString &oldName, const QString &newName);
+    void compressCables();
 
 protected:
     void updateProblems();
     void clear();
 
 private:
+    QString createCompressedCableName(unsigned id);
 
 public:
     // Iteration of all atoms in this patch

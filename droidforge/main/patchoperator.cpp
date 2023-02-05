@@ -286,7 +286,7 @@ void PatchOperator::saveToSD()
 
     QDir dir(dirPath);
     QFileInfo droidIni(dir, DROID_PATCH_FILENAME);
-    if (!patch->saveToFile(droidIni.absoluteFilePath()))
+    if (!patch->saveToFile(droidIni.absoluteFilePath(), true /* compressed */))
     {
         QMessageBox::critical(
                     the_forge,

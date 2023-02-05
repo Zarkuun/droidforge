@@ -12,7 +12,7 @@ unsigned MIDIHost::prepareSysexMessage(const Patch *patch)
     sysexBuffer[2] = 0x66;
     sysexBuffer[3] = 0x66;
     sysexBuffer[4] = 'P';
-    QString droidini = patch->toBare();
+    QString droidini = patch->toCompressed();
 
     // The MIDI Driver of MAC seems to have hickups if the length
     // of a sysex message is > 255 bytes. It drops each 256th byte.

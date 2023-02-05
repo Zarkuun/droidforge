@@ -12,6 +12,9 @@
 	  from right to left.
 	* You can now save a patch section as a patch into a new file (using the Section
 	  menu or popup menu on the section)
+	* New "Preferences" dialog with two now options for patch compression. Renaming
+	  cables to short things like _A, _B when deploying reduces the patch size
+	  (and you have a maximum of 64k).
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue

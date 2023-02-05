@@ -10,7 +10,6 @@ class PreferencesDialog : public Dialog
 {
     Q_OBJECT
 
-    QCheckBox *checkboxRemoveSpaces;
     QCheckBox *checkboxRemoveEmptyLines;
     QCheckBox *checkboxRenameCables;
 

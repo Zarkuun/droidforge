@@ -6,6 +6,7 @@
 #include "globals.h"
 
 #include <QFileInfo>
+#include <QSettings>
 
 Patch::Patch()
     : sectionIndex(0)
@@ -30,6 +31,7 @@ void Patch::clear()
         delete problem;
     problems.clear();
 }
+
 Patch *Patch::clone() const
 {
     Patch *newPatch = new Patch();
@@ -257,6 +259,29 @@ void Patch::renameCable(const QString &oldName, const QString &newName)
                 ac->setCable(newName);
         }
     }
+}
+void Patch::compressCables()
+{
+    unsigned nextId = 0;
+    QStringList cables = allCables();
+    for (auto& cable: cables) {
+        QString newName = createCompressedCableName(nextId++);
+        while (cables.contains(newName))
+           newName = createCompressedCableName(nextId++);
+        renameCable(cable, newName);
+    }
+}
+QString Patch::createCompressedCableName(unsigned id)
+{
+    QString name;
+    // make a system of 26
+    do {
+        unsigned digit = id % 26;
+        QChar c = char(65 + digit);
+        name += c;
+        id = id / 26;
+    } while (id > 0);
+    return name;
 }
 void Patch::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
 {
@@ -587,13 +612,49 @@ QString Patch::toBare() const
         s += sections[i]->toBare();
     return s;
 }
-bool Patch::saveToFile(const QString filePath) const
+QString Patch::toCompressed() const
+{
+    QSettings settings;
+    bool renameCables = settings.value("compression/rename_cables", false).toBool();
+    bool removeEmptyLines = settings.value("compression/remove_empty_lines", false).toBool();
+    QString source;
+    if (renameCables) {
+         Patch *patch = clone();
+         patch->compressCables();
+         source = patch->toString();
+         delete patch;
+    }
+    else
+        source = toString();
+
+    // Remove spaces and tabs
+    source.remove(' ');
+    source.remove('\t');
+
+    // Remove comments
+    static QRegularExpression comment("#.*");
+    // source.replace(comment, "");
+    source.remove(comment);
+
+    // Remove empty lines
+    if (removeEmptyLines) {
+        while (source.startsWith("\n"))
+            source.remove(0, 1);
+        while (source.contains("\n\n"))
+            source.replace("\n\n", "\n");
+    }
+    return source;
+}
+bool Patch::saveToFile(const QString filePath, bool compressed) const
 {
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
           return false;
     QTextStream stream(&file);
-    stream << toString();
+    if (compressed)
+        stream << toCompressed();
+    else
+        stream << toString();
     stream.flush();
     file.close();
     return stream.status() == QTextStream::Ok;
