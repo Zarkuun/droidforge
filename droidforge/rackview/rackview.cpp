@@ -59,9 +59,9 @@ RackView::RackView(PatchEditEngine *patch)
 void RackView::modifyPatch()
 {
     scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
+    dragger.cancel();
     refreshScene();
     updateRegisterHilites();
-    dragger.cancel();
 }
 void RackView::toggleDisplayOptions()
 {

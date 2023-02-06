@@ -28,6 +28,7 @@
 	* FIX: When opening the popup menu on a section, select that section so
 	  the menu action is performed on the clicked section
 	* FIX: Correctly load patches with a number like ".3" instead of "0.3".
+	* FIX: Fix left over white register cursor when loading a new patch
 
 	Clean ups:
 	* Make white label areas wider, so that more text fits in (suggested by
