@@ -32,6 +32,7 @@
 	* FIX: Fix left over white register cursor when loading a new patch
 	* FIX: The section cursor is now correctly white (instead of black) after starting
 	  or loading a new patch
+	* FIX: Fix crash when resizing the rack view a lot in a short time
 
 	Clean ups:
 	* Make white label areas wider, so that more text fits in (suggested by

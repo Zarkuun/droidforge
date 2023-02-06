@@ -136,17 +136,14 @@ void RegisterLabels::removeController(int number)
 }
 void RegisterLabels::copyControllerLabels(int fromNumber, int toNumber)
 {
-    shout << "Copiing" << fromNumber << "to" << toNumber;
     QMapIterator<AtomRegister, RegisterLabel> it(*this);
     while (it.hasNext()) {
         it.next();
         AtomRegister atom = it.key();
         const RegisterLabel &label = it.value();
-        shout << "found label at" << atom << atom.controller();
         if (atom.controller() == (unsigned)fromNumber) {
             AtomRegister copied(atom.getRegisterType(), toNumber, atom.getNumber());
             (*this)[copied] = label;
-            shout << "COPIED" << copied << "TO" << label.shorthand << label.description;
         }
     }
 }

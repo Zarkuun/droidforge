@@ -55,6 +55,8 @@ RackView::RackView(PatchEditEngine *patch)
     connect(the_hub, &UpdateHub::patchModified, this, &RackView::modifyPatch);
     connect(the_hub, &UpdateHub::sectionSwitched, this, &RackView::updateRegisterHilites);
     connect(the_hub, &UpdateHub::cursorMoved, this, &RackView::updateRegisterHilites);
+
+    setStyleSheet(QString("QGraphicsView { padding: 4px; }"));
 }
 void RackView::modifyPatch()
 {
@@ -392,7 +394,8 @@ void RackView::updateSize()
         setAlignment(Qt::AlignRight);
     else
         setAlignment(Qt::AlignLeft);
-    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+    auto sr = scene()->sceneRect();
+    fitInView(sr, Qt::KeepAspectRatio);
     updateModuleHeights();
 }
 void RackView::addModule(const QString &name, int controllerIndex)
@@ -678,16 +681,16 @@ int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insert
 
 void RackView::updateModuleHeights()
 {
-    for (auto module: modules)
+    for (auto module: modules) {
         module->setPixelHeight(height() - 13); // This 13 is empirical. Other numbers make pixel artefacts
-    int padding = height() * RACV_PADDING_MARGIN / 320;
-    setStyleSheet(QString("QGraphicsView { padding-left: %1px; padding-top: %1px; padding-bottom: %2px; background-color: %3; }")
-                  .arg(padding)
-                  .arg(padding - 5)
-                  .arg(COLOR(COLOR_RACK_BACKGROUND).name())
-                  );
-
-
+    }
+    // This crashes on Qt 6.3.1 if you resize the rack view up and down a lot
+    // int padding = height() * RACV_PADDING_MARGIN / 320;
+    // setStyleSheet(QString("QGraphicsView { padding-left: %1px; padding-top: %1px; padding-bottom: %2px; background-color: %3; }")
+    //               .arg(padding)
+    //               .arg(padding - 5)
+    //               .arg(COLOR(COLOR_RACK_BACKGROUND).name())
+    //               );
 }
 void RackView::abortDragging()
 {
