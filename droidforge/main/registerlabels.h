@@ -22,6 +22,7 @@ public:
     void swapControllerNumbers(unsigned fromnum, unsigned tonum);
     void shiftControllerNumbers(int number, int by);
     void removeController(int number);
+    void copyControllerLabels(int fromNumber, int toNumber);
 
 private:
     QString toString(char reg, unsigned controller, const QString &title=0) const;

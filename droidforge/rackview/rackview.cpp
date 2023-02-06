@@ -123,8 +123,13 @@ void RackView::popupModuleContextMenu(int controllerIndex, QString moduleType, A
     QMenu *menu = new QMenu(this);
     if (controllerIndex >= 0) {
         ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
+        menu->addAction(tr("Duplicate this controller"), this,
+                        [this,controllerIndex,moduleType] () {this->duplicateController(controllerIndex, false); });
+        menu->addAction(tr("Duplicate this controller with labels"), this,
+                        [this,controllerIndex,moduleType] () {this->duplicateController(controllerIndex, true); });
         menu->addAction(tr("Remove this controller"), this,
                         [this,controllerIndex,moduleType] () {this->askRemoveController(controllerIndex); });
+        menu->addSeparator();
         if (controllerIndex > 0)
             menu->addAction(tr("Move by one position to the left"), this,
                             [this,controllerIndex] () {this->swapControllers(controllerIndex, controllerIndex-1); });
@@ -689,6 +694,12 @@ void RackView::abortDragging()
     unsetCursor();
     dragRegisterIndicator->setVisible(false);
     dragControllerIndicator->setVisible(false);
+}
+void RackView::duplicateController(int controller, bool withLabels)
+{
+    patch->duplicateController(controller, withLabels);
+    patch->commit(tr("duplicating controller"));
+    emit patchModified();
 }
 void RackView::remapControls(QString controllerName, int controllerIndex)
 {

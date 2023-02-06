@@ -642,6 +642,14 @@ void Patch::shiftControllerNumbers(int number, int by)
         }
     }
 }
+void Patch::duplicateController(int index, bool withLabels)
+{
+    QString name = controllers[index];
+    controllers.append(name);
+    moveControllerSmart(controllers.count()-1, index+1);
+    if (withLabels)
+        registerLabels.copyControllerLabels(index+1, index+2);
+}
 QString Patch::toString() const
 {
     QString s;

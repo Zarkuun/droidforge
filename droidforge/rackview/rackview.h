@@ -79,6 +79,7 @@ public slots:
     void abortDragging();
 
 private slots:
+    void duplicateController(int controller, bool withLabels);
     void askRemoveController(int controller);
     void purchaseController(QString name);
     void findRegister(AtomRegister reg);

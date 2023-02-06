@@ -98,6 +98,7 @@ public:
     void swapControllerNumbers(int fromindex, int toindex);
     void shiftControllerNumbers(int number, int by=-1);
     void addController(QString name) { controllers.append(name); };
+    void duplicateController(int index, bool withLabels);
     void removeController(int index);
     void setDescription(const QString &d);
     void addRegisterComment(register_type_t registerType,
