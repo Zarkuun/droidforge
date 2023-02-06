@@ -29,6 +29,8 @@
 	  the menu action is performed on the clicked section
 	* FIX: Correctly load patches with a number like ".3" instead of "0.3".
 	* FIX: Fix left over white register cursor when loading a new patch
+	* FIX: The section cursor is now correctly white (instead of black) after starting
+	  or loading a new patch
 
 	Clean ups:
 	* Make white label areas wider, so that more text fits in (suggested by

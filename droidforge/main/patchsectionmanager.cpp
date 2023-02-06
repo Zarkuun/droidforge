@@ -393,7 +393,6 @@ void PatchSectionManager::stopDraggingItem(QGraphicsItem *startItem, QGraphicsIt
         emit patchModified();
     }
 }
-
 void PatchSectionManager::abortDragging()
 {
     unsetCursor();
@@ -439,7 +438,6 @@ void PatchSectionManager::rebuildGraphics()
     scene()->addItem(frameCursor);
     QRectF sceneRect(0, 0, viewport()->width(), y);
     scene()->setSceneRect(sceneRect);
-    // scene()->addRect(sceneRect, QPen(QColor(255, 255, 0)));
     updateCursor();
 }
 void PatchSectionManager::updateCursor()

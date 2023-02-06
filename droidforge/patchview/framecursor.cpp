@@ -17,6 +17,7 @@ FrameCursor::FrameCursor()
     animation.setKeyValueAt(0.1, 1.0);
     animation.setKeyValueAt(1, 0.0);
     animation.setEasingCurve(QEasingCurve::OutQuad);
+    setPen(color);
 }
 FrameCursor::~FrameCursor()
 {
