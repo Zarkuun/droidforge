@@ -53,17 +53,22 @@ RackView::RackView(PatchEditEngine *patch)
 
     // Events that we are interested in
     connect(the_hub, &UpdateHub::patchModified, this, &RackView::modifyPatch);
-    connect(the_hub, &UpdateHub::sectionSwitched, this, &RackView::updateRegisterHilites);
-    connect(the_hub, &UpdateHub::cursorMoved, this, &RackView::updateRegisterHilites);
+    connect(the_hub, &UpdateHub::sectionSwitched, this, &RackView::setRegisterHilitesDirty);
+    connect(the_hub, &UpdateHub::cursorMoved, this, &RackView::setRegisterHilitesDirty);
 
     setStyleSheet(QString("QGraphicsView { padding: 4px; }"));
+
+    // Update of register hilites is delayed. This speeds up cursor movement
+    registerHilightTimer = new QTimer(this);
+    registerHilightTimer->setSingleShot(true);
+    connect(registerHilightTimer, &QTimer::timeout, this, &RackView::updateRegisterHilites);
 }
 void RackView::modifyPatch()
 {
     scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
     dragger.cancel();
     refreshScene();
-    updateRegisterHilites();
+    setRegisterHilitesDirty();
 }
 void RackView::toggleDisplayOptions()
 {
@@ -697,6 +702,11 @@ void RackView::abortDragging()
     unsetCursor();
     dragRegisterIndicator->setVisible(false);
     dragControllerIndicator->setVisible(false);
+}
+void RackView::setRegisterHilitesDirty()
+{
+    if (!registerHilightTimer->isActive())
+        registerHilightTimer->start(RACV_HILIGHT_UPDATE_INTERVAL);
 }
 void RackView::duplicateController(int controller, bool withLabels)
 {

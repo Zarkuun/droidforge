@@ -13,6 +13,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsEllipseItem>
+#include <QTimer>
 
 
 class RackView : public QGraphicsView, PatchView
@@ -24,6 +25,7 @@ class RackView : public QGraphicsView, PatchView
     RegisterMarker *registerMarker;
     DragRegisterIndicator *dragRegisterIndicator;
     DragControllerIndicator *dragControllerIndicator;
+    QTimer *registerHilightTimer;
     MouseDragger dragger;
 
 public:
@@ -79,6 +81,7 @@ public slots:
     void abortDragging();
 
 private slots:
+    void setRegisterHilitesDirty();
     void duplicateController(int controller, bool withLabels);
     void askRemoveController(int controller);
     void purchaseController(QString name);

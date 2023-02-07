@@ -98,6 +98,7 @@
 #define RACV_JACK_LABEL_WIDTH                1.93
 #define RACV_POT_LABEL_WIDTH                 4.8
 #define RACV_LABEL_HEIGHT                    (0.7 * RACV_PIXEL_PER_HP)
+#define RACV_HILIGHT_UPDATE_INTERVAL         100 // ms
 
 
 #define CONTROL_LARGE_POT_SIZE               4.1

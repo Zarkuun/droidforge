@@ -42,6 +42,8 @@
 	  Harrison!)
 	* The settings "show register labels" and "show register usage" are now
 	  saved and not reset every time you start the Forge.
+	* Speed up cursor movement by delaying update of highliting of used registers
+	  by 100 ms.
 
 
 1.0:
