@@ -108,7 +108,6 @@ MainWindow::~MainWindow()
 {
     delete patch;
 }
-
 bool MainWindow::searchActive() const
 {
     return findPanel.isEnabled();
@@ -343,6 +342,7 @@ void MainWindow::createStatusBar()
     statusbar->addPermanentWidget(&memoryIndicator);
     statusbar->addPermanentWidget(&patchProblemIndicator);
     statusbar->addPermanentWidget(&clipboardIndicator);
+    findPanel.setDisabled(true);
     findPanel.hide();
     statusbar->addPermanentWidget(&findPanel);
     connect(&findPanel, &FindPanel::search, the_operator, &PatchOperator::search);

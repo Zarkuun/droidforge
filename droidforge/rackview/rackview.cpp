@@ -21,10 +21,12 @@ RackView::RackView(PatchEditEngine *patch)
     : QGraphicsView()
     , PatchView(patch)
     , dragger(this)
+    , previousHeight(0)
 {
     setFocusPolicy(Qt::NoFocus);
     setMinimumHeight(RACV_MIN_HEIGHT);
     setMaximumHeight(RACV_MAX_HEIGHT);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QGraphicsScene *thescene = new QGraphicsScene();
@@ -395,12 +397,33 @@ void RackView::connectDragger()
 }
 void RackView::updateSize()
 {
+    auto sr = scene()->sceneRect();
+    double neededWidth = mapFromScene(sr).boundingRect().width();
+
+    // Enable / disable scrollbar with histeresis, to avoid an endless loop.
+    // By removing the horizontal scroll bar, we get more height, a resize
+    // event and that could lead to having a scroll bar and so on.
+    if (previousHeight < height() && neededWidth > viewport()->width() && horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff) {
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        return;
+    }
+    else if (previousHeight > height() && neededWidth + 45 < viewport()->width() && horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOn) {
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        return;
+    }
+
+    previousHeight = height();
+
     if (ACTION(ACTION_RIGHT_TO_LEFT)->isChecked())
         setAlignment(Qt::AlignRight);
     else
         setAlignment(Qt::AlignLeft);
-    auto sr = scene()->sceneRect();
-    fitInView(sr, Qt::KeepAspectRatio);
+
+    double availableHeight = viewport()->height();
+    resetTransform();
+    double s = sr.height() / availableHeight;
+    scale(1 / s, 1 / s);
+
     updateModuleHeights();
 }
 void RackView::addModule(const QString &name, int controllerIndex)

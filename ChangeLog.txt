@@ -44,7 +44,8 @@
 	  saved and not reset every time you start the Forge.
 	* Speed up cursor movement by delaying update of highliting of used registers
 	  by 100 ms.
-
+	* Allow zooming in in rack view beyond the visibility of all modules (and enable
+	  horizontal scroll bar if needed).
 
 1.0:
 	New features:

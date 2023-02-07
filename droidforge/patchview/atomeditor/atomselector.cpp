@@ -59,12 +59,14 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     labelDescription->setStyleSheet(QString("QLabel { padding: 10px; }"));
     labelDescription->setAlignment(Qt::AlignTop);
     labelDescription->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    labelDescription->setFocusPolicy(Qt::NoFocus);
 
     scrollArea = new QScrollArea();
     scrollArea->setWidget(labelDescription);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     scrollArea->setWidgetResizable(true);
+    scrollArea->setFocusPolicy(Qt::NoFocus);
     mainLayout->addWidget(scrollArea);
 
     // Jack type

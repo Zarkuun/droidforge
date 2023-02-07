@@ -27,6 +27,7 @@ class RackView : public QGraphicsView, PatchView
     DragControllerIndicator *dragControllerIndicator;
     QTimer *registerHilightTimer;
     MouseDragger dragger;
+    int previousHeight;
 
 public:
     explicit RackView(PatchEditEngine *patch);
