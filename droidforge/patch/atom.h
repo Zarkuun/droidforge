@@ -3,6 +3,8 @@
 
 class PatchProblem;
 
+#include "rewritecablesdialog.h"
+
 #include <QString>
 #include <QList>
 
@@ -27,6 +29,7 @@ public:
     virtual bool needsX7() const { return false; };
     virtual QString problemAsInput(const Patch *patch) const = 0;
     virtual QString problemAsOutput(const Patch *patch) const = 0;
+    virtual void rewriteCableNames(const QString &, const QString &, RewriteCablesDialog::mode_t) {};
 };
 
 #endif // ATOM_H

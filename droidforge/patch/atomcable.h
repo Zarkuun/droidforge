@@ -19,6 +19,7 @@ public:
     QString problemAsInput(const Patch *patch) const;
     QString problemAsOutput(const Patch *patch) const;
     static QString nextCableName(const QString &name);
+    void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
 };
 
 #endif // ATOMCABLE_H

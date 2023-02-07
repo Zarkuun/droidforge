@@ -425,6 +425,39 @@ void PatchSection::toggleFold()
     if (currentCircuit()->isFolded())
         setCursorRowColumn(ROW_CIRCUIT, 0);
 }
+void PatchSection::rewriteSelectedCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode)
+{
+    if (selection->isCircuitSelection()) {
+        for (int i=selection->fromPos().circuitNr;
+             i<=selection->toPos().circuitNr;
+             i++)
+        {
+            Circuit *circuit = circuits[i];
+            circuit->rewriteCableNames(remove, insert, mode);
+        }
+    }
+    else if (selection->isJackSelection()) {
+        Circuit *circuit = circuits[selection->fromPos().circuitNr];
+        circuit->rewriteCableNames(remove, insert, mode, selection->fromPos().row, selection->toPos().row);
+    }
+    else if (selection->isSingleAtomSelection()) {
+        Atom *atom = atomAt(selection->fromPos());
+        atom->rewriteCableNames(remove, insert, mode);
+    }
+    else if (selection->isAtomSelection()) {
+        for (int i=selection->fromPos().column;
+             i<=selection->toPos().column;
+             i++)
+        {
+            CursorPosition pos(selection->fromPos().circuitNr,
+                               selection->fromPos().row,
+                               i);
+            Atom *atom = atomAt(pos);
+            if (atom)
+                atom->rewriteCableNames(remove, insert, mode);
+        }
+    }
+}
 Patch *PatchSection::getSelectionAsPatch() const
 {
     Clipboard cb;
@@ -538,7 +571,11 @@ const Atom *PatchSection::currentAtom() const
     else
         return 0;
 }
-const Atom *PatchSection::atomAt(const CursorPosition &pos)
+const Atom *PatchSection::atomAt(const CursorPosition &pos) const
+{
+    return circuits[pos.circuitNr]->atomAt(pos.row, pos.column);
+}
+Atom *PatchSection::atomAt(const CursorPosition &pos)
 {
     return circuits[pos.circuitNr]->atomAt(pos.row, pos.column);
 }

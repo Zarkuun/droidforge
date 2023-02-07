@@ -45,3 +45,19 @@ QString AtomCable::nextCableName(const QString &name)
     int number = name.mid(i).toInt();
     return stem + QString::number(number+1);
 }
+void AtomCable::rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode)
+{
+    switch (mode) {
+    case RewriteCablesDialog::SEARCH:
+        name = name.toUpper().replace(remove.toUpper(), insert.toUpper());
+        break;
+
+    case RewriteCablesDialog::PREFIX:
+        name = insert + name;
+        break;
+
+    case RewriteCablesDialog::SUFFIX:
+        name = name + insert;
+        break;
+    }
+}

@@ -358,6 +358,16 @@ void Patch::renameCable(const QString &oldName, const QString &newName)
         }
     }
 }
+void Patch::rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode)
+{
+    if (currentSection()->getSelection())
+        currentSection()->rewriteSelectedCableNames(remove, insert, mode);
+    else {
+        for (auto atom: *this) {
+            atom->rewriteCableNames(remove, insert, mode);
+        }
+    }
+}
 void Patch::compressCables()
 {
     unsigned nextId = 0;

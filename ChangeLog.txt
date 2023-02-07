@@ -3,6 +3,10 @@
 	* There now is a search function, finally! Command-F (or the menu entry
 	  starts it). You can search for all that makes up a patch, including
 	  circuit names, circuit comments, parameters, cables, registers and numbers.
+	* New function for doing a search & replace in all cable names (or all
+	  in the current selection if there is one). This allows you to copy a complete
+	  section, do "select all" there, and then rename e.g. "VOICE1" to "VOICE2"
+	  in all cables.
 	* New "Text mode" view option. In this mode all decorations, icons, lines,
 	  etc are omitted from the patch view, the font is monospaced and everything
 	  looks much like a raw Droid patch. The whole way you edit the patch is

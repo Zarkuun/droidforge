@@ -5,6 +5,7 @@
 #include "patchsection.h"
 #include "registerlabels.h"
 #include "patchproblem.h"
+#include "rewritecablesdialog.h"
 
 #include <QStringList>
 
@@ -111,6 +112,7 @@ public:
     void swapRegisters(AtomRegister regA, AtomRegister regB);
     void removeRegisterReferences(RegisterList &rl);
     void renameCable(const QString &oldName, const QString &newName);
+    void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
     void compressCables();
 
 protected:

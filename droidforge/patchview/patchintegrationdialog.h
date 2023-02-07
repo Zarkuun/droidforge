@@ -5,7 +5,6 @@
 
 #include <QObject>
 #include <QCheckBox>
-#include <QRadioButton>
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QDialog>

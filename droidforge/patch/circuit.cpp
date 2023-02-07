@@ -154,6 +154,15 @@ void Circuit::findCableConnections(const QString &cable, int &asInput, int &asOu
         if (!ja->isDisabled())
             ja->findCableConnections(cable, asInput, asOutput);
 }
+void Circuit::rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode, int fromRow, int toRow)
+{
+    if (toRow == -1)
+        toRow = jackAssignments.count() - 1;
+    for (int row=fromRow; row <= toRow; row++) {
+        JackAssignment *ja = jackAssignments[row];
+        ja->rewriteCableNames(remove, insert, mode);
+    }
+}
 QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *> allProblems;

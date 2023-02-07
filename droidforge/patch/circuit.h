@@ -67,6 +67,7 @@ public:
     void setAtomAt(int row, int column, Atom *atom);
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
+    void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode, int fromRow=0, int toRow=-1);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
     bool jackIsArray(int row) const;
     QString prefixOfJack(const QString &jackName);

@@ -67,6 +67,8 @@ QtApplication {
         "main/editoractions.h",
         "patchview/findpanel.cpp",
         "patchview/findpanel.h",
+        "patchview/rewritecablesdialog.cpp",
+        "patchview/rewritecablesdialog.h",
         "rackview/smoothellipseitem.cpp",
         "rackview/smoothellipseitem.h",
         "utilities/ellipsislabel.cpp",

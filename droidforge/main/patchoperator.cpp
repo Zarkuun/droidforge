@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "mainwindow.h"
 #include "parseexception.h"
+#include "rewritecablesdialog.h"
 #include "updatehub.h"
 #include "patchpropertiesdialog.h"
 #include "sourcecodeeditor.h"
@@ -133,6 +134,7 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &PatchOperator::abortAllActions);
 
     CONNECT_ACTION(ACTION_FIX_LED_MISMATCH, &PatchOperator::fixLEDMismatch);
+    CONNECT_ACTION(ACTION_REWRITE_CABLE_NAMES, &PatchOperator::rewriteCableNames);
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -960,6 +962,39 @@ void PatchOperator::fixLEDMismatch()
     section()->sanitizeCursor();
     patch->commit(tr("fixing LED mismatches"));
     emit patchModified();
+}
+void PatchOperator::rewriteCableNames()
+{
+    static RewriteCablesDialog *dialog = 0;
+
+    // Dialog aufmachen, der search + replace erfragt
+    QString search;
+    QString replace;
+
+    if (!dialog)
+        dialog = new RewriteCablesDialog();
+
+    while (true) {
+        if (dialog->exec() == QDialog::Accepted)
+        {
+            QString error = dialog->validateInput();
+            if (error != "") {
+                QMessageBox::critical(
+                            the_forge,
+                            tr("Invalid input, please try again"),
+                            error,
+                            QMessageBox::Ok);
+                continue;
+            }
+            patch->rewriteCableNames(dialog->getRemoved(), dialog->getInserted(), dialog->getMode());
+            patch->commit(tr("Rewriting patch cable names"));
+            emit patchModified();
+            return;
+        }
+        else {
+            return;
+        }
+    }
 }
 void PatchOperator::globalClipboardChanged()
 {

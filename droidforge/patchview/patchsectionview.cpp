@@ -953,6 +953,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         menu->addSeparator();
 
         ADD_ACTION_IF_ENABLED(ACTION_RENAME_CABLE, menu);
+        ADD_ACTION(ACTION_REWRITE_CABLE_NAMES, menu);
         ADD_ACTION_IF_ENABLED(ACTION_START_PATCHING, menu);
         ADD_ACTION_IF_ENABLED(ACTION_FINISH_PATCHING, menu);
         ADD_ACTION_IF_ENABLED(ACTION_ABORT_PATCHING, menu);

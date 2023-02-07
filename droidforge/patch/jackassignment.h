@@ -5,6 +5,7 @@
 #include "atomregister.h"
 #include "patchproblem.h"
 #include "registerlist.h"
+#include "rewritecablesdialog.h"
 
 #include <QString>
 #include <QSet>
@@ -40,6 +41,7 @@ public:
     void setComment(const QString &c) { comment = c; };
     void changeJack(QString j) { jack = j; };
     void collectRegisterAtoms(RegisterList &) const;
+    void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
 
     virtual ~JackAssignment();
     virtual JackAssignment *clone() const = 0;
@@ -62,8 +64,7 @@ public:
 protected:
     static Atom *parseCable(QString s);
     static Atom *parseRegister(QString s);
-
-     friend bool operator<(const JackAssignment &a, const JackAssignment &b);
+    friend bool operator<(const JackAssignment &a, const JackAssignment &b);
 };
 
 bool operator<(const JackAssignment &a, const JackAssignment &b);

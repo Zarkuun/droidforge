@@ -70,6 +70,7 @@ private slots:
     void editCircuitSource();
     void barePatchSource();
     void fixLEDMismatch();
+    void rewriteCableNames();
     void globalClipboardChanged();
     void modifyPatch();
 

@@ -193,6 +193,9 @@ void EditorActions::createActions()
     actions[ACTION_RENAME_CABLE] = new QAction(tr("Rename internal cable"), this);
     actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+Ctrl+R")));
 
+    actions[ACTION_REWRITE_CABLE_NAMES] = new QAction(tr("Rewrite cable names..."), this);
+    actions[ACTION_REWRITE_CABLE_NAMES]->setShortcut(QKeySequence(tr("Ctrl+W")));
+
     actions[ACTION_START_PATCHING] = new QAction(tr("Start creating internal cable"), this);
     actions[ACTION_START_PATCHING]->setShortcut(QKeySequence(tr("=")));
 

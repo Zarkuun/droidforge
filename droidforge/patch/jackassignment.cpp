@@ -80,6 +80,14 @@ void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
          }
     }
 }
+void JackAssignment::rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode)
+{
+    for (int i=1; i<=numColumns(); i++) {
+         Atom *atom = atomAt(i);
+         if (atom)
+             atom->rewriteCableNames(remove, insert, mode);
+    }
+}
 Atom *JackAssignment::parseCable(QString s)
 {
     static QRegularExpression exp("^_[a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);

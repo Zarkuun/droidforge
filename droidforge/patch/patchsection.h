@@ -6,6 +6,7 @@
 #include "cursorposition.h"
 #include "patchproblem.h"
 #include "selection.h"
+#include "rewritecablesdialog.h"
 
 #include <QList>
 
@@ -52,6 +53,7 @@ public:
     void addCircuit(Circuit *circuit);
     bool allCircuitsFolded() const;
     void toggleFold();
+    void rewriteSelectedCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
 
     const Selection *getSelection() const { return selection; };
     const Selection * const *getSelectionPointer() const { return &selection; };
@@ -71,7 +73,8 @@ public:
     const Circuit *currentCircuit() const;
     int currentCircuitId() const { return cursor.circuitNr; };
     const Atom *currentAtom() const;
-    const Atom *atomAt(const CursorPosition &pos);
+    const Atom *atomAt(const CursorPosition &pos) const;
+    Atom *atomAt(const CursorPosition &pos);
     void setAtomAt(const CursorPosition &pos, Atom *atom);
     bool isEmpty() const { return circuits.size() == 0; };
     Circuit *circuit(int n) { return circuits[n]; };
