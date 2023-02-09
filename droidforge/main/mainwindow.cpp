@@ -112,6 +112,10 @@ bool MainWindow::searchActive() const
 {
     return findPanel.isEnabled();
 }
+void MainWindow::setStatusbarText(QString text)
+{
+    statusbarText->setText(text);
+}
 void MainWindow::modifyPatch()
 {
     QFileInfo fi(patch->getFilePath());
@@ -253,6 +257,8 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_RENAME_CABLE, menu);
     ADD_ACTION(ACTION_REWRITE_CABLE_NAMES, menu);
     ADD_ACTION(ACTION_FIND, menu);
+    ADD_ACTION(ACTION_SET_BOOKMARK, menu);
+    ADD_ACTION(ACTION_JUMP_TO_BOOKMARK, menu);
 
     menu->addSeparator();
 
@@ -480,7 +486,6 @@ void MainWindow::updateStatusbarMessage()
         statusbarText->clear();
         statusbarIcon->clear();
     }
-
 }
 void MainWindow::rackZoom(int whence)
 {

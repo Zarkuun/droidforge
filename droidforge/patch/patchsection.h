@@ -90,6 +90,9 @@ public:
     unsigned memoryFootprint() const;
     bool needsX7() const;
     bool searchHit(const QString &text);
+    void clearBookmarks();
+    bool findBookmark(CursorPosition *pos);
+    void setBookmark();
 
 private:
     bool nextCursorPosition(CursorPosition &pos) const;

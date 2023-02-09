@@ -135,6 +135,8 @@ PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
 
     CONNECT_ACTION(ACTION_FIX_LED_MISMATCH, &PatchOperator::fixLEDMismatch);
     CONNECT_ACTION(ACTION_REWRITE_CABLE_NAMES, &PatchOperator::rewriteCableNames);
+    CONNECT_ACTION(ACTION_SET_BOOKMARK, &PatchOperator::setBookmark);
+    CONNECT_ACTION(ACTION_JUMP_TO_BOOKMARK, &PatchOperator::jumpToBookmark);
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, the_hub, &UpdateHub::modifyPatch);
@@ -995,6 +997,30 @@ void PatchOperator::rewriteCableNames()
             return;
         }
     }
+}
+void PatchOperator::setBookmark()
+{
+    shoutfunc;
+    patch->clearBookmarks();
+    patch->setBookmark();
+    ACTION(ACTION_JUMP_TO_BOOKMARK)->setEnabled(true);
+    the_forge->setStatusbarText(tr("Bookmark set"));
+}
+void PatchOperator::jumpToBookmark()
+{
+    int sectionNr;
+    CursorPosition pos;
+    bool found;
+    found = patch->findBookmark(&sectionNr, &pos);
+    if (!found) {
+        shout << "There is no bookmark. Strange";
+        return;
+    }
+
+    shout << "BOOKMARK" << found << sectionNr << pos;
+    patch->switchCurrentSection(sectionNr);
+    patch->setCursorTo(sectionNr, pos);
+    emit sectionSwitched();
 }
 void PatchOperator::globalClipboardChanged()
 {

@@ -679,3 +679,27 @@ bool PatchSection::searchHit(const QString &text)
 
     return refText.contains(text, Qt::CaseInsensitive);
 }
+void PatchSection::clearBookmarks()
+{
+    for (auto circuit: circuits)
+        circuit->clearBookmark();
+}
+bool PatchSection::findBookmark(CursorPosition *pos)
+{
+    for (int i=0; i<circuits.count(); i++) {
+        const Circuit *circuit = circuits[i];
+        if (circuit->hasBookmark()) {
+            pos->circuitNr = i;
+            pos->row = circuit->bookmarkRow();
+            pos->column = circuit->bookmarkColumn();
+            return true;
+        }
+    }
+    return false;
+}
+void PatchSection::setBookmark()
+{
+    Circuit *circuit = currentCircuit();
+    shout << "SETTING PBOOKMARK to " << circuit->getName();
+    circuit->setBookmark(cursor.row, cursor.column);
+}

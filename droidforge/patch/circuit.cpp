@@ -12,6 +12,7 @@ Circuit::Circuit(QString name, const QStringList &comment, bool disabled)
     , comment(comment)
     , disabled(disabled)
     , folded(false)
+    , haveBookmark(false)
 {
 }
 Circuit::~Circuit()
@@ -62,6 +63,12 @@ unsigned Circuit::memoryFootprint() const
 bool Circuit::needsX7() const
 {
     return the_firmware->circuitNeedsX7(name);
+}
+void Circuit::setBookmark(int row, int column)
+{
+     bmRow = row;
+     bmColumn = column;
+     haveBookmark = true;
 }
 const JackAssignment *Circuit::findJack(const QString name) const
 {

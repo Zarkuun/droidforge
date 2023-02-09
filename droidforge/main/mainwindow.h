@@ -72,6 +72,7 @@ public:
     ~MainWindow();
     // TODO: This is so sick
     bool searchActive() const;
+    void setStatusbarText(QString text);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

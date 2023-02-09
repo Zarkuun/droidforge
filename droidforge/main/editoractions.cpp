@@ -190,6 +190,13 @@ void EditorActions::createActions()
     actions[ACTION_FIND] = new QAction(tr("Find..."), this);
     actions[ACTION_FIND]->setShortcut(QKeySequence(tr("Ctrl+F")));
 
+    actions[ACTION_SET_BOOKMARK] = new QAction(tr("Set bookmark"), this);
+    actions[ACTION_SET_BOOKMARK]->setShortcut(QKeySequence(tr("Ctrl+Shift+J")));
+
+    actions[ACTION_JUMP_TO_BOOKMARK] = new QAction(tr("Jump to bookmark"), this);
+    actions[ACTION_JUMP_TO_BOOKMARK]->setShortcut(QKeySequence(tr("Ctrl+J")));
+    actions[ACTION_JUMP_TO_BOOKMARK]->setEnabled(false);
+
     actions[ACTION_RENAME_CABLE] = new QAction(tr("Rename internal cable"), this);
     actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+Ctrl+R")));
 
@@ -363,6 +370,8 @@ void EditorActions::modifyPatch()
 
     actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems() > 0);
     actions[ACTION_TOOLBAR_PROBLEMS]->setVisible(patch->numProblems() > 0);
+
+    // actions[JUMP_TO_BOOKMARK]->setEnabled(patch->hasBookmark());
 
     switchSection();
     changeDroidState(); // actions for upload and save to SD

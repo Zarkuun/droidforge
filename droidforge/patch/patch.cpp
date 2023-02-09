@@ -379,6 +379,32 @@ void Patch::compressCables()
         renameCable(cable, newName);
     }
 }
+void Patch::clearBookmarks()
+{
+    for (auto section: sections)
+        section->clearBookmarks();
+}
+
+bool Patch::findBookmark(int *sectionNr, CursorPosition *pos)
+{
+    for (int i=0; i<sections.count(); i++) {
+        if (sections[i]->findBookmark(pos)) {
+            *sectionNr = i;
+            return true;
+        }
+    }
+    return false;
+}
+bool Patch::hasBookmark()
+{
+    int section;
+    CursorPosition pos;
+    return findBookmark(&section, &pos);
+}
+void Patch::setBookmark()
+{
+    currentSection()->setBookmark();
+}
 QString Patch::createCompressedCableName(unsigned id)
 {
     QString name;

@@ -25,6 +25,9 @@ class Circuit
     QList<JackAssignment *> jackAssignments;
     bool disabled;
     bool folded;
+    bool haveBookmark;
+    int bmRow;
+    int bmColumn;
 
 public:
     Circuit(QString name, const QStringList &comment, bool disabled);
@@ -73,6 +76,11 @@ public:
     QString prefixOfJack(const QString &jackName);
     unsigned memoryFootprint() const;
     bool needsX7() const;
+    bool hasBookmark() const { return haveBookmark; };
+    void setBookmark(int row, int column);
+    void clearBookmark() { haveBookmark = false; };
+    int bookmarkRow() const { return bmRow; };
+    int bookmarkColumn() const { return bmColumn; };
 
     void changeCircuit(QString newCircuit);
     void collectRegisterAtoms(RegisterList &) const;

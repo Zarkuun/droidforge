@@ -71,6 +71,8 @@ private slots:
     void barePatchSource();
     void fixLEDMismatch();
     void rewriteCableNames();
+    void setBookmark();
+    void jumpToBookmark();
     void globalClipboardChanged();
     void modifyPatch();
 

@@ -114,6 +114,10 @@ public:
     void renameCable(const QString &oldName, const QString &newName);
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
     void compressCables();
+    void clearBookmarks();
+    bool findBookmark(int *section, CursorPosition *pos);
+    bool hasBookmark();
+    void setBookmark();
 
 protected:
     void updateProblems();
