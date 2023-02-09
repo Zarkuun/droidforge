@@ -36,6 +36,8 @@ void Circuit::addJackAssignment(JackAssignment *ja)
 void Circuit::insertJackAssignment(JackAssignment *ja, int index)
 {
     jackAssignments.insert(index, ja);
+    if (haveBookmark && bmRow >= index)
+        bmRow++;
 }
 JackAssignment *Circuit::findJack(const QString name)
 {
@@ -89,6 +91,12 @@ void Circuit::removeUndefinedJacks()
     for (qsizetype i=0; i<jackAssignments.count(); i++) {
         if (jackAssignments[i]->isUndefined()) {
             jackAssignments.remove(i);
+            if (haveBookmark) {
+                if (bmRow > i)
+                    bmRow--;
+                else if (bmRow == i)
+                    clearBookmark();
+            }
             i--;
         }
     }
@@ -113,6 +121,12 @@ void Circuit::deleteJackAssignment(unsigned i)
 {
     delete jackAssignments[i];
     jackAssignments.remove(i);
+    if (haveBookmark) {
+        if (bmRow > i)
+            bmRow--;
+        else if (bmRow == i)
+            clearBookmark();
+    }
 }
 void Circuit::sortJacks()
 {
@@ -127,6 +141,12 @@ void Circuit::sortJacksFromTo(int fromRow, int toRow)
         for (int i=fromRow; i<toRow; i++) {
             if (*jackAssignments[i+1] < *jackAssignments[i]) {
                 jackAssignments.swapItemsAt(i, i+1);
+                if (haveBookmark) {
+                    if (bmRow == i)
+                        bmRow = i+1;
+                    else if (bmRow == i+1)
+                        bmRow = i;
+                }
                 sorted = false;
             }
         }
@@ -415,4 +435,6 @@ void Circuit::setComment(QString c)
 void Circuit::removeComment()
 {
     comment.clear();
+    if (haveBookmark && bmRow == ROW_COMMENT)
+        bmRow = ROW_CIRCUIT;
 }

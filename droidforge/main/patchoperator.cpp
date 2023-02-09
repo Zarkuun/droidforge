@@ -1000,7 +1000,6 @@ void PatchOperator::rewriteCableNames()
 }
 void PatchOperator::setBookmark()
 {
-    shoutfunc;
     patch->clearBookmarks();
     patch->setBookmark();
     ACTION(ACTION_JUMP_TO_BOOKMARK)->setEnabled(true);
@@ -1012,12 +1011,9 @@ void PatchOperator::jumpToBookmark()
     CursorPosition pos;
     bool found;
     found = patch->findBookmark(&sectionNr, &pos);
-    if (!found) {
-        shout << "There is no bookmark. Strange";
+    if (!found)
         return;
-    }
 
-    shout << "BOOKMARK" << found << sectionNr << pos;
     patch->switchCurrentSection(sectionNr);
     patch->setCursorTo(sectionNr, pos);
     emit sectionSwitched();

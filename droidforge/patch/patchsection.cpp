@@ -700,6 +700,5 @@ bool PatchSection::findBookmark(CursorPosition *pos)
 void PatchSection::setBookmark()
 {
     Circuit *circuit = currentCircuit();
-    shout << "SETTING PBOOKMARK to " << circuit->getName();
     circuit->setBookmark(cursor.row, cursor.column);
 }

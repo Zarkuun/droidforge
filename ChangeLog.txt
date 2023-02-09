@@ -1,19 +1,27 @@
 1.1beta1:
 	New features:
-	* There now is a search function, finally! Command-F (or the menu entry
-	  starts it). You can search for all that makes up a patch, including
+	* There is now a search function, finally! Command-F (or the menu entry)
+	  starts it. You can search for all that makes up a patch, including
 	  circuit names, circuit comments, parameters, cables, registers and numbers.
+	* You can now set a bookmark at your current cursor position in the patch
+	  with Command+Shift+J. Later you can jump back to that position by pressing
+	  Cmd+J (J stands for "jump"). You can have just one bookmark, setting
+	  a new one will remove the previous one. This feature is intended to help
+	  you in a situation where you need to find a different position in
+	  your patch for copying or viewing something and than coming back to where
+	  you were.
 	* New function for doing a search & replace in all cable names (or all
-	  in the current selection if there is one). This allows you to copy a complete
-	  section, do "select all" there, and then rename e.g. "VOICE1" to "VOICE2"
-	  in all cables.
+	  in the current selection if there is one). You can for example copy
+	  a complete section, do "select all" there, and then rename e.g. "VOICE1"
+	  to "VOICE2" in all cables.
 	* New "Text mode" view option. In this mode all decorations, icons, lines,
 	  etc are omitted from the patch view, the font is monospaced and everything
 	  looks much like a raw Droid patch. The whole way you edit the patch is
 	  still the same as in normal mode.
 	* When the cursor is on a register like input, output, button, pot or LED,
 	  you can now directly set a label for that register with Command+L or
-	  with the Edit/Popup menu.
+	  with the Edit/Popup menu. The shortcut for "Fix button/LED mismatches"
+	  has changed to Shift+Command+L.
 	* New view option "Show master on the right side". This will display all
 	  modules in reversed order, for those of you that have mounted the controllers
 	  from right to left.
@@ -21,7 +29,7 @@
 	  menu or popup menu on the section)
 	* New "Preferences" dialog with two now options for patch compression. Renaming
 	  cables to short things like _A, _B when deploying reduces the patch size
-	  (and you have a maximum of 64k).
+	  (There is a maximum patch size of 64k).
 	* New action for copying a controller with or without its labels
 
 	Bug fixes:

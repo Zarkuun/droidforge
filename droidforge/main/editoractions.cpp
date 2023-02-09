@@ -150,7 +150,7 @@ void EditorActions::createActions()
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setShortcut(QKeySequence(tr("Shift+Ctrl+R")));
 
     actions[ACTION_FIX_LED_MISMATCH] = new QAction(tr("F&ix button/LED mismatches"), this);
-    actions[ACTION_FIX_LED_MISMATCH]->setShortcut(QKeySequence(tr("Ctrl+L")));
+    actions[ACTION_FIX_LED_MISMATCH]->setShortcut(QKeySequence(tr("Shift+Ctrl+L")));
 
     actions[ACTION_SELECT_ALL] = new QAction(tr("Select &all"), this);
     actions[ACTION_SELECT_ALL]->setShortcut(QKeySequence(tr("Ctrl+A")));
@@ -371,7 +371,7 @@ void EditorActions::modifyPatch()
     actions[ACTION_JUMP_TO_NEXT_PROBLEM]->setEnabled(patch->numProblems() > 0);
     actions[ACTION_TOOLBAR_PROBLEMS]->setVisible(patch->numProblems() > 0);
 
-    // actions[JUMP_TO_BOOKMARK]->setEnabled(patch->hasBookmark());
+    actions[ACTION_JUMP_TO_BOOKMARK]->setEnabled(patch->hasBookmark());
 
     switchSection();
     changeDroidState(); // actions for upload and save to SD
