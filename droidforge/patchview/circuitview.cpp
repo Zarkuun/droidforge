@@ -95,6 +95,16 @@ void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
             paintLines(painter);
     }
     paintSelection(painter);
+
+    if (circuit->hasBookmark()) {
+        QRectF cr = cellRect(circuit->bookmarkRow(), circuit->bookmarkColumn());
+        QPen pen;
+        pen.setColor(COLOR(COLOR_CURSOR_NORMAL));
+        pen.setWidth(1);
+        pen.setStyle(Qt::DotLine);
+        painter->setPen(pen);
+        painter->drawRect(cr);
+    }
 }
 void CircuitView::paintHeader(QPainter *painter)
 {
@@ -213,7 +223,6 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 rect.y(),
                 rect.width() - 1 * CIRV_TEXT_SIDE_PADDING,
                 rect.height());
-
 
     CursorPosition pos(circuitNumber, row, column);
     bool isPatchingFromHere =  the_operator->isPatchingFrom(pos);

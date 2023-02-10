@@ -1002,8 +1002,8 @@ void PatchOperator::setBookmark()
 {
     patch->clearBookmarks();
     patch->setBookmark();
-    ACTION(ACTION_JUMP_TO_BOOKMARK)->setEnabled(true);
     the_forge->setStatusbarText(tr("Bookmark set"));
+    emit patchModified();
 }
 void PatchOperator::jumpToBookmark()
 {
