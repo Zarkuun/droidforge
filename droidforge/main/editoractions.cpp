@@ -111,6 +111,9 @@ void EditorActions::createActions()
 
     actions[ACTION_TOOLBAR_PROBLEMS] = new QAction(ICON("problems"), tr("Problems"), this);
 
+    actions[ACTION_CLOSE] = new QAction(tr("&Close window"), this);
+    actions[ACTION_CLOSE]->setShortcuts(QKeySequence::Close);
+
     actions[ACTION_QUIT] = new QAction(tr("&Quit"), this);
     actions[ACTION_QUIT]->setShortcuts(QKeySequence::Quit);
 
@@ -205,7 +208,7 @@ void EditorActions::createActions()
     actions[ACTION_RENAME_CABLE]->setShortcut(QKeySequence(tr("Alt+Ctrl+R")));
 
     actions[ACTION_REWRITE_CABLE_NAMES] = new QAction(tr("Rewrite cable names..."), this);
-    actions[ACTION_REWRITE_CABLE_NAMES]->setShortcut(QKeySequence(tr("Ctrl+W")));
+    actions[ACTION_REWRITE_CABLE_NAMES]->setShortcut(QKeySequence(tr("Ctrl+P")));
 
     actions[ACTION_START_PATCHING] = new QAction(tr("Start creating internal cable"), this);
     actions[ACTION_START_PATCHING]->setShortcut(QKeySequence(tr("=")));

@@ -84,6 +84,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     CONNECT_ACTION(ACTION_CLEAR_SETTINGS, &MainWindow::clearSettings);
     CONNECT_ACTION(ACTION_FIND, &MainWindow::showFindPanel);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &MainWindow::abortAllActions);
+    CONNECT_ACTION(ACTION_CLOSE, &MainWindow::close);
 
     createMenus();
     createToolbar();
@@ -106,7 +107,6 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
 }
 MainWindow::~MainWindow()
 {
-    delete patch;
 }
 bool MainWindow::searchActive() const
 {
@@ -135,8 +135,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 }
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    patchOperator.quit();
-    event->ignore();
+    // patchOperator.quit();
+    // event->ignore();
 }
 void MainWindow::resizeEvent(QResizeEvent *)
 {
@@ -205,6 +205,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_SAVE, menu);
     ADD_ACTION(ACTION_SAVE_AS, menu);
     ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
+    ADD_ACTION(ACTION_CLOSE, menu);
 
     menu->addSeparator();
 
