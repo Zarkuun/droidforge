@@ -25,17 +25,17 @@
 
 #define mainWindow this // make ACTION() macros work
 
-MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
+MainWindow::MainWindow(QString initialFilename)
     : QMainWindow()
-    , PatchView(patch)
-    , editorActions(this, patch)
-    , patchOperator(this, patch, initialFilename)
-    , rackView(this, patch)
-    , patchSectionView(this, patch)
-    , patchSectionManager(this, patch)
-    , memoryIndicator(this, patch)
-    , cableStatusIndicator(this, patch)
-    , patchProblemIndicator(this, patch)
+    , PatchView(&thePatch)
+    , editorActions(this, &thePatch)
+    , patchOperator(this, &thePatch, initialFilename)
+    , rackView(this, &thePatch)
+    , patchSectionView(this, &thePatch)
+    , patchSectionManager(this, &thePatch)
+    , memoryIndicator(this, &thePatch)
+    , cableStatusIndicator(this, &thePatch)
+    , patchProblemIndicator(this, &thePatch)
     , clipboardIndicator(this)
     , moduleBuilder(this)
 {
@@ -187,7 +187,13 @@ void MainWindow::createFileMenu()
 
     ADD_ACTION(ACTION_NEW, menu);
     ADD_ACTION(ACTION_NEW_WITH_SAME_RACK, menu);
+    ADD_ACTION(ACTION_NEW_WINDOW, menu);
+    ADD_ACTION(ACTION_NEW_WINDOW_WITH_SAME_RACK, menu);
+
+    menu->addSeparator();
+
     ADD_ACTION(ACTION_OPEN, menu);
+    ADD_ACTION(ACTION_OPEN_IN_NEW_WINDOW, menu);
     recentFilesMenu = menu->addMenu(tr("Open &recent patch"));
     patchOperator.createRecentFileActions(recentFilesMenu);
 
@@ -195,8 +201,6 @@ void MainWindow::createFileMenu()
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, menu);
     #endif
-
-    menu->addSeparator();
 
     ADD_ACTION(ACTION_SAVE, menu);
     ADD_ACTION(ACTION_SAVE_AS, menu);

@@ -7,6 +7,7 @@
 #include "clipboard.h"
 #include "colorscheme.h"
 #include "usermanual.h"
+#include "iconbase.h"
 
 #include <QApplication>
 #include <QDir>
@@ -23,6 +24,15 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("dmmdm.de");
     app.setWindowIcon(QIcon(":images/droidforge-icon.png"));
 
+    // Global variable objects that are shared by all MainWindow
+    Clipboard clipboard; // must be global to all windows
+    UserManual userManual;
+    IconBase iconBase;
+    CableColorizer cableColorizer;
+    ColorScheme colorscheme;
+    if (colorscheme.isDevelopment())
+        colorscheme.dumpHeaderFile();
+
     // Create and change to user's patch directory
     QDir dir = QDir::homePath();
     if (!dir.cd(PATCH_DIRECTORY_NAME)) {
@@ -31,20 +41,15 @@ int main(int argc, char *argv[])
     dir.cd(PATCH_DIRECTORY_NAME);
     QDir::setCurrent(dir.absolutePath());
 
-    UpdateHub updateHub; // signal hub, to avoid n:m connections
-    Clipboard clipboard; // must be global to all windows
-    UserManual userManual;
-    ColorScheme colorscheme;
-    if (colorscheme.isDevelopment())
-        colorscheme.dumpHeaderFile();
-
+    // TODO: Brauch ich das wirklich hier?
     QString initialFilename;
+    QSettings settings;
     if (argc > 1)
         initialFilename = argv[1];
-
-    CableColorizer cableColorizer;
-    PatchEditEngine thePatch;
-    MainWindow mainWindow(&thePatch, initialFilename);
+    else if (settings.contains("lastfile"))
+        initialFilename = settings.value("lastfile").toString();
+    MainWindow mainWindow(initialFilename);
     mainWindow.show();
+
     return app.exec();
 }

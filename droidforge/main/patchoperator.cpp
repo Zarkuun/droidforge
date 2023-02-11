@@ -107,6 +107,9 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QSt
     CONNECT_ACTION(ACTION_NEW_WITH_SAME_RACK, &PatchOperator::newPatchWithSameRack);
     CONNECT_ACTION(ACTION_TOOLBAR_NEW, &PatchOperator::newPatchWithSameRack);
     CONNECT_ACTION(ACTION_OPEN, &PatchOperator::open);
+    CONNECT_ACTION(ACTION_OPEN_IN_NEW_WINDOW, &PatchOperator::openInNewWindow);
+    CONNECT_ACTION(ACTION_NEW_WINDOW, &PatchOperator::newWindow);
+    CONNECT_ACTION(ACTION_NEW_WINDOW_WITH_SAME_RACK, &PatchOperator::newWindowWithSameRack);
     CONNECT_ACTION(ACTION_CLEAR_RECENT_FILES, &PatchOperator::clearRecentFiles);
     CONNECT_ACTION(ACTION_TOOLBAR_OPEN, &PatchOperator::open);
     CONNECT_ACTION(ACTION_SAVE, &PatchOperator::save);
@@ -148,9 +151,6 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QSt
     // Event that we are interested in
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchOperator::modifyPatch);
 
-    QSettings settings;
-    if (initialFilename == "" && settings.contains("lastfile"))
-        initialFilename = settings.value("lastfile").toString();
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [this,initialFilename] () { this->loadFile(initialFilename, FILE_MODE_LOAD);});
     else
@@ -483,6 +483,19 @@ void PatchOperator::open()
         loadFile(filePath, FILE_MODE_LOAD);
     }
 }
+void PatchOperator::openInNewWindow()
+{
+    shoutfunc;
+}
+void PatchOperator::newWindow()
+{
+    MainWindow *newWindow = new MainWindow("");
+    newWindow->show();
+}
+void PatchOperator::newWindowWithSameRack()
+{
+    shoutfunc;
+}
 void PatchOperator::clearRecentFiles()
 {
     QSettings settings;
@@ -490,7 +503,6 @@ void PatchOperator::clearRecentFiles()
     settings.setValue("recentfiles", emptyList);
     createRecentFileActions(recentFilesMenu);
 }
-
 void PatchOperator::search(QString text, int direction)
 {
     int startSectionIndex = patch->currentSectionIndex();

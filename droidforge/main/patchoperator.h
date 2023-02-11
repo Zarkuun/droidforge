@@ -56,6 +56,9 @@ private slots:
     void newPatch();
     void newPatchWithSameRack();
     void open();
+    void openInNewWindow();
+    void newWindow();
+    void newWindowWithSameRack();
     void integrate();
     void exportSelection();
     void save();

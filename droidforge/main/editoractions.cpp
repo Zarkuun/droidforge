@@ -51,11 +51,10 @@ void EditorActions::createActions()
     actions[ACTION_LICENSE] = new QAction(tr("DROID Forge &license"), this);
 
     actions[ACTION_CLEAR_SETTINGS] = new QAction(tr("&Restore factory settings"), this);
-
     actions[ACTION_CLEAR_RECENT_FILES] = new QAction(tr("Clear list of recent patches"), this);
 
-    actions[ACTION_NEW] = new QAction(tr("&New..."), this);
-    actions[ACTION_NEW_WITH_SAME_RACK] = new QAction(tr("New &with same rack..."), this);
+    actions[ACTION_NEW] = new QAction(tr("&New patch"), this);
+    actions[ACTION_NEW_WITH_SAME_RACK] = new QAction(tr("New patch &with same rack"), this);
     actions[ACTION_NEW_WITH_SAME_RACK]->setShortcut(QKeySequence(tr("Ctrl+Shift+Alt+N")));
 
     actions[ACTION_TOOLBAR_NEW] = new QAction(ICON("new"), tr("New"), this);
@@ -80,6 +79,13 @@ void EditorActions::createActions()
 
     actions[ACTION_EXPORT_SELECTION] = new QAction(tr("E&xport selection as patch..."), this);
     actions[ACTION_EXPORT_SELECTION]->setEnabled(false);
+
+    actions[ACTION_NEW_WINDOW] = new QAction(tr("New window"), this);
+
+    actions[ACTION_NEW_WINDOW_WITH_SAME_RACK] = new QAction(tr("New window with same rack"), this);
+
+    actions[ACTION_OPEN_IN_NEW_WINDOW] = new QAction(tr("Open in new window..."), this);
+    actions[ACTION_OPEN_IN_NEW_WINDOW]->setShortcut(QKeySequence(tr("Ctrl+Shift+O")));
 
     actions[ACTION_UPLOAD_TO_DROID] = new QAction(tr("Activate in master via USB to X7"), this);
     actions[ACTION_UPLOAD_TO_DROID]->setShortcut(QKeySequence(tr("F9")));

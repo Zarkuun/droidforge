@@ -39,6 +39,7 @@ class MainWindow : public QMainWindow, PatchView
 {
     Q_OBJECT
 
+    PatchEditEngine thePatch;
     UpdateHub updateHub;
     DroidFirmware firmware;
 
@@ -71,7 +72,7 @@ class MainWindow : public QMainWindow, PatchView
     QToolBar *toolbar;
 
 public:
-    MainWindow(PatchEditEngine *patch, QString initialFilename);
+    MainWindow(QString initialFilename);
     ~MainWindow();
     // TODO: This is so sick
     bool searchActive() const;

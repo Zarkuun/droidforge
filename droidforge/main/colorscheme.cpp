@@ -302,7 +302,7 @@ void ColorScheme::darkLightSwitch()
     }
 #endif
 
-    the_iconbase.flushCaches();
+    the_iconbase->flushCaches();
     background = PIXMAP("background").scaledToHeight(BACKGROUND_PIXMAP_HEIGHT);
 
     if (dark)

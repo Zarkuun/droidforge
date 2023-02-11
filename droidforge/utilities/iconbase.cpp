@@ -3,8 +3,13 @@
 #include "tuning.h"
 #include "colorscheme.h"
 
-IconBase the_iconbase;
+IconBase *the_iconbase = 0;
 
+IconBase::IconBase()
+{
+    Q_ASSERT(the_iconbase == 0);
+    the_iconbase = this;
+}
 const QIcon &IconBase::getIcon(const QString &name)
 {
     if (!icons.contains(name)) {
@@ -17,7 +22,7 @@ const QIcon &IconBase::getIcon(const QString &name)
 }
 const QIcon &IconBase::icon(const QString &name)
 {
-    return the_iconbase.getIcon(name);
+    return the_iconbase->getIcon(name);
 }
 const QImage &IconBase::getImage(const QString &name)
 {
@@ -29,7 +34,6 @@ const QImage &IconBase::getImage(const QString &name)
     }
     return images[name];
 }
-
 const QPixmap &IconBase::getPixmap(const QString &name)
 {
     if (!pixmaps.contains(name)) {
@@ -60,14 +64,14 @@ void IconBase::flushCaches()
 }
 const QImage &IconBase::image(const QString &name)
 {
-    return the_iconbase.getImage(name);
+    return the_iconbase->getImage(name);
 }
 const QPixmap &IconBase::pixmap(const QString &name)
 {
-    return the_iconbase.getPixmap(name);
+    return the_iconbase->getPixmap(name);
 }
 const QImage &IconBase::jackTypeSymbol(const QString &name)
 {
-    return the_iconbase.getJackTypeSymbol(name);
+    return the_iconbase->getJackTypeSymbol(name);
 
 }
