@@ -35,7 +35,6 @@ public:
     explicit PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename, const Patch *initialRack=0);
     void createRecentFileActions(QMenu *menu);
     void loadFile(const QString &filename, int how);
-    void quit();
     void jumpTo(int sectionIndex, const CursorPosition &pos);
     void clearSelection();
     bool droidSDCardPresent() const { return sdCardPresent; };
@@ -80,6 +79,8 @@ private slots:
     void jumpToBookmark();
     void globalClipboardChanged();
     void modifyPatch();
+    void close();
+    void quit();
 
 public slots:
     void clearRecentFiles();

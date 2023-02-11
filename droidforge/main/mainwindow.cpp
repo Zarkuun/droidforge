@@ -84,7 +84,6 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     CONNECT_ACTION(ACTION_CLEAR_SETTINGS, &MainWindow::clearSettings);
     CONNECT_ACTION(ACTION_FIND, &MainWindow::showFindPanel);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &MainWindow::abortAllActions);
-    CONNECT_ACTION(ACTION_CLOSE, &MainWindow::close);
 
     createMenus();
     createToolbar();

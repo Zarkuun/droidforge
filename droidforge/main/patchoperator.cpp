@@ -100,6 +100,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     , x7Present(false)
 {
     CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
+    CONNECT_ACTION(ACTION_CLOSE, &PatchOperator::close);
     CONNECT_ACTION(ACTION_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_SAVE_TO_SD, &PatchOperator::saveToSD);
@@ -1053,6 +1054,12 @@ void PatchOperator::modifyPatch()
         createBackup();
     else
         removeBackup();
+}
+
+void PatchOperator::close()
+{
+    if (checkModified())
+        mainWindow->close();
 }
 Patch *PatchOperator::editSource(const QString &title, QString oldSource)
 {
