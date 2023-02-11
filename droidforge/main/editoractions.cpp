@@ -111,8 +111,17 @@ void EditorActions::createActions()
 
     actions[ACTION_TOOLBAR_PROBLEMS] = new QAction(ICON("problems"), tr("Problems"), this);
 
-    actions[ACTION_CLOSE] = new QAction(tr("&Close window"), this);
-    actions[ACTION_CLOSE]->setShortcuts(QKeySequence::Close);
+    actions[ACTION_CLOSE_WINDOW] = new QAction(tr("&Close window"), this);
+    actions[ACTION_CLOSE_WINDOW]->setShortcuts(QKeySequence::Close);
+
+    actions[ACTION_NEXT_WINDOW] = new QAction(tr("Next"), this);
+    actions[ACTION_NEXT_WINDOW]->setShortcut(tr("Meta+Tab"));
+
+    actions[ACTION_PREVIOUS_WINDOW] = new QAction(tr("Previous"), this);
+    actions[ACTION_PREVIOUS_WINDOW]->setShortcut(tr("Meta+Shift+Tab"));
+
+    actions[ACTION_MINIMIZE_WINDOW] = new QAction(tr("Minimize"), this);
+    actions[ACTION_MINIMIZE_WINDOW]->setShortcut(tr("Ctrl+M"));
 
     actions[ACTION_QUIT] = new QAction(tr("&Quit"), this);
     actions[ACTION_QUIT]->setShortcuts(QKeySequence::Quit);
@@ -339,10 +348,10 @@ void EditorActions::createActions()
     actions[ACTION_BARE_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Alt+Ctrl+U")));
 
     actions[ACTION_USER_MANUAL] = new QAction(tr("DROID user &manual"), this);
-    actions[ACTION_USER_MANUAL]->setShortcuts({QKeySequence(tr("Shift+Ctrl+M")), QKeySequence(tr("F1"))});
+    actions[ACTION_USER_MANUAL]->setShortcuts({QKeySequence(tr("Shift+Ctrl+T")), QKeySequence(tr("F1"))});
 
     actions[ACTION_CIRCUIT_MANUAL] = new QAction(tr("User manual of &circuit"), this);
-    actions[ACTION_CIRCUIT_MANUAL]->setShortcut(QKeySequence(tr("Ctrl+M")));
+    actions[ACTION_CIRCUIT_MANUAL]->setShortcut(QKeySequence(tr("Ctrl+T")));
 
     for (auto action: actions)
          action->setShortcutVisibleInContextMenu(true);

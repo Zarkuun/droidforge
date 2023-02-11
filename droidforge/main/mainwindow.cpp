@@ -86,6 +86,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     CONNECT_ACTION(ACTION_CLEAR_SETTINGS, &MainWindow::clearSettings);
     CONNECT_ACTION(ACTION_FIND, &MainWindow::showFindPanel);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &MainWindow::abortAllActions);
+    CONNECT_ACTION(ACTION_MINIMIZE_WINDOW, &MainWindow::showMinimized);
 
     createMenus();
     createToolbar();
@@ -214,7 +215,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_SAVE, menu);
     ADD_ACTION(ACTION_SAVE_AS, menu);
     ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
-    ADD_ACTION(ACTION_CLOSE, menu);
+    ADD_ACTION(ACTION_CLOSE_WINDOW, menu);
 
     menu->addSeparator();
 
@@ -529,7 +530,10 @@ void MainWindow::rackZoom(int whence)
 void MainWindow::updateWindowsMenu()
 {
     windowsMenu->clear();
-    ADD_ACTION(ACTION_CLOSE, windowsMenu);
+    ADD_ACTION(ACTION_MINIMIZE_WINDOW, windowsMenu);
+    ADD_ACTION(ACTION_NEXT_WINDOW, windowsMenu);
+    ADD_ACTION(ACTION_PREVIOUS_WINDOW, windowsMenu);
+    ADD_ACTION(ACTION_CLOSE_WINDOW, windowsMenu);
     windowsMenu->addSeparator();
     the_windowlist->addMenuEntries(windowsMenu);
 }

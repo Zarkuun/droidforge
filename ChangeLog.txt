@@ -31,6 +31,7 @@
 	  cables to short things like _A, _B when deploying reduces the patch size
 	  (There is a maximum patch size of 64k).
 	* New action for copying a controller with or without its labels
+	* Shortcut Command+M for minimizing a Forge window (Mac standard)
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
@@ -58,6 +59,9 @@
 	  by 100 ms.
 	* Allow zooming in in rack view beyond the visibility of all modules (and enable
 	  horizontal scroll bar if needed).
+	* The shortcut for "circuit manual" and "user manual" have been changed to
+	  Command+T and Command+shift+T, since Command+M now minimizes the Window
+	  "Mac standard"
 
 1.0:
 	New features:
