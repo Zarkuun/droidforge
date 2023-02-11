@@ -83,6 +83,7 @@ public:
     ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };
     UpdateHub *theHub() { return &updateHub; };
     QString patchName() const;
+    void bringToFront();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -122,6 +123,8 @@ private slots:
     void clearSettings();
     void showFindPanel();
     void abortAllActions();
+    void nextWindow();
+    void previousWindow();
 
 signals:
     void allActionsAborted();

@@ -17,9 +17,10 @@ public:
     WindowList();
     void add(MainWindow *window);
     void remove(MainWindow *window);
-    void debug();
     void addMenuEntries(QMenu *menu);
     void update();
+    MainWindow *nextWindow(const MainWindow *window);
+    MainWindow *previousWindow(const MainWindow *window);
 
 signals:
     void changed();

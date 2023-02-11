@@ -87,6 +87,8 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     CONNECT_ACTION(ACTION_FIND, &MainWindow::showFindPanel);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &MainWindow::abortAllActions);
     CONNECT_ACTION(ACTION_MINIMIZE_WINDOW, &MainWindow::showMinimized);
+    CONNECT_ACTION(ACTION_NEXT_WINDOW, &MainWindow::nextWindow);
+    CONNECT_ACTION(ACTION_PREVIOUS_WINDOW, &MainWindow::previousWindow);
 
     createMenus();
     createToolbar();
@@ -128,6 +130,12 @@ QString MainWindow::patchName() const
     if (name == "")
         name = tr("(untitled)");
     return name;
+}
+void MainWindow::bringToFront()
+{
+    raise();
+    activateWindow();
+    setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
 }
 void MainWindow::modifyPatch()
 {
@@ -458,6 +466,14 @@ void MainWindow::abortAllActions()
     findPanel.hide();
     findPanel.setEnabled(false);
 }
+void MainWindow::nextWindow()
+{
+    the_windowlist->nextWindow(this)->bringToFront();
+}
+void MainWindow::previousWindow()
+{
+    the_windowlist->previousWindow(this)->bringToFront();
+}
 void MainWindow::updateStatusbarMessage()
 {
     QStringList infos;
@@ -533,7 +549,6 @@ void MainWindow::updateWindowsMenu()
     ADD_ACTION(ACTION_MINIMIZE_WINDOW, windowsMenu);
     ADD_ACTION(ACTION_NEXT_WINDOW, windowsMenu);
     ADD_ACTION(ACTION_PREVIOUS_WINDOW, windowsMenu);
-    ADD_ACTION(ACTION_CLOSE_WINDOW, windowsMenu);
     windowsMenu->addSeparator();
     the_windowlist->addMenuEntries(windowsMenu);
 }

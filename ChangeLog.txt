@@ -1,5 +1,10 @@
 1.1beta1:
 	New features:
+	* The Forge now handles multiple patch windows in parallel. With the
+	  actions "New window", "New window with same rack" and "Open in new window"
+	  you can create a new patch window. This allows for easy copy & paste
+	  between your different patches and also makes a multi-master-setup
+	  easier to handle.
 	* There is now a search function, finally! Command-F (or the menu entry)
 	  starts it. You can search for all that makes up a patch, including
 	  circuit names, circuit comments, parameters, cables, registers and numbers.
