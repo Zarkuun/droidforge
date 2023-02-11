@@ -13,6 +13,7 @@
 #include <QList>
 
 class MainWindow;
+class PatchOperator;
 
 class PatchSectionManager : public QGraphicsView, PatchView
 {
@@ -28,6 +29,7 @@ public:
     explicit PatchSectionManager(MainWindow *mainWindow, PatchEditEngine *patch, QWidget *parent = nullptr);
 
 private:
+    PatchOperator *theOperator();
     void rebuildGraphics();
     void updateCursor();
     void switchToSection(int i);

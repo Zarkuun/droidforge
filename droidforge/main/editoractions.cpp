@@ -4,14 +4,16 @@
 #include "patchoperator.h"
 #include "updatehub.h"
 #include "clipboard.h"
+#include "mainwindow.h"
 
 #include <QSettings>
 
 EditorActions *the_actions = 0;
 
-EditorActions::EditorActions(PatchEditEngine *patch, QObject *parent)
+EditorActions::EditorActions(MainWindow *mainWindow, PatchEditEngine *patch, QObject *parent)
     : QObject{parent}
     , PatchView(patch)
+    , mainWindow(mainWindow)
 {
     Q_ASSERT(the_actions == 0);
     the_actions = this;
@@ -510,13 +512,17 @@ void EditorActions::changeDroidState()
     updateSaveToSDAction(ACTION_SAVE_TO_SD);
     updateSaveToSDAction(ACTION_TOOLBAR_SAVE_TO_SD);
 }
+PatchOperator *EditorActions::theOperator()
+{
+    return mainWindow->theOperator();
+}
 void EditorActions::updateUploadAction(action_t action)
 {
     QString tooltip;
     bool enabled = false;
     if (patch->hasProblems())
         tooltip = tr("Your patch has problems. You cannot activate your patch unless you have fixed them.");
-    else if (!the_operator->droidX7Present())
+    else if (!theOperator()->droidX7Present())
         tooltip = tr("No DROID X7 MIDI device was detected. Attach your X7 via USB and push the switch to the right.");
     else {
         tooltip = tr("Upload and activate your patch via MIDI");
@@ -531,7 +537,7 @@ void EditorActions::updateSaveToSDAction(action_t action)
     bool enabled = false;
     if (patch->hasProblems())
         tooltip = tr("Your patch has problems. You cannot activate your patch unless you have fixed them.");
-    else if (!the_operator->droidSDCardPresent())
+    else if (!theOperator()->droidSDCardPresent())
         tooltip = tr("No DROID SD card was detected. Insert your SD card that was already in use by your DROID master.");
     else {
         tooltip = tr("Write your patch to your DROID sd card and eject the card.");

@@ -4,17 +4,24 @@
 #include <QWidget>
 #include "patchview.h"
 
+class MainWindow;
+class PatchOperator;
+
 class PatchProblemIndicator : public QWidget, PatchView
 {
     Q_OBJECT
 
+    MainWindow *mainWindow;
     unsigned numProblems;
     unsigned currentProblem;
 
 public:
-    PatchProblemIndicator(PatchEditEngine *patch, QWidget *parent = nullptr);
+    PatchProblemIndicator(MainWindow *mainWindow, PatchEditEngine *patch, QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
+
+private:
+    PatchOperator *theOperator();
 
 public slots:
     void updateStatus();

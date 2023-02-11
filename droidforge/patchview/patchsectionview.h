@@ -19,6 +19,7 @@
 
 class MainWindow;
 class PatchView;
+class PatchOperator;
 
 class PatchSectionView : public QGraphicsView, PatchView
 {
@@ -63,6 +64,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
+    PatchOperator *theOperator();
     bool handleKeyPress(int key, int modifiers);
     void updateCableIndicator();
     CursorPosition *cursorAtMousePosition(QPoint pos) const;

@@ -26,14 +26,14 @@
 MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     : QMainWindow()
     , PatchView(patch)
-    , editorActions(patch)
+    , editorActions(this, patch)
     , patchOperator(this, patch, initialFilename)
     , rackView(this, patch)
     , patchSectionView(this, patch)
     , patchSectionManager(this, patch)
     , memoryIndicator(patch)
     , cableStatusIndicator(patch)
-    , patchProblemIndicator(patch)
+    , patchProblemIndicator(this, patch)
 {
     setWindowTitle(APPLICATION_NAME);
     QIcon appIcon(":droidforge.icns");

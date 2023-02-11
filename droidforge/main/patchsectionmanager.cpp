@@ -61,6 +61,10 @@ PatchSectionManager::PatchSectionManager(MainWindow *mainWindow, PatchEditEngine
         width = PSM_NORMAL_WIDTH;
     resize(width, height());
 }
+PatchOperator *PatchSectionManager::theOperator()
+{
+    return mainWindow->theOperator();
+}
 void PatchSectionManager::connectActions()
 {
     CONNECT_ACTION(ACTION_PREVIOUS_SECTION, &PatchSectionManager::switchBackward);
@@ -220,7 +224,7 @@ void PatchSectionManager::duplicateSection()
     PatchSection *newSection = oldSection->clone();
     newSection->setTitle(newname);
     newpatch->addSection(newSection);
-    if (!the_operator->interactivelyRemapRegisters(newpatch)) {
+    if (!theOperator()->interactivelyRemapRegisters(newpatch)) {
         delete newpatch;
         return;
     }
@@ -279,7 +283,7 @@ void PatchSectionManager::saveSectionAsPatch()
         sectionPatch.setTitle(section->getTitle());
 
     if (sectionPatch.saveToFile(newFilePath))
-        the_operator->addToRecentFiles(newFilePath);
+        theOperator()->addToRecentFiles(newFilePath);
     else {
         QMessageBox::warning(
                     mainWindow,

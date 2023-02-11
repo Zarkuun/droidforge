@@ -110,13 +110,18 @@ typedef enum {
     NUM_ACTIONS,
 } action_t;
 
+
+class MainWindow;
+class PatchOperator;
+
 class EditorActions : public QObject, PatchView
 {
     Q_OBJECT
+    MainWindow *mainWindow;
     QAction *actions[NUM_ACTIONS];
 
 public:
-    explicit EditorActions(PatchEditEngine *patch, QObject *parent = nullptr);
+    explicit EditorActions(MainWindow *mainWindow, PatchEditEngine *patch, QObject *parent = nullptr);
     QAction *action(action_t action) { return actions[action]; };
     void updateIcons();
 
@@ -130,6 +135,7 @@ private slots:
     void changeDroidState();
 
 private:
+    PatchOperator *theOperator();
     void createActions();
     void updateDisablingActions();
     void updatePasteAction();

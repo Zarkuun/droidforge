@@ -72,6 +72,7 @@ public:
     // TODO: This is so sick
     bool searchActive() const;
     void setStatusbarText(QString text);
+    PatchOperator *theOperator() { return &patchOperator; };
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

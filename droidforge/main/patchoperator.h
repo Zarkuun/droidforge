@@ -114,6 +114,4 @@ signals:
     void droidStateChanged();
 };
 
-extern PatchOperator *the_operator;
-
 #endif // PATCHOPERATOR_H

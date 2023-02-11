@@ -9,8 +9,12 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsDropShadowEffect>
 
+class MainWindow;
+class PatchOperator;
+
 class CircuitView : public QObject, public QGraphicsItem
 {
+    MainWindow *mainWindow;
     Circuit *circuit;
     unsigned circuitNumber; // within section
     const Selection * const *selection;
@@ -24,7 +28,7 @@ class CircuitView : public QObject, public QGraphicsItem
     QFont fixedFont;
 
 public:
-    CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const *selection, float width, unsigned lineHeight);
+    CircuitView(MainWindow *mainWindow, Circuit *circuit, unsigned circuitNumber, const Selection * const *selection, float width, unsigned lineHeight);
     QRectF boundingRect() const override;
     static unsigned minimumWidth();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -37,6 +41,7 @@ public:
     int nextHeaderMarkerOffset();
 
 private:
+    PatchOperator *theOperator();
     bool textMode() const;
     bool isFolded() const { return circuit->isFolded(); };
     void paintJacks(QPainter *painter);

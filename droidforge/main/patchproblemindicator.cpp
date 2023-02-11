@@ -5,13 +5,15 @@
 #include "tuning.h"
 #include "updatehub.h"
 #include "iconbase.h"
+#include "mainwindow.h"
 
 #include <QPainter>
 #include <QMouseEvent>
 
-PatchProblemIndicator::PatchProblemIndicator(PatchEditEngine *patch, QWidget *parent)
+PatchProblemIndicator::PatchProblemIndicator(MainWindow *mainWindow, PatchEditEngine *patch, QWidget *parent)
     : QWidget{parent}
     , PatchView(patch)
+    , mainWindow(mainWindow)
     , numProblems(0)
     , currentProblem(0)
 {
@@ -52,13 +54,15 @@ void PatchProblemIndicator::paintEvent(QPaintEvent *)
     painter.setPen(COLOR(COLOR_STATUSBAR_TEXT));
     painter.drawText(textRect, Qt::AlignVCenter, text);
 }
-
 void PatchProblemIndicator::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         emit clicked();
 }
-
+PatchOperator *PatchProblemIndicator::theOperator()
+{
+    return mainWindow->theOperator();
+}
 void PatchProblemIndicator::updateStatus()
 {
     numProblems = patch->numProblems();
@@ -76,7 +80,6 @@ void PatchProblemIndicator::updateStatus()
     the_actions->action(ACTION_TOOLBAR_PROBLEMS)->setToolTip(toolTip());
     update();
 }
-
 void PatchProblemIndicator::jumpToNextProblem()
 {
     if (patch->numProblems() == 0)
@@ -87,5 +90,5 @@ void PatchProblemIndicator::jumpToNextProblem()
     const PatchProblem *problem = patch->problem(currentProblem++);
     if (currentProblem >= patch->numProblems())
         currentProblem = 0;
-    the_operator->jumpTo(problem->getSection(), problem->getCursorPosition());
+    theOperator()->jumpTo(problem->getSection(), problem->getCursorPosition());
 }

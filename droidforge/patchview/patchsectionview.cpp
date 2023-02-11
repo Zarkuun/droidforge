@@ -129,6 +129,7 @@ void PatchSectionView::buildPatchSection()
         if (circuit->isFolded() && lastWasFolded)
             y = y - CIRV_BOTTOM_PADDING + CIRV_FOLDED_PADDING;
         CircuitView *cv = new CircuitView(
+                    mainWindow,
                     circuit,
                     i,
                     section()->getSelectionPointer(),
@@ -367,7 +368,7 @@ bool PatchSectionView::handleKeyPress(int key, int modifiers)
             updateKeyboardSelection(posBefore, section()->cursorPosition());
         else
             if (section()->getSelection())
-                the_operator->clearSelection();
+                theOperator()->clearSelection();
         return true;
     }
 
@@ -452,7 +453,7 @@ void PatchSectionView::mousePress(QPoint pos, int button, bool doubleClick)
     else if (button == Qt::RightButton)
         handleRightMousePress(0);
     else {
-        the_operator->clearSelection();
+        theOperator()->clearSelection();
         if (doubleClick) {
             int circuitNr = getInsertPosition(mapToScene(pos).y());
             newCircuitAt(circuitNr);
@@ -573,7 +574,7 @@ void PatchSectionView::paste()
 void PatchSectionView::pasteSmart()
 {
     Patch *pastedPatch = the_clipboard->getAsPatch();
-    if (!the_operator->interactivelyRemapRegisters(pastedPatch)) {
+    if (!theOperator()->interactivelyRemapRegisters(pastedPatch)) {
         delete pastedPatch;
         return;
     }
@@ -853,7 +854,7 @@ void PatchSectionView::zoomOut()
 }
 void PatchSectionView::foldUnfold()
 {
-    the_operator->clearSelection();
+    theOperator()->clearSelection();
     currentCircuit()->toggleFold();
     section()->setCursorRowColumn(ROW_CIRCUIT, 0);
     patch->commitCursorPosition();
@@ -862,7 +863,7 @@ void PatchSectionView::foldUnfold()
 }
 void PatchSectionView::foldUnfoldAll()
 {
-    the_operator->clearSelection();
+    theOperator()->clearSelection();
     section()->toggleFold();
     patch->commitCursorPosition();
     patch->commitFolding();
@@ -899,7 +900,7 @@ void PatchSectionView::handleLeftMousePress(const CursorPosition &curPos)
         instantCableFrom(curPos);
 
     else {
-        the_operator->clearSelection();
+        theOperator()->clearSelection();
         dragging = true;
         section()->setCursor(curPos);
         emit cursorMoved();
@@ -996,6 +997,10 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 void PatchSectionView::resizeEvent(QResizeEvent *)
 {
     rebuildPatchSection();
+}
+PatchOperator *PatchSectionView::theOperator()
+{
+    return mainWindow->theOperator();
 }
 JackAssignment *PatchSectionView::buildJackAssignment(const QString &name)
 {
@@ -1114,7 +1119,7 @@ void PatchSectionView::followCable()
     if (!found)
         return;
 
-    the_operator->jumpTo(it.sectionIndex(), it.cursorPosition());
+    theOperator()->jumpTo(it.sectionIndex(), it.cursorPosition());
 }
 void PatchSectionView::followRegister()
 {
@@ -1157,7 +1162,7 @@ void PatchSectionView::followRegister()
     if (!found)
         return;
 
-    the_operator->jumpTo(it.sectionIndex(), it.cursorPosition());
+    theOperator()->jumpTo(it.sectionIndex(), it.cursorPosition());
 
 }
 void PatchSectionView::editJack(int key)
@@ -1583,7 +1588,7 @@ void PatchSectionView::deleteCursorOrSelection()
 {
     if (section()->getSelection()) {
         Selection selection = *section()->getSelection();
-        the_operator->clearSelection();
+        theOperator()->clearSelection();
 
         // When just a single object is selected, we can use
         // the existing functions for deleting at the cursor position

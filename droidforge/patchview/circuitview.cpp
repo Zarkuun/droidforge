@@ -8,6 +8,7 @@
 #include "tuning.h"
 #include "cablecolorizer.h"
 #include "patchoperator.h"
+#include "mainwindow.h"
 
 #include <QPainter>
 #include <QFontMetrics>
@@ -18,8 +19,9 @@
 #define CIRV_TEXTMODE_EQUALS_WIDTH 20
 
 
-CircuitView::CircuitView(Circuit *circuit, unsigned circuitNumber, const Selection * const*selection, float width, unsigned lineHeight)
-    : circuit(circuit)
+CircuitView::CircuitView(MainWindow *mainWindow, Circuit *circuit, unsigned circuitNumber, const Selection * const*selection, float width, unsigned lineHeight)
+    : mainWindow(mainWindow)
+    , circuit(circuit)
     , circuitNumber(circuitNumber)
     , selection(selection)
     , totalWidth(width)
@@ -225,7 +227,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 rect.height());
 
     CursorPosition pos(circuitNumber, row, column);
-    bool isPatchingFromHere =  the_operator->isPatchingFrom(pos);
+    bool isPatchingFromHere =  theOperator()->isPatchingFrom(pos);
     QRectF r = textRect;
     QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
     QImage ghostPlug = *the_cable_colorizer->ghostPlug();
@@ -500,6 +502,10 @@ int CircuitView::nextHeaderMarkerOffset()
 {
     markerOffset -= headerHeight();
     return markerOffset;
+}
+PatchOperator *CircuitView::theOperator()
+{
+    return mainWindow->theOperator();
 }
 bool CircuitView::textMode() const
 {

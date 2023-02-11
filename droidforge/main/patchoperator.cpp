@@ -92,17 +92,12 @@ bool PatchOperator::ejectSDWindows(const QString letter)
 
 #endif
 
-PatchOperator *the_operator = 0;
-
 PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename)
     : mainWindow(mainWindow)
     , patch(patch)
     , sdCardPresent(false)
     , x7Present(false)
 {
-    Q_ASSERT(the_operator == 0);
-    the_operator = this;
-
     CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
     CONNECT_ACTION(ACTION_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, &PatchOperator::upload);
