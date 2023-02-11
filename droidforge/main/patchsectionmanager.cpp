@@ -46,12 +46,12 @@ PatchSectionManager::PatchSectionManager(MainWindow *mainWindow, PatchEditEngine
     connectDragger();
 
     // Events we create
-    connect(this, &PatchSectionManager::patchModified, the_hub, &UpdateHub::modifyPatch);
-    connect(this, &PatchSectionManager::sectionSwitched, the_hub, &UpdateHub::switchSection);
+    connect(this, &PatchSectionManager::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
+    connect(this, &PatchSectionManager::sectionSwitched, mainWindow->theHub(), &UpdateHub::switchSection);
 
     // Events we are interested in
-    connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
-    connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionManager::modifyPatch);
+    connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
+    connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchSectionManager::modifyPatch);
 
     int width;
     QSettings settings;

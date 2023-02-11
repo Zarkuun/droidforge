@@ -33,9 +33,10 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     , rackView(this, patch)
     , patchSectionView(this, patch)
     , patchSectionManager(this, patch)
-    , memoryIndicator(patch)
+    , memoryIndicator(this, patch)
     , cableStatusIndicator(this, patch)
     , patchProblemIndicator(this, patch)
+    , clipboardIndicator(this)
     , moduleBuilder(this)
 {
     setWindowTitle(APPLICATION_NAME);
@@ -92,16 +93,16 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     installEventFilter(this);
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::patchModified, this, &MainWindow::modifyPatch);
-    connect(the_hub, &UpdateHub::sectionSwitched, this, &MainWindow::cursorMoved);
-    connect(the_hub, &UpdateHub::cursorMoved, this, &MainWindow::cursorMoved);
+    connect(theHub(), &UpdateHub::patchModified, this, &MainWindow::modifyPatch);
+    connect(theHub(), &UpdateHub::sectionSwitched, this, &MainWindow::cursorMoved);
+    connect(theHub(), &UpdateHub::cursorMoved, this, &MainWindow::cursorMoved);
 
     // Event that we create
-    connect(this, &MainWindow::patchModified, the_hub, &UpdateHub::modifyPatch);
+    connect(this, &MainWindow::patchModified, theHub(), &UpdateHub::modifyPatch);
 
     // Some special connections that do not deal with update events
     connect(&rackView, &RackView::registerClicked, &patchSectionView, &PatchSectionView::clickOnRegister);
-    connect(the_colorscheme, &ColorScheme::changed, the_hub, &UpdateHub::patchModified);
+    connect(the_colorscheme, &ColorScheme::changed, theHub(), &UpdateHub::patchModified);
 }
 MainWindow::~MainWindow()
 {

@@ -5,13 +5,16 @@
 
 #include <QWidget>
 
+class MainWindow;
+
 class ClipboardIndicator : public QWidget
 {
     Q_OBJECT
+    MainWindow *mainWindow;
     QImage pasteImage;
 
 public:
-    explicit ClipboardIndicator(QWidget *parent = nullptr);
+    explicit ClipboardIndicator(MainWindow *mainWindow);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
 

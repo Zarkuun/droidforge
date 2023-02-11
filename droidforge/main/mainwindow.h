@@ -15,6 +15,7 @@
 #include "patchproblemindicator.h"
 #include "findpanel.h"
 #include "modulebuilder.h"
+#include "updatehub.h"
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -38,6 +39,7 @@ class MainWindow : public QMainWindow, PatchView
 {
     Q_OBJECT
 
+    UpdateHub updateHub;
     DroidFirmware firmware;
 
     // all PatchViews
@@ -77,6 +79,7 @@ public:
     PatchOperator *theOperator() { return &patchOperator; };
     EditorActions *theActions() { return &editorActions; };
     ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };
+    UpdateHub *theHub() { return &updateHub; };
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

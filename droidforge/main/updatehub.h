@@ -45,6 +45,4 @@ signals:
 
 // patchModified > sectionSwitched > cursorMoved
 
-extern UpdateHub *the_hub;
-
 #endif // UPDATEHUB_H

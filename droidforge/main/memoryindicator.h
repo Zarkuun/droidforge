@@ -4,14 +4,17 @@
 #include "patcheditengine.h"
 #include "patchview.h"
 
+class MainWindow;
+
 class MemoryIndicator : public QWidget, PatchView
 {
     Q_OBJECT
+    MainWindow *mainWindow;
     unsigned memoryNeeded;
     unsigned memoryAvailable;
 
 public:
-    explicit MemoryIndicator(PatchEditEngine *patch, QWidget *parent = nullptr);
+    explicit MemoryIndicator(MainWindow *mainWindow, PatchEditEngine *patch);
     void paintEvent(QPaintEvent *);
 
 private slots:

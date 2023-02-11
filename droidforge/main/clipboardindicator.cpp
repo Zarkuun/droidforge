@@ -2,11 +2,13 @@
 #include "colorscheme.h"
 #include "tuning.h"
 #include "updatehub.h"
+#include "mainwindow.h"
 
 #include <QMouseEvent>
 
-ClipboardIndicator::ClipboardIndicator(QWidget *parent)
-    : QWidget{parent}
+ClipboardIndicator::ClipboardIndicator(MainWindow *mainWindow)
+    : QWidget{mainWindow}
+    , mainWindow(mainWindow)
     , pasteImage(":images/icons/white/description.png")
 {
     setMinimumWidth(CI_WIDTH);
@@ -14,7 +16,7 @@ ClipboardIndicator::ClipboardIndicator(QWidget *parent)
     setVisible(false); // wait until first clipboard event
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::clipboardChanged, this, &ClipboardIndicator::changeClipboard);
+    connect(mainWindow->theHub(), &UpdateHub::clipboardChanged, this, &ClipboardIndicator::changeClipboard);
 }
 
 void ClipboardIndicator::paintEvent(QPaintEvent *)

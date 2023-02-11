@@ -25,12 +25,12 @@ PatchProblemIndicator::PatchProblemIndicator(MainWindow *mainWindow, PatchEditEn
     SET_ACTION_TRIGGER(ACTION_JUMP_TO_NEXT_PROBLEM, &PatchProblemIndicator::clicked);
 
     // Events that we create
-    connect(this, &PatchProblemIndicator::patchModified, the_hub, &UpdateHub::modifyPatch);
-    connect(this, &PatchProblemIndicator::sectionSwitched, the_hub, &UpdateHub::switchSection);
-    connect(this, &PatchProblemIndicator::cursorMoved, the_hub, &UpdateHub::moveCursor);
+    connect(this, &PatchProblemIndicator::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
+    connect(this, &PatchProblemIndicator::sectionSwitched, mainWindow->theHub(), &UpdateHub::switchSection);
+    connect(this, &PatchProblemIndicator::cursorMoved, mainWindow->theHub(), &UpdateHub::moveCursor);
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::patchModified, this, &PatchProblemIndicator::updateStatus);
+    connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchProblemIndicator::updateStatus);
 }
 
 void PatchProblemIndicator::paintEvent(QPaintEvent *)

@@ -55,19 +55,19 @@ PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *init
     connectActions();
 
     // Events that we create
-    connect(this, &PatchSectionView::patchModified, the_hub, &UpdateHub::modifyPatch);
-    connect(this, &PatchSectionView::clipboardChanged, the_hub, &UpdateHub::changeClipboard);
-    connect(this, &PatchSectionView::selectionChanged, the_hub, &UpdateHub::changeSelection);
-    connect(this, &PatchSectionView::sectionSwitched, the_hub, &UpdateHub::switchSection);
-    connect(this, &PatchSectionView::cursorMoved, the_hub, &UpdateHub::moveCursor);
-    connect(this, &PatchSectionView::patchingChanged, the_hub, &UpdateHub::changePatching);
+    connect(this, &PatchSectionView::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
+    connect(this, &PatchSectionView::clipboardChanged, mainWindow->theHub(), &UpdateHub::changeClipboard);
+    connect(this, &PatchSectionView::selectionChanged, mainWindow->theHub(), &UpdateHub::changeSelection);
+    connect(this, &PatchSectionView::sectionSwitched, mainWindow->theHub(), &UpdateHub::switchSection);
+    connect(this, &PatchSectionView::cursorMoved, mainWindow->theHub(), &UpdateHub::moveCursor);
+    connect(this, &PatchSectionView::patchingChanged, mainWindow->theHub(), &UpdateHub::changePatching);
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
-    connect(the_hub, &UpdateHub::patchModified, this, &PatchSectionView::modifyPatch);
-    connect(the_hub, &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
-    connect(the_hub, &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
-    connect(the_hub, &UpdateHub::patchingChanged, this, &PatchSectionView::changePatching);
+    connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
+    connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchSectionView::modifyPatch);
+    connect(mainWindow->theHub(), &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
+    connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
+    connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &PatchSectionView::changePatching);
     CONNECT_ACTION(ACTION_TEXT_MODE, &PatchSectionView::modifyPatch);
 
     QTimer *timer = new QTimer(this);

@@ -27,9 +27,9 @@ CableStatusIndicator::CableStatusIndicator(MainWindow *mainWindow, PatchEditEngi
     SET_ACTION_TRIGGER(ACTION_FOLLOW_CABLE, &CableStatusIndicator::clicked);
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::patchModified, this, &CableStatusIndicator::updateStatus);
-    connect(the_hub, &UpdateHub::cursorMoved, this, &CableStatusIndicator::updateStatus);
-    connect(the_hub, &UpdateHub::patchingChanged, this, &CableStatusIndicator::changePatching);
+    connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &CableStatusIndicator::updateStatus);
+    connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &CableStatusIndicator::updateStatus);
+    connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &CableStatusIndicator::changePatching);
 }
 
 void CableStatusIndicator::paintEvent(QPaintEvent *)

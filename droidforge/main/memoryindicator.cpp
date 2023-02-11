@@ -3,19 +3,21 @@
 #include "droidfirmware.h"
 #include "updatehub.h"
 #include "globals.h"
+#include "mainwindow.h"
 
 #define MI_WIDTH 200
 
-MemoryIndicator::MemoryIndicator(PatchEditEngine *patch, QWidget *parent)
-    : QWidget{parent}
+MemoryIndicator::MemoryIndicator(MainWindow *mainWindow, PatchEditEngine *patch)
+    : QWidget{mainWindow}
     , PatchView(patch)
+    , mainWindow(mainWindow)
     , memoryNeeded(0)
     , memoryAvailable(1)
 {
     setMinimumWidth(MI_WIDTH);
     setMaximumWidth(MI_WIDTH);
 
-    connect(the_hub, &UpdateHub::patchModified, this, &MemoryIndicator::updateStatus);
+    connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &MemoryIndicator::updateStatus);
 }
 void MemoryIndicator::paintEvent(QPaintEvent *)
 {

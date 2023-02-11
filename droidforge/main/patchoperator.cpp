@@ -136,17 +136,17 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QSt
     CONNECT_ACTION(ACTION_JUMP_TO_BOOKMARK, &PatchOperator::jumpToBookmark);
 
     // Events that we create
-    connect(this, &PatchOperator::patchModified, the_hub, &UpdateHub::modifyPatch);
-    connect(this, &PatchOperator::clipboardChanged, the_hub, &UpdateHub::changeClipboard);
-    connect(this, &PatchOperator::selectionChanged, the_hub, &UpdateHub::changeSelection);
-    connect(this, &PatchOperator::sectionSwitched, the_hub, &UpdateHub::switchSection);
-    connect(this, &PatchOperator::cursorMoved, the_hub, &UpdateHub::moveCursor);
-    connect(this, &PatchOperator::patchingChanged, the_hub, &UpdateHub::changePatching);
-    connect(this, &PatchOperator::droidStateChanged, the_hub, &UpdateHub::changeDroidState);
-    connect(this, &PatchOperator::patchingChanged, the_hub, &UpdateHub::changePatching);
+    connect(this, &PatchOperator::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
+    connect(this, &PatchOperator::clipboardChanged, mainWindow->theHub(), &UpdateHub::changeClipboard);
+    connect(this, &PatchOperator::selectionChanged, mainWindow->theHub(), &UpdateHub::changeSelection);
+    connect(this, &PatchOperator::sectionSwitched, mainWindow->theHub(), &UpdateHub::switchSection);
+    connect(this, &PatchOperator::cursorMoved, mainWindow->theHub(), &UpdateHub::moveCursor);
+    connect(this, &PatchOperator::patchingChanged, mainWindow->theHub(), &UpdateHub::changePatching);
+    connect(this, &PatchOperator::droidStateChanged, mainWindow->theHub(), &UpdateHub::changeDroidState);
+    connect(this, &PatchOperator::patchingChanged, mainWindow->theHub(), &UpdateHub::changePatching);
 
     // Event that we are interested in
-    connect(the_hub, &UpdateHub::patchModified, this, &PatchOperator::modifyPatch);
+    connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchOperator::modifyPatch);
 
     QSettings settings;
     if (initialFilename == "" && settings.contains("lastfile"))

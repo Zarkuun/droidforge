@@ -53,13 +53,13 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     connectDragger();
 
     // Events that we create
-    connect(this, &RackView::patchModified, the_hub, &UpdateHub::modifyPatch);
-    connect(this, &RackView::sectionSwitched, the_hub, &UpdateHub::sectionSwitched);
+    connect(this, &RackView::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
+    connect(this, &RackView::sectionSwitched, mainWindow->theHub(), &UpdateHub::sectionSwitched);
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::patchModified, this, &RackView::modifyPatch);
-    connect(the_hub, &UpdateHub::sectionSwitched, this, &RackView::setRegisterHilitesDirty);
-    connect(the_hub, &UpdateHub::cursorMoved, this, &RackView::setRegisterHilitesDirty);
+    connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &RackView::modifyPatch);
+    connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &RackView::setRegisterHilitesDirty);
+    connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &RackView::setRegisterHilitesDirty);
 
     setStyleSheet(QString("QGraphicsView { padding: 4px; }"));
 

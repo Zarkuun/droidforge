@@ -16,13 +16,13 @@ EditorActions::EditorActions(MainWindow *mainWindow, PatchEditEngine *patch, QOb
     createActions();
 
     // Events that we are interested in
-    connect(the_hub, &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
-    connect(the_hub, &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
-    connect(the_hub, &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
-    connect(the_hub, &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
-    connect(the_hub, &UpdateHub::cursorMoved, this, &EditorActions::moveCursor);
-    connect(the_hub, &UpdateHub::patchingChanged, this, &EditorActions::changePatching);
-    connect(the_hub, &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
+    connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
+    connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
+    connect(mainWindow->theHub(), &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
+    connect(mainWindow->theHub(), &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
+    connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &EditorActions::moveCursor);
+    connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &EditorActions::changePatching);
+    connect(mainWindow->theHub(), &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
 
     CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &EditorActions::persistViewToggles);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &EditorActions::persistViewToggles);
