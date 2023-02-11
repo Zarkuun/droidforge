@@ -64,6 +64,7 @@ class MainWindow : public QMainWindow, PatchView
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
     QMenu *recentFilesMenu;
+    QMenu *windowsMenu;
     QString initialFilename;
     QString filePath; // of loaded patch
     QSplitter *rackSplitter;
@@ -81,6 +82,7 @@ public:
     EditorActions *theActions() { return &editorActions; };
     ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };
     UpdateHub *theHub() { return &updateHub; };
+    QString patchName() const;
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -97,12 +99,14 @@ private:
     void createSectionMenu();
     void createViewMenu();
     void createHelpMenu();
+    void createWindowsMenu();
     void createToolbar();
     void createStatusBar();
     void updateStatusbarMessage();
     void rackZoom(int whence);
 
 private slots:
+    void updateWindowsMenu();
     void about();
     void editPreferences();
     void showDiscord();

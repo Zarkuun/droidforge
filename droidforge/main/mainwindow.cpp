@@ -15,6 +15,7 @@
 #include "patchoperator.h"
 #include "usermanual.h"
 #include "preferencesdialog.h"
+#include "windowlist.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -71,6 +72,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
         resize(MAIN_WIDTH, MAIN_HEIGHT);
     }
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
+    connect(the_windowlist, &WindowList::changed, this, &MainWindow::updateWindowsMenu);
 
     CONNECT_ACTION(ACTION_ABOUT, &MainWindow::about);
     CONNECT_ACTION(ACTION_LICENSE, &MainWindow::showLicense);
@@ -103,9 +105,12 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     // Some special connections that do not deal with update events
     connect(&rackView, &RackView::registerClicked, &patchSectionView, &PatchSectionView::clickOnRegister);
     connect(the_colorscheme, &ColorScheme::changed, theHub(), &UpdateHub::patchModified);
+
+    the_windowlist->add(this);
 }
 MainWindow::~MainWindow()
 {
+    the_windowlist->remove(this);
 }
 bool MainWindow::searchActive() const
 {
@@ -115,13 +120,17 @@ void MainWindow::setStatusbarText(QString text)
 {
     statusbarText->setText(text);
 }
-void MainWindow::modifyPatch()
+QString MainWindow::patchName() const
 {
     QFileInfo fi(patch->getFilePath());
-    QString patchName = fi.baseName();
-    if (patchName == "")
-        patchName = tr("(untitled)");
-    QString title = patchName + " - " + APPLICATION_NAME;
+    QString name = fi.baseName();
+    if (name == "")
+        name = tr("(untitled)");
+    return name;
+}
+void MainWindow::modifyPatch()
+{
+    QString title = patchName() + " - " + APPLICATION_NAME;
     if (patch->isModified())
         title += tr(" (modified)");
     setWindowTitle(title);
@@ -173,6 +182,7 @@ void MainWindow::createMenus()
     createSectionMenu();
     createViewMenu();
     createHelpMenu();
+    createWindowsMenu();
 
     // Add actions to the main window that have no menu entry
     // or toolbar, so that the keyboard shortcuts will work.
@@ -346,6 +356,11 @@ void MainWindow::createHelpMenu()
 
     ADD_ACTION(ACTION_LICENSE, menu);
 }
+void MainWindow::createWindowsMenu()
+{
+    windowsMenu = menuBar()->addMenu(tr("&Window"));
+    updateWindowsMenu();
+}
 void MainWindow::createStatusBar()
 {
     statusbar = new QStatusBar(this);
@@ -509,6 +524,14 @@ void MainWindow::rackZoom(int whence)
     }
     currentSizes[1] = totalsize - currentSizes[0];
     rackSplitter->setSizes(currentSizes);
+}
+
+void MainWindow::updateWindowsMenu()
+{
+    windowsMenu->clear();
+    ADD_ACTION(ACTION_CLOSE, windowsMenu);
+    windowsMenu->addSeparator();
+    the_windowlist->addMenuEntries(windowsMenu);
 }
 void MainWindow::about()
 {

@@ -9,6 +9,7 @@
 #include "sourcecodeeditor.h"
 #include "atomcable.h"
 #include "mainwindow.h"
+#include "windowlist.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -179,6 +180,7 @@ void PatchOperator::newPatch()
     patch->commit(tr("creating new patch"));
     setLastFilePath("");
     emit patchModified();
+    the_windowlist->update();
 }
 void PatchOperator::newPatchWithSameRack()
 {
@@ -187,6 +189,7 @@ void PatchOperator::newPatchWithSameRack()
     clearWithControllersFromOtherRack(patch);
     setLastFilePath("");
     emit patchModified();
+    the_windowlist->update();
 }
 void PatchOperator::clearWithControllersFromOtherRack(const Patch *otherPatch)
 {
@@ -451,6 +454,7 @@ void PatchOperator::loadFile(const QString &filePath, int how)
         else
             integratePatch(filePath);
         emit patchModified();
+        the_windowlist->update();
     }
     catch (ParseException &e) {
         // If the loading of the file has not worked, but we have a backup,
@@ -588,6 +592,7 @@ void PatchOperator::saveAs()
     if (!newFilePath.isEmpty()) {
         if (saveAndCheck(newFilePath))
             addToRecentFiles(newFilePath);
+        the_windowlist->update();
     }
 }
 bool PatchOperator::saveAndCheck(QString path)
@@ -1055,7 +1060,6 @@ void PatchOperator::modifyPatch()
     else
         removeBackup();
 }
-
 void PatchOperator::close()
 {
     if (checkModified())

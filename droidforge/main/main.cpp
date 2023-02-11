@@ -8,6 +8,7 @@
 #include "colorscheme.h"
 #include "usermanual.h"
 #include "iconbase.h"
+#include "windowlist.h"
 
 #include <QApplication>
 #include <QDir>
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":images/droidforge-icon.png"));
 
     // Global variable objects that are shared by all MainWindow
+    WindowList windowList;
     Clipboard clipboard; // must be global to all windows
     UserManual userManual;
     IconBase iconBase;
@@ -41,7 +43,6 @@ int main(int argc, char *argv[])
     dir.cd(PATCH_DIRECTORY_NAME);
     QDir::setCurrent(dir.absolutePath());
 
-    // TODO: Brauch ich das wirklich hier?
     QString initialFilename;
     QSettings settings;
     if (argc > 1)

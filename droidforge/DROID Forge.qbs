@@ -49,6 +49,8 @@ QtApplication {
         "main/memoryindicator.h",
         "main/preferencesdialog.cpp",
         "main/preferencesdialog.h",
+        "main/windowlist.cpp",
+        "main/windowlist.h",
         "modules/modulebling.cpp",
         "modules/modulebling.h",
         "os/midihost.cpp",
