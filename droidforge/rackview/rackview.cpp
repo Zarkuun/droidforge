@@ -17,9 +17,10 @@
 #include <QMessageBox>
 #include <algorithm>
 
-RackView::RackView(PatchEditEngine *patch)
+RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     : QGraphicsView()
     , PatchView(patch)
+    , mainWindow(mainWindow)
     , dragger(this)
     , previousHeight(0)
 {
@@ -182,7 +183,7 @@ void RackView::askRemoveController(int controllerIndex)
 
     if (patch->numControllers() > 1)
         reply = QMessageBox::question(
-                    the_forge,
+                    mainWindow,
                     tr("Used controls"),
                     tr("The following controls of this controller are used "
                        "by your patch:\n\n%1\n\nShall I try to move these "
@@ -211,7 +212,7 @@ void RackView::askRemoveController(int controllerIndex)
                      "by your patch:\n\n%1\n\n")
                     .arg(usedRegisters.toSmartString());
         reply = QMessageBox::question(
-                    the_forge,
+                    mainWindow,
                     tr("Used controls"),
                     msg + tr("Shall I remove these references from your patch "
                              "in order to avoid chaos and trouble?"),

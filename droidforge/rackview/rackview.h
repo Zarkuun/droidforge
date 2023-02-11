@@ -16,10 +16,13 @@
 #include <QTimer>
 
 
+class MainWindow;
+
 class RackView : public QGraphicsView, PatchView
 {
     Q_OBJECT
 
+    MainWindow *mainWindow;
     QList<Module *> modules;
     int x;
     RegisterMarker *registerMarker;
@@ -30,7 +33,7 @@ class RackView : public QGraphicsView, PatchView
     int previousHeight;
 
 public:
-    explicit RackView(PatchEditEngine *patch);
+    explicit RackView(MainWindow *mainWindow, PatchEditEngine *patch);
     void resizeEvent(QResizeEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;

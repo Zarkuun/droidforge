@@ -28,7 +28,6 @@
 class PatchEditEngine;
 
 class MainWindow;
-extern MainWindow *the_forge;
 extern DroidFirmware *the_firmware;
 
 #define FILE_MODE_LOAD 0

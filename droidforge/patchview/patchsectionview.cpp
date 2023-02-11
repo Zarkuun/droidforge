@@ -33,8 +33,9 @@
 
 #define DATA_INDEX_CIRCUIT_NR 0
 
-PatchSectionView::PatchSectionView(PatchEditEngine *initialPatch)
+PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *initialPatch)
     : PatchView(initialPatch) // patch is never ever 0!
+    , mainWindow(mainWindow)
     , zoomLevel(0)
     , zoomFactor(1.0)
     , dragging(false)
@@ -357,7 +358,7 @@ bool PatchSectionView::handleKeyPress(int key, int modifiers)
     case Qt::Key_Tab:       moveCursorTab(1);         moved = true; break;
     case Qt::Key_Backtab:   moveCursorTab(-1);        shiftHeld = false; moved = true; break;
     case Qt::Key_Return:
-    case Qt::Key_Enter:     if (!the_forge->searchActive())
+    case Qt::Key_Enter:     if (!mainWindow->searchActive())
                                 editValue(Qt::Key_Return); break;
     }
 

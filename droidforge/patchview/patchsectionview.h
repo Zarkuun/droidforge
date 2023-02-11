@@ -17,12 +17,14 @@
 #include <QResizeEvent>
 #include <QGraphicsRectItem>
 
+class MainWindow;
 class PatchView;
 
 class PatchSectionView : public QGraphicsView, PatchView
 {
     Q_OBJECT
 
+    MainWindow *mainWindow;
     int zoomLevel;
     float zoomFactor;
     bool needScrollbarAdaption;
@@ -32,7 +34,7 @@ class PatchSectionView : public QGraphicsView, PatchView
     FrameCursor *frameCursor;
 
 public:
-    PatchSectionView(PatchEditEngine *initialPatch);
+    PatchSectionView(MainWindow *mainWindow, PatchEditEngine *initialPatch);
     ~PatchSectionView();
     bool handleKeyPress(QKeyEvent *event);
     void addNewCircuit(QString name, jackselection_t jackSelection);

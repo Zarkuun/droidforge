@@ -21,9 +21,10 @@
 
 #define DATA_INDEX_SECTION_INDEX 0
 
-PatchSectionManager::PatchSectionManager(PatchEditEngine *patch, QWidget *parent)
+PatchSectionManager::PatchSectionManager(MainWindow *mainWindow, PatchEditEngine *patch, QWidget *parent)
     : QGraphicsView{parent}
     , PatchView(patch)
+    , mainWindow(mainWindow)
     , lastIndex(-1)
     , dragSectionIndicator(0)
     , dragger(this)
@@ -262,7 +263,7 @@ void PatchSectionManager::saveSectionAsPatch()
 {
     const PatchSection *section = patch->currentSection();
     QString newFilePath = QFileDialog::getSaveFileName(
-                the_forge,
+                mainWindow,
                 tr("Save section as patch to new file"),
                 section->getTitle(),
                 tr("DROID patch files (*.ini)"));
@@ -281,7 +282,7 @@ void PatchSectionManager::saveSectionAsPatch()
         the_operator->addToRecentFiles(newFilePath);
     else {
         QMessageBox::warning(
-                    the_forge,
+                    mainWindow,
                     tr("Error"),
                     tr("There was an error saving your patch to disk"));
     }

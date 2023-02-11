@@ -23,22 +23,18 @@
 #include <QtGlobal>
 #include <QDesktopServices>
 
-MainWindow *the_forge;
-
 MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     : QMainWindow()
     , PatchView(patch)
     , editorActions(patch)
-    , patchOperator(patch, initialFilename)
-    , rackView(patch)
-    , patchSectionView(patch)
-    , patchSectionManager(patch)
+    , patchOperator(this, patch, initialFilename)
+    , rackView(this, patch)
+    , patchSectionView(this, patch)
+    , patchSectionManager(this, patch)
     , memoryIndicator(patch)
     , cableStatusIndicator(patch)
     , patchProblemIndicator(patch)
 {
-    the_forge = this;
-
     setWindowTitle(APPLICATION_NAME);
     QIcon appIcon(":droidforge.icns");
     setWindowIcon(appIcon);
@@ -358,7 +354,7 @@ void MainWindow::createStatusBar()
     findPanel.setDisabled(true);
     findPanel.hide();
     statusbar->addPermanentWidget(&findPanel);
-    connect(&findPanel, &FindPanel::search, the_operator, &PatchOperator::search);
+    connect(&findPanel, &FindPanel::search, &patchOperator, &PatchOperator::search);
 }
 void MainWindow::createToolbar()
 {
@@ -414,7 +410,7 @@ void MainWindow::clearSettings()
                    "sizes of dialog windows, your list of recent files, the "
                    "zoom level and other similar things?"),
                 QMessageBox::Ok | QMessageBox::Cancel,
-                the_forge);
+                this);
     if (box.exec() == QMessageBox::Ok) {
         QSettings settings;
         settings.clear();
@@ -425,7 +421,7 @@ void MainWindow::clearSettings()
         sectionSplitter->setSizes(newSizes);
         patchSectionView.clearSettings();
         rackZoomReset();
-        the_operator->clearRecentFiles();
+        patchOperator.clearRecentFiles();
     }
 }
 void MainWindow::showFindPanel()

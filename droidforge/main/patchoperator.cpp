@@ -8,6 +8,7 @@
 #include "patchpropertiesdialog.h"
 #include "sourcecodeeditor.h"
 #include "atomcable.h"
+#include "mainwindow.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -93,8 +94,9 @@ bool PatchOperator::ejectSDWindows(const QString letter)
 
 PatchOperator *the_operator = 0;
 
-PatchOperator::PatchOperator(PatchEditEngine *patch, QString initialFilename)
-    : patch(patch)
+PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename)
+    : mainWindow(mainWindow)
+    , patch(patch)
     , sdCardPresent(false)
     , x7Present(false)
 {
@@ -225,7 +227,7 @@ bool PatchOperator::checkModified()
                     tr("Your patch is modified!"),
                     tr("Do you want to save your changes before you proceed?"),
                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
-                    the_forge);
+                    mainWindow);
         int ret = box.exec();
         switch (ret) {
         case QMessageBox::Save:
@@ -268,7 +270,7 @@ void PatchOperator::upload()
     QString error = midiHost.sendPatch(patch);
     if (error != "") {
         QMessageBox::critical(
-                    the_forge,
+                    mainWindow,
                     tr("Cannot send patch via MIDI"),
                     error,
                     QMessageBox::Ok);
@@ -279,7 +281,7 @@ void PatchOperator::saveToSD()
     QString dirPath = sdCardDir();
     if (dirPath == "") {
         QMessageBox::critical(
-                    the_forge,
+                    mainWindow,
                     tr("Cannot find memory card"),
                     tr("There is no DROID SD card mounted.\n\nIf it has been "
                        "ejected, remove and reinsert it. Note: it must be a "
@@ -293,7 +295,7 @@ void PatchOperator::saveToSD()
     if (!patch->saveToFile(droidIni.absoluteFilePath(), true /* compressed */))
     {
         QMessageBox::critical(
-                    the_forge,
+                    mainWindow,
                     tr("Cannot write %1").arg(QString(DROID_PATCH_FILENAME)),
                     tr("Error writing %1").arg(droidIni.absoluteFilePath()),
                     QMessageBox::Ok);
@@ -308,7 +310,7 @@ void PatchOperator::saveToSD()
     }
     else {
         QMessageBox::warning(
-                    the_forge,
+                    mainWindow,
                     tr("Could not eject SD card"),
                     tr("An error occurred while ejecting the SD card"),
                     QMessageBox::Ok);
@@ -323,7 +325,7 @@ void PatchOperator::saveToSD()
 
     if (!success) { // never happened ever.
         QMessageBox::warning(
-                    the_forge,
+                    mainWindow,
                     tr("Could not eject SD card"),
                     tr("Timeout while trying to safely eject the SD card."),
                     QMessageBox::Ok);
@@ -331,14 +333,14 @@ void PatchOperator::saveToSD()
     else if (process.exitStatus() != QProcess::NormalExit) { // neither happened
         QString error = process.readAll(); // always empty
         QMessageBox::warning(
-                    the_forge,
+                    mainWindow,
                     tr("Could not eject SD card"),
                     tr("An error occurred while ejecting the SD card:\n%1").arg(error),
                     QMessageBox::Ok);
     }
     else if (dir.exists()) {
         QMessageBox::warning(
-                    the_forge,
+                    mainWindow,
                     tr("Could not eject SD card"),
                     tr("I have saved your patch to the SD card.\n\n"
                        "However, I could not eject it.\n\n"
@@ -399,7 +401,7 @@ void PatchOperator::loadFile(const QString &filePath, int how)
         if (info.exists() && info.size() > 0) {
             QString date = info.birthTime().toString();
             int reply = QMessageBox::question(
-                        the_forge,
+                        mainWindow,
                         tr("Auto backup detected"),
                         tr("There is an automatic backup file of the patch that you "
                            "are going to load. Maybe the Forge or your computer crashed "
@@ -435,7 +437,7 @@ void PatchOperator::loadFile(const QString &filePath, int how)
                 }
                 catch (ParseException &e) {
                     QMessageBox::critical(
-                                the_forge,
+                                mainWindow,
                                 tr("Cannot restore backup"),
                                 tr("Parse error in the backup file. The backup cannot be restored. I will use the original file."),
                                 QMessageBox::Ok);
@@ -480,7 +482,7 @@ void PatchOperator::open()
         return;
 
     QString filePath = QFileDialog::getOpenFileName(
-                the_forge, "", "", "DROID patches (*.ini)");
+                mainWindow, "", "", "DROID patches (*.ini)");
 
     if (!filePath.isEmpty()) {
         loadFile(filePath, FILE_MODE_LOAD);
@@ -521,14 +523,14 @@ void PatchOperator::search(QString text, int direction)
 }
 void PatchOperator::integrate()
 {
-    QString filePath = QFileDialog::getOpenFileName(the_forge);
+    QString filePath = QFileDialog::getOpenFileName(mainWindow);
     if (!filePath.isEmpty())
         loadFile(filePath, FILE_MODE_INTEGRATE);
 }
 void PatchOperator::exportSelection()
 {
     QString filePath = QFileDialog::getSaveFileName(
-                the_forge,
+                mainWindow,
                 tr("Export selection into new patch"),
                 "",
                 tr("DROID patch files (*.ini)"));
@@ -537,7 +539,7 @@ void PatchOperator::exportSelection()
         if (!patch->saveToFile(filePath))
         {
             QMessageBox::warning(
-                        the_forge,
+                        mainWindow,
                         tr("Error"),
                         tr("There was an error saving your selection to disk."));
         }
@@ -556,7 +558,7 @@ void PatchOperator::save()
 void PatchOperator::saveAs()
 {
     QString newFilePath = QFileDialog::getSaveFileName(
-                the_forge,
+                mainWindow,
                 tr("Save patch to new file"),
                 patch->getFilePath(),
                 tr("DROID patch files (*.ini)"));
@@ -576,7 +578,7 @@ bool PatchOperator::saveAndCheck(QString path)
     }
     else
         QMessageBox::warning(
-                    the_forge,
+                    mainWindow,
                     tr("Error"),
                     tr("There was an error saving your patch to disk"));
     return false;
@@ -723,7 +725,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
     if (!controllers.isEmpty())
     {
         int reply = QMessageBox::question(
-                    the_forge,
+                    mainWindow,
                     TR("Controllers"),
                     TR("The integrated patch contains controller definitions: %1. "
                        "Do you want to add these definitions to your patch?")
@@ -767,7 +769,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
 
     if (atomsToRemap.count()) {
         int reply = QMessageBox::question(
-                    the_forge,
+                    mainWindow,
                     TR("Register conflicts"),
                     TR("Some of the register references in the integrated patch either do not exist in your "
                        "current rack definition or are already occupied. Shall I try to find useful replacements "
@@ -810,7 +812,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
             // Phase 2b: Remaining un remapped registers
             if (!atomsToRemap.isEmpty()) {
                 int reply = QMessageBox::question(
-                            the_forge,
+                            mainWindow,
                             tr("Register conflicts"),
                             tr("For some register references I could not find a valid replacement in your patch. "
                                "Shall I remove these references (otherwise I would just leave them as "
@@ -862,7 +864,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
 
                 else if (asOutput && ontoAsOutput) {
                     int reply = QMessageBox::question(
-                                the_forge,
+                                mainWindow,
                                 tr("Cable conflict"),
                                 tr("The internal patch cable \"%1\" is used as output both by "
                                    "the existing and the integrated patch. This will result in a "
@@ -982,7 +984,7 @@ void PatchOperator::rewriteCableNames()
             QString error = dialog->validateInput();
             if (error != "") {
                 QMessageBox::critical(
-                            the_forge,
+                            mainWindow,
                             tr("Invalid input, please try again"),
                             error,
                             QMessageBox::Ok);
@@ -1002,7 +1004,7 @@ void PatchOperator::setBookmark()
 {
     patch->clearBookmarks();
     patch->setBookmark();
-    the_forge->setStatusbarText(tr("Bookmark set"));
+    mainWindow->setStatusbarText(tr("Bookmark set"));
     emit patchModified();
 }
 void PatchOperator::jumpToBookmark()
@@ -1032,7 +1034,7 @@ void PatchOperator::modifyPatch()
 }
 Patch *PatchOperator::editSource(const QString &title, QString oldSource)
 {
-    SourceCodeEditor editor(title, oldSource, the_forge, false /* readonly */);
+    SourceCodeEditor editor(title, oldSource, mainWindow, false /* readonly */);
     PatchParser parser;
     while (true) {
         if (!editor.edit())
@@ -1045,7 +1047,7 @@ Patch *PatchOperator::editSource(const QString &title, QString oldSource)
         }
         catch (ParseException &e) {
             QMessageBox::critical(
-                        the_forge,
+                        mainWindow,
                         tr("Parse error"),
                         e.toString(),
                         QMessageBox::Ok);
@@ -1054,7 +1056,7 @@ Patch *PatchOperator::editSource(const QString &title, QString oldSource)
 }
 void PatchOperator::showSource(const QString &title, QString source)
 {
-    SourceCodeEditor editor(title, source, the_forge, true /* readonly */);
+    SourceCodeEditor editor(title, source, mainWindow, true /* readonly */);
     editor.exec();
 }
 void PatchOperator::clearSelection()

@@ -17,10 +17,13 @@
 #include <QObject>
 #include <QFileInfo>
 
+class MainWindow;
+
 
 class PatchOperator : public QObject
 {
     Q_OBJECT
+    MainWindow *mainWindow;
     PatchEditEngine *patch;
     PatchParser parser;
     bool sdCardPresent;
@@ -28,9 +31,8 @@ class PatchOperator : public QObject
     OurMIDIHost midiHost;
     QMenu *recentFilesMenu;
 
-
 public:
-    explicit PatchOperator(PatchEditEngine *patch, QString initialFilename);
+    explicit PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename);
     void createRecentFileActions(QMenu *menu);
     void loadFile(const QString &filename, int how);
     void quit();

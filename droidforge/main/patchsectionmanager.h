@@ -12,9 +12,12 @@
 #include <QGraphicsView>
 #include <QList>
 
+class MainWindow;
+
 class PatchSectionManager : public QGraphicsView, PatchView
 {
     Q_OBJECT
+    MainWindow *mainWindow;
     QList<PatchSectionTitleView *> titleViews;
     FrameCursor *frameCursor;
     int lastIndex;
@@ -22,7 +25,7 @@ class PatchSectionManager : public QGraphicsView, PatchView
     MouseDragger dragger;
 
 public:
-    explicit PatchSectionManager(PatchEditEngine *patch, QWidget *parent = nullptr);
+    explicit PatchSectionManager(MainWindow *mainWindow, PatchEditEngine *patch, QWidget *parent = nullptr);
 
 private:
     void rebuildGraphics();
