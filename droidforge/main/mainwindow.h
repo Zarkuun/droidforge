@@ -72,7 +72,7 @@ class MainWindow : public QMainWindow, PatchView
     QToolBar *toolbar;
 
 public:
-    MainWindow(QString initialFilename);
+    MainWindow(QString initialFilename, const Patch *initialRack=0);
     ~MainWindow();
     // TODO: This is so sick
     bool searchActive() const;

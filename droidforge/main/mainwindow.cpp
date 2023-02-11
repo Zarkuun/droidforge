@@ -25,11 +25,11 @@
 
 #define mainWindow this // make ACTION() macros work
 
-MainWindow::MainWindow(QString initialFilename)
+MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     : QMainWindow()
     , PatchView(&thePatch)
     , editorActions(this, &thePatch)
-    , patchOperator(this, &thePatch, initialFilename)
+    , patchOperator(this, &thePatch, initialFilename, initialRack)
     , rackView(this, &thePatch)
     , patchSectionView(this, &thePatch)
     , patchSectionManager(this, &thePatch)

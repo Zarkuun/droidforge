@@ -92,7 +92,8 @@ bool PatchOperator::ejectSDWindows(const QString letter)
 
 #endif
 
-PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename)
+PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
+                             QString initialFilename, const Patch *initialRack)
     : mainWindow(mainWindow)
     , patch(patch)
     , sdCardPresent(false)
@@ -153,6 +154,10 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QSt
 
     if (!initialFilename.isEmpty())
         QTimer::singleShot(0, this, [this,initialFilename] () { this->loadFile(initialFilename, FILE_MODE_LOAD);});
+    else if (initialRack) {
+        clearWithControllersFromOtherRack(initialRack);
+        QTimer::singleShot(0, this, [this] () { this->newPatchWithSameRack();});
+    }
     else
         QTimer::singleShot(0, this, [this] () { this->newPatch();});
 
@@ -178,8 +183,13 @@ void PatchOperator::newPatchWithSameRack()
 {
     if (!checkModified())
         return;
-
-    QStringList controllers = patch->allControllers();
+    clearWithControllersFromOtherRack(patch);
+    setLastFilePath("");
+    emit patchModified();
+}
+void PatchOperator::clearWithControllersFromOtherRack(const Patch *otherPatch)
+{
+    QStringList controllers = otherPatch->allControllers();
 
     patch->startFromScratch();
     for (auto controller: controllers)
@@ -187,8 +197,6 @@ void PatchOperator::newPatchWithSameRack()
 
     patch->addSection(new PatchSection());
     patch->commit(tr("creating new patch with same rack"));
-    setLastFilePath("");
-    emit patchModified();
 }
 void PatchOperator::createRecentFileActions(QMenu *menu)
 {
@@ -485,7 +493,13 @@ void PatchOperator::open()
 }
 void PatchOperator::openInNewWindow()
 {
-    shoutfunc;
+    QString filePath = QFileDialog::getOpenFileName(
+                mainWindow, "", "", "DROID patches (*.ini)");
+
+    if (!filePath.isEmpty()) {
+        MainWindow *newWindow = new MainWindow(filePath);
+        newWindow->show();
+    }
 }
 void PatchOperator::newWindow()
 {
@@ -494,7 +508,8 @@ void PatchOperator::newWindow()
 }
 void PatchOperator::newWindowWithSameRack()
 {
-    shoutfunc;
+    MainWindow *newWindow = new MainWindow("", patch);
+    newWindow->show();
 }
 void PatchOperator::clearRecentFiles()
 {

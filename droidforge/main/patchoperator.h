@@ -32,7 +32,7 @@ class PatchOperator : public QObject
     QMenu *recentFilesMenu;
 
 public:
-    explicit PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename);
+    explicit PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename, const Patch *initialRack=0);
     void createRecentFileActions(QMenu *menu);
     void loadFile(const QString &filename, int how);
     void quit();
@@ -87,6 +87,7 @@ public slots:
 
 private:
     bool checkModified();
+    void clearWithControllersFromOtherRack(const Patch *other);
     void setLastFilePath(const QString &path);
     void openDirInFinder(const QString &filename);
     QStringList getRecentFiles();
