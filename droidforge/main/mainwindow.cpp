@@ -64,13 +64,17 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     rackSplitter->addWidget(sectionSplitter);
 
     QSettings settings;
-    if (settings.contains("mainwindow/position")) {
-        move(settings.value("mainwindow/position").toPoint());
+    if (settings.contains("mainwindow/size"))
         resize(settings.value("mainwindow/size").toSize());
-    }
-    else {
+    else
         resize(MAIN_WIDTH, MAIN_HEIGHT);
-    }
+
+    // Make sure a new windows does not open at the same position an
+    // existing one does.
+    if (the_windowlist->count() > 0)
+        move(the_windowlist->newPosition());
+
+
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
     connect(the_windowlist, &WindowList::changed, this, &MainWindow::updateWindowsMenu);
 

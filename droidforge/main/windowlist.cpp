@@ -52,3 +52,19 @@ MainWindow *WindowList::previousWindow(const MainWindow *window)
     else
         return windows[index-1];
 }
+
+QPoint WindowList::newPosition() const
+{
+    int xMax = 0;
+    int yMax = 0;
+    for (auto window: windows) {
+        shout << "Fenster bei" << window->pos();
+        xMax = qMax(xMax, window->pos().x());
+        yMax = qMax(yMax, window->pos().y());
+    }
+#define WINDOW_X_DISPLACEMENT 30
+#define WINDOW_Y_DISPLACEMENT 10
+    return QPoint(xMax + WINDOW_X_DISPLACEMENT,
+                  yMax + WINDOW_Y_DISPLACEMENT);
+
+}

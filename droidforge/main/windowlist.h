@@ -21,6 +21,8 @@ public:
     void update();
     MainWindow *nextWindow(const MainWindow *window);
     MainWindow *previousWindow(const MainWindow *window);
+    int count() const { return windows.count(); };
+    QPoint newPosition() const;
 
 signals:
     void changed();
