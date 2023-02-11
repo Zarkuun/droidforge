@@ -6,7 +6,7 @@
 class ModuleP2B8 : public Module
 {
 public:
-    ModuleP2B8() : Module("p2b8") {}
+    ModuleP2B8(MainWindow *mainWindow) : Module(mainWindow, "p2b8") {}
     QString title() const { return "P2B8 Controller"; }
     float hp() const  { return 5; }
     unsigned numRegisters(register_type_t type) const;

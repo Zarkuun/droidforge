@@ -23,6 +23,8 @@
 #include <QtGlobal>
 #include <QDesktopServices>
 
+#define mainWindow this // make ACTION() macros work
+
 MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     : QMainWindow()
     , PatchView(patch)
@@ -32,8 +34,9 @@ MainWindow::MainWindow(PatchEditEngine *patch, QString initialFilename)
     , patchSectionView(this, patch)
     , patchSectionManager(this, patch)
     , memoryIndicator(patch)
-    , cableStatusIndicator(patch)
+    , cableStatusIndicator(this, patch)
     , patchProblemIndicator(this, patch)
+    , moduleBuilder(this)
 {
     setWindowTitle(APPLICATION_NAME);
     QIcon appIcon(":droidforge.icns");
@@ -158,7 +161,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::ApplicationPaletteChange) {
         the_colorscheme->darkLightSwitch();
-        the_actions->updateIcons();
+        editorActions.updateIcons();
         emit patchModified();
     }
     return QObject::eventFilter(obj, event);

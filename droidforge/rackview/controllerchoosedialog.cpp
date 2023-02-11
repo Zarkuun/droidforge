@@ -6,8 +6,9 @@
 #include <QKeyEvent>
 #include <QDesktopServices>
 
-ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
-    : Dialog("controllerchooser", parent)
+ControllerChooseDialog::ControllerChooseDialog(MainWindow *mainWindow)
+    : Dialog("controllerchooser", mainWindow)
+    , mainWindow(mainWindow)
 {
     setWindowTitle(tr("Add controller"));
 
@@ -15,7 +16,7 @@ ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
     setLayout(mainLayout);
 
     // Area with clickable controllers
-    controllerSelector = new ControllerSelector(this);
+    controllerSelector = new ControllerSelector(mainWindow, this);
     connect(controllerSelector, &ControllerSelector::controllerSelected, this, &QDialog::accept);
     mainLayout->addWidget(controllerSelector);
 
@@ -33,22 +34,16 @@ ControllerChooseDialog::ControllerChooseDialog(QWidget *parent)
 
 QString ControllerChooseDialog::chooseController()
 {
-    static ControllerChooseDialog *dialog = 0;
-    if (!dialog)
-        dialog = new ControllerChooseDialog();
-
-    dialog->setFocus();
-    if (dialog->exec() == QDialog::Accepted)
-        return dialog->getSelectedController();
+    setFocus();
+    if (exec() == QDialog::Accepted)
+        return getSelectedController();
     else
         return "";
 }
-
 const QString &ControllerChooseDialog::getSelectedController() const
 {
     return controllerSelector->getSelectedController();
 }
-
 void ControllerChooseDialog::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Left)
@@ -62,7 +57,6 @@ void ControllerChooseDialog::keyPressEvent(QKeyEvent *event)
     else
         Dialog::keyPressEvent(event);
 }
-
 void ControllerChooseDialog::purchase()
 {
     QString name = controllerSelector->getSelectedController();

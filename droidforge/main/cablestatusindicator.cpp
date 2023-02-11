@@ -7,12 +7,14 @@
 #include "editoractions.h"
 #include "iconbase.h"
 #include "globals.h"
+#include "mainwindow.h"
 
 #include <QMouseEvent>
 
-CableStatusIndicator::CableStatusIndicator(PatchEditEngine *patch, QWidget *parent)
+CableStatusIndicator::CableStatusIndicator(MainWindow *mainWindow, PatchEditEngine *patch, QWidget *parent)
     : QWidget{parent}
     , PatchView(patch)
+    , mainWindow(mainWindow)
     , animation(this, "animationPhase")
 {
     setMinimumWidth(CSI_WIDTH);

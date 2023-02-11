@@ -3,6 +3,7 @@
 
 #include "dialog.h"
 #include "module.h"
+#include "modulebuilder.h"
 #include "registerlabels.h"
 #include "registerlabelwidget.h"
 
@@ -10,8 +11,11 @@
 #include <QHBoxLayout>
 #include <QList>
 
+class MainWindow;
+
 class ControllerLabellingDialog : public Dialog
 {
+    ModuleBuilder moduleBuilder;
     RegisterLabels &labels;
     QString controllerType;
     unsigned controllerNumber; // e.g. 2 for B2.4
@@ -22,7 +26,7 @@ class ControllerLabellingDialog : public Dialog
     QList<RegisterLabelWidget *> labelWidgets;
 
 public:
-    ControllerLabellingDialog(RegisterLabels &labels, QString controller, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent = nullptr);
+    ControllerLabellingDialog(MainWindow *mainWindow, RegisterLabels &labels, QString controller, unsigned controllerNumber, AtomRegister jumpTo);
     void accept();
 
 private:

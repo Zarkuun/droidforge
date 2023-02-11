@@ -21,6 +21,8 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     : QGraphicsView()
     , PatchView(patch)
     , mainWindow(mainWindow)
+    , moduleBuilder(mainWindow)
+    , controllerChooseDialog(mainWindow)
     , dragger(this)
     , previousHeight(0)
 {
@@ -429,7 +431,7 @@ void RackView::updateSize()
 }
 void RackView::addModule(const QString &name, int controllerIndex)
 {
-    Module *module = ModuleBuilder::buildModule(name, patch->getRegisterLabelsPointer());
+    Module *module = moduleBuilder.buildModule(name, patch->getRegisterLabelsPointer());
     module->setData(DATA_INDEX_MODULE_NAME, name);
     module->setData(DATA_INDEX_MODULE_INDEX, modules.count());
     module->setData(DATA_INDEX_DRAGGER_PRIO, 1);
@@ -500,7 +502,7 @@ void RackView::updateRegisterHilites()
 }
 void RackView::addController()
 {
-    QString controller = ControllerChooseDialog::chooseController();
+    QString controller = controllerChooseDialog.chooseController();
     if (!controller.isEmpty()) {
         patch->addController(controller);
         patch->commit(tr("adding %1 controller").arg(controller.toUpper()));
@@ -769,7 +771,7 @@ void RackView::editLabelling(QString moduleType, int controllerIndex, AtomRegist
 {
     // Get current position of register marker
     RegisterLabels &labels = patch->getRegisterLabels();
-    ControllerLabellingDialog dialog(labels, moduleType, controllerIndex + 1, reg, this);
+    ControllerLabellingDialog dialog(mainWindow, labels, moduleType, controllerIndex + 1, reg);
     int ret = dialog.exec();
     if (ret == QDialog::Accepted) {
         patch->commit(tr("editing labelling of '%1'").arg(moduleType));

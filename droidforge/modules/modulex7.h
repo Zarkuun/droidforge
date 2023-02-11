@@ -6,7 +6,7 @@
 class ModuleX7 : public Module
 {
 public:
-    ModuleX7() : Module("x7") {};
+    ModuleX7(MainWindow *mainWindow) : Module(mainWindow, "x7") {};
     QString title() const { return "X7 MIDI/USB Expander"; }
     float hp() const { return 4; }
     unsigned numRegisters(register_type_t type) const;

@@ -144,7 +144,7 @@ void PatchSectionView::buildPatchSection()
     }
     QRectF totalRect(0, 0, totalWidth, y);
     scene->setSceneRect(totalRect);
-    frameCursor = new FrameCursor();
+    frameCursor = new FrameCursor(mainWindow);
     scene->addItem(frameCursor); // owned by the scene now
     updateCursor();
     setScene(scene);

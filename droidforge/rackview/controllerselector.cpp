@@ -2,12 +2,16 @@
 #include "colorscheme.h"
 #include "modulebuilder.h"
 #include "tuning.h"
+#include "mainwindow.h"
+#include "modulebuilder.h"
 
 #include <QGraphicsItem>
 #include <QMouseEvent>
 
-ControllerSelector::ControllerSelector(QWidget *parent)
+ControllerSelector::ControllerSelector(MainWindow *mainWindow, QWidget *parent)
     : QGraphicsView{parent}
+    , mainWindow(mainWindow)
+    , moduleBuilder(mainWindow)
     , selectedController("p2b8")
 {
     QGraphicsScene *scene = new QGraphicsScene();
@@ -19,7 +23,7 @@ ControllerSelector::ControllerSelector(QWidget *parent)
     for (qsizetype i=0; i<controllers.size(); i++)
     {
         QString name = controllers[i];
-        Module *module = ModuleBuilder::buildModule(name);
+        Module *module = moduleBuilder.buildModule(name);
         scene->addItem(module);
         module->setData(0, name);
         module->setZValue(10); // make it above margin rect
@@ -83,7 +87,7 @@ void ControllerSelector::placeCursor()
     for (qsizetype i=0; i<controllers.size(); i++)
     {
         QString name = controllers[i];
-        Module *module = ModuleBuilder::buildModule(name);
+        Module *module = moduleBuilder.buildModule(name);
         if (name == selectedController) {
             cursor->setRect(module->moduleRect().translated(x, 0)
                             .adjusted(-CSEL_CURSOR_WIDTH,

@@ -8,15 +8,11 @@
 
 #include <QSettings>
 
-EditorActions *the_actions = 0;
-
 EditorActions::EditorActions(MainWindow *mainWindow, PatchEditEngine *patch, QObject *parent)
     : QObject{parent}
     , PatchView(patch)
     , mainWindow(mainWindow)
 {
-    Q_ASSERT(the_actions == 0);
-    the_actions = this;
     createActions();
 
     // Events that we are interested in

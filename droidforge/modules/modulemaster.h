@@ -6,7 +6,7 @@
 class ModuleMaster : public Module
 {
 public:
-    ModuleMaster() : Module("master") {  }
+    ModuleMaster(MainWindow *mainWindow) : Module(mainWindow, "master") {  }
     QString title() const { return "DROID master"; }
     float hp() const { return 8; }
     unsigned numRegisters(register_type_t type) const;

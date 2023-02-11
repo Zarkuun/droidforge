@@ -6,7 +6,7 @@
 class ModuleM4 : public Module
 {
 public:
-    ModuleM4() : Module("m4") {  }
+    ModuleM4(MainWindow *mainWindow) : Module(mainWindow, "m4") {  }
     QString title() const { return "M4 Motor Fader Unit";  }
     float hp() const { return 14; }
     unsigned numRegisters(register_type_t type) const;

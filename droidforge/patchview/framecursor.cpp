@@ -3,11 +3,13 @@
 #include "tuning.h"
 #include "colorscheme.h"
 #include "globals.h"
+#include "mainwindow.h"
 
 #include <QPen>
 
-FrameCursor::FrameCursor()
-    : animation(this, "animationPhase")
+FrameCursor::FrameCursor(MainWindow *mainWindow)
+    : mainWindow(mainWindow)
+    , animation(this, "animationPhase")
 {
     setMode(CURSOR_NORMAL);
     setZValue(50);

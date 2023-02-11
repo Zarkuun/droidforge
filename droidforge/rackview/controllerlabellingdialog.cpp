@@ -2,14 +2,17 @@
 #include "modulebuilder.h"
 #include "registerlabelwidget.h"
 #include "globals.h"
+#include "mainwindow.h"
 
 #include <QGridLayout>
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QPushButton>
 
-ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo, QWidget *parent)
-    : Dialog("controllerlabelling/" + controllerType, parent)
+
+ControllerLabellingDialog::ControllerLabellingDialog(MainWindow *mainWindow, RegisterLabels &labels, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo)
+    : Dialog("controllerlabelling/" + controllerType, mainWindow)
+    , moduleBuilder(mainWindow)
     , labels(labels)
     , controllerType(controllerType)
     , controllerNumber(controllerNumber)
@@ -47,17 +50,15 @@ ControllerLabellingDialog::ControllerLabellingDialog(RegisterLabels &labels, QSt
     }
 }
 
-
 void ControllerLabellingDialog::accept()
 {
     for (auto rlw: labelWidgets)
         rlw->updateLabels(labels);
     Dialog::accept();
 }
-
 void ControllerLabellingDialog::populate()
 {
-    Module *module = ModuleBuilder::buildModule(controllerType);
+    Module *module = moduleBuilder.buildModule(controllerType);
     populateRegisters(module, REGISTER_INPUT, tr("Inputs"));
     populateRegisters(module, REGISTER_OUTPUT, tr("Outputs"));
     populateRegisters(module, REGISTER_GATE, tr("Gates"));
@@ -65,7 +66,6 @@ void ControllerLabellingDialog::populate()
     populateRegisters(module, REGISTER_BUTTON, tr("Buttons"));
     populateRegisters(module, REGISTER_SWITCH, tr("Switches"));
 }
-
 void ControllerLabellingDialog::populateRegisters(Module *module, char regType, const QString &title)
 {
     unsigned count = module->numRegisters(regType);
@@ -122,7 +122,6 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
     }
     currentRow++;
 }
-
 void ControllerLabellingDialog::clear()
 {
     for (auto rlw: labelWidgets)

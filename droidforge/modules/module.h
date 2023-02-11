@@ -27,8 +27,11 @@ QT_END_NAMESPACE
 #define DATA_INDEX_REGISTER         4
 
 
+class MainWindow;
+
 class Module : public QGraphicsItem
 {
+    MainWindow *mainWindow;
     QString name;
     QImage faceplateImage;
     int registerHilite[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE]; // 0: off, 1: used, 2: current
@@ -36,7 +39,7 @@ class Module : public QGraphicsItem
     unsigned pixelHeight;
 
 public:
-    Module(const QString &name);
+    Module(MainWindow *mainWindow, const QString &name);
     void setPixelHeight(unsigned height) { pixelHeight = height; };
     void setLabels(const RegisterLabels *labels) { registerLabels = labels; };
     virtual ~Module();

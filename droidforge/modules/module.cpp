@@ -3,12 +3,14 @@
 #include "globals.h"
 #include "tuning.h"
 #include "editoractions.h"
+#include "mainwindow.h"
 
 #include <QPainter>
 #include <QGraphicsScene>
 
-Module::Module(const QString &name)
-    : name(name)
+Module::Module(MainWindow *mainWindow, const QString &name)
+    : mainWindow(mainWindow)
+    , name(name)
     , faceplateImage(":images/faceplates/" + name)
     , registerHilite{{0}}
     , registerLabels(0)

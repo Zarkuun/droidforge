@@ -8,6 +8,8 @@
 #include "patchview.h"
 #include "dragregisterindicator.h"
 #include "dragcontrollerindicator.h"
+#include "controllerchoosedialog.h"
+#include "modulebuilder.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -23,6 +25,9 @@ class RackView : public QGraphicsView, PatchView
     Q_OBJECT
 
     MainWindow *mainWindow;
+    ModuleBuilder moduleBuilder;
+    ControllerChooseDialog controllerChooseDialog;
+
     QList<Module *> modules;
     int x;
     RegisterMarker *registerMarker;

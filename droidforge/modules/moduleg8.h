@@ -6,7 +6,7 @@
 class ModuleG8 : public Module
 {
 public:
-    ModuleG8() : Module("g8") {}
+    ModuleG8(MainWindow *mainWindow) : Module(mainWindow, "g8") {}
     QString title() const { return "G8 Gates Expander"; }
     float hp() const { return 4; }
     unsigned numRegisters(register_type_t type) const;

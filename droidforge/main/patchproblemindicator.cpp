@@ -77,7 +77,7 @@ void PatchProblemIndicator::updateStatus()
                       "to be loaded to your master."));
         unsetCursor();
     }
-    the_actions->action(ACTION_TOOLBAR_PROBLEMS)->setToolTip(toolTip());
+    ACTION(ACTION_TOOLBAR_PROBLEMS)->setToolTip(toolTip());
     update();
 }
 void PatchProblemIndicator::jumpToNextProblem()

@@ -6,17 +6,19 @@
 
 #include <QDialogButtonBox>
 
+class MainWindow;
+
 class ControllerChooseDialog : public Dialog
 {
     Q_OBJECT
 
+    MainWindow *mainWindow;
     QDialogButtonBox *buttonBox;
     ControllerSelector *controllerSelector;
 
-    ControllerChooseDialog(QWidget *parent = nullptr);
-
 public:
-    static QString chooseController();
+    ControllerChooseDialog(MainWindow *mainWindow);
+    QString chooseController();
     const QString &getSelectedController() const;
 
 protected:

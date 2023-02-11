@@ -14,6 +14,7 @@
 #include "cablestatusindicator.h"
 #include "patchproblemindicator.h"
 #include "findpanel.h"
+#include "modulebuilder.h"
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -49,8 +50,9 @@ class MainWindow : public QMainWindow, PatchView
     CableStatusIndicator cableStatusIndicator;
     PatchProblemIndicator patchProblemIndicator;
     ClipboardIndicator clipboardIndicator;
-    FindPanel findPanel;
 
+    ModuleBuilder moduleBuilder;
+    FindPanel findPanel;
     QStatusBar *statusbar;
     QLabel *statusbarText;
     QLabel *statusbarIcon;
@@ -73,6 +75,8 @@ public:
     bool searchActive() const;
     void setStatusbarText(QString text);
     PatchOperator *theOperator() { return &patchOperator; };
+    EditorActions *theActions() { return &editorActions; };
+    ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

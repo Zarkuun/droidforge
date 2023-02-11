@@ -12,11 +12,13 @@ typedef enum {
     CURSOR_DISABLED,
 } cursor_mode_t;
 
+class MainWindow;
 
 class FrameCursor : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
 
+    MainWindow *mainWindow;
     float animationPhase;
     QPropertyAnimation animation;
     cursor_mode_t mode;
@@ -24,7 +26,7 @@ class FrameCursor : public QObject, public QGraphicsRectItem
     QColor color;
 
 public:
-    FrameCursor();
+    FrameCursor(MainWindow *mainWindow);
     ~FrameCursor();
     void setMode(cursor_mode_t m);
     float getanimationPhase() const;

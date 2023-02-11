@@ -5,11 +5,16 @@
 #include "atomregister.h"
 #include "registerlabels.h"
 
+class MainWindow;
+
 class ModuleBuilder
 {
+    MainWindow *mainWindow;
+
 public:
+    ModuleBuilder(MainWindow *mainWindow) : mainWindow(mainWindow) {};
     static const QStringList &allControllers();
-    static Module *buildModule(QString name, const RegisterLabels *labels = 0);
+    Module *buildModule(QString name, const RegisterLabels *labels = 0);
     static bool controllerExists(QString name);
     static void allRegistersOf(QString name, unsigned number, RegisterList &rl);
 };

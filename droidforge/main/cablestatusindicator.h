@@ -9,9 +9,12 @@
 #include <QPen>
 #include <QPainter>
 
+class MainWindow;
+
 class CableStatusIndicator : public QWidget, PatchView
 {
     Q_OBJECT
+    MainWindow *mainWindow;
     QPen cablePen;
     QPen cableHilitePen;
     QImage warningImage;
@@ -25,7 +28,7 @@ class CableStatusIndicator : public QWidget, PatchView
     int numAsOutput;
 
 public:
-    explicit CableStatusIndicator(PatchEditEngine *patch, QWidget *parent = nullptr);
+    explicit CableStatusIndicator(MainWindow *mainWindow, PatchEditEngine *patch, QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
     void set(QString name, int numAsInput, int numAsOutput);

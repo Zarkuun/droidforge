@@ -22,25 +22,25 @@ Module *ModuleBuilder::buildModule(QString name, const RegisterLabels *labels)
 {
     Module *module;
     if (name == "master")
-        module = new ModuleMaster();
+        module = new ModuleMaster(mainWindow);
     else if (name == "g8")
-        module = new ModuleG8();
+        module = new ModuleG8(mainWindow);
     else if (name == "x7")
-        module = new ModuleX7();
+        module = new ModuleX7(mainWindow);
     else if (name == "p4b2")
-        module = new ModuleP4B2();
+        module = new ModuleP4B2(mainWindow);
     else if (name == "p2b8")
-        module = new ModuleP2B8();
+        module = new ModuleP2B8(mainWindow);
     else if (name == "p10")
-        module = new ModuleP10();
+        module = new ModuleP10(mainWindow);
     else if (name == "s10")
-        module = new ModuleS10();
+        module = new ModuleS10(mainWindow);
     else if (name == "m4")
-        module = new ModuleM4();
+        module = new ModuleM4(mainWindow);
     else if (name == "b32")
-        module = new ModuleB32();
+        module = new ModuleB32(mainWindow);
     else
-        module = new ModuleBling();
+        module = new ModuleBling(mainWindow);
     if (labels)
         module->setLabels(labels);
     return module;
@@ -51,7 +51,8 @@ bool ModuleBuilder::controllerExists(QString name)
 }
 void ModuleBuilder::allRegistersOf(QString name, unsigned number, RegisterList &rl)
 {
-    Module *m = buildModule(name);
+    ModuleBuilder mb(0);
+    Module *m = mb.buildModule(name);
     m->collectAllRegisters(rl, number);
     delete m;
 }

@@ -439,7 +439,7 @@ void PatchSectionManager::rebuildGraphics()
         y += item->boundingRect().height() + PSM_VERTICAL_DISTANCE;
     }
 
-    frameCursor = new FrameCursor();
+    frameCursor = new FrameCursor(mainWindow);
     scene()->addItem(frameCursor);
     QRectF sceneRect(0, 0, viewport()->width(), y);
     scene()->setSceneRect(sceneRect);

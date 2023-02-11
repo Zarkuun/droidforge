@@ -6,7 +6,7 @@
 class ModuleS10 : public Module
 {
 public:
-    ModuleS10() : Module("s10") {  }
+    ModuleS10(MainWindow *mainWindow) : Module(mainWindow, "s10") {  }
     QString title() const  { return "S10 Controller";  }
     float hp() const  { return 5; }
     unsigned numRegisters(register_type_t type) const;

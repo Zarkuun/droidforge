@@ -6,7 +6,7 @@
 class ModuleBling : public Module
 {
 public:
-    ModuleBling() : Module("bling") {}
+    ModuleBling(MainWindow *mainWindow) : Module(mainWindow, "bling") {}
     QString faceplate() const { return "bling"; };
     QString title() const { return "1 HP blind plate"; };
     float hp() const { return 1; };

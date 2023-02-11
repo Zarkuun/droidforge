@@ -6,7 +6,7 @@
 class ModuleB32 : public Module
 {
 public:
-    ModuleB32() : Module("b32") {}
+    ModuleB32(MainWindow *mainWindow) : Module(mainWindow, "b32") {}
     QString title() const { return "B32 Controller"; };
     float hp() const { return 10; };
     unsigned numRegisters(register_type_t type) const;
