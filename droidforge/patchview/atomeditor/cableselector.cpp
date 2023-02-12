@@ -35,14 +35,26 @@ bool CableSelector::handlesAtom(const Atom *atom) const
 {
     return atom->isCable();
 }
-void CableSelector::setPatch(const Patch *patch)
+void CableSelector::setPatch(const Patch *newPatch)
 {
+    patch = newPatch;
+    updateList();
+}
+void CableSelector::updateList()
+{
+    QString filter;
+    if (!lineEdit->hasSelectedText())
+        filter = lineEdit->text().toUpper();
+
     listWidget->clear();
     QStringList cables = patch->allCables();
     for (auto &cable: cables) {
-        const QIcon *icon = the_cable_colorizer->iconForCable(cable);
-        QListWidgetItem *item = new QListWidgetItem(*icon, cable, listWidget);
-        listWidget->addItem(item);
+        shout << cable;
+        if (cable.contains(filter)) {
+            const QIcon *icon = the_cable_colorizer->iconForCable(cable);
+            QListWidgetItem *item = new QListWidgetItem(*icon, cable, listWidget);
+            listWidget->addItem(item);
+        }
     }
 }
 void CableSelector::setAtom(const Patch *patch, const Atom *atom)
@@ -75,6 +87,7 @@ void CableSelector::cableEdited(QString text)
     if (text != text.toUpper())
         lineEdit->setText(text.toUpper());
     updateIcon();
+    updateList();
 }
 void CableSelector::cableSelected(int row)
 {

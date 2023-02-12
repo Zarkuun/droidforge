@@ -33,6 +33,9 @@ public:
     void getFocus();
     void installFocusFilter(QWidget *);
 
+private:
+    void updateList();
+
 private slots:
     void cableEdited(QString text);
     void cableSelected(int row);

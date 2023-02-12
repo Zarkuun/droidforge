@@ -37,6 +37,9 @@
 	  (There is a maximum patch size of 64k).
 	* New action for copying a controller with or without its labels
 	* Shortcut Command+M for minimizing a Forge window (Mac standard)
+	* In list of patch cables in value editor the entered name is now a search
+	  filter for the list of cables. That makes it much faster to find an
+	  existing cable.
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
