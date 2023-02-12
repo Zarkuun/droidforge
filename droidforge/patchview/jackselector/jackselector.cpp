@@ -66,6 +66,11 @@ QString JackSelector::getSelectedJack() const
     return jack;
 }
 
+void JackSelector::showEvent(QShowEvent *)
+{
+    if (currentJack())
+        ensureVisible(currentJack(), JSEL_SCROLL_MARGIN, JSEL_SCROLL_MARGIN);
+}
 void JackSelector::initScene()
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

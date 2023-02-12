@@ -56,6 +56,5 @@ void FindPanel::searchBackward()
 }
 void FindPanel::catchKeyPress(QKeyEvent *event)
 {
-   shoutfunc;
    emit keyCaptured(event);
 }

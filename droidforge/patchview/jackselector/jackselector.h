@@ -26,6 +26,9 @@ public:
     void mouseDoubleClickEvent(QMouseEvent *event);
     QString getSelectedJack() const;
 
+protected:
+    void showEvent(QShowEvent *);
+
 private:
     void initScene();
     void loadJacks(QString circuit, QString search="");
