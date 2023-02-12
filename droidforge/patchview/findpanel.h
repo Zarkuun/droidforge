@@ -6,10 +6,12 @@
 #include <QLineEdit>
 #include <QToolButton>
 
+#include "searchlineedit.h"
+
 class FindPanel : public QWidget
 {
     Q_OBJECT
-    QLineEdit *searchField;
+    SearchLineEdit *searchField;
     QToolButton *buttonPrev;
     QToolButton *buttonNext;
     QToolButton *buttonFinished;
@@ -19,19 +21,18 @@ public:
 
 protected:
     virtual void showEvent(QShowEvent *) override;
-    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
-    // void handleKeyPress(int key);
     void doSearch(int direction);
 
 private slots:
     void searchForward();
     void searchBackward();
+    void catchKeyPress(QKeyEvent *event);
 
 signals:
     void search(QString text, int direction);
-
+    void keyCaptured(QKeyEvent *event);
 };
 
 #endif // FINDPANEL_H

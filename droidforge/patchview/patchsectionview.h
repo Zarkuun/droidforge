@@ -126,6 +126,7 @@ private:
     int getInsertPosition(int ypos);
 
 public slots:
+    void keyCaptured(QKeyEvent *);
     void modifyPatch();
     void changeSelection();
     void switchSection();

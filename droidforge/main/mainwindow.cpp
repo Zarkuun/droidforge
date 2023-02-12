@@ -77,6 +77,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
 
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
     connect(the_windowlist, &WindowList::changed, this, &MainWindow::updateWindowMenu);
+    connect(&findPanel, &FindPanel::keyCaptured, &patchSectionView, &PatchSectionView::keyCaptured);
 
     CONNECT_ACTION(ACTION_ABOUT, &MainWindow::about);
     CONNECT_ACTION(ACTION_LICENSE, &MainWindow::showLicense);
@@ -150,6 +151,10 @@ void MainWindow::bringToFront()
     activateWindow();
     setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
 }
+void MainWindow::hideFindPanel()
+{
+    findPanel.hide();
+}
 void MainWindow::modifyPatch()
 {
     QString title = patchTitle() + " - " + APPLICATION_NAME;
@@ -163,7 +168,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if (!patchSectionView.handleKeyPress(event))
         event->ignore();
 }
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *)
 {
     // patchOperator.quit();
     // event->ignore();

@@ -68,6 +68,7 @@ PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *init
     connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
     connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &PatchSectionView::changePatching);
     CONNECT_ACTION(ACTION_TEXT_MODE, &PatchSectionView::modifyPatch);
+    installEventFilter(this);
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PatchSectionView::clockTick);
@@ -480,6 +481,14 @@ int PatchSectionView::getInsertPosition(int ypos)
         }
     }
     return bestCircuit;
+}
+void PatchSectionView::keyCaptured(QKeyEvent *keyEvent)
+{
+    // This is called when within the search panel a cursor
+    // movement is done while the search already has been
+    // active.
+    mainWindow->hideFindPanel();
+    handleKeyPress(keyEvent);
 }
 void PatchSectionView::changeSelection()
 {

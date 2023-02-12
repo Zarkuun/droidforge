@@ -10,7 +10,7 @@ FindPanel::FindPanel(QWidget *parent)
     : QWidget{parent}
 {
     QLabel *labelFind = new QLabel(tr("Search:"));
-    searchField = new QLineEdit();
+    searchField = new SearchLineEdit(this);
 
     buttonPrev = new QToolButton(this);
     buttonPrev->setText("<");
@@ -30,6 +30,7 @@ FindPanel::FindPanel(QWidget *parent)
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     connect(searchField, &QLineEdit::returnPressed, this, &FindPanel::searchForward);
+    connect(searchField, &SearchLineEdit::keyPressed, this, &FindPanel::catchKeyPress);
     connect(buttonNext, &QToolButton::pressed, this, &FindPanel::searchForward);
     connect(buttonPrev, &QToolButton::pressed, this, &FindPanel::searchBackward);
 }
@@ -37,11 +38,6 @@ void FindPanel::showEvent(QShowEvent *)
 {
     searchField->selectAll();
     searchField->setFocus();
-}
-
-bool FindPanel::eventFilter(QObject *, QEvent *event)
-{
-    return false;
 }
 void FindPanel::doSearch(int direction)
 {
@@ -57,4 +53,9 @@ void FindPanel::searchForward()
 void FindPanel::searchBackward()
 {
     doSearch(-1);
+}
+void FindPanel::catchKeyPress(QKeyEvent *event)
+{
+   shoutfunc;
+   emit keyCaptured(event);
 }

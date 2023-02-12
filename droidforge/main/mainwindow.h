@@ -85,6 +85,7 @@ public:
     QString patchTitle() const;
     const QString &getFilePath() const;
     void bringToFront();
+    void hideFindPanel();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

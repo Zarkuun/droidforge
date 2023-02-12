@@ -260,6 +260,8 @@ QtApplication {
         "utilities/inputvalidationexception.h",
         "utilities/namechoosedialog.cpp",
         "utilities/namechoosedialog.h",
+        "utilities/searchlineedit.cpp",
+        "utilities/searchlineedit.h",
     ]
 
     install: true
