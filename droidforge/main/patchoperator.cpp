@@ -889,6 +889,9 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
 
     QStringList existingCables = ontoPatch->allCables();
 
+    bool yesToAll = false;
+    bool noToAll = false;
+
     // Loop through all cables of the newly integrated patch
     for (auto cable: otherPatch->allCables())
     {
@@ -915,15 +918,30 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
                     rename = false;
 
                 else if (asOutput && ontoAsOutput) {
-                    int reply = QMessageBox::question(
+                    int reply;
+                    if (yesToAll)
+                        reply = QMessageBox::Yes;
+                    else if (noToAll)
+                        reply = QMessageBox::No;
+                    else QMessageBox::question(
                                 mainWindow,
                                 tr("Cable conflict"),
                                 tr("The internal patch cable \"%1\" is used as output both by "
                                    "the existing and the integrated patch. This will result in a "
                                    "problem.\n\nShall I rename that cable in order to avoid fear, "
                                    "uncertainty and doubt?").arg(cable),
-                                QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::No |
+                                QMessageBox::YesToAll | QMessageBox::NoToAll,
                                 QMessageBox::Yes);
+
+                    if (reply == QMessageBox::YesToAll) {
+                        yesToAll = true;
+                        reply = QMessageBox::Yes;
+                    }
+                    else if (reply == QMessageBox::NoToAll) {
+                        noToAll = true;
+                        reply = QMessageBox::No;
+                    }
 
                     if (reply == QMessageBox::Cancel)
                         return false;

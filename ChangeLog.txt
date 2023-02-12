@@ -41,22 +41,6 @@
 	  filter for the list of cables. That makes it much faster to find an
 	  existing cable.
 
-	Bug fixes:
-	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
-	  with the wrong page numbers.
-	* FIX: Fix crash when deleting contents of a cell of an undefined parameter
-	  (found by @Michael Gerdau)
-	* FIX: Fix crash when hitting enter on a circuit comment
-	* FIX: When opening the popup menu on a section, select that section so
-	  the menu action is performed on the clicked section
-	* FIX: Correctly load patches with a number like ".3" instead of "0.3".
-	* FIX: Fix left over white register cursor when loading a new patch
-	* FIX: The section cursor is now correctly white (instead of black) after starting
-	  or loading a new patch
-	* FIX: Fix crash when resizing the rack view a lot in a short time
-	* FIX: Make sure cursor position is always visible in parameter selection
-	  window.
-
 	Clean ups:
 	* Make white label areas wider, so that more text fits in (suggested by
 	  @Second_Breakfast)
@@ -74,6 +58,24 @@
 	  "Mac standard"
 	* The "End" key now really goes to the end of the current section, i.e. to
 	  the last line of the last circuit, not to its header.
+	* New buttons "No to all" and "Yes to all" in dialog for automatically renaming
+	  cables when duplicating a section (or similar operations)
+
+	Bug fixes:
+	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
+	  with the wrong page numbers.
+	* FIX: Fix crash when deleting contents of a cell of an undefined parameter
+	  (found by @Michael Gerdau)
+	* FIX: Fix crash when hitting enter on a circuit comment
+	* FIX: When opening the popup menu on a section, select that section so
+	  the menu action is performed on the clicked section
+	* FIX: Correctly load patches with a number like ".3" instead of "0.3".
+	* FIX: Fix left over white register cursor when loading a new patch
+	* FIX: The section cursor is now correctly white (instead of black) after starting
+	  or loading a new patch
+	* FIX: Fix crash when resizing the rack view a lot in a short time
+	* FIX: Make sure cursor position is always visible in parameter selection
+	  window.
 
 1.0:
 	New features:

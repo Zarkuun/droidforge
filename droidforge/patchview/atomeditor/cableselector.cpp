@@ -49,7 +49,6 @@ void CableSelector::updateList()
     listWidget->clear();
     QStringList cables = patch->allCables();
     for (auto &cable: cables) {
-        shout << cable;
         if (cable.contains(filter)) {
             const QIcon *icon = the_cable_colorizer->iconForCable(cable);
             QListWidgetItem *item = new QListWidgetItem(*icon, cable, listWidget);
