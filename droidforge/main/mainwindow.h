@@ -64,7 +64,7 @@ class MainWindow : public QMainWindow, PatchView
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
     QMenu *recentFilesMenu;
-    QMenu *windowsMenu;
+    QMenu *windowMenu;
     QString initialFilename;
     QString filePath; // of loaded patch
     QSplitter *rackSplitter;
@@ -108,7 +108,7 @@ private:
     void rackZoom(int whence);
 
 private slots:
-    void updateWindowsMenu();
+    void updateWindowMenu();
     void about();
     void editPreferences();
     void showDiscord();

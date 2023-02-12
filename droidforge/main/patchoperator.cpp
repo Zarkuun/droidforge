@@ -143,7 +143,6 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
-    connect(this, &PatchOperator::clipboardChanged, mainWindow->theHub(), &UpdateHub::changeClipboard);
     connect(this, &PatchOperator::selectionChanged, mainWindow->theHub(), &UpdateHub::changeSelection);
     connect(this, &PatchOperator::sectionSwitched, mainWindow->theHub(), &UpdateHub::switchSection);
     connect(this, &PatchOperator::cursorMoved, mainWindow->theHub(), &UpdateHub::moveCursor);
@@ -232,7 +231,8 @@ bool PatchOperator::checkModified()
         QMessageBox box(
                     QMessageBox::Warning,
                     tr("Your patch is modified!"),
-                    tr("Do you want to save your changes before you proceed?"),
+                    tr("Your patch \"%1\" is modified.\n\n"
+                       "Do you want to save your changes before you proceed?").arg(mainWindow->patchTitle()),
                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
                     mainWindow);
         int ret = box.exec();
@@ -374,10 +374,10 @@ QString PatchOperator::sdCardDir() const
     }
     return "";
 }
-bool PatchOperator::bringToFrontIfOpen(const QString &filePath)
+bool PatchOperator::bringToFrontIfOpen(const QString &filePath, bool inOthers)
 {
     MainWindow *otherWindow = the_windowlist->windowWithFile(filePath);
-    if (otherWindow && otherWindow != mainWindow) {
+    if (otherWindow && (otherWindow != mainWindow || !inOthers)) {
         otherWindow->bringToFront();
         return true;
     }
@@ -503,12 +503,12 @@ void PatchOperator::open()
     QString filePath = QFileDialog::getOpenFileName(
                 mainWindow, "", "", "DROID patches (*.ini)");
 
-    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath))
+    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath, true))
         loadFile(filePath, FILE_MODE_LOAD);
 }
 void PatchOperator::openRecentFile(const QString filePath)
 {
-    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath))
+    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath, true))
         loadFile(filePath, FILE_MODE_LOAD);
 }
 void PatchOperator::openInNewWindow()
@@ -516,7 +516,7 @@ void PatchOperator::openInNewWindow()
     QString filePath = QFileDialog::getOpenFileName(
                 mainWindow, "", "", "DROID patches (*.ini)");
 
-    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath)) {
+    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath, false)) {
         MainWindow *newWindow = new MainWindow(filePath);
         newWindow->show();
     }
@@ -1075,7 +1075,6 @@ void PatchOperator::jumpToBookmark()
 void PatchOperator::globalClipboardChanged()
 {
     the_clipboard->copyFromGlobalClipboard();
-    emit clipboardChanged();
 }
 void PatchOperator::modifyPatch()
 {

@@ -56,7 +56,6 @@ PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *init
 
     // Events that we create
     connect(this, &PatchSectionView::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
-    connect(this, &PatchSectionView::clipboardChanged, mainWindow->theHub(), &UpdateHub::changeClipboard);
     connect(this, &PatchSectionView::selectionChanged, mainWindow->theHub(), &UpdateHub::changeSelection);
     connect(this, &PatchSectionView::sectionSwitched, mainWindow->theHub(), &UpdateHub::switchSection);
     connect(this, &PatchSectionView::cursorMoved, mainWindow->theHub(), &UpdateHub::moveCursor);

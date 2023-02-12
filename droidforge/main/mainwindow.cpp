@@ -76,7 +76,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
 
 
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
-    connect(the_windowlist, &WindowList::changed, this, &MainWindow::updateWindowsMenu);
+    connect(the_windowlist, &WindowList::changed, this, &MainWindow::updateWindowMenu);
 
     CONNECT_ACTION(ACTION_ABOUT, &MainWindow::about);
     CONNECT_ACTION(ACTION_LICENSE, &MainWindow::showLicense);
@@ -218,15 +218,12 @@ void MainWindow::createFileMenu()
 
     ADD_ACTION(ACTION_NEW, menu);
     ADD_ACTION(ACTION_NEW_WITH_SAME_RACK, menu);
-    ADD_ACTION(ACTION_NEW_WINDOW, menu);
-    ADD_ACTION(ACTION_NEW_WINDOW_WITH_SAME_RACK, menu);
-
-    menu->addSeparator();
 
     ADD_ACTION(ACTION_OPEN, menu);
-    ADD_ACTION(ACTION_OPEN_IN_NEW_WINDOW, menu);
     recentFilesMenu = menu->addMenu(tr("Open &recent patch"));
     patchOperator.createRecentFileActions(recentFilesMenu);
+
+    menu->addSeparator();
 
     ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
@@ -380,8 +377,8 @@ void MainWindow::createHelpMenu()
 }
 void MainWindow::createWindowsMenu()
 {
-    windowsMenu = menuBar()->addMenu(tr("&Window"));
-    updateWindowsMenu();
+    windowMenu = menuBar()->addMenu(tr("&Window"));
+    updateWindowMenu();
 }
 void MainWindow::createStatusBar()
 {
@@ -556,14 +553,20 @@ void MainWindow::rackZoom(int whence)
     rackSplitter->setSizes(currentSizes);
 }
 
-void MainWindow::updateWindowsMenu()
+void MainWindow::updateWindowMenu()
 {
-    windowsMenu->clear();
-    ADD_ACTION(ACTION_MINIMIZE_WINDOW, windowsMenu);
-    ADD_ACTION(ACTION_NEXT_WINDOW, windowsMenu);
-    ADD_ACTION(ACTION_PREVIOUS_WINDOW, windowsMenu);
-    windowsMenu->addSeparator();
-    the_windowlist->addMenuEntries(windowsMenu);
+    windowMenu->clear();
+    ADD_ACTION(ACTION_NEW_WINDOW, windowMenu);
+    ADD_ACTION(ACTION_NEW_WINDOW_WITH_SAME_RACK, windowMenu);
+    ADD_ACTION(ACTION_OPEN_IN_NEW_WINDOW, windowMenu);
+
+    windowMenu->addSeparator();
+
+    ADD_ACTION(ACTION_MINIMIZE_WINDOW, windowMenu);
+    ADD_ACTION(ACTION_NEXT_WINDOW, windowMenu);
+    ADD_ACTION(ACTION_PREVIOUS_WINDOW, windowMenu);
+    windowMenu->addSeparator();
+    the_windowlist->addMenuEntries(windowMenu);
 }
 void MainWindow::about()
 {

@@ -18,17 +18,16 @@ EditorActions::EditorActions(MainWindow *mainWindow, PatchEditEngine *patch, QOb
     // Events that we are interested in
     connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
-    connect(mainWindow->theHub(), &UpdateHub::clipboardChanged, this, &EditorActions::changeClipboard);
     connect(mainWindow->theHub(), &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
     connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &EditorActions::moveCursor);
     connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &EditorActions::changePatching);
     connect(mainWindow->theHub(), &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
+    connect(the_clipboard, &Clipboard::changed, this, &EditorActions::updatePasteAction);
 
     CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &EditorActions::persistViewToggles);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &EditorActions::persistViewToggles);
     CONNECT_ACTION(ACTION_TEXT_MODE, &EditorActions::persistViewToggles);
 }
-
 void EditorActions::updateIcons()
 {
     // Is called after a dark/light switch in order to use the correct
@@ -83,6 +82,7 @@ void EditorActions::createActions()
     actions[ACTION_NEW_WINDOW] = new QAction(tr("New window"), this);
 
     actions[ACTION_NEW_WINDOW_WITH_SAME_RACK] = new QAction(tr("New window with same rack"), this);
+    actions[ACTION_NEW_WINDOW_WITH_SAME_RACK]->setShortcut(QKeySequence(tr("Meta+N")));
 
     actions[ACTION_OPEN_IN_NEW_WINDOW] = new QAction(tr("Open in new window..."), this);
     actions[ACTION_OPEN_IN_NEW_WINDOW]->setShortcut(QKeySequence(tr("Ctrl+Shift+O")));

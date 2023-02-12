@@ -1,8 +1,10 @@
 #include "clipboardindicator.h"
 #include "colorscheme.h"
+#include "globals.h"
 #include "tuning.h"
 #include "updatehub.h"
 #include "mainwindow.h"
+#include "clipboard.h"
 
 #include <QMouseEvent>
 
@@ -16,7 +18,7 @@ ClipboardIndicator::ClipboardIndicator(MainWindow *mainWindow)
     setVisible(false); // wait until first clipboard event
 
     // Events that we are interested in
-    connect(mainWindow->theHub(), &UpdateHub::clipboardChanged, this, &ClipboardIndicator::changeClipboard);
+    connect(the_clipboard, &Clipboard::changed, this, &ClipboardIndicator::changeClipboard);
 }
 
 void ClipboardIndicator::paintEvent(QPaintEvent *)
@@ -46,7 +48,7 @@ void ClipboardIndicator::paintEvent(QPaintEvent *)
     else if (the_clipboard->numJacks())
         info = tr("%1 parameters").arg(the_clipboard->numJacks());
     else if (the_clipboard->numAtoms())
-        info = tr("%1 parameters").arg(the_clipboard->numAtoms());
+        info = tr("%1 values").arg(the_clipboard->numAtoms());
     else if (the_clipboard->isComment())
         info = tr("comment");
 
@@ -62,6 +64,7 @@ void ClipboardIndicator::mousePressEvent(QMouseEvent *event)
 
 void ClipboardIndicator::changeClipboard()
 {
+    shout << this << "changeClipboard()" << the_clipboard->isEmpty();
     if (the_clipboard->isEmpty())
         setVisible(false);
     else

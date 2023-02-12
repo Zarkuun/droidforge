@@ -10,13 +10,15 @@
 
 #include <QList>
 
-class Clipboard
+class Clipboard : public QObject
 {
+    Q_OBJECT
+
     QList<Circuit *> circuits;
     QList<JackAssignment *> jackAssignments;
     QList<Atom *> atoms;
     QString comment;
-    bool ignoreNextGlobalClipboardChange;
+    qint64 lockGlobalClipboardUntil;
 
 public:
     Clipboard();
@@ -39,6 +41,9 @@ public:
 
 private:
     void clear();
+
+signals:
+    void changed();
 };
 
 extern Clipboard *the_clipboard;

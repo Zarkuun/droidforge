@@ -105,7 +105,7 @@ private:
     void restoreBackup(const QString &backupPath);
     void createBackup();
     void removeBackup();
-    bool bringToFrontIfOpen(const QString &filePath);
+    bool bringToFrontIfOpen(const QString &filePath, bool inOthers);
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);
 #endif
@@ -113,7 +113,6 @@ private:
 
 signals:
     void patchModified();
-    void clipboardChanged();
     void selectionChanged();
     void sectionSwitched();
     void cursorMoved();

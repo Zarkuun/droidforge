@@ -18,11 +18,6 @@ void UpdateHub::switchSection()
     // Called whenever another patch section is now being selected.
     emit sectionSwitched();
 }
-void UpdateHub::changeClipboard()
-{
-    // Called when the contents of the clipboard change
-    emit clipboardChanged();
-}
 void UpdateHub::changeSelection()
 {
     // Called when the range of the selection in the PatchSectionView

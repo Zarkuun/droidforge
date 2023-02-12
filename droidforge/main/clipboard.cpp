@@ -6,11 +6,14 @@
 
 #include <QGuiApplication>
 #include <QClipboard>
+#include <QDateTime>
+
+#define CLIPBOARD_LOCK_TIME 500
 
 Clipboard *the_clipboard = 0;
 
 Clipboard::Clipboard()
-    : ignoreNextGlobalClipboardChange(false)
+    : lockGlobalClipboardUntil(0)
 {
     // Hm. This seems like a hack. The first clipboard goes global.
     // Intermediate clipboards come later and will not overwrite this.
@@ -32,16 +35,18 @@ void Clipboard::copyFromSelection(const Selection *sel, const PatchSection *sect
     const CursorPosition &to = sel->toPos();
 
     clear();
-    if (sel->isCircuitSelection())
+    if (sel->isCircuitSelection()) {
         for (int i=from.circuitNr; i<=to.circuitNr; i++) {
             circuits.append(section->circuit(i)->clone());
         }
+    }
     else {
         const Circuit *circuit = section->circuit(from.circuitNr);
 
-        if (sel->isJackSelection())
+        if (sel->isJackSelection()) {
             for (int i=from.row; i<=to.row; i++)
                 jackAssignments.append(circuit->jackAssignment(i)->clone());
+        }
 
         else if (sel->isAtomSelection()) {
             for (int i=from.column; i<=to.column; i++) {
@@ -53,7 +58,8 @@ void Clipboard::copyFromSelection(const Selection *sel, const PatchSection *sect
             comment = circuit->getComment();
     }
 
-    ignoreNextGlobalClipboardChange = true;
+    lockGlobalClipboardUntil = QDateTime::currentMSecsSinceEpoch() + CLIPBOARD_LOCK_TIME;
+    emit changed();
 }
 bool Clipboard::isEmpty() const
 {
@@ -87,8 +93,7 @@ void Clipboard::copyToGlobalClipboard() const
 }
 void Clipboard::copyFromGlobalClipboard()
 {
-    if (ignoreNextGlobalClipboardChange) {
-        ignoreNextGlobalClipboardChange = false;
+    if (lockGlobalClipboardUntil != 0 && QDateTime::currentMSecsSinceEpoch() < lockGlobalClipboardUntil) {
         return;
     }
     clear();
@@ -103,7 +108,7 @@ void Clipboard::copyFromGlobalClipboard()
     }
     catch (ParseException &e) {
     }
-
+    emit changed();
 }
 QString Clipboard::toString() const
 {

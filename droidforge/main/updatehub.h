@@ -15,7 +15,6 @@ public:
 public slots:
     void modifyPatch();
     void switchSection();
-    void changeClipboard();
     void changeSelection();
     void moveCursor();
     void changePatching();
@@ -24,7 +23,6 @@ public slots:
 signals:
     void patchModified();
     void sectionSwitched();
-    void clipboardChanged();
     void selectionChanged();
     void patchingChanged();
     void cursorMoved();
