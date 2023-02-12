@@ -45,8 +45,8 @@ QtApplication {
     ]
 
     files: [
-        "main/memoryindicator.cpp",
-        "main/memoryindicator.h",
+        "main/patchsizeindicator.cpp",
+        "main/patchsizeindicator.h",
         "main/preferencesdialog.cpp",
         "main/preferencesdialog.h",
         "main/windowlist.cpp",

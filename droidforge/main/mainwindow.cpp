@@ -34,7 +34,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     , rackView(this, &thePatch)
     , patchSectionView(this, &thePatch)
     , patchSectionManager(this, &thePatch)
-    , memoryIndicator(this, &thePatch)
+    , patchSizeIndicator(this, &thePatch)
     , cableStatusIndicator(this, &thePatch)
     , patchProblemIndicator(this, &thePatch)
     , clipboardIndicator(this)
@@ -395,7 +395,7 @@ void MainWindow::createStatusBar()
     statusbar->addPermanentWidget(statusbarIcon);
     statusbar->addPermanentWidget(statusbarText, 1);
     statusbar->addPermanentWidget(&cableStatusIndicator);
-    statusbar->addPermanentWidget(&memoryIndicator);
+    statusbar->addPermanentWidget(&patchSizeIndicator);
     statusbar->addPermanentWidget(&patchProblemIndicator);
     statusbar->addPermanentWidget(&clipboardIndicator);
     findPanel.setDisabled(true);
@@ -599,6 +599,7 @@ void MainWindow::about()
 void MainWindow::editPreferences()
 {
     PreferencesDialog::editPreferences();
+    emit patchModified(); // Update patch size usage
 }
 void MainWindow::showDiscord()
 {

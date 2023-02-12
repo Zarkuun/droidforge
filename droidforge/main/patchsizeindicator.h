@@ -1,20 +1,21 @@
-#ifndef MEMORYINDICATOR_H
-#define MEMORYINDICATOR_H
+#ifndef PATCHSIZEINDICATOR_H
+#define PATCHSIZEINDICATOR_H
 
 #include "patcheditengine.h"
 #include "patchview.h"
 
 class MainWindow;
 
-class MemoryIndicator : public QWidget, PatchView
+class PatchSizeIndicator : public QWidget, PatchView
 {
     Q_OBJECT
     MainWindow *mainWindow;
     unsigned memoryNeeded;
     unsigned memoryAvailable;
+    unsigned patchSize; // counts to MAX_DROID_INI
 
 public:
-    explicit MemoryIndicator(MainWindow *mainWindow, PatchEditEngine *patch);
+    explicit PatchSizeIndicator(MainWindow *mainWindow, PatchEditEngine *patch);
     void paintEvent(QPaintEvent *);
 
 private slots:
@@ -24,4 +25,4 @@ signals:
 
 };
 
-#endif // MEMORYINDICATOR_H
+#endif // PATCHSIZEINDICATOR_H

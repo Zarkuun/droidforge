@@ -60,6 +60,10 @@
 	  the last line of the last circuit, not to its header.
 	* New buttons "No to all" and "Yes to all" in dialog for automatically renaming
 	  cables when duplicating a section (or similar operations)
+	* The statusbar now also checks the size of the patch. There is a maximum of
+	  64,000 bytes. The status bar now either shows the RAM usage or the size
+	  usage - depending on which of both is bigger. Loading of too big patches
+	  via SD card or X7 is inhibited now.
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
@@ -76,6 +80,8 @@
 	* FIX: Fix crash when resizing the rack view a lot in a short time
 	* FIX: Make sure cursor position is always visible in parameter selection
 	  window.
+	* FIX: Avoid crash when trying to load a patch that is bigger than the allowed
+	  maximum size of 64,000 bytes.
 
 1.0:
 	New features:

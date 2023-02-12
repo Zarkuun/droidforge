@@ -297,6 +297,19 @@ void PatchOperator::saveToSD()
         return;
     }
 
+    QString compressed = patch->toCompressed();
+    if (compressed.size() > MAX_DROID_INI) {
+        QMessageBox::critical(
+                    mainWindow,
+                    tr("Your patch is too big"),
+                    tr("Your patch is %1 bytes big. There is a maximum "
+                       "of %2 bytes that the Droid can handle. Please check the compression "
+                       "options in the preferences. ").arg(compressed.size()).arg(MAX_DROID_INI),
+                    QMessageBox::Ok);
+        return;
+    }
+
+
     QDir dir(dirPath);
     QFileInfo droidIni(dir, DROID_PATCH_FILENAME);
     if (!patch->saveToFile(droidIni.absoluteFilePath(), true /* compressed */))
@@ -923,7 +936,8 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
                         reply = QMessageBox::Yes;
                     else if (noToAll)
                         reply = QMessageBox::No;
-                    else QMessageBox::question(
+                    else
+                        reply = QMessageBox::question(
                                 mainWindow,
                                 tr("Cable conflict"),
                                 tr("The internal patch cable \"%1\" is used as output both by "

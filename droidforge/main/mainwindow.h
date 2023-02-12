@@ -10,7 +10,7 @@
 #include "patcheditengine.h"
 #include "patchview.h"
 #include "clipboardindicator.h"
-#include "memoryindicator.h"
+#include "patchsizeindicator.h"
 #include "cablestatusindicator.h"
 #include "patchproblemindicator.h"
 #include "findpanel.h"
@@ -49,7 +49,7 @@ class MainWindow : public QMainWindow, PatchView
     RackView rackView;
     PatchSectionView patchSectionView;
     PatchSectionManager patchSectionManager;
-    MemoryIndicator memoryIndicator;
+    PatchSizeIndicator patchSizeIndicator;
     CableStatusIndicator cableStatusIndicator;
     PatchProblemIndicator patchProblemIndicator;
     ClipboardIndicator clipboardIndicator;

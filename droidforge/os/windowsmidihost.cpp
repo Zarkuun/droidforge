@@ -40,6 +40,8 @@ QString WindowsMIDIHost::sendPatch(const Patch *patch)
         return TR("Could not open X7 MIDI device");
 
     unsigned length = prepareSysexMessage(patch);
+    if (length == 0)
+        return TR("You have exceeded the maximum allowed patch size.");
     MIDIHDR midiHdr;
 
     midiHdr.lpData = (char *)sysexData();

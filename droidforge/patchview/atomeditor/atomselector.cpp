@@ -64,7 +64,7 @@ AtomSelector::AtomSelector(jacktype_t jacktype, QWidget *parent)
     scrollArea = new QScrollArea();
     scrollArea->setWidget(labelDescription);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFocusPolicy(Qt::NoFocus);
     mainLayout->addWidget(scrollArea);
