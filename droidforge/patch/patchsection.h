@@ -78,6 +78,7 @@ public:
     void setAtomAt(const CursorPosition &pos, Atom *atom);
     bool isEmpty() const { return circuits.size() == 0; };
     Circuit *circuit(int n) { return circuits[n]; };
+    const Circuit *lastCircuit() const { return circuits.last(); };
     unsigned numCircuits() const { return circuits.count(); };
     const Circuit *circuit(int n) const { return circuits[n]; };
     const QList<Circuit *> &getCircuits() const { return circuits; };

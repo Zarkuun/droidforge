@@ -67,6 +67,8 @@
 	* The shortcut for "circuit manual" and "user manual" have been changed to
 	  Command+T and Command+shift+T, since Command+M now minimizes the Window
 	  "Mac standard"
+	* The "End" key now really goes to the end of the current section, i.e. to
+	  the last line of the last circuit, not to its header.
 
 1.0:
 	New features:

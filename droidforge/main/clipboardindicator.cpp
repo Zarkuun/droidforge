@@ -64,7 +64,6 @@ void ClipboardIndicator::mousePressEvent(QMouseEvent *event)
 
 void ClipboardIndicator::changeClipboard()
 {
-    shout << this << "changeClipboard()" << the_clipboard->isEmpty();
     if (the_clipboard->isEmpty())
         setVisible(false);
     else

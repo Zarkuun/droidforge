@@ -1579,8 +1579,17 @@ void PatchSectionView::moveCursorHome()
 }
 void PatchSectionView::moveCursorEnd()
 {
-    if (!section()->isEmpty())
-        section()->setCursor(CursorPosition(section()->numCircuits()-1, ROW_CIRCUIT, 0));
+    if (!section()->isEmpty()) {
+        int row;
+        const Circuit *circuit = section()->lastCircuit();
+        if (circuit->numJackAssignments() > 0)
+            row = circuit->numJackAssignments() - 1;
+        else if (circuit->hasComment())
+            row = ROW_COMMENT;
+        else
+            row = ROW_CIRCUIT;
+        section()->setCursor(CursorPosition(section()->numCircuits()-1, row, 0));
+    }
     emit cursorMoved();
 }
 void PatchSectionView::deleteCursorOrSelection()
