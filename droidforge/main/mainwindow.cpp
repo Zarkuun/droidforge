@@ -135,6 +135,10 @@ QString MainWindow::patchName() const
         name = tr("(untitled)");
     return name;
 }
+const QString &MainWindow::getFilePath() const
+{
+    return patch->getFilePath();
+}
 void MainWindow::bringToFront()
 {
     raise();

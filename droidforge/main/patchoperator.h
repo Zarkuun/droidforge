@@ -55,6 +55,7 @@ private slots:
     void newPatch();
     void newPatchWithSameRack();
     void open();
+    void openRecentFile(const QString filePath);
     void openInNewWindow();
     void newWindow();
     void newWindowWithSameRack();
@@ -104,6 +105,7 @@ private:
     void restoreBackup(const QString &backupPath);
     void createBackup();
     void removeBackup();
+    bool bringToFrontIfOpen(const QString &filePath);
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);
 #endif

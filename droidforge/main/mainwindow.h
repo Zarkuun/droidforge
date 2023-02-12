@@ -83,6 +83,7 @@ public:
     ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };
     UpdateHub *theHub() { return &updateHub; };
     QString patchName() const;
+    const QString &getFilePath() const;
     void bringToFront();
 
 protected:

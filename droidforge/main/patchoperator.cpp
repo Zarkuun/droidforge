@@ -217,7 +217,7 @@ void PatchOperator::createRecentFileActions(QMenu *menu)
             QAction *action = new QAction(title, this);
             delete patch;
             QString path = fi.absoluteFilePath();
-            connect(action, &QAction::triggered, this, [this, path]() { this->loadFile(path, FILE_MODE_LOAD); });
+            connect(action, &QAction::triggered, this, [this, path]() { this->openRecentFile(path); });
             menu->addAction(action);
         }
     }
@@ -374,6 +374,17 @@ QString PatchOperator::sdCardDir() const
     }
     return "";
 }
+bool PatchOperator::bringToFrontIfOpen(const QString &filePath)
+{
+    MainWindow *otherWindow = the_windowlist->windowWithFile(filePath);
+    if (otherWindow && otherWindow != mainWindow) {
+        otherWindow->bringToFront();
+        return true;
+    }
+    else
+        return false;
+
+}
 bool PatchOperator::isDroidVolume(const QString &rootPath) const
 {
     QDir dir(rootPath);
@@ -492,16 +503,20 @@ void PatchOperator::open()
     QString filePath = QFileDialog::getOpenFileName(
                 mainWindow, "", "", "DROID patches (*.ini)");
 
-    if (!filePath.isEmpty()) {
+    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath))
         loadFile(filePath, FILE_MODE_LOAD);
-    }
+}
+void PatchOperator::openRecentFile(const QString filePath)
+{
+    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath))
+        loadFile(filePath, FILE_MODE_LOAD);
 }
 void PatchOperator::openInNewWindow()
 {
     QString filePath = QFileDialog::getOpenFileName(
                 mainWindow, "", "", "DROID patches (*.ini)");
 
-    if (!filePath.isEmpty()) {
+    if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath)) {
         MainWindow *newWindow = new MainWindow(filePath);
         newWindow->show();
     }
@@ -590,6 +605,15 @@ void PatchOperator::saveAs()
                 patch->getFilePath(),
                 tr("DROID patch files (*.ini)"));
     if (!newFilePath.isEmpty()) {
+        MainWindow *otherWindow = the_windowlist->windowWithFile(newFilePath);
+        if (otherWindow && otherWindow != mainWindow) {
+            QMessageBox::warning(
+                        mainWindow,
+                        tr("Error"),
+                        tr("This file is already open in another window."));
+            otherWindow->bringToFront();
+            return;
+        }
         if (saveAndCheck(newFilePath))
             addToRecentFiles(newFilePath);
         the_windowlist->update();

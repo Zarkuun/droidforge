@@ -1,6 +1,7 @@
 #include "windowlist.h"
 #include "globals.h"
 #include "mainwindow.h"
+#include "tuning.h"
 
 WindowList *the_windowlist = 0;
 
@@ -41,7 +42,6 @@ MainWindow *WindowList::nextWindow(const MainWindow *window)
     else
         return windows[index+1];
 }
-
 MainWindow *WindowList::previousWindow(const MainWindow *window)
 {
     int index = windows.indexOf(window);
@@ -52,19 +52,29 @@ MainWindow *WindowList::previousWindow(const MainWindow *window)
     else
         return windows[index-1];
 }
-
 QPoint WindowList::newPosition() const
 {
     int xMax = 0;
     int yMax = 0;
     for (auto window: windows) {
-        shout << "Fenster bei" << window->pos();
         xMax = qMax(xMax, window->pos().x());
         yMax = qMax(yMax, window->pos().y());
     }
-#define WINDOW_X_DISPLACEMENT 30
-#define WINDOW_Y_DISPLACEMENT 10
     return QPoint(xMax + WINDOW_X_DISPLACEMENT,
                   yMax + WINDOW_Y_DISPLACEMENT);
+}
 
+MainWindow *WindowList::windowWithFile(const QString &filePath)
+{
+    QFileInfo info(filePath);
+    QString absolute = info.absoluteFilePath();
+    for (auto window: windows) {
+        QString p = window->getFilePath();
+        if (p != "") {
+            QFileInfo winfo(p);
+            if (winfo.absoluteFilePath() == absolute)
+                return window;
+        }
+    }
+    return 0;
 }

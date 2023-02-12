@@ -23,6 +23,7 @@ public:
     MainWindow *previousWindow(const MainWindow *window);
     int count() const { return windows.count(); };
     QPoint newPosition() const;
+    MainWindow *windowWithFile(const QString &filePath);
 
 signals:
     void changed();

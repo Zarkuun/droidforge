@@ -40,6 +40,8 @@
 // Main window
 #define MAIN_WIDTH                           1000
 #define MAIN_HEIGHT                          1000
+#define WINDOW_X_DISPLACEMENT                40
+#define WINDOW_Y_DISPLACEMENT                15
 
 // Standard for all dialogs
 #define STANDARD_SPACING                     10
