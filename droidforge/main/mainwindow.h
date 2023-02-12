@@ -82,7 +82,7 @@ public:
     EditorActions *theActions() { return &editorActions; };
     ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };
     UpdateHub *theHub() { return &updateHub; };
-    QString patchName() const;
+    QString patchTitle() const;
     const QString &getFilePath() const;
     void bringToFront();
 

@@ -127,13 +127,18 @@ void MainWindow::setStatusbarText(QString text)
 {
     statusbarText->setText(text);
 }
-QString MainWindow::patchName() const
+QString MainWindow::patchTitle() const
 {
-    QFileInfo fi(patch->getFilePath());
-    QString name = fi.baseName();
-    if (name == "")
-        name = tr("(untitled)");
-    return name;
+    QString title = patch->getTitle();
+    if (title != "")
+        return title;
+    else {
+        QString filepath = patch->getFilePath();
+        if (filepath != "")
+            return QFileInfo(filepath).baseName();
+        else
+            return tr("untitled");
+    }
 }
 const QString &MainWindow::getFilePath() const
 {
@@ -147,7 +152,7 @@ void MainWindow::bringToFront()
 }
 void MainWindow::modifyPatch()
 {
-    QString title = patchName() + " - " + APPLICATION_NAME;
+    QString title = patchTitle() + " - " + APPLICATION_NAME;
     if (patch->isModified())
         title += tr(" (modified)");
     setWindowTitle(title);
