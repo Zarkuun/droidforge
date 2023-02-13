@@ -28,6 +28,7 @@
 #include <QLabel>
 
 class PatchEditEngine;
+class StatusDump;
 
 class MainWindow;
 extern DroidFirmware *the_firmware;
@@ -70,8 +71,9 @@ class MainWindow : public QMainWindow, PatchView
     QString filePath; // of loaded patch
     QSplitter *rackSplitter;
     QSplitter *sectionSplitter;
-
     QToolBar *toolbar;
+
+    const StatusDump *currentStatusDump;
 
 public:
     MainWindow(QString initialFilename, const Patch *initialRack=0);
@@ -80,6 +82,8 @@ public:
     bool searchActive() const;
     void setStatusbarText(QString text);
     void addStatusDumpsMenu(QMenu *menu);
+    const StatusDump *statusDump() { return currentStatusDump; };
+    void showStatusDump(const StatusDump *dump);
     PatchOperator *theOperator() { return &patchOperator; };
     EditorActions *theActions() { return &editorActions; };
     ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };
@@ -109,6 +113,7 @@ private:
     void createStatusBar();
     void updateStatusbarMessage();
     void rackZoom(int whence);
+
 
 private slots:
     void updateWindowMenu();

@@ -9,6 +9,7 @@
 #include "cablecolorizer.h"
 #include "patchoperator.h"
 #include "mainwindow.h"
+#include "atomcable.h"
 
 #include <QPainter>
 #include <QFontMetrics>
@@ -235,12 +236,20 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
         ghostPlug = ghostPlug.mirrored(true, false);
 
     if (atom) {
+        bool showDumpValue = false;
+        double dumpValue = 0.0;
         if (isPatchingFromHere)
             painter->drawImage(imageRect, ghostPlug);
         else {
             QString text(tr(atom->toDisplay().toLatin1()));
             if (atom->isCable()) {
                 text = text.mid(1);
+                AtomCable *cable = (AtomCable *)atom;
+                const StatusDump *dump = mainWindow->statusDump();
+                if (dump && dump->hasCable(cable->getCable())) {
+                    showDumpValue = true;
+                    dumpValue = dump->valueOfCable(cable->getCable());
+                }
                 QImage image = *the_cable_colorizer->imageForCable(text);
                 if (circuit->isDisabled())
                     image = *the_cable_colorizer->ghostPlug();
@@ -252,7 +261,25 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 r = r.translated(imageWidth + STANDARD_SPACING, 0);
                 r.setWidth(r.width() - imageWidth - STANDARD_SPACING);
             }
+            else if (atom->isRegister()) {
+                QString name = atom->toString();
+                const StatusDump *dump = mainWindow->statusDump();
+                if (dump && dump->hasRegister(name)) {
+                    showDumpValue = true;
+                    dumpValue = dump->valueOfRegister(name);
+                }
+            }
             painter->drawText(r, Qt::AlignVCenter, text);
+            if (showDumpValue) {
+                painter->fillRect(rect, COLOR(CIRV_STATUS_DUMP_BACKGROUND));
+                QRectF numberRect(
+                            rect.left(),
+                            rect.y(),
+                            rect.width() - CIRV_TEXT_SIDE_PADDING,
+                            rect.height());
+                painter->setPen(COLOR(CIRV_STATUS_DUMP_TEXT));
+                painter->drawText(numberRect, Qt::AlignVCenter | Qt::AlignRight, QString::number(dumpValue));
+            }
         }
     }
     else if (isPatchingFromHere)

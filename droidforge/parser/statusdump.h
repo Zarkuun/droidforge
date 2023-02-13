@@ -11,6 +11,10 @@ class StatusDump
 
 public:
     StatusDump(const QString &filePath);
+    bool hasCable(const QString &name) const;
+    bool hasRegister(const QString &name) const;
+    double valueOfCable(const QString &name) const;
+    double valueOfRegister(const QString &name) const;
 
 private:
     void parse(const QStringList &lines);

@@ -82,10 +82,22 @@ StatusDump::StatusDump(const QString &filePath)
     inputFile.close();
     parse(lines);
 }
-
-bool StatusDump::hasCable(const QString &name)
+bool StatusDump::hasCable(const QString &name) const
 {
+    return cables.contains(name);
+}
+bool StatusDump::hasRegister(const QString &name) const
+{
+    return registers.contains(name);
 
+}
+double StatusDump::valueOfCable(const QString &name) const
+{
+    return cables[name];
+}
+double StatusDump::valueOfRegister(const QString &name) const
+{
+    return registers[name];
 }
 void StatusDump::parse(const QStringList &lines)
 {

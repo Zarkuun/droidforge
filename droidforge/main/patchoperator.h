@@ -61,8 +61,8 @@ private slots:
     void upload();
     void saveToSD();
     void loadStatusDumps();
-    void showStatusDump(int nr);
     void newPatch();
+    void showStatusDump(int nr);
     void newPatchWithSameRack();
     void open();
     void openRecentFile(const QString filePath);

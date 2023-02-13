@@ -96,6 +96,12 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Circuits: + and * background"), list);
     item->setData(1, CIRV_COLOR_OPERATOR_BG);
 
+    item = new QListWidgetItem(tr("Circuits: status dump background"), list);
+    item->setData(1, CIRV_STATUS_DUMP_BACKGROUND);
+
+    item = new QListWidgetItem(tr("Circuits: status dump color"), list);
+    item->setData(1, CIRV_STATUS_DUMP_TEXT);
+
     item = new QListWidgetItem(tr("Circuits: Selection"), list);
     item->setData(1, CIRV_COLOR_SELECTION);
 

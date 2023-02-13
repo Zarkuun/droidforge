@@ -132,6 +132,12 @@ void MainWindow::addStatusDumpsMenu(QMenu *menu)
 {
     fileMenu->addMenu(menu);
 }
+void MainWindow::showStatusDump(const StatusDump *dump)
+{
+    shoutfunc << dump;
+    currentStatusDump = dump;
+    emit patchModified();
+}
 QString MainWindow::patchTitle() const
 {
     QString title = patch->getTitle();

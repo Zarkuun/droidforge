@@ -388,11 +388,11 @@ void PatchOperator::createStatusDumpsMenu()
 }
 void PatchOperator::loadStatusDumps()
 {
-    shoutfunc;
     if (!dumpsMenu)
         createStatusDumpsMenu();
 
     statusDumps.clear();
+    mainWindow->showStatusDump(0); // avoid crash
     dumpsMenu->clear();
     for (int nr=1; nr<MAX_DUMP_FILE_NUMBER; nr++) {
         QFileInfo statusFile = QFileInfo(sdCardDir(), QString(STATUS_DUMP_FILENAME).arg(nr));
@@ -412,20 +412,24 @@ void PatchOperator::loadStatusDumps()
             }
             QString title = QString::number(nr) + " " + path; // Dump title
             QAction *action = new QAction(title, this);
-            connect(action, &QAction::triggered, this, [this, nr]() { this->showStatusDump(nr); });
+            connect(action, &QAction::triggered, this, [this, nr]() { this->showStatusDump(nr-1); });
             dumpsMenu->addAction(action);
         }
         else
             break;
     }
     QAction *action = new QAction(tr("Hide status dumps"), this);
-    connect(action, &QAction::triggered, this, [this]() { this->showStatusDump(0); });
+    connect(action, &QAction::triggered, this, [this]() { this->mainWindow->showStatusDump(0); });
     dumpsMenu->addSeparator();
     dumpsMenu->addAction(action);
+    showStatusDump(0); // immediately switch to latest loaded dump
 }
 void PatchOperator::showStatusDump(int nr)
 {
-   shoutfunc;
+    if (nr >= 0 && nr < statusDumps.count())
+        mainWindow->showStatusDump(&statusDumps[nr]);
+    else
+        mainWindow->showStatusDump(0);
 }
 QString PatchOperator::sdCardDir() const
 {
