@@ -128,6 +128,10 @@ void MainWindow::setStatusbarText(QString text)
 {
     statusbarText->setText(text);
 }
+void MainWindow::addStatusDumpsMenu(QMenu *menu)
+{
+    fileMenu->addMenu(menu);
+}
 QString MainWindow::patchTitle() const
 {
     QString title = patch->getTitle();
@@ -219,43 +223,44 @@ void MainWindow::createMenus()
 }
 void MainWindow::createFileMenu()
 {
-    QMenu *menu = menuBar()->addMenu(tr("&File"));
+    fileMenu = menuBar()->addMenu(tr("&File"));
 
-    ADD_ACTION(ACTION_NEW, menu);
-    ADD_ACTION(ACTION_NEW_WITH_SAME_RACK, menu);
+    ADD_ACTION(ACTION_NEW, fileMenu);
+    ADD_ACTION(ACTION_NEW_WITH_SAME_RACK, fileMenu);
 
-    ADD_ACTION(ACTION_OPEN, menu);
-    recentFilesMenu = menu->addMenu(tr("Open &recent patch"));
+    ADD_ACTION(ACTION_OPEN, fileMenu);
+    recentFilesMenu = fileMenu->addMenu(tr("Open &recent patch"));
     patchOperator.createRecentFileActions(recentFilesMenu);
 
-    menu->addSeparator();
+    fileMenu->addSeparator();
 
-    ADD_ACTION(ACTION_INTEGRATE_PATCH, menu);
+    ADD_ACTION(ACTION_INTEGRATE_PATCH, fileMenu);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
-    ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, menu);
+    ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, fileMenu);
     #endif
 
-    ADD_ACTION(ACTION_SAVE, menu);
-    ADD_ACTION(ACTION_SAVE_AS, menu);
-    ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
-    ADD_ACTION(ACTION_CLOSE_WINDOW, menu);
+    ADD_ACTION(ACTION_SAVE, fileMenu);
+    ADD_ACTION(ACTION_SAVE_AS, fileMenu);
+    ADD_ACTION(ACTION_EXPORT_SELECTION, fileMenu);
+    ADD_ACTION(ACTION_CLOSE_WINDOW, fileMenu);
 
-    menu->addSeparator();
+    fileMenu->addSeparator();
 
-    ADD_ACTION(ACTION_PATCH_PROPERTIES, menu);
-    ADD_ACTION(ACTION_PREFERENCES, menu);
-    ADD_ACTION(ACTION_EDIT_PATCH_SOURCE, menu);
-    ADD_ACTION(ACTION_BARE_PATCH_SOURCE, menu);
+    ADD_ACTION(ACTION_PATCH_PROPERTIES, fileMenu);
+    ADD_ACTION(ACTION_PREFERENCES, fileMenu);
+    ADD_ACTION(ACTION_EDIT_PATCH_SOURCE, fileMenu);
+    ADD_ACTION(ACTION_BARE_PATCH_SOURCE, fileMenu);
     if (the_colorscheme->isDevelopment())
-        ADD_ACTION(ACTION_CONFIGURE_COLORS, menu);
+        ADD_ACTION(ACTION_CONFIGURE_COLORS, fileMenu);
 
-    menu->addSeparator();
+    fileMenu->addSeparator();
 
-    ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, menu);
-    ADD_ACTION(ACTION_UPLOAD_TO_DROID, menu);
-    ADD_ACTION(ACTION_SAVE_TO_SD, menu);
-    ADD_ACTION(ACTION_CLEAR_SETTINGS, menu);
-    ADD_ACTION(ACTION_QUIT, menu);
+    ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, fileMenu);
+    ADD_ACTION(ACTION_UPLOAD_TO_DROID, fileMenu);
+    ADD_ACTION(ACTION_SAVE_TO_SD, fileMenu);
+    ADD_ACTION(ACTION_CLEAR_SETTINGS, fileMenu);
+    ADD_ACTION(ACTION_LOAD_STATUS_DUMP, fileMenu);
+    ADD_ACTION(ACTION_QUIT, fileMenu);
 }
 void MainWindow::createEditMenu()
 {

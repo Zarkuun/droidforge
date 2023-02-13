@@ -67,6 +67,8 @@ QtApplication {
         "main/dragsectionindicator.h",
         "main/editoractions.cpp",
         "main/editoractions.h",
+        "parser/statusdump.cpp",
+        "parser/statusdump.h",
         "patchview/findpanel.cpp",
         "patchview/findpanel.h",
         "patchview/rewritecablesdialog.cpp",

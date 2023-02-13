@@ -14,6 +14,8 @@
 
 #define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors_%1.h"
 #define DROID_PATCH_FILENAME                 "droid.ini"
+#define STATUS_DUMP_FILENAME                 "STATES%1.TXT"
+#define MAX_DUMP_FILE_NUMBER                 99 // from Droid:tuning.h
 #define SHOP_PRODUCTS_URL                    "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"
 #define SECTION_DEFAULT_NAME                 TR("Untitled section")

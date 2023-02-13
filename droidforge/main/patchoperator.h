@@ -16,6 +16,9 @@
 
 #include <QObject>
 #include <QFileInfo>
+#include <QMenu>
+
+#include "statusdump.h"
 
 class MainWindow;
 
@@ -27,17 +30,22 @@ class PatchOperator : public QObject
     PatchEditEngine *patch;
     PatchParser parser;
     bool sdCardPresent;
+    bool statusDumpPresent;
     bool x7Present;
     OurMIDIHost midiHost;
     QMenu *recentFilesMenu;
+    QList<StatusDump> statusDumps;
+    QMenu *dumpsMenu;
 
 public:
     explicit PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename, const Patch *initialRack=0);
     void createRecentFileActions(QMenu *menu);
+    void createStatusDumpsMenu();
     void loadFile(const QString &filename, int how);
     void jumpTo(int sectionIndex, const CursorPosition &pos);
     void clearSelection();
     bool droidSDCardPresent() const { return sdCardPresent; };
+    bool droidStatusDumpPresent() const { return statusDumpPresent; };
     bool droidX7Present() const { return x7Present; };
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
     bool isPatching() const { return patch->isPatching(); };
@@ -52,6 +60,8 @@ private slots:
     void abortAllActions();
     void upload();
     void saveToSD();
+    void loadStatusDumps();
+    void showStatusDump(int nr);
     void newPatch();
     void newPatchWithSameRack();
     void open();

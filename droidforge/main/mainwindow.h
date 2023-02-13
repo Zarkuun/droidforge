@@ -63,6 +63,7 @@ class MainWindow : public QMainWindow, PatchView
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
     QMenuBar *menubar;
+    QMenu *fileMenu;
     QMenu *recentFilesMenu;
     QMenu *windowMenu;
     QString initialFilename;
@@ -78,6 +79,7 @@ public:
     // TODO: This is so sick
     bool searchActive() const;
     void setStatusbarText(QString text);
+    void addStatusDumpsMenu(QMenu *menu);
     PatchOperator *theOperator() { return &patchOperator; };
     EditorActions *theActions() { return &editorActions; };
     ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };

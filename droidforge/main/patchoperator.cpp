@@ -98,13 +98,16 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     : mainWindow(mainWindow)
     , patch(patch)
     , sdCardPresent(false)
+    , statusDumpPresent(false)
     , x7Present(false)
+    , dumpsMenu(0)
 {
     CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
     CONNECT_ACTION(ACTION_CLOSE_WINDOW, &PatchOperator::close);
     CONNECT_ACTION(ACTION_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_SAVE_TO_SD, &PatchOperator::saveToSD);
+    CONNECT_ACTION(ACTION_LOAD_STATUS_DUMP, &PatchOperator::loadStatusDumps);
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_NEW_WITH_SAME_RACK, &PatchOperator::newPatchWithSameRack);
@@ -326,6 +329,7 @@ void PatchOperator::saveToSD()
     if (ejectSDWindows(dir.absolutePath().mid(0, 1)))
     {
         sdCardPresent = false;
+        statusDumpPresent = false;
         emit droidStateChanged();
     }
     else {
@@ -372,9 +376,46 @@ void PatchOperator::saveToSD()
     else {
         // QString all = process.readAll();
         sdCardPresent = false;
+        statusDumpPresent = false;
         emit droidStateChanged();
     }
 #endif
+}
+void PatchOperator::createStatusDumpsMenu()
+{
+     dumpsMenu = new QMenu(tr("Show status dump"));
+     mainWindow->addStatusDumpsMenu(dumpsMenu);
+}
+void PatchOperator::loadStatusDumps()
+{
+    shoutfunc;
+    if (!dumpsMenu)
+        createStatusDumpsMenu();
+
+    statusDumps.clear();
+    dumpsMenu->clear();
+    for (int nr=1; nr<MAX_DUMP_FILE_NUMBER; nr++) {
+        QFileInfo statusFile = QFileInfo(sdCardDir(), QString(STATUS_DUMP_FILENAME).arg(nr));
+        if (statusFile.isFile()) {
+            QString path = statusFile.absoluteFilePath();
+            statusDumps.append(StatusDump(path));
+            QString title = QString::number(nr) + " " + path; // Dump title
+            QAction *action = new QAction(title, this);
+            connect(action, &QAction::triggered, this, [this, nr]() { this->showStatusDump(nr); });
+            dumpsMenu->addAction(action);
+        }
+        else
+            break;
+    }
+    QAction *action = new QAction(tr("Hide status dumps"), this);
+    connect(action, &QAction::triggered, this, [this]() { this->showStatusDump(0); });
+    dumpsMenu->addSeparator();
+    dumpsMenu->addAction(action);
+}
+
+void PatchOperator::showStatusDump(int nr)
+{
+   shoutfunc;
 }
 QString PatchOperator::sdCardDir() const
 {
@@ -406,9 +447,16 @@ bool PatchOperator::isDroidVolume(const QString &rootPath) const
 void PatchOperator::updateSDAndX7State()
 {
     bool oldSDState = sdCardPresent;
+    bool oldStatusState = statusDumpPresent;
     sdCardPresent = sdCardDir() != "";
+    if (sdCardPresent) {
+        QFileInfo statusFile = QFileInfo(sdCardDir(), QString(STATUS_DUMP_FILENAME).arg(1));
+        statusDumpPresent = statusFile.isFile();
+    }
+    else
+        statusDumpPresent = false;
 
-    if (oldSDState != sdCardPresent) {
+    if (oldSDState != sdCardPresent || oldStatusState != statusDumpPresent) {
         emit droidStateChanged();
         return;
     }
