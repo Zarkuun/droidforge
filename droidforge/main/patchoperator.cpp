@@ -398,7 +398,18 @@ void PatchOperator::loadStatusDumps()
         QFileInfo statusFile = QFileInfo(sdCardDir(), QString(STATUS_DUMP_FILENAME).arg(nr));
         if (statusFile.isFile()) {
             QString path = statusFile.absoluteFilePath();
-            statusDumps.append(StatusDump(path));
+            try {
+                statusDumps.append(StatusDump(path));
+            }
+            catch (ParseException &e) {
+                QMessageBox::critical(
+                            mainWindow,
+                            tr("Could not load status dump"),
+                            tr("An error occurred while loading the status dump file %1:\n\n%2")
+                            .arg(path).arg(e.toString()),
+                            QMessageBox::Ok);
+                break;
+            }
             QString title = QString::number(nr) + " " + path; // Dump title
             QAction *action = new QAction(title, this);
             connect(action, &QAction::triggered, this, [this, nr]() { this->showStatusDump(nr); });
@@ -412,7 +423,6 @@ void PatchOperator::loadStatusDumps()
     dumpsMenu->addSeparator();
     dumpsMenu->addAction(action);
 }
-
 void PatchOperator::showStatusDump(int nr)
 {
    shoutfunc;
