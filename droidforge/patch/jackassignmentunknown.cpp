@@ -1,6 +1,7 @@
 #include "jackassignmentunknown.h"
 
 #include <QCoreApplication>
+#include <QSettings>
 
 #define tr(s) QCoreApplication::translate("Patch", s)
 
@@ -50,7 +51,9 @@ void JackAssignmentUnknown::parseExpression(const QString &expression)
 QList<PatchProblem *> JackAssignmentUnknown::collectProblems(const Patch *) const
 {
     QList<PatchProblem *>problems;
-    problems.append(new PatchProblem(-1, 0, tr("Unknown parameter '%1' in this circuit'").arg(jackName())));
+    QSettings settings;
+    if (!settings.value("loading/ignore_unknown_jacks", false).toBool())
+        problems.append(new PatchProblem(-1, 0, tr("Unknown parameter '%1' in this circuit'").arg(jackName())));
     return problems;
 }
 

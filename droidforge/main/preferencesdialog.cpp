@@ -15,7 +15,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     QVBoxLayout *compressBoxLayout = new QVBoxLayout(compressBox);
     compressBoxLayout->addWidget(checkboxRemoveEmptyLines);
     compressBoxLayout->addWidget(checkboxRenameCables);
-    compressBox->setLayout(compressBoxLayout);
+
+    QGroupBox *loadingOfPatches = new QGroupBox(tr("Loading of patches"));
+    checkboxIgnoreUnknownJacks = new QCheckBox(tr("Do not treat unknown parameters as errors"));
+    QVBoxLayout *loadingOfPatchesLayout = new QVBoxLayout(loadingOfPatches);
+    loadingOfPatchesLayout->addWidget(checkboxIgnoreUnknownJacks);
 
     // Buttons with OK/Cancel
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -26,6 +30,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     setLayout(mainLayout);
 
     mainLayout->addWidget(compressBox);
+    mainLayout->addWidget(loadingOfPatches);
     mainLayout->addWidget(buttonBox);
 }
 void PreferencesDialog::loadSettings()
@@ -33,12 +38,15 @@ void PreferencesDialog::loadSettings()
     QSettings settings;
     checkboxRenameCables->setChecked(settings.value("compression/rename_cables", false).toBool());
     checkboxRemoveEmptyLines->setChecked(settings.value("compression/remove_empty_lines", false).toBool());
+    checkboxIgnoreUnknownJacks->setChecked(settings.value("loading/ignore_unknown_jacks", false).toBool());
+
 }
 void PreferencesDialog::saveSettings() const
 {
     QSettings settings;
     settings.setValue("compression/rename_cables", checkboxRenameCables->isChecked());
     settings.setValue("compression/remove_empty_lines", checkboxRemoveEmptyLines->isChecked());
+    settings.setValue("loading/ignore_unknown_jacks", checkboxIgnoreUnknownJacks->isChecked());
 }
 void PreferencesDialog::editPreferences()
 {

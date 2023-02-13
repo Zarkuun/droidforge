@@ -942,6 +942,8 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_PASTE_SMART, menu);
         ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
         ADD_ACTION(ACTION_SORT_JACKS, menu);
+        menu->addSeparator();
+        ADD_ACTION(ACTION_REWRITE_CABLE_NAMES, menu);
     }
 
     else {

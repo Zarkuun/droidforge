@@ -12,6 +12,7 @@ class PreferencesDialog : public Dialog
 
     QCheckBox *checkboxRemoveEmptyLines;
     QCheckBox *checkboxRenameCables;
+    QCheckBox *checkboxIgnoreUnknownJacks;
 
 public:
     static void editPreferences();
