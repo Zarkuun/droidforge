@@ -163,6 +163,7 @@ void MainWindow::bringToFront()
 }
 void MainWindow::hideFindPanel()
 {
+    findPanel.setDisabled(true);
     findPanel.hide();
 }
 void MainWindow::modifyPatch()
