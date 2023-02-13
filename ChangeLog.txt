@@ -8,6 +8,10 @@
 	* There is now a search function, finally! Command-F (or the menu entry)
 	  starts it. You can search for all that makes up a patch, including
 	  circuit names, circuit comments, parameters, cables, registers and numbers.
+	* New function for doing a search & replace in all cable names (or all
+	  in the current selection if there is one). You can for example copy
+	  a complete section, do "select all" there, and then rename e.g. "VOICE1"
+	  to "VOICE2" in all cables.
 	* You can now set a bookmark at your current cursor position in the patch
 	  with Command+Shift+J. Later you can jump back to that position by pressing
 	  Cmd+J (J stands for "jump"). You can have just one bookmark, setting
@@ -15,10 +19,6 @@
 	  you in a situation where you need to find a different position in
 	  your patch for copying or viewing something and than coming back to where
 	  you were.
-	* New function for doing a search & replace in all cable names (or all
-	  in the current selection if there is one). You can for example copy
-	  a complete section, do "select all" there, and then rename e.g. "VOICE1"
-	  to "VOICE2" in all cables.
 	* New "Text mode" view option. In this mode all decorations, icons, lines,
 	  etc are omitted from the patch view, the font is monospaced and everything
 	  looks much like a raw Droid patch. The whole way you edit the patch is
@@ -36,12 +36,19 @@
 	  cables to short things like _A, _B when deploying reduces the patch size
 	  (There is a maximum patch size of 64k).
 	* New action for copying a controller with or without its labels
-	* Shortcut Command+M for minimizing a Forge window (Mac standard)
 	* In list of patch cables in value editor the entered name is now a search
 	  filter for the list of cables. That makes it much faster to find an
 	  existing cable.
+	* New action for loading a status dump from your SD card. Such a dump
+	  is created with a double click on the master's button. It contains the
+	  current values of all registers and internal cables. The Forge can now
+	  load such a file and display the values in the patch. If you are working
+	  with the X7, put the lever to the left for getting access to the SD
+	  card and the status file on it without removing the SD card manually.
 
 	Clean ups:
+	* Shortcut Command+M for minimizing a Forge window (Mac standard) (manual is now
+	  Command+T)
 	* Make white label areas wider, so that more text fits in (suggested by
 	  @Second_Breakfast)
 	* Rename "recent files" to "recent patches"
