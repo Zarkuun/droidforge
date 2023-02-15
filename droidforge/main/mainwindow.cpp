@@ -39,6 +39,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     , patchProblemIndicator(this, &thePatch)
     , clipboardIndicator(this)
     , moduleBuilder(this)
+    , currentStatusDump(0)
 {
     setWindowTitle(APPLICATION_NAME);
     QIcon appIcon(":droidforge.icns");
