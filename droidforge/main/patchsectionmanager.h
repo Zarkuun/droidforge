@@ -42,6 +42,7 @@ private:
     int clickedSectionIndex(QMouseEvent *event);
     int snapSectionInsertPosition(int fromIndex, float y, float *insertSnap) const;
     void newSectionAtIndex(int index);
+    void duplicateSection(bool smartly);
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -56,7 +57,8 @@ public slots:
 
     void renameSection();
     void deleteSection();
-    void duplicateSection();
+    void duplicateSectionDumb();
+    void duplicateSectionSmartly();
     void mergeWithPreviousSection();
     void mergeWithNextSection();
     void newSectionAfterCurrent();

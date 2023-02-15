@@ -274,6 +274,8 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 }
 void PatchOperator::upload()
 {
+    shoutfunc;
+
     if (patch->isModified())
         save();
 
@@ -993,6 +995,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
                     rename = false;
 
                 else if (asOutput && ontoAsOutput) {
+                    shout << "CABLE:" << cable << "yestoall" << yesToAll << "notoall" << noToAll;
                     int reply;
                     if (yesToAll)
                         reply = QMessageBox::Yes;

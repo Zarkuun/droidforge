@@ -83,7 +83,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_CUT, &PatchSectionView::cut);
     CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
-    CONNECT_ACTION(ACTION_PASTE_SMART, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_PASTE_SMARTLY, &PatchSectionView::pasteSmart);
     CONNECT_ACTION(ACTION_EXPAND_ARRAY, &PatchSectionView::expandArray);
     CONNECT_ACTION(ACTION_EXPAND_ARRAY_MAX, &PatchSectionView::expandArrayMax);
     CONNECT_ACTION(ACTION_ADD_MISSING_JACKS, &PatchSectionView::addMissingJacks);
@@ -237,7 +237,7 @@ void PatchSectionView::editJackCommentAt(const CursorPosition &pos)
         return;
 
     QString oldComment = ja->getComment();
-    QString newComment = NameChooseDialog::getName(tr("Edit info of this parameter"), tr("Info:"), oldComment);
+    QString newComment = NameChooseDialog::getReName(tr("Edit info of this parameter"), tr("Info:"), oldComment);
     if (newComment != oldComment) {
         ja->setComment(newComment);
         patch->commit(tr("changing info of parameter '%1'").arg(ja->jackName()));
@@ -259,7 +259,7 @@ void PatchSectionView::editLabel()
 
     RegisterLabel label = patch->registerLabel(lr);
     QString oldName = label.shorthand;
-    QString newName = NameChooseDialog::getName(
+    QString newName = NameChooseDialog::getReName(
                 tr("Edit label for register '%1'").arg(atom->toString()),
                 tr("Label:"),
                 oldName,
@@ -939,7 +939,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_CUT, menu);
         ADD_ACTION(ACTION_COPY, menu);
         ADD_ACTION(ACTION_PASTE, menu);
-        ADD_ACTION(ACTION_PASTE_SMART, menu);
+        ADD_ACTION(ACTION_PASTE_SMARTLY, menu);
         ADD_ACTION(ACTION_EXPORT_SELECTION, menu);
         ADD_ACTION(ACTION_SORT_JACKS, menu);
         menu->addSeparator();
@@ -958,7 +958,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_CUT, menu);
         ADD_ACTION(ACTION_COPY, menu);
         ADD_ACTION(ACTION_PASTE, menu);
-        ADD_ACTION(ACTION_PASTE_SMART, menu);
+        ADD_ACTION(ACTION_PASTE_SMARTLY, menu);
         ADD_ACTION(ACTION_DISABLE, menu);
         ADD_ACTION(ACTION_ENABLE, menu);
 
@@ -1072,7 +1072,7 @@ void PatchSectionView::finishPatching()
     else if (endAtom && endAtom->isCable())
         cableName = ((AtomCable *)endAtom)->getCable();
     else {
-        cableName = NameChooseDialog::getName(tr("Create new internal patch cable"), tr("Cable name:"), "", true);
+        cableName = NameChooseDialog::getNewName(tr("Create new internal patch cable"), tr("Cable name:"), "", true);
         if (cableName == "") {
             return;
         }
@@ -1324,7 +1324,7 @@ void PatchSectionView::renameCable()
         return;
 
     QString oldName = ((AtomCable *)atom)->getCable();
-    QString newName = NameChooseDialog::getName(
+    QString newName = NameChooseDialog::getReName(
                 tr("Rename internal cable '%1'").arg(oldName),
                 tr("New name:"),
                 oldName,

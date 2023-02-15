@@ -14,8 +14,12 @@ class NameChooseDialog : public Dialog
     bool forceUpper;
 
 public:
-    static QString getName(const QString &title, const QString &label, QString oldname = "", bool forceUpperCase = false);
+    static QString getReName(const QString &title, const QString &label, QString oldname = "", bool forceUpperCase = false);
+    static QString getNewName(const QString &title, const QString &label, QString oldname = "", bool forceUpperCase = false);
     void setForceUpperCase(bool f) { forceUpper = f; };
+
+private:
+    static QString getName(const QString &title, const QString &label, QString oldname, bool forceUpperCase, bool rename);
 
 private slots:
     void changeText(const QString &t);

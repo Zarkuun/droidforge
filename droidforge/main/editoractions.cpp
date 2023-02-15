@@ -149,9 +149,9 @@ void EditorActions::createActions()
     actions[ACTION_PASTE]->setShortcuts(QKeySequence::Paste);
     actions[ACTION_PASTE]->setEnabled(false); // enabled by clipboard
 
-    actions[ACTION_PASTE_SMART] = new QAction(tr("Paste &smart"), this);
-    actions[ACTION_PASTE_SMART]->setShortcut(QKeySequence(tr("Shift+Ctrl+V")));
-    actions[ACTION_PASTE_SMART]->setEnabled(false); // enabled by clipboard
+    actions[ACTION_PASTE_SMARTLY] = new QAction(tr("Paste &smartly"), this);
+    actions[ACTION_PASTE_SMARTLY]->setShortcut(QKeySequence(tr("Shift+Ctrl+V")));
+    actions[ACTION_PASTE_SMARTLY]->setEnabled(false); // enabled by clipboard
 
     actions[ACTION_PASTE_AS_SECTION] = new QAction(tr("&Paste as new section"), this);
     actions[ACTION_PASTE_AS_SECTION]->setShortcut(QKeySequence("Ctrl+Alt+V"));
@@ -263,6 +263,9 @@ void EditorActions::createActions()
 
     actions[ACTION_DUPLICATE_PATCH_SECTION] = new QAction(tr("&Duplicate section..."), this);
     actions[ACTION_DUPLICATE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+D")));
+
+    actions[ACTION_DUPLICATE_PATCH_SECTION_SMARTLY] = new QAction(tr("&Duplicate section smartly..."), this);
+    actions[ACTION_DUPLICATE_PATCH_SECTION_SMARTLY]->setShortcut(QKeySequence(tr("Shift+Alt+D")));
 
     actions[ACTION_RENAME_PATCH_SECTION] = new QAction(tr("&Rename section..."), this);
     actions[ACTION_RENAME_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+R")));
@@ -420,7 +423,7 @@ void EditorActions::switchSection()
 void EditorActions::changeClipboard()
 {
     updatePasteAction();
-    actions[ACTION_PASTE_SMART]->setEnabled(the_clipboard->numCircuits());
+    actions[ACTION_PASTE_SMARTLY]->setEnabled(the_clipboard->numCircuits());
     actions[ACTION_PASTE_AS_SECTION]->setEnabled(the_clipboard->numCircuits());
 }
 void EditorActions::changeSelection()

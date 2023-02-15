@@ -28,7 +28,15 @@ NameChooseDialog::NameChooseDialog(QWidget *parent)
     layout->addWidget(buttonBox, 1, 1, 1, 2);
 }
 
-QString NameChooseDialog::getName(const QString &title, const QString &label, QString oldname, bool forceUpperCase)
+QString NameChooseDialog::getReName(const QString &title, const QString &label, QString oldname, bool forceUpperCase)
+{
+    return getName(title, label, oldname, forceUpperCase, true);
+}
+QString NameChooseDialog::getNewName(const QString &title, const QString &label, QString oldname, bool forceUpperCase)
+{
+    return getName(title, label, oldname, forceUpperCase, false);
+}
+QString NameChooseDialog::getName(const QString &title, const QString &label, QString oldname, bool forceUpperCase, bool rename)
 {
     static NameChooseDialog *dialog = 0;
     if (!dialog)
@@ -42,8 +50,12 @@ QString NameChooseDialog::getName(const QString &title, const QString &label, QS
 
     if (dialog->exec() == QDialog::Accepted)
         return dialog->lineEdit->text().trimmed();
-    else
-        return oldname;
+    else {
+        if (rename)
+            return oldname;
+        else
+            return "";
+    }
 }
 
 void NameChooseDialog::changeText(const QString &)

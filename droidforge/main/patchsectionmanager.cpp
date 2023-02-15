@@ -72,7 +72,8 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchSectionManager::newSectionAfterCurrent);
     CONNECT_ACTION(ACTION_SAVE_SECTION, &PatchSectionManager::saveSectionAsPatch);
     CONNECT_ACTION(ACTION_PASTE_AS_SECTION, &PatchSectionManager::pasteAsSection);
-    CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchSectionManager::duplicateSection);
+    CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchSectionManager::duplicateSectionDumb);
+    CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION_SMARTLY, &PatchSectionManager::duplicateSectionSmartly);
     CONNECT_ACTION(ACTION_DELETE_PATCH_SECTION, &PatchSectionManager::deleteSection);
     CONNECT_ACTION(ACTION_RENAME_PATCH_SECTION, &PatchSectionManager::renameSection);
     CONNECT_ACTION(ACTION_MERGE_WITH_PREVIOUS_SECTION, &PatchSectionManager::mergeWithPreviousSection);
@@ -103,6 +104,7 @@ void PatchSectionManager::popupSectionMenu(int index)
     ADD_ACTION(ACTION_PASTE_AS_SECTION, menu);
     if (index >= 0) {
         ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION, menu);
+        ADD_ACTION(ACTION_DUPLICATE_PATCH_SECTION_SMARTLY, menu);
         ADD_ACTION(ACTION_RENAME_PATCH_SECTION, menu);
         ADD_ACTION(ACTION_DELETE_PATCH_SECTION, menu);
 
@@ -194,7 +196,7 @@ void PatchSectionManager::renameSection()
 {
     PatchSection *section = patch->currentSection();
     QString oldname = section->getTitle();
-    QString newname = NameChooseDialog::getName(tr("Rename patch section"), tr("New name:"), oldname);
+    QString newname = NameChooseDialog::getReName(tr("Rename patch section"), tr("New name:"), oldname);
     if (newname != "" && oldname != newname) {
         section->setTitle(newname);
         patch->commit(tr("renaming patch section to '%1'").arg(newname));
@@ -209,31 +211,50 @@ void PatchSectionManager::deleteSection()
     patch->commit(tr("deleting patch section '%1'").arg(title));
     emit patchModified();
 }
-void PatchSectionManager::duplicateSection()
+
+void PatchSectionManager::duplicateSection(bool smartly)
 {
+    shoutfunc << smartly;
+
     int index = patch->currentSectionIndex();
     PatchSection *oldSection = patch->section(index);
-    QString newname = NameChooseDialog::getName(
-                tr("Duplicate section"),
+    QString newname = NameChooseDialog::getNewName(
+                smartly ? tr("Duplicate section smartly") : tr("Duplicate section"),
                 tr("New name:"),
                 oldSection->getTitle());
     if (newname.isEmpty())
         return;
 
+    shout << "NAME" << newname;
+
     Patch *newpatch = new Patch();
     PatchSection *newSection = oldSection->clone();
     newSection->setTitle(newname);
     newpatch->addSection(newSection);
-    if (!theOperator()->interactivelyRemapRegisters(newpatch)) {
-        delete newpatch;
-        return;
+
+    if (smartly) {
+        shout << "smartly";
+        if (!theOperator()->interactivelyRemapRegisters(newpatch)) {
+            delete newpatch;
+            return;
+        }
     }
 
     PatchSection *newsection = newpatch->section(0)->clone();
+    shout << "going to insert";
     patch->insertSection(index + 1, newsection);
+    shout << "inserted";
     delete newpatch;
-    patch->commit(tr("duplicating section"));
+    patch->commit(smartly ? tr("duplicating section smartly") : tr("duplicating section"));
     emit patchModified(); // implies sectionSwitched
+}
+void PatchSectionManager::duplicateSectionDumb()
+{
+    duplicateSection(false /* smartly */);
+}
+void PatchSectionManager::duplicateSectionSmartly()
+{
+    duplicateSection(true /* smartly */);
 }
 void PatchSectionManager::mergeWithPreviousSection()
 {
@@ -293,7 +314,7 @@ void PatchSectionManager::saveSectionAsPatch()
 }
 void PatchSectionManager::newSectionAtIndex(int index)
 {
-    QString newname = NameChooseDialog::getName(tr("Add new patch section"), tr("Name:"));
+    QString newname = NameChooseDialog::getNewName(tr("Add new patch section"), tr("Name:"));
     if (newname.isEmpty())
         return;
 
@@ -303,7 +324,7 @@ void PatchSectionManager::newSectionAtIndex(int index)
 }
 void PatchSectionManager::pasteAsSection()
 {
-    QString newname = NameChooseDialog::getName(tr("Paste as new section"), tr("New section name:"));
+    QString newname = NameChooseDialog::getNewName(tr("Paste as new section"), tr("New section name:"));
     if (newname.isEmpty())
         return;
     PatchSection *newSection = new PatchSection(newname);

@@ -45,6 +45,8 @@ QString MacMIDIHost::sendPatch(const Patch *patch)
     if (sysexLength == 0)
         return TR("You have exceeded the maximum allowed patch size.");
 
+    shout << "Ich sende patch der lanege" << sysexLength;
+
     MIDIEndpointRef endpointRef = findX7();
     if (!endpointRef)
         return TR("Cannot find DROID X7");

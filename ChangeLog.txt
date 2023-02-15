@@ -49,6 +49,9 @@
 	  card and the status file on it without removing the SD card manually.
 
 	Clean ups:
+	* New action "Duplicate section smartly", which does what "Duplicate section"
+	  did do. And "Duplicate section" now makes a plain dumb copy with no renamings
+	  or remappings.
 	* Shortcut Command+M for minimizing a Forge window (Mac standard) (manual is now
 	  Command+T)
 	* Make white label areas wider, so that more text fits in (suggested by
