@@ -144,6 +144,8 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_REWRITE_CABLE_NAMES, &PatchOperator::rewriteCableNames);
     CONNECT_ACTION(ACTION_SET_BOOKMARK, &PatchOperator::setBookmark);
     CONNECT_ACTION(ACTION_JUMP_TO_BOOKMARK, &PatchOperator::jumpToBookmark);
+    CONNECT_ACTION(ACTION_EXPAND_ARRAY, &PatchOperator::expandArray);
+    CONNECT_ACTION(ACTION_EXPAND_ARRAY_MAX, &PatchOperator::expandArrayMax);
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
@@ -259,6 +261,50 @@ void PatchOperator::quit()
 {
     if (checkModified())
         exit(0);
+}
+void PatchOperator::expandArray(bool max)
+{
+    Circuit *circuit = section()->currentCircuit();
+    JackAssignment *ja = section()->currentJackAssignment();
+    CursorPosition curPos = section()->cursorPosition();
+
+    // Starting from the *current* index within the jack array find
+    // the next hole. Then add the new jack right after the last
+    // one before the hole (creating a sane sort order).
+    while (true) {
+        QString jackName = ja->jackName();
+        QString next = circuit->nextJackArrayName(jackName, ja->jackType() == JACKTYPE_INPUT);
+        if (next == "")
+            break;
+
+        JackAssignment *newJa = ja->clone();
+        newJa->setJackName(next);
+
+        // Insert the new jack right after that with the previous index.
+        QString prefix = circuit->prefixOfJack(jackName);
+        unsigned thisIndex = next.mid(prefix.length()).toUInt();
+        if (thisIndex > 1) {
+            QString prevName = prefix + QString::number(thisIndex - 1);
+            for (unsigned i=0; i<circuit->numJackAssignments(); i++) {
+                if (circuit->jackAssignment(i)->jackName() == prevName) {
+                    curPos.row = i;
+                    break;
+                }
+            }
+        }
+
+        curPos.row++;
+        circuit->insertJackAssignment(newJa, curPos.row);
+        section()->setCursor(curPos);
+        if (!max)
+            break;
+    }
+    patch->commit(tr("expanding parameter array"));
+    emit patchModified();
+}
+void PatchOperator::expandArrayMax()
+{
+    expandArray(true);
 }
 void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 {

@@ -91,6 +91,8 @@ private slots:
     void modifyPatch();
     void close();
     void quit();
+    void expandArray(bool max = false);
+    void expandArrayMax();
 
 public slots:
     void save();

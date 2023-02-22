@@ -84,8 +84,6 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
     CONNECT_ACTION(ACTION_PASTE_SMARTLY, &PatchSectionView::pasteSmart);
-    CONNECT_ACTION(ACTION_EXPAND_ARRAY, &PatchSectionView::expandArray);
-    CONNECT_ACTION(ACTION_EXPAND_ARRAY_MAX, &PatchSectionView::expandArrayMax);
     CONNECT_ACTION(ACTION_ADD_MISSING_JACKS, &PatchSectionView::addMissingJacks);
     CONNECT_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, &PatchSectionView::removeUndefinedJacks);
 
@@ -596,50 +594,6 @@ void PatchSectionView::pasteSmart()
     section()->setCursor(CursorPosition(position, ROW_CIRCUIT, 0));
     patch->commit(tr("smart pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
-}
-void PatchSectionView::expandArray(bool max)
-{
-    Circuit *circuit = section()->currentCircuit();
-    JackAssignment *ja = section()->currentJackAssignment();
-    CursorPosition curPos = section()->cursorPosition();
-
-    // Starting from the *current* index within the jack array find
-    // the next hole. Then add the new jack right after the last
-    // one before the hole (creating a sane sort order).
-    while (true) {
-        QString jackName = ja->jackName();
-        QString next = circuit->nextJackArrayName(jackName, ja->jackType() == JACKTYPE_INPUT);
-        if (next == "")
-            break;
-
-        JackAssignment *newJa = ja->clone();
-        newJa->setJackName(next);
-
-        // Insert the new jack right after that with the previous index.
-        QString prefix = circuit->prefixOfJack(jackName);
-        unsigned thisIndex = next.mid(prefix.length()).toUInt();
-        if (thisIndex > 1) {
-            QString prevName = prefix + QString::number(thisIndex - 1);
-            for (unsigned i=0; i<circuit->numJackAssignments(); i++) {
-                if (circuit->jackAssignment(i)->jackName() == prevName) {
-                    curPos.row = i;
-                    break;
-                }
-            }
-        }
-
-        curPos.row++;
-        circuit->insertJackAssignment(newJa, curPos.row);
-        section()->setCursor(curPos);
-        if (!max)
-            break;
-    }
-    patch->commit(tr("expanding parameter array"));
-    emit patchModified();
-}
-void PatchSectionView::expandArrayMax()
-{
-    expandArray(true);
 }
 void PatchSectionView::addMissingJacks()
 {
