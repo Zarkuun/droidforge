@@ -76,7 +76,6 @@ QPoint WindowList::newPosition() const
     return QPoint(xMax + WINDOW_X_DISPLACEMENT,
                   yMax + WINDOW_Y_DISPLACEMENT);
 }
-
 MainWindow *WindowList::windowWithFile(const QString &filePath)
 {
     QFileInfo info(filePath);
@@ -90,4 +89,9 @@ MainWindow *WindowList::windowWithFile(const QString &filePath)
         }
     }
     return 0;
+}
+void WindowList::saveAll()
+{
+    for (auto window: windows)
+        window->saveMeLikeAll();
 }

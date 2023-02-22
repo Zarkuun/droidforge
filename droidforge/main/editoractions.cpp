@@ -76,6 +76,8 @@ void EditorActions::createActions()
     actions[ACTION_SAVE_AS] = new QAction(tr("Save &as..."), this);
     actions[ACTION_SAVE_AS]->setShortcut(QKeySequence(tr("Ctrl+Shift+S")));
 
+    actions[ACTION_SAVE_ALL] = new QAction(tr("Save all"), this);
+
     actions[ACTION_EXPORT_SELECTION] = new QAction(tr("E&xport selection as patch..."), this);
     actions[ACTION_EXPORT_SELECTION]->setEnabled(false);
 

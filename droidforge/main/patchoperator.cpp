@@ -120,6 +120,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_TOOLBAR_OPEN, &PatchOperator::open);
     CONNECT_ACTION(ACTION_SAVE, &PatchOperator::save);
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE, &PatchOperator::save);
+    connect(ACTION(ACTION_SAVE_ALL), &QAction::triggered, the_windowlist, &WindowList::saveAll);
     CONNECT_ACTION(ACTION_SAVE_AS, &PatchOperator::saveAs);
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &PatchOperator::openEnclosingFolder);

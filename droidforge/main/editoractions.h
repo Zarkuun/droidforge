@@ -88,6 +88,7 @@ typedef enum {
     ACTION_RIGHT_TO_LEFT,
     ACTION_SAVE,
     ACTION_SAVE_AS,
+    ACTION_SAVE_ALL,
     ACTION_SAVE_SECTION,
     ACTION_SAVE_TO_SD,
     ACTION_SELECT_ALL,
@@ -158,10 +159,10 @@ private:
  *   the action signal, not by someone else.
 */
 #define ACTION(A)                      (mainWindow->theActions()->action(A))
-#define CONNECT_ACTION(A, FUNC)        connect(mainWindow->theActions()->action(A), &QAction::triggered, this, FUNC)
-#define SET_ACTION_TRIGGER(A, FUNC)    connect(this, FUNC, mainWindow->theActions()->action(A), &QAction::trigger)
-#define TRIGGER_ACTION(A)              mainWindow->theActions()->action(A)->trigger();
-#define ADD_ACTION(A, TO)              TO->addAction(mainWindow->theActions()->action(A))
-#define ADD_ACTION_IF_ENABLED(A, TO)   if (mainWindow->theActions()->action(A)->isEnabled()) TO->addAction(mainWindow->theActions()->action(A))
+#define CONNECT_ACTION(A, FUNC)        connect(ACTION(A), &QAction::triggered, this, FUNC)
+#define SET_ACTION_TRIGGER(A, FUNC)    connect(this, FUNC, ACTION(A), &QAction::trigger)
+#define TRIGGER_ACTION(A)              ACTION(A)->trigger();
+#define ADD_ACTION(A, TO)              TO->addAction(ACTION(A))
+#define ADD_ACTION_IF_ENABLED(A, TO)   if (ACTION(A)->isEnabled()) TO->addAction(ACTION(A))
 
 #endif // EDITORACTIONS_H

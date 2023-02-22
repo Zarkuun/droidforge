@@ -71,7 +71,6 @@ private slots:
     void newWindowWithSameRack();
     void integrate();
     void exportSelection();
-    void save();
     void saveAs();
     void openEnclosingFolder();
     void editProperties();
@@ -94,6 +93,7 @@ private slots:
     void quit();
 
 public slots:
+    void save();
     void clearRecentFiles();
     void search(QString text, int direction);
 

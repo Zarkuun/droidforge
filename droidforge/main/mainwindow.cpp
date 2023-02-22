@@ -167,6 +167,11 @@ void MainWindow::hideFindPanel()
     findPanel.setDisabled(true);
     findPanel.hide();
 }
+bool MainWindow::saveMeLikeAll()
+{
+    patchOperator.save();
+    return !patch->isModified();
+}
 void MainWindow::modifyPatch()
 {
     QString title = patchTitle() + " - " + APPLICATION_NAME;
@@ -249,6 +254,7 @@ void MainWindow::createFileMenu()
 
     ADD_ACTION(ACTION_SAVE, fileMenu);
     ADD_ACTION(ACTION_SAVE_AS, fileMenu);
+    ADD_ACTION(ACTION_SAVE_ALL, fileMenu);
     ADD_ACTION(ACTION_EXPORT_SELECTION, fileMenu);
     ADD_ACTION(ACTION_CLOSE_WINDOW, fileMenu);
 

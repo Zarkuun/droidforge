@@ -25,6 +25,9 @@ public:
     QPoint newPosition() const;
     MainWindow *windowWithFile(const QString &filePath);
 
+public slots:
+    void saveAll();
+
 signals:
     void changed();
 };
