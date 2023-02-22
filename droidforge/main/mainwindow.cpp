@@ -135,7 +135,6 @@ void MainWindow::addStatusDumpsMenu(QMenu *menu)
 }
 void MainWindow::showStatusDump(const StatusDump *dump)
 {
-    shoutfunc << dump;
     currentStatusDump = dump;
     emit patchModified();
 }
@@ -167,10 +166,9 @@ void MainWindow::hideFindPanel()
     findPanel.setDisabled(true);
     findPanel.hide();
 }
-bool MainWindow::saveMeLikeAll()
+void MainWindow::saveMeLikeAll()
 {
     patchOperator.save();
-    return !patch->isModified();
 }
 void MainWindow::modifyPatch()
 {
@@ -187,8 +185,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 }
 void MainWindow::closeEvent(QCloseEvent *)
 {
-    // patchOperator.quit();
-    // event->ignore();
+    delete this;
 }
 void MainWindow::resizeEvent(QResizeEvent *)
 {

@@ -92,7 +92,7 @@ public:
     const QString &getFilePath() const;
     void bringToFront();
     void hideFindPanel();
-    bool saveMeLikeAll();
+    void saveMeLikeAll();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

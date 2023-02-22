@@ -49,8 +49,8 @@ int main(int argc, char *argv[])
         initialFilename = argv[1];
     else if (settings.contains("lastfile"))
         initialFilename = settings.value("lastfile").toString();
-    MainWindow mainWindow(initialFilename);
-    mainWindow.show();
+    MainWindow *mainWindow = new MainWindow(initialFilename);
+    mainWindow->show();
 
     return app.exec();
 }

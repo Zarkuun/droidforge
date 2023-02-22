@@ -214,8 +214,6 @@ void PatchSectionManager::deleteSection()
 
 void PatchSectionManager::duplicateSection(bool smartly)
 {
-    shoutfunc << smartly;
-
     int index = patch->currentSectionIndex();
     PatchSection *oldSection = patch->section(index);
     QString newname = NameChooseDialog::getNewName(
@@ -225,15 +223,12 @@ void PatchSectionManager::duplicateSection(bool smartly)
     if (newname.isEmpty())
         return;
 
-    shout << "NAME" << newname;
-
     Patch *newpatch = new Patch();
     PatchSection *newSection = oldSection->clone();
     newSection->setTitle(newname);
     newpatch->addSection(newSection);
 
     if (smartly) {
-        shout << "smartly";
         if (!theOperator()->interactivelyRemapRegisters(newpatch)) {
             delete newpatch;
             return;
@@ -241,9 +236,7 @@ void PatchSectionManager::duplicateSection(bool smartly)
     }
 
     PatchSection *newsection = newpatch->section(0)->clone();
-    shout << "going to insert";
     patch->insertSection(index + 1, newsection);
-    shout << "inserted";
     delete newpatch;
     patch->commit(smartly ? tr("duplicating section smartly") : tr("duplicating section"));
     emit patchModified(); // implies sectionSwitched
