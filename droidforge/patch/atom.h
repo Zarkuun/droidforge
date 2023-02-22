@@ -30,6 +30,7 @@ public:
     virtual QString problemAsInput(const Patch *patch) const = 0;
     virtual QString problemAsOutput(const Patch *patch) const = 0;
     virtual void rewriteCableNames(const QString &, const QString &, RewriteCablesDialog::mode_t) {};
+    virtual void incrementForExpansion(const Patch *) {};
 };
 
 #endif // ATOM_H

@@ -42,6 +42,7 @@ public:
     void changeJack(QString j) { jack = j; };
     void collectRegisterAtoms(RegisterList &) const;
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
+    void incrementForExpansion(const Patch *patch);
 
     virtual ~JackAssignment();
     virtual JackAssignment *clone() const = 0;

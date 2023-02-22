@@ -49,6 +49,11 @@
 	  card and the status file on it without removing the SD card manually.
 
 	Clean ups:
+	* Expand parameter array now increases the button/LED number and also input or
+	  output number of the first argument, if possible. This does not always make sense
+	  but is often a great speed up, e.g. if you create an algoquencer with 16 buttons
+	  of a B32. Simply create the first line and select "expand parameter array to max"
+	  and you are done.
 	* Display RAM usage of current section in tooltip of status bar's memory indicator.
 	* New action "Duplicate section smartly", which does what "Duplicate section"
 	  did do. And "Duplicate section" now makes a plain dumb copy with no renamings

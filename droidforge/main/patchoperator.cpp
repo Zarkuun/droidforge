@@ -278,6 +278,7 @@ void PatchOperator::expandArray(bool max)
             break;
 
         JackAssignment *newJa = ja->clone();
+        newJa->incrementForExpansion(patch);
         newJa->setJackName(next);
 
         // Insert the new jack right after that with the previous index.

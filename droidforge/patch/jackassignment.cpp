@@ -88,6 +88,12 @@ void JackAssignment::rewriteCableNames(const QString &remove, const QString &ins
              atom->rewriteCableNames(remove, insert, mode);
     }
 }
+void JackAssignment::incrementForExpansion(const Patch *patch)
+{
+    Atom *atom = atomAt(1);
+    if (atom)
+        atom->incrementForExpansion(patch);
+}
 Atom *JackAssignment::parseCable(QString s)
 {
     static QRegularExpression exp("^_[a-z0-9_]+$",  QRegularExpression::CaseInsensitiveOption);

@@ -194,6 +194,12 @@ QString AtomRegister::problemAsOutput(const Patch *patch) const
     }
     return generalProblem(patch);
 }
+void AtomRegister::incrementForExpansion(const Patch *patch)
+{
+    num++;
+    if (!patch->registerAvailable(*this))
+        num--;
+}
 QString AtomRegister::generalProblem(const Patch *patch) const
 {
     if (num <= 0)
