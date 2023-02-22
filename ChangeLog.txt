@@ -49,6 +49,7 @@
 	  card and the status file on it without removing the SD card manually.
 
 	Clean ups:
+	* Display RAM usage of current section in tooltip of status bar's memory indicator.
 	* New action "Duplicate section smartly", which does what "Duplicate section"
 	  did do. And "Duplicate section" now makes a plain dumb copy with no renamings
 	  or remappings.

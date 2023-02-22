@@ -19,6 +19,7 @@ PatchSizeIndicator::PatchSizeIndicator(MainWindow *mainWindow, PatchEditEngine *
     setMaximumWidth(MI_WIDTH);
 
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchSizeIndicator::updateStatus);
+    connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &PatchSizeIndicator::updateStatus);
 }
 void PatchSizeIndicator::paintEvent(QPaintEvent *)
 {
@@ -61,12 +62,20 @@ void PatchSizeIndicator::updateStatus()
     QString tooltipRAM = tr("Your patch needs %1 bytes of RAM.").arg(memoryNeeded);
     if (memoryNeeded <= memoryAvailable) {
         unsigned perc = memoryNeeded * 100 / memoryAvailable;
-        tooltipRAM += " " + tr("That is %1% of the available RAM. You have %2 bytes left.").arg(perc).arg(memoryAvailable - memoryNeeded);
+        tooltipRAM += " " + tr("This is %1% of the available RAM. You have %2 bytes left.").arg(perc).arg(memoryAvailable - memoryNeeded);
     }
     else {
-        tooltipRAM += " " + tr("That is %1 bytes more than there is available! "
+        tooltipRAM += " " + tr("This is %1 bytes more than there is available! "
                             "Try to remove some circuits.").arg(memoryNeeded - memoryAvailable);
     }
+
+    unsigned sectionRam = patch->currentSection()->memoryFootprint();
+    QString tooltipSection = tr("The section '%1' needs %2 bytes.")
+            .arg(patch->currentSection()->getTitle())
+            .arg(sectionRam);
+    tooltipSection += " " + tr("This is %1% of the patch size and %2% of the available RAM.")
+            .arg(100 * sectionRam / memoryNeeded)
+            .arg(100 * sectionRam / memoryAvailable);
 
     patchSize = patch->toCompressed().size();
     QString tooltipSize = tr("Your patch size is %1 bytes.").arg(patchSize);
@@ -77,6 +86,6 @@ void PatchSizeIndicator::updateStatus()
                              .arg(QString::number((unsigned)(patchSize * 100 / MAX_DROID_INI)))
                              .arg(MAX_DROID_INI);
 
-    setToolTip(tooltipRAM + "\n" + tooltipSize);
+    setToolTip(tooltipRAM + "\n" + tooltipSection + "\n" + tooltipSize);
     update();
 }
