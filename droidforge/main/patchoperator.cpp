@@ -271,15 +271,18 @@ void PatchOperator::expandArray(bool max)
     // Starting from the *current* index within the jack array find
     // the next hole. Then add the new jack right after the last
     // one before the hole (creating a sane sort order).
+    const JackAssignment *jaToClone = ja;
+
     while (true) {
         QString jackName = ja->jackName();
         QString next = circuit->nextJackArrayName(jackName, ja->jackType() == JACKTYPE_INPUT);
         if (next == "")
             break;
 
-        JackAssignment *newJa = ja->clone();
+        JackAssignment *newJa = jaToClone->clone();
         newJa->incrementForExpansion(patch);
         newJa->setJackName(next);
+        jaToClone = newJa;
 
         // Insert the new jack right after that with the previous index.
         QString prefix = circuit->prefixOfJack(jackName);
