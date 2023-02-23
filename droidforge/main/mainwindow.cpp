@@ -29,6 +29,7 @@
 MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     : QMainWindow()
     , PatchView(&thePatch)
+    , bringToFrontAction("solala", this)
     , editorActions(this, &thePatch)
     , patchOperator(this, &thePatch, initialFilename, initialRack)
     , rackView(this, &thePatch)
@@ -44,6 +45,8 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     setWindowTitle(APPLICATION_NAME);
     QIcon appIcon(":droidforge.icns");
     setWindowIcon(appIcon);
+
+    bringToFrontAction.setCheckable(true);
 
     menubar = new QMenuBar(this);
     setMenuBar(menubar);
@@ -75,7 +78,6 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     if (the_windowlist->count() > 0)
         move(the_windowlist->newPosition());
 
-
     connect(rackSplitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
     connect(the_windowlist, &WindowList::changed, this, &MainWindow::updateWindowMenu);
     connect(&findPanel, &FindPanel::keyCaptured, &patchSectionView, &PatchSectionView::keyCaptured);
@@ -95,6 +97,8 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     CONNECT_ACTION(ACTION_MINIMIZE_WINDOW, &MainWindow::showMinimized);
     CONNECT_ACTION(ACTION_NEXT_WINDOW, &MainWindow::nextWindow);
     CONNECT_ACTION(ACTION_PREVIOUS_WINDOW, &MainWindow::previousWindow);
+
+    connect(&bringToFrontAction, &QAction::triggered, this, &MainWindow::bringToFront);
 
     createMenus();
     createToolbar();
@@ -176,6 +180,7 @@ void MainWindow::modifyPatch()
     if (patch->isModified())
         title += tr(" (modified)");
     setWindowTitle(title);
+    updateBTFAction();
     cursorMoved();
 }
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -213,6 +218,9 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         the_colorscheme->darkLightSwitch();
         editorActions.updateIcons();
         emit patchModified();
+    }
+    else if (event->type() == QEvent::ActivationChange) {
+        bringToFrontAction.setChecked(isActiveWindow());
     }
     return QObject::eventFilter(obj, event);
 }
@@ -573,6 +581,20 @@ void MainWindow::rackZoom(int whence)
     }
     currentSizes[1] = totalsize - currentSizes[0];
     rackSplitter->setSizes(currentSizes);
+}
+
+void MainWindow::updateBTFAction()
+{
+    QString fileName = getFilePath();
+    QString patchName = patchTitle();
+    QString title;
+    if (fileName != "")
+        title = patchName + " - " + fileName;
+    else
+        title = patchName;
+    if (patch->isModified())
+        title += " (" + tr("modified") + ")";
+    bringToFrontAction.setText(title);
 }
 
 void MainWindow::updateWindowMenu()

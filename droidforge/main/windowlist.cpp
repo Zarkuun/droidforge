@@ -21,25 +21,8 @@ void WindowList::remove(MainWindow *window)
 }
 void WindowList::addMenuEntries(QMenu *menu)
 {
-    for (auto window: windows) {
-        QString fileName = window->getFilePath();
-    /// QFileInfo fi(patch->getFilePath());
-        QString patchTitle = window->patchTitle();
-    /// patch->getTitle();
-    /// QFileInfo fi(patch->getFilePath());
-    /// QString name = fi.baseName();
-    /// if (name == "")
-    ///     name = tr("(untitled)");
-    /// return name;
-        QString title;
-        if (fileName != "")
-            title = patchTitle + " - " + fileName;
-        else
-            title = patchTitle;
-        QAction *action = new QAction(title, this);
-        connect(action, &QAction::triggered, this, [window]() { window->bringToFront();});
-        menu->addAction(action);
-    }
+    for (auto window: windows)
+        menu->addAction(window->btfAction());
 }
 void WindowList::update()
 {

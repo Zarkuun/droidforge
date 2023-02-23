@@ -43,6 +43,7 @@ class MainWindow : public QMainWindow, PatchView
     PatchEditEngine thePatch;
     UpdateHub updateHub;
     DroidFirmware firmware;
+    QAction bringToFrontAction;
 
     // all PatchViews
     EditorActions editorActions;
@@ -93,6 +94,7 @@ public:
     void bringToFront();
     void hideFindPanel();
     void saveMeLikeAll();
+    QAction *btfAction() { return &bringToFrontAction; };
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -114,6 +116,7 @@ private:
     void createStatusBar();
     void updateStatusbarMessage();
     void rackZoom(int whence);
+    void updateBTFAction();
 
 
 private slots:
