@@ -42,6 +42,7 @@ public:
     void createRecentFileActions(QMenu *menu);
     void createStatusDumpsMenu();
     void loadFile(const QString &filename, int how);
+    bool checkModified();
     void jumpTo(int sectionIndex, const CursorPosition &pos);
     void clearSelection();
     bool droidSDCardPresent() const { return sdCardPresent; };
@@ -101,7 +102,6 @@ public slots:
     void search(QString text, int direction);
 
 private:
-    bool checkModified();
     void clearWithControllersFromOtherRack(const Patch *other);
     void setLastFilePath(const QString &path);
     void openDirInFinder(const QString &filename);

@@ -507,6 +507,7 @@ void PatchOperator::loadStatusDumps()
             break;
     }
     QAction *action = new QAction(tr("Hide status dumps"), this);
+    action->setShortcut(QKeySequence(tr("Shift+F10")));
     connect(action, &QAction::triggered, this, [this]() { this->mainWindow->showStatusDump(0); });
     dumpsMenu->addSeparator();
     dumpsMenu->addAction(action);
@@ -553,7 +554,7 @@ void PatchOperator::updateSDAndX7State()
     sdCardPresent = sdCardDir() != "";
     if (sdCardPresent) {
         QFileInfo statusFile = QFileInfo(sdCardDir(), QString(STATUS_DUMP_FILENAME).arg(1));
-        statusDumpPresent = statusFile.isFile();
+        statusDumpPresent = statusFile.isFile() && statusFile.exists();
     }
     else
         statusDumpPresent = false;

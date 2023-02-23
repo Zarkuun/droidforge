@@ -188,9 +188,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if (!patchSectionView.handleKeyPress(event))
         event->ignore();
 }
-void MainWindow::closeEvent(QCloseEvent *)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    delete this;
+    if (!patchOperator.checkModified())
+        event->ignore();
+    else {
+        event->accept();
+        delete this;
+    }
 }
 void MainWindow::resizeEvent(QResizeEvent *)
 {

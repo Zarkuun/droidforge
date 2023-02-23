@@ -534,7 +534,9 @@ void EditorActions::changeDroidState()
     updateUploadAction(ACTION_TOOLBAR_UPLOAD_TO_DROID);
     updateSaveToSDAction(ACTION_SAVE_TO_SD);
     updateSaveToSDAction(ACTION_TOOLBAR_SAVE_TO_SD);
-    actions[ACTION_LOAD_STATUS_DUMP]->setEnabled(theOperator()->droidStatusDumpPresent());
+    actions[ACTION_LOAD_STATUS_DUMP]->setEnabled(
+                theOperator()->droidStatusDumpPresent() &&
+                !mainWindow->statusDump());
 }
 PatchOperator *EditorActions::theOperator()
 {
