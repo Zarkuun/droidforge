@@ -4,10 +4,11 @@
 
 #include <QGridLayout>
 #include <QDialogButtonBox>
+#include <QRegularExpression>
 
 NameChooseDialog::NameChooseDialog(QWidget *parent)
     : Dialog{"namechooser", parent}
-    , forceUpper(false)
+    , forceCableName(false)
 {
     QGridLayout *layout = new QGridLayout(this);
     setLayout(layout);
@@ -28,21 +29,21 @@ NameChooseDialog::NameChooseDialog(QWidget *parent)
     layout->addWidget(buttonBox, 1, 1, 1, 2);
 }
 
-QString NameChooseDialog::getReName(const QString &title, const QString &label, QString oldname, bool forceUpperCase)
+QString NameChooseDialog::getReName(const QString &title, const QString &label, QString oldname, bool forceCableName)
 {
-    return getName(title, label, oldname, forceUpperCase, true);
+    return getName(title, label, oldname, forceCableName, true);
 }
-QString NameChooseDialog::getNewName(const QString &title, const QString &label, QString oldname, bool forceUpperCase)
+QString NameChooseDialog::getNewName(const QString &title, const QString &label, QString oldname, bool forceCableName)
 {
-    return getName(title, label, oldname, forceUpperCase, false);
+    return getName(title, label, oldname, forceCableName, false);
 }
-QString NameChooseDialog::getName(const QString &title, const QString &label, QString oldname, bool forceUpperCase, bool rename)
+QString NameChooseDialog::getName(const QString &title, const QString &label, QString oldname, bool forceCableName, bool rename)
 {
     static NameChooseDialog *dialog = 0;
     if (!dialog)
         dialog = new NameChooseDialog();
 
-    dialog->setForceUpperCase(forceUpperCase);
+    dialog->setForceCableName(forceCableName);
     dialog->setWindowTitle(title);
     dialog->label->setText(label);
     dialog->lineEdit->setText(oldname);
@@ -60,9 +61,12 @@ QString NameChooseDialog::getName(const QString &title, const QString &label, QS
 
 void NameChooseDialog::changeText(const QString &)
 {
-   if (forceUpper) {
-       int curPos = lineEdit->cursorPosition();
-       lineEdit->setText(lineEdit->text().toUpper());
-       lineEdit->setCursorPosition(curPos);
-   }
+    static QRegularExpression re("[^A-Z0-9_]*");
+    if (forceCableName) {
+        int curPos = lineEdit->cursorPosition();
+        QString text = lineEdit->text().toUpper().replace(' ', '_');
+        text = text.replace(re, "");
+        lineEdit->setText(text);
+        lineEdit->setCursorPosition(curPos);
+    }
 }

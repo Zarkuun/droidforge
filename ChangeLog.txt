@@ -82,6 +82,7 @@
 	  64,000 bytes. The status bar now either shows the RAM usage or the size
 	  usage - depending on which of both is bigger. Loading of too big patches
 	  via SD card or X7 is inhibited now.
+	* Prevent nonallowed characters to be used in names of cables.
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
