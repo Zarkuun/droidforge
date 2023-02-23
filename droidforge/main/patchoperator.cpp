@@ -10,6 +10,7 @@
 #include "atomcable.h"
 #include "mainwindow.h"
 #include "windowlist.h"
+#include "namechoosedialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -146,6 +147,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_JUMP_TO_BOOKMARK, &PatchOperator::jumpToBookmark);
     CONNECT_ACTION(ACTION_EXPAND_ARRAY, &PatchOperator::expandArray);
     CONNECT_ACTION(ACTION_EXPAND_ARRAY_MAX, &PatchOperator::expandArrayMax);
+    CONNECT_ACTION(ACTION_RENAME_CABLE, &PatchOperator::renameCable);
 
     // Events that we create
     connect(this, &PatchOperator::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
@@ -309,6 +311,41 @@ void PatchOperator::expandArray(bool max)
 void PatchOperator::expandArrayMax()
 {
     expandArray(true);
+}
+void PatchOperator::renameCable()
+{
+    const Atom *atom = patch->currentAtom();
+    if (!atom || !atom->isCable())
+        return;
+
+    QString oldName = ((AtomCable *)atom)->getCable();
+    QString newName = NameChooseDialog::getReName(
+                tr("Rename internal cable '%1'").arg(oldName),
+                tr("New name:"),
+                oldName,
+                true /* force upper case */);
+    if (newName == oldName)
+        return;
+
+    newName = newName.toUpper();
+    QStringList all = patch->allCables();
+    if (all.contains(newName)) {
+        int reply = QMessageBox::warning(
+                    mainWindow,
+                    tr("Conflict"),
+                    tr("There already is a cable with this name. Choosing the name '%1'"
+                       "will join these cables and make all according inputs and outputs "
+                       "connected.\n\n"
+                       "Do you want want to join both cables?").arg(newName),
+                    QMessageBox::Cancel | QMessageBox::Yes,
+                    QMessageBox::Cancel);
+        if (reply == QMessageBox::Cancel)
+            return;
+    }
+
+    patch->renameCable(oldName, newName);
+    patch->commit(tr("renaming cable '%1' to '%2'").arg(oldName).arg(newName));
+    emit patchModified();
 }
 void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 {

@@ -44,14 +44,11 @@ public:
     void deleteCursorOrSelection();
     void editValue(int key);
     void editCircuitComment(int key);
-    void renameCable();
     bool isEmpty() const;
     void updateCircuits();
     void updateRegisterHilites() const;
     void clickOnRegister(AtomRegister ar);
     void rebuildPatchSection();
-    const Atom *currentAtom() const;
-    Atom *currentAtom();
     bool atomCellSelected() const;
     // void setCursorPosition(const CursorPosition &pos);
     const CursorPosition &getCursorPosition() const;

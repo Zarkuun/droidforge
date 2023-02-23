@@ -93,6 +93,7 @@ private slots:
     void quit();
     void expandArray(bool max = false);
     void expandArrayMax();
+    void renameCable();
 
 public slots:
     void save();

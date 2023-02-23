@@ -99,7 +99,6 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_EDIT_CIRCUIT_COMMENT, &PatchSectionView::editCircuitComment);
     CONNECT_ACTION(ACTION_EDIT_JACK_COMMENT, &PatchSectionView::editJackComment);
     CONNECT_ACTION(ACTION_EDIT_LABEL, &PatchSectionView::editLabel);
-    CONNECT_ACTION(ACTION_RENAME_CABLE, &PatchSectionView::renameCable);
     CONNECT_ACTION(ACTION_RESET_ZOOM, &PatchSectionView::zoomReset);
     CONNECT_ACTION(ACTION_ZOOM_IN, &PatchSectionView::zoomIn);
     CONNECT_ACTION(ACTION_ZOOM_OUT, &PatchSectionView::zoomOut);
@@ -248,7 +247,7 @@ void PatchSectionView::editJackComment()
 }
 void PatchSectionView::editLabel()
 {
-    const Atom *atom = currentAtom();
+    const Atom *atom = patch->currentAtom();
     if (!atom || !atom->canHaveLabel())
         return; // should be handled by enabling, but better play save
 
@@ -1271,41 +1270,6 @@ void PatchSectionView::editCircuitComment(int key)
         emit patchModified();
     }
 }
-void PatchSectionView::renameCable()
-{
-    const Atom *atom = currentAtom();
-    if (!atom || !atom->isCable())
-        return;
-
-    QString oldName = ((AtomCable *)atom)->getCable();
-    QString newName = NameChooseDialog::getReName(
-                tr("Rename internal cable '%1'").arg(oldName),
-                tr("New name:"),
-                oldName,
-                true /* force upper case */);
-    if (newName == oldName)
-        return;
-
-    newName = newName.toUpper();
-    QStringList all = patch->allCables();
-    if (all.contains(newName)) {
-        int reply = QMessageBox::warning(
-                    this,
-                    tr("Conflict"),
-                    tr("There already is a cable with this name. Choosing the name '%1'"
-                       "will join these cables and make all according inputs and outputs "
-                       "connected.\n\n"
-                       "Do you want want to join both cables?").arg(newName),
-                    QMessageBox::Cancel | QMessageBox::Yes,
-                    QMessageBox::Cancel);
-        if (reply == QMessageBox::Cancel)
-            return;
-    }
-
-    patch->renameCable(oldName, newName);
-    patch->commit(tr("renaming cable '%1' to '%2'").arg(oldName).arg(newName));
-    emit patchModified();
-}
 bool PatchSectionView::isEmpty() const
 {
     return section()->isEmpty();
@@ -1469,7 +1433,7 @@ void PatchSectionView::instantCableFrom(const CursorPosition &from)
     if (from.row < 0 || from.column <= 0) // not on an atom
         return;
 
-    const Atom *atom = currentAtom();
+    const Atom *atom = patch->currentAtom();
     const Atom *sourceAtom = section()->atomAt(from);
 
     QString cableName;
@@ -1643,22 +1607,6 @@ void PatchSectionView::deleteMultipleJacks(int circuitNr, int from, int to)
     section()->sanitizeCursor();
     patch->commit(tr("deleting %1 parameters").arg(to - from + 1));
     emit patchModified();
-}
-const Atom *PatchSectionView::currentAtom() const
-{
-    return (const_cast<PatchSectionView *>(this))->currentAtom();
-}
-Atom *PatchSectionView::currentAtom()
-{
-    JackAssignment *ja = section()->currentJackAssignment();
-    if (!ja)
-        return 0;
-    else {
-        int column = section()->cursorPosition().column;
-        if (!ja->isInput())
-            column = qMin(1, column);
-        return ja->atomAt(column);
-    }
 }
 bool PatchSectionView::atomCellSelected() const
 {
