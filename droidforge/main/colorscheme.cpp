@@ -102,6 +102,12 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Circuits: status dump color"), list);
     item->setData(1, CIRV_STATUS_DUMP_TEXT);
 
+    item = new QListWidgetItem(tr("Section comment: text"), list);
+    item->setData(1, PSV_COLOR_COMMENT_TEXT);
+
+    item = new QListWidgetItem(tr("Section comment: background"), list);
+    item->setData(1, PSV_COLOR_COMMENT_BG);
+
     item = new QListWidgetItem(tr("Circuits: Selection"), list);
     item->setData(1, CIRV_COLOR_SELECTION);
 

@@ -31,6 +31,7 @@ public:
     QString getTitle() const { return title; };
     QString getNonemptyTitle() const;
     void setComment(const QStringList &c);
+    const QStringList &getComment() const { return comment; };
     void setTitle(const QString &t) { title = t; };
     void deleteCurrentCircuit();
     void deleteCircuit(int i);

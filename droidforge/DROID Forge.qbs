@@ -73,6 +73,8 @@ QtApplication {
         "patchview/findpanel.h",
         "patchview/rewritecablesdialog.cpp",
         "patchview/rewritecablesdialog.h",
+        "patchview/sectioncommentview.cpp",
+        "patchview/sectioncommentview.h",
         "rackview/smoothellipseitem.cpp",
         "rackview/smoothellipseitem.h",
         "utilities/cableselectorlineedit.cpp",

@@ -12,6 +12,7 @@
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
 #include "mainwindow.h"
+#include "sectioncommentview.h"
 #include "tuning.h"
 #include "commentdialog.h"
 #include "circuitchoosedialog.h"
@@ -118,6 +119,18 @@ void PatchSectionView::buildPatchSection()
     QGraphicsScene *scene = new QGraphicsScene();
 
     int y = CIRV_TOP_PADDING;
+
+    const QStringList &comment = section()->getComment();
+    if (!comment.empty()) {
+        SectionCommentView *commentView = new SectionCommentView(
+                    comment,
+                    totalWidth - 2 * CIRV_SIDE_PADDING,
+                    fontMetrics().lineSpacing());
+        scene->addItem(commentView);
+        commentView->setPos(CIRV_SIDE_PADDING, y);
+        y += commentView->boundingRect().height() + CIRV_BOTTOM_PADDING;
+    }
+
     bool lastWasFolded = false;
     for (qsizetype i=0; i<section()->numCircuits(); i++)
     {

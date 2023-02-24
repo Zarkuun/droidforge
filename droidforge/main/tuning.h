@@ -147,6 +147,7 @@
 // Patch section view
 #define CURSOR_VISIBILITY_MARGIN             30
 #define PSV_SCROLL_SPEED                     0.2
+#define PSV_COMMENT_PADDING                  (STANDARD_SPACING / 2)
 
 // Circuit view (in section view)
 #define CIRV_TOP_PADDING                     11 // (2 * STANDARD_SPACING)
