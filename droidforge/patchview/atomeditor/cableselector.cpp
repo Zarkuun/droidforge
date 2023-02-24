@@ -18,8 +18,8 @@ CableSelector::CableSelector(QWidget *parent)
     mainLayout->addWidget(labelIcon, 0, 0);
 
     // Line edit for creating new cables
-    static QRegularExpression re("[a-zA-Z][_0-9a-zA-Z]*");
-    lineEdit = new QLineEdit(this);
+    static QRegularExpression re("[_0-9a-zA-Z]+");
+    lineEdit = new CableSelectorLineEdit(this);
     lineEdit->setValidator(new QRegularExpressionValidator(re, this));
     mainLayout->addWidget(lineEdit, 0, 1);
 
@@ -28,6 +28,7 @@ CableSelector::CableSelector(QWidget *parent)
     mainLayout->addWidget(listWidget, 1, 0, 1, 2);
 
     connect(lineEdit, &QLineEdit::textEdited, this, &CableSelector::cableEdited);
+    connect(lineEdit, &CableSelectorLineEdit::keyPressed, this, &CableSelector::lineKeyPressed);
     connect(listWidget, &QListWidget::currentRowChanged, this, &CableSelector::cableSelected);
     connect(listWidget, &QListWidget::itemDoubleClicked, this, &CableSelector::itemDoubleClicked);
 }
@@ -105,4 +106,11 @@ void CableSelector::updateIcon()
     QImage scaled = *image;
     scaled = scaled.scaled(59, 14);
     labelIcon->setPixmap(QPixmap::fromImage(scaled));
+}
+void CableSelector::lineKeyPressed(int key)
+{
+    if (key == Qt::Key_Down) {
+        listWidget->setFocus();
+        listWidget->setCurrentRow(0);
+    }
 }

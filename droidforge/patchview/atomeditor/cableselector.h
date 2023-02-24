@@ -4,6 +4,7 @@
 #include "atomcable.h"
 #include "patch.h"
 #include "atomsubselector.h"
+#include "cableselectorlineedit.h"
 
 #include <QGroupBox>
 #include <QObject>
@@ -18,7 +19,7 @@ class CableSelector : public AtomSubSelector
     const Patch *patch;
 
     QLabel *labelIcon;
-    QLineEdit *lineEdit;
+    CableSelectorLineEdit *lineEdit;
     QListWidget *listWidget;
     QString cable;
 
@@ -41,6 +42,7 @@ private slots:
     void cableSelected(int row);
     void itemDoubleClicked();
     void updateIcon();
+    void lineKeyPressed(int key);
 
 signals:
     void committed();

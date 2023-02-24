@@ -83,6 +83,10 @@
 	  usage - depending on which of both is bigger. Loading of too big patches
 	  via SD card or X7 is inhibited now.
 	* Prevent nonallowed characters to be used in names of cables.
+	* Allow cable names to start with a digit (like _1). Such cable names are not
+	  proposed but legal.
+	* Cable selector: you can now move the cursor from the entry field to the first
+	  element in the list with the Down key.
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue

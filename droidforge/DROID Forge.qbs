@@ -75,6 +75,8 @@ QtApplication {
         "patchview/rewritecablesdialog.h",
         "rackview/smoothellipseitem.cpp",
         "rackview/smoothellipseitem.h",
+        "utilities/cableselectorlineedit.cpp",
+        "utilities/cableselectorlineedit.h",
         "utilities/ellipsislabel.cpp",
         "utilities/ellipsislabel.h",
         "utilities/iconbase.cpp",
