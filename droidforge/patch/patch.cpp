@@ -714,7 +714,7 @@ QString Patch::toString() const
 
     QString sectionPart;
     for (qsizetype i=0; i<sections.length(); i++)
-        sectionPart += sections[i]->toString();
+        sectionPart += sections[i]->toString(i == 0 /* supress empty header */);
 
     // If the patch does not have a title and also no description,
     // the first comment of the section part would be interpreted

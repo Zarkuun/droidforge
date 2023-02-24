@@ -25,7 +25,7 @@ public:
     PatchSection(QString t);
     ~PatchSection();
     PatchSection *clone() const;
-    QString toString() const;
+    QString toString(bool suppressEmptyHeader) const;
     QString toCleanString() const;
     QString toBare() const;
     QString getTitle() const { return title; };

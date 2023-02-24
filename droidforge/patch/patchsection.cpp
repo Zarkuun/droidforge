@@ -28,11 +28,11 @@ PatchSection *PatchSection::clone() const
         newsection->circuits.append(circuits[i]->clone());
     return newsection;
 }
-QString PatchSection::toString() const
+QString PatchSection::toString(bool suppressEmptyHeader) const
 {
     QString s;
 
-    if (!title.isEmpty() || !comment.isEmpty()) {
+    if (!title.isEmpty() || !comment.isEmpty() || !suppressEmptyHeader) {
         s += "# -------------------------------------------------\n";
         s += "# " + getNonemptyTitle() + "\n";
         for (auto& line: comment)

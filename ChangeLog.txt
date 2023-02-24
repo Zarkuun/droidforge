@@ -108,6 +108,8 @@
 	  window.
 	* FIX: Avoid crash when trying to load a patch that is bigger than the allowed
 	  maximum size of 64,000 bytes.
+	* FIX: When your first section had no title and you moved it to a different
+	  position, it got merged with the section before. This has been fixed.
 
 1.0:
 	New features:

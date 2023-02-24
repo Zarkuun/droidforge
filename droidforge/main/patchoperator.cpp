@@ -1164,7 +1164,7 @@ void PatchOperator::editPatchSource()
 void PatchOperator::editSectionSource()
 {
     QString title = tr("Source code of section '%1'").arg(patch->currentSection()->getNonemptyTitle());
-    Patch *parsed = editSource(title, section()->toString());
+    Patch *parsed = editSource(title, section()->toString(true /* supress empty header */));
     if (parsed) {
         int sectionIndex = patch->currentSectionIndex();
         patch->removeSection(sectionIndex);

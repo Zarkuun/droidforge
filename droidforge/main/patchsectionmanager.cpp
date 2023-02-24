@@ -290,7 +290,7 @@ void PatchSectionManager::saveSectionAsPatch()
     if (newFilePath == "")
         return; // aborted
 
-    QString sectionSource = section->toString();
+    QString sectionSource = section->toString(true /* supress empty header */);
     Patch sectionPatch;
     PatchParser parser;
     parser.parseString(sectionSource, &sectionPatch);
