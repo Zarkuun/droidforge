@@ -367,6 +367,7 @@ void MainWindow::createSectionMenu()
 
     menu->addSeparator();
 
+    ADD_ACTION(ACTION_EDIT_SECTION_COMMENT, menu);
     ADD_ACTION(ACTION_EDIT_SECTION_SOURCE, menu);
 }
 void MainWindow::createViewMenu()

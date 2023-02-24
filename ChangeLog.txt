@@ -47,6 +47,9 @@
 	  load such a file and display the values in the patch. If you are working
 	  with the X7, put the lever to the left for getting access to the SD
 	  card and the status file on it without removing the SD card manually.
+	* Sections can now have comments. The section comment is displayed at the
+	  top if it is not empty. Edit it with Alt-C or the menu entry or by double
+	  clicking on it (if it is already there).
 
 	Clean ups:
 	* Expand parameter array now increases the button/LED number and also input or

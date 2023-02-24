@@ -238,6 +238,9 @@ void EditorActions::createActions()
     actions[ACTION_ABORT_ALL_ACTIONS] = new QAction(tr("Abort all actions"), this);
     actions[ACTION_ABORT_ALL_ACTIONS]->setShortcut(QKeySequence(tr("Escape")));
 
+    actions[ACTION_EDIT_SECTION_COMMENT] = new QAction(tr("Edit section comment..."), this);
+    actions[ACTION_EDIT_SECTION_COMMENT]->setShortcut(QKeySequence(tr("Alt+C")));
+
     actions[ACTION_EDIT_CIRCUIT_COMMENT] = new QAction(tr("Edit circuit co&mment..."), this);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setShortcut(QKeySequence(tr("Shift+Ctrl+C")));
 

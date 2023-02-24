@@ -33,6 +33,7 @@
 #include <QScrollBar>
 
 #define DATA_INDEX_CIRCUIT_NR 0
+#define DATA_INDEX_SECTION_COMMENT 11
 
 PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *initialPatch)
     : PatchView(initialPatch) // patch is never ever 0!
@@ -126,6 +127,7 @@ void PatchSectionView::buildPatchSection()
                     comment,
                     totalWidth - 2 * CIRV_SIDE_PADDING,
                     fontMetrics().lineSpacing());
+        commentView->setData(DATA_INDEX_SECTION_COMMENT, 1);
         scene->addItem(commentView);
         commentView->setPos(CIRV_SIDE_PADDING, y);
         y += commentView->boundingRect().height() + CIRV_BOTTOM_PADDING;
@@ -444,6 +446,10 @@ void PatchSectionView::mousePress(QPoint pos, int button, bool doubleClick)
         for (auto item: items(pos)) {
             if (item->data(DATA_INDEX_ICON_MARKER).isValid()) {
                 clickOnIconMarker((IconMarker *)item);
+                return;
+            }
+            else if (item->data(DATA_INDEX_SECTION_COMMENT).isValid() && doubleClick) {
+                TRIGGER_ACTION(ACTION_EDIT_SECTION_COMMENT);
                 return;
             }
         }

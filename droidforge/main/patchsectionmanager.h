@@ -68,6 +68,7 @@ public slots:
     void mergeAllSections();
     void moveSectionUp();
     void moveSectionDown();
+    void editComment();
 
     // from mouseDragger
     void clickOnItem(QGraphicsItem *item);

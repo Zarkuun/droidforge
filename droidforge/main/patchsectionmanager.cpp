@@ -9,6 +9,7 @@
 #include "editoractions.h"
 #include "namechoosedialog.h"
 #include "patchview.h"
+#include "commentdialog.h"
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -81,6 +82,7 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_MERGE_ALL_SECTIONS, &PatchSectionManager::mergeAllSections);
     CONNECT_ACTION(ACTION_MOVE_SECTION_UP, &PatchSectionManager::moveSectionUp);
     CONNECT_ACTION(ACTION_MOVE_SECTION_DOWN, &PatchSectionManager::moveSectionDown);
+    CONNECT_ACTION(ACTION_EDIT_SECTION_COMMENT, &PatchSectionManager::editComment);
 }
 void PatchSectionManager::connectDragger()
 {
@@ -121,6 +123,7 @@ void PatchSectionManager::popupSectionMenu(int index)
 
         menu->addSeparator();
 
+        ADD_ACTION(ACTION_EDIT_SECTION_COMMENT, menu);
         ADD_ACTION(ACTION_EDIT_SECTION_SOURCE, menu);
     }
     menu->popup(QCursor::pos());
@@ -137,12 +140,10 @@ void PatchSectionManager::mousePressEvent(QMouseEvent *event)
 {
     dragger.mousePress(event);
 }
-
 void PatchSectionManager::mouseReleaseEvent(QMouseEvent *event)
 {
     dragger.mouseRelease(event);
 }
-
 void PatchSectionManager::mouseMoveEvent(QMouseEvent *event)
 {
     dragger.mouseMove(event);
@@ -351,6 +352,24 @@ void PatchSectionManager::moveSectionDown()
     patch->switchCurrentSection(i+1);
     patch->commit(tr("moving section down"));
     emit patchModified();
+}
+void PatchSectionManager::editComment()
+{
+    QString oldComment = section()->getComment().join("\n").trimmed();
+    QString newComment = CommentDialog::editComment(oldComment).trimmed();
+    if (newComment != oldComment) {
+        if (newComment.isEmpty()) {
+            QStringList empty;
+            section()->setComment(empty);
+        }
+        else {
+            QStringList comment = newComment.trimmed().split('\n');
+            section()->setComment(comment);
+        }
+
+        patch->commit(tr("editing section comment"));
+        emit patchModified();
+    }
 }
 void PatchSectionManager::clickOnItem(QGraphicsItem *item)
 {
