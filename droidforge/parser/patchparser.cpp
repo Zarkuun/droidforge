@@ -102,12 +102,12 @@ void PatchParser::parseEmptyLine()
         commentState = DESCRIPTION;
 
     else if (commentState == DESCRIPTION) {
-        patch->addDescriptionLines(currentComment);
-        currentComment.clear();
+        patch->addDescriptionLines(circuitComment);
+        circuitComment.clear();
     }
 
-    else if (currentComment.size() > 0) {
-        currentComment.append("");
+    else if (circuitComment.size() > 0) {
+        circuitComment.append("");
     }
 }
 void PatchParser::parseCommentLine(QString line)
@@ -136,12 +136,13 @@ void PatchParser::parseCommentLine(QString line)
         if (commentState == SECTION_HEADER_ACTIVE) {
             commentState = CIRCUIT_HEADER;
             if (!sectionHeader.isEmpty())
-                startNewSection(sectionHeader);
+                startNewSection(sectionHeader, sectionComment);
             sectionHeader = "";
         }
         else {
             commentState = SECTION_HEADER_ACTIVE;
             sectionHeader = "";
+            sectionComment.clear();
         }
     }
 
@@ -162,20 +163,21 @@ void PatchParser::parseCommentLine(QString line)
         else if (commentState == DESCRIPTION) {
             if (!maybeParseRegisterComment(comment)
                 && !maybeParseMetaComment(comment))
-                currentComment.append(comment);
+                circuitComment.append(comment);
         }
 
-        // A comment int the section header belongs to the name
-        // of the section
+        // The first line in a section header is its title,
+        // all remaining lines are a section comment.
         else if (commentState == SECTION_HEADER_ACTIVE) {
-            if (!sectionHeader.isEmpty())
-                sectionHeader += " ";
-            sectionHeader += comment;
+            if (sectionHeader.isEmpty())
+                sectionHeader = comment;
+            else
+                sectionComment.append(comment);
         }
 
         // Finally: collect normal comment for the next circuit
         else
-            currentComment.append(comment);
+            circuitComment.append(comment);
     }
 }
 bool PatchParser::maybeParseRegisterComment(QString comment)
@@ -263,13 +265,13 @@ void PatchParser::parseCircuitLine(QString line, bool disabled)
     if (ModuleBuilder::controllerExists(circuitName.toLower())) {
         if (!disabled) { // disabling controller is not supported
             patch->addController(circuitName.toLower());
-            currentComment.clear();
+            circuitComment.clear();
         }
     }
     else {
         commentState = CIRCUIT_HEADER;
         if (comment != "")
-            currentComment.append(comment);
+            circuitComment.append(comment);
         parseCircuit(circuitName, disabled);
     }
 }
@@ -281,25 +283,28 @@ void PatchParser::parseCircuit(QString name, bool disabled)
     if (!e.match(namel).hasMatch())
         throw ParseException("Invalid circuit name '" + name + "'");
 
-    if (!section)
-        startNewSection("");
+    if (!section) {
+        QStringList emptyComment;
+        startNewSection("", emptyComment);
+    }
 
     stripEmptyCommentLines();
-    circuit = new Circuit(name, currentComment, disabled);
+    circuit = new Circuit(name, circuitComment, disabled);
     section->addCircuit(circuit);
-    currentComment.clear();
+    circuitComment.clear();
 }
 void PatchParser::stripEmptyCommentLines()
 {
-    while (currentComment.size() > 0 &&
-           currentComment.last().isEmpty())
+    while (circuitComment.size() > 0 &&
+           circuitComment.last().isEmpty())
     {
-        currentComment.removeLast();
+        circuitComment.removeLast();
     }
 }
-void PatchParser::startNewSection(QString name)
+void PatchParser::startNewSection(const QString &name, const QStringList &comment)
 {
     section = new PatchSection(name);
+    section->setComment(comment);
     patch->addSection(section);
 }
 void PatchParser::parseJackLine(Circuit *circuit, QString line, bool disabled)

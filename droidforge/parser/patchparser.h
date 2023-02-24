@@ -15,8 +15,6 @@ class PatchParser
 
     QString errorMessage;
     unsigned errorLine;
-    QStringList currentComment;
-    QString sectionHeader;
     enum {
         AWAITING_TITLE_COMMENT,
         DESCRIPTION,
@@ -24,7 +22,9 @@ class PatchParser
         SECTION_HEADER_ACTIVE,
         CIRCUIT_HEADER,
     } commentState;
-    // bool nextCommentIsSectionTitle;
+    QString sectionHeader;
+    QStringList sectionComment;
+    QStringList circuitComment;
 
 public:
     PatchParser();
@@ -42,7 +42,7 @@ private:
     void parseJackLine(Circuit *circuit, QString line, bool disabled);
     void parseCircuit(QString name, bool disabled);
     void stripEmptyCommentLines();
-    void startNewSection(QString name);
+    void startNewSection(const QString &name, const QStringList &comment);
     bool maybeParseMetaComment(QString comment);
     bool maybeParseRegisterComment(QString comment);
 };

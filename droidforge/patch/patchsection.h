@@ -14,13 +14,13 @@ class Patch;
 
 class PatchSection
 {
+    QStringList comment;
     CursorPosition cursor;
     QString title;
     Selection *selection;
     QList<Circuit *> circuits;
 
 public:
-
     PatchSection(); // no title
     PatchSection(QString t);
     ~PatchSection();
@@ -30,6 +30,7 @@ public:
     QString toBare() const;
     QString getTitle() const { return title; };
     QString getNonemptyTitle() const;
+    void setComment(const QStringList &c);
     void setTitle(const QString &t) { title = t; };
     void deleteCurrentCircuit();
     void deleteCircuit(int i);

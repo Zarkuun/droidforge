@@ -22,6 +22,7 @@ PatchSection::~PatchSection()
 PatchSection *PatchSection::clone() const
 {
     PatchSection *newsection = new PatchSection(title);
+    newsection->setComment(comment);
     newsection->cursor = cursor;
     for (unsigned i=0; i<circuits.size(); i++)
         newsection->circuits.append(circuits[i]->clone());
@@ -31,9 +32,11 @@ QString PatchSection::toString() const
 {
     QString s;
 
-    if (!title.isEmpty()) {
+    if (!title.isEmpty() || !comment.isEmpty()) {
         s += "# -------------------------------------------------\n";
-        s += "# " + title + "\n";
+        s += "# " + getNonemptyTitle() + "\n";
+        for (auto& line: comment)
+            s += "# " + line + "\n";
         s += "# -------------------------------------------------\n\n";
     }
 
@@ -42,7 +45,6 @@ QString PatchSection::toString() const
 
     return s;
 }
-
 QString PatchSection::toCleanString() const
 {
     QString s;
@@ -68,6 +70,10 @@ QString PatchSection::getNonemptyTitle() const
         return SECTION_DEFAULT_NAME;
     else
         return title;
+}
+void PatchSection::setComment(const QStringList &c)
+{
+    comment = c;
 }
 void PatchSection::deleteCurrentCircuit()
 {
