@@ -122,9 +122,9 @@ void Circuit::deleteJackAssignment(unsigned i)
     delete jackAssignments[i];
     jackAssignments.remove(i);
     if (haveBookmark) {
-        if (bmRow > i)
+        if (bmRow > (int)i)
             bmRow--;
-        else if (bmRow == i)
+        else if (bmRow == (int)i)
             clearBookmark();
     }
 }
