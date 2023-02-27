@@ -775,7 +775,6 @@ QString Patch::toCompressed() const
 
     // Remove comments
     static QRegularExpression comment("#.*");
-    // source.replace(comment, "");
     source.remove(comment);
 
     // Remove empty lines

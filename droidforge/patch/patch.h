@@ -118,9 +118,9 @@ public:
     bool findBookmark(int *section, CursorPosition *pos);
     bool hasBookmark();
     void setBookmark();
+    void updateProblems();
 
 protected:
-    void updateProblems();
     void clear();
 
 private:

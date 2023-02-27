@@ -8,8 +8,11 @@
 #include "jackassignmentunknown.h"
 #include "parseexception.h"
 #include "atomregister.h"
+#include "tuning.h"
+#include "globals.h"
 
 #include <QRegularExpression>
+#include <QSettings>
 
 JackAssignment::JackAssignment(QString jack, QString comment)
     : jack(jack)
@@ -93,6 +96,27 @@ void JackAssignment::incrementForExpansion(const Patch *patch)
     Atom *atom = atomAt(1);
     if (atom)
         atom->incrementForExpansion(patch);
+}
+
+QList<PatchProblem *> JackAssignment::collectProblems(const Patch *patch) const
+{
+    QList<PatchProblem *>problems = collectSpecificProblems(patch);
+
+    // check line length if cable name compression is off
+    QSettings settings;
+    bool renameCables = settings.value("compression/rename_cables", false).toBool();
+    if (!renameCables) {
+        QString  line = toBare();
+        if (line.length() > MAX_PATCH_LINE_LENGTH)
+            problems.append(new PatchProblem(-1, 0,
+              TR("Line too long: "
+                 "The maximum line length is %1, "
+                 "this line is %2. Use shorter cable names or "
+                 "enable compression of cable names.")
+                                             .arg(MAX_PATCH_LINE_LENGTH)
+                                             .arg(line.length())));
+    }
+    return problems;
 }
 Atom *JackAssignment::parseCable(QString s)
 {

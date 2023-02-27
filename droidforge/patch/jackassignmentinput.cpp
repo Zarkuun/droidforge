@@ -11,8 +11,6 @@
 
 #define NUM_ATOMS 3
 
-#define tr(s) QCoreApplication::translate("Patch", s)
-
 JackAssignmentInput::JackAssignmentInput(QString jack, QString comment, QString valueString)
     : JackAssignment(jack, comment)
     , atoms{0, 0, 0}
@@ -253,13 +251,13 @@ Atom *JackAssignmentInput::parseInputFraction(const QString &s)
     else
         return 0;
 }
-QList<PatchProblem *> JackAssignmentInput::collectProblems(const Patch *patch) const
+QList<PatchProblem *> JackAssignmentInput::collectSpecificProblems(const Patch *patch) const
 {
     QList<PatchProblem *>problems;
 
     if (!atoms[0] && !atoms[1] && !atoms[2]) {
         problems.append(
-                    new PatchProblem(-1, 1, tr("You need to set a value for at least one of the three columns")));
+                    new PatchProblem(-1, 1, TR("You need to set a value for at least one of the three columns")));
     }
 
     for (int i=0; i<NUM_ATOMS; i++) {

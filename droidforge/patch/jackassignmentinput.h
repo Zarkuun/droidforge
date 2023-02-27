@@ -23,7 +23,7 @@ public:
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     static Atom *parseInputAtom(const QString &s);
     static Atom *parseInputFraction(const QString &s);
-    QList<PatchProblem *> collectProblems(const Patch *patch) const;
+    QList<PatchProblem *> collectSpecificProblems(const Patch *patch) const;
     bool isUndefined() const;
 
 protected:

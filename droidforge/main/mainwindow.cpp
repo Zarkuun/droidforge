@@ -644,7 +644,8 @@ void MainWindow::about()
 void MainWindow::editPreferences()
 {
     PreferencesDialog::editPreferences();
-    emit patchModified(); // Update patch size usage
+    patch->updateProblems();
+    emit patchModified(); // Update patch size usage and potential problems
 }
 void MainWindow::showDiscord()
 {

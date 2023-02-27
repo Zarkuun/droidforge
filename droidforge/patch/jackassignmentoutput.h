@@ -22,7 +22,7 @@ public:
     void parseExpression(const QString &expression);
     static Atom *parseOutputAtom(const QString &s);
     void removeRegisterReferences(RegisterList &rl);
-    QList<PatchProblem *> collectProblems(const Patch *patch) const;
+    QList<PatchProblem *> collectSpecificProblems(const Patch *patch) const;
     bool isUndefined() const { return atom == 0; };
 
 protected:

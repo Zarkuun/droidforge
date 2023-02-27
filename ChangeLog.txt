@@ -91,6 +91,8 @@
 	* Cable selector: you can now move the cursor from the entry field to the first
 	  element in the list with the Down key.
 	* Always save the patch before depolying it to the SD card.
+	* There is a maximum of 63 characters for line in a patch. The master will complain
+	  about longer lines. This is now checked by the Forge.
 
 	Bug fixes:
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue

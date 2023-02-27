@@ -43,6 +43,7 @@ public:
     void collectRegisterAtoms(RegisterList &) const;
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
     void incrementForExpansion(const Patch *patch);
+    QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     virtual ~JackAssignment();
     virtual JackAssignment *clone() const = 0;
@@ -58,7 +59,7 @@ public:
     virtual void findCableConnections(const QString &, int &, int &) const {};
     virtual void parseExpression(const QString &expression) = 0;
     virtual void removeRegisterReferences(RegisterList &rl) = 0;
-    virtual QList<PatchProblem *> collectProblems(const Patch *patch) const = 0;
+    virtual QList<PatchProblem *> collectSpecificProblems(const Patch *patch) const = 0;
     virtual bool isUndefined() const = 0;
     static JackAssignment *parseJackLine(const QString &circuit, QString line);
 

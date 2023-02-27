@@ -19,7 +19,7 @@ public:
     void collectCables(QStringList &) const {};
     void parseExpression(const QString &expression);
     void removeRegisterReferences(RegisterList &) {};
-    QList<PatchProblem *> collectProblems(const Patch *patch) const;
+    QList<PatchProblem *> collectSpecificProblems(const Patch *patch) const;
     bool isUndefined() const { return true; }
 
 protected:
