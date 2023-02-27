@@ -504,6 +504,19 @@ void PatchOperator::loadStatusDumps()
         else
             break;
     }
+    // Create mapping table for cable compression if that is enabled
+    QSettings settings;
+    bool renameCables = settings.value("compression/rename_cables", false).toBool();
+    if (renameCables) {
+        Patch *cloned = patch->clone();
+        QMap<QString, QString> mapping;
+        cloned->compressCables(&mapping);
+        delete cloned;
+        for (auto &dump: statusDumps) {
+            dump.addCableMapping(mapping);
+        }
+    }
+
     showStatusDumpNr(statusDumps.count() - 1);
 }
 void PatchOperator::showStatusDumpNr(int nr)

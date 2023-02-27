@@ -368,7 +368,7 @@ void Patch::rewriteCableNames(const QString &remove, const QString &insert, Rewr
         }
     }
 }
-void Patch::compressCables()
+void Patch::compressCables(QMap<QString,QString> *mapping)
 {
     unsigned nextId = 0;
     QStringList cables = allCables();
@@ -377,6 +377,8 @@ void Patch::compressCables()
         while (cables.contains(newName))
            newName = createCompressedCableName(nextId++);
         renameCable(cable, newName);
+        if (mapping)
+            (*mapping)[cable] = newName; // for status dumps
     }
 }
 void Patch::clearBookmarks()

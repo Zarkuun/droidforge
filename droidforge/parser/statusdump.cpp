@@ -83,17 +83,24 @@ StatusDump::StatusDump(const QString &filePath)
     inputFile.close();
     parse(lines);
 }
-bool StatusDump::hasCable(const QString &name) const
+void StatusDump::addCableMapping(const QMap<QString, QString> mapping)
 {
+    cableCompressionMapping = mapping;
+}
+bool StatusDump::hasCable(QString name) const
+{
+    if (cableCompressionMapping.contains(name))
+        name = cableCompressionMapping[name];
     return cables.contains(name);
 }
 bool StatusDump::hasRegister(const QString &name) const
 {
     return registers.contains(name);
-
 }
-double StatusDump::valueOfCable(const QString &name) const
+double StatusDump::valueOfCable(QString name) const
 {
+    if (cableCompressionMapping.contains(name))
+        name = cableCompressionMapping[name];
     return cables[name];
 }
 double StatusDump::valueOfRegister(const QString &name) const

@@ -113,7 +113,7 @@ public:
     void removeRegisterReferences(RegisterList &rl);
     void renameCable(const QString &oldName, const QString &newName);
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
-    void compressCables();
+    void compressCables(QMap<QString, QString> *mapping = 0);
     void clearBookmarks();
     bool findBookmark(int *section, CursorPosition *pos);
     bool hasBookmark();
