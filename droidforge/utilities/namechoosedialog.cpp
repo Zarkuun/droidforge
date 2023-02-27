@@ -58,7 +58,6 @@ QString NameChooseDialog::getName(const QString &title, const QString &label, QS
             return "";
     }
 }
-
 void NameChooseDialog::changeText(const QString &)
 {
     static QRegularExpression re("[^A-Z0-9_]*");

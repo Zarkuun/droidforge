@@ -26,13 +26,13 @@ RewriteCablesDialog::RewriteCablesDialog(QWidget *parent)
 
     QHBoxLayout *lineLayout = new QHBoxLayout();
     lSearch = new QLabel(tr("Search:"));
-    lineEditRemove = new QLineEdit();
+    lineEditRemove = new CableSelectorLineEdit();
     lReplace = new QLabel(tr("Replace with:"));
     lSuffix = new QLabel(tr("Suffix to add:"));
     lSuffix->setVisible(false);
     lPrefix = new QLabel(tr("Prefix to add:"));
     lPrefix->setVisible(false);
-    lineEditInsert = new QLineEdit();
+    lineEditInsert = new CableSelectorLineEdit();
 
     lineLayout->addWidget(lSearch);
     lineLayout->addWidget(lineEditRemove);

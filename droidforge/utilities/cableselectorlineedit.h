@@ -14,6 +14,9 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *event);
 
+private slots:
+    void changeText(const QString &t);
+
 signals:
     void keyPressed(int key);
 };

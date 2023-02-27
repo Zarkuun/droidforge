@@ -2,6 +2,7 @@
 #define REWRITECABLESDIALOG_H
 
 #include "dialog.h"
+#include "cableselectorlineedit.h"
 
 #include <QLineEdit>
 #include <QLabel>
@@ -11,8 +12,8 @@
 class RewriteCablesDialog : public Dialog
 {
     Q_OBJECT
-    QLineEdit *lineEditRemove;
-    QLineEdit *lineEditInsert;
+    CableSelectorLineEdit *lineEditRemove;
+    CableSelectorLineEdit *lineEditInsert;
 
     QRadioButton *rbSearchReplace;
     QRadioButton *rbAddPrefix;
