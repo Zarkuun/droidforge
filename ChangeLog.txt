@@ -35,7 +35,7 @@
 	* New "Preferences" dialog with two now options for patch compression. Renaming
 	  cables to short things like _A, _B when deploying reduces the patch size
 	  (There is a maximum patch size of 64k).
-	* New option to ignore uknown jacks (in preferences). This allows you to try
+	* New option to ignore unknown jacks (in preferences). This allows you to try
 	  new firmware features (new inputs and outputs) without updating the Forge.
 	* New action for copying a controller with or without its labels
 	* In list of patch cables in value editor the entered name is now a search
