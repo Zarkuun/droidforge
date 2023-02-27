@@ -326,6 +326,13 @@ void PatchSectionView::placeMarker(const CursorPosition &pos, icon_marker_t type
 
     marker->setPos(p);
 }
+void PatchSectionView::popupSectionCommentMenu()
+{
+    QMenu *menu = new QMenu(this);
+    ADD_ACTION(ACTION_EDIT_SECTION_COMMENT, menu);
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->popup(QCursor::pos());
+}
 void PatchSectionView::deletePatchSection()
 {
     scene()->clear();
@@ -441,17 +448,25 @@ CursorPosition *PatchSectionView::cursorAtMousePosition(QPoint pos) const
 }
 void PatchSectionView::mousePress(QPoint pos, int button, bool doubleClick)
 {
-    // Click on little "info" icon
+    // Click a click on a marker
     if (button == Qt::LeftButton) {
         for (auto item: items(pos)) {
             if (item->data(DATA_INDEX_ICON_MARKER).isValid()) {
                 clickOnIconMarker((IconMarker *)item);
                 return;
             }
-            else if (item->data(DATA_INDEX_SECTION_COMMENT).isValid() && doubleClick) {
+        }
+    }
+
+    // Check click on the (optional) section comment
+    for (auto item: items(pos)) {
+        if (item->data(DATA_INDEX_SECTION_COMMENT).isValid()) {
+            if (doubleClick) {
                 TRIGGER_ACTION(ACTION_EDIT_SECTION_COMMENT);
-                return;
             }
+            else if (button == Qt::RightButton)
+                popupSectionCommentMenu();
+            return;
         }
     }
 

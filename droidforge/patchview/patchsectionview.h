@@ -95,6 +95,7 @@ private:
     void createFoldMarkers();
     void createLEDMismatchMarkers();
     void placeMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip = "");
+    void popupSectionCommentMenu();
 
     void connectActions();
     void setZoom(int zoom);
