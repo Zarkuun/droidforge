@@ -350,11 +350,11 @@ void PatchOperator::renameCable()
 void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 {
     int oldSection = patch->currentSectionIndex();
-    patch->setCursorTo(sectionIndex, pos);
-    if (section()->currentCircuit()->isFolded()) {
-        section()->currentCircuit()->setFold(false);
+    bool wasFolded = patch->section(sectionIndex)->circuit(pos.circuitNr)->isFolded();
+    patch->setCursorTo(sectionIndex, pos); // unfolds if neccessary
+
+    if (wasFolded)
         emit patchModified();
-    }
     else if (patch->currentSectionIndex() != oldSection)
         emit sectionSwitched();
     else

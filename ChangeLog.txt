@@ -111,6 +111,9 @@
 	  maximum size of 64,000 bytes.
 	* FIX: When your first section had no title and you moved it to a different
 	  position, it got merged with the section before. This has been fixed.
+	* FIX: When jumping to a folded circuit by following a cable or register,
+	  it was correctly unfolded by no graphics update was done so everything was garbled.
+	  This has been fixed.
 
 1.0:
 	New features:
