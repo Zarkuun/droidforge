@@ -35,11 +35,14 @@ class PatchOperator : public QObject
     OurMIDIHost midiHost;
     QMenu *recentFilesMenu;
     QList<StatusDump> statusDumps;
+    int lastShownStatusDumpNr;
     QMenu *dumpsMenu;
+    QAction *actionLoadDumps;
 
 public:
     explicit PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename, const Patch *initialRack=0);
     void createRecentFileActions(QMenu *menu);
+    QMenu *statusDumpsMenu() { return dumpsMenu; };
     void createStatusDumpsMenu();
     void loadFile(const QString &filename, int how);
     bool checkModified();
@@ -63,7 +66,7 @@ private slots:
     void saveToSD();
     void loadStatusDumps();
     void newPatch();
-    void showStatusDump(int nr);
+    void showStatusDumpNr(int nr);
     void newPatchWithSameRack();
     void open();
     void openRecentFile(const QString filePath);
@@ -119,6 +122,8 @@ private:
     void createBackup();
     void removeBackup();
     bool bringToFrontIfOpen(const QString &filePath, bool inOthers);
+    void updateStatusDumpsMenu();
+
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);
 #endif

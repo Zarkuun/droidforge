@@ -97,10 +97,6 @@ void EditorActions::createActions()
     actions[ACTION_SAVE_TO_SD]->setShortcut(QKeySequence(tr("F10")));
     actions[ACTION_TOOLBAR_SAVE_TO_SD] = new QAction(ICON("save_to_sd"), tr("Save to SD"), this);
 
-    actions[ACTION_LOAD_STATUS_DUMP] = new QAction(tr("Load status dump from DROID microSD card"), this);
-    actions[ACTION_LOAD_STATUS_DUMP]->setShortcut(QKeySequence(tr("Shift+F10")));
-    actions[ACTION_LOAD_STATUS_DUMP]->setEnabled(false);
-
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS
     QString title = tr("Reveal in finder");
@@ -537,9 +533,6 @@ void EditorActions::changeDroidState()
     updateUploadAction(ACTION_TOOLBAR_UPLOAD_TO_DROID);
     updateSaveToSDAction(ACTION_SAVE_TO_SD);
     updateSaveToSDAction(ACTION_TOOLBAR_SAVE_TO_SD);
-    actions[ACTION_LOAD_STATUS_DUMP]->setEnabled(
-                theOperator()->droidStatusDumpPresent() &&
-                !mainWindow->statusDump());
 }
 PatchOperator *EditorActions::theOperator()
 {

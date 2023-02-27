@@ -68,6 +68,7 @@ Internal patch cables:
 */
 
 StatusDump::StatusDump(const QString &filePath)
+    : filePath(filePath)
 {
     QStringList lines;
     QFile inputFile(filePath);
