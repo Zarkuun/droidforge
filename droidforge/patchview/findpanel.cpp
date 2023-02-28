@@ -33,6 +33,7 @@ FindPanel::FindPanel(QWidget *parent)
     connect(searchField, &SearchLineEdit::keyPressed, this, &FindPanel::catchKeyPress);
     connect(buttonNext, &QToolButton::pressed, this, &FindPanel::searchForward);
     connect(buttonPrev, &QToolButton::pressed, this, &FindPanel::searchBackward);
+    connect(buttonFinished, &QToolButton::pressed, this, &FindPanel::finished);
 }
 void FindPanel::showEvent(QShowEvent *)
 {
@@ -56,5 +57,10 @@ void FindPanel::searchBackward()
 }
 void FindPanel::catchKeyPress(QKeyEvent *event)
 {
-   emit keyCaptured(event);
+    emit keyCaptured(event);
+}
+void FindPanel::finished()
+{
+    setDisabled(true);
+    hide();
 }

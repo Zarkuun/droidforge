@@ -1,3 +1,7 @@
+1.1beta2:
+   Bug fixes:
+   * Fix button "Finished" in search field (found by @jpizzo)
+
 1.1beta1:
 	New features:
 	* The Forge now handles multiple patch windows in parallel. With the

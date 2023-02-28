@@ -29,6 +29,7 @@ private slots:
     void searchForward();
     void searchBackward();
     void catchKeyPress(QKeyEvent *event);
+    void finished();
 
 signals:
     void search(QString text, int direction);
