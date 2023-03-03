@@ -116,10 +116,10 @@ void CircuitView::paintHeader(QPainter *painter)
         QString name;
         if (circuit->isDisabled()) {
             name = "# ";
-            painter->setPen(COLOR(CIRV_COLOR_COMMENT));
+            painter->setPen(COLOR(TEXTMODE_COMMENT));
         }
         else
-            painter->setPen(COLOR(CIRV_COLOR_CIRCUIT_NAME));
+            painter->setPen(COLOR(TEXTMODE_CIRCUIT));
         name += "[";
         name += circuit->getName().toLower() + "]";
         if (circuit->isFolded())
@@ -163,13 +163,16 @@ void CircuitView::paintHeader(QPainter *painter)
 }
 void CircuitView::paintComment(QPainter *painter)
 {
-    painter->setPen(COLOR(CIRV_COLOR_COMMENT));
 
     if (textMode()) {
-        painter->drawText(commentRect().translated(0, 0.5),  Qt::AlignLeft | Qt::AlignTop, circuit->getCommentWithHashes());
+        painter->setPen(COLOR(TEXTMODE_COMMENT));
+        painter->drawText(commentRect().translated(0, 0.5),
+                          Qt::AlignLeft | Qt::AlignTop,
+                          circuit->getCommentWithHashes());
     }
 
     else {
+        painter->setPen(COLOR(CIRV_COLOR_COMMENT));
         painter->fillRect(commentRect(), COLOR(CIRV_COLOR_COMMENT_BACKGROUND));
         painter->drawText(
                     QRectF(commentRect().left() + CIRV_TEXT_SIDE_PADDING,
@@ -212,8 +215,17 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
     painter->setPen(textcolor);
 
     if (textMode()) {
-        if (atom)
+        if (atom) {
+            if (atom->isCable())
+                painter->setPen(COLOR(TEXTMODE_CABLE));
+            else if (atom->isRegister())
+                painter->setPen(COLOR(TEXTMODE_REGISTER));
+            else if (atom->isNumber())
+                painter->setPen(COLOR(TEXTMODE_NUMBER));
+            else
+                painter->setPen(COLOR(TEXTMODE_INVALID));
             painter->drawText(rect, Qt::AlignVCenter, atom->toString());
+        }
         return;
     }
 
@@ -343,22 +355,22 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
     QColor bgColor = COLOR(row % 2 == 0 ? CIRV_COLOR_EVEN_ROW : CIRV_COLOR_ODD_ROW);
 
     if (ja->isDisabled()) {
-        jackFgColor = COLOR(textMode() ? CIRV_COLOR_COMMENT : CIRV_COLOR_DISABLED_TEXT);
+        jackFgColor = COLOR(textMode() ? TEXTMODE_COMMENT : CIRV_COLOR_DISABLED_TEXT);
         atomColor = jackFgColor;
         bgColor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
         jackBgColor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
     }
     else if (ja->jackType() == JACKTYPE_INPUT) {
-        jackFgColor = COLOR(CIRV_COLOR_INPUT_JACK);
+        jackFgColor = COLOR(textMode() ? TEXTMODE_INPUT : CIRV_COLOR_INPUT_JACK);
         jackBgColor = COLOR(CIRV_COLOR_INPUT_JACK_BG);
     }
     else if (ja->jackType() == JACKTYPE_OUTPUT) {
-        jackFgColor = COLOR(CIRV_COLOR_OUTPUT_JACK);
+        jackFgColor = COLOR(textMode() ? TEXTMODE_OUTPUT : CIRV_COLOR_OUTPUT_JACK);
         jackBgColor = COLOR(CIRV_COLOR_OUTPUT_JACK_BG);
     }
     else {
-        atomColor = COLOR(CIRV_COLOR_DISABLED_TEXT);
-        jackFgColor = COLOR(CIRV_COLOR_UNKNOWN_JACK);
+        atomColor = COLOR(textMode() ? TEXTMODE_INVALID : CIRV_COLOR_DISABLED_TEXT);
+        jackFgColor = COLOR(textMode() ? TEXTMODE_INVALID : CIRV_COLOR_UNKNOWN_JACK);
         jackBgColor = COLOR(CIRV_COLOR_UNKNOWN_JACK_BG);
     }
 
@@ -373,7 +385,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
                           jr.top(),
                           columnWidth(0),
                           jackHeight()), Qt::AlignVCenter, text);
-        painter->setPen(COLOR(CIRV_COLOR_TEXT));
+        painter->setPen(COLOR(TEXTMODE_OPERATOR));
         painter->drawText(
                     QRectF(jr.left(),
                           jr.top(),
@@ -447,7 +459,7 @@ void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QStri
 {
     QRectF r(x, y, CIRV_COLUMN_OPERATOR_WIDTH, jackHeight());
     if (textMode()) {
-        painter->setPen(COLOR(CIRV_COLOR_TEXT));
+        painter->setPen(COLOR(TEXTMODE_OPERATOR));
         painter->drawText(r, o, Qt::AlignVCenter | Qt::AlignCenter);
     }
     else {

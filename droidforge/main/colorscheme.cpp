@@ -261,6 +261,33 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Memory Indicator: Text on bar"), list);
     item->setData(1, PSI_COLOR_TEXT);
 
+    item = new QListWidgetItem(tr("Text mode: circuit name"), list);
+    item->setData(1, TEXTMODE_CIRCUIT);
+
+    item = new QListWidgetItem(tr("Text mode: input"), list);
+    item->setData(1, TEXTMODE_INPUT);
+
+    item = new QListWidgetItem(tr("Text mode: output"), list);
+    item->setData(1, TEXTMODE_OUTPUT);
+
+    item = new QListWidgetItem(tr("Text mode: operator"), list);
+    item->setData(1, TEXTMODE_OPERATOR);
+
+    item = new QListWidgetItem(tr("Text mode: cable"), list);
+    item->setData(1, TEXTMODE_CABLE);
+
+    item = new QListWidgetItem(tr("Text mode: register"), list);
+    item->setData(1, TEXTMODE_REGISTER);
+
+    item = new QListWidgetItem(tr("Text mode: number"), list);
+    item->setData(1, TEXTMODE_NUMBER);
+
+    item = new QListWidgetItem(tr("Text mode: comment"), list);
+    item->setData(1, TEXTMODE_COMMENT);
+
+    item = new QListWidgetItem(tr("Text mode: invalid jack or value"), list);
+    item->setData(1, TEXTMODE_INVALID);
+
     colorDialog = new QColorDialog(this);
     colorDialog->setOption(QColorDialog::ShowAlphaChannel);
     colorDialog->setOption(QColorDialog::NoButtons);

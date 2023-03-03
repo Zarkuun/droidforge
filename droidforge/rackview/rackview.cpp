@@ -60,8 +60,6 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &RackView::setRegisterHilitesDirty);
     connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &RackView::setRegisterHilitesDirty);
 
-    setStyleSheet(QString("QGraphicsView { padding: 4px; }"));
-
     // Update of register hilites is delayed. This speeds up cursor movement
     registerHilightTimer = new QTimer(this);
     registerHilightTimer->setSingleShot(true);
@@ -105,7 +103,7 @@ void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     dragger.mouseMove(event);
 }
-void RackView::showEvent(QShowEvent *event)
+void RackView::showEvent(QShowEvent *)
 {
     updateSize();
 }
@@ -336,6 +334,8 @@ void RackView::swapControllers(int fromindex, int toindex)
 }
 void RackView::refreshScene()
 {
+    setStyleSheet(QString("QGraphicsView { padding: 4px; }"));
+
     modules.clear();
     if (dragRegisterIndicator->scene())
         scene()->removeItem(dragRegisterIndicator);

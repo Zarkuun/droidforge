@@ -4,6 +4,9 @@
    * Try to fix maximally zoomed modules before window resize
      (worked for me, so this fix is just a guess)
 
+   Cleanups:
+   * Add color scheme to simplified text mode
+
 1.1beta1:
 	New features:
 	* The Forge now handles multiple patch windows in parallel. With the
