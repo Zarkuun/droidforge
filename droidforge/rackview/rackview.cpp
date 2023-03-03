@@ -39,7 +39,6 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     dragRegisterIndicator = new DragRegisterIndicator;
     registerMarker = new RegisterMarker;
     dragControllerIndicator = new DragControllerIndicator;
-    initScene();
 
     CONNECT_ACTION(ACTION_NEW_CONTROLLER, &RackView::addController);
     CONNECT_ACTION(ACTION_TOOLBAR_ADD_CONTROLLER, &RackView::addController);
@@ -67,6 +66,8 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     registerHilightTimer = new QTimer(this);
     registerHilightTimer->setSingleShot(true);
     connect(registerHilightTimer, &QTimer::timeout, this, &RackView::updateRegisterHilites);
+
+    initScene();
 }
 void RackView::modifyPatch()
 {
@@ -103,6 +104,10 @@ void RackView::mouseDoubleClickEvent(QMouseEvent *event)
 void RackView::mouseMoveEvent(QMouseEvent *event)
 {
     dragger.mouseMove(event);
+}
+void RackView::showEvent(QShowEvent *event)
+{
+    updateSize();
 }
 bool RackView::registersSuitableForSwapping(AtomRegister a, AtomRegister b)
 {

@@ -1,6 +1,8 @@
 1.1beta2:
    Bug fixes:
    * Fix button "Finished" in search field (found by @jpizzo)
+   * Try to fix maximally zoomed modules before window resize
+     (worked for me, so this fix is just a guess)
 
 1.1beta1:
 	New features:
