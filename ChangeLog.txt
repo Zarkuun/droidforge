@@ -3,6 +3,7 @@
    * Fix button "Finished" in search field (found by @jpizzo)
    * Try to fix maximally zoomed modules before window resize
      (worked for me, so this fix is just a guess)
+   * Make computation of used RAM more precise
 
    Cleanups:
    * Add color scheme to simplified text mode

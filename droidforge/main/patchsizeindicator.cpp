@@ -71,7 +71,7 @@ void PatchSizeIndicator::updateStatus()
 
     unsigned sectionRam = patch->currentSection()->memoryFootprint();
     QString tooltipSection = tr("The section '%1' needs %2 bytes.")
-            .arg(patch->currentSection()->getTitle())
+            .arg(patch->currentSection()->getNonemptyTitle())
             .arg(sectionRam);
     tooltipSection += " " + tr("This is %1% of the patch size and %2% of the available RAM.")
             .arg(100 * sectionRam / memoryNeeded)

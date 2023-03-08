@@ -48,6 +48,7 @@ public:
     QString controller(qsizetype i) const { return controllers[i]; };
     const QStringList &allControllers() const { return controllers; };
     bool isEmpty() const { return numSections() == 0; };
+    unsigned numCircuits() const;
     qsizetype numSections() const { return sections.size(); };
     qsizetype currentSectionIndex() const { return sectionIndex; };
     const PatchSection *currentSection() const { return sections[sectionIndex]; };

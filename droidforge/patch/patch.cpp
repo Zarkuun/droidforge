@@ -218,6 +218,13 @@ void Patch::setRegisterLabel(AtomRegister atom, RegisterLabel label)
 {
     registerLabels[atom] = label;
 }
+unsigned Patch::numCircuits() const
+{
+    unsigned num = 0;
+    for (auto& section: sections)
+        num += section->numCircuits();
+    return num;
+}
 const Circuit *Patch::currentCircuit() const
 {
     return currentSection()->currentCircuit();
@@ -591,11 +598,23 @@ bool Patch::registerAvailable(AtomRegister ar) const
 unsigned Patch::memoryFootprint() const
 {
     unsigned memory = 0;
-    for (auto section: sections)
-        memory += section->memoryFootprint();
 
-    for (const QString &controller: controllers)
-        memory += the_firmware->controllerMemoryFootprint(controller);
+    // If the patch is completely empty, Droid will replace it with
+    // one that consists of the sole circuit "[droid]". Because it
+    // cannot save an empty patch to the flash.
+    if (numCircuits() == 0 && controllers.size() == 0) {
+        memory = the_firmware->circuitMemoryFootprint("droid");
+    }
+    else {
+        for (auto section: sections)
+            memory += section->memoryFootprint();
+
+        for (const QString &controller: controllers)
+            memory += the_firmware->controllerMemoryFootprint(controller);
+    }
+
+    // We must assume an attached X7. The X7 need 1k RAM just because
+    // it's attached.
     memory += the_firmware->controllerMemoryFootprint("x7");
 
     return memory;
