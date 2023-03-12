@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QLineEdit>
+#include <QLabel>
 #include <QToolButton>
 
 #include "searchlineedit.h"
@@ -11,6 +12,7 @@
 class FindPanel : public QWidget
 {
     Q_OBJECT
+    QLabel *label;
     SearchLineEdit *searchField;
     QToolButton *buttonPrev;
     QToolButton *buttonNext;
@@ -24,6 +26,9 @@ protected:
 
 private:
     void doSearch(int direction);
+
+public slots:
+    void updateSearchStats(unsigned pos, unsigned count);
 
 private slots:
     void searchForward();

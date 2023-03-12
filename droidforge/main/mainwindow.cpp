@@ -433,6 +433,7 @@ void MainWindow::createStatusBar()
     findPanel.hide();
     statusbar->addPermanentWidget(&findPanel);
     connect(&findPanel, &FindPanel::search, &patchOperator, &PatchOperator::search);
+    connect(&patchOperator, &PatchOperator::searchStatsChanged, &findPanel, &FindPanel::updateSearchStats);
 }
 void MainWindow::createToolbar()
 {

@@ -244,8 +244,10 @@ void Patch::setCursorTo(int section, const CursorPosition &pos)
     sectionIndex = section;
     currentSection()->setCursor(pos);
 }
-void Patch::moveCursorForward()
+bool Patch::moveCursorForward()
 {
+    bool wrapped = false;
+
     // Move the cursor to the next possible atom, jack, circuit, whatever
     CursorPosition pos = currentSection()->cursorPosition();
     int circuitNr = pos.circuitNr;
@@ -289,9 +291,11 @@ void Patch::moveCursorForward()
         row = ROW_CIRCUIT;
         column = 0;
         sectionIndex = 0;
+        wrapped = true;
     }
 
     currentSection()->setCursor(CursorPosition(circuitNr, row, column));
+    return wrapped;
 }
 void Patch::moveCursorBackward()
 {
@@ -341,6 +345,31 @@ void Patch::moveCursorBackward()
 
     currentSection()->setCursor(CursorPosition(circuitNr, row, column));
     return;
+}
+unsigned Patch::searchHitPosition(const QString &text, unsigned *count)
+{
+    *count = 0;
+    unsigned position = 0;
+    int startSectionIndex = sectionIndex;
+    CursorPosition startCursor = currentSection()->cursorPosition();
+
+    sectionIndex = 0;
+    currentSection()->setCursor(CursorPosition(0, ROW_CIRCUIT, 0));
+    currentSection()->sanitizeCursor();
+    while (true) {
+        if (currentSection()->searchHit(text)) {
+            (*count)++;
+            if (startSectionIndex == sectionIndex &&
+                    startCursor == currentSection()->cursorPosition()) {
+                position = *count;
+            }
+        }
+        if (moveCursorForward())
+            break; // wrapped around
+    }
+    sectionIndex = startSectionIndex;
+    currentSection()->setCursor(startCursor);
+    return position;
 }
 void Patch::setTitle(const QString &newTitle)
 {

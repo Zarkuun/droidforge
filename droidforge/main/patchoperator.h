@@ -136,6 +136,7 @@ signals:
     void cursorMoved();
     void patchingChanged();
     void droidStateChanged();
+    void searchStatsChanged(unsigned pos, unsigned count);
 };
 
 #endif // PATCHOPERATOR_H

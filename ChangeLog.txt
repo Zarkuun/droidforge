@@ -7,6 +7,7 @@
 
    Cleanups:
    * Add color scheme to simplified text mode
+   * Search: show stats like 5/10 (as suggested by @jpizzo)
 
 1.1beta1:
 	New features:

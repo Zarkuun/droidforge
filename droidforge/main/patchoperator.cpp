@@ -792,6 +792,11 @@ void PatchOperator::search(QString text, int direction)
             break;
         }
     }
+
+    // First round: We count the number of search hits
+    unsigned pos, count;
+    pos = patch->searchHitPosition(text, &count);
+    emit searchStatsChanged(pos, count);
 }
 void PatchOperator::integrate()
 {

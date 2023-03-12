@@ -60,8 +60,9 @@ public:
     void moveSection(int fromIndex, int toIndex);
     const Atom *currentAtom() const; // can be 0
     void setCursorTo(int section, const CursorPosition &pos);
-    void moveCursorForward();
+    bool moveCursorForward();
     void moveCursorBackward();
+    unsigned searchHitPosition(const QString &text, unsigned *count);
 
     // More complex analysis
     QStringList allCables() const;
