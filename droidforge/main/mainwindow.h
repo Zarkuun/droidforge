@@ -31,7 +31,6 @@ class PatchEditEngine;
 class StatusDump;
 
 class MainWindow;
-extern DroidFirmware *the_firmware;
 
 #define FILE_MODE_LOAD 0
 #define FILE_MODE_INTEGRATE 1
@@ -42,7 +41,6 @@ class MainWindow : public QMainWindow, PatchView
 
     PatchEditEngine thePatch;
     UpdateHub updateHub;
-    DroidFirmware firmware;
     QAction bringToFrontAction;
 
     // all PatchViews

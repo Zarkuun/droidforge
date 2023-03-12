@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":images/droidforge-icon.png"));
 
     // Global variable objects that are shared by all MainWindow
+    DroidFirmware firmware;
     WindowList windowList;
     Clipboard clipboard; // must be global to all windows
     UserManual userManual;
