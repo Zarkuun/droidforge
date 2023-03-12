@@ -52,7 +52,6 @@ void FindPanel::doSearch(int direction)
 
 void FindPanel::updateSearchStats(unsigned pos, unsigned count)
 {
-    shout << "search" << pos << count;
     if (!count)
         label->setText(tr("Search (no hit)"));
     else if (!pos)
