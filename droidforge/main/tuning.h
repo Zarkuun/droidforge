@@ -7,7 +7,7 @@
 #ifdef QT_DEBUG
 #define APPLICATION_VERSION                  ("SNAPSHOT " __DATE__)
 #else
-#define APPLICATION_VERSION                  "1.1beta2"
+#define APPLICATION_VERSION                  "1.1beta3"
 #endif
 #define LICENSE_URL                          "https://www.gnu.org/licenses/gpl.txt"
 #define DISCORD_URL                          "https://discord.com/invite/9TUcRmH"

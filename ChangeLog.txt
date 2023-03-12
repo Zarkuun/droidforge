@@ -3,6 +3,7 @@
    * Save the rack size when it was changed with the menu entries or
      keyboard shortcuts (previously it was just saved when you moved
 	 the bar between the rack and the patch with the mouse).
+   * Try to fix the maximally zoomed modules at start, again.
 
 1.1beta2:
    Bug fixes:

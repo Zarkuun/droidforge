@@ -411,7 +411,7 @@ void RackView::updateSize()
     // Enable / disable scrollbar with histeresis, to avoid an endless loop.
     // By removing the horizontal scroll bar, we get more height, a resize
     // event and that could lead to having a scroll bar and so on.
-    if (previousHeight < height() && neededWidth > viewport()->width() && horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff) {
+    if (previousHeight != 0 && previousHeight < height() && neededWidth > viewport()->width() && horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff) {
         setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
         return;
     }
