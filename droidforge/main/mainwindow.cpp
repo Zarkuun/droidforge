@@ -214,8 +214,9 @@ void MainWindow::showEvent(QShowEvent *)
         rackSplitter->restoreState(settings.value("mainwindow/splitposition").toByteArray());
         rackSplitter->setHandleWidth(SPLITTER_HANDLE_WIDTH);
     }
-    else
+    else {
         rackZoomReset();
+    }
 }
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
@@ -453,10 +454,14 @@ void MainWindow::createToolbar()
     ADD_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, toolbar);
     ADD_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, toolbar);
 }
-void MainWindow::splitterMoved()
+void MainWindow::saveSplitPosition()
 {
     QSettings settings;
     settings.setValue("mainwindow/splitposition", rackSplitter->saveState());
+}
+void MainWindow::splitterMoved()
+{
+    saveSplitPosition();
 }
 void MainWindow::rackZoomIn()
 {
@@ -588,6 +593,7 @@ void MainWindow::rackZoom(int whence)
     }
     currentSizes[1] = totalsize - currentSizes[0];
     rackSplitter->setSizes(currentSizes);
+    saveSplitPosition();
 }
 
 void MainWindow::updateBTFAction()

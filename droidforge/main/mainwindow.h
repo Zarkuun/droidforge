@@ -117,7 +117,7 @@ private:
     void updateStatusbarMessage();
     void rackZoom(int whence);
     void updateBTFAction();
-
+    void saveSplitPosition();
 
 private slots:
     void updateWindowMenu();
