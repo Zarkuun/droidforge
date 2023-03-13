@@ -80,7 +80,9 @@ public:
     const QList<PatchProblem *> &allProblems() const { return problems; };
     const PatchProblem *problem(unsigned nr) { return problems[nr]; };
     bool registerAvailable(AtomRegister ar) const;
-    unsigned memoryFootprint() const;
+    unsigned memoryFootprint(QStringList &breakdown) const;
+    unsigned countUniqueCables();
+    unsigned countUniqueConstants();
     bool needsG8();
     bool needsX7();
 

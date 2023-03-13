@@ -57,16 +57,20 @@ void PatchSizeIndicator::paintEvent(QPaintEvent *)
 }
 void PatchSizeIndicator::updateStatus()
 {
+    QStringList breakdown;
     memoryAvailable = the_firmware->availableMemory();
-    memoryNeeded = patch->memoryFootprint();
-    QString tooltipRAM = tr("Your patch needs %1 bytes of RAM.").arg(memoryNeeded);
+    memoryNeeded = patch->memoryFootprint(breakdown);
+    QString tooltipRAM = tr("Your patch needs %1 bytes of RAM.\n").arg(memoryNeeded);
+    for (auto& hint: breakdown)
+        tooltipRAM += " * " + hint + "\n";
+
     if (memoryNeeded <= memoryAvailable) {
         unsigned perc = memoryNeeded * 100 / memoryAvailable;
-        tooltipRAM += " " + tr("This is %1% of the available RAM. You have %2 bytes left.").arg(perc).arg(memoryAvailable - memoryNeeded);
+        tooltipRAM += tr("This is %1% of the available RAM. You have %2 bytes left.\n").arg(perc).arg(memoryAvailable - memoryNeeded);
     }
     else {
-        tooltipRAM += " " + tr("This is %1 bytes more than there is available! "
-                            "Try to remove some circuits.").arg(memoryNeeded - memoryAvailable);
+        tooltipRAM += tr("This is %1 bytes more than there is available! "
+                            "Try to remove some circuits.\n").arg(memoryNeeded - memoryAvailable);
     }
 
     unsigned sectionRam = patch->currentSection()->memoryFootprint();

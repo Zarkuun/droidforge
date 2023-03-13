@@ -1,5 +1,6 @@
 #include "patch.h"
 #include "atomcable.h"
+#include "atomnumber.h"
 #include "droidfirmware.h"
 #include "modulebuilder.h"
 #include "registerlabels.h"
@@ -624,7 +625,7 @@ bool Patch::registerAvailable(AtomRegister ar) const
 
     return ar.getNumber() >= 1 && ar.getNumber() <= max;
 }
-unsigned Patch::memoryFootprint() const
+unsigned Patch::memoryFootprint(QStringList &breakdown) const
 {
     unsigned memory = 0;
 
@@ -635,18 +636,81 @@ unsigned Patch::memoryFootprint() const
         memory = the_firmware->circuitMemoryFootprint("droid");
     }
     else {
+        unsigned byCircuits = 0;
         for (auto section: sections)
-            memory += section->memoryFootprint();
+            byCircuits += section->memoryFootprint();
+        memory += byCircuits;
+        memory -= 12; // Somehow neccessary in blue-2
+        breakdown.append(TR("%1 bytes are needed by %2 circuits.")
+                         .arg(byCircuits).arg(numCircuits()));
 
+        unsigned byControllers = 0;
         for (const QString &controller: controllers)
-            memory += the_firmware->controllerMemoryFootprint(controller);
+            byControllers += the_firmware->controllerMemoryFootprint(controller);
+        memory += byControllers;
+        breakdown.append(TR("%1 bytes are needed by %2 controllers.")
+                         .arg(byControllers).arg(controllers.count()));
     }
 
     // We must assume an attached X7. The X7 need 1k RAM just because
     // it's attached.
-    memory += the_firmware->controllerMemoryFootprint("x7");
+    unsigned byX7 = the_firmware->controllerMemoryFootprint("x7");
+    if (((Patch *)this)->needsX7())
+        breakdown.append(TR("%1 bytes are used by the X7.").arg(byX7));
+    else
+        breakdown.append(TR("%1 bytes could be used by a potential X7.").arg(byX7));
+    memory += byX7;
 
+
+    unsigned numConstants = ((Patch *)this)->countUniqueConstants();
+    memory += numConstants * 4;
+    breakdown.append(TR("%1 bytes are used by %2 unique constants.")
+                     .arg(numConstants * 4).arg(numConstants));
+
+    unsigned numCables = ((Patch *)this)->countUniqueCables();
+    memory += numCables * 8;
+    breakdown.append(TR("%1 bytes are used by %2 unique Cables.")
+                     .arg(numCables * 8).arg(numCables));
     return memory;
+}
+unsigned Patch::countUniqueCables()
+{
+    QSet<QString> cables;
+    for (auto it = beginEnabled(); it != this->end(); ++it)
+    {
+        auto &atom = *it;
+        if (atom->isCable()) {
+            QString name = ((AtomCable *)atom)->getCable();
+            cables.insert(name);
+        }
+    }
+    return cables.count();
+}
+
+unsigned Patch::countUniqueConstants()
+{
+    // This algo is quite complex. Please have a look at the Droid firmware
+    // thedroid.cc for the mirrored code that is the basis for this.
+    QSet<float> constants;
+    constants.insert(0.0);
+    constants.insert(1.0);
+    for (auto it = beginEnabled(); it != this->end(); ++it)
+    {
+        auto &atom = *it;
+        if (atom->isNumber()) {
+            AtomNumber *an = (AtomNumber *)atom;
+            float number = an->getNumber();
+            if (number == 0.0)
+                continue;
+            constants.insert(number);
+            constants.insert(-number);
+            if (an->isFraction()) {
+                constants.insert(1.0 / number);
+                constants.insert(1.0 / -number);
+            }
+        }
+    }
+    return constants.count();
 }
 bool Patch::needsG8()
 {

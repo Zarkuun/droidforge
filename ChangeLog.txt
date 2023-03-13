@@ -3,7 +3,11 @@
 	* Fix crash found @nohumans. The Forge crashed when you opened a second
 	  patch window, close that again and the entered the preferences and
 	  changed them.
-
+	* Fix patch RAM usage for one more time. Now it should be very
+	  precise. Just note that the Forge cannot know wether you have an
+	  X7 attached. An X7 needs 1000 bytes, just because it is attached,
+	  even if not used in the patch. So the forge always assume these 1000
+	  bytes, just for safety.
 1.1:
 	New features:
 	* The Forge now handles multiple patch windows in parallel. With the
