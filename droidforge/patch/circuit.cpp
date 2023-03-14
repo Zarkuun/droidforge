@@ -319,16 +319,12 @@ bool Circuit::checkLEDMismatches(bool fixit)
     for (auto ja: jackAssignments) {
         if (ja->jackPrefix() == "led") {
             QString suffix = ja->jackName().mid(3);
-            shout << "Such nach suffix" << suffix;
             if (!findJack("button" + suffix)) {
-                shout << "kein button. Adde" << nr;
                 if (fixit)
                     toBeRemoved.append(nr);
                 else
                     return true;
             }
-            else
-                shout << "Es gibt einen" << ("button" + suffix);
         }
         nr++;
     }
