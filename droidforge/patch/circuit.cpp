@@ -31,7 +31,6 @@ Circuit *Circuit::clone() const
 void Circuit::addJackAssignment(JackAssignment *ja)
 {
     jackAssignments.append(ja);
-
 }
 void Circuit::insertJackAssignment(JackAssignment *ja, int index)
 {
@@ -271,63 +270,72 @@ bool Circuit::checkLEDMismatches(bool fixit)
             unsigned controller = reg.controller();
             unsigned number = reg.number();
 
+            // Conserve the "up" and "down" in "buttonup" and "buttondown"
             QString suffix = ja->jackName().mid(6);
             QString ledname = "led" + suffix;
 
             JackAssignment *ledja = findJack(ledname);
-            if (!ledja) {
+            if (!ledja) { // matching LED assignment not found
                 if (fixit) {
                     JackAssignmentOutput *newJa = new JackAssignmentOutput(ledname);
                     newJa->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
-                    this->addJackAssignment(newJa);
+                    addJackAssignment(newJa);
                     continue;
                 }
                 else
-                    return true;
+                    return true; // found mismatch
             }
-
-            const Atom *ledAtom = ledja->atomAt(1);
-            if (!ledAtom || !ledAtom->isRegister()) {
-                if (fixit) {
-                    ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
-                    continue;
+            else {
+                // parameter led... found, but is it set with a register?
+                const Atom *ledAtom = ledja->atomAt(1);
+                if (!ledAtom || !ledAtom->isRegister()) { // not present or no register
+                    if (fixit) {
+                        ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
+                        continue;
+                    }
+                    else
+                        return true;
                 }
-                else
-                    return true;
-            }
-
-            AtomRegister ledReg = *(AtomRegister *)ledAtom;
-            if (ledReg.getRegisterType() != REGISTER_LED
-                || ledReg.controller() != controller
-                || ledReg.number() != number)
-            {
-                if (fixit)
-                    ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
-                else
-                    return true;
+                else {
+                    // parameter present and with a register. Now check if it's the correct LX.Y
+                    AtomRegister ledReg = *(AtomRegister *)ledAtom;
+                    if (ledReg.getRegisterType() != REGISTER_LED
+                            || ledReg.controller() != controller
+                            || ledReg.number() != number)
+                    {
+                        if (fixit)
+                            ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
+                        else
+                            return true;
+                    }
+                }
             }
         }
     }
 
     // Phase 2: remove exceeding LED assignments
-    QList<unsigned> toRemove;
+    QList<unsigned> toBeRemoved; // indices of to assignment to be removed
     unsigned nr = 0;
     for (auto ja: jackAssignments) {
         if (ja->jackPrefix() == "led") {
             QString suffix = ja->jackName().mid(3);
+            shout << "Such nach suffix" << suffix;
             if (!findJack("button" + suffix)) {
+                shout << "kein button. Adde" << nr;
                 if (fixit)
-                    toRemove.append(nr);
+                    toBeRemoved.append(nr);
                 else
                     return true;
             }
+            else
+                shout << "Es gibt einen" << ("button" + suffix);
         }
         nr++;
     }
 
     // remove in reverse direction (avoids index chaos)
-    while (!toRemove.isEmpty())
-       deleteJackAssignment(toRemove.takeLast());
+    while (!toBeRemoved.isEmpty())
+       deleteJackAssignment(toBeRemoved.takeLast());
 
     return false;
 }
