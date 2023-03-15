@@ -10,6 +10,7 @@
 	Cleanu ups:
 	* Assign Shift-F10 shortcut to "reload status dump", when a new SD card
 	  has been inserted (rather than just show the previously loaded dump)
+	* Avoid section comment with just one empty line
 
 1.1beta4:
 	Bug fixes
