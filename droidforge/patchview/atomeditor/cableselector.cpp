@@ -39,14 +39,10 @@ bool CableSelector::handlesAtom(const Atom *atom) const
 void CableSelector::setPatch(const Patch *newPatch)
 {
     patch = newPatch;
-    updateList();
+    updateList("" /* no filter */);
 }
-void CableSelector::updateList()
+void CableSelector::updateList(QString filter)
 {
-    QString filter;
-    if (!lineEdit->hasSelectedText())
-        filter = lineEdit->text().toUpper();
-
     listWidget->clear();
     QStringList cables = patch->allCables();
     for (auto &cable: cables) {
@@ -87,7 +83,7 @@ void CableSelector::cableEdited(QString text)
     if (text != text.toUpper())
         lineEdit->setText(text.toUpper());
     updateIcon();
-    updateList();
+    updateList(lineEdit->text());
 }
 void CableSelector::cableSelected(int row)
 {

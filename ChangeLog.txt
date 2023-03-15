@@ -8,6 +8,9 @@
 	  X7 attached. An X7 needs 1000 bytes, just because it is attached,
 	  even if not used in the patch. So the forge always assume these 1000
 	  bytes, just for safety.
+	* Fix glitch where the wrong cable is shown and the list of cables just
+	  has one row when editing a cable by pressing enter or double clicking.
+
 1.1:
 	New features:
 	* The Forge now handles multiple patch windows in parallel. With the
