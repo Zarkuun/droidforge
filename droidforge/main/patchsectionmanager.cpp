@@ -356,7 +356,7 @@ void PatchSectionManager::moveSectionDown()
 void PatchSectionManager::editComment()
 {
     QString oldComment = section()->getComment().join("\n").trimmed();
-    QString newComment = CommentDialog::editComment(oldComment).trimmed();
+    QString newComment = CommentDialog::editComment(tr("Edit section comment"), oldComment).trimmed();
     if (newComment != oldComment) {
         if (newComment.isEmpty()) {
             QStringList empty;

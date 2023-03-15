@@ -4,6 +4,8 @@
 	  has one row when editing a cable by pressing enter or double clicking.
 	* Fix potential crash in "fix button/LED mismatch". This *could* possibly
 	  fix the crash that @eising has reported.
+	* Fix window title of "Edit section comment" (was titled "Edit circuit
+	  comment")
 
 	Cleanu ups:
 	* Assign Shift-F10 shortcut to "reload status dump", when a new SD card

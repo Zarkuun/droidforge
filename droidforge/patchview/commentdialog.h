@@ -15,7 +15,7 @@ class CommentDialog : public Dialog
 
 public:
     CommentDialog(QWidget *parent = nullptr);
-    static QString editComment(QString c);
+    static QString editComment(const QString &windowTitle, QString c);
 };
 
 #endif // COMMENTDIALOG_H

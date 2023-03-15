@@ -1292,7 +1292,7 @@ void PatchSectionView::editCircuitComment(int key)
         oldComment = QString(QChar(key));
     else
         oldComment = circuit->getComment();
-    QString newComment = CommentDialog::editComment(oldComment);
+    QString newComment = CommentDialog::editComment(tr("Edit circuit comment"), oldComment);
     if (newComment != oldComment) {
         if (newComment != "")
             circuit->setComment(newComment);

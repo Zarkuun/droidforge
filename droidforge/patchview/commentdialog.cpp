@@ -6,8 +6,6 @@
 CommentDialog::CommentDialog(QWidget *parent)
     : Dialog{"comment", parent}
 {
-    setWindowTitle(tr("Edit circuit comment"));
-
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
 
@@ -21,14 +19,13 @@ CommentDialog::CommentDialog(QWidget *parent)
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     layout->addWidget(buttonBox);
 }
-
-
-QString CommentDialog::editComment(QString c)
+QString CommentDialog::editComment(const QString &windowTitle, QString c)
 {
     static CommentDialog *dialog = 0;
     if (!dialog)
         dialog = new CommentDialog();
 
+    dialog->setWindowTitle(windowTitle);
     dialog->textEdit->setText(c);
     dialog->textEdit->moveCursor(QTextCursor::End);
     if (dialog->exec() == QDialog::Accepted)
