@@ -212,6 +212,15 @@ void CircuitView::paintJacks(QPainter *painter)
 }
 void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput, int row, int column)
 {
+    bool showDumpValue = false;
+    double dumpValue;
+    if (atom) {
+        const StatusDump *dump = mainWindow->statusDump();
+        if (dump && dump->hasAtom(atom)) {
+            dumpValue = dump->valueOfAtom(atom);
+            showDumpValue = true;
+        }
+    }
     painter->setPen(textcolor);
 
     if (textMode()) {
@@ -225,6 +234,8 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
             else
                 painter->setPen(COLOR(TEXTMODE_INVALID));
             painter->drawText(rect, Qt::AlignVCenter, atom->toString());
+            if (showDumpValue)
+                paintDumpValue(painter, rect, dumpValue);
         }
         return;
     }
@@ -248,20 +259,12 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
         ghostPlug = ghostPlug.mirrored(true, false);
 
     if (atom) {
-        bool showDumpValue = false;
-        double dumpValue = 0.0;
         if (isPatchingFromHere)
             painter->drawImage(imageRect, ghostPlug);
         else {
             QString text(tr(atom->toDisplay().toLatin1()));
             if (atom->isCable()) {
                 text = text.mid(1);
-                AtomCable *cable = (AtomCable *)atom;
-                const StatusDump *dump = mainWindow->statusDump();
-                if (dump && dump->hasCable(cable->getCable())) {
-                    showDumpValue = true;
-                    dumpValue = dump->valueOfCable(cable->getCable());
-                }
                 QImage image = *the_cable_colorizer->imageForCable(text);
                 if (circuit->isDisabled())
                     image = *the_cable_colorizer->ghostPlug();
@@ -273,29 +276,27 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 r = r.translated(imageWidth + STANDARD_SPACING, 0);
                 r.setWidth(r.width() - imageWidth - STANDARD_SPACING);
             }
-            else if (atom->isRegister()) {
-                QString name = atom->toString();
-                const StatusDump *dump = mainWindow->statusDump();
-                if (dump && dump->hasRegister(name)) {
-                    showDumpValue = true;
-                    dumpValue = dump->valueOfRegister(name);
-                }
-            }
             painter->drawText(r, Qt::AlignVCenter, text);
-            if (showDumpValue) {
-                painter->fillRect(rect, COLOR(CIRV_STATUS_DUMP_BACKGROUND));
-                QRectF numberRect(
-                            rect.left(),
-                            rect.y(),
-                            rect.width() - CIRV_TEXT_SIDE_PADDING,
-                            rect.height());
-                painter->setPen(COLOR(CIRV_STATUS_DUMP_TEXT));
-                painter->drawText(numberRect, Qt::AlignVCenter | Qt::AlignRight, QString::number(dumpValue));
-            }
+            if (showDumpValue)
+                paintDumpValue(painter, rect, dumpValue);
         }
     }
     else if (isPatchingFromHere)
         painter->drawImage(imageRect, ghostPlug);
+}
+void CircuitView::paintDumpValue(QPainter *painter, const QRectF &rect, double value)
+{
+    painter->fillRect(rect, COLOR(CIRV_STATUS_DUMP_BACKGROUND));
+    QRectF numberRect(
+                rect.left(),
+                rect.y(),
+                rect.width() - CIRV_TEXT_SIDE_PADDING,
+                rect.height());
+    painter->setPen(COLOR(CIRV_STATUS_DUMP_TEXT));
+    painter->drawText(
+                numberRect,
+                Qt::AlignVCenter | Qt::AlignRight,
+                QString::number(value));
 }
 void CircuitView::paintLines(QPainter *painter)
 {

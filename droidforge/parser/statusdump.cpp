@@ -1,5 +1,7 @@
 #include <QFile>
 
+#include "atomcable.h"
+#include "atomregister.h"
 #include "parseexception.h"
 #include "statusdump.h"
 #include "globals.h"
@@ -86,6 +88,29 @@ StatusDump::StatusDump(const QString &filePath)
 void StatusDump::addCableMapping(const QMap<QString, QString> mapping)
 {
     cableCompressionMapping = mapping;
+}
+
+bool StatusDump::hasAtom(const Atom *atom) const
+{
+    if (!atom)
+        return false;
+    else if (atom->isCable())
+        return hasCable(((const AtomCable *)atom)->getCable());
+    else if (atom->isRegister())
+        return hasRegister(((const AtomRegister *)atom)->toString());
+    else
+        return false;
+}
+double StatusDump::valueOfAtom(const Atom *atom) const
+{
+    if (!atom)
+        return 0.0;
+    else if (atom->isCable())
+        return valueOfCable(((const AtomCable *)atom)->getCable());
+    else if (atom->isRegister())
+        return valueOfRegister(((const AtomRegister *)atom)->toString());
+    else
+        return false;
 }
 bool StatusDump::hasCable(QString name) const
 {

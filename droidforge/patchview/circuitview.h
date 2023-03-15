@@ -53,6 +53,7 @@ private:
     QRectF jackRect(int row) const;
     QRectF atomRect(int row, int column) const;
     void paintAtom(QPainter *painter, const QRectF &rect, QColor textcolor, Atom *atom, bool isInput, int row, int column);
+    void paintDumpValue(QPainter *painter, const QRectF &rect, double value);
     // geometry helpers
     float totalHeight() const;
     float headerHeight() const;
