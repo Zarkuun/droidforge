@@ -256,6 +256,7 @@ bool Circuit::checkLEDMismatches(bool fixit)
     // there must be a ledX which is assigned to the corresponding L...
 
     // Phase 1: add missing LED assignments
+    QList<JackAssignment *> toBeAdded;
     for (auto ja: jackAssignments) {
         if (ja->jackPrefix() == "button" ||
             ja->jackName() == "buttonup" ||
@@ -279,7 +280,7 @@ bool Circuit::checkLEDMismatches(bool fixit)
                 if (fixit) {
                     JackAssignmentOutput *newJa = new JackAssignmentOutput(ledname);
                     newJa->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
-                    addJackAssignment(newJa);
+                    toBeAdded.append(newJa);
                     continue;
                 }
                 else
@@ -312,6 +313,8 @@ bool Circuit::checkLEDMismatches(bool fixit)
             }
         }
     }
+    for (auto ja: toBeAdded)
+        addJackAssignment(ja);
 
     // Phase 2: remove exceeding LED assignments
     QList<unsigned> toBeRemoved; // indices of to assignment to be removed

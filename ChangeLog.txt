@@ -10,6 +10,8 @@
 	  bytes, just for safety.
 	* Fix glitch where the wrong cable is shown and the list of cables just
 	  has one row when editing a cable by pressing enter or double clicking.
+	* Fix potential crash in "fix button/LED mismatch". This *could* possibly
+	  fix the crash that @eising has reported.
 
 1.1:
 	New features:
