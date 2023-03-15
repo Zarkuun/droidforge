@@ -122,7 +122,7 @@ private:
     void createBackup();
     void removeBackup();
     bool bringToFrontIfOpen(const QString &filePath, bool inOthers);
-    void updateStatusDumpsMenu();
+    void updateStatusDumpsMenu(bool newDumpAvailable);
 
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);

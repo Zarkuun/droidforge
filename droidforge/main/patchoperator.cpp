@@ -104,7 +104,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     , lastShownStatusDumpNr(-1)
 {
     dumpsMenu = new QMenu(tr("Status dumps"));
-    updateStatusDumpsMenu();
+    updateStatusDumpsMenu(false);
 
     CONNECT_ACTION(ACTION_QUIT, &PatchOperator::quit);
     CONNECT_ACTION(ACTION_CLOSE_WINDOW, &PatchOperator::close);
@@ -527,7 +527,7 @@ void PatchOperator::showStatusDumpNr(int nr)
     }
     else
         mainWindow->showStatusDump(0);
-    updateStatusDumpsMenu();
+    updateStatusDumpsMenu(false);
 }
 QString PatchOperator::sdCardDir() const
 {
@@ -551,7 +551,7 @@ bool PatchOperator::bringToFrontIfOpen(const QString &filePath, bool inOthers)
         return false;
 
 }
-void PatchOperator::updateStatusDumpsMenu()
+void PatchOperator::updateStatusDumpsMenu(bool newDumpAvailable)
 {
     // The shortcut Shift+F10 is always at one of the possible actions
     // (if any of them is available):
@@ -570,21 +570,35 @@ void PatchOperator::updateStatusDumpsMenu()
     connect(actionLoadDumps, &QAction::triggered, this, &PatchOperator::loadStatusDumps);
     dumpsMenu->addAction(actionLoadDumps);
 
-    if (statusDumpPresent)
-        actionLoadDumps->setEnabled(true);
+    // The shortcut is set as follows (in order of priority)
+    // - If no status dump is loaded, the shortcut is set on load
+    // - If a (new) dump becomes available on the SD card, the
+    //   shortcut is also set on load
+    // - If a dump is shown, the shortcut is set on hide
+    // - Otherwise the shortcut is set on show
 
-    if (statusDumps.empty())
-        actionLoadDumps->setShortcut(shortcut);
-    else {
-        QAction *action = new QAction(tr("Hide status dump"), this);
-        connect(action, &QAction::triggered, this, [this]() { this->showStatusDumpNr(-1); });
+    bool shortcut_set = false;
+
+    if (statusDumpPresent) {
+        actionLoadDumps->setEnabled(true);
+        if (newDumpAvailable || statusDumps.empty()) {
+            actionLoadDumps->setShortcut(shortcut);
+            shortcut_set = true;
+        }
+    }
+    if (!statusDumps.empty()) {
+        QAction *actionHide = new QAction(tr("Hide status dump"), this);
+        connect(actionHide, &QAction::triggered, this, [this]() { this->showStatusDumpNr(-1); });
         if (mainWindow->statusDump()) {
-            action->setEnabled(true);
-            action->setShortcut(shortcut); // Shift+F10 hides if one is shown
+            actionHide->setEnabled(true);
+            if (!shortcut_set) {
+                actionHide->setShortcut(shortcut); // Shift+F10 hides if one is shown
+                shortcut_set = true;
+            }
         }
         else
-            action->setEnabled(false);
-        dumpsMenu->addAction(action);
+            actionHide->setEnabled(false);
+        dumpsMenu->addAction(actionHide);
 
         dumpsMenu->addSeparator();
 
@@ -600,7 +614,7 @@ void PatchOperator::updateStatusDumpsMenu()
             // No status dump shown right now? Attach short cut to
             // either most previously shown or last dump in the list
             if (!mainWindow->statusDump()) {
-                if (lastShownStatusDumpNr == i)
+                if (lastShownStatusDumpNr == i && !shortcut_set)
                     action->setShortcut(shortcut);
             }
         }
@@ -625,7 +639,7 @@ void PatchOperator::updateSDAndX7State()
 
     if (oldSDState != sdCardPresent || oldStatusState != statusDumpPresent) {
         if (oldStatusState != statusDumpPresent)
-            updateStatusDumpsMenu();
+            updateStatusDumpsMenu(statusDumpPresent);
         emit droidStateChanged();
         return;
     }

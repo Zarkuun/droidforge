@@ -1,3 +1,14 @@
+1.1beta5:
+	Bug fixes
+	* Fix glitch where the wrong cable is shown and the list of cables just
+	  has one row when editing a cable by pressing enter or double clicking.
+	* Fix potential crash in "fix button/LED mismatch". This *could* possibly
+	  fix the crash that @eising has reported.
+
+	Cleanu ups:
+	* Assign Shift-F10 shortcut to "reload status dump", when a new SD card
+	  has been inserted (rather than just show the previously loaded dump)
+
 1.1beta4:
 	Bug fixes
 	* Fix crash found @nohumans. The Forge crashed when you opened a second
@@ -8,10 +19,6 @@
 	  X7 attached. An X7 needs 1000 bytes, just because it is attached,
 	  even if not used in the patch. So the forge always assume these 1000
 	  bytes, just for safety.
-	* Fix glitch where the wrong cable is shown and the list of cables just
-	  has one row when editing a cable by pressing enter or double clicking.
-	* Fix potential crash in "fix button/LED mismatch". This *could* possibly
-	  fix the crash that @eising has reported.
 
 1.1:
 	New features:
