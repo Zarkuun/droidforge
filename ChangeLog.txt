@@ -1,3 +1,8 @@
+1.1beta6:
+	Bug fixes
+	* Remove unsave characters like ; : " \ and / from a section title before
+	  suggesting a filename when saving a section as patch (found be @oedoen)
+
 1.1beta5:
 	Bug fixes
 	* Fix glitch where the wrong cable is shown and the list of cables just

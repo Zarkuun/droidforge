@@ -10,6 +10,7 @@
 #include "namechoosedialog.h"
 #include "patchview.h"
 #include "commentdialog.h"
+#include "utilities.h"
 
 #include <QGraphicsItem>
 #include <QPainter>
@@ -284,7 +285,7 @@ void PatchSectionManager::saveSectionAsPatch()
     QString newFilePath = QFileDialog::getSaveFileName(
                 mainWindow,
                 tr("Save section as patch to new file"),
-                section->getTitle(),
+                saveFilename(section->getTitle()),
                 tr("DROID patch files (*.ini)"));
 
     if (newFilePath == "")

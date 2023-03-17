@@ -268,6 +268,8 @@ QtApplication {
         "utilities/namechoosedialog.h",
         "utilities/searchlineedit.cpp",
         "utilities/searchlineedit.h",
+        "utilities/utilities.cpp",
+        "utilities/utilities.h",
     ]
 
     install: true

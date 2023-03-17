@@ -12,6 +12,8 @@
 #define LICENSE_URL                          "https://www.gnu.org/licenses/gpl.txt"
 #define DISCORD_URL                          "https://discord.com/invite/9TUcRmH"
 
+#define BANNED_FILENAME_CHARS                ":;/\\\"'"
+
 #define COLOR_DEFINITION_FILE                "/Users/mk/git/droidforge/droidforge/colors_%1.h"
 #define DROID_PATCH_FILENAME                 "droid.ini"
 #define STATUS_DUMP_FILENAME                 "STATES%1.TXT"
@@ -28,7 +30,7 @@
 #define MAC_UMOUNT_TIMEOUT_MS                25000 // ms
 #define SD_CHECK_INTERVAL                    300  // ms
 #define MAX_DROID_INI                        64000 // from x7.h
-#define MAX_PATCH_LINE_LENGTH                      63 // from master:tuning.h
+#define MAX_PATCH_LINE_LENGTH                63 // from master:tuning.h
 
 #define MAX_LENGTH_SHORTHAND                 12 // for register labels
 #define MAX_RECENT_FILES                     10
