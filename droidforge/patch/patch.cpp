@@ -249,36 +249,44 @@ bool Patch::moveCursorForward()
 {
     bool wrapped = false;
 
-    // Move the cursor to the next possible atom, jack, circuit, whatever
-    CursorPosition pos = currentSection()->cursorPosition();
-    int circuitNr = pos.circuitNr;
-    int row = pos.row;
-    int column = pos.column;
-    if (row == ROW_CIRCUIT) {
-        if (currentCircuit()->hasComment())
-            row = ROW_COMMENT;
-        else
+    int circuitNr = 0;
+    int row = ROW_CIRCUIT;
+    int column = 0;
+
+    if (!currentSection()->isEmpty()) {
+        // Move the cursor to the next possible atom, jack, circuit, whatever
+        CursorPosition pos = currentSection()->cursorPosition();
+        circuitNr = pos.circuitNr;
+        row = pos.row;
+        column = pos.column;
+        if (row == ROW_CIRCUIT) {
+            if (currentCircuit()->hasComment())
+                row = ROW_COMMENT;
+            else
+                row = 0;
+            column = 0;
+        }
+        else if (row == ROW_COMMENT) {
             row = 0;
-        column = 0;
-    }
-    else if (row == ROW_COMMENT) {
-        row = 0;
-        column = 0;
-    }
-    else {
-        JackAssignment *ja = currentSection()->currentJackAssignment();
-        column ++;
-        if (column > ja->numColumns()) {
-            row ++;
+            column = 0;
+        }
+        else {
+            JackAssignment *ja = currentSection()->currentJackAssignment();
+            column ++;
+            if (column > ja->numColumns()) {
+                row ++;
+                column = 0;
+            }
+        }
+
+        if (row >= currentCircuit()->numJackAssignments()) {
+            circuitNr ++;
+            row = ROW_CIRCUIT;
             column = 0;
         }
     }
-
-    if (row >= currentCircuit()->numJackAssignments()) {
-        circuitNr ++;
-        row = ROW_CIRCUIT;
-        column = 0;
-    }
+    else
+        circuitNr = 0;
 
     if (circuitNr >= (int) currentSection()->numCircuits()) {
         circuitNr = 0;
