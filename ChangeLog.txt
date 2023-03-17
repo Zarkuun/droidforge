@@ -1,7 +1,8 @@
 1.1beta6:
 	Bug fixes
 	* Remove unsave characters like ; : " \ and / from a section title before
-	  suggesting a filename when saving a section as patch (found be @oedoen)
+	  suggesting a filename when saving a section as patch (found by @oedoen)
+	* Fix crash in search when you have an empty patch section (found by @oedoen)
 
 1.1beta5:
 	Bug fixes
