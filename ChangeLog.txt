@@ -6,10 +6,13 @@
 	* Fix color of parameters of disabled lines in text mode
 	* Fix visibility of "Patching" in statusbar (would go invisible when the
 	  cursor was over a non-cable value)
+	* Fix visibility and initial size of user manual PDF viewer.
 
 	Clean ups:
 	* Fix position of opening square bracket in text mode
 	* Add "Set bookmark" and "Jump to bookmark" to context menu
+	* Add "Manual" button to "Edit parameter" dialog, for getting direct access
+	  to the circuit's manual.
 
 1.1beta5:
 	Bug fixes

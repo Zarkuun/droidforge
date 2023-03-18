@@ -1,6 +1,7 @@
 #include "atomselectordialog.h"
 #include "atomselector.h"
 #include "globals.h"
+#include "usermanual.h"
 
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -20,6 +21,9 @@ AtomSelectorDialog::AtomSelectorDialog(jacktype_t jacktype, QWidget *parent)
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    QPushButton *manualButton = new QPushButton(tr("Manual"));
+    connect(manualButton, &QPushButton::clicked, this, &AtomSelectorDialog::showManual);
+    buttonBox->addButton(manualButton, QDialogButtonBox::ActionRole);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
@@ -35,6 +39,7 @@ void AtomSelectorDialog::setAllowFraction(bool allowFraction)
 void AtomSelectorDialog::setCircuitAndJack(QString circuit, QString jack)
 {
     atomSelector->setCircuitAndJack(circuit, jack);
+    this->circuit = circuit;
 }
 Atom *AtomSelectorDialog::editAtom(const Patch *patch, const QString &circuit, const QString &jack, jacktype_t jacktype, bool allowFraction, const Atom *atom)
 {
@@ -64,4 +69,8 @@ Atom *AtomSelectorDialog::editAtom(const Patch *patch, const QString &circuit, c
         return dialog->atomSelector->getAtom();
     else
         return const_cast<Atom *>(atom); // We know we haven't changed it
+}
+void AtomSelectorDialog::showManual()
+{
+    the_manual->showCircuit(circuit);
 }

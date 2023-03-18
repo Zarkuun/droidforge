@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "pageselector.h"
 #include "droidfirmware.h"
+#include "tuning.h"
 
 #include <QGridLayout>
 #include <QPdfBookmarkModel>
@@ -23,7 +24,7 @@ UserManual::UserManual(QWidget *parent)
     , document(this)
 {
     the_manual = this;
-
+    setDefaultSize({MANUAL_WIDTH, MANUAL_HEIGHT});
     setCloseOnReturn(false);
 
     // PDF Widget
@@ -70,8 +71,9 @@ void UserManual::openExternally()
 }
 void UserManual::showCircuit(const QString &circuit)
 {
-    show();
+    // show();
     jumpToPage(the_firmware->circuitManualPage(circuit));
+    exec();
 }
 
 void UserManual::keyPressEvent(QKeyEvent *event)
@@ -80,4 +82,12 @@ void UserManual::keyPressEvent(QKeyEvent *event)
         event->ignore();
     else if (event->key() == Qt::Key_Escape)
         hide();
+}
+
+void UserManual::wheelEvent(QWheelEvent *event)
+{
+    if (event->angleDelta().y() > 0)
+        pageNavigation->goToNextPage();
+    else if (event->angleDelta().y() < 0)
+        pageNavigation->goToPreviousPage();
 }

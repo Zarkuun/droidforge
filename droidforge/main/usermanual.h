@@ -22,6 +22,7 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *) override;
+    void wheelEvent(QWheelEvent *) override;
 
 private:
     void jumpToPage(unsigned nr);

@@ -14,12 +14,16 @@ class AtomSelectorDialog : public Dialog
 {
     AtomSelector *atomSelector;
     QDialogButtonBox *buttonBox;
+    QString circuit;
 
 public:
     AtomSelectorDialog(jacktype_t, QWidget *parent = nullptr);
     void setAllowFraction(bool allowFraction);
     void setCircuitAndJack(QString circuit, QString jack);
     static Atom *editAtom(const Patch *patch, const QString &circuit, const QString &jack, jacktype_t, bool allowFraction, const Atom *atom);
+
+private slots:
+    void showManual();
 
 };
 

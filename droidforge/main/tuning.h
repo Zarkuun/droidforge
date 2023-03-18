@@ -48,6 +48,10 @@
 #define WINDOW_X_DISPLACEMENT                40
 #define WINDOW_Y_DISPLACEMENT                15
 
+// User manual PDF viewer
+#define MANUAL_WIDTH                         800
+#define MANUAL_HEIGHT                        648
+
 // Standard for all dialogs
 #define STANDARD_SPACING                     10
 #define BACKGROUND_PIXMAP_HEIGHT             500 // tiling of background image
