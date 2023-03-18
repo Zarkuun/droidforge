@@ -124,7 +124,7 @@ void CircuitView::paintHeader(QPainter *painter)
         name += circuit->getName().toLower() + "]";
         if (circuit->isFolded())
             name += " ...";
-        painter->drawText(headerRect().translated(-3, 0), Qt::AlignVCenter, name);
+            painter->drawText(headerRect().translated(circuit->isDisabled() ? 0 : -3, 0), Qt::AlignVCenter, name);
     }
     else {
         // Icon and circuit name
@@ -225,7 +225,9 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
 
     if (textMode()) {
         if (atom) {
-            if (atom->isCable())
+            if (textcolor == COLOR(TEXTMODE_COMMENT))
+                ; // line is disabled, keep color
+            else if (atom->isCable())
                 painter->setPen(COLOR(TEXTMODE_CABLE));
             else if (atom->isRegister())
                 painter->setPen(COLOR(TEXTMODE_REGISTER));
@@ -351,7 +353,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
 {
     // CIRV_COLUMN 0: Name of the jack.
     QRectF jr = jackRect(row);
-    QColor jackFgColor, jackBgColor, atomColor;
+    QColor jackFgColor, jackBgColor, atomColor, operatorColor;
     atomColor = COLOR(CIRV_COLOR_TEXT);
     QColor bgColor = COLOR(row % 2 == 0 ? CIRV_COLOR_EVEN_ROW : CIRV_COLOR_ODD_ROW);
 
@@ -360,33 +362,37 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
         atomColor = jackFgColor;
         bgColor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
         jackBgColor = COLOR(CIRV_COLOR_DISABLED_JACK_BG);
-    }
-    else if (ja->jackType() == JACKTYPE_INPUT) {
-        jackFgColor = COLOR(textMode() ? TEXTMODE_INPUT : CIRV_COLOR_INPUT_JACK);
-        jackBgColor = COLOR(CIRV_COLOR_INPUT_JACK_BG);
-    }
-    else if (ja->jackType() == JACKTYPE_OUTPUT) {
-        jackFgColor = COLOR(textMode() ? TEXTMODE_OUTPUT : CIRV_COLOR_OUTPUT_JACK);
-        jackBgColor = COLOR(CIRV_COLOR_OUTPUT_JACK_BG);
+        operatorColor = jackFgColor;
     }
     else {
-        atomColor = COLOR(textMode() ? TEXTMODE_INVALID : CIRV_COLOR_DISABLED_TEXT);
-        jackFgColor = COLOR(textMode() ? TEXTMODE_INVALID : CIRV_COLOR_UNKNOWN_JACK);
-        jackBgColor = COLOR(CIRV_COLOR_UNKNOWN_JACK_BG);
+        operatorColor = COLOR(textMode() ? TEXTMODE_OPERATOR : CIRV_COLOR_OPERATOR);
+        if (ja->jackType() == JACKTYPE_INPUT) {
+            jackFgColor = COLOR(textMode() ? TEXTMODE_INPUT : CIRV_COLOR_INPUT_JACK);
+            jackBgColor = COLOR(CIRV_COLOR_INPUT_JACK_BG);
+        }
+        else if (ja->jackType() == JACKTYPE_OUTPUT) {
+            jackFgColor = COLOR(textMode() ? TEXTMODE_OUTPUT : CIRV_COLOR_OUTPUT_JACK);
+            jackBgColor = COLOR(CIRV_COLOR_OUTPUT_JACK_BG);
+        }
+        else {
+            atomColor = COLOR(textMode() ? TEXTMODE_INVALID : CIRV_COLOR_DISABLED_TEXT);
+            jackFgColor = COLOR(textMode() ? TEXTMODE_INVALID : CIRV_COLOR_UNKNOWN_JACK);
+            jackBgColor = COLOR(CIRV_COLOR_UNKNOWN_JACK_BG);
+        }
     }
 
     if (textMode())
     {
         QString text = ja->jackName();
         if (ja->isDisabled())
-            text = "# " + text;
+            text = "#  " + text;
         painter->setPen(jackFgColor);
         painter->drawText(
                     QRectF(jr.left(),
                           jr.top(),
                           columnWidth(0),
                           jackHeight()), Qt::AlignVCenter, text);
-        painter->setPen(COLOR(TEXTMODE_OPERATOR));
+        painter->setPen(operatorColor);
         painter->drawText(
                     QRectF(jr.left(),
                           jr.top(),
@@ -416,7 +422,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
         }
 
         QRectF ar = atomRect(row, 1);
-        painter->setPen(jackFgColor);
+        painter->setPen(operatorColor);
         if (jai->getAtom(1) || !textMode())
             paintOperator(painter, operatorPosition(0), ar.top(), "✱");
         if (jai->getAtom(2) || !textMode())
@@ -460,7 +466,6 @@ void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QStri
 {
     QRectF r(x, y, CIRV_COLUMN_OPERATOR_WIDTH, jackHeight());
     if (textMode()) {
-        painter->setPen(COLOR(TEXTMODE_OPERATOR));
         painter->drawText(r, o, Qt::AlignVCenter | Qt::AlignCenter);
     }
     else {
@@ -468,7 +473,6 @@ void CircuitView::paintOperator(QPainter *painter, unsigned x, unsigned y, QStri
         painter->save();
         const QFont &font = painter->font();
         painter->setFont(QFont(font.family(), font.pointSize() * 1.2));
-        painter->setPen(COLOR(CIRV_COLOR_OPERATOR));
         painter->drawText(r, o, Qt::AlignVCenter | Qt::AlignCenter);
         painter->restore();
     }

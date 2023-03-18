@@ -3,6 +3,8 @@
 	* Remove unsave characters like ; : " \ and / from a section title before
 	  suggesting a filename when saving a section as patch (found by @oedoen)
 	* Fix crash in search when you have an empty patch section (found by @oedoen)
+	* Fix color of parameters of disabled lines in text mode
+	* Fix position of opening square bracket in text mode
 
 1.1beta5:
 	Bug fixes
