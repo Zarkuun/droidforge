@@ -31,7 +31,6 @@ CableStatusIndicator::CableStatusIndicator(MainWindow *mainWindow, PatchEditEngi
     connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &CableStatusIndicator::updateStatus);
     connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &CableStatusIndicator::changePatching);
 }
-
 void CableStatusIndicator::paintEvent(QPaintEvent *)
 {
     setToolTip("");
@@ -221,24 +220,30 @@ void CableStatusIndicator::setanimationPhase(float newanimationPhase)
 }
 void CableStatusIndicator::updateStatus()
 {
-    const Atom *atom = patch->currentAtom();
-    if (atom && atom->isCable()) {
-        AtomCable *ac = (AtomCable *)atom;
-        QString name = ac->getCable();
-        int numAsOutput = 0;
-        int numAsInput = 0;
-        patch->findCableConnections(name, numAsInput, numAsOutput);
-        set(name, numAsInput, numAsOutput);
-        if (!patch->isPatching())
-            setCursor(Qt::PointingHandCursor);
-        else
-            unsetCursor();
+    if (patch->isPatching()) {
         setVisible(true);
+        unsetCursor();
     }
     else {
-        clear();
-        unsetCursor();
-        setVisible(false);
+        const Atom *atom = patch->currentAtom();
+        if (atom && atom->isCable()) {
+            AtomCable *ac = (AtomCable *)atom;
+            QString name = ac->getCable();
+            int numAsOutput = 0;
+            int numAsInput = 0;
+            patch->findCableConnections(name, numAsInput, numAsOutput);
+            set(name, numAsInput, numAsOutput);
+            if (!patch->isPatching())
+                setCursor(Qt::PointingHandCursor);
+            else
+                unsetCursor();
+            setVisible(true);
+        }
+        else {
+            clear();
+            unsetCursor();
+            setVisible(false);
+        }
     }
 }
 void CableStatusIndicator::changePatching()

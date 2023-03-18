@@ -4,6 +4,8 @@
 	  suggesting a filename when saving a section as patch (found by @oedoen)
 	* Fix crash in search when you have an empty patch section (found by @oedoen)
 	* Fix color of parameters of disabled lines in text mode
+	* Fix visibility of "Patching" in statusbar (would go invisible when the
+	  cursor was over a non-cable value)
 
 	Clean ups:
 	* Fix position of opening square bracket in text mode
