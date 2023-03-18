@@ -960,6 +960,8 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
 
         menu->addSeparator();
 
+        ADD_ACTION(ACTION_SET_BOOKMARK, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_JUMP_TO_BOOKMARK, menu);
         ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_REGISTER, menu);
         ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
         ADD_ACTION(ACTION_SORT_JACKS, menu);

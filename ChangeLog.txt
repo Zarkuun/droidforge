@@ -4,7 +4,10 @@
 	  suggesting a filename when saving a section as patch (found by @oedoen)
 	* Fix crash in search when you have an empty patch section (found by @oedoen)
 	* Fix color of parameters of disabled lines in text mode
+
+	Clean ups:
 	* Fix position of opening square bracket in text mode
+	* Add "Set bookmark" and "Jump to bookmark" to context menu
 
 1.1beta5:
 	Bug fixes
@@ -15,7 +18,7 @@
 	* Fix window title of "Edit section comment" (was titled "Edit circuit
 	  comment")
 
-	Cleanu ups:
+	Clean ups:
 	* Assign Shift-F10 shortcut to "reload status dump", when a new SD card
 	  has been inserted (rather than just show the previously loaded dump)
 	* Avoid section comment with just one empty line
