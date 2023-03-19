@@ -38,7 +38,7 @@ void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int con
         if (type == REGISTER_EXTRA || type == REGISTER_LED || type == REGISTER_NORMALIZE)
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
-            QRectF rect = registerRect(type, j+1, 1).translated(pos().x(), 0);
+            QRectF rect = registerRect(type, j+1, rectAspect(type), 1).translated(pos().x(), 0);
             auto item = scene->addRect(rect, QPen(QColor(0, 0, 0, 0), 0));
             item->setData(DATA_INDEX_DRAGGER_PRIO, 2);
             item->setData(DATA_INDEX_REGISTER_NAME, registerAtom(type, j+1).toString());
@@ -92,7 +92,8 @@ void Module::paintRegisterHilites(QPainter *painter, int usage)
 }
 void Module::paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number)
 {
-    QRectF r = registerRect(type, number, 1); // usage);
+    float ra = rectAspect(type);
+    QRectF r = registerRect(type, number, ra, 1); // usage);
     QPen pen;
 
     int d = 8;
@@ -109,7 +110,7 @@ void Module::paintHiliteRegister(QPainter *painter, int usage, register_type_t t
         pen.setWidth(d);
         painter->setPen(pen);
         painter->setBrush(Qt::NoBrush);
-        if (type == REGISTER_RGB_LED || type == REGISTER_EXTRA)
+        if (ra)
             painter->drawRect(r);
         else
             painter->drawEllipse(r);
@@ -147,7 +148,7 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
     register_type_t regtype = atom.getRegisterType();
     unsigned regnum = atom.getNumber() - numberOffset(regtype);
 
-    QRectF rr = registerRect(regtype, regnum, 1);
+    QRectF rr = registerRect(regtype, regnum, rectAspect(regtype), 1);
     qreal mid = (rr.left() + rr.right()) / 2;
     float dist = RACV_PIXEL_PER_HP * labelDistance(regtype, regnum);
     float width = RACV_PIXEL_PER_HP * labelWidth(regtype, regnum);
@@ -182,15 +183,16 @@ void Module::hiliteRegisters(int usage, register_type_t type, unsigned number)
         }
     }
 }
-QRectF Module::registerRect(register_type_t type, unsigned number, int usage) const
+QRectF Module::registerRect(register_type_t type, unsigned number, float aspect, int usage) const
 {
     QPointF posHP = registerPosition(type, number); // in HP, mid
     float size = registerSize(type, number) * RACV_PIXEL_PER_HP * 2 / 3;
     if (usage == 2)
         size = size * 5 / 4;
+    float ysize = aspect == 0.0 ? size : size * aspect;
     QPointF pos(posHP.x() * RACV_PIXEL_PER_HP - size/2,
-                posHP.y() * RACV_PIXEL_PER_HP - size/2);
-    return QRectF(pos, QSize(size, size));
+                posHP.y() * RACV_PIXEL_PER_HP - ysize/2);
+    return QRectF(pos, QSize(size, ysize));
 }
 AtomRegister *Module::registerAt(const QPoint &pos) const
 {
@@ -199,7 +201,7 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
         if (type == REGISTER_EXTRA)
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
-            QRectF r = registerRect(type, j+1, 1);
+            QRectF r = registerRect(type, j+1, rectAspect(type), 1);
             if (r.contains(pos)) {
                 return registerAtom(type, j+1).clone();
             }

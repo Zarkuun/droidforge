@@ -47,6 +47,14 @@ float ModuleX7::labelDistance(register_type_t, unsigned) const
     return -2.45;
 }
 
+float ModuleX7::rectAspect(register_type_t type) const
+{
+    if (type == REGISTER_RGB_LED)
+        return 1.0;
+    else
+        return 0.0;
+}
+
 unsigned ModuleX7::numberOffset(register_type_t type) const
 {
     if (type == REGISTER_GATE)

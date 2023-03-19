@@ -117,7 +117,7 @@
 #define CONTROL_BUTTON_SIZE                  2.7
 #define CONTROL_SMALL_SWITCH_SIZE            2.0
 #define CONTROL_M4_FADER_SIZE                3.0
-#define CONTROL_M4_TOUCH_SIZE                2.2
+#define CONTROL_M4_TOUCH_SIZE                2.65
 #define CONTROL_RGBLED_SIZE                  2.1
 #define CONTROL_JACK_SIZE                    2.5
 #define CONTROL_EXTRA_SIZE                   11.5

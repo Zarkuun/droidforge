@@ -52,3 +52,11 @@ float ModuleMaster::labelDistance(register_type_t, unsigned) const
 {
     return -2.45;
 }
+
+float ModuleMaster::rectAspect(register_type_t type) const
+{
+    if (type == REGISTER_RGB_LED || type == REGISTER_EXTRA)
+        return 1.0;
+    else
+        return 0.0;
+}

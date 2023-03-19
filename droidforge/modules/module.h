@@ -69,10 +69,11 @@ public:
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
+    virtual float rectAspect(register_type_t) const { return 0.0; };
 
 private:
     void paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number);
-    QRectF registerRect(register_type_t type, unsigned number, int usage) const;
+    QRectF registerRect(register_type_t type, unsigned number, float aspect, int usage) const;
     void paintRegisterLabels(QPainter *painter);
     void paintRegisterHilites(QPainter *painter);
     bool haveRegister(AtomRegister atom);

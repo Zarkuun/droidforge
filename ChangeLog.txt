@@ -13,6 +13,7 @@
 	* Add "Set bookmark" and "Jump to bookmark" to context menu
 	* Add "Manual" button to "Edit parameter" dialog, for getting direct access
 	  to the circuit's manual.
+	* Visualize used M4 faders and buttons as rectangles, not as circles.
 
 1.1beta5:
 	Bug fixes

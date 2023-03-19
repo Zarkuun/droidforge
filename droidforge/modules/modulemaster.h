@@ -17,6 +17,7 @@ protected:
     bool labelNeedsBackground(register_type_t, unsigned) const { return true; };
     float labelDistance(register_type_t, unsigned) const; // in HP
     float labelWidth(register_type_t, unsigned) const { return RACV_JACK_LABEL_WIDTH; };
+    float rectAspect(register_type_t) const;
 };
 
 

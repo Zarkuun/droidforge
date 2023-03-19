@@ -13,15 +13,15 @@ QPointF ModuleM4::registerPosition(register_type_t type, unsigned number) const
 {
     // const float faderPositions[4] = { 18.25, 10.35, 14.53, 5.90, };
 
-    float x = 3.50 * (number - 1) + 1.83;
+    float x = 3.498 * (number - 1) + 1.83;
     float y;
 
     if (type == REGISTER_POT) {
-        y = 18.27;
-        x -= 0.1;
+        y = 18.37;
+        x -= 0.08;
     }
     else
-        y = 23.0;
+        y = 22.94;
     return QPointF(x, y);
 }
 
@@ -44,4 +44,12 @@ float ModuleM4::labelDistance(register_type_t type, unsigned) const
 float ModuleM4::labelWidth(register_type_t, unsigned) const
 {
     return 3.4;
+}
+
+float ModuleM4::rectAspect(register_type_t type) const
+{
+    if (type == REGISTER_POT)
+        return 2.2;
+    else
+        return 0.7;
 }
