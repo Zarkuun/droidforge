@@ -7,6 +7,9 @@
 	* Fix visibility of "Patching" in statusbar (would go invisible when the
 	  cursor was over a non-cable value)
 	* Fix visibility and initial size of user manual PDF viewer.
+	* Fix missing or non-updated graphics of "dragging indicator" in section list,
+	  which happened when you dragged sections in a longer list that was scrolled
+	  up too far.
 
 	Clean ups:
 	* Fix position of opening square bracket in text mode
@@ -14,6 +17,7 @@
 	* Add "Manual" button to "Edit parameter" dialog, for getting direct access
 	  to the circuit's manual.
 	* Visualize used M4 faders and buttons as rectangles, not as circles.
+	* Show the scroll bar in the section list if it is too long.
 
 1.1beta5:
 	Bug fixes

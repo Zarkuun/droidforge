@@ -34,9 +34,9 @@ PatchSectionManager::PatchSectionManager(MainWindow *mainWindow, PatchEditEngine
     setFocusPolicy(Qt::NoFocus);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     // When you scroll down, the drag indicator will not be shown anymore
-    // of the scroll offset > 62.5% of one section height. I don't know why.
+    // if the scroll offset > 62.5% of one section height. I don't know why.
     // So for the while I simply shut off the scroll bar.
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setMinimumWidth(PSM_MINIMUM_WIDTH);
     setMaximumWidth(PSM_MAXIMUM_WIDTH);
     setScene(new QGraphicsScene());
@@ -414,7 +414,16 @@ void PatchSectionManager::dragItem(QGraphicsItem *startItem, QGraphicsItem *, QP
     dragSectionIndicator->setInsertPos(indicatorPos, ip >= 0);
     dragSectionIndicator->setVisible(true);
     dragSectionIndicator->update();
+
+    // Qt seems to have a bug that scene()->update() does not update
+    // the whole part of the scene if the visible part is scrolled
+    // up too far. We can amend this by artificially faking a larger
+    // scene rect while calling update()
+    QRectF sceneRect = scene()->sceneRect();
+    float h = sceneRect.height() + viewport()->height();
+    scene()->setSceneRect(QRectF(0,0, sceneRect.width(), h));
     scene()->update();
+    scene()->setSceneRect(sceneRect);
 }
 void PatchSectionManager::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *, QPoint pos)
 {
