@@ -227,9 +227,11 @@ void EditorActions::createActions()
     actions[ACTION_FINISH_PATCHING] = new QAction(tr("Finish creating internal cable"), this);
     actions[ACTION_FINISH_PATCHING]->setShortcut(QKeySequence(tr("=")));
     actions[ACTION_FINISH_PATCHING]->setEnabled(false);
+    actions[ACTION_FINISH_PATCHING]->setVisible(false);
 
     actions[ACTION_ABORT_PATCHING] = new QAction(tr("Abort creating internal cable"), this);
     actions[ACTION_ABORT_PATCHING]->setEnabled(false);
+    actions[ACTION_ABORT_PATCHING]->setVisible(false);
 
     actions[ACTION_ABORT_ALL_ACTIONS] = new QAction(tr("Abort all actions"), this);
     actions[ACTION_ABORT_ALL_ACTIONS]->setShortcut(QKeySequence(tr("Escape")));
@@ -524,8 +526,11 @@ void EditorActions::changePatching()
 {
     const Atom *atom = section()->currentAtom();
     actions[ACTION_START_PATCHING]->setEnabled(atom && !patch->isPatching());
+    actions[ACTION_START_PATCHING]->setVisible(atom && !patch->isPatching());
     actions[ACTION_FINISH_PATCHING]->setEnabled(patch->isPatching());
+    actions[ACTION_FINISH_PATCHING]->setVisible(patch->isPatching());
     actions[ACTION_ABORT_PATCHING]->setEnabled(patch->isPatching());
+    actions[ACTION_ABORT_PATCHING]->setVisible(patch->isPatching());
 }
 void EditorActions::changeDroidState()
 {

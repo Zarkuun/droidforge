@@ -18,6 +18,8 @@
 	  to the circuit's manual.
 	* Visualize used M4 faders and buttons as rectangles, not as circles.
 	* Show the scroll bar in the section list if it is too long.
+	* Hide menu entries for finishing/aborting cabling when they are not
+	  useful.
 
 1.1beta5:
 	Bug fixes
