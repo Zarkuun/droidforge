@@ -22,7 +22,7 @@ EditorActions::EditorActions(MainWindow *mainWindow, PatchEditEngine *patch, QOb
     connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &EditorActions::moveCursor);
     connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &EditorActions::changePatching);
     connect(mainWindow->theHub(), &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
-    connect(the_clipboard, &Clipboard::changed, this, &EditorActions::updatePasteAction);
+    connect(the_clipboard, &Clipboard::changed, this, &EditorActions::changeClipboard);
 
     CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &EditorActions::persistViewToggles);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &EditorActions::persistViewToggles);

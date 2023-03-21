@@ -10,6 +10,8 @@
 	* Fix missing or non-updated graphics of "dragging indicator" in section list,
 	  which happened when you dragged sections in a longer list that was scrolled
 	  up too far.
+	* Fix actions "paste smartly" and "paste as section". They were never
+	  enabled.
 
 	Clean ups:
 	* Fix position of opening square bracket in text mode
