@@ -1,56 +1,3 @@
-1.1beta6:
-	Bug fixes
-	* Remove unsave characters like ; : " \ and / from a section title before
-	  suggesting a filename when saving a section as patch (found by @oedoen)
-	* Fix crash in search when you have an empty patch section (found by @oedoen)
-	* Fix color of parameters of disabled lines in text mode
-	* Fix visibility of "Patching" in statusbar (would go invisible when the
-	  cursor was over a non-cable value)
-	* Fix visibility and initial size of user manual PDF viewer.
-	* Fix missing or non-updated graphics of "dragging indicator" in section list,
-	  which happened when you dragged sections in a longer list that was scrolled
-	  up too far.
-	* Fix actions "paste smartly" and "paste as section". They were never
-	  enabled.
-
-	Clean ups:
-	* Fix position of opening square bracket in text mode
-	* Add "Set bookmark" and "Jump to bookmark" to context menu
-	* Add "Manual" button to "Edit parameter" dialog, for getting direct access
-	  to the circuit's manual.
-	* Visualize used M4 faders and buttons as rectangles, not as circles.
-	* Show the scroll bar in the section list if it is too long.
-	* Hide menu entries for finishing/aborting cabling when they are not
-	  useful.
-	* Fix setting focus correctly in value selector when pressing buttons.
-
-1.1beta5:
-	Bug fixes
-	* Fix glitch where the wrong cable is shown and the list of cables just
-	  has one row when editing a cable by pressing enter or double clicking.
-	* Fix potential crash in "fix button/LED mismatch". This *could* possibly
-	  fix the crash that @eising has reported.
-	* Fix window title of "Edit section comment" (was titled "Edit circuit
-	  comment")
-
-	Clean ups:
-	* Assign Shift-F10 shortcut to "reload status dump", when a new SD card
-	  has been inserted (rather than just show the previously loaded dump)
-	* Avoid section comment with just one empty line
-	* Show status dump values also in simplified text mode (as suggested
-	  by @eising)
-
-1.1beta4:
-	Bug fixes
-	* Fix crash found @nohumans. The Forge crashed when you opened a second
-	  patch window, close that again and the entered the preferences and
-	  changed them.
-	* Fix patch RAM usage for one more time. Now it should be very
-	  precise. Just note that the Forge cannot know wether you have an
-	  X7 attached. An X7 needs 1000 bytes, just because it is attached,
-	  even if not used in the patch. So the forge always assume these 1000
-	  bytes, just for safety.
-
 1.1:
 	New features:
 	* The Forge now handles multiple patch windows in parallel. With the
@@ -146,9 +93,16 @@
 	* Always save the patch before depolying it to the SD card.
 	* There is a maximum of 63 characters for line in a patch. The master will complain
 	  about longer lines. This is now checked by the Forge.
+	* Fix setting focus correctly in value selector when pressing buttons.
+	* Add "Manual" button to "Edit parameter" dialog, for getting direct access
+	  to the circuit's manual.
+	* Visualize used M4 faders and buttons as rectangles, not as circles.
+	* Show the scroll bar in the section list if it is too long.
+	* Hide menu entries for finishing/aborting cabling when they are not
+	  useful.
 
 	Bug fixes:
-	* FIX: Make computation of used RAM more precise
+	* FIX: Make computation of used RAM precise
 	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
 	  with the wrong page numbers.
 	* FIX: Fix crash when deleting contents of a cell of an undefined parameter
@@ -173,6 +127,18 @@
 	* FIX: Save the rack size when it was changed with the menu entries or
 	  keyboard shortcuts (previously it was just saved when you moved
 	  the bar between the rack and the patch with the mouse).
+	* Fix glitch where the wrong cable is shown and the list of cables just
+	  has one row when editing a cable by pressing enter or double clicking.
+	* Fix potential crash in "fix button/LED mismatch". This *could* possibly
+	  fix the crash that @eising has reported.
+	* Fix actions "paste smartly" and "paste as section". They were never
+	  enabled.
+	* Remove unsave characters like ; : " \ and / from a section title before
+	  suggesting a filename when saving a section as patch (found by @oedoen)
+	* Fix visibility and initial size of user manual PDF viewer.
+	* Fix missing or non-updated graphics of "dragging indicator" in section list,
+	  which happened when you dragged sections in a longer list that was scrolled
+	  up too far.
 
 1.0:
 	New features:
