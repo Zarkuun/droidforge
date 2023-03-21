@@ -160,7 +160,7 @@ void AtomSelector::mousePressEvent(QMouseEvent *event)
 
 void AtomSelector::subselectorSelected(AtomSubSelector *ass)
 {
-     currentSelector = ass;
+    currentSelector = ass;
 }
 void AtomSelector::switchToSelector(int index)
 {

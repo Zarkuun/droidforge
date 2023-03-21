@@ -1,6 +1,7 @@
 #include "registerselector.h"
 #include "atomregister.h"
 #include "tuning.h"
+#include "globals.h"
 
 #include <QRegularExpressionValidator>
 
@@ -49,6 +50,10 @@ void RegisterSelector::setRegisterType(register_type_t reg)
 {
     registerType = reg;
     labelRegister->setText(QChar(reg));
+    if (lineEditController->isVisible())
+        lineEditController->setFocus();
+    else
+        lineEditNumber->setFocus();
 }
 
 
