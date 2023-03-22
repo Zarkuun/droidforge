@@ -236,8 +236,8 @@ void MainWindow::createMenus()
     createEditMenu();
     createSectionMenu();
     createViewMenu();
-    createHelpMenu();
     createWindowsMenu();
+    createHelpMenu();
 
     // Add actions to the main window that have no menu entry
     // or toolbar, so that the keyboard shortcuts will work.
