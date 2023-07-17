@@ -132,21 +132,20 @@ bool AtomRegister::isRelatedTo(const AtomRegister &other) const
     else
         return false;
 }
-bool AtomRegister::needsG8() const
+unsigned AtomRegister::neededG8Number() const
 {
     if (registerType == REGISTER_GATE
-           && cont == 0
            && num >= 1
            && num <= 8)
-        return true;
+        return cont;
 
     if (registerType == REGISTER_RGB_LED
             && cont == 0
             && num >= 17
-            && num <= 24)
-        return true;
+            && num <= 48)
+        return (num - 16) / 8;
 
-    return false;
+    return 0;
 }
 bool AtomRegister::needsX7() const
 {

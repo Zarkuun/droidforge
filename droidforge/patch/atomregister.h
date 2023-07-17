@@ -39,7 +39,7 @@ public:
     AtomRegister *clone() const override;
     QString toString() const override;
     QString toDisplay() const override;
-    bool needsG8() const override;
+    unsigned neededG8Number() const override;
     bool needsX7() const override;
     QString problemAsInput(const Patch *patch) const override;
     QString problemAsOutput(const Patch *patch) const override;

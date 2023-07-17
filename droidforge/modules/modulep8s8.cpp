@@ -27,7 +27,7 @@ QPointF ModuleP8S8::registerPosition(register_type_t type, unsigned number) cons
         y = ((number-1) / 4) * 2.82 + 19.45;
     return QPointF(x, y);
 }
-float ModuleP8S8::registerSize(register_type_t type, unsigned) const
+float ModuleP8S8::registerSize(register_type_t, unsigned) const
 {
     return CONTROL_BUTTON_SIZE;
 }

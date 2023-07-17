@@ -75,6 +75,7 @@ public slots:
     void abortAllActions();
     void modifyPatch();
     void toggleDisplayOptions();
+    void showG8s(unsigned count);
     void updateRegisterHilites();
     void addController();
 

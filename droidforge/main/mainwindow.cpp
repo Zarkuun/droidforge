@@ -385,12 +385,19 @@ void MainWindow::createViewMenu()
 
     menu->addSeparator();
 
+    ADD_ACTION(ACTION_RIGHT_TO_LEFT, menu);
     ADD_ACTION(ACTION_SHOW_REGISTER_LABELS, menu);
     ADD_ACTION(ACTION_SHOW_REGISTER_USAGE, menu);
     ADD_ACTION(ACTION_TEXT_MODE, menu);
-    ADD_ACTION(ACTION_SHOW_G8_ON_DEMAND, menu);
     ADD_ACTION(ACTION_SHOW_X7_ON_DEMAND, menu);
-    ADD_ACTION(ACTION_RIGHT_TO_LEFT, menu);
+
+    QMenu *g8menu = menu->addMenu(tr("G8 expander"));
+    ADD_ACTION(ACTION_SHOW_USED_G8s, g8menu);
+    g8menu->addSeparator();
+    ADD_ACTION(ACTION_SHOW_ONE_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_TWO_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_THREE_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_FOUR_G8, g8menu);
 
     menu->addSeparator();
 

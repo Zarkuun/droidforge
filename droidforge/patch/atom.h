@@ -25,8 +25,8 @@ public:
     virtual bool canHaveLabel() const { return false; };
     virtual bool isCable() const { return false; };
     virtual bool isInvalid() const { return false; };
-    virtual bool needsG8() const { return false; };
     virtual bool needsX7() const { return false; };
+    virtual unsigned neededG8Number() const { return 0; };
     virtual QString problemAsInput(const Patch *patch) const = 0;
     virtual QString problemAsOutput(const Patch *patch) const = 0;
     virtual void rewriteCableNames(const QString &, const QString &, RewriteCablesDialog::mode_t) {};

@@ -329,9 +329,26 @@ void EditorActions::createActions()
     actions[ACTION_TEXT_MODE]->setCheckable(true);
     actions[ACTION_TEXT_MODE]->setChecked(settings.value("simplified_text_mode", false).toBool());
 
-    actions[ACTION_SHOW_G8_ON_DEMAND] = new QAction(tr("Show &G8 only when used"), this);
-    actions[ACTION_SHOW_G8_ON_DEMAND]->setCheckable(true);
-    actions[ACTION_SHOW_G8_ON_DEMAND]->setChecked(settings.value("show_g8_on_demand").toBool());
+    unsigned show_g8s = settings.value("show_g8s", 0).toInt();
+    actions[ACTION_SHOW_USED_G8s] = new QAction(tr("Show &G8s that are in use"));
+    actions[ACTION_SHOW_USED_G8s]->setCheckable(true);
+    actions[ACTION_SHOW_USED_G8s]->setChecked(show_g8s == 0);
+
+    actions[ACTION_SHOW_ONE_G8] = new QAction(tr("Show at least one G8"), this);
+    actions[ACTION_SHOW_ONE_G8]->setCheckable(true);
+    actions[ACTION_SHOW_ONE_G8]->setChecked(show_g8s == 1);
+
+    actions[ACTION_SHOW_TWO_G8] = new QAction(tr("Show at least two G8s"), this);
+    actions[ACTION_SHOW_TWO_G8]->setCheckable(true);
+    actions[ACTION_SHOW_TWO_G8]->setChecked(show_g8s == 2);
+
+    actions[ACTION_SHOW_THREE_G8] = new QAction(tr("Show at least three G8s"), this);
+    actions[ACTION_SHOW_THREE_G8]->setCheckable(true);
+    actions[ACTION_SHOW_THREE_G8]->setChecked(show_g8s == 3);
+
+    actions[ACTION_SHOW_FOUR_G8] = new QAction(tr("Show four G8s"), this);
+    actions[ACTION_SHOW_FOUR_G8]->setCheckable(true);
+    actions[ACTION_SHOW_FOUR_G8]->setChecked(show_g8s == 4);
 
     actions[ACTION_SHOW_X7_ON_DEMAND] = new QAction(tr("Show &X7 only when used"), this);
     actions[ACTION_SHOW_X7_ON_DEMAND]->setCheckable(true);

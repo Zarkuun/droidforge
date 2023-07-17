@@ -720,18 +720,21 @@ unsigned Patch::countUniqueConstants()
     }
     return constants.count();
 }
-bool Patch::needsG8()
+
+unsigned Patch::neededG8s()
 {
+    unsigned highest_g8 = 0;
     for (auto it = beginEnabled(); it != this->end(); ++it)
     {
         auto &atom = *it;
         if (atom->isRegister()) {
             AtomRegister *reg = (AtomRegister *)atom;
-            if (reg->needsG8())
-                return true;
+            if (reg->getRegisterType() == REGISTER_GATE) {
+                highest_g8 = 1;
+            }
         }
     }
-    return false;
+    return highest_g8;
 }
 bool Patch::needsX7()
 {

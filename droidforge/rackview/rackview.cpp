@@ -45,7 +45,11 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &RackView::abortAllActions);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &RackView::modifyPatch);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &RackView::modifyPatch);
-    CONNECT_ACTION(ACTION_SHOW_G8_ON_DEMAND, &RackView::toggleDisplayOptions);
+    CONNECT_ACTION(ACTION_SHOW_USED_G8s, [this]{ showG8s(0); });
+    CONNECT_ACTION(ACTION_SHOW_ONE_G8, [this]{ showG8s(1); });
+    CONNECT_ACTION(ACTION_SHOW_TWO_G8, [this]{ showG8s(2); });
+    CONNECT_ACTION(ACTION_SHOW_THREE_G8,[this]{ showG8s(3); });
+    CONNECT_ACTION(ACTION_SHOW_FOUR_G8, [this]{ showG8s(4); });
     CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, &RackView::toggleDisplayOptions);
     CONNECT_ACTION(ACTION_RIGHT_TO_LEFT, &RackView::toggleDisplayOptions);
 
@@ -77,9 +81,21 @@ void RackView::modifyPatch()
 void RackView::toggleDisplayOptions()
 {
     QSettings settings;
-    settings.setValue("show_g8_on_demand", ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked());
     settings.setValue("show_x7_on_demand", ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked());
     settings.setValue("right_to_left", ACTION(ACTION_RIGHT_TO_LEFT)->isChecked());
+    modifyPatch();
+    updateSize();
+}
+
+void RackView::showG8s(unsigned count)
+{
+    QSettings settings;
+    settings.setValue("show_g8s", count);
+    ACTION(ACTION_SHOW_USED_G8s)->setChecked(count == 0);
+    ACTION(ACTION_SHOW_ONE_G8)->setChecked(count == 1);
+    ACTION(ACTION_SHOW_TWO_G8)->setChecked(count == 2);
+    ACTION(ACTION_SHOW_THREE_G8)->setChecked(count == 3);
+    ACTION(ACTION_SHOW_FOUR_G8)->setChecked(count == 4);
     modifyPatch();
     updateSize();
 }
@@ -352,6 +368,10 @@ void RackView::refreshScene()
     scene()->addItem(dragControllerIndicator);
 
     x = 0;
+    QSettings settings;
+    unsigned show_g8s = qMax((unsigned)(settings.value("show_g8s", 0).toInt()),
+                             patch->neededG8s());
+
     if (ACTION(ACTION_RIGHT_TO_LEFT)->isChecked())
     {
         for (int i=patch->numControllers()-1; i>=0; i--)
@@ -360,13 +380,13 @@ void RackView::refreshScene()
         x += RACV_CONTROLLER_GAP;
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
             addModule("x7");
-        if (!ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked() || patch->needsG8())
+        for (unsigned g=0; g<show_g8s; g++)
             addModule("g8");
         addModule("master");
     }
     else {
         addModule("master");
-        if (!ACTION(ACTION_SHOW_G8_ON_DEMAND)->isChecked() || patch->needsG8())
+        for (unsigned g=0; g<show_g8s; g++)
             addModule("g8");
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
             addModule("x7");
