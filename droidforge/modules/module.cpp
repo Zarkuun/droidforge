@@ -31,7 +31,7 @@ unsigned Module::controllerNumber() const
         controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
     return controller;
 }
-void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex)
+void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex, unsigned g8Number)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
         register_type_t type = register_types[i];

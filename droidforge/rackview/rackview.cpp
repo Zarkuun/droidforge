@@ -380,14 +380,14 @@ void RackView::refreshScene()
         x += RACV_CONTROLLER_GAP;
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
             addModule("x7");
-        for (unsigned g=0; g<show_g8s; g++)
-            addModule("g8");
+        for (unsigned g=show_g8s; g>=1; g--)
+            addModule("g8", -1, g);
         addModule("master");
     }
     else {
         addModule("master");
-        for (unsigned g=0; g<show_g8s; g++)
-            addModule("g8");
+        for (unsigned g=1; g<=show_g8s; g++)
+            addModule("g8", -1, g);
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
             addModule("x7");
         addModule("bling");
@@ -454,7 +454,7 @@ void RackView::updateSize()
 
     updateModuleHeights();
 }
-void RackView::addModule(const QString &name, int controllerIndex)
+void RackView::addModule(const QString &name, int controllerIndex, int g8Number)
 {
     Module *module = moduleBuilder.buildModule(name, patch->getRegisterLabelsPointer());
     module->setData(DATA_INDEX_MODULE_NAME, name);
@@ -464,9 +464,11 @@ void RackView::addModule(const QString &name, int controllerIndex)
     modules.append(module);
     if (controllerIndex >= 0)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
+    if (g8Number > 0)
+        module->setData(DATA_INDEX_G8_NUMBER, g8Number);
     module->setPos(x, 0); //RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
-    module->createRegisterItems(scene(), modules.count() - 1, controllerIndex);
+    module->createRegisterItems(scene(), modules.count() - 1, controllerIndex, g8Number);
 }
 unsigned RackView::numControllers() const
 {
@@ -539,6 +541,7 @@ void RackView::clickOnItem(QGraphicsItem *item)
 {
     if (item->data(DATA_INDEX_REGISTER_NAME).isValid()) {
         AtomRegister ar(item->data(DATA_INDEX_REGISTER_NAME).toString());
+        shout << "Der name ist " << ar.toString();
         emit registerClicked(ar);
     }
 }

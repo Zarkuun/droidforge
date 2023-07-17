@@ -25,6 +25,7 @@ QT_END_NAMESPACE
 #define DATA_INDEX_MODULE_NAME      2 // QString, e.g. "b32"
 #define DATA_INDEX_REGISTER_NAME    3 // QString, e.g. "L1.4"
 #define DATA_INDEX_REGISTER         4
+#define DATA_INDEX_G8_NUMBER        5 // starting from 1
 
 
 class MainWindow;
@@ -65,7 +66,7 @@ public:
     AtomRegister registerAtom(register_type_t type, unsigned number) const;
     void collectAllRegisters(RegisterList &rl, int number=-1) const;
     unsigned controllerNumber() const;
-    void createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex);
+    void createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex, unsigned g8Number);
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
