@@ -53,6 +53,8 @@ QtApplication {
         "main/windowlist.h",
         "modules/modulebling.cpp",
         "modules/modulebling.h",
+        "modules/modulep8s8.cpp",
+        "modules/modulep8s8.h",
         "os/midihost.cpp",
         "os/midihost.h",
         "os/macmidihost.cpp",

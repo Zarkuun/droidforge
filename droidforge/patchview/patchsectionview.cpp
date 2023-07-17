@@ -1335,6 +1335,9 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             ar.setRegisterType(REGISTER_NORMALIZE);
         else if (ar.getRegisterType() == REGISTER_BUTTON)
             ar.setRegisterType(REGISTER_LED);
+        else if (ar.getRegisterType() == REGISTER_POT &&
+                 patch->controller(ar.controller() - 1) == "p8s8")
+            ar.setRegisterType(REGISTER_LED);
     }
 
     // The following is a conveniance feature for that case that
@@ -1343,6 +1346,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     // Now if you click again, that changes to L1.1 (and later back again)
     else if (ja->isInput()) {
         const Atom *a = ja->atomAt(column);
+        shout << a->toString();
         if (a && a->isRegister()) {
             const AtomRegister *arx = (AtomRegister *)a;
             if (*arx == ar && ar.getRegisterType() == REGISTER_BUTTON) {
@@ -1350,10 +1354,24 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
                   tr("You just clicked on button %1 to assign that button\n"
                      "to the input parameter \"%2\" in your patch. But that\n"
                      "button was already assigned or you clicked two times in a row.\n\n"
-                     "Clicking a button a second time you changes the reference to\n"
+                     "Clicking a button a second time changes the reference to\n"
                      "the button into the LED in that button. Using an LED as input\n"
                      "is allowed and can sometimes be useful.").arg(ar.toString()).arg(ja->jackName()));
                 ar.setRegisterType(REGISTER_LED);
+            }
+            // LEDs in P8S8
+            else if (*arx == ar && ar.getRegisterType() == REGISTER_POT) {
+                QString cont = patch->controller(arx->controller() - 1);
+                if (cont == "p8s8") {
+                    HintDialog::hint("click_slider_led",
+                      tr("You just clicked on slider %1 to assign that slider\n"
+                         "to the input parameter \"%2\" in your patch. But that\n"
+                         "slider was already assigned or you clicked two times in a row.\n\n"
+                         "Clicking a slider a second time changes the reference to\n"
+                         "the slider into the LED in that slider. Using an LED as input\n"
+                         "is allowed and can sometimes be useful.").arg(ar.toString()).arg(ja->jackName()));
+                    ar.setRegisterType(REGISTER_LED);
+                }
             }
         }
     }

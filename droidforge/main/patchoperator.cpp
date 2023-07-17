@@ -532,6 +532,10 @@ void PatchOperator::showStatusDumpNr(int nr)
 QString PatchOperator::sdCardDir() const
 {
     foreach (const QStorageInfo &storage, QStorageInfo::mountedVolumes()) {
+        // TODO: Hier muss ich bei Windows wahrscheinlich noch checken, ob der richtige
+        // Filesystemtype daherkommt. Evtl. auch bei Mac-OS. Vielleicht sind dann die
+        // Hänger bei Windows weg!
+        // TODO: storage.fileSystemType() == weonweouin
         if (storage.isValid() && storage.isReady() && !storage.isReadOnly()) {
             if (isDroidVolume(storage.rootPath())) {
                 return storage.rootPath();

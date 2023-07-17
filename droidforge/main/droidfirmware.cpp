@@ -418,6 +418,13 @@ unsigned DroidFirmware::numControllerRegisters(const QString &module, char regis
         case REGISTER_SWITCH: return 10;
         }
     }
+    if (module == "p8s8") {
+        switch (registerType) {
+        case REGISTER_POT:    return 8;
+        case REGISTER_LED:    return 8;
+        case REGISTER_SWITCH: return 8;
+        }
+    }
     else if (module == "m4") {
         switch (registerType) {
         case REGISTER_POT:     return 4;
