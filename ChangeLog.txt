@@ -1,4 +1,8 @@
 1.2beta1:
+	New features:
+	* Based on new DROID firmware blue-3
+	* Support for the new P8S8 controller
+
     Clean ups:
 	* Fix order of menus. Now "Help" is the last menu, as usual.
 1.1:
