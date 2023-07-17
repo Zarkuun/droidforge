@@ -337,5 +337,12 @@
         <file>images/droidforge-icon.png</file>
         <file>images/circuits/potbank.png</file>
         <file>images/faceplates/p8s8.png</file>
+        <file>images/circuits/delay.png</file>
+        <file>images/circuits/looper.png</file>
+        <file>images/circuits/recorder.png</file>
+        <file>images/circuits/gatetool.png</file>
+        <file>images/circuits/timing copy.png</file>
+        <file>images/circuits/select.png</file>
+        <file>images/circuits/once.png</file>
     </qresource>
 </RCC>
