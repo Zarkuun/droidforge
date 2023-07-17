@@ -1346,7 +1346,6 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     // Now if you click again, that changes to L1.1 (and later back again)
     else if (ja->isInput()) {
         const Atom *a = ja->atomAt(column);
-        shout << a->toString();
         if (a && a->isRegister()) {
             const AtomRegister *arx = (AtomRegister *)a;
             if (*arx == ar && ar.getRegisterType() == REGISTER_BUTTON) {
