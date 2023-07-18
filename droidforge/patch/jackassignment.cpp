@@ -79,7 +79,8 @@ void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
          const Atom *atom = atomAt(i);
          if (atom && atom->isRegister()) {
              AtomRegister *ar = (AtomRegister *)atom;
-             sl.append(*ar);
+             if (!sl.contains(*ar))
+                 sl.append(*ar);
          }
     }
 }

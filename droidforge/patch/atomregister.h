@@ -24,6 +24,7 @@ public:
     AtomRegister relatedRegisterWithLabel() const;
     bool isControl() { return controller > 0; };
     unsigned getController() const { return controller; }
+    unsigned getG8Number() const { return g8; }
     unsigned getNumber() const { return number; }
     bool isRelatedTo(const AtomRegister &other) const;
 

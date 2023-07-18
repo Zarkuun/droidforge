@@ -488,6 +488,7 @@ void RackView::updateRegisterHilites()
 {
     RegisterList usedRegisters;
     patch->collectUsedRegisterAtoms(usedRegisters);
+    shout << "USED:" << usedRegisters;
 
     RegisterList currentRegisters;
     const Circuit *circuit = section()->currentCircuit();
@@ -512,16 +513,19 @@ void RackView::updateRegisterHilites()
         unsigned controller = 0;
         if (module->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
             controller = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
+        unsigned g8 = 0;
+        if (module->data(DATA_INDEX_G8_NUMBER).isValid())
+            g8 = module->data(DATA_INDEX_G8_NUMBER).toInt();
 
         module->clearHilites();
         for (auto ar: usedRegisters)
         {
-            if (ar.getController() == controller)
+            if (ar.getController() == controller && ar.getG8Number() == g8)
                 module->hiliteRegisters(1, ar.getRegisterType(), ar.getNumber());
         }
         for (auto ar: currentRegisters)
         {
-            if (ar.getController() == controller)
+            if (ar.getController() == controller && ar.getG8Number() == g8)
                 module->hiliteRegisters(2, ar.getRegisterType(), ar.getNumber());
         }
         module->update();
