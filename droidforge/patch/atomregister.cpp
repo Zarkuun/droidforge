@@ -11,23 +11,24 @@
 
 AtomRegister::AtomRegister()
     : registerType(0)
-    , cont(0)
-    , num(0)
+    , controller(0)
+    , g8(0)
+    , number(0)
 {
 }
-
-AtomRegister::AtomRegister(char t, unsigned c, unsigned n)
-    : registerType(t)
-    , cont(c)
-    , num(n)
+AtomRegister::AtomRegister(char ty, unsigned co, unsigned g8, unsigned nr)
+    : registerType(ty)
+    , controller(co)
+    , g8(g8)
+    , number(nr)
 {
 }
-
 AtomRegister::AtomRegister(const AtomRegister &ar)
 {
     registerType = ar.registerType;
-    cont = ar.cont;
-    num = ar.num;
+    controller = ar.controller;
+    g8 = ar.g8;
+    number = ar.number;
 }
 AtomRegister::AtomRegister(const QString &s)
 {
@@ -41,30 +42,41 @@ AtomRegister::AtomRegister(const QString &s)
     m = expa.match(s);
     if (m.hasMatch()) {
         registerType = m.captured(1).toUpper()[0].toLatin1();
-        num = m.captured(2).toUInt();
-        cont = 0;
-        if (registerType == REGISTER_GATE)
-            cont = 1; // G5 -> G1.5
+        number = m.captured(2).toUInt();
+        controller = 0;
+        if (registerType == REGISTER_GATE && number >=1 && number <= 8)
+            g8 = 1; // G5 -> G1.5
+        else
+            g8 = 0;
         return;
     }
 
     m = expb.match(s);
     if (m.hasMatch()) {
         registerType = m.captured(1).toUpper()[0].toLatin1();
-        cont = m.captured(2).toUInt();
-        num = m.captured(3).toUInt();
+        if (registerType == REGISTER_GATE) {
+            g8 = m.captured(2).toUInt();
+            controller = 0;
+        }
+        else {
+            controller = m.captured(2).toUInt();
+            g8 = 0;
+        }
+        number = m.captured(3).toUInt();
     }
     else {
         registerType = 0;
-        cont = 0;
-        num = 0;
+        controller = 0;
+        g8 = 0;
+        number = 0;
     }
 }
 AtomRegister AtomRegister::operator=(const AtomRegister &ar)
 {
     registerType = ar.registerType;
-    cont = ar.cont;
-    num = ar.num;
+    controller = ar.controller;
+    g8 = ar.g8;
+    number = ar.number;
     return *this;
 }
 AtomRegister *AtomRegister::clone() const
@@ -73,10 +85,12 @@ AtomRegister *AtomRegister::clone() const
 }
 QString AtomRegister::toString() const
 {
-    if (cont)
-        return registerType + QString::number(cont) + "." + QString::number(num);
+    if (controller)
+        return registerType + QString::number(controller) + "." + QString::number(number);
+    else if (g8)
+        return registerType + QString::number(g8) + "." + QString::number(number);
     else
-        return registerType + QString::number(num);
+        return registerType + QString::number(number);
 }
 QString AtomRegister::toDisplay() const
 {
@@ -89,28 +103,30 @@ bool AtomRegister::isNull() const
 bool AtomRegister::canHaveLabel() const
 {
     return registerType == REGISTER_BUTTON
-             || registerType == REGISTER_POT
-             || registerType == REGISTER_LED
-             || registerType == REGISTER_SWITCH
-             || registerType == REGISTER_INPUT
-             || registerType == REGISTER_NORMALIZE
-             || registerType == REGISTER_OUTPUT
+            || registerType == REGISTER_POT
+            || registerType == REGISTER_LED
+            || registerType == REGISTER_SWITCH
+            || registerType == REGISTER_INPUT
+            || registerType == REGISTER_NORMALIZE
+            || registerType == REGISTER_OUTPUT
             || registerType == REGISTER_GATE;
 }
 AtomRegister AtomRegister::relatedRegisterWithLabel() const
 {
     if (registerType == REGISTER_NORMALIZE)
-        return AtomRegister(REGISTER_INPUT, cont, num);
+        return AtomRegister(REGISTER_INPUT, controller, 0, number);
     else if (registerType == REGISTER_LED)
-        return AtomRegister(REGISTER_BUTTON, cont, num);
+        return AtomRegister(REGISTER_BUTTON, controller, 0, number);
     else
         return *this;
 }
 bool AtomRegister::isRelatedTo(const AtomRegister &other) const
 {
-    if (cont != other.cont)
+    if (controller != other.controller)
         return false;
-    else if (num != other.num)
+    else if (number != other.number)
+        return false;
+    else if (g8 != other.g8)
         return false;
     else if (registerType == other.registerType) // identical
         return true;
@@ -136,46 +152,44 @@ bool AtomRegister::isRelatedTo(const AtomRegister &other) const
 }
 unsigned AtomRegister::neededG8Number() const
 {
-    if (registerType == REGISTER_GATE
-           && num >= 1
-           && num <= 8)
-        return cont;
+    if (g8)
+        return g8;
 
     if (registerType == REGISTER_RGB_LED
-            && cont == 0
-            && num >= 17
-            && num <= 48)
-        return (num - 16) / 8;
+            && controller == 0
+            && number >= 17
+            && number <= 48)
+        return (number - 16) / 8;
 
     return 0;
 }
 bool AtomRegister::needsX7() const
 {
     if (registerType == REGISTER_GATE
-           && cont == 0
-           && num >= 9
-           && num <= 12)
+           && controller == 0
+           && number >= 9
+           && number <= 12)
         return true;
 
     if (registerType == REGISTER_RGB_LED
-            && cont == 0
-            && num >= 25
-            && num <= 32)
+            && controller == 0
+            && number >= 25
+            && number <= 32)
         return true;
 
     return false;
 }
 void AtomRegister::swapControllerNumbers(int fromController, int toController)
 {
-    if ((int)cont == fromController)
-        cont = toController;
-    else if ((int)cont == toController)
-        cont = fromController;
+    if ((int)controller == fromController)
+        controller = toController;
+    else if ((int)controller == toController)
+        controller = fromController;
 }
 void AtomRegister::shiftControllerNumbers(int controller, int by)
 {
-    if ((int)cont > controller)
-        cont += by;
+    if ((int)controller > controller)
+        this->controller += by;
 }
 QString AtomRegister::problemAsInput(const Patch *patch) const
 {
@@ -197,17 +211,17 @@ QString AtomRegister::problemAsOutput(const Patch *patch) const
 }
 void AtomRegister::incrementForExpansion(const Patch *patch)
 {
-    num++;
+    number++;
     if (!patch->registerAvailable(*this))
-        num--;
+        number--;
 }
 QString AtomRegister::generalProblem(const Patch *patch) const
 {
-    if (num <= 0)
+    if (number <= 0)
         return tr("The number of the register may not be less than 1");
-    else if (cont > patch->numControllers())
+    else if (controller > patch->numControllers())
         return tr("Invalid controller number %1. You have just %2 controllers")
-                .arg(cont).arg(patch->numControllers());
+                .arg(controller).arg(patch->numControllers());
     else if (!patch->registerAvailable(*this))
         return tr("This jack / control is not available");
 
@@ -220,8 +234,9 @@ QDebug &operator<<(QDebug &out, const AtomRegister &ar) {
 bool operator==(const AtomRegister &a, const AtomRegister &b)
 {
     return a.registerType == b.registerType
-            && a.cont == b.cont
-            && a.num == b.num;
+            && a.controller == b.controller
+            && a.g8 == b.g8
+            && a.number == b.number;
 }
 bool operator!=(const AtomRegister &a, const AtomRegister &b)
 {
@@ -229,13 +244,17 @@ bool operator!=(const AtomRegister &a, const AtomRegister &b)
 }
 bool operator<(const AtomRegister &a, const AtomRegister &b)
 {
-    if (a.cont < b.cont)
+    if (a.controller < b.controller)
         return true;
-    else if (a.cont > b.cont)
+    else if (a.controller > b.controller)
+        return false;
+    if (a.g8 < b.g8)
+        return true;
+    else if (a.g8 > b.g8)
         return false;
     else if (a.registerType < b.registerType)
         return true;
     else if (a.registerType > b.registerType)
         return false;
-    else return a.num < b.num;
+    else return a.number < b.number;
 }

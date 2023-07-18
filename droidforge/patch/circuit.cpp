@@ -268,8 +268,8 @@ bool Circuit::checkLEDMismatches(bool fixit)
             AtomRegister reg = *(AtomRegister *)atom;
             if (reg.getRegisterType() != REGISTER_BUTTON)
                 continue; // Weird special thing. Ignore
-            unsigned controller = reg.controller();
-            unsigned number = reg.number();
+            unsigned controller = reg.getController();
+            unsigned number = reg.getNumber();
 
             // Conserve the "up" and "down" in "buttonup" and "buttondown"
             QString suffix = ja->jackName().mid(6);
@@ -279,7 +279,7 @@ bool Circuit::checkLEDMismatches(bool fixit)
             if (!ledja) { // matching LED assignment not found
                 if (fixit) {
                     JackAssignmentOutput *newJa = new JackAssignmentOutput(ledname);
-                    newJa->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
+                    newJa->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, 0, number));
                     toBeAdded.append(newJa);
                     continue;
                 }
@@ -291,7 +291,7 @@ bool Circuit::checkLEDMismatches(bool fixit)
                 const Atom *ledAtom = ledja->atomAt(1);
                 if (!ledAtom || !ledAtom->isRegister()) { // not present or no register
                     if (fixit) {
-                        ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
+                        ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, 0, number));
                         continue;
                     }
                     else
@@ -301,11 +301,11 @@ bool Circuit::checkLEDMismatches(bool fixit)
                     // parameter present and with a register. Now check if it's the correct LX.Y
                     AtomRegister ledReg = *(AtomRegister *)ledAtom;
                     if (ledReg.getRegisterType() != REGISTER_LED
-                            || ledReg.controller() != controller
-                            || ledReg.number() != number)
+                            || ledReg.getController() != controller
+                            || ledReg.getNumber() != number)
                     {
                         if (fixit)
-                            ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, number));
+                            ledja->replaceAtom(1, new AtomRegister(REGISTER_LED, controller, 0, number));
                         else
                             return true;
                     }

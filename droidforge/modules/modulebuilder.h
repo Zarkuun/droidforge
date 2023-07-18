@@ -16,7 +16,7 @@ public:
     static const QStringList &allControllers();
     Module *buildModule(QString name, const RegisterLabels *labels = 0);
     static bool controllerExists(QString name);
-    static void allRegistersOf(QString name, unsigned number, RegisterList &rl);
+    static void allRegistersOf(QString name, unsigned controller, unsigned g8, RegisterList &rl);
 };
 
 #endif // MODULEBUILDER_H

@@ -137,19 +137,19 @@ void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
     patch->swapRegisters(regA, regB);
     // Also swap connected registers: Input normalization, LED in Button
     if (regA.getRegisterType() == 'I') {
-        AtomRegister nA('N', regA.controller(), regA.number());
-        AtomRegister nB('N', regB.controller(), regB.number());
+        AtomRegister nA('N', regA.getController(), 0, regA.getNumber());
+        AtomRegister nB('N', regB.getController(), 0, regB.getNumber());
         patch->swapRegisters(nA, nB);
     }
     else if (regA.getRegisterType() == 'B') {
-        AtomRegister lA('L', regA.controller(), regA.number());
-        AtomRegister lB('L', regB.controller(), regB.number());
+        AtomRegister lA('L', regA.getController(), 0, regA.getNumber());
+        AtomRegister lB('L', regB.getController(), 0, regB.getNumber());
         patch->swapRegisters(lA, lB);
     }
     patch->commit(tr("Exchanging registers '%1' and '%2'").arg(regA.toString()).arg(regB.toString()));
     emit patchModified();
 }
-void RackView::popupModuleContextMenu(int controllerIndex, QString moduleType, AtomRegister areg)
+void RackView::popupModuleContextMenu(int controllerIndex, unsigned g8Number, QString moduleType, AtomRegister areg)
 {
     QMenu *menu = new QMenu(this);
     if (controllerIndex >= 0) {
@@ -173,7 +173,7 @@ void RackView::popupModuleContextMenu(int controllerIndex, QString moduleType, A
     }
 
     menu->addAction(tr("Edit labelling of controls"), this,
-                    [this,controllerIndex,moduleType,areg] () {this->editLabelling(moduleType, controllerIndex, areg); });
+                    [this,controllerIndex,g8Number,moduleType,areg] () {this->editLabelling(moduleType, controllerIndex, g8Number, areg); });
 
     if (!areg.isNull()) {
         QAction *action =  menu->addAction(tr("Find this control in your patch"), this,
@@ -552,14 +552,15 @@ void RackView::doubleClickOnItem(QGraphicsItem *item)
         Module *module = modules[item->data(DATA_INDEX_MODULE_INDEX).toInt()];
         if (module->getName() == "bling")
             return;
-        bool ok;
+        bool ok = false;
         int controllerIndex = item->data(DATA_INDEX_CONTROLLER_INDEX).toInt(&ok);
         if (!ok)
             controllerIndex = -1;
         AtomRegister ar;
         if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
             ar = AtomRegister(item->data(DATA_INDEX_REGISTER_NAME).toString());
-        editLabelling(module->getName(), controllerIndex, ar);
+        unsigned g8Number = item->data(DATA_INDEX_G8_NUMBER).toInt(&ok);
+        editLabelling(module->getName(), controllerIndex, ok ? g8Number : 0, ar);
     }
 }
 
@@ -589,7 +590,9 @@ void RackView::openMenuOnItem(QGraphicsItem *item)
     if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
         areg = item->data(DATA_INDEX_REGISTER_NAME).toString();
 
-    popupModuleContextMenu(index, moduleName, areg);
+    unsigned g8Number = item->data(DATA_INDEX_G8_NUMBER).toInt(0);
+
+    popupModuleContextMenu(index, g8Number, moduleName, areg);
 }
 
 void RackView::hoverIn(QGraphicsItem *item)
@@ -795,11 +798,11 @@ void RackView::remapControls(QString controllerName, int controllerIndex)
         emit patchModified();
     }
 }
-void RackView::editLabelling(QString moduleType, int controllerIndex, AtomRegister reg)
+void RackView::editLabelling(QString moduleType, int controllerIndex, unsigned g8Number, AtomRegister reg)
 {
     // Get current position of register marker
     RegisterLabels &labels = patch->getRegisterLabels();
-    ControllerLabellingDialog dialog(mainWindow, labels, moduleType, controllerIndex + 1, reg);
+    ControllerLabellingDialog dialog(mainWindow, labels, moduleType, controllerIndex + 1, g8Number, reg);
     int ret = dialog.exec();
     if (ret == QDialog::Accepted) {
         patch->commit(tr("editing labelling of '%1'").arg(moduleType));

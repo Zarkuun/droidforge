@@ -10,12 +10,13 @@
 #include <QPushButton>
 
 
-ControllerLabellingDialog::ControllerLabellingDialog(MainWindow *mainWindow, RegisterLabels &labels, QString controllerType, unsigned controllerNumber, AtomRegister jumpTo)
+ControllerLabellingDialog::ControllerLabellingDialog(MainWindow *mainWindow, RegisterLabels &labels, QString controllerType, unsigned controllerNumber, unsigned g8Number, AtomRegister jumpTo)
     : Dialog("controllerlabelling/" + controllerType, mainWindow)
     , moduleBuilder(mainWindow)
     , labels(labels)
     , controllerType(controllerType)
     , controllerNumber(controllerNumber)
+    , g8Number(g8Number)
     , currentRow(0)
 {
     mainLayout = new QHBoxLayout(this);
@@ -106,7 +107,7 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
             currentRow ++;
         }
 
-        AtomRegister atom(regType, controllerNumber, num);
+        AtomRegister atom(regType, controllerNumber, g8Number, num);
         QString shorthand;
         QString description;
         if (labels.contains(atom)) {

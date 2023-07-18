@@ -31,6 +31,7 @@
 #define SD_CHECK_INTERVAL                    300  // ms
 #define MAX_DROID_INI                        64000 // from x7.h
 #define MAX_PATCH_LINE_LENGTH                63 // from master:tuning.h
+#define MAX_NUM_G8S                          4
 
 #define MAX_LENGTH_SHORTHAND                 12 // for register labels
 #define MAX_RECENT_FILES                     10

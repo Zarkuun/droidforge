@@ -149,9 +149,9 @@ void Patch::setDescription(const QString &d)
     if (d.endsWith("\n"))
         description.removeLast();
 }
-void Patch::addRegisterComment(register_type_t registerType, unsigned controller, unsigned number, const QString &shorthand, const QString &comment)
+void Patch::addRegisterComment(register_type_t registerType, unsigned controller, unsigned number, unsigned g8, const QString &shorthand, const QString &comment)
 {
-    AtomRegister atom(registerType, controller, number);
+    AtomRegister atom(registerType, controller, g8, number);
     RegisterLabel rc{shorthand, comment};
     registerLabels[atom] = rc;
 }
@@ -516,13 +516,15 @@ bool Patch::controlUsed(AtomRegister reg)
 }
 void Patch::collectAvailableRegisterAtoms(RegisterList &rl) const
 {
-    ModuleBuilder::allRegistersOf("master", 0, rl);
-    ModuleBuilder::allRegistersOf("g8", 0, rl);
-    ModuleBuilder::allRegistersOf("x7", 0, rl);
+    ModuleBuilder::allRegistersOf("master", 0, 0, rl);
+    for (unsigned g=1; g<=MAX_NUM_G8S; g++)
+        ModuleBuilder::allRegistersOf("g8", 0, g, rl);
+
+    ModuleBuilder::allRegistersOf("x7", 0, 0, rl);
     unsigned controllerNumber = 1;
 
     for (auto &controller: controllers) {
-        ModuleBuilder::allRegistersOf(controller, controllerNumber, rl);
+        ModuleBuilder::allRegistersOf(controller, controllerNumber, 0, rl);
         controllerNumber++;
     }
 }
@@ -622,7 +624,7 @@ bool Patch::registerAvailable(AtomRegister ar) const
     unsigned max;
 
     if (ar.isControl()) {
-        unsigned c = ar.controller();
+        unsigned c = ar.getController();
         if (c > controllers.count())
             return false;
         QString name = controllers[c-1];

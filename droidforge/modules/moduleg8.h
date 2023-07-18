@@ -11,6 +11,7 @@ public:
     float hp() const { return 4; }
     unsigned numRegisters(register_type_t type) const;
     unsigned numberOffset(register_type_t type) const;
+    AtomRegister registerAtom(register_type_t type, unsigned number) const;
 
 protected:
     QPointF registerPosition(register_type_t type, unsigned number) const;

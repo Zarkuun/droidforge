@@ -19,6 +19,7 @@ class ControllerLabellingDialog : public Dialog
     RegisterLabels &labels;
     QString controllerType;
     unsigned controllerNumber; // e.g. 2 for B2.4
+    unsigned g8Number; // e.g. 3 for G3.7
     int currentRow;
     unsigned numColumns;
     QHBoxLayout *mainLayout;
@@ -26,7 +27,7 @@ class ControllerLabellingDialog : public Dialog
     QList<RegisterLabelWidget *> labelWidgets;
 
 public:
-    ControllerLabellingDialog(MainWindow *mainWindow, RegisterLabels &labels, QString controller, unsigned controllerNumber, AtomRegister jumpTo);
+    ControllerLabellingDialog(MainWindow *mainWindow, RegisterLabels &labels, QString controller, unsigned controllerNumber, unsigned g8Number, AtomRegister jumpTo);
     void accept();
 
 private:

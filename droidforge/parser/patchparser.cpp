@@ -193,15 +193,20 @@ bool PatchParser::maybeParseRegisterComment(QString comment)
     m = regex.match(comment);
     if (m.hasMatch()) {
         QChar registerName = m.captured(1).toUpper()[0];
-        unsigned controller;
-        unsigned number;
+        unsigned controller = 0;
+        unsigned g8 = 0;
+        unsigned number = 0;
         if (m.captured(3).isEmpty()) {
             controller = 0;
+            g8 = 0;
             number = m.captured(2).toUInt();
         }
         else {
-            controller = m.captured(2).toUInt();
             number = m.captured(3).toUInt();
+            if (registerName == 'G' && number >= 1 && number <= 8)
+                g8 = m.captured(2).toUInt();
+            else
+                controller = m.captured(2).toUInt();
         }
         QString atomcomment = m.captured(4);
         QRegularExpressionMatch m2;
@@ -212,7 +217,7 @@ bool PatchParser::maybeParseRegisterComment(QString comment)
             atomcomment = m2.captured(2);
         }
         register_type_t registerType = registerName.toLatin1();
-        patch->addRegisterComment(registerType, controller, number, shorthand, atomcomment);
+        patch->addRegisterComment(registerType, controller, g8, number, shorthand, atomcomment);
         return true;
     }
     else

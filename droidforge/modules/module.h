@@ -54,6 +54,7 @@ public:
     virtual float labelDistance(register_type_t, unsigned) const { return 0; }; // in HP
     virtual float labelWidth(register_type_t, unsigned) const { return 2.0; }; // never called
     virtual bool labelNeedsBackground(register_type_t, unsigned) const { return false; };
+    virtual AtomRegister registerAtom(register_type_t type, unsigned number) const;
     QRectF boundingRect() const override;
     QRectF moduleRect() const;
 
@@ -63,9 +64,9 @@ public:
     const QImage *getFaceplateImage() const { return &faceplateImage; };
     // const QPixmap *getFaceplatePixmap() const { return &faceplatePixmap; };
     AtomRegister *registerAt(const QPoint &pos) const;
-    AtomRegister registerAtom(register_type_t type, unsigned number) const;
-    void collectAllRegisters(RegisterList &rl, int number=-1) const;
+    void collectAllRegisters(RegisterList &rl) const;
     unsigned controllerNumber() const;
+    unsigned g8Number() const;
     void createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex, unsigned g8Number);
 
 protected:

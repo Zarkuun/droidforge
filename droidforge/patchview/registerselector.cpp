@@ -109,7 +109,8 @@ Atom *RegisterSelector::getAtom() const
 {
     unsigned number = lineEditNumber->text().toUInt();
     unsigned controller = isControl ? lineEditController->text().toUInt() : 0;
-    return new AtomRegister(registerType, controller, number);
+    // TODO: Hier fehlen die G8s
+    return new AtomRegister(registerType, controller, 0 /* TODO */, number);
 }
 
 void RegisterSelector::installFocusFilter(QWidget *w)

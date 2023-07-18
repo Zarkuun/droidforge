@@ -54,7 +54,7 @@ private:
     void removeModule(int controllerIndex);
     RegisterList findCurrentRegisters() const;
     void updateSize();
-    void popupModuleContextMenu(int controller, QString name, AtomRegister areg);
+    void popupModuleContextMenu(int controller, unsigned g8Number, QString name, AtomRegister areg);
     void popupBackgroundContextMenu();
     void collectUsedRegisters(int controllerIndex, RegisterList &used);
     bool controllersRegistersUsed(int controllerIndex);
@@ -99,7 +99,7 @@ private slots:
     void findRegister(AtomRegister reg);
     void swapControllers(int oldindex, int newindex);
     void remapControls(QString moduleType, int controllerIndex);
-    void editLabelling(QString moduleType, int controllerIndex, AtomRegister reg);
+    void editLabelling(QString moduleType, int controllerIndex, unsigned g8Number, AtomRegister reg);
 
 signals:
     void registerClicked(AtomRegister ar);

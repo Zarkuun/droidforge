@@ -1336,7 +1336,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
         else if (ar.getRegisterType() == REGISTER_BUTTON)
             ar.setRegisterType(REGISTER_LED);
         else if (ar.getRegisterType() == REGISTER_POT &&
-                 patch->controller(ar.controller() - 1) == "p8s8")
+                 patch->controller(ar.getController() - 1) == "p8s8")
             ar.setRegisterType(REGISTER_LED);
     }
 
@@ -1360,7 +1360,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             }
             // LEDs in P8S8
             else if (*arx == ar && ar.getRegisterType() == REGISTER_POT) {
-                QString cont = patch->controller(arx->controller() - 1);
+                QString cont = patch->controller(arx->getController() - 1);
                 if (cont == "p8s8") {
                     HintDialog::hint("click_slider_led",
                       tr("You just clicked on slider %1 to assign that slider\n"

@@ -52,10 +52,16 @@ bool ModuleBuilder::controllerExists(QString name)
 {
     return allControllers().contains(name);
 }
-void ModuleBuilder::allRegistersOf(QString name, unsigned number, RegisterList &rl)
+
+void ModuleBuilder::allRegistersOf(QString name, unsigned controller, unsigned g8, RegisterList &rl)
 {
     ModuleBuilder mb(0);
     Module *m = mb.buildModule(name);
-    m->collectAllRegisters(rl, number);
+    if (controller)
+        m->setData(DATA_INDEX_CONTROLLER_INDEX, controller);
+    else if (g8)
+        m->setData(DATA_INDEX_G8_NUMBER, g8);
+
+    m->collectAllRegisters(rl);
     delete m;
 }

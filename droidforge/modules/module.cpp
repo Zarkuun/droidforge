@@ -31,6 +31,13 @@ unsigned Module::controllerNumber() const
         controller = data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
     return controller;
 }
+unsigned Module::g8Number() const
+{
+    unsigned g8 = 0;
+    if (data(DATA_INDEX_G8_NUMBER).isValid())
+        g8 = data(DATA_INDEX_G8_NUMBER).toInt();
+    return g8;
+}
 void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int controllerIndex, unsigned g8Number)
 {
     for (int i=0; i<NUM_REGISTER_TYPES; i++) {
@@ -41,9 +48,10 @@ void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int con
             QRectF rect = registerRect(type, j+1, rectAspect(type), 1).translated(pos().x(), 0);
             auto item = scene->addRect(rect, QPen(QColor(0, 0, 0, 0), 0));
             item->setData(DATA_INDEX_DRAGGER_PRIO, 2);
-            item->setData(DATA_INDEX_REGISTER_NAME, registerAtom(type, j+1).toString());
+            item->setData(DATA_INDEX_REGISTER_NAME, registerAtom(type,  j+1).toString());
             item->setData(DATA_INDEX_MODULE_INDEX, moduleIndex);
             item->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
+            item->setData(DATA_INDEX_G8_NUMBER, g8Number);
         }
     }
 }
@@ -132,7 +140,7 @@ void Module::paintRegisterLabels(QPainter *painter)
     while (it.hasNext()) {
         it.next();
         AtomRegister atom = it.key();
-        if (atom.controller() != controller)
+        if (atom.getController() != controller)
             continue;
         if (!haveRegister(atom))
             continue;
@@ -168,7 +176,7 @@ bool Module::haveRegister(AtomRegister atom)
 {
     unsigned count = numRegisters(atom.getRegisterType());
     unsigned offset = numberOffset(atom.getRegisterType());
-    bool have = atom.number() >= 1 + offset && atom.number() <= count + offset;
+    bool have = atom.getNumber() >= 1 + offset && atom.getNumber() <= count + offset;
     return have;
 }
 void Module::hiliteRegisters(int usage, register_type_t type, unsigned number)
@@ -211,18 +219,14 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
 }
 AtomRegister Module::registerAtom(register_type_t type, unsigned number) const
 {
-    return AtomRegister(type, controllerNumber(), number + numberOffset(type));
+    return AtomRegister(type, controllerNumber(), g8Number(), number + numberOffset(type));
 }
-void Module::collectAllRegisters(RegisterList &rl, int number) const
+void Module::collectAllRegisters(RegisterList &rl) const
 {
     for (unsigned i=0; i<NUM_REGISTER_TYPES; i++) {
         register_type_t type = register_types[i];
         unsigned count = numRegisters(type);
-        for (unsigned j=1; j<=count; j++) {
-            if (number >= 1)
-                rl.append(AtomRegister(type, number, j));
-            else
-                rl.append(registerAtom(type, j));
-        }
+        for (unsigned number=1; number<=count; number++)
+            rl.append(registerAtom(type, number));
     }
 }

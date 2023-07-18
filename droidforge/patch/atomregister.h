@@ -10,23 +10,21 @@
 class AtomRegister : public Atom
 {
     register_type_t registerType;
-    uint8_t cont; // none: master,x7,g8,internal
-    uint8_t num;
+    uint8_t controller; // 0: master, x7, internal, R-registers of G8
+    uint8_t g8; // 1, 2, 3 or 4 for a G8
+    uint8_t number; // The 4 in "P1.4". Or the 8 in "I8"
 
 public:
     AtomRegister();
-    AtomRegister(char t, unsigned c, unsigned n);
+    AtomRegister(char ty, unsigned co, unsigned g8, unsigned nr);
     AtomRegister(const AtomRegister& ar);
     AtomRegister(const QString &s);
     AtomRegister operator=(const AtomRegister &ar);
     bool isNull() const;
     AtomRegister relatedRegisterWithLabel() const;
-    bool isControl() { return cont > 0; };
-    bool isOnMasterG8X7() { return cont == 0; };
-    unsigned controller() const { return cont; };
-    unsigned number() const { return num; };
-    unsigned getController() const { return cont; }
-    unsigned getNumber() const { return num; }
+    bool isControl() { return controller > 0; };
+    unsigned getController() const { return controller; }
+    unsigned getNumber() const { return number; }
     bool isRelatedTo(const AtomRegister &other) const;
 
     void setRegisterType(register_type_t t) { registerType = t; };

@@ -29,8 +29,8 @@ QString RegisterList::toSmartString() const
 
     for (auto &reg: *this) {
         if (reg.getRegisterType() == previous.getRegisterType()
-            && reg.controller() == previous.controller()
-            && reg.number() == previous.number() + 1)
+            && reg.getController() == previous.getController()
+            && reg.getNumber() == previous.getNumber() + 1)
         {
             groupLength ++;
             previous = reg;

@@ -109,6 +109,7 @@ public:
     void addRegisterComment(register_type_t registerType,
             unsigned controller,
             unsigned number,
+            unsigned g8,
             const QString &shorthand,
             const QString &atomcomment);
     void moveRegistersToOtherControllers(int controllerIndex, RegisterList &atomsToRemap);

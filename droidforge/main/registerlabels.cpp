@@ -90,10 +90,10 @@ void RegisterLabels::swapControllerNumbers(unsigned fromnum, unsigned tonum)
             swapped[reg] = (*this)[reg];
         else {
             AtomRegister newReg;
-            if (reg.controller() == fromnum)
-                newReg = AtomRegister(reg.getRegisterType(), tonum, reg.number());
-            else if (reg.controller() == tonum)
-                newReg = AtomRegister(reg.getRegisterType(), fromnum, reg.number());
+            if (reg.getController() == fromnum)
+                newReg = AtomRegister(reg.getRegisterType(), tonum, 0, reg.getNumber());
+            else if (reg.getController() == tonum)
+                newReg = AtomRegister(reg.getRegisterType(), fromnum, 0, reg.getNumber());
             else
                 newReg = reg;
             swapped[newReg] = (*this)[reg];
@@ -127,7 +127,7 @@ void RegisterLabels::removeController(int number)
     for (auto it = keyBegin(); it != keyEnd(); ++it)
     {
         AtomRegister reg = *it;
-        if (reg.controller() != (unsigned)number)
+        if (reg.getController() != (unsigned)number)
             removed[reg] = (*this)[reg];
     }
     clear();
@@ -141,8 +141,8 @@ void RegisterLabels::copyControllerLabels(int fromNumber, int toNumber)
         it.next();
         AtomRegister atom = it.key();
         const RegisterLabel &label = it.value();
-        if (atom.controller() == (unsigned)fromNumber) {
-            AtomRegister copied(atom.getRegisterType(), toNumber, atom.getNumber());
+        if (atom.getController() == (unsigned)fromNumber) {
+            AtomRegister copied(atom.getRegisterType(), toNumber, 0, atom.getNumber());
             (*this)[copied] = label;
         }
     }
@@ -157,7 +157,7 @@ QString RegisterLabels::toString(char reg, unsigned controller, const QString &t
         it.next();
         AtomRegister atom = it.key();
         const RegisterLabel &label = it.value();
-        if (atom.getRegisterType() == reg && atom.controller() == controller) {
+        if (atom.getRegisterType() == reg && atom.getController() == controller) {
             if (first) {
                 first = false;
                 if (title != "")

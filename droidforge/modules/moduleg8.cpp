@@ -16,7 +16,13 @@ unsigned ModuleG8::numberOffset(register_type_t type) const
     else
         return 0;
 }
-
+AtomRegister ModuleG8::registerAtom(register_type_t type, unsigned number) const
+{
+    if (type == REGISTER_GATE)
+        return AtomRegister(type, 0, g8Number(), number); // eg. G3.8
+    else
+        return Module::registerAtom(type, number);
+}
 QPointF ModuleG8::registerPosition(register_type_t type, unsigned number) const
 {
     int column = (number - 1) % 2;
