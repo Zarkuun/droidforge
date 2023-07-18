@@ -3,9 +3,11 @@
 
 #include "registerselector.h"
 
+#include <QComboBox>
+
 class InputOutputSelector : public RegisterSelector
 {
-    jacktype_t jacktype;
+    // jacktype_t jacktype;
 
 public:
     explicit InputOutputSelector(jacktype_t, QWidget *parent = nullptr);

@@ -7,7 +7,7 @@ class ControlSelector : public RegisterSelector
 {
 public:
     explicit ControlSelector(jacktype_t, QWidget *parent = nullptr);
-    QString title() const { return tr("Control"); };
+    QString title() const { return tr("Controller"); };
     bool handlesAtom(const Atom *atom) const;
 
 protected:

@@ -11,7 +11,6 @@ InputOutputSelector::InputOutputSelector(jacktype_t jacktype, QWidget *parent)
           jacktype == JACKTYPE_INPUT ? REGISTER_INPUT : REGISTER_OUTPUT,
           jacktype == JACKTYPE_INPUT ? "IGRO" : "OGNRX",
           parent)
-    , jacktype(jacktype)
 {
     if (jacktype == JACKTYPE_INPUT) {
         addRegisterButton(REGISTER_INPUT, tr("Input"));
@@ -30,10 +29,7 @@ InputOutputSelector::InputOutputSelector(jacktype_t jacktype, QWidget *parent)
 
 QString InputOutputSelector::title() const
 {
-    if (jacktype == JACKTYPE_INPUT)
-        return QString("External input");
-    else
-        return QString("External output");
+    return tr("master / X7 / G8");
 }
 
 bool InputOutputSelector::handlesAtom(const Atom *atom) const
