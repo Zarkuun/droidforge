@@ -86,7 +86,6 @@ void RackView::toggleDisplayOptions()
     modifyPatch();
     updateSize();
 }
-
 void RackView::showG8s(unsigned count)
 {
     QSettings settings;
@@ -488,7 +487,6 @@ void RackView::updateRegisterHilites()
 {
     RegisterList usedRegisters;
     patch->collectUsedRegisterAtoms(usedRegisters);
-    shout << "USED:" << usedRegisters;
 
     RegisterList currentRegisters;
     const Circuit *circuit = section()->currentCircuit();
@@ -540,16 +538,13 @@ void RackView::addController()
         emit patchModified();
     }
 }
-
 void RackView::clickOnItem(QGraphicsItem *item)
 {
     if (item->data(DATA_INDEX_REGISTER_NAME).isValid()) {
         AtomRegister ar(item->data(DATA_INDEX_REGISTER_NAME).toString());
-        shout << "Der name ist " << ar.toString();
         emit registerClicked(ar);
     }
 }
-
 void RackView::doubleClickOnItem(QGraphicsItem *item)
 {
     if (item->data(DATA_INDEX_MODULE_INDEX).isValid()) {
@@ -567,12 +562,10 @@ void RackView::doubleClickOnItem(QGraphicsItem *item)
         editLabelling(module->getName(), controllerIndex, ok ? g8Number : 0, ar);
     }
 }
-
 void RackView::doubleClickOnBackground()
 {
     TRIGGER_ACTION(ACTION_NEW_CONTROLLER);
 }
-
 void RackView::openMenuOnBackground()
 {
     QMenu *menu = new QMenu(this);
@@ -580,7 +573,6 @@ void RackView::openMenuOnBackground()
     ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
     menu->popup(QCursor::pos());
 }
-
 void RackView::openMenuOnItem(QGraphicsItem *item)
 {
     Module *module = modules[item->data(DATA_INDEX_MODULE_INDEX).toInt()];
@@ -598,7 +590,6 @@ void RackView::openMenuOnItem(QGraphicsItem *item)
 
     popupModuleContextMenu(index, g8Number, moduleName, areg);
 }
-
 void RackView::hoverIn(QGraphicsItem *item)
 {
     if (!item->data(DATA_INDEX_REGISTER_NAME).isValid())
@@ -614,14 +605,12 @@ void RackView::hoverIn(QGraphicsItem *item)
     registerMarker->update();
     registerMarker->startAnimation();
 }
-
 void RackView::hoverOut(QGraphicsItem *item)
 {
     if (!item->data(DATA_INDEX_REGISTER_NAME).isValid())
         return;
     registerMarker->setVisible(false);
 }
-
 void RackView::dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos)
 {
     if (startItem->data(DATA_INDEX_REGISTER_NAME).isValid())
@@ -629,7 +618,6 @@ void RackView::dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint en
     else if (startItem->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
         dragController(startItem, item, endPos);
 }
-
 void RackView::dragRegister(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos)
 {
     setCursor(Qt::ClosedHandCursor);
@@ -650,7 +638,6 @@ void RackView::dragRegister(QGraphicsItem *startItem, QGraphicsItem *item, QPoin
     dragRegisterIndicator->update();
     scene()->update();
 }
-
 void RackView::dragController(QGraphicsItem *startItem, QGraphicsItem *, QPoint endPos)
 {
     setCursor(Qt::ClosedHandCursor);
@@ -667,7 +654,6 @@ void RackView::dragController(QGraphicsItem *startItem, QGraphicsItem *, QPoint 
     dragControllerIndicator->update();
     scene()->update();
 }
-
 void RackView::stopDraggingItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos)
 {
     unsetCursor();
@@ -706,7 +692,6 @@ void RackView::stopDraggingController(QGraphicsItem *startItem, QPoint pos)
     }
     dragControllerIndicator->setVisible(false);
 }
-
 int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insertSnap) const
 {
     bool rtl = ACTION(ACTION_RIGHT_TO_LEFT)->isChecked();
@@ -744,7 +729,6 @@ int RackView::snapControllerInsertPosition(int fromIndex, float x, float *insert
     }
     return -1;
 }
-
 void RackView::updateModuleHeights()
 {
     for (auto module: modules) {

@@ -106,7 +106,7 @@ public:
     void duplicateController(int index, bool withLabels);
     void removeController(int index);
     void setDescription(const QString &d);
-    void addRegisterComment(register_type_t registerType,
+    void addRegisterLabel(register_type_t registerType,
             unsigned controller,
             unsigned number,
             unsigned g8,

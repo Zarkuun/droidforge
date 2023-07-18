@@ -161,7 +161,7 @@ void PatchParser::parseCommentLine(QString line)
         // We are already in the description? Add that line to the
         // description (or such register or meta data from that line)
         else if (commentState == DESCRIPTION) {
-            if (!maybeParseRegisterComment(comment)
+            if (!maybeParseRegisterLabel(comment)
                 && !maybeParseMetaComment(comment))
                 circuitComment.append(comment);
         }
@@ -180,7 +180,7 @@ void PatchParser::parseCommentLine(QString line)
             circuitComment.append(comment);
     }
 }
-bool PatchParser::maybeParseRegisterComment(QString comment)
+bool PatchParser::maybeParseRegisterLabel(QString comment)
 {
     // Examples:
     // I1: [CLK] optional external clock
@@ -217,7 +217,7 @@ bool PatchParser::maybeParseRegisterComment(QString comment)
             atomcomment = m2.captured(2);
         }
         register_type_t registerType = registerName.toLatin1();
-        patch->addRegisterComment(registerType, controller, g8, number, shorthand, atomcomment);
+        patch->addRegisterLabel(registerType, controller, g8, number, shorthand, atomcomment);
         return true;
     }
     else

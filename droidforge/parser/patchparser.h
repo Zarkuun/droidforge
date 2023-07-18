@@ -44,7 +44,7 @@ private:
     void stripEmptyCommentLines();
     void startNewSection(const QString &name, const QStringList &comment);
     bool maybeParseMetaComment(QString comment);
-    bool maybeParseRegisterComment(QString comment);
+    bool maybeParseRegisterLabel(QString comment);
 };
 
 #endif // PATCHPARSER_H

@@ -149,7 +149,7 @@ void Patch::setDescription(const QString &d)
     if (d.endsWith("\n"))
         description.removeLast();
 }
-void Patch::addRegisterComment(register_type_t registerType, unsigned controller, unsigned number, unsigned g8, const QString &shorthand, const QString &comment)
+void Patch::addRegisterLabel(register_type_t registerType, unsigned controller, unsigned g8, unsigned number, const QString &shorthand, const QString &comment)
 {
     AtomRegister atom(registerType, controller, g8, number);
     RegisterLabel rc{shorthand, comment};

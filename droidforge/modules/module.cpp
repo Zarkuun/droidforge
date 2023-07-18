@@ -135,12 +135,15 @@ void Module::paintRegisterLabels(QPainter *painter)
 
     painter->setPen(COLOR(RACV_COLOR_REGISTER_LABEL));
     unsigned controller = controllerNumber();
+    unsigned g8 = g8Number();
 
     QMapIterator<AtomRegister, RegisterLabel> it(*registerLabels);
     while (it.hasNext()) {
         it.next();
         AtomRegister atom = it.key();
         if (atom.getController() != controller)
+            continue;
+        if (atom.getG8Number() != g8)
             continue;
         if (!haveRegister(atom))
             continue;

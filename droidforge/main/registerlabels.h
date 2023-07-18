@@ -25,7 +25,7 @@ public:
     void copyControllerLabels(int fromNumber, int toNumber);
 
 private:
-    QString toString(char reg, unsigned controller, const QString &title=0) const;
+    QString toString(char reg, unsigned controller, unsigned g8, const QString &title=0) const;
 };
 
 #endif // REGISTERLABELS_H

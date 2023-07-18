@@ -21,12 +21,15 @@ QString RegisterLabels::toString() const
         { REGISTER_INPUT, "INPUTS" },
         { REGISTER_NORMALIZE, "NORMALIZATIONS" },
         { REGISTER_OUTPUT, "OUTPUTS" },
-        { REGISTER_GATE, "GATES" },
+        { REGISTER_GATE, "GATES ON X7" },
         { REGISTER_RGB_LED, "RGB LEDS" },
     };
 
     for (unsigned i=0; i<sizeof(globalRegtypes) / sizeof(regtitle_t); i++)
-        s += toString(globalRegtypes[i].reg, 0, globalRegtypes[i].title);
+        s += toString(globalRegtypes[i].reg, 0, 0, globalRegtypes[i].title);
+
+    for (unsigned g=1; g <= MAX_NUM_G8S; g++)
+        s += toString(REGISTER_GATE, 0, g, "GATES ON G8 " + QString::number(g));
 
     // And now the registers on the controllers
     static regtitle_t controllerRegtypes[] =  {
@@ -40,7 +43,7 @@ QString RegisterLabels::toString() const
     for (unsigned cn=0; cn<MAX_NUM_CONTROLLERS; cn++) {
         QString sc;
         for (unsigned j=0; j<sizeof(controllerRegtypes) / sizeof(regtitle_t); j++)
-            sc += toString(controllerRegtypes[j].reg, cn+1);
+            sc += toString(controllerRegtypes[j].reg, cn+1, 0);
         if (!sc.isEmpty()) {
             s += "# CONTROLLER " + QString::number(cn+1) + ":\n";
             s += sc;
@@ -147,7 +150,7 @@ void RegisterLabels::copyControllerLabels(int fromNumber, int toNumber)
         }
     }
 }
-QString RegisterLabels::toString(char reg, unsigned controller, const QString &title) const
+QString RegisterLabels::toString(char reg, unsigned controller, unsigned g8, const QString &title) const
 {
     QString s;
     bool first = true;
@@ -157,7 +160,10 @@ QString RegisterLabels::toString(char reg, unsigned controller, const QString &t
         it.next();
         AtomRegister atom = it.key();
         const RegisterLabel &label = it.value();
-        if (atom.getRegisterType() == reg && atom.getController() == controller) {
+        if (atom.getRegisterType() == reg
+            && atom.getController() == controller
+            && atom.getG8Number() == g8)
+        {
             if (first) {
                 first = false;
                 if (title != "")
