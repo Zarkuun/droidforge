@@ -532,12 +532,20 @@ void PatchOperator::showStatusDumpNr(int nr)
 QString PatchOperator::sdCardDir() const
 {
     foreach (const QStorageInfo &storage, QStorageInfo::mountedVolumes()) {
-        if (storage.fileSystemType() != "msdos" &&
-            storage.fileSystemType() != "....")
+
+         // shout << "name:" << storage.displayName() << "type" << storage.fileSystemType()
+         //      << "blocksize:" << storage.blockSize() << "device" << storage.device();
+         // Make sure that we avoid access to network and cloud filesystems and similar
+         // stuff that can make trouble. Note: The lower case filesystem names are
+         // for MAC. The upper case ones for Windows. We have seen "FAT32", but "FAT16"
+         // or "FAT" is just a guess. I don't know where to get an authoritive list
+         // of these identifiers.
+         if (storage.fileSystemType() != "msdos" &&
+            storage.fileSystemType() != "FAT32" &&
+            storage.fileSystemType() != "FAT16" &&
+            storage.fileSystemType() != "FAT" )
                     continue;
 
-       //  shout << "name:" << storage.displayName() << "type" << storage.fileSystemType()
-       //        << "blocksize:" << storage.blockSize() << "device" << storage.device();
 
         // storage.fileSystemType():
         //   Returns the type name of the filesystem.
