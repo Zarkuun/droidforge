@@ -631,9 +631,18 @@ bool PatchOperator::isDroidVolume(const QString &rootPath) const
 }
 void PatchOperator::updateSDAndX7State()
 {
+    QSettings settings;
+    bool pollX7 = settings.value("activation/poll_for_x7", true).toBool();
+    bool pollSD = settings.value("activation/poll_for_sd", true).toBool();
+
     bool oldSDState = sdCardPresent;
     bool oldStatusState = statusDumpPresent;
-    sdCardPresent = sdCardDir() != "";
+
+    if (pollSD)
+        sdCardPresent = sdCardDir() != "";
+    else
+        sdCardPresent = true;
+
     if (sdCardPresent) {
         QFileInfo statusFile = QFileInfo(sdCardDir(), QString(STATUS_DUMP_FILENAME).arg(1));
         statusDumpPresent = statusFile.isFile() && statusFile.exists();
@@ -649,7 +658,11 @@ void PatchOperator::updateSDAndX7State()
     }
 
     bool oldX7State = x7Present;
-    x7Present = midiHost.x7Connected();
+    if (pollX7)
+        x7Present = midiHost.x7Connected();
+    else
+        x7Present = true;
+
     if (oldX7State != x7Present)
         emit droidStateChanged();
 }
