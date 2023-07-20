@@ -59,7 +59,16 @@ QString Circuit::prefixOfJack(const QString &jackName)
 }
 unsigned Circuit::memoryFootprint() const
 {
-    return isDisabled() ? 0 : the_firmware->circuitMemoryFootprint(name);
+    unsigned ram = isDisabled() ? 0 : the_firmware->circuitMemoryFootprint(name);
+    for (auto ja: jackAssignments) {
+        if (ja->isDisabled())
+            ram += 0;
+        else if (ja->jackType() == JACKTYPE_UNKNOWN)
+            ram += 12; // just as a guess
+        else
+            ram += the_firmware->jackMemoryFootprint(name, ja->jackName());
+    }
+    return ram;
 }
 bool Circuit::needsX7() const
 {

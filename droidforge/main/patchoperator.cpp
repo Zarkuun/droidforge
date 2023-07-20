@@ -532,6 +532,20 @@ void PatchOperator::showStatusDumpNr(int nr)
 QString PatchOperator::sdCardDir() const
 {
     foreach (const QStorageInfo &storage, QStorageInfo::mountedVolumes()) {
+        if (storage.fileSystemType() != "msdos" &&
+            storage.fileSystemType() != "....")
+                    continue;
+
+       //  shout << "name:" << storage.displayName() << "type" << storage.fileSystemType()
+       //        << "blocksize:" << storage.blockSize() << "device" << storage.device();
+
+        // storage.fileSystemType():
+        //   Returns the type name of the filesystem.
+        //   This is a platform-dependent function, and filesystem names can
+        //   vary between different operating systems. For example, on Windows
+        //   filesystems they can be named NTFS, and on Linux they can be named
+        //   ntfs-3g or fuseblk.
+
         // TODO: Hier muss ich bei Windows wahrscheinlich noch checken, ob der richtige
         // Filesystemtype daherkommt. Evtl. auch bei Mac-OS. Vielleicht sind dann die
         // Hänger bei Windows weg!

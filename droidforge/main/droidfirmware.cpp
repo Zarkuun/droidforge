@@ -68,6 +68,16 @@ unsigned DroidFirmware::circuitMemoryFootprint(QString circuit) const
 {
     return circuits[circuit].toObject()["ramsize"].toInt();
 }
+unsigned DroidFirmware::jackMemoryFootprint(QString circuit, QString jack) const
+{
+    QJsonValue jackinfo = findJack(circuit, "inputs", jack);
+    if (!jackinfo.isNull())
+        return jackinfo["ramsize"].toInt();
+    jackinfo = findJack(circuit, "outputs", jack);
+    if (!jackinfo.isNull())
+        return jackinfo["ramsize"].toInt();
+    return 12; // Should never be reached.
+}
 unsigned DroidFirmware::controllerMemoryFootprint(QString controller) const
 {
     return controllers[controller].toObject()["ramsize"].toInt();
