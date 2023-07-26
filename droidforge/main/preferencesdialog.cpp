@@ -1,5 +1,6 @@
 #include "preferencesdialog.h"
 #include "globals.h"
+#include "tuning.h"
 
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
@@ -31,7 +32,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     layout->addWidget(checkboxIgnoreUnknownJacks);
     mainLayout->addWidget(box);
 
-    // Pollinng for activation
+    // Polling for activation
     box = new QGroupBox(tr("Activation / Loading of patches"));
     layout = new QVBoxLayout(box);
     checkboxPollX7 = new QCheckBox(tr("Poll regularily for X7 connection"));
@@ -52,8 +53,8 @@ void PreferencesDialog::loadSettings()
     checkboxRenameCables->setChecked(settings.value("compression/rename_cables", false).toBool());
     checkboxRemoveEmptyLines->setChecked(settings.value("compression/remove_empty_lines", false).toBool());
     checkboxIgnoreUnknownJacks->setChecked(settings.value("validation/ignore_unknown_jacks", false).toBool());
-    checkboxPollX7->setChecked(settings.value("activation/poll_for_x7", true).toBool());
-    checkboxPollSD->setChecked(settings.value("activation/poll_for_sd", true).toBool());
+    checkboxPollX7->setChecked(settings.value("activation/poll_for_x7", SETTING_POLL_DEFAULT).toBool());
+    checkboxPollSD->setChecked(settings.value("activation/poll_for_sd", SETTING_POLL_DEFAULT).toBool());
 
 }
 void PreferencesDialog::saveSettings() const

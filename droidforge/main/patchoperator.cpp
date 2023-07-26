@@ -11,6 +11,7 @@
 #include "mainwindow.h"
 #include "windowlist.h"
 #include "namechoosedialog.h"
+#include "tuning.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -654,8 +655,8 @@ bool PatchOperator::isDroidVolume(const QString &rootPath) const
 void PatchOperator::updateSDAndX7State()
 {
     QSettings settings;
-    bool pollX7 = settings.value("activation/poll_for_x7", true).toBool();
-    bool pollSD = settings.value("activation/poll_for_sd", true).toBool();
+    bool pollX7 = settings.value("activation/poll_for_x7", SETTING_POLL_DEFAULT).toBool();
+    bool pollSD = settings.value("activation/poll_for_sd", SETTING_POLL_DEFAULT).toBool();
 
     bool oldSDState = sdCardPresent;
     bool oldStatusState = statusDumpPresent;

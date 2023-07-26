@@ -85,9 +85,11 @@
 #ifdef Q_OS_WIN
 #define CSI_MARKER_FONT_SIZE                 6
 #define CSI_LABEL_FONT_SIZE                  8
+#define SETTING_POLL_DEFAULT                 false
 #else
 #define CSI_MARKER_FONT_SIZE                 9
 #define CSI_LABEL_FONT_SIZE                  12
+#define SETTING_POLL_DEFAULT                 true
 #endif
 
 // Rack view
