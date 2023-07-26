@@ -344,5 +344,6 @@
         <file>images/circuits/timing copy.png</file>
         <file>images/circuits/select.png</file>
         <file>images/circuits/once.png</file>
+        <file>images/circuits/flipflop.png</file>
     </qresource>
 </RCC>

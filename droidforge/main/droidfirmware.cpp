@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QJsonArray>
 #include <QRegularExpression>
+#include <QMessageBox>
 
 #define GROUP "([^}]*)"
 QRegularExpression replace_("_{" GROUP "}");
@@ -18,7 +19,6 @@ QRegularExpression replaceSqrt("\\\\sqrt{" GROUP "}");
 QRegularExpression replaceFootnotesize("{\\\\footnotesize" GROUP "}");
 QRegularExpression replaceCircuit("\\\\circuit{" GROUP "}");
 QRegularExpression replaceFrac("\\\\frac{" GROUP "}{" GROUP "}");
-QRegularExpression replaceTextcolor("\\\\textcolor{red}{\\\\bf (.*)}");
 QRegularExpression replaceFramebox("\\\\framebox[^{]*{" GROUP "}");
 QRegularExpression regTabular("\\\\(begin|end){tabular}.*");
 QRegularExpression regVspace("\\\\vspace{[^}]*}");
@@ -161,6 +161,15 @@ QString DroidFirmware::circuitDescription(QString circuit) const
     QString latexcode = object["description"].toString();
     QString firstSentence = latexcode.split('.')[0].replace("\n", " ") + ".";
     QString fullDescription = delatexify(firstSentence);
+    if (fullDescription.contains("\\") ||
+            fullDescription.contains("}") ||
+            fullDescription.contains("{"))
+    {
+        shout << "MIST" << fullDescription;
+        shout << "----------------";
+        shout << latexcode;
+        fullDescription += "MIIIIIIIIIIIIIIIIIIIST";
+    }
     return fullDescription;
 }
 QString DroidFirmware::circuitTitle(QString circuit) const
@@ -381,7 +390,7 @@ bool DroidFirmware::circuitNeedsX7(QString circuit) const
             || circuit == "firefacecontrol";
 }
 
-void DroidFirmware::checkAllDescriptions() const
+bool DroidFirmware::checkAllDescriptions() const
 {
     for (auto& circuitname: circuits.keys()) {
         for (auto whence: { "inputs", "output" }) {
@@ -390,11 +399,22 @@ void DroidFirmware::checkAllDescriptions() const
                 QJsonObject jackinfo = input.toObject();
                 QString jack = jackinfo["name"].toString();
                 QString desc = jackDescriptionHTML(circuitname, whence, jack);
-                if (desc.contains("\\"))
-                    qDebug() << circuitname << "." << jack << "\n" << desc;
+                if (desc.contains("\\") || desc.contains("}") || desc.contains("}"))
+                {
+                    if (QMessageBox::warning(
+                        0,
+                        "LaTeX reminents in jack description",
+                        QString("Circuit: ") + circuitname + "\n"
+                             "Jack: " + jack + "\n\n"
+                             "Description: \n" +
+                             desc,
+                              QMessageBox::Ok | QMessageBox::Abort) == QMessageBox::Abort)
+                    return false;
+                }
             }
         }
     }
+    return true;
 }
 unsigned DroidFirmware::numControllerRegisters(const QString &module, char registerType) const
 {
@@ -492,6 +512,8 @@ QString DroidFirmware::delatexify(QString s, bool html) const
     s.replace(replaceNth, html ? "\\1<sup>th</sup>" : "\\1th");
     s.replace(replaceNthX, html ? "\\1<sup>th</sup>" : "\\1th");
     s.replace(regSup, html ? "<sup>\\1</sup>" : "\\1");
+    s.replace("page \\pageref{presets}", "chapter 3.2");
+    s.replace("page \\pageref{taptempo}", "chapter 3.3");
 
     replaceLatexSymbols(s);
 
@@ -503,7 +525,8 @@ QString DroidFirmware::delatexify(QString s, bool html) const
     s.replace("\\begin{itemize}", html ? "<ul>" : "");
     s.replace("\\end{itemize}", html ? "</ul>" : "");
     s.replace("\\item", html ? "<br><li>" : "");
-    s.replace(replaceTextcolor, "\\1");
+    if (s.startsWith("\\textcolor{red}{\\bf "))
+        s = s.mid(20);
     s.replace(replaceFramebox, "\\1");
     s.replace(replaceT,       html ? "<tt>\\1</tt>" : "\"\\1\"");
     s.replace(replaceIt,      html ? "<i>\\1</i>"   : "\\1");

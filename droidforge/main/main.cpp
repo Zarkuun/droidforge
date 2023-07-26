@@ -53,5 +53,10 @@ int main(int argc, char *argv[])
     MainWindow *mainWindow = new MainWindow(initialFilename);
     mainWindow->show();
 
+#ifdef QT_DEBUG
+    if (!firmware.checkAllDescriptions())
+        exit(1);
+#endif
+
     return app.exec();
 }

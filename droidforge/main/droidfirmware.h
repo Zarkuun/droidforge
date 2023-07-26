@@ -44,7 +44,7 @@ public:
     unsigned numControllerRegisters(const QString &controller, char registerType) const;
     unsigned numGlobalRegisters(char registerType) const;
     bool circuitNeedsX7(QString circuit) const;
-    void checkAllDescriptions() const;
+    bool checkAllDescriptions() const;
 
 private:
     QJsonValue findJack(QString circuit, QString whence, QString jack) const;

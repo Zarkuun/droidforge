@@ -1,0 +1,2 @@
+#!/bin/sh
+cp ../mk/modular/droid/vim/circuits.json droidforge/droidfirmware.json 
