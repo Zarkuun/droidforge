@@ -1302,7 +1302,7 @@ void PatchOperator::editSectionSource()
 }
 void PatchOperator::editCircuitSource()
 {
-    // Add one empty line, otherwise we will loose the first comment
+    // Add one empty line, otherwise we will lose the first comment
     // line of the circuit if it has any
     Patch *parsed = editSource(tr("Circuit source code"), "\n" + section()->currentCircuit()->toString());
     if (parsed) {
