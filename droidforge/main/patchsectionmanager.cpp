@@ -198,8 +198,9 @@ void PatchSectionManager::renameSection()
 {
     PatchSection *section = patch->currentSection();
     QString oldname = section->getTitle();
-    QString newname = NameChooseDialog::getReName(tr("Rename patch section"), tr("New name:"), oldname);
-    if (newname != "" && oldname != newname) {
+    QString newname = askForSectionName(tr("Rename patch section"), tr("New name:"), oldname, true);
+
+    if (newname != "") {
         section->setTitle(newname);
         patch->commit(tr("renaming patch section to '%1'").arg(newname));
         emit patchModified();
@@ -218,10 +219,11 @@ void PatchSectionManager::duplicateSection(bool smartly)
 {
     int index = patch->currentSectionIndex();
     PatchSection *oldSection = patch->section(index);
-    QString newname = NameChooseDialog::getNewName(
+    QString newname = askForSectionName(
                 smartly ? tr("Duplicate section smartly") : tr("Duplicate section"),
                 tr("New name:"),
-                oldSection->getTitle());
+                oldSection->getTitle(),
+                false);
     if (newname.isEmpty())
         return;
 
@@ -309,7 +311,7 @@ void PatchSectionManager::saveSectionAsPatch()
 }
 void PatchSectionManager::newSectionAtIndex(int index)
 {
-    QString newname = NameChooseDialog::getNewName(tr("Add new patch section"), tr("Name:"));
+    QString newname = askForSectionName(tr("Add new patch section"), tr("Name:"), "", false);
     if (newname.isEmpty())
         return;
 
@@ -319,7 +321,7 @@ void PatchSectionManager::newSectionAtIndex(int index)
 }
 void PatchSectionManager::pasteAsSection()
 {
-    QString newname = NameChooseDialog::getNewName(tr("Paste as new section"), tr("New section name:"));
+    QString newname = askForSectionName(tr("Add new patch section"), tr("Name:"), "", false);
     if (newname.isEmpty())
         return;
     PatchSection *newSection = new PatchSection(newname);
@@ -512,4 +514,25 @@ void PatchSectionManager::switchBackward()
 void PatchSectionManager::switchForward()
 {
     switchToSection(qMin(patch->numSections() -1 , patch->currentSectionIndex() + 1));
+}
+QString PatchSectionManager::askForSectionName(QString title, QString label, QString oldname, bool rename)
+{
+    QString newname;
+    if (rename)
+        newname = NameChooseDialog::getReName(title, label, oldname);
+    else
+        newname = NameChooseDialog::getNewName(title, label, oldname);
+
+    if (sectionSeparator.match(newname).hasMatch()) {
+        QMessageBox::warning(
+                    mainWindow,
+                    tr("Invalid name"),
+                    tr("This is an invalid name for a patch section."),
+                    QMessageBox::Ok);
+        return "";
+    }
+    else if (newname == oldname)
+        return "";
+    else
+        return newname;
 }

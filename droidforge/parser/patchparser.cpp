@@ -12,6 +12,8 @@
 #include <QRegularExpression>
 #include <QException>
 
+QRegularExpression sectionSeparator("^----*$");
+
 
 PatchParser::PatchParser()
     : patch(0)
@@ -132,7 +134,7 @@ void PatchParser::parseCommentLine(QString line)
     }
 
     // Comments like "# ------------" start (or end) section headers
-    if (comment.startsWith("---")) {
+    if (sectionSeparator.match(comment).hasMatch()) {
         if (commentState == SECTION_HEADER_ACTIVE) {
             commentState = CIRCUIT_HEADER;
             if (!sectionHeader.isEmpty())

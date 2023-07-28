@@ -43,6 +43,7 @@ private:
     int snapSectionInsertPosition(int fromIndex, float y, float *insertSnap) const;
     void newSectionAtIndex(int index);
     void duplicateSection(bool smartly);
+    QString askForSectionName(QString title, QString label, QString oldname, bool rename);
 
 protected:
     void resizeEvent(QResizeEvent *);

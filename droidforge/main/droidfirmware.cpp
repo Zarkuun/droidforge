@@ -161,15 +161,6 @@ QString DroidFirmware::circuitDescription(QString circuit) const
     QString latexcode = object["description"].toString();
     QString firstSentence = latexcode.split('.')[0].replace("\n", " ") + ".";
     QString fullDescription = delatexify(firstSentence);
-    // if (fullDescription.contains("\\") ||
-    //         fullDescription.contains("}") ||
-    //         fullDescription.contains("{"))
-    // {
-    //     shout << "MIST" << fullDescription;
-    //     shout << "----------------";
-    //     shout << latexcode;
-    //     fullDescription += "MIIIIIIIIIIIIIIIIIIIST";
-    // }
     return fullDescription;
 }
 QString DroidFirmware::circuitTitle(QString circuit) const

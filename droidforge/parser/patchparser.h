@@ -47,4 +47,6 @@ private:
     bool maybeParseRegisterLabel(QString comment);
 };
 
+extern QRegularExpression sectionSeparator;
+
 #endif // PATCHPARSER_H
