@@ -11,7 +11,7 @@
 #define GROUP "([^}]*)"
 QRegularExpression replace_("_{" GROUP "}");
 QRegularExpression replaceT("{\\\\t " GROUP "}");
-QRegularExpression replaceNth("\\\\nth([4-9])");
+QRegularExpression replaceNth("\\\\nth ?([4-9])");
 QRegularExpression replaceNthX("\\\\nth{" GROUP "}");
 QRegularExpression replaceIt("{\\\\it" GROUP "}");
 QRegularExpression replaceBf("{\\\\bf" GROUP "}");
