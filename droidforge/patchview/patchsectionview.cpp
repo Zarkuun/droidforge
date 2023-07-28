@@ -47,7 +47,6 @@ PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *init
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     buildPatchSection();
-    setBackgroundBrush(COLOR(COLOR_PATCH_BACKGROUND));
 
     QSettings settings;
     if (settings.contains("patchwindow/zoom"))
@@ -115,6 +114,11 @@ void PatchSectionView::connectActions()
 }
 void PatchSectionView::buildPatchSection()
 {
+    if (ACTION(ACTION_TEXT_MODE)->isChecked())
+        setBackgroundBrush(COLOR(TEXTMODE_BACKGROUND));
+    else
+        setBackgroundBrush(COLOR(COLOR_PATCH_BACKGROUND));
+
     unsigned totalWidth = viewport()->width() / zoomFactor;
     unsigned circuitWidth = totalWidth - 2 * CIRV_SIDE_PADDING;
     QGraphicsScene *scene = new QGraphicsScene();

@@ -261,6 +261,9 @@ ColorScheme::ColorScheme(QWidget *parent)
     item = new QListWidgetItem(tr("Memory Indicator: Text on bar"), list);
     item->setData(1, PSI_COLOR_TEXT);
 
+    item = new QListWidgetItem(tr("Text mode: background"), list);
+    item->setData(1, TEXTMODE_BACKGROUND);
+
     item = new QListWidgetItem(tr("Text mode: circuit name"), list);
     item->setData(1, TEXTMODE_CIRCUIT);
 

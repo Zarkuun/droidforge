@@ -70,7 +70,7 @@ void loadColorsLight()
     colors_light.insert(62, QColor(176, 176, 176, 255));
     colors_light.insert(63, QColor(64, 64, 64, 255));
     colors_light.insert(70, QColor(67, 67, 67, 255));
-    colors_light.insert(701, QColor(255, 253, 227, 255));
+    colors_light.insert(701, QColor(0, 0, 0, 255));
     colors_light.insert(702, QColor(0, 129, 153, 255));
     colors_light.insert(703, QColor(166, 55, 56, 255));
     colors_light.insert(704, QColor(100, 100, 100, 255));
@@ -80,6 +80,7 @@ void loadColorsLight()
     colors_light.insert(708, QColor(126, 126, 128, 255));
     colors_light.insert(709, QColor(215, 124, 0, 255));
     colors_light.insert(71, QColor(128, 128, 128, 17));
+    colors_light.insert(710, QColor(230, 230, 230, 255));
     colors_light.insert(72, QColor(255, 255, 255, 222));
     colors_light.insert(73, QColor(0, 138, 17, 255));
     colors_light.insert(74, QColor(214, 214, 214, 255));

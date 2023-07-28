@@ -92,6 +92,7 @@ typedef enum {
     TEXTMODE_NUMBER = 707,
     TEXTMODE_COMMENT = 708,
     TEXTMODE_INVALID = 709,
+    TEXTMODE_BACKGROUND = 710,
 } color_t;
 
 class ColorScheme : public Dialog
