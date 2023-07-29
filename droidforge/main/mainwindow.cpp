@@ -386,6 +386,7 @@ void MainWindow::createViewMenu()
     menu->addSeparator();
 
     ADD_ACTION(ACTION_RIGHT_TO_LEFT, menu);
+    ADD_ACTION(ACTION_MIRROR_PLUGS, menu);
     ADD_ACTION(ACTION_SHOW_REGISTER_LABELS, menu);
     ADD_ACTION(ACTION_SHOW_REGISTER_USAGE, menu);
     ADD_ACTION(ACTION_TEXT_MODE, menu);

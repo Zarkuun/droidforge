@@ -111,6 +111,13 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_FIND, &PatchSectionView::find);
     CONNECT_ACTION(ACTION_FOLLOW_CABLE, &PatchSectionView::followCable);
     CONNECT_ACTION(ACTION_FOLLOW_REGISTER, &PatchSectionView::followRegister);
+    CONNECT_ACTION(ACTION_MIRROR_PLUGS, &PatchSectionView::toggleMirrorPlugs);
+}
+void PatchSectionView::toggleMirrorPlugs()
+{
+    QSettings settings;
+    settings.setValue("mirror_plugs", ACTION(ACTION_MIRROR_PLUGS)->isChecked());
+    emit patchModified();
 }
 void PatchSectionView::buildPatchSection()
 {

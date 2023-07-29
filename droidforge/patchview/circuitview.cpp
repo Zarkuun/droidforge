@@ -85,6 +85,9 @@ unsigned CircuitView::minimumWidth()
 }
 void CircuitView::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    QSettings settings;
+    mirror_plugs = settings.value("mirror_plugs", false).toBool();
+
     painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     if (textMode())
         painter->setFont(fixedFont);
@@ -257,7 +260,8 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
     QRectF r = textRect;
     QRectF imageRect(r.x(), r.y() + imageTop, imageWidth, imageHeight);
     QImage ghostPlug = *the_cable_colorizer->ghostPlug();
-    if (!isInput)
+
+    if (!isInput != mirror_plugs)
         ghostPlug = ghostPlug.mirrored(true, false);
 
     if (atom) {
@@ -271,7 +275,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 if (circuit->isDisabled())
                     image = *the_cable_colorizer->ghostPlug();
 
-                if (isInput)
+                if (isInput != mirror_plugs)
                     painter->drawImage(imageRect, image);
                 else
                     painter->drawImage(imageRect, image.mirrored(true, false));

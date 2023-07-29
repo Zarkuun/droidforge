@@ -98,13 +98,30 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
     const QImage *plugImage = the_cable_colorizer->imageForCable(cableName);
     QImage mirroredPlugImage = plugImage->mirrored(true, false);
 
+    QSettings settings;
+    bool mirror_plugs = settings.value("mirror_plugs", false).toBool();
+
     // Indicate number of times this cable is used as output
     if (numAsOutput) {
-        painter.drawImage(leftPlugRect, mirroredPlugImage);
+        const QImage *plug;
+        const QRectF *rect;
+        int x;
+        if (mirror_plugs) {
+            plug = plugImage;
+            rect = &rightPlugRect;
+            x = rightPlugRect.left() - CSI_MARKER_DISTANCE;
+        }
+        else {
+            plug = &mirroredPlugImage;
+            rect = &leftPlugRect;
+            x = leftPlugRect.right() + CSI_MARKER_DISTANCE;
+        }
+
+        painter.drawImage(*rect, *plug);
         if (numAsOutput > 1) {
             paintMarker(
                     painter,
-                    leftPlugRect.right() + CSI_MARKER_DISTANCE,
+                    x,
                     COLOR(CSI_BAD_MARKER_BORDER),
                     COLOR(CSI_BAD_MARKER_BACKGROUND),
                     numAsOutput);
@@ -113,11 +130,25 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
 
     // Indicate number of times this cable is used as input
     if (numAsInput) {
-        painter.drawImage(rightPlugRect, *plugImage);
+        const QImage *plug;
+        const QRectF *rect;
+        int x;
+        if (!mirror_plugs) {
+            plug = plugImage;
+            rect = &rightPlugRect;
+            x = rightPlugRect.left() - CSI_MARKER_DISTANCE;
+        }
+        else {
+            plug = &mirroredPlugImage;
+            rect = &leftPlugRect;
+            x = leftPlugRect.right() + CSI_MARKER_DISTANCE;
+        }
+
+        painter.drawImage(*rect, *plug);
         if (numAsInput > 1) {
             paintMarker(
                     painter,
-                    rightPlugRect.left() - CSI_MARKER_DISTANCE,
+                    x,
                     COLOR(CSI_GOOD_MARKER_BORDER),
                     COLOR(CSI_GOOD_MARKER_BACKGROUND),
                     numAsInput);

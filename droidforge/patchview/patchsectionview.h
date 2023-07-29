@@ -159,6 +159,7 @@ public slots:
 
 private slots:
     void clockTick();
+    void toggleMirrorPlugs();
 
 signals:
     void patchModified();

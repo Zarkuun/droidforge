@@ -358,6 +358,10 @@ void EditorActions::createActions()
     actions[ACTION_RIGHT_TO_LEFT]->setCheckable(true);
     actions[ACTION_RIGHT_TO_LEFT]->setChecked(settings.value("right_to_left").toBool());
 
+    actions[ACTION_MIRROR_PLUGS] = new QAction(tr("Mirror cable plug icons"), this);
+    actions[ACTION_MIRROR_PLUGS]->setCheckable(true);
+    actions[ACTION_MIRROR_PLUGS]->setChecked(settings.value("mirror_plugs").toBool());
+
     actions[ACTION_NEW_CONTROLLER] = new QAction(tr("New con&troller..."), this);
     actions[ACTION_NEW_CONTROLLER]->setShortcut(QKeySequence(tr("Ctrl+Alt+N")));
     actions[ACTION_TOOLBAR_ADD_CONTROLLER] = new QAction(ICON("add_controller"), tr("Controller"), this);

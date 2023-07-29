@@ -26,6 +26,7 @@ class CircuitView : public QObject, public QGraphicsItem
     QImage  iconImage;
     int markerOffset;
     QFont fixedFont;
+    bool mirror_plugs;
 
 public:
     CircuitView(MainWindow *mainWindow, Circuit *circuit, unsigned circuitNumber, const Selection * const *selection, float width, unsigned lineHeight);
