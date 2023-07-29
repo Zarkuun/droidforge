@@ -345,5 +345,7 @@
         <file>images/circuits/select.png</file>
         <file>images/circuits/once.png</file>
         <file>images/circuits/flipflop.png</file>
+        <file>images/icons/light/video.png</file>
+        <file>images/icons/dark/video.png</file>
     </qresource>
 </RCC>

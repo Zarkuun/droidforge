@@ -417,7 +417,35 @@ void MainWindow::createHelpMenu()
 
     menu->addSeparator();
 
+    createVideoActions(menu);
+
+    menu->addSeparator();
+
     ADD_ACTION(ACTION_LICENSE, menu);
+}
+
+void MainWindow::createVideoActions(QMenu *menu)
+{
+    typedef struct {
+        const char *title;
+        const char *youtube_code;
+    } video_info_t;
+
+    video_info_t videos[5] = {
+        { "Getting started", "chewnlsYVgQ" },
+        { "Efficient navigation", "zXTwTapTa7Y" },
+        { "Connecting circuits", "qEKdbK2jzTc" },
+        { "Labelling things", "1TuZCNJs9x4" },
+        { "Status dumps", "-jnsVFWMxuw" },
+    };
+
+    for (auto &info: videos) {
+        QAction *action = new QAction(info.title, this);
+        action->setIcon(ICON("video"));
+        QString code = info.youtube_code;
+        connect(action, &QAction::triggered, this, [this, code]() { this->showVideo(code); });
+        menu->addAction(action);
+    }
 }
 void MainWindow::createWindowsMenu()
 {
@@ -660,6 +688,10 @@ void MainWindow::editPreferences()
     PreferencesDialog::editPreferences();
     patch->updateProblems();
     emit patchModified(); // Update patch size usage and potential problems
+}
+void MainWindow::showVideo(QString youtube_code)
+{
+    QDesktopServices::openUrl(QUrl("https://youtu.be/" + youtube_code));
 }
 void MainWindow::showDiscord()
 {

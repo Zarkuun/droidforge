@@ -109,6 +109,7 @@ private:
     void createSectionMenu();
     void createViewMenu();
     void createHelpMenu();
+    void createVideoActions(QMenu *menu);
     void createWindowsMenu();
     void createToolbar();
     void createStatusBar();
@@ -122,6 +123,7 @@ private slots:
     void about();
     void editPreferences();
     void showDiscord();
+    void showVideo(QString youtube_code);
     void showLicense();
     void modifyPatch();
     void cursorMoved();
