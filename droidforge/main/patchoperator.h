@@ -55,6 +55,7 @@ public:
     bool isPatching() const { return patch->isPatching(); };
     bool isPatchingFrom(const CursorPosition &pos) const;
     void addToRecentFiles(const QString &path);
+    void openFileFromExternal(const QString &filePath);
 
 protected:
     PatchSection *section() { return patch->currentSection(); };

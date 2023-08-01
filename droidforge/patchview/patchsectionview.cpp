@@ -290,8 +290,13 @@ void PatchSectionView::editLabel()
     if (newName == oldName)
         return;
 
-    label.shorthand = newName;
-    patch->setRegisterLabel(lr, label);
+    if (newName != "") {
+        label.shorthand = newName;
+        patch->setRegisterLabel(lr, label);
+    }
+    else
+        patch->removeRegisterLabel(lr);
+
     patch->commit(tr("editing register label"));
     emit patchModified();
 }

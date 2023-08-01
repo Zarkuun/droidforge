@@ -777,6 +777,11 @@ void PatchOperator::loadFile(const QString &filePath, int how)
         box.exec();
     }
 }
+void PatchOperator::openFileFromExternal(const QString &filePath)
+{
+    if (checkModified() && !bringToFrontIfOpen(filePath, true))
+        loadFile(filePath, FILE_MODE_LOAD);
+}
 void PatchOperator::open()
 {
     if (!checkModified())

@@ -14,10 +14,39 @@
 #include <QDir>
 #include <QSettings>
 #include <QFile>
+#include <QMessageBox>
+
+// http://www.mardy.it/blog/2019/10/implementing-open-with-on-macos-with-qt.html
+
+MainWindow *hirn_mainwindow = 0;
+
+class MyApplication : public QApplication
+{
+public:
+    MyApplication(int &argc, char **argv)
+        : QApplication(argc, argv) { }
+
+    bool event(QEvent *event) override
+    {
+        if (event->type() == QEvent::FileOpen) {
+            QFileOpenEvent *openEvent = static_cast<QFileOpenEvent *>(event);
+            if (hirn_mainwindow)
+                hirn_mainwindow->theOperator()->openFileFromExternal(openEvent->file());
+            // QMessageBox::about( 0,
+            //             tr("Man will eine Datei Laden"),
+            //             openEvent->file());
+            // qDebug() << "Open file" << openEvent->file();
+        }
+
+        return QApplication::event(event);
+    }
+};
+
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    // QApplication app(argc, argv);
+    MyApplication app(argc, argv);
     app.setApplicationName(APPLICATION_NAME);
     app.setApplicationVersion(APPLICATION_VERSION);
     app.setApplicationDisplayName(APPLICATION_NAME);
@@ -51,6 +80,7 @@ int main(int argc, char *argv[])
     else if (settings.contains("lastfile"))
         initialFilename = settings.value("lastfile").toString();
     MainWindow *mainWindow = new MainWindow(initialFilename);
+    hirn_mainwindow = mainWindow;
     mainWindow->show();
 
 #ifdef QT_DEBUG

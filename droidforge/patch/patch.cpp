@@ -219,6 +219,10 @@ void Patch::setRegisterLabel(AtomRegister atom, RegisterLabel label)
 {
     registerLabels[atom] = label;
 }
+void Patch::removeRegisterLabel(AtomRegister atom)
+{
+    registerLabels.remove(atom);
+}
 unsigned Patch::numCircuits() const
 {
     unsigned num = 0;
