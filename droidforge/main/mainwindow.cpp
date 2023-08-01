@@ -23,6 +23,7 @@
 #include <QSettings>
 #include <QtGlobal>
 #include <QDesktopServices>
+#include <QMimeData>
 
 #define mainWindow this // make ACTION() macros work
 
@@ -120,6 +121,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     connect(the_colorscheme, &ColorScheme::changed, theHub(), &UpdateHub::patchModified);
 
     the_windowlist->add(this);
+    // setAcceptDrops(true); Geht irgendwie noch nicht
 }
 MainWindow::~MainWindow()
 {
@@ -230,6 +232,24 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     }
     return QObject::eventFilter(obj, event);
 }
+/// DAS hier geht nicht. Drag aber kein Drop.
+/// void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+/// {
+///     shoutfunc << event;
+///    //  if (event->mimeData()->hasFormat("text/plain"))
+///    //          event->acceptProposedAction();
+///    //
+///     // if (e->mimeData()->hasUrls())
+///     event->acceptProposedAction();
+/// }
+/// void MainWindow::dragMoveEvent(QDragMoveEvent *event)
+/// {
+///     shoutfunc << event;
+/// }
+/// void MainWindow::dropEvent(QDropEvent *event)
+/// {
+///    shoutfunc << event;
+/// }
 void MainWindow::createMenus()
 {
     createFileMenu();
