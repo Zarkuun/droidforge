@@ -314,6 +314,10 @@ void EditorActions::createActions()
     actions[ACTION_FOLD_UNFOLD_ALL] = new QAction(tr("Fold / unfold &all circuits"), this);
     actions[ACTION_FOLD_UNFOLD_ALL]->setShortcut(QKeySequence(tr("Shift+Space")));
 
+    actions[ACTION_DUPLICATE_CIRCUIT] = new QAction(tr("Duplicate circuit"), this);
+    actions[ACTION_DUPLICATE_CIRCUIT]->setShortcut(QKeySequence(tr("Ctrl+D")));
+    actions[ACTION_DUPLICATE_CIRCUIT]->setEnabled(false);
+
     actions[ACTION_SHOW_REGISTER_LABELS] = new QAction(tr("Show &register labels"), this);
     actions[ACTION_SHOW_REGISTER_LABELS]->setShortcut(QKeySequence(tr("F3")));
     actions[ACTION_SHOW_REGISTER_LABELS]->setCheckable(true);
@@ -489,6 +493,7 @@ void EditorActions::moveCursor()
     actions[ACTION_FOLD_UNFOLD_ALL]->setEnabled(circuit);
     actions[ACTION_START_PATCHING]->setEnabled(section()->cursorPosition().column >= 1 && !patch->isPatching());
     actions[ACTION_CIRCUIT_MANUAL]->setEnabled(circuit);
+    actions[ACTION_DUPLICATE_CIRCUIT]->setEnabled(circuit);
 }
 void EditorActions::updateDisablingActions()
 {

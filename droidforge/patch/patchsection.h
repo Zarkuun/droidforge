@@ -53,6 +53,7 @@ public:
     void addNewCircuit(QString name, jackselection_t jackSelection, int position=-1);
     void insertCircuit(int pos, Circuit *circuit);
     void addCircuit(Circuit *circuit);
+    void duplicateCurrentCircuit();
     bool allCircuitsFolded() const;
     void toggleFold();
     void rewriteSelectedCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);

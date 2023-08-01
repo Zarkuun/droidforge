@@ -143,6 +143,7 @@ public slots:
     void copy();
     void paste();
     void pasteSmart();
+    void duplicateCircuit();
     void addMissingJacks();
     void removeUndefinedJacks();
     void sortJacks();

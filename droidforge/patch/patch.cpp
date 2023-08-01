@@ -101,6 +101,10 @@ void Patch::reorderSections(int fromindex, int toindex)
     sections.remove(fromindex);
     sections.insert(toindex, moved);
 }
+void Patch::duplicateCurrentCircuit()
+{
+    currentSection()->duplicateCurrentCircuit();
+}
 void Patch::swapControllersSmart(int fromindex, int toindex)
 {
     QStringList newControllers;

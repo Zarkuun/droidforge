@@ -415,6 +415,12 @@ void PatchSection::addCircuit(Circuit *circuit)
 {
     circuits.append(circuit);
 }
+void PatchSection::duplicateCurrentCircuit()
+{
+    const Circuit *circuit = circuits[cursor.circuitNr];
+    Circuit *newCircuit = circuit->clone();
+    circuits.insert(cursor.circuitNr, newCircuit);
+}
 bool PatchSection::allCircuitsFolded() const
 {
     for (auto circuit: circuits) {

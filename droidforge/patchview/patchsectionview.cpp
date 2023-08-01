@@ -85,6 +85,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
     CONNECT_ACTION(ACTION_PASTE_SMARTLY, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_DUPLICATE_CIRCUIT, &PatchSectionView::duplicateCircuit);
     CONNECT_ACTION(ACTION_ADD_MISSING_JACKS, &PatchSectionView::addMissingJacks);
     CONNECT_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, &PatchSectionView::removeUndefinedJacks);
 
@@ -644,6 +645,12 @@ void PatchSectionView::pasteSmart()
     patch->commit(tr("smart pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
 }
+void PatchSectionView::duplicateCircuit()
+{
+    patch->duplicateCurrentCircuit();
+    patch->commit(tr("duplicating circuit"));
+    emit patchModified();
+}
 void PatchSectionView::addMissingJacks()
 {
     Circuit *circuit = currentCircuit();
@@ -962,6 +969,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_COPY, menu);
         ADD_ACTION(ACTION_PASTE, menu);
         ADD_ACTION(ACTION_PASTE_SMARTLY, menu);
+        ADD_ACTION(ACTION_DUPLICATE_CIRCUIT, menu);
         ADD_ACTION(ACTION_DISABLE, menu);
         ADD_ACTION(ACTION_ENABLE, menu);
 

@@ -99,6 +99,7 @@ public:
     void removeSection(int index);
     void integratePatch(const Patch *snippet);
     void reorderSections(int fromindex, int toindex);
+    void duplicateCurrentCircuit();
     void swapControllersSmart(int fromindex, int toindex);
     void moveControllerSmart(int fromIndex, int toIndex);
     void swapControllerNumbers(int fromindex, int toindex);
