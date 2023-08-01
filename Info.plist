@@ -32,5 +32,23 @@
         <string>droidforge.icns</string>
         <key>NSHumanReadableCopyright</key>
         <string>© 2022, Mathias Kettner</string>
-</dict>
+
+        <key>CFBundleDocumentTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeIconFiles</key>
+                    <array/>
+                <key>CFBundleTypeName</key>
+                    <string>DROID patch</string>
+                <key>CFBundleTypeRole</key>
+                    <string>Editor</string>
+                <key>LSHandlerRank</key>
+                    <string>Default</string>
+                <key>LSItemContentTypes</key>
+                    <array>
+                        <string>text/plain</string>
+                    </array>
+            </dict>
+        </array>
+    </dict>
 </plist>
