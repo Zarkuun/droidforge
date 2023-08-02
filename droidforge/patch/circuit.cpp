@@ -74,6 +74,14 @@ bool Circuit::needsX7() const
 {
     return the_firmware->circuitNeedsX7(name);
 }
+bool Circuit::usesSelect() const
+{
+    for (auto ja: jackAssignments) {
+        if (!ja->isDisabled() && ja->isInput() && ja->jackName() == "select")
+            return true;
+    }
+    return false;
+}
 void Circuit::setBookmark(int row, int column)
 {
      bmRow = row;
@@ -360,11 +368,12 @@ void Circuit::changeCircuit(QString newCircuit)
     jackAssignments.clear();
     jackAssignments = newJacks;
 }
-void Circuit::collectRegisterAtoms(RegisterList &sl) const
+void Circuit::collectRegisterAtoms(RegisterList &sl, bool skipOverlayedControls) const
 {
+    bool skipControls = skipOverlayedControls && usesSelect();
     for (auto ja: jackAssignments) {
         if (!ja->isDisabled())
-            ja->collectRegisterAtoms(sl);
+            ja->collectRegisterAtoms(sl, skipControls);
     }
 }
 void Circuit::removeRegisterReferences(RegisterList &rl)

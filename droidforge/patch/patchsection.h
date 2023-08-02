@@ -89,7 +89,7 @@ public:
     JackAssignment *currentJackAssignment();
     const JackAssignment *currentJackAssignment() const;
     JackAssignment *jackAssignmentAt(const CursorPosition &pos);
-    void collectRegisterAtoms(RegisterList &) const;
+    void collectRegisterAtoms(RegisterList &, bool skipOverlayedControls) const;
     void removeRegisterReferences(RegisterList &rl);
     unsigned memoryFootprint() const;
     bool needsX7() const;

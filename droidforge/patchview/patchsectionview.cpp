@@ -84,7 +84,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_CUT, &PatchSectionView::cut);
     CONNECT_ACTION(ACTION_COPY, &PatchSectionView::copy);
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
-    CONNECT_ACTION(ACTION_PASTE_SMARTLY, &PatchSectionView::pasteSmart);
+    CONNECT_ACTION(ACTION_PASTE_SMARTLY, &PatchSectionView::pasteSmartly);
     CONNECT_ACTION(ACTION_DUPLICATE_CIRCUIT, &PatchSectionView::duplicateCircuit);
     CONNECT_ACTION(ACTION_ADD_MISSING_JACKS, &PatchSectionView::addMissingJacks);
     CONNECT_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, &PatchSectionView::removeUndefinedJacks);
@@ -627,7 +627,7 @@ void PatchSectionView::paste()
         // Should never happen
     }
 }
-void PatchSectionView::pasteSmart()
+void PatchSectionView::pasteSmartly()
 {
     Patch *pastedPatch = the_clipboard->getAsPatch();
     if (!theOperator()->interactivelyRemapRegisters(pastedPatch)) {
@@ -642,7 +642,7 @@ void PatchSectionView::pasteSmart()
         section()->insertCircuit(position, newCircuit);
     }
     section()->setCursor(CursorPosition(position, ROW_CIRCUIT, 0));
-    patch->commit(tr("smart pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
+    patch->commit(tr("smartly pasting %1 circuits").arg(the_clipboard->getCircuits().count()));
     emit patchModified();
 }
 void PatchSectionView::duplicateCircuit()

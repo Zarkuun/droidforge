@@ -70,7 +70,7 @@ public:
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     bool cableExists(const QString &cable) const;
     QString freshCableName() const;
-    void collectUsedRegisterAtoms(RegisterList &) const;
+    void collectUsedRegisterAtoms(RegisterList &, bool skipOverlayedControls = false) const;
     bool registerUsed(AtomRegister reg);
     bool controlUsed(AtomRegister reg);
     void collectAvailableRegisterAtoms(RegisterList &) const;

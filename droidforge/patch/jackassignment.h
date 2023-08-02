@@ -40,7 +40,7 @@ public:
     QString getComment() const { return comment; };
     void setComment(const QString &c) { comment = c; };
     void changeJack(QString j) { jack = j; };
-    void collectRegisterAtoms(RegisterList &) const;
+    void collectRegisterAtoms(RegisterList &, bool skipControls=false) const;
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
     void incrementForExpansion(const Patch *patch);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;

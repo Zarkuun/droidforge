@@ -73,12 +73,14 @@ JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString li
     return ja;
 
 }
-void JackAssignment::collectRegisterAtoms(RegisterList &sl) const
+void JackAssignment::collectRegisterAtoms(RegisterList &sl, bool skipControls) const
 {
     for (int i=1; i<=3; i++) {
          const Atom *atom = atomAt(i);
          if (atom && atom->isRegister()) {
              AtomRegister *ar = (AtomRegister *)atom;
+             if (skipControls && ar->isControl())
+                 continue;
              if (!sl.contains(*ar))
                  sl.append(*ar);
          }

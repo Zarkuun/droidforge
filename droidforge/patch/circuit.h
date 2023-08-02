@@ -76,6 +76,7 @@ public:
     QString prefixOfJack(const QString &jackName);
     unsigned memoryFootprint() const;
     bool needsX7() const;
+    bool usesSelect() const;
     bool hasBookmark() const { return haveBookmark; };
     void setBookmark(int row, int column);
     void clearBookmark() { haveBookmark = false; };
@@ -83,7 +84,7 @@ public:
     int bookmarkColumn() const { return bmColumn; };
 
     void changeCircuit(QString newCircuit);
-    void collectRegisterAtoms(RegisterList &) const;
+    void collectRegisterAtoms(RegisterList &, bool skipOverlayedControls=false) const;
     void removeRegisterReferences(RegisterList &rl);
 
 private:

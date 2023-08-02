@@ -1094,7 +1094,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
     RegisterList occupiedRegisters;
     ontoPatch->collectUsedRegisterAtoms(occupiedRegisters);
     RegisterList neededRegisters;
-    otherPatch->collectUsedRegisterAtoms(neededRegisters);
+    otherPatch->collectUsedRegisterAtoms(neededRegisters, true /* skip overlayed controls */);
 
     // Create a list of registers to remap and a list of registers
     // that are occupied (in the new configuration already)

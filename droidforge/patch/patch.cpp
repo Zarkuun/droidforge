@@ -491,14 +491,14 @@ QString Patch::freshCableName() const
         name = AtomCable::nextCableName(name);
     return name;
 }
-void Patch::collectUsedRegisterAtoms(RegisterList &sl) const
+void Patch::collectUsedRegisterAtoms(RegisterList &sl, bool skipOverlayedControls) const
 {
     // We could use the iterator but that has no const
     // version. Copying the whole iterator is no option.
     // Maybe there is a way to do that with templates.
     // If you feel like doing that, send me a pull request.
     for (auto section: sections)
-        section->collectRegisterAtoms(sl);
+        section->collectRegisterAtoms(sl, skipOverlayedControls);
 }
 bool Patch::registerUsed(AtomRegister reg)
 {

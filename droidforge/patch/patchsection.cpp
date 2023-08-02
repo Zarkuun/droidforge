@@ -637,11 +637,11 @@ JackAssignment *PatchSection::jackAssignmentAt(const CursorPosition &pos)
     else
         return 0;
 }
-void PatchSection::collectRegisterAtoms(RegisterList &sl) const
+void PatchSection::collectRegisterAtoms(RegisterList &sl, bool skipOverlayedControls) const
 {
     for (auto circuit: circuits) {
         if (!circuit->isDisabled())
-            circuit->collectRegisterAtoms(sl);
+            circuit->collectRegisterAtoms(sl, skipOverlayedControls);
     }
 }
 void PatchSection::removeRegisterReferences(RegisterList &rl)
