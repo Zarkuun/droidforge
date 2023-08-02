@@ -55,9 +55,8 @@ void CircuitCollection::updateSceneRect(int numCircuits)
 }
 void CircuitCollection::mousePressEvent(QMouseEvent *event)
 {
-    if (event->type() == QMouseEvent::MouseButtonPress) {
+    if (event->type() == QMouseEvent::MouseButtonPress)
         handleMousePress(event->pos());
-    }
 }
 void CircuitCollection::mouseDoubleClickEvent(QMouseEvent *event)
 {
@@ -105,14 +104,18 @@ bool CircuitCollection::preselectCircuit(QString name)
 }
 bool CircuitCollection::handleMousePress(const QPoint &pos)
 {
+    auto pos_in_scene = this->mapToScene(pos);
+
     // Qt 6.3 seems to have a bug here. This loop does not work reliably.
     // Sometimes items(pos) is empty. Don't know why. And the manual loop
     // seems to work find (checking the hitbox ourselves)
-    // for (auto item: items(pos)) {
-    for (auto item: items()) {
-        if (item->data(DATA_INDEX_INDEX).isValid()) {
+    // for (auto item: items(pos_in_scene)) {
+    for (auto item: items())
+    {
+        if (item->data(DATA_INDEX_INDEX).isValid())
+        {
             QRectF hitbox = item->boundingRect().translated(item->pos());
-            if (hitbox.contains(pos)) {
+            if (hitbox.contains(pos_in_scene)) {
                 int index = item->data(DATA_INDEX_INDEX).toInt();
                 if (currentCircuit())
                     currentCircuit()->deselect();
