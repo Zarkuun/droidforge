@@ -154,7 +154,7 @@ void CircuitView::paintHeader(QPainter *painter)
         if (isFolded()) {
             if (circuit->hasComment()) {
                 painter->setPen(COLOR(CIRV_COLOR_COMMENT));
-                QString oneliner = circuit->getComment().replace("\n", "").simplified();
+                QString oneliner = circuit->getComment().replace("\n", " ").simplified();
                 QRectF r(textRect.left() + CIRV_FOLDING_COMMENT_INDENT,
                          textRect.top(),
                          textRect.width() - CIRV_FOLDING_COMMENT_INDENT - 2 * headerHeight() - CIRV_ICON_MARGIN,
