@@ -294,7 +294,7 @@ void EditorActions::createActions()
     actions[ACTION_RESET_ZOOM]->setShortcut(QKeySequence(tr("Ctrl+0")));
 
     actions[ACTION_ZOOM_IN] = new QAction(tr("&Increase font size"), this);
-    actions[ACTION_ZOOM_IN]->setShortcuts(QKeySequence::ZoomIn);
+    actions[ACTION_ZOOM_IN]->setShortcuts({QKeySequence(tr("Ctrl+=")), QKeySequence::ZoomIn});
 
     actions[ACTION_ZOOM_OUT] = new QAction(tr("&Decrease font size"), this);
     actions[ACTION_ZOOM_OUT]->setShortcuts(QKeySequence::ZoomOut);
