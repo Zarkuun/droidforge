@@ -1,2 +1,4 @@
 #!/bin/sh
-cp ../mk/modular/droid/vim/circuits.json droidforge/droidfirmware.json 
+cp -v ../mk/modular/droid/vim/circuits.json droidforge/droidfirmware.json
+cp -v ../mk/modular/droid/releases/latest/manual/droid-manual-*.pdf droidforge/droid-manual.pdf
+
