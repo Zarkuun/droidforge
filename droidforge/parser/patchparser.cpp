@@ -116,7 +116,7 @@ void PatchParser::parseCommentLine(QString line)
 {
     static QRegularExpression disabledJackLine("^[a-zA-z]+([1-9][0-9]*)?[[:space:]]*=.*");
 
-    QString comment = line.mid(1).trimmed(); // strip off '#'
+    QString comment = line.mid(1).trimmed(); // strip off first '#'
 
     // Is this a disabled circuit?
     if (comment.startsWith("[")) {

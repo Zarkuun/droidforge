@@ -1207,8 +1207,13 @@ void PatchSectionView::editJack(int key)
         if (ja->jackType() == JACKTYPE_UNKNOWN) {
             JackAssignment *newJa = buildJackAssignment(name);
             newJa->parseExpression(ja->valueToString());
+            int insertAt = section()->cursorPosition().row;
             section()->deleteCurrentJackAssignment();
-            currentCircuit()->insertJackAssignment(newJa, section()->cursorPosition().row);
+            bool moveDown = (insertAt == currentCircuit()->numJackAssignments());
+            currentCircuit()->insertJackAssignment(newJa, insertAt);
+            if (moveDown)
+                section()->moveCursorDown();
+
         }
         else
             currentJackAssignment()->changeJack(name);
