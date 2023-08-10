@@ -1310,9 +1310,8 @@ void PatchSectionView::editAtom(int key)
         }
         emit patchModified();
     }
-    if (lastKey) {
+    if (lastKey)
         handleKeyPress(lastKey, 0);
-    }
 }
 void PatchSectionView::editCircuitComment(int key)
 {

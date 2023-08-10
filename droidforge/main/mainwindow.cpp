@@ -235,7 +235,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 /// DAS hier geht nicht. Drag aber kein Drop.
 /// void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 /// {
-///     shoutfunc << event;
 ///    //  if (event->mimeData()->hasFormat("text/plain"))
 ///    //          event->acceptProposedAction();
 ///    //
@@ -244,11 +243,9 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 /// }
 /// void MainWindow::dragMoveEvent(QDragMoveEvent *event)
 /// {
-///     shoutfunc << event;
 /// }
 /// void MainWindow::dropEvent(QDropEvent *event)
 /// {
-///    shoutfunc << event;
 /// }
 void MainWindow::createMenus()
 {

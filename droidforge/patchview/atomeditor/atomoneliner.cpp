@@ -87,6 +87,7 @@ Atom *AtomOneliner::editAtom(QRectF geometry, const Patch *, jacktype_t jacktype
 }
 bool AtomOneliner::edit(QRectF geo, jacktype_t jt, QString start)
 {
+    lastKey = 0;
     geometry = geo;
     jacktype = jt;
 
