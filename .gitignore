@@ -1,0 +1,7 @@
+build-*
+*.dmg
+.*.swp
+LIESMICH.github
+macrelease.log
+dmg.root
+build

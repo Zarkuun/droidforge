@@ -1,0 +1,89 @@
+#!/bin/bash
+set -e
+
+PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin/
+
+VERSION=$(./version)
+NAME="DROID Forge"
+if [ $(uname -m) = arm64 ] ; then
+    HARDWARE=M1
+else
+    HARDWARE=Intel
+fi
+QT_DIR=~/Qt/6.3.1
+PATH=$PATH:$QT_DIR/macos/bin
+APP_ICON=droidforge/droidforge.icns
+INSTALL_ROOT=build/release-mac/install-root/usr/local/Applications
+APP_DIR="$INSTALL_ROOT/$NAME.app"
+EXECUTABLE="$APP_DIR/Contents/MacOS/$NAME"
+DMGDIR="dmg.root"
+DMGNAME="$NAME $VERSION $HARDWARE.dmg"
+TARGET_INFO_PLIST=$APP_DIR/Contents/Info.plist
+TARGET_LICENSE="$APP_DIR/Contents"
+CERTIDENT="Developer ID Application: Matthias Kettner (Z8A7223C2C)"
+LOGFILE=$(pwd)/macrelease.log
+OK=$(echo -e "\033[32mOK\033[0m")
+
+rm -f "$LOGFILE"
+
+# First build the project
+
+echo -n "Cleaning old build..."
+rm -rf "$APP_DIR"
+echo $OK
+
+echo -n "Now do the Release-build in QtCreator."
+while [ ! -e "$EXECUTABLE" ] ; do
+    echo -n .
+    sleep 1
+done
+echo $OK
+
+
+echo -n "Fixing rpath..."
+install_name_tool -add_rpath @loader_path/../Frameworks "$APP_DIR/Contents/MacOS/$NAME"
+echo $OK
+
+echo -n "Installing Info.plist..."
+sed "s/DROIDFORGEVERSION/$VERSION/g" Info.plist > "$TARGET_INFO_PLIST"
+echo $OK
+
+echo -n "Installing icon..."
+mkdir -p "$APP_DIR/Contents/Resources"
+cp "$APP_ICON" "$APP_DIR/Contents/Resources"
+echo $OK
+
+echo -n "Adding all dependencies and sign (with macdeployqt)..."
+pushd "$INSTALL_ROOT" >/dev/null
+macdeployqt "$NAME.app" -verbose=2 -hardened-runtime -timestamp -codesign=$CERTIDENT -sign-for-notarization=$CERTIDENT >> $LOGFILE 2>&1
+echo $OK
+popd >/dev/null
+
+echo -n "Creating DMG contents in $DMGDIR..."
+rm -rf "$DMGDIR"
+mkdir "$DMGDIR"
+ln -sf /Applications "$DMGDIR/Applications"
+mv "$APP_DIR" "$DMGDIR"
+cp _DS_Store "$DMGDIR/.DS_Store"
+echo $OK
+
+echo -n "Creating DMG with dmgcanvas..."
+dmgcanvas DROID\ Forge.dmgCanvas "$DMGNAME" >> $LOGFILE 2>&1
+echo $OK
+
+echo -n "Signing DMG"...
+codesign -vvv -f --options runtime --timestamp -s "Developer ID" "$DMGNAME" >> "$LOGFILE" 2>&1
+echo $OK
+
+echo -n "Notarizing this thing..."
+notarytool submit "$DMGNAME" --keychain-profile "DROIDFORGE" --wait >> "$LOGFILE" 2>&1
+echo $OK
+
+echo -n "Status: "
+grep '^  status: ' "$LOGFILE"
+grep -q '^  status: Accepted' "$LOGFILE"
+
+echo -n "Stapling..."
+stapler staple "$DMGNAME" >> "$LOGFILE" 2>&1
+echo $OK
+

@@ -1,0 +1,295 @@
+1.2.1:
+	* Fix crash when pasting the contents of a cell (e.g. a cable name)
+	  when the cursor is in the header line of a circuit or on the
+	  name of a parameter (first column).
+
+1.2:
+    See releases notes of Droid blue-3 firmware
+
+1.1:
+	New features:
+	* The Forge now handles multiple patch windows in parallel. With the
+	  actions "New window", "New window with same rack" and "Open in new window"
+	  you can create a new patch window. This allows for easy copy & paste
+	  between your different patches and also makes a multi-master-setup
+	  easier to handle.
+	* There is now a search function, finally! Command-F (or the menu entry)
+	  starts it. You can search for all that makes up a patch, including
+	  circuit names, circuit comments, parameters, cables, registers and numbers.
+	* New function for doing a search & replace in all cable names (or all
+	  in the current selection if there is one). You can for example copy
+	  a complete section, do "select all" there, and then rename e.g. "VOICE1"
+	  to "VOICE2" in all cables.
+	* You can now set a bookmark at your current cursor position in the patch
+	  with Command+Shift+J. Later you can jump back to that position by pressing
+	  Cmd+J (J stands for "jump"). You can have just one bookmark, setting
+	  a new one will remove the previous one. This feature is intended to help
+	  you in a situation where you need to find a different position in
+	  your patch for copying or viewing something and than coming back to where
+	  you were.
+	* New "Text mode" view option. In this mode all decorations, icons, lines,
+	  etc are omitted from the patch view, the font is monospaced and everything
+	  looks much like a raw Droid patch. The whole way you edit the patch is
+	  still the same as in normal mode.
+	* When the cursor is on a register like input, output, button, pot or LED,
+	  you can now directly set a label for that register with Command+L or
+	  with the Edit/Popup menu. The shortcut for "Fix button/LED mismatches"
+	  has changed to Shift+Command+L.
+	* New view option "Show master on the right side". This will display all
+	  modules in reversed order, for those of you that have mounted the controllers
+	  from right to left.
+	* You can now save a patch section as a patch into a new file (using the Section
+	  menu or popup menu on the section)
+	* New "Preferences" dialog with two now options for patch compression. Renaming
+	  cables to short things like _A, _B when deploying reduces the patch size
+	  (There is a maximum patch size of 64k).
+	* New option to ignore unknown jacks (in preferences). This allows you to try
+	  new firmware features (new inputs and outputs) without updating the Forge.
+	* New action for copying a controller with or without its labels
+	* In list of patch cables in value editor the entered name is now a search
+	  filter for the list of cables. That makes it much faster to find an
+	  existing cable.
+	* New action for loading a status dump from your SD card. Such a dump
+	  is created with a double click on the master's button. It contains the
+	  current values of all registers and internal cables. The Forge can now
+	  load such a file and display the values in the patch. If you are working
+	  with the X7, put the lever to the left for getting access to the SD
+	  card and the status file on it without removing the SD card manually.
+	* Sections can now have comments. The section comment is displayed at the
+	  top if it is not empty. Edit it with Alt-C or the menu entry or by double
+	  clicking on it (if it is already there).
+
+	Clean ups:
+	* Expand parameter array now increases the button/LED number and also input or
+	  output number of the first argument, if possible. This does not always make sense
+	  but is often a great speed up, e.g. if you create an algoquencer with 16 buttons
+	  of a B32. Simply create the first line and select "expand parameter array to max"
+	  and you are done.
+	* Display RAM usage of current section in tooltip of status bar's memory indicator.
+	* New action "Duplicate section smartly", which does what "Duplicate section"
+	  did do. And "Duplicate section" now makes a plain dumb copy with no renamings
+	  or remappings.
+	* Shortcut Command+M for minimizing a Forge window (Mac standard) (manual is now
+	  Command+T)
+	* Make white label areas wider, so that more text fits in (suggested by
+	  @Second_Breakfast)
+	* Rename "recent files" to "recent patches"
+	* Replaced app icon by a version contributed by @Harrison (thanks for your nice icon,
+	  Harrison!)
+	* The settings "show register labels" and "show register usage" are now
+	  saved and not reset every time you start the Forge.
+	* Speed up cursor movement by delaying update of highliting of used registers
+	  by 100 ms.
+	* Allow zooming in in rack view beyond the visibility of all modules (and enable
+	  horizontal scroll bar if needed).
+	* The shortcut for "circuit manual" and "user manual" have been changed to
+	  Command+T and Command+shift+T, since Command+M now minimizes the Window
+	  "Mac standard"
+	* The "End" key now really goes to the end of the current section, i.e. to
+	  the last line of the last circuit, not to its header.
+	* New buttons "No to all" and "Yes to all" in dialog for automatically renaming
+	  cables when duplicating a section (or similar operations)
+	* The statusbar now also checks the size of the patch. There is a maximum of
+	  64,000 bytes. The status bar now either shows the RAM usage or the size
+	  usage - depending on which of both is bigger. Loading of too big patches
+	  via SD card or X7 is inhibited now.
+	* Prevent nonallowed characters to be used in names of cables.
+	* Allow cable names to start with a digit (like _1). Such cable names are not
+	  proposed but legal.
+	* Cable selector: you can now move the cursor from the entry field to the first
+	  element in the list with the Down key.
+	* Always save the patch before depolying it to the SD card.
+	* There is a maximum of 63 characters for line in a patch. The master will complain
+	  about longer lines. This is now checked by the Forge.
+	* Fix setting focus correctly in value selector when pressing buttons.
+	* Add "Manual" button to "Edit parameter" dialog, for getting direct access
+	  to the circuit's manual.
+	* Visualize used M4 faders and buttons as rectangles, not as circles.
+	* Show the scroll bar in the section list if it is too long.
+	* Hide menu entries for finishing/aborting cabling when they are not
+	  useful.
+
+	Bug fixes:
+	* FIX: Make computation of used RAM precise
+	* FIX: Add correct manual of Droid firmware blue-2. This also fixes the issue
+	  with the wrong page numbers.
+	* FIX: Fix crash when deleting contents of a cell of an undefined parameter
+	  (found by @Michael Gerdau)
+	* FIX: Fix crash when hitting enter on a circuit comment
+	* FIX: When opening the popup menu on a section, select that section so
+	  the menu action is performed on the clicked section
+	* FIX: Correctly load patches with a number like ".3" instead of "0.3".
+	* FIX: Fix left over white register cursor when loading a new patch
+	* FIX: The section cursor is now correctly white (instead of black) after starting
+	  or loading a new patch
+	* FIX: Fix crash when resizing the rack view a lot in a short time
+	* FIX: Make sure cursor position is always visible in parameter selection
+	  window.
+	* FIX: Avoid crash when trying to load a patch that is bigger than the allowed
+	  maximum size of 64,000 bytes.
+	* FIX: When your first section had no title and you moved it to a different
+	  position, it got merged with the section before. This has been fixed.
+	* FIX: When jumping to a folded circuit by following a cable or register,
+	  it was correctly unfolded by no graphics update was done so everything was garbled.
+	  This has been fixed.
+	* FIX: Save the rack size when it was changed with the menu entries or
+	  keyboard shortcuts (previously it was just saved when you moved
+	  the bar between the rack and the patch with the mouse).
+	* Fix glitch where the wrong cable is shown and the list of cables just
+	  has one row when editing a cable by pressing enter or double clicking.
+	* Fix potential crash in "fix button/LED mismatch". This *could* possibly
+	  fix the crash that @eising has reported.
+	* Fix actions "paste smartly" and "paste as section". They were never
+	  enabled.
+	* Remove unsave characters like ; : " \ and / from a section title before
+	  suggesting a filename when saving a section as patch (found by @oedoen)
+	* Fix visibility and initial size of user manual PDF viewer.
+	* Fix missing or non-updated graphics of "dragging indicator" in section list,
+	  which happened when you dragged sections in a longer list that was scrolled
+	  up too far.
+
+1.0:
+	New features:
+	* Do an automatic backup of your patch whenever it is modified. If the Forge
+	  or your computer crashes, you can restore that backup (you will be asked).
+	* Support the keys Home and End in the controller selection dialog.
+
+	Bug fixes:
+	* FIX: Fix crash when loading drumsequencer.ini from the video series. Reason
+	  was a comment like "# BD = bass drum" in the global comment section (reported
+	  and nailed down by @Brian (The Aefonic))
+	* FIX: When double clicking on the background, the new circuit will now be placed
+	  nearest to the click. That way you can easily decide where to insert a new
+	  circuit. Before it was always on the top (reported by @odessa)
+	* FIX: Fix missing icons for button/LED mismatch (bulb) and folded circuit
+	* FIX: Fix cursor moving to unchartered territory when adding a jack while the
+	  circuit is folded.
+	* FIX: Fix titles of source code editor windows: make clear what's edited.
+	* FIX: Fix window suddenly getting wider in certain situations.
+	* FIX: Add new sections at the end when double clicking
+	* FIX: Fix copy & paste of fractions like 1/120, which are allowed in the third
+	       column
+	* FIX: You now can enter fractions of the form 1/X into in input cell also
+	       directly, without the dialog
+	* FIX: Fixed memory leak that made the Forge more and more RAM.
+	* FIX: Minor layout fixes in value selection dialog
+	* FIX: Fix cursor hanging "in the air" when pasting a parameter line
+	  into a folded circuit
+	* FIX: Fix size of marker for used X1 register
+	* FIX: Don't swap controllers when you drag a button/pot into an empty
+	       space of another controller.
+
+0.7:
+    Bug fixes:
+	* FIX: Mac: automatically detect dark/light mode switch of system preferences
+	       and immediately switch colors in the Forge, as well (might also work
+	       on Windows, but not tested yet).
+	* FIX: Fix text in cell overlapping to next cell
+	* FIX: Fix too large initial size of dialogs
+	* FIX: Fix too large font size of internal cable statusbar information on
+               Windows
+	* FIX: Get rid of bogus "Meta" shortcut key on Windows
+
+	Features:
+	* Cell editor: add icon and description of parameter type (CV, gate, etc.)
+	* Statusbar: add information (comment) or problem icon
+	* Rack view: new option to show G8 or X7 just when they are used by the patch
+	* Find related control: New menu action (and shortcut ?) for jumping around
+	  between all references to the same button/led/whatever.
+	* Shortcuts: Change keyboard shortcuts for section commands so that
+	  they also work on Windows
+	* Windows: Make menu items selectable with Alt key combinations
+
+0.6:
+    Bug fixes:
+	* FIX: Leaving a direct cell editing with cursor down would skip
+		   two lines.
+	* FIX: Fix values like 0.2000000234324 when adding a new circuit
+	       with typical example (default values of input jacks)
+	* FIX: Don't wrap text in control labels if it's too long
+	* FIX: Fix misaligned problem marker if parameter has a comment
+	* FIX: Fix parsing of "root = I1 / 120 + 18"
+	* FIX: Don't show problem for duplicate usage of output when the
+	       line is disabled
+	* FIX: Avoid loosing the first comment line a circuit when editing
+	       the circuit's source code with Cmd+U
+	* FIX: Don't jump to end of text when editing in the mids of
+	       a cable name (when creating or renaming cables)
+	* FIX: Fix size of vertical separator bar and paddings
+	* FIX: cable section list now makes use of available width
+	* FIX: Fix various bugs when the cursor is in the 2nd or 3rd
+	       cell of an input parameter and is then moved up or down
+		   to an output parameter.
+	* FIX: Avoid cursor moving into empty column in parameter
+	       selector
+
+	Features:
+	* Support for magenta-12
+	* Cell editor: Make description of parameter selectable
+	* Patch view: double click on parameter name edits parameter comment
+	  (information) instead of a change of the parameter (that can still
+	  be done with Enter)
+	* Menu: New action "New with same rack...". This is like "New..." but
+	  keeps all controllers in place. The short cut of "New..." and the
+	  toolbar icon now call this action.
+	* Add hint when clicking two times a row on a button
+	* Help menu: Add link to Discord community
+
+0.5:
+    Bug fixes:
+	* FIX: Fixed crash when deleting the problem before the last problem (found
+	       by @nohumans)
+	* FIX: Fixed crash when cutting an empty cell (found by @Mario Paler)
+	* FIX: Fix bug where a double click on a module (not on a jack/control)
+	       opens a labelling dialog where the existing labels are missing
+		   (found by @Mario Paler)
+	* FIX: Fix number precision bug where 0.3 gets converted into 0.30000001773773
+	* FIX: Fix two undo messages (bogus "%s" in message)
+	* FIX: Fix detecting if SD card is present (enabling of SD card icon)
+	* FIX: Memory computation now also takes controllers into account (just
+	       a slight difference but that might be important)
+
+	Features:
+	* Fast copy: command + mouse click on a cell copies that cell's content
+	  to the cursor position (previously it was vice versa)
+	* Edit cell: After editing the contents of a cell (via direct typing
+	  or via the cell editor) the cursor moves one row down (if there
+	  is one more in the current circuit)
+	* Parameter chooser: Add information about the type of CV a parameter
+	  expects or outputs.
+	* Mac DMG: Create background image for DMG installer (not final yet)
+	* Labels: Move labels of controls above the controls (were below)
+	* Plugs: Better colors for cable plugs
+	* Icons: New colors for circuit icons
+	* Colors: Small adaption to various colors and backgrounds
+
+0.4:
+    Bug fixes:
+	* FIX: avoid numbers like 1.123e-5
+	* FIX: don't convert numbers like 0.000000001 to 0 anymore
+	* FIX: Manual viewer: do not open external viewer when pressing enter
+	* FIX: Fix cursor jumping glitch when comment of a circuit is larger than
+	       the patch screen (found by @Mario Paler)
+    * FIX: Various parameters where missing when adding all remaining parameters
+	       with "Add remaining parameters" (found by @Mario Paler)
+	* FIX: Fix crash when doing shift cursor in empty section (found by @Mario Paler)
+	* FIX: Fix empty labelling dialog when using popup menu on button / jack (found
+	       by @Mario Paler)
+    * FIX: Keypad now also works for direct number entry (found be @Mario Paler)
+	* FIX: Updated user manual and fixed page numbers of circuits
+	* FIX: Allow to close user manual with Escacpe key (as with all dialogs)
+	* FIX: Make rendering of register marker circles and arrows smooth, avoid
+	       pixels.
+	* FIX: Fix too wide lines when dragging things on low resolution screens
+	* FIX: Make controllers look smooth on low resolution screens
+
+	Features:
+	* Manual viewer: cursor left and right now also work for page switching
+	* Status bar: new element for showing the memory consumption of your patch
+	* Patch: create a "problem" on circuits that exceed the available DROID memory
+	* Installer: Add link to "Applications" for an easy drag & drop installation
+	* Toolbar: add hover information for the two activation icons (MIDI + SD) that
+	  explains the reason why it is deactivated.
+	* Toolbar: make problem icon colored, so you see it immediately
+	* Rack view: use 1 HP blind plate as seperator, not gap
+
