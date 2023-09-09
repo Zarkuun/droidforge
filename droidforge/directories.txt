@@ -1,0 +1,12 @@
+.
+./main
+./rackview
+./modules
+./utilities
+./parser
+./patchview
+./patchview/jackselector
+./patchview/circuitchooser
+./patchview/atomeditor
+./os
+./patch
