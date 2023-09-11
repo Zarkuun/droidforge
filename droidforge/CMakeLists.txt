@@ -18,8 +18,20 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Pdf PdfWidgets)
 # automatically.
 # add_compile_options(-isystem /Users/mk/Qt/6.3.1/macos/lib/QtPdfWidgets.framework/Headers)
 
-file(STRINGS "directories.txt" INCLUDE_DIRS)
-include_directories(${INCLUDE_DIRS})
+include_directories(
+    .
+    ./main
+    ./rackview
+    ./modules
+    ./utilities
+    ./parser
+    ./patchview
+    ./patchview/jackselector
+    ./patchview/circuitchooser
+    ./patchview/atomeditor
+    ./os
+    ./patch
+)
 
 set(PROJECT_SOURCES
     rackview/animatedindicator.cpp
@@ -280,7 +292,7 @@ qt_add_executable(DroidForge
 target_link_libraries(DroidForge PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(DroidForge PRIVATE Qt6::Pdf)
 target_link_libraries(DroidForge PRIVATE Qt6::PdfWidgets)
-target_link_libraries(DroidForge PRIVATE "-framework CoreMIDI")
+# target_link_libraries(DroidForge PRIVATE "-framework CoreMIDI")
 
 set_target_properties(DroidForge PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER droidforge.dmmdm.de

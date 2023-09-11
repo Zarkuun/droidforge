@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "tuning.h"
 
+#include <QAction>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QFontDatabase>

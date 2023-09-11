@@ -27,9 +27,9 @@ RUN apt-get install -y \
 # RUN ./qt-opensource-linux-x64-6.3.2.run
 
 
-COPY ./droidforge /app
+# COPY ./droidforge /app
 
 WORKDIR /app
 
-RUN cmake -S . -B build
-RUN cmake --build build
+# RUN cmake -S . -B build
+# RUN cmake --build build -j24
