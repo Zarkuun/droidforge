@@ -86,6 +86,8 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
         numColumns = 4;
     else if (regType == REGISTER_POT) // P2B8, P4B2
         numColumns = 1;
+    else if (regType == REGISTER_ENCODER) // E4
+        numColumns = 1;
     else if (regType == REGISTER_BUTTON && count > 8) // B32
         numColumns = 4;
     else if (regType == REGISTER_BUTTON)

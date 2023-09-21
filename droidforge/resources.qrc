@@ -347,5 +347,6 @@
         <file>images/circuits/flipflop.png</file>
         <file>images/icons/light/video.png</file>
         <file>images/icons/dark/video.png</file>
+        <file>images/faceplates/e4.png</file>
     </qresource>
 </RCC>
