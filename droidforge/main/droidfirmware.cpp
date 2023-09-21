@@ -446,6 +446,13 @@ unsigned DroidFirmware::numControllerRegisters(const QString &module, char regis
         case REGISTER_SWITCH: return 8;
         }
     }
+    else if (module == "e4") {
+        switch (registerType) {
+        case REGISTER_ENCODER: return 4;
+        case REGISTER_BUTTON:  return 4;
+        case REGISTER_LED:     return 4;
+        }
+    }
     else if (module == "m4") {
         switch (registerType) {
         case REGISTER_POT:     return 4;

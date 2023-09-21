@@ -15,6 +15,7 @@ typedef char register_type_t;
 #define    REGISTER_SWITCH    'S'
 #define    REGISTER_RGB_LED   'R'
 #define    REGISTER_EXTRA     'X'
+#define    REGISTER_ENCODER   'E'
 
 #define    REGISTER_TYPE_NULL '\0'
 

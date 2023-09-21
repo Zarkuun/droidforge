@@ -9,6 +9,7 @@
 #include "modulep10.h"
 #include "modules10.h"
 #include "modulep8s8.h"
+#include "modulee4.h"
 #include "modulem4.h"
 #include "modulebling.h"
 
@@ -16,7 +17,7 @@
 
 const QStringList &ModuleBuilder::allControllers()
 {
-    static const QStringList controllers{"p2b8", "p4b2", "b32", "p10", "s10", "p8s8", "m4"};
+    static const QStringList controllers{"p2b8", "p4b2", "b32", "p10", "s10", "p8s8", "e4", "m4"};
     return controllers;
 }
 Module *ModuleBuilder::buildModule(QString name, const RegisterLabels *labels)
@@ -38,6 +39,8 @@ Module *ModuleBuilder::buildModule(QString name, const RegisterLabels *labels)
         module = new ModuleS10(mainWindow);
     else if (name == "p8s8")
         module = new ModuleP8S8(mainWindow);
+    else if (name == "e4")
+        module = new ModuleE4(mainWindow);
     else if (name == "m4")
         module = new ModuleM4(mainWindow);
     else if (name == "b32")
