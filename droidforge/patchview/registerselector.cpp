@@ -81,8 +81,16 @@ void RegisterSelector::setAtom(const Patch *, const Atom *atom)
     else {
         const AtomRegister *areg = (const AtomRegister *)atom;
         setRegisterType(areg->getRegisterType());
-        setRegisterNumber(areg->getNumber());
-        setControllerNumber(areg->getController());
+        if (areg->getRegisterType() == REGISTER_GATE) {
+            lineEditNumber->setText(
+                      QString::number(areg->getG8Number())
+                      + "."
+                      + QString::number(areg->getNumber()));
+        }
+        else {
+            setRegisterNumber(areg->getNumber());
+            setControllerNumber(areg->getController());
+        }
     }
 }
 void RegisterSelector::clearAtom()
