@@ -11,6 +11,14 @@
 	  now automatically get disabled when the circuit is disabled (found
 	  by @oedoen).
 
+	* Add support for the new E4 encoder controller
+
+1.2.1:
+	* Fix crash when pasting the contents of a cell (e.g. a cable name)
+	  when the cursor is in the header line of a circuit or on the
+	  name of a parameter (first column).
+
+
 1.2:
     See releases notes of Droid blue-3 firmware
 
