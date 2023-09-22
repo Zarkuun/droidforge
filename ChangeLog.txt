@@ -1,6 +1,8 @@
 1.3:
+	* Update to Droid firmware magenta-25
 	* Fix loosing parts of a circuit comment when it contains empty lines
 	  (found by @eising).
+	* Add support for the new E4 encoder controller
 
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)
