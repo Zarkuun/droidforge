@@ -3,6 +3,11 @@
 	* Fix freeze when sorting the parameters of a circuit when the parameter
 	  names contain two numbers, like "outputmix9in13".
 
+m18:
+	* Fix editing cells with new G8 style notation "G2.5". Here when
+	  you hit enter on such a cell, the editor would just show "G2",
+	  which was wrong. Now it correctly shows "G2.5".
+
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)
 	  when the cursor is in the header line of a circuit or on the
