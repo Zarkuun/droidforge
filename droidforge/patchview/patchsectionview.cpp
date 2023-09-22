@@ -1378,25 +1378,42 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
         const Atom *a = ja->atomAt(column);
         if (a && a->isRegister()) {
             const AtomRegister *arx = (AtomRegister *)a;
-            if (*arx == ar && ar.getRegisterType() == REGISTER_BUTTON) {
+
+            // LEDs in buttons
+            if (*arx == ar && ar.getRegisterType() == REGISTER_BUTTON)
+            {
                 HintDialog::hint("click_button_led",
-                  tr("You just clicked on button %1 to assign that button\n"
+                  tr("You just clicked on button %1 to assign this button\n" // TODO: "encoder"
                      "to the input parameter \"%2\" in your patch. But that\n"
                      "button was already assigned or you clicked two times in a row.\n\n"
-                     "Clicking a button a second time changes the reference to\n"
+                     "Clicking a button for a second time changes the reference to\n"
                      "the button into the LED in that button. Using an LED as input\n"
                      "is allowed and can sometimes be useful.").arg(ar.toString()).arg(ja->jackName()));
                 ar.setRegisterType(REGISTER_LED);
             }
+
+            // Push buttons in encoders
+            if (*arx == ar && ar.getRegisterType() == REGISTER_ENCODER)
+            {
+                HintDialog::hint("click_button_led",
+                  tr("You just clicked on encoder %1 to assign this encoder\n"
+                     "to the input parameter \"%2\" in your patch. But that\n"
+                     "encoder was already assigned or you clicked on it two\n"
+                     "times in a row.\n\n"
+                     "Clicking an encoder for a second time selects the push button\n"
+                     "in the encoder rather than the encoder itself.").arg(ar.toString()).arg(ja->jackName()));
+                ar.setRegisterType(REGISTER_BUTTON);
+            }
+
             // LEDs in P8S8
             else if (*arx == ar && ar.getRegisterType() == REGISTER_POT) {
                 QString cont = patch->controller(arx->getController() - 1);
                 if (cont == "p8s8") {
                     HintDialog::hint("click_slider_led",
-                      tr("You just clicked on slider %1 to assign that slider\n"
+                      tr("You just clicked on slider %1 to assign this slider\n"
                          "to the input parameter \"%2\" in your patch. But that\n"
                          "slider was already assigned or you clicked two times in a row.\n\n"
-                         "Clicking a slider a second time changes the reference to\n"
+                         "Clicking a slider for a second time changes the reference to\n"
                          "the slider into the LED in that slider. Using an LED as input\n"
                          "is allowed and can sometimes be useful.").arg(ar.toString()).arg(ja->jackName()));
                     ar.setRegisterType(REGISTER_LED);

@@ -64,6 +64,7 @@ void ControllerLabellingDialog::populate()
     populateRegisters(module, REGISTER_OUTPUT, tr("Outputs"));
     populateRegisters(module, REGISTER_GATE, tr("Gates"));
     populateRegisters(module, REGISTER_POT, tr("Potentiometers"));
+    populateRegisters(module, REGISTER_ENCODER, tr("Encoders"));
     populateRegisters(module, REGISTER_BUTTON, tr("Buttons"));
     populateRegisters(module, REGISTER_SWITCH, tr("Switches"));
 }

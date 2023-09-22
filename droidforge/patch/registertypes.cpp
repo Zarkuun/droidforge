@@ -11,6 +11,7 @@ const char register_types[NUM_REGISTER_TYPES] = {
   REGISTER_POT,
   REGISTER_BUTTON,
   REGISTER_SWITCH,
+  REGISTER_ENCODER,
 
   // Can be both input or output
   REGISTER_GATE,
@@ -28,6 +29,7 @@ const char *register_names[NUM_REGISTER_TYPES] = {
     "Potentiometer",
     "Button",
     "Switch",
+    "Encoder",
     "Gate",
     "Input-Normalization",
     "Output",
