@@ -12,6 +12,7 @@ ControlSelector::ControlSelector(jacktype_t jacktype, QWidget *parent)
         addRegisterButton(REGISTER_LED, tr("LED in Button"));
         addRegisterButton(REGISTER_RGB_LED, tr("RGB-LED"));
         addRegisterButton(REGISTER_POT, tr("Potentiometer"));
+        addRegisterButton(REGISTER_ENCODER, tr("Encoder"));
         addRegisterButton(REGISTER_SWITCH, tr("Swich"));
     }
     else {

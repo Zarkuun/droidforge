@@ -35,7 +35,7 @@ AtomRegister::AtomRegister(const QString &s)
     // Note: we allow invalid registers such as I0 here. It's easer
     // for creating precise error messages later.
     static QRegularExpression expa("^([INOGRX])([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
-    static QRegularExpression expb("^([GBLPSR])([0-9]+)[.]([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
+    static QRegularExpression expb("^([GBLPESR])([0-9]+)[.]([0-9]+)$", QRegularExpression::CaseInsensitiveOption);
 
     QRegularExpressionMatch m;
 
@@ -104,6 +104,7 @@ bool AtomRegister::canHaveLabel() const
 {
     return registerType == REGISTER_BUTTON
             || registerType == REGISTER_POT
+            || registerType == REGISTER_ENCODER
             || registerType == REGISTER_LED
             || registerType == REGISTER_SWITCH
             || registerType == REGISTER_INPUT
@@ -138,6 +139,14 @@ bool AtomRegister::isRelatedTo(const AtomRegister &other) const
             (other.registerType == REGISTER_BUTTON
                   || other.registerType == REGISTER_LED
                   || other.registerType == REGISTER_RGB_LED) )
+        return true;
+
+    // Buttons and LEDs are related to their encoders in E$
+    else if ((registerType == REGISTER_BUTTON || registerType == REGISTER_LED)
+             && other.registerType == REGISTER_ENCODER)
+        return true;
+    else if (registerType == REGISTER_ENCODER
+             && (other.registerType == REGISTER_BUTTON || other.registerType == REGISTER_LED))
         return true;
 
 
@@ -202,6 +211,8 @@ QString AtomRegister::problemAsOutput(const Patch *patch) const
                 return tr("You cannot use an input of the master as output");
         case REGISTER_POT:
                 return tr("You cannot use a potentiometer as output");
+        case REGISTER_ENCODER:
+                return tr("You cannot use an encoder as output");
         case REGISTER_BUTTON:
                 return tr("You cannot use a button as output");
         case REGISTER_SWITCH:

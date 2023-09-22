@@ -8,14 +8,12 @@ unsigned ModuleE4::numRegisters(register_type_t type) const
     else
         return 0;
 }
-
-QPointF ModuleE4::registerPosition(register_type_t type, unsigned number) const
+QPointF ModuleE4::registerPosition(register_type_t, unsigned number) const
 {
     float x = 3.0;
     float y = 5.490 * (number - 1) + 4.33;
     return QPointF(x, y);
 }
-
 float ModuleE4::registerSize(register_type_t type, unsigned) const
 {
     if (type == REGISTER_ENCODER || type == REGISTER_BUTTON)
@@ -23,17 +21,14 @@ float ModuleE4::registerSize(register_type_t type, unsigned) const
     else
         return 7.0;
 }
-
-float ModuleE4::labelDistance(register_type_t type, unsigned) const
+float ModuleE4::labelDistance(register_type_t, unsigned) const
 {
-    return -2.34;
+    return -4.40;
 }
-
 float ModuleE4::labelWidth(register_type_t, unsigned) const
 {
     return 5.0;
 }
-
 float ModuleE4::rectAspect(register_type_t type) const
 {
     if (type == REGISTER_LED)

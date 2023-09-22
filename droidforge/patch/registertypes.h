@@ -1,7 +1,7 @@
 #ifndef REGISTERTYPES_H
 #define REGISTERTYPES_H
 
-#define NUM_REGISTER_TYPES 10
+#define NUM_REGISTER_TYPES 11
 
 typedef char register_type_t;
 
@@ -12,10 +12,10 @@ typedef char register_type_t;
 #define    REGISTER_BUTTON    'B'
 #define    REGISTER_LED       'L'
 #define    REGISTER_POT       'P'
+#define    REGISTER_ENCODER   'E'
 #define    REGISTER_SWITCH    'S'
 #define    REGISTER_RGB_LED   'R'
 #define    REGISTER_EXTRA     'X'
-#define    REGISTER_ENCODER   'E'
 
 #define    REGISTER_TYPE_NULL '\0'
 

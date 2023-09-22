@@ -34,6 +34,7 @@ QString RegisterLabels::toString() const
     // And now the registers on the controllers
     static regtitle_t controllerRegtypes[] =  {
         { REGISTER_POT, "POTS" },
+        { REGISTER_ENCODER, "ENCODERS" },
         { REGISTER_BUTTON, "BUTTONS" },
         { REGISTER_LED, "LEDS" },
         { REGISTER_SWITCH, "SWITCHES" },
