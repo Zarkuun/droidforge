@@ -74,7 +74,15 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
     if (!count)
         return;
 
-    gridLayout->addWidget(new QLabel(title, this), currentRow, 0, 1, -1);
+    unsigned columnOffset;
+    if (module->getName() == "e4" && regType == REGISTER_BUTTON) {
+        columnOffset = 1;
+        currentRow = 0;
+    }
+    else
+        columnOffset = 0;
+
+    gridLayout->addWidget(new QLabel(title, this), currentRow, columnOffset, 1, -1);
     currentRow ++;
 
     if (regType == REGISTER_INPUT || regType == REGISTER_OUTPUT)
@@ -91,13 +99,15 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
         numColumns = 1;
     else if (regType == REGISTER_BUTTON && count > 8) // B32
         numColumns = 4;
+    else if (regType == REGISTER_BUTTON && module->getName() == "e4")
+        numColumns = 1;
     else if (regType == REGISTER_BUTTON)
         numColumns = 2;
     else
         numColumns = 2;
 
-    unsigned column = 0;
     unsigned start = module->numberOffset(regType);
+    unsigned column = 0;
     for (unsigned num=start+1; num<=start+count; num++) {
         if (column >= numColumns) {
             column = 0;
@@ -121,7 +131,7 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
 
         RegisterLabelWidget *rlw = new RegisterLabelWidget(atom, shorthand, description, this);
         labelWidgets.append(rlw);
-        gridLayout->addWidget(rlw, currentRow, column);
+        gridLayout->addWidget(rlw, currentRow, column + columnOffset);
         column ++;
     }
     currentRow++;
