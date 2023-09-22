@@ -21,9 +21,12 @@ float ModuleE4::registerSize(register_type_t type, unsigned) const
     else
         return 7.0;
 }
-float ModuleE4::labelDistance(register_type_t, unsigned) const
+float ModuleE4::labelDistance(register_type_t type, unsigned) const
 {
-    return -4.40;
+    if (type == REGISTER_ENCODER)
+        return -4.40;
+    else
+        return -3.68; // button
 }
 float ModuleE4::labelWidth(register_type_t, unsigned) const
 {
