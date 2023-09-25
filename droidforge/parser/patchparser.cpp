@@ -219,6 +219,9 @@ bool PatchParser::maybeParseRegisterLabel(QString comment)
             atomcomment = m2.captured(2);
         }
         register_type_t registerType = registerName.toLatin1();
+        // Convert old-style registers like "G8" to new ones like "G1.8"
+        if (registerType == 'G' && g8 == 0 && number <= 8)
+            g8 = 1;
         patch->addRegisterLabel(registerType, controller, g8, number, shorthand, atomcomment);
         return true;
     }

@@ -7,6 +7,7 @@ m18:
 	* Fix editing cells with new G8 style notation "G2.5". Here when
 	  you hit enter on such a cell, the editor would just show "G2",
 	  which was wrong. Now it correctly shows "G2.5".
+	* Fix loading labels for G1 ... G8
 
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)
