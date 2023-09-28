@@ -1365,6 +1365,8 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             ar.setRegisterType(REGISTER_NORMALIZE);
         else if (ar.getRegisterType() == REGISTER_BUTTON)
             ar.setRegisterType(REGISTER_LED);
+        else if (ar.getRegisterType() == REGISTER_ENCODER)
+            ar.setRegisterType(REGISTER_LED);
         else if (ar.getRegisterType() == REGISTER_POT &&
                  patch->controller(ar.getController() - 1) == "p8s8")
             ar.setRegisterType(REGISTER_LED);
