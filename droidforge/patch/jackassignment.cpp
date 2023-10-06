@@ -139,6 +139,15 @@ Atom *JackAssignment::parseRegister(QString s)
     else
         return ar.clone();
 }
+unsigned long prefixNumber(const QString &s)
+{
+    // "13in6" -> 13
+    int i=0;
+    while (s[i].isDigit())
+        i++;
+    QString n = s.left(i);
+    return n.toULong();
+}
 bool numericStringLess(const QString &a, const QString &b)
 {
     if (b == "")
@@ -157,8 +166,8 @@ bool numericStringLess(const QString &a, const QString &b)
     // OK. Now we have two digits. We do not compare the digits
     // but the number that is constructed by all following digits
 
-    auto na = a.toULongLong();
-    auto nb = b.toULongLong();
+    auto na = prefixNumber(a);
+    auto nb = prefixNumber(b);
     if (na < nb)
         return true;
     else if (nb < na)
