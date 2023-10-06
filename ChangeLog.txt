@@ -1,5 +1,7 @@
 1.3:
 	* Add support for the new E4 encoder controller
+	* Fix freeze when sorting the parameters of a circuit when the parameter
+	  names contain two numbers, like "outputmix9in13".
 
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)
