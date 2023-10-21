@@ -1,6 +1,10 @@
 #ifndef PATCHOPERATOR_H
 #define PATCHOPERATOR_H
 
+#define POLL_SD_SETTINGS_KEY_NAME       "activation/poll_for_sd"
+#define POLL_X7_SETTINGS_KEY_NAME       "activation/poll_for_x7"
+#define SD_PATH_SETTINGS_KEY_NAME       "activation/sd_path"
+
 #include "patcheditengine.h"
 #include "editoractions.h"
 #include "patchparser.h"
@@ -17,6 +21,7 @@
 #include <QObject>
 #include <QFileInfo>
 #include <QMenu>
+#include <QSettings>
 
 #include "statusdump.h"
 
@@ -117,6 +122,7 @@ private:
     void integratePatch(const QString &aFilePath);
     bool isDroidVolume(const QString &rootPath) const;
     void updateSDAndX7State();
+    void updateSDAndX7StateSansPolling();
     QString sdCardDir() const;
     Patch *editSource(const QString &title, QString oldSource);
     void showSource(const QString &title, QString source);
@@ -128,6 +134,11 @@ private:
     void removeBackup();
     bool bringToFrontIfOpen(const QString &filePath, bool inOthers);
     void updateStatusDumpsMenu(bool newDumpAvailable);
+    QSettings pollingSettings;
+    bool pollSD() const;
+    bool pollX7() const;
+    QString savedSDCardDir() const;
+    QString sdCardDirSansPolling();
 
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);
