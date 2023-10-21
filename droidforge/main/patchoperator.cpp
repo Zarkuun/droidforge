@@ -389,8 +389,7 @@ void PatchOperator::saveToSD()
 {
     if (patch->isModified())
         save();
-
-    QString dirPath = sdCardDir();
+    QString dirPath = pollSD()? sdCardDir() : sdCardDirSansPolling();
     if (dirPath == "") {
         QMessageBox::critical(
                     mainWindow,
@@ -696,10 +695,10 @@ void PatchOperator::updateSDAndX7StateSansPolling()
 {
     bool oldSDState = sdCardPresent;
     bool oldStatusState = statusDumpPresent;
-    sdCardPresent = sdCardDir() != "";
+    sdCardPresent = sdCardDirSansPolling() != "";
 
     if (sdCardPresent) {
-        QFileInfo statusFile = QFileInfo(sdCardDir(), QString(STATUS_DUMP_FILENAME).arg(1));
+        QFileInfo statusFile = QFileInfo(sdCardDirSansPolling(), QString(STATUS_DUMP_FILENAME).arg(1));
         statusDumpPresent = statusFile.isFile() && statusFile.exists();
     }
     else
