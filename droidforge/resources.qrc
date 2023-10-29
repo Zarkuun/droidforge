@@ -351,5 +351,9 @@
         <file>images/circuits/encoquencer.png</file>
         <file>images/circuits/encoderbank.png</file>
         <file>images/circuits/encoder.png</file>
+        <file>images/circuits/vcotuner.png</file>
+        <file>images/circuits/sinfonionlink.png</file>
+        <file>images/circuits/outputcalibrator.png</file>
+        <file>images/circuits/detune.png</file>
     </qresource>
 </RCC>
