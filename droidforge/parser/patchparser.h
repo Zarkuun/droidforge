@@ -37,7 +37,7 @@ private:
     void parseLine(QString line);
     void parseEmptyLine();
     void parseCommentLine(QString line);
-    void parseLibraryMetaData(QString data);
+    void parseLabels(QString data);
     void parseCircuitLine(QString line, bool disabled);
     void parseJackLine(Circuit *circuit, QString line, bool disabled);
     void parseCircuit(QString name, bool disabled);

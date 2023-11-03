@@ -50,7 +50,10 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     CONNECT_ACTION(ACTION_SHOW_TWO_G8, [this]{ showG8s(2); });
     CONNECT_ACTION(ACTION_SHOW_THREE_G8,[this]{ showG8s(3); });
     CONNECT_ACTION(ACTION_SHOW_FOUR_G8, [this]{ showG8s(4); });
-    CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, &RackView::toggleDisplayOptions);
+    CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, [this]{ showX7(true); });
+    CONNECT_ACTION(ACTION_SHOW_X7_ALWAYS, [this]{ showX7(false); });
+    CONNECT_ACTION(ACTION_SHOW_MASTER16, [this]{ showMaster(16); });
+    CONNECT_ACTION(ACTION_SHOW_MASTER18, [this]{ showMaster(18); });
     CONNECT_ACTION(ACTION_RIGHT_TO_LEFT, &RackView::toggleDisplayOptions);
 
     connectDragger();
@@ -81,7 +84,6 @@ void RackView::modifyPatch()
 void RackView::toggleDisplayOptions()
 {
     QSettings settings;
-    settings.setValue("show_x7_on_demand", ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked());
     settings.setValue("right_to_left", ACTION(ACTION_RIGHT_TO_LEFT)->isChecked());
     modifyPatch();
     updateSize();
@@ -95,6 +97,26 @@ void RackView::showG8s(unsigned count)
     ACTION(ACTION_SHOW_TWO_G8)->setChecked(count == 2);
     ACTION(ACTION_SHOW_THREE_G8)->setChecked(count == 3);
     ACTION(ACTION_SHOW_FOUR_G8)->setChecked(count == 4);
+    modifyPatch();
+    updateSize();
+}
+
+void RackView::showX7(bool on_demand)
+{
+    QSettings settings;
+    settings.setValue("show_x7_on_demand", on_demand);
+    ACTION(ACTION_SHOW_X7_ON_DEMAND)->setChecked(on_demand);
+    ACTION(ACTION_SHOW_X7_ALWAYS)->setChecked(!on_demand);
+    modifyPatch();
+    updateSize();
+}
+
+void RackView::showMaster(unsigned which)
+{
+    QSettings settings;
+    settings.setValue("show_master", which);
+    ACTION(ACTION_SHOW_MASTER16)->setChecked(which == 16);
+    ACTION(ACTION_SHOW_MASTER18)->setChecked(which == 18);
     modifyPatch();
     updateSize();
 }
@@ -381,10 +403,10 @@ void RackView::refreshScene()
             addModule("x7");
         for (unsigned g=show_g8s; g>=1; g--)
             addModule("g8", -1, g);
-        addModule("master");
+        addModule(masterModuleName());
     }
     else {
-        addModule("master");
+        addModule(masterModuleName());
         for (unsigned g=1; g<=show_g8s; g++)
             addModule("g8", -1, g);
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
@@ -741,6 +763,16 @@ void RackView::updateModuleHeights()
     //               .arg(padding - 5)
     //               .arg(COLOR(COLOR_RACK_BACKGROUND).name())
     //               );
+}
+QString RackView::masterModuleName() const
+{
+    QSettings settings;
+    unsigned show_master = settings.value("show_master", 0).toInt();
+    if (show_master == 18)
+        return "master18";
+    else
+        return "master";
+
 }
 void RackView::abortDragging()
 {

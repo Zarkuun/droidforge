@@ -231,8 +231,8 @@ bool PatchParser::maybeParseMetaComment(QString comment)
     QRegularExpressionMatch m;
     m = regex.match(comment);
     if (m.hasMatch()) {
-        if (m.captured(1) == "LIBRARY")
-            parseLibraryMetaData(m.captured(2));
+        if (m.captured(1) == "LABELS")
+            parseLabels(m.captured(2));
         // Ignore the other headers. They are most probably from
         // the output of the registers like "INPUTS:"
         return true;
@@ -240,11 +240,23 @@ bool PatchParser::maybeParseMetaComment(QString comment)
     else
         return false;
 }
-void PatchParser::parseLibraryMetaData(QString data)
+void PatchParser::parseLabels(QString data)
 {
+    static QRegularExpression label_re("^([a-zA-Z0-9]+)[[:space:]]*=(.*)$");
+
     // Example:
-    // LIBRARY: name=arpeggio; version=1.0; firmware=blue-1
-    patch->setLibraryMetaData(data);
+    // master=18; version=1.0; firmware=blue-1
+    shout << "Labels sind" << data;
+    QStringList parts = data.split(";");
+    shout << "Part: " << parts;
+    for (auto part: parts) {
+        auto matches = label_re.match(part.trimmed());
+        if (matches.hasMatch()) {
+            QString label = matches.captured(1);
+            QString value = matches.captured(2);
+            patch->setLabel(label, value);
+        }
+    }
 }
 void PatchParser::parseCircuitLine(QString line, bool disabled)
 {
