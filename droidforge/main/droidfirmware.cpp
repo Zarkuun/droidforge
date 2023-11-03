@@ -387,14 +387,18 @@ unsigned DroidFirmware::numGlobalRegisters(char registerType) const
     }
 
 }
-bool DroidFirmware::circuitNeedsX7(QString circuit) const
+bool DroidFirmware::circuitNeedsMaster18(QString circuit) const
+{
+    return circuit == "vcotuner"
+            || circuit == "sinfonionlink";
+}
+bool DroidFirmware::circuitNeedsMIDI(QString circuit) const
 {
     return     circuit == "midiin"
             || circuit == "midiout"
             || circuit == "midithrough"
             || circuit == "firefacecontrol";
 }
-
 bool DroidFirmware::checkAllDescriptions() const
 {
     for (auto& circuitname: circuits.keys()) {

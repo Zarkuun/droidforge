@@ -93,8 +93,8 @@ public:
     void collectRegisterAtoms(RegisterList &, bool skipOverlayedControls) const;
     void removeRegisterReferences(RegisterList &rl);
     unsigned memoryFootprint() const;
-    bool needsX7() const;
     bool searchHitAtCursor(const QString &text);
+    bool needsMIDI() const;
     void clearBookmarks();
     bool findBookmark(CursorPosition *pos);
     void setBookmark();

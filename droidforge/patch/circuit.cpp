@@ -1,6 +1,7 @@
 #include "circuit.h"
 #include "droidfirmware.h"
 #include "jackassignmentoutput.h"
+#include "patch.h"
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -72,9 +73,14 @@ unsigned Circuit::memoryFootprint() const
     }
     return ram;
 }
-bool Circuit::needsX7() const
+bool Circuit::needsMIDI() const
 {
-    return the_firmware->circuitNeedsX7(name);
+    return the_firmware->circuitNeedsMIDI(name);
+}
+
+bool Circuit::needsMASTER18() const
+{
+    return the_firmware->circuitNeedsMaster18(name);
 }
 bool Circuit::usesSelect() const
 {
@@ -218,6 +224,7 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
             new PatchProblem(ROW_CIRCUIT, 0, tr("There is no such circuit with the name '%1'").arg(name)));
     }
 
+
     if (the_firmware->circuitIsDeprecated(name) &&
         settings.value("validation/denounce_deprecated_circuits", true).toBool())
     {
@@ -227,6 +234,13 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
                                                 " in the preferences.")));
     }
 
+
+    unsigned master = patch->typeOfMaster();
+    if (master == 16 && needsMASTER18())
+    {
+        allProblems.append(
+            new PatchProblem(ROW_CIRCUIT, 0, tr("The MASTER does not support the circuit '%1'").arg(name)));
+    }
 
     QSet<QString> usedJacks;
 

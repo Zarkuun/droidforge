@@ -660,10 +660,10 @@ unsigned PatchSection::memoryFootprint() const
         memory += circuit->memoryFootprint();
     return memory;
 }
-bool PatchSection::needsX7() const
+bool PatchSection::needsMIDI() const
 {
     for (auto circuit: circuits) {
-        if (!circuit->isDisabled() && circuit->needsX7())
+        if (!circuit->isDisabled() && circuit->needsMIDI())
             return true;
     }
     return false;

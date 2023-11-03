@@ -45,7 +45,8 @@ public:
     double jackDefaultvalue(QString circuit, QString jack) const;
     unsigned numControllerRegisters(const QString &controller, char registerType) const;
     unsigned numGlobalRegisters(char registerType) const;
-    bool circuitNeedsX7(QString circuit) const;
+    bool circuitNeedsMIDI(QString circuit) const;
+    bool circuitNeedsMaster18(QString circuit) const;
     bool checkAllDescriptions() const;
 
 private:

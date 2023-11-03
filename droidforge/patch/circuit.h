@@ -75,7 +75,8 @@ public:
     bool jackIsArray(int row) const;
     QString prefixOfJack(const QString &jackName);
     unsigned memoryFootprint() const;
-    bool needsX7() const;
+    bool needsMIDI() const;
+    bool needsMASTER18() const;
     bool usesSelect() const;
     bool hasBookmark() const { return haveBookmark; };
     void setBookmark(int row, int column);
