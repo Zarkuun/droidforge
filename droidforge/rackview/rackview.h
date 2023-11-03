@@ -70,12 +70,15 @@ private:
     void stopDraggingController(QGraphicsItem *startItem, QPoint pos);
     int snapControllerInsertPosition(int fromIndex, float x, float *insertSnap) const;
     void updateModuleHeights();
+    QString masterModuleName() const;
 
 public slots:
     void abortAllActions();
     void modifyPatch();
     void toggleDisplayOptions();
+    void showMaster(unsigned which);
     void showG8s(unsigned count);
+    void showX7(bool on_demand);
     void updateRegisterHilites();
     void addController();
 

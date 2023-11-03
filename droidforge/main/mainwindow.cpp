@@ -391,6 +391,23 @@ void MainWindow::createSectionMenu()
 void MainWindow::createViewMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&View"));
+
+    QMenu *mastermenu = menu->addMenu(tr("Master module"));
+    ADD_ACTION(ACTION_SHOW_MASTER16, mastermenu);
+    ADD_ACTION(ACTION_SHOW_MASTER18, mastermenu);
+    QMenu *g8menu = menu->addMenu(tr("G8 expanders"));
+    ADD_ACTION(ACTION_SHOW_USED_G8s, g8menu);
+    ADD_ACTION(ACTION_SHOW_ONE_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_TWO_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_THREE_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_FOUR_G8, g8menu);
+    QMenu *x7menu = menu->addMenu(tr("X7 expander"));
+    ADD_ACTION(ACTION_SHOW_X7_ON_DEMAND, x7menu);
+    ADD_ACTION(ACTION_SHOW_X7_ALWAYS, x7menu);
+
+
+    menu->addSeparator();
+
     ADD_ACTION(ACTION_RESET_ZOOM, menu);
     ADD_ACTION(ACTION_ZOOM_IN, menu);
     ADD_ACTION(ACTION_ZOOM_OUT, menu);
@@ -407,15 +424,6 @@ void MainWindow::createViewMenu()
     ADD_ACTION(ACTION_SHOW_REGISTER_LABELS, menu);
     ADD_ACTION(ACTION_SHOW_REGISTER_USAGE, menu);
     ADD_ACTION(ACTION_TEXT_MODE, menu);
-    ADD_ACTION(ACTION_SHOW_X7_ON_DEMAND, menu);
-
-    QMenu *g8menu = menu->addMenu(tr("G8 expander"));
-    ADD_ACTION(ACTION_SHOW_USED_G8s, g8menu);
-    g8menu->addSeparator();
-    ADD_ACTION(ACTION_SHOW_ONE_G8, g8menu);
-    ADD_ACTION(ACTION_SHOW_TWO_G8, g8menu);
-    ADD_ACTION(ACTION_SHOW_THREE_G8, g8menu);
-    ADD_ACTION(ACTION_SHOW_FOUR_G8, g8menu);
 
     menu->addSeparator();
 

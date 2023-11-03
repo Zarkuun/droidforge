@@ -354,5 +354,6 @@
         <file>images/circuits/sinfonionlink.png</file>
         <file>images/circuits/outputcalibrator.png</file>
         <file>images/circuits/detune.png</file>
+        <file>images/faceplates/master18.png</file>
     </qresource>
 </RCC>

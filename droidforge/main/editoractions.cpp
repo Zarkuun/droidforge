@@ -333,8 +333,17 @@ void EditorActions::createActions()
     actions[ACTION_TEXT_MODE]->setCheckable(true);
     actions[ACTION_TEXT_MODE]->setChecked(settings.value("simplified_text_mode", false).toBool());
 
+    unsigned show_master = settings.value("show_master", 0).toInt();
+    actions[ACTION_SHOW_MASTER16] = new QAction(tr("Create patch for MASTER"));
+    actions[ACTION_SHOW_MASTER16]->setCheckable(true);
+    actions[ACTION_SHOW_MASTER16]->setChecked(show_master == 16);
+
+    actions[ACTION_SHOW_MASTER18] = new QAction(tr("Create patch for MASTER18"));
+    actions[ACTION_SHOW_MASTER18]->setCheckable(true);
+    actions[ACTION_SHOW_MASTER18]->setChecked(show_master == 18);
+
     unsigned show_g8s = settings.value("show_g8s", 0).toInt();
-    actions[ACTION_SHOW_USED_G8s] = new QAction(tr("Show &G8s that are in use"));
+    actions[ACTION_SHOW_USED_G8s] = new QAction(tr("Show &G8s needed by the current patch"));
     actions[ACTION_SHOW_USED_G8s]->setCheckable(true);
     actions[ACTION_SHOW_USED_G8s]->setChecked(show_g8s == 0);
 
@@ -354,9 +363,14 @@ void EditorActions::createActions()
     actions[ACTION_SHOW_FOUR_G8]->setCheckable(true);
     actions[ACTION_SHOW_FOUR_G8]->setChecked(show_g8s == 4);
 
-    actions[ACTION_SHOW_X7_ON_DEMAND] = new QAction(tr("Show &X7 only when used"), this);
+    bool x7_on_demand = settings.value("show_x7_on_demand").toBool();
+    actions[ACTION_SHOW_X7_ON_DEMAND] = new QAction(tr("Show &X7 if needed by the current patch"), this);
     actions[ACTION_SHOW_X7_ON_DEMAND]->setCheckable(true);
-    actions[ACTION_SHOW_X7_ON_DEMAND]->setChecked(settings.value("show_x7_on_demand").toBool());
+    actions[ACTION_SHOW_X7_ON_DEMAND]->setChecked(x7_on_demand);
+
+    actions[ACTION_SHOW_X7_ALWAYS] = new QAction(tr("Show &X7 always"));
+    actions[ACTION_SHOW_X7_ALWAYS]->setCheckable(true);
+    actions[ACTION_SHOW_X7_ALWAYS]->setChecked(!x7_on_demand);
 
     actions[ACTION_RIGHT_TO_LEFT] = new QAction(tr("Show master on the right side"), this);
     actions[ACTION_RIGHT_TO_LEFT]->setCheckable(true);

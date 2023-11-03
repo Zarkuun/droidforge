@@ -8,13 +8,14 @@
 #include "rewritecablesdialog.h"
 
 #include <QStringList>
+#include <QMap>
 
 class Patch
 {
     // Contents tha are saved to disk
     QString title;
     QStringList description;
-    QString libraryMetaData; // break into structure later
+    QMap<QString, QString> labels;
     RegisterLabels registerLabels;
     QStringList controllers;
     QList<PatchSection *> sections;
@@ -39,7 +40,6 @@ public:
     const QString &getTitle() const { return title; }
     bool hasTitle() const { return title != ""; }
     QString getDescription() const;
-    const QString &getLibraryMetaData() const { return libraryMetaData; }
     RegisterLabels &getRegisterLabels() { return registerLabels; };
     const RegisterLabels *getRegisterLabelsPointer() const { return &registerLabels; };
     RegisterLabel registerLabel(AtomRegister atom) const;
@@ -94,7 +94,7 @@ public:
     void addDescriptionLine(const QString &line);
     void addDescriptionLines(const QStringList &list);
     void setTitle(const QString &newTitle);
-    void setLibraryMetaData(const QString &newLibraryMetaData) { libraryMetaData = newLibraryMetaData; }
+    void setLabel(const QString &label, const QString &value);
     void switchCurrentSection(qsizetype i) { sectionIndex = i; };
     void addSection(PatchSection *section);
     void insertSection(int index, PatchSection *section);
@@ -135,6 +135,7 @@ protected:
 
 private:
     QString createCompressedCableName(unsigned id);
+    QString labelsToString() const;
 
 public:
     // Iteration of all atoms in this patch

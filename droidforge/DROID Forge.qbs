@@ -55,6 +55,8 @@ QtApplication {
         "modules/modulebling.h",
         "modules/modulee4.cpp",
         "modules/modulee4.h",
+        "modules/modulemaster18.cpp",
+        "modules/modulemaster18.h",
         "modules/modulep8s8.cpp",
         "modules/modulep8s8.h",
         "os/midihost.cpp",

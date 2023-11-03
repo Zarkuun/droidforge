@@ -21,7 +21,7 @@ void Patch::clear()
 {
     title = "";
     description.clear();
-    libraryMetaData = "";
+    labels.clear();
     registerLabels.clear();
     controllers.clear();
     for (auto section: sections)
@@ -44,7 +44,7 @@ void Patch::cloneInto(Patch *otherPatch) const
     otherPatch->clear();
     otherPatch->title = title;
     otherPatch->description = description;
-    otherPatch->libraryMetaData = libraryMetaData;
+    otherPatch->labels = labels;
     otherPatch->registerLabels = registerLabels;
     otherPatch->registerLabels.detach();
     otherPatch->controllers = controllers;
@@ -398,6 +398,11 @@ void Patch::setTitle(const QString &newTitle)
 {
     title = newTitle;
 }
+void Patch::setLabel(const QString &label, const QString &value)
+{
+    labels[label] = value;
+    shout << "Neues Label: " << label << " = " << value;
+}
 QStringList Patch::allCables() const
 {
     QStringList cables;
@@ -477,6 +482,18 @@ QString Patch::createCompressedCableName(unsigned id)
         id = id / 26;
     } while (id > 0);
     return name;
+}
+QString Patch::labelsToString() const
+{
+    QString s;
+    for (auto i = labels.cbegin(), end = labels.cend(); i != end; ++i) {
+        QString l = i.key() + "=" + i.value() + ";";
+        s += l;
+
+    }
+    if (s.endsWith(";"))
+        s = s.chopped(1);
+    return s;
 }
 void Patch::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
 {
@@ -918,8 +935,8 @@ QString Patch::toString() const
     if (!title.isEmpty())
         s += "# " + title + "\n";
 
-    if (!libraryMetaData.isEmpty())
-        s += "# LIBRARY: " + libraryMetaData + "\n";
+    if (!labels.isEmpty())
+        s += "# LABELS: " + labelsToString() + "\n";
 
     if (!description.isEmpty()) {
         if (!s.isEmpty())

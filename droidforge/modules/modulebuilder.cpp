@@ -1,6 +1,7 @@
 #include "modulebuilder.h"
 
 #include "modulemaster.h"
+#include "modulemaster18.h"
 #include "moduleg8.h"
 #include "modulex7.h"
 #include "modulep2b8.h"
@@ -26,6 +27,8 @@ Module *ModuleBuilder::buildModule(QString name, const RegisterLabels *labels)
     Module *module;
     if (name == "master")
         module = new ModuleMaster(mainWindow);
+    else if (name == "master18")
+        module = new ModuleMaster18(mainWindow);
     else if (name == "g8")
         module = new ModuleG8(mainWindow);
     else if (name == "x7")
