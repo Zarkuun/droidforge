@@ -246,9 +246,7 @@ void PatchParser::parseLabels(QString data)
 
     // Example:
     // master=18; version=1.0; firmware=blue-1
-    shout << "Labels sind" << data;
     QStringList parts = data.split(";");
-    shout << "Part: " << parts;
     for (auto part: parts) {
         auto matches = label_re.match(part.trimmed());
         if (matches.hasMatch()) {

@@ -240,9 +240,7 @@ unsigned Patch::typeOfMaster() const
             return value;
     }
 
-    shout << "TODO: Auto detection of master";
-    // TODO: Auto detection
-    return 16;
+    return 16; // This is the default
 }
 
 void Patch::setTypeOfMaster(unsigned new_type)
@@ -417,7 +415,6 @@ void Patch::setTitle(const QString &newTitle)
 void Patch::setLabel(const QString &label, const QString &value)
 {
     labels[label] = value;
-    shout << "Neues Label: " << label << " = " << value;
 }
 QStringList Patch::allCables() const
 {
@@ -600,26 +597,34 @@ void Patch::updateProblems()
         sectionNr++;
     }
 
-    // Look for outputs (O) or normalizations (N) that are used twice as output.
-    // LEDs are fine! Since many circuits work with select and allow
-    // overloading of LEDs.
+    unsigned master = typeOfMaster();
+
+    // Invalid registers:
+    // 1) Look for outputs (O) or normalizations (N) that are used twice as output.
+    //    LEDs are fine! Since many circuits work with select and allow
+    //    overloading of LEDs.
+    // 2) Look for registers not present on the chosen master
     RegisterList usedOutputs;
     for (auto it = begin(); it != end(); ++it)
     {
         const Atom *atom = *it;
-        if (!atom->isRegister() || !it.isOutput())
-            continue;
+        if (!atom->isRegister())
+            continue; // we are only interested in registers
 
         const AtomRegister *reg = (const AtomRegister *)atom;
-        if (reg->getRegisterType() != REGISTER_OUTPUT &&
-            reg->getRegisterType() != REGISTER_NORMALIZE)
-            continue;
-
         const CursorPosition &pos = it.cursorPosition();
         const PatchSection *sec = section(it.sectionIndex());
         const Circuit *circuit = sec->circuit(pos.circuitNr);
         const JackAssignment *ja = circuit->jackAssignment(pos.row);
-        if (!ja->isDisabled())
+        if (ja->isDisabled())
+            continue;
+
+        // 1) Check registers used as ouput twice. We *don't* check LED registers
+        // because it's quite common to use them twice - as a part of layered
+        // menus with select and stuff.
+        if  (it.isOutput() &&
+            (reg->getRegisterType() == REGISTER_OUTPUT ||
+            reg->getRegisterType() == REGISTER_NORMALIZE))
         {
             if (usedOutputs.contains(*reg)) {
                 PatchProblem *prob = new PatchProblem(pos.row, pos.column,
@@ -631,7 +636,40 @@ void Patch::updateProblems()
             else
                 usedOutputs.append(*reg);
         }
+
+        // 2) Check for registers not available on the current master
+        PatchProblem *prob = 0;
+        if (master == 16) {
+            if (reg->getG8Number() > 4)
+                prob = new PatchProblem(pos.row, pos.column,
+                                        TR("Invalid G8 number %1").arg(reg->getG8Number()));
+        }
+        else if (master == 18) {
+            if (reg->getG8Number() == 1 && reg->getNumber() > 4)
+            {
+                prob = new PatchProblem(pos.row, pos.column,
+                                        TR("Invalid gate number %1").arg(reg->getNumber()));
+            }
+
+            else if (reg->getRegisterType() == REGISTER_INPUT && reg->getNumber() > 2)
+            {
+                prob = new PatchProblem(pos.row, pos.column,
+                                        TR("Invalid input number %1").arg(reg->getNumber()));
+            }
+
+            else if (reg->getRegisterType() == REGISTER_NORMALIZE)
+            {
+                prob = new PatchProblem(pos.row, pos.column,
+                                        TR("The MASTER18 has no normalization registers"));
+            }
+        }
+        if (prob) {
+            prob->setCircuit(pos.circuitNr);
+            prob->setSection(it.sectionIndex());
+            problems.append(prob);
+        }
     }
+
 
     // Check memory consumption of circuits
     unsigned usedMemory = 0;
@@ -799,9 +837,13 @@ bool Patch::needsX7()
         }
     }
 
-    for (auto section: sections)
-        if (section->needsX7())
-            return true;
+    // Some circuits need MIDI. This can be provided by
+    // the X7 or by a master18/36
+    if (typeOfMaster() == 16) {
+        for (auto section: sections)
+            if (section->needsMIDI())
+                return true;
+    }
 
     return false;
 }

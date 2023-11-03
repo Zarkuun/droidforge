@@ -2,6 +2,7 @@
 #include "droidfirmware.h"
 #include "globals.h"
 #include "jackassignmentoutput.h"
+#include "patch.h"
 
 #include <QCoreApplication>
 
@@ -70,9 +71,14 @@ unsigned Circuit::memoryFootprint() const
     }
     return ram;
 }
-bool Circuit::needsX7() const
+bool Circuit::needsMIDI() const
 {
-    return the_firmware->circuitNeedsX7(name);
+    return the_firmware->circuitNeedsMIDI(name);
+}
+
+bool Circuit::needsMASTER18() const
+{
+    return the_firmware->circuitNeedsMaster18(name);
 }
 bool Circuit::usesSelect() const
 {
@@ -213,6 +219,13 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
     if (!the_firmware->circuitExists(name)) {
         allProblems.append(
             new PatchProblem(ROW_CIRCUIT, 0, tr("There is no such circuit with the name '%1'").arg(name)));
+    }
+
+    unsigned master = patch->typeOfMaster();
+    if (master == 16 && needsMASTER18())
+    {
+        allProblems.append(
+            new PatchProblem(ROW_CIRCUIT, 0, tr("The MASTER does not support the circuit '%1'").arg(name)));
     }
 
     QSet<QString> usedJacks;
