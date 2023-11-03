@@ -333,14 +333,11 @@ void EditorActions::createActions()
     actions[ACTION_TEXT_MODE]->setCheckable(true);
     actions[ACTION_TEXT_MODE]->setChecked(settings.value("simplified_text_mode", false).toBool());
 
-    unsigned show_master = settings.value("show_master", 0).toInt();
-    actions[ACTION_SHOW_MASTER16] = new QAction(tr("Create patch for MASTER"));
-    actions[ACTION_SHOW_MASTER16]->setCheckable(true);
-    actions[ACTION_SHOW_MASTER16]->setChecked(show_master == 16);
+    actions[ACTION_USE_MASTER16] = new QAction(tr("MASTER"));
+    actions[ACTION_USE_MASTER16]->setCheckable(true);
 
-    actions[ACTION_SHOW_MASTER18] = new QAction(tr("Create patch for MASTER18"));
-    actions[ACTION_SHOW_MASTER18]->setCheckable(true);
-    actions[ACTION_SHOW_MASTER18]->setChecked(show_master == 18);
+    actions[ACTION_USE_MASTER18] = new QAction(tr("MASTER18"));
+    actions[ACTION_USE_MASTER18]->setCheckable(true);
 
     unsigned show_g8s = settings.value("show_g8s", 0).toInt();
     actions[ACTION_SHOW_USED_G8s] = new QAction(tr("Show &G8s needed by the current patch"));
@@ -429,6 +426,9 @@ void EditorActions::modifyPatch()
         actions[ACTION_REDO]->setText(tr("&Redo"));
         actions[ACTION_REDO]->setEnabled(false);
     }
+
+    actions[ACTION_USE_MASTER16]->setChecked(patch->typeOfMaster() == 16);
+    actions[ACTION_USE_MASTER18]->setChecked(patch->typeOfMaster() == 18);
 
     actions[ACTION_DELETE_PATCH_SECTION]->setEnabled(patch->numSections() >= 2);
     actions[ACTION_MERGE_ALL_SECTIONS]->setEnabled(patch->numSections() >= 2);

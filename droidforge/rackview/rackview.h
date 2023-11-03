@@ -76,7 +76,7 @@ public slots:
     void abortAllActions();
     void modifyPatch();
     void toggleDisplayOptions();
-    void showMaster(unsigned which);
+    void switchMaster(unsigned which);
     void showG8s(unsigned count);
     void showX7(bool on_demand);
     void updateRegisterHilites();

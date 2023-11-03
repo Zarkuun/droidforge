@@ -52,8 +52,8 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     CONNECT_ACTION(ACTION_SHOW_FOUR_G8, [this]{ showG8s(4); });
     CONNECT_ACTION(ACTION_SHOW_X7_ON_DEMAND, [this]{ showX7(true); });
     CONNECT_ACTION(ACTION_SHOW_X7_ALWAYS, [this]{ showX7(false); });
-    CONNECT_ACTION(ACTION_SHOW_MASTER16, [this]{ showMaster(16); });
-    CONNECT_ACTION(ACTION_SHOW_MASTER18, [this]{ showMaster(18); });
+    CONNECT_ACTION(ACTION_USE_MASTER16, [this]{ switchMaster(16); });
+    CONNECT_ACTION(ACTION_USE_MASTER18, [this]{ switchMaster(18); });
     CONNECT_ACTION(ACTION_RIGHT_TO_LEFT, &RackView::toggleDisplayOptions);
 
     connectDragger();
@@ -110,15 +110,14 @@ void RackView::showX7(bool on_demand)
     modifyPatch();
     updateSize();
 }
-
-void RackView::showMaster(unsigned which)
+void RackView::switchMaster(unsigned new_type)
 {
-    QSettings settings;
-    settings.setValue("show_master", which);
-    ACTION(ACTION_SHOW_MASTER16)->setChecked(which == 16);
-    ACTION(ACTION_SHOW_MASTER18)->setChecked(which == 18);
-    modifyPatch();
-    updateSize();
+    unsigned old_type = patch->typeOfMaster();
+    if (old_type != new_type) {
+        patch->setTypeOfMaster(new_type);
+        patch->commit(tr("Change type of master"));
+        emit patchModified();
+    }
 }
 void RackView::resizeEvent(QResizeEvent *)
 {
@@ -766,13 +765,10 @@ void RackView::updateModuleHeights()
 }
 QString RackView::masterModuleName() const
 {
-    QSettings settings;
-    unsigned show_master = settings.value("show_master", 0).toInt();
-    if (show_master == 18)
+    if (patch->typeOfMaster() == 18)
         return "master18";
     else
         return "master";
-
 }
 void RackView::abortDragging()
 {

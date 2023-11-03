@@ -227,6 +227,28 @@ void Patch::removeRegisterLabel(AtomRegister atom)
 {
     registerLabels.remove(atom);
 }
+unsigned Patch::typeOfMaster() const
+{
+    /* Determine the type of master of this patch. This information
+      either comes from the label "master" or it is autodetected.
+      The auto detection is not very precise. It uses questions
+      like "if I3 is used it cannot be a MASTER18". */
+    auto result = labels.find("master");
+    if (result != labels.end()) {
+        unsigned value = result->toInt();
+        if (value == 16 || value == 18)
+            return value;
+    }
+
+    shout << "TODO: Auto detection of master";
+    // TODO: Auto detection
+    return 16;
+}
+
+void Patch::setTypeOfMaster(unsigned new_type)
+{
+    labels["master"] = QString::number(new_type);
+}
 unsigned Patch::numCircuits() const
 {
     unsigned num = 0;
