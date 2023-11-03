@@ -249,6 +249,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 void MainWindow::createMenus()
 {
     createFileMenu();
+    createRackMenu();
     createEditMenu();
     createSectionMenu();
     createViewMenu();
@@ -303,6 +304,33 @@ void MainWindow::createFileMenu()
     fileMenu->addMenu(patchOperator.statusDumpsMenu());
     ADD_ACTION(ACTION_QUIT, fileMenu);
 }
+void MainWindow::createRackMenu()
+{
+    QMenu *menu = menuBar()->addMenu(tr("&Rack"));
+
+    QMenu *mastermenu = menu->addMenu(tr("Master module"));
+    ADD_ACTION(ACTION_USE_MASTER16, mastermenu);
+    ADD_ACTION(ACTION_USE_MASTER18, mastermenu);
+    QMenu *g8menu = menu->addMenu(tr("G8 expanders"));
+    ADD_ACTION(ACTION_SHOW_USED_G8s, g8menu);
+    ADD_ACTION(ACTION_SHOW_ONE_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_TWO_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_THREE_G8, g8menu);
+    ADD_ACTION(ACTION_SHOW_FOUR_G8, g8menu);
+    QMenu *x7menu = menu->addMenu(tr("X7 expander"));
+    ADD_ACTION(ACTION_SHOW_X7_ON_DEMAND, x7menu);
+    ADD_ACTION(ACTION_SHOW_X7_ALWAYS, x7menu);
+
+    ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
+    menu->addSeparator();
+
+    ADD_ACTION(ACTION_RACK_RESET_ZOOM, menu);
+    ADD_ACTION(ACTION_RACK_ZOOM_IN, menu);
+    ADD_ACTION(ACTION_RACK_ZOOM_OUT, menu);
+
+    menu->addSeparator();
+
+}
 void MainWindow::createEditMenu()
 {
     QMenu *menu = menuBar()->addMenu(ZERO_WIDTH_SPACE + tr("&Edit"));
@@ -336,7 +364,6 @@ void MainWindow::createEditMenu()
 
     ADD_ACTION(ACTION_NEW_CIRCUIT, menu);
     ADD_ACTION(ACTION_NEW_JACK, menu);
-    ADD_ACTION(ACTION_NEW_CONTROLLER, menu);
     ADD_ACTION(ACTION_EDIT_VALUE, menu);
     ADD_ACTION(ACTION_FIND, menu);
     ADD_ACTION(ACTION_SET_BOOKMARK, menu);
@@ -392,22 +419,6 @@ void MainWindow::createViewMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&View"));
 
-    QMenu *mastermenu = menu->addMenu(tr("Master module"));
-    ADD_ACTION(ACTION_SHOW_MASTER16, mastermenu);
-    ADD_ACTION(ACTION_SHOW_MASTER18, mastermenu);
-    QMenu *g8menu = menu->addMenu(tr("G8 expanders"));
-    ADD_ACTION(ACTION_SHOW_USED_G8s, g8menu);
-    ADD_ACTION(ACTION_SHOW_ONE_G8, g8menu);
-    ADD_ACTION(ACTION_SHOW_TWO_G8, g8menu);
-    ADD_ACTION(ACTION_SHOW_THREE_G8, g8menu);
-    ADD_ACTION(ACTION_SHOW_FOUR_G8, g8menu);
-    QMenu *x7menu = menu->addMenu(tr("X7 expander"));
-    ADD_ACTION(ACTION_SHOW_X7_ON_DEMAND, x7menu);
-    ADD_ACTION(ACTION_SHOW_X7_ALWAYS, x7menu);
-
-
-    menu->addSeparator();
-
     ADD_ACTION(ACTION_RESET_ZOOM, menu);
     ADD_ACTION(ACTION_ZOOM_IN, menu);
     ADD_ACTION(ACTION_ZOOM_OUT, menu);
@@ -424,12 +435,6 @@ void MainWindow::createViewMenu()
     ADD_ACTION(ACTION_SHOW_REGISTER_LABELS, menu);
     ADD_ACTION(ACTION_SHOW_REGISTER_USAGE, menu);
     ADD_ACTION(ACTION_TEXT_MODE, menu);
-
-    menu->addSeparator();
-
-    ADD_ACTION(ACTION_RACK_RESET_ZOOM, menu);
-    ADD_ACTION(ACTION_RACK_ZOOM_IN, menu);
-    ADD_ACTION(ACTION_RACK_ZOOM_OUT, menu);
 
     menu->addSeparator(); // separates "Enter full screen" on Mac
 }

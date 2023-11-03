@@ -45,6 +45,8 @@ public:
     RegisterLabel registerLabel(AtomRegister atom) const;
     void setRegisterLabel(AtomRegister atom, RegisterLabel label);
     void removeRegisterLabel(AtomRegister atom);
+    unsigned typeOfMaster() const;
+    void setTypeOfMaster(unsigned new_type);
     qsizetype numControllers() const { return controllers.size(); };
     QString controller(qsizetype i) const { return controllers[i]; };
     const QStringList &allControllers() const { return controllers; };

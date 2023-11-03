@@ -109,6 +109,7 @@ protected:
 private:
     void createMenus();
     void createFileMenu();
+    void createRackMenu();
     void createEditMenu();
     void createSectionMenu();
     void createViewMenu();
