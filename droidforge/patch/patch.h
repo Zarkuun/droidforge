@@ -89,7 +89,7 @@ public:
     unsigned countUniqueConstants();
     unsigned countEncoders() const;
     unsigned countFaders() const;
-    unsigned neededG8s();
+    unsigned highestGatePrefix();
     bool needsX7();
 
     // Modifications

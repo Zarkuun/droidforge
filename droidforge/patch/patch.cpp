@@ -881,6 +881,7 @@ unsigned Patch::countUniqueConstants()
     }
     return constants.count();
 }
+
 unsigned int Patch::countEncoders() const
 {
     unsigned count = 0;
@@ -901,7 +902,8 @@ unsigned int Patch::countFaders() const
     }
     return count;
 }
-unsigned Patch::neededG8s()
+
+unsigned Patch::highestGatePrefix()
 {
     unsigned highest_g8 = 0;
     for (auto it = beginEnabled(); it != this->end(); ++it)
@@ -910,8 +912,9 @@ unsigned Patch::neededG8s()
         if (atom->isRegister()) {
             AtomRegister *reg = (AtomRegister *)atom;
             if (reg->getRegisterType() == REGISTER_GATE &&
-                reg->getNumber() < 9 /* don't confuse with X7 */) {
-                highest_g8 = 1;
+                reg->getNumber() < 9 /* don't confuse with X7 */)
+            {
+                highest_g8 = qMax(highest_g8, reg->getG8Number());
             }
         }
     }
