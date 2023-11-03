@@ -389,8 +389,13 @@ void RackView::refreshScene()
 
     x = 0;
     QSettings settings;
-    unsigned show_g8s = qMax((unsigned)(settings.value("show_g8s", 0).toInt()),
-                             patch->neededG8s());
+    int used_g8s = patch->highestGatePrefix();
+    int g8_offset = 0;
+    if (patch->typeOfMaster() != 16)
+        g8_offset = 1;
+    unsigned show_g8s = qMax(settings.value("show_g8s", 0).toInt(), used_g8s - g8_offset);
+    shout << "Used:" << used_g8s << "show" << show_g8s;
+
 
     if (ACTION(ACTION_RIGHT_TO_LEFT)->isChecked())
     {
@@ -401,13 +406,13 @@ void RackView::refreshScene()
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
             addModule("x7");
         for (unsigned g=show_g8s; g>=1; g--)
-            addModule("g8", -1, g);
+            addModule("g8", -1, g + g8_offset);
         addModule(masterModuleName());
     }
     else {
         addModule(masterModuleName());
         for (unsigned g=1; g<=show_g8s; g++)
-            addModule("g8", -1, g);
+            addModule("g8", -1, g + g8_offset);
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
             addModule("x7");
         addModule("bling");
@@ -535,6 +540,8 @@ void RackView::updateRegisterHilites()
         unsigned g8 = 0;
         if (module->data(DATA_INDEX_G8_NUMBER).isValid())
             g8 = module->data(DATA_INDEX_G8_NUMBER).toInt();
+        else if (module->getName() == "master18")
+            g8 = 1; // Not sure if this is elegant enough :(
 
         module->clearHilites();
         for (auto ar: usedRegisters)

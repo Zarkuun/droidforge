@@ -808,7 +808,7 @@ unsigned Patch::countUniqueConstants()
     return constants.count();
 }
 
-unsigned Patch::neededG8s()
+unsigned Patch::highestGatePrefix()
 {
     unsigned highest_g8 = 0;
     for (auto it = beginEnabled(); it != this->end(); ++it)
@@ -817,7 +817,7 @@ unsigned Patch::neededG8s()
         if (atom->isRegister()) {
             AtomRegister *reg = (AtomRegister *)atom;
             if (reg->getRegisterType() == REGISTER_GATE) {
-                highest_g8 = 1;
+                highest_g8 = qMax(highest_g8, reg->getG8Number());
             }
         }
     }

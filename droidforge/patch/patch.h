@@ -86,7 +86,7 @@ public:
     unsigned memoryFootprint(QStringList &breakdown) const;
     unsigned countUniqueCables();
     unsigned countUniqueConstants();
-    unsigned neededG8s();
+    unsigned highestGatePrefix();
     bool needsX7();
 
     // Modifications
