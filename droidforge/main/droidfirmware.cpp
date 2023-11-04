@@ -52,9 +52,10 @@ QString DroidFirmware::version() const
 {
     return json["firmware_version"].toString();
 }
-unsigned DroidFirmware::availableMemory() const
+unsigned DroidFirmware::availableMemory(unsigned master) const
 {
-    return json["available_memory"].toInt();
+    QString key = "master" + QString::number(master);
+    return json["available_memory"].toObject()[key].toInt();
 }
 bool DroidFirmware::circuitExists(QString circuit) const
 {

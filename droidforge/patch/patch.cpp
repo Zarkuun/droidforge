@@ -731,7 +731,7 @@ void Patch::updateProblems()
 
     // Check memory consumption of circuits, also their count
     unsigned usedMemory = 0;
-    unsigned availableMemory = the_firmware->availableMemory();
+    unsigned availableMemory = the_firmware->availableMemory(typeOfMaster());
     unsigned sectionIndex = 0;
     QMap<QString, unsigned> circuitCounts;
 
