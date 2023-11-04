@@ -394,7 +394,6 @@ void RackView::refreshScene()
     if (patch->typeOfMaster() != 16)
         g8_offset = 1;
     unsigned show_g8s = qMax(settings.value("show_g8s", 0).toInt(), used_g8s - g8_offset);
-    shout << "Used:" << used_g8s << "show" << show_g8s;
 
 
     if (ACTION(ACTION_RIGHT_TO_LEFT)->isChecked())

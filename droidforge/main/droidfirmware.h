@@ -16,7 +16,7 @@ class DroidFirmware
 public:
     DroidFirmware();
     QString version() const;
-    unsigned availableMemory() const;
+    unsigned availableMemory(unsigned master) const;
     bool circuitExists(QString circuit) const;
     unsigned circuitManualPage(QString circuit) const;
     unsigned circuitMemoryFootprint(QString circuit) const;

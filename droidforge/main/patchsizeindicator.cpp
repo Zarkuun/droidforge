@@ -58,7 +58,7 @@ void PatchSizeIndicator::paintEvent(QPaintEvent *)
 void PatchSizeIndicator::updateStatus()
 {
     QStringList breakdown;
-    memoryAvailable = the_firmware->availableMemory();
+    memoryAvailable = the_firmware->availableMemory(patch->typeOfMaster());
     memoryNeeded = patch->memoryFootprint(breakdown);
     QString tooltipRAM = tr("Your patch needs %1 bytes of RAM.\n").arg(memoryNeeded);
     for (auto& hint: breakdown)

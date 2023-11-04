@@ -673,7 +673,7 @@ void Patch::updateProblems()
 
     // Check memory consumption of circuits
     unsigned usedMemory = 0;
-    unsigned availableMemory = the_firmware->availableMemory();
+    unsigned availableMemory = the_firmware->availableMemory(typeOfMaster());
     unsigned sectionIndex = 0;
     for (auto section: sections) {
         unsigned circuitNr = 0;
