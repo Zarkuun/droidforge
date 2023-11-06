@@ -782,6 +782,15 @@ bool Patch::registerAvailable(AtomRegister ar) const
     register_type_t regType = ar.getRegisterType();
     unsigned max;
 
+    if (typeOfMaster() == 18) {
+        // Special handling for the fact that R5 ... R16 do
+        // not exist on MASTER18
+        if (regType == REGISTER_RGB_LED && ar.getNumber() >= 5 && ar.getNumber() <= 16)
+            return false;
+        else if (regType == REGISTER_EXTRA && ar.getNumber() == 1)
+            return false;
+    }
+
     if (ar.isControl()) {
         unsigned c = ar.getController();
         if (c > controllers.count())
