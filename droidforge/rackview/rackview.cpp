@@ -537,20 +537,21 @@ void RackView::updateRegisterHilites()
         if (module->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
             controller = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
         unsigned g8 = 0;
+        unsigned g8_offset = module->getName() == "master18" ? 1 : 0;
         if (module->data(DATA_INDEX_G8_NUMBER).isValid())
             g8 = module->data(DATA_INDEX_G8_NUMBER).toInt();
-        else if (module->getName() == "master18")
-            g8 = 1; // Not sure if this is elegant enough :(
 
         module->clearHilites();
         for (auto ar: usedRegisters)
         {
-            if (ar.getController() == controller && ar.getG8Number() == g8)
+            int g8num = g8 + (ar.getRegisterType() == REGISTER_GATE ? g8_offset : 0);
+            if (ar.getController() == controller && ar.getG8Number() == g8num)
                 module->hiliteRegisters(1, ar.getRegisterType(), ar.getNumber());
         }
         for (auto ar: currentRegisters)
         {
-            if (ar.getController() == controller && ar.getG8Number() == g8)
+            int g8num = g8 + (ar.getRegisterType() == REGISTER_GATE ? g8_offset : 0);
+            if (ar.getController() == controller && ar.getG8Number() == g8num)
                 module->hiliteRegisters(2, ar.getRegisterType(), ar.getNumber());
         }
         module->update();
