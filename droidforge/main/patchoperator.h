@@ -122,8 +122,7 @@ private:
     void integratePatch(const QString &aFilePath);
     bool isDroidVolume(const QString &rootPath) const;
     void updateSDAndX7State();
-    void updateSDAndX7StateSansPolling();
-    QString sdCardDir() const;
+    QString sdCardDir();
     Patch *editSource(const QString &title, QString oldSource);
     void showSource(const QString &title, QString source);
     bool saveAndCheck(QString path);
@@ -143,7 +142,6 @@ private:
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);
 #endif
-
 
 signals:
     void patchModified();

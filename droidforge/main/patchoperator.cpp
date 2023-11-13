@@ -176,12 +176,13 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
 
     if (!pollSD()) {
         QTimer *sdTimerSansPolling = new QTimer(this);
-        connect(sdTimerSansPolling, &QTimer::timeout, this, &PatchOperator::updateSDAndX7StateSansPolling);
+        connect(sdTimerSansPolling, &QTimer::timeout, this, &PatchOperator::updateSDAndX7State);
         sdTimerSansPolling->start(SD_CHECK_INTERVAL_SANS_POLLING);
     }
     else {
         // reset SDCard path in settings. In case of path change.
         pollingSettings.setValue(SD_PATH_SETTINGS_KEY_NAME, "");
+
         QTimer *sdTimer = new QTimer(this);
         connect(sdTimer, &QTimer::timeout, this, &PatchOperator::updateSDAndX7State);
         sdTimer->start(SD_CHECK_INTERVAL);
@@ -391,7 +392,7 @@ void PatchOperator::saveToSD()
 {
     if (patch->isModified())
         save();
-    QString dirPath = pollSD()? sdCardDir() : sdCardDirSansPolling();
+    QString dirPath = sdCardDir();
     if (dirPath == "") {
         QMessageBox::critical(
                     mainWindow,
@@ -548,8 +549,6 @@ QString PatchOperator::sdCardDirSansPolling()
         if (isDroidVolume(path)) {
             return path;
         }
-        // path not valid atm, return ""
-        return "";
     }
     else {
         // if no path is set in settings, look for it on all attached drives
@@ -564,17 +563,22 @@ QString PatchOperator::sdCardDirSansPolling()
             }
             if (storage.isValid() && storage.isReady() && !storage.isReadOnly()) {
                 if (isDroidVolume(storage.rootPath())) {
-                    // found SDCard, safe to settings and return
+                    // found SDCard, safe to settings and return it
                     pollingSettings.setValue(SD_PATH_SETTINGS_KEY_NAME, storage.rootPath());
                     return storage.rootPath();
                 }
             }
         }
-        return "";
     }
+    // path not valid atm, return ""
+    return "";
 }
-QString PatchOperator::sdCardDir() const
+QString PatchOperator::sdCardDir()
 {
+    if (!pollSD()) {
+        return sdCardDirSansPolling();
+    }
+
     foreach (const QStorageInfo &storage, QStorageInfo::mountedVolumes())
     {
          // Make sure that we avoid access to network and cloud filesystems and similar
@@ -587,7 +591,6 @@ QString PatchOperator::sdCardDir() const
             storage.fileSystemType() != "FAT16" &&
             storage.fileSystemType() != "FAT" )
                     continue;
-
 
         // storage.fileSystemType():
         //   Returns the type name of the filesystem.
@@ -693,33 +696,6 @@ bool PatchOperator::isDroidVolume(const QString &rootPath) const
     QDir dir(rootPath);
     return dir.exists("DROIDCAL.BIN") || dir.exists("DROIDSTA.BIN");
 }
-void PatchOperator::updateSDAndX7StateSansPolling()
-{
-    bool oldSDState = sdCardPresent;
-    bool oldStatusState = statusDumpPresent;
-    sdCardPresent = sdCardDirSansPolling() != "";
-
-    if (sdCardPresent) {
-        QFileInfo statusFile = QFileInfo(sdCardDirSansPolling(), QString(STATUS_DUMP_FILENAME).arg(1));
-        statusDumpPresent = statusFile.isFile() && statusFile.exists();
-    }
-    else
-    {
-        statusDumpPresent = false;
-    }
-    if (oldSDState != sdCardPresent || oldStatusState != statusDumpPresent) {
-        if (oldStatusState != statusDumpPresent) {
-            updateStatusDumpsMenu(statusDumpPresent);
-        }
-        emit droidStateChanged();
-    }
-
-    bool oldX7State = x7Present;
-    x7Present = midiHost.x7Connected();
-    if (oldX7State != x7Present) {
-        emit droidStateChanged();
-    }
-}
 bool PatchOperator::pollSD() const {
     return pollingSettings.value(POLL_SD_SETTINGS_KEY_NAME, SETTING_POLL_DEFAULT).toBool();
 }
@@ -731,14 +707,10 @@ QString PatchOperator::savedSDCardDir() const {
 }
 void PatchOperator::updateSDAndX7State()
 {
-    QSettings settings;
-    bool pollX7 = settings.value("activation/poll_for_x7", SETTING_POLL_DEFAULT).toBool();
-    bool pollSD = settings.value("activation/poll_for_sd", SETTING_POLL_DEFAULT).toBool();
-
     bool oldSDState = sdCardPresent;
     bool oldStatusState = statusDumpPresent;
 
-    if (pollSD)
+    if (pollSD())
         sdCardPresent = sdCardDir() != "";
     else
         sdCardPresent = true;
@@ -758,7 +730,7 @@ void PatchOperator::updateSDAndX7State()
     }
 
     bool oldX7State = x7Present;
-    if (pollX7)
+    if (pollX7())
         x7Present = midiHost.x7Connected();
     else
         x7Present = true;

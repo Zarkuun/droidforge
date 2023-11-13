@@ -58,6 +58,13 @@ Thumbs.db
 *.opensdf
 *.vcxproj
 *vcxproj.*
+/.vs
+/.vscode
+.editorconfig
+
+# CMake presets
+CMakePresets.json
+CMakeUserPresets.json
 
 # MinGW generated files
 *.Debug
