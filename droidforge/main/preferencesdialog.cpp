@@ -35,8 +35,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     // Polling for activation
     box = new QGroupBox(tr("Activation / Loading of patches"));
     layout = new QVBoxLayout(box);
-    checkboxPollX7 = new QCheckBox(tr("Poll regularily for X7 connection"));
-    checkboxPollSD = new QCheckBox(tr("Poll regularily for DROID SD card"));
+    checkboxPollX7 = new QCheckBox(tr("Poll regularly for X7 connection"));
+    checkboxPollSD = new QCheckBox(tr("Poll regularly for DROID SD card"));
     layout->addWidget(checkboxPollX7);
     layout->addWidget(checkboxPollSD);
     mainLayout->addWidget(box);
