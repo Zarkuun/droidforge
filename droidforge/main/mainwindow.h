@@ -16,6 +16,7 @@
 #include "findpanel.h"
 #include "modulebuilder.h"
 #include "updatehub.h"
+#include "patchgenerator.h"
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -110,6 +111,7 @@ private:
     void createMenus();
     void createFileMenu();
     void createRackMenu();
+    void createGeneratorsMenu(QMenu *menu);
     void createEditMenu();
     void createSectionMenu();
     void createViewMenu();
@@ -143,6 +145,7 @@ private slots:
     void abortAllActions();
     void nextWindow();
     void previousWindow();
+    void openPatchGenerator(PatchGenerator *gen);
 
 signals:
     void allActionsAborted();
