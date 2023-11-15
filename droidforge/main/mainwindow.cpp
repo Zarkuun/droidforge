@@ -16,6 +16,8 @@
 #include "usermanual.h"
 #include "preferencesdialog.h"
 #include "windowlist.h"
+#include "patchgeneratorbase.h"
+#include "patchgenerator.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -273,6 +275,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_OPEN, fileMenu);
     recentFilesMenu = fileMenu->addMenu(tr("Open &recent patch"));
     patchOperator.createRecentFileActions(recentFilesMenu);
+    createGeneratorsMenu(fileMenu->addMenu(tr("Patch generators")));
 
     fileMenu->addSeparator();
 
@@ -305,6 +308,7 @@ void MainWindow::createFileMenu()
     fileMenu->addMenu(patchOperator.statusDumpsMenu());
     ADD_ACTION(ACTION_QUIT, fileMenu);
 }
+
 void MainWindow::createRackMenu()
 {
     QMenu *menu = menuBar()->addMenu(tr("&Rack"));
@@ -330,7 +334,16 @@ void MainWindow::createRackMenu()
     ADD_ACTION(ACTION_RACK_ZOOM_OUT, menu);
 
     menu->addSeparator();
-
+}
+void MainWindow::createGeneratorsMenu(QMenu *menu)
+{
+    for (auto &gen: *the_patch_generator_base->generators())
+    {
+        QAction *action = new QAction(gen->title(), this);
+        shout << "NEUE ACTIN:" << gen->title();
+        connect(action, &QAction::triggered, this, [this, gen]() { this->openPatchGenerator(gen); });
+        menu->addAction(action);
+    }
 }
 void MainWindow::createEditMenu()
 {
@@ -592,6 +605,11 @@ void MainWindow::nextWindow()
 void MainWindow::previousWindow()
 {
     the_windowlist->previousWindow(this)->bringToFront();
+}
+void MainWindow::openPatchGenerator(PatchGenerator *gen)
+{
+    shout << "Mach " << gen->title();
+
 }
 void MainWindow::updateStatusbarMessage()
 {

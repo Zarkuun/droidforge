@@ -20,6 +20,7 @@
 #define MAX_DUMP_FILE_NUMBER                 99 // from Droid:tuning.h
 #define SHOP_PRODUCTS_URL                    "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"
+#define PATCH_GENERATORS_SUBDIR              "Generators"
 #define SECTION_DEFAULT_NAME                 TR("Untitled section")
 #define CIRCUIT_ICON_PATH                    ":images/circuits/"
 #define ICON_PATH_TEMPLATE                   ":images/icons/%1/%2.png"
@@ -32,6 +33,7 @@
 #define MAX_DROID_INI                        64000 // from x7.h
 #define MAX_PATCH_LINE_LENGTH                63 // from master:tuning.h
 #define MAX_NUM_G8S                          4
+#define GENERATOR_START_TIMEOUT_MS           1000
 
 #define MAX_LENGTH_SHORTHAND                 12 // for register labels
 #define MAX_RECENT_FILES                     10

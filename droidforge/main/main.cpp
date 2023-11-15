@@ -9,6 +9,8 @@
 #include "usermanual.h"
 #include "iconbase.h"
 #include "windowlist.h"
+#include "patchgeneratorbase.h"
+#include "tuning.h"
 
 #include <QApplication>
 #include <QDir>
@@ -58,6 +60,7 @@ int main(int argc, char *argv[])
     IconBase iconBase;
     CableColorizer cableColorizer;
     ColorScheme colorscheme;
+
     if (colorscheme.isDevelopment())
         colorscheme.dumpHeaderFile();
 
@@ -68,6 +71,11 @@ int main(int argc, char *argv[])
     }
     dir.cd(PATCH_DIRECTORY_NAME);
     QDir::setCurrent(dir.absolutePath());
+
+    if (!dir.cd(PATCH_GENERATORS_SUBDIR))
+        dir.mkdir(PATCH_GENERATORS_SUBDIR);
+    dir.cd(PATCH_GENERATORS_SUBDIR);
+    PatchGeneratorBase pgBase(dir);
 
     QString initialFilename;
     QSettings settings;
