@@ -16,7 +16,7 @@
 
 // http://www.mardy.it/blog/2019/10/implementing-open-with-on-macos-with-qt.html
 
-MainWindow *hirn_mainwindow = 0;
+MainWindow *the_mainwindow = 0;
 
 class MyApplication : public QApplication
 {
@@ -28,12 +28,8 @@ public:
     {
         if (event->type() == QEvent::FileOpen) {
             QFileOpenEvent *openEvent = static_cast<QFileOpenEvent *>(event);
-            if (hirn_mainwindow)
-                hirn_mainwindow->theOperator()->openFileFromExternal(openEvent->file());
-            // QMessageBox::about( 0,
-            //             tr("Man will eine Datei Laden"),
-            //             openEvent->file());
-            // qDebug() << "Open file" << openEvent->file();
+            if (the_mainwindow)
+                the_mainwindow->theOperator()->openFileFromExternal(openEvent->file());
         }
 
         return QApplication::event(event);
@@ -111,7 +107,7 @@ int main(int argc, char *argv[])
 
 
     MainWindow *mainWindow = new MainWindow(initialFilename);
-    hirn_mainwindow = mainWindow;
+    the_mainwindow = mainWindow;
     mainWindow->show();
 
 #ifdef QT_DEBUG
