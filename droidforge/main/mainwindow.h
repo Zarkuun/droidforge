@@ -62,7 +62,7 @@ class MainWindow : public QMainWindow, PatchView
     QLabel *statusbarIcon;
     QWidget *centralwidget;
     QWidget *verticalLayoutWidget;
-    QVBoxLayout *verticalLayout;
+    Dialog *verticalLayout;
     QMenuBar *menubar;
     QMenu *fileMenu;
     QMenu *recentFilesMenu;
@@ -145,7 +145,6 @@ private slots:
     void abortAllActions();
     void nextWindow();
     void previousWindow();
-    void openPatchGenerator(PatchGenerator *gen);
 
 signals:
     void allActionsAborted();

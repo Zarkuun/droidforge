@@ -3,6 +3,7 @@
 
 #include "patcheditengine.h"
 #include "editoractions.h"
+#include "patchgenerator.h"
 #include "patchparser.h"
 #include "os.h"
 
@@ -104,6 +105,7 @@ public slots:
     void save();
     void clearRecentFiles();
     void search(QString text, int direction);
+    void openPatchGenerator(PatchGenerator *gen);
 
 private:
     void clearWithControllersFromOtherRack(const Patch *other);

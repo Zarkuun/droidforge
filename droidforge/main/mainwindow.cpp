@@ -340,8 +340,8 @@ void MainWindow::createGeneratorsMenu(QMenu *menu)
     for (auto &gen: *the_patch_generator_base->generators())
     {
         QAction *action = new QAction(gen->title(), this);
-        shout << "NEUE ACTIN:" << gen->title();
-        connect(action, &QAction::triggered, this, [this, gen]() { this->openPatchGenerator(gen); });
+        action->setShortcut(QKeySequence(tr("F2")));
+        connect(action, &QAction::triggered, this, [this, gen]() { patchOperator.openPatchGenerator(gen); });
         menu->addAction(action);
     }
 }
@@ -605,11 +605,6 @@ void MainWindow::nextWindow()
 void MainWindow::previousWindow()
 {
     the_windowlist->previousWindow(this)->bringToFront();
-}
-void MainWindow::openPatchGenerator(PatchGenerator *gen)
-{
-    shout << "Mach " << gen->title();
-
 }
 void MainWindow::updateStatusbarMessage()
 {
