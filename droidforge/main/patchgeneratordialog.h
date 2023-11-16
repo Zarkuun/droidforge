@@ -1,0 +1,36 @@
+#ifndef PATCHGENERATORDIALOG_H
+#define PATCHGENERATORDIALOG_H
+
+#include "patch.h"
+#include "patchgenerator.h"
+#include "dialog.h"
+
+#include <QMap>
+
+typedef QMap<QString, QVariant> pgconfig_t;
+
+class PatchGeneratorDialog : public Dialog
+{
+    Q_OBJECT
+
+    PatchGenerator *_generator;
+    QMap <QString, QLineEdit *> _numberFields;
+    QMap <QString, QComboBox *> _enumFields;
+    QMap <QString, QComboBox *> _booleanFields;
+
+public:
+    PatchGeneratorDialog(PatchGenerator *generator, QWidget *parent = nullptr);
+    static Patch *generatePatch(PatchGenerator *generator);
+
+private:
+    void renderOptions(QLayout *layout);
+    void setOption(QString name, QVariant value);
+    void collectConfig(pgconfig_t &config);
+    void defaultConfig(pgconfig_t &config);
+    void setConfig(pgconfig_t &config);
+
+private slots:
+    void resetToDefaults();
+};
+
+#endif // PATCHGENERATORDIALOG_H

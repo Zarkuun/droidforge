@@ -12,6 +12,7 @@
 #include "windowlist.h"
 #include "namechoosedialog.h"
 #include "tuning.h"
+#include "patchgeneratordialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -912,6 +913,34 @@ void PatchOperator::search(QString text, int direction)
     pos = patch->searchHitPosition(text, &count);
     if (found) emit patchModified(); // circuit might have been unfolded. We need a repaint.
     emit searchStatsChanged(pos, count);
+}
+
+void PatchOperator::openPatchGenerator(PatchGenerator *gen)
+{
+    if (!checkModified())
+        return;
+
+    Patch *newPatch = PatchGeneratorDialog::generatePatch(gen);
+    if (!newPatch)
+        return;
+
+    shout << "Got new patch";
+
+    // Move contents of new patch into "our" patch without
+    // invalidating its pointer
+    patch->startFromScratch();
+    patch->setFilePath("");
+    newPatch->cloneInto(patch);
+
+    // Brauchen wir das hier wirklich??
+    // Beware: a patch *must* have at least one section. If we load
+    // an empty patch, we crash if there is no section
+    // if (patch->numSections() == 0)
+    //     patch->addSection(new PatchSection());
+
+    patch->commit(tr("generating patch"));
+    setLastFilePath("");
+    emit patchModified();
 }
 void PatchOperator::integrate()
 {

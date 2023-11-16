@@ -49,6 +49,8 @@ QtApplication {
         "main/patchgenerator.h",
         "main/patchgeneratorbase.cpp",
         "main/patchgeneratorbase.h",
+        "main/patchgeneratordialog.cpp",
+        "main/patchgeneratordialog.h",
         "main/patchsizeindicator.cpp",
         "main/patchsizeindicator.h",
         "main/preferencesdialog.cpp",

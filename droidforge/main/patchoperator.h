@@ -7,6 +7,7 @@
 
 #include "patcheditengine.h"
 #include "editoractions.h"
+#include "patchgenerator.h"
 #include "patchparser.h"
 
 #ifdef Q_OS_MAC
@@ -111,6 +112,7 @@ public slots:
     void save();
     void clearRecentFiles();
     void search(QString text, int direction);
+    void openPatchGenerator(PatchGenerator *gen);
 
 private:
     void clearWithControllersFromOtherRack(const Patch *other);
