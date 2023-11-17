@@ -2,6 +2,8 @@
 #include "globals.h"
 #include "patchgenerator.h"
 
+#include <QMessageBox>
+
 PatchGeneratorBase *the_patch_generator_base = 0;
 
 PatchGeneratorBase::PatchGeneratorBase(QDir directory)
@@ -12,15 +14,22 @@ PatchGeneratorBase::PatchGeneratorBase(QDir directory)
 }
 void PatchGeneratorBase::loadGenerators()
 {
-    for (auto &file: _directory.entryList()) {
-        if (file.startsWith('.')) {
+    for (auto &fileName: _directory.entryList()) {
+        if (fileName.startsWith('.')) {
             continue;
         }
-        PatchGenerator *gen = new PatchGenerator(_directory.absoluteFilePath(file), file);
+        QString absPath = _directory.absoluteFilePath(fileName);
+        PatchGenerator *gen = new PatchGenerator(absPath, fileName);
         if (gen->isValid())
             _generators.append(gen);
         else {
-            shout << "Patch generator" << file << "failed:" << gen->error();
+            QString title = TR("Failed to load patch generator '") + absPath + "'";
+
+            QMessageBox::warning(
+                        0,
+                        title,
+                        title + "\n\n" + gen->error(),
+                        QMessageBox::Ok);
             delete gen;
         }
     }

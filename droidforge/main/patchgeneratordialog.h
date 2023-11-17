@@ -33,6 +33,7 @@ private:
 
 private slots:
     void resetToDefaults();
+    void randomize();
 };
 
 #endif // PATCHGENERATORDIALOG_H
