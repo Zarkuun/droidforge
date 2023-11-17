@@ -28,6 +28,8 @@ private:
     void collectConfig(pgconfig_t &config);
     void defaultConfig(pgconfig_t &config);
     void setConfig(pgconfig_t &config);
+    void saveConfigToSettings(pgconfig_t &config);
+    void loadConfigFromSettings(pgconfig_t &config);
 
 private slots:
     void resetToDefaults();
