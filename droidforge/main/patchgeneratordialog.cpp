@@ -4,6 +4,7 @@
 #include "patch.h"
 #include "patchparser.h"
 
+#include <QRandomGenerator>
 #include <QSettings>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -30,29 +31,12 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
     QPushButton *defaultsButton = new QPushButton(tr("Reset to defaults"));
     connect(defaultsButton, &QPushButton::clicked, this, &PatchGeneratorDialog::resetToDefaults);
     buttonBox->addButton(defaultsButton, QDialogButtonBox::ActionRole);
+    QPushButton *randomizeButton = new QPushButton(tr("Randomize"));
+    connect(randomizeButton, &QPushButton::clicked, this, &PatchGeneratorDialog::randomize);
+    buttonBox->addButton(randomizeButton, QDialogButtonBox::ActionRole);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     mainLayout->addWidget(buttonBox);
-
-
-    // TODO: Hier muss man jetzt die ganze Optionen anzeigen.
-    // Jede Sektion in einer GroupBox. Und wir müssen die Funktionalität
-    // machen, dass man Werte von Defaults laden kann. Außerdem braucht
-    // jeder PG noch in den Settings die letzen Einstellungen. Die
-    // muss man auch Laden können. Irgendwie als map oder so. Mit QT-Datentyp.
-
-    // Wenn man dann OK drückt, rufen wir den Generator auf mit diesen
-    // OPtionen. Wenn er einen Fehler meldet, zeigen wir diesen an.
-    // Wenn nicht, erzeugen wir ein Patch und geben das zurück.
-
-    // Im PatchOperator muss man dann das aktuell geladene Patch durch
-    // das neu generiert ersetzen. Falls es modified ist, müssen wir
-    // fragen, etc.
-
-    // Dann müssen wir auch noch den Workflow schnell machen. Also
-    // dass man schnell eine neue Version machen kann.
-
-    // Frage ist, ob der neue Patch als "modified" erscheint.
 }
 
 void PatchGeneratorDialog::renderOptions(QLayout *layout)
@@ -117,6 +101,36 @@ void PatchGeneratorDialog::resetToDefaults()
     pgconfig_t options;
     defaultConfig(options);
     setConfig(options);
+}
+void PatchGeneratorDialog::randomize()
+{
+    const QJsonDocument &info = _generator->parameterInfo();
+    auto sections = info.object()["sections"].toArray();
+    for (auto s: sections)
+    {
+        auto section = s.toObject();
+        auto options = section["options"].toArray();
+        for (auto o: options) {
+            quint32 rval = QRandomGenerator::global()->generate();
+            auto option = o.toObject();
+            QString name = option["name"].toString();
+            if (option.contains("enum")) {
+                auto e = option["enum"].toArray();
+                int index = rval % e.count();
+                setOption(name, e[index].toArray()[0].toString());
+            }
+            else if (option.contains("number")) {
+                int minimum = option["number"].toArray()[0].toInt();
+                int maximum = option["number"].toArray()[1].toInt();
+                int choices = maximum - minimum + 1;
+                int number = minimum + rval % choices;
+                setOption(name, number);
+            }
+            else  { // boolean
+                setOption(name, rval % 2 == 0);
+            }
+        }
+    }
 }
 void PatchGeneratorDialog::collectConfig(pgconfig_t &config)
 {
