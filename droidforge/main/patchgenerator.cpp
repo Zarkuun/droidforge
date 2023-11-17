@@ -74,6 +74,12 @@ QString PatchGenerator::run(const QStringList &args, bool &ok)
     proc.closeWriteChannel();
     proc.waitForFinished(GENERATOR_START_TIMEOUT_MS);
     QString output = proc.readAll();
+    QString error = proc.readAllStandardError();
     ok = proc.exitStatus() == QProcess::NormalExit && proc.exitCode() == 0;
+    if (!ok) {
+        output += error;
+        _error = output;
+    }
+
     return output;
 }

@@ -544,13 +544,13 @@ void RackView::updateRegisterHilites()
         module->clearHilites();
         for (auto ar: usedRegisters)
         {
-            int g8num = g8 + (ar.getRegisterType() == REGISTER_GATE ? g8_offset : 0);
+            unsigned g8num = g8 + (ar.getRegisterType() == REGISTER_GATE ? g8_offset : 0);
             if (ar.getController() == controller && ar.getG8Number() == g8num)
                 module->hiliteRegisters(1, ar.getRegisterType(), ar.getNumber());
         }
         for (auto ar: currentRegisters)
         {
-            int g8num = g8 + (ar.getRegisterType() == REGISTER_GATE ? g8_offset : 0);
+            unsigned g8num = g8 + (ar.getRegisterType() == REGISTER_GATE ? g8_offset : 0);
             if (ar.getController() == controller && ar.getG8Number() == g8num)
                 module->hiliteRegisters(2, ar.getRegisterType(), ar.getNumber());
         }

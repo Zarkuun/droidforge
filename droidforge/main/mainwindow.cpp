@@ -275,7 +275,8 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_OPEN, fileMenu);
     recentFilesMenu = fileMenu->addMenu(tr("Open &recent patch"));
     patchOperator.createRecentFileActions(recentFilesMenu);
-    createGeneratorsMenu(fileMenu->addMenu(tr("Patch generators")));
+    generatorsMenu = fileMenu->addMenu(tr("Patch generators"));
+    populateGeneratorsMenu();
 
     fileMenu->addSeparator();
 
@@ -335,14 +336,31 @@ void MainWindow::createRackMenu()
 
     menu->addSeparator();
 }
-void MainWindow::createGeneratorsMenu(QMenu *menu)
+void MainWindow::populateGeneratorsMenu()
 {
+    int i = 0;
     for (auto &gen: *the_patch_generator_base->generators())
     {
         QAction *action = new QAction(gen->title(), this);
-        action->setShortcut(QKeySequence(tr("F2")));
-        connect(action, &QAction::triggered, this, [this, gen]() { patchOperator.openPatchGenerator(gen); });
-        menu->addAction(action);
+        connect(action, &QAction::triggered, this, [this, i, gen]() { patchOperator.openPatchGenerator(i, gen); });
+        generatorsMenu->addAction(action);
+        i++;
+    }
+
+    QSettings settings;
+    int lastPg = settings.value("last_patch_generator", 0).toInt();
+    updateGeneratorsShortcut(lastPg);
+}
+void MainWindow::updateGeneratorsShortcut(int index)
+{
+    QSettings settings;
+    settings.setValue("last_patch_generator", index);
+    QList<QAction *> actions = generatorsMenu->actions();
+    for (int i=0; i<actions.count(); i++) {
+        if (i == index)
+            actions[i]->setShortcut(QKeySequence(tr("Ctrl+Shift+G")));
+        else
+            actions[i]->setShortcut(QKeySequence());
     }
 }
 void MainWindow::createEditMenu()

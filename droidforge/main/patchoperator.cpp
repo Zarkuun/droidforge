@@ -857,16 +857,16 @@ void PatchOperator::search(QString text, int direction)
     emit searchStatsChanged(pos, count);
 }
 
-void PatchOperator::openPatchGenerator(PatchGenerator *gen)
+void PatchOperator::openPatchGenerator(int index, PatchGenerator *gen)
 {
     if (!checkModified())
         return;
 
+    mainWindow->updateGeneratorsShortcut(index);
+
     Patch *newPatch = PatchGeneratorDialog::generatePatch(gen);
     if (!newPatch)
         return;
-
-    shout << "Got new patch";
 
     // Move contents of new patch into "our" patch without
     // invalidating its pointer
