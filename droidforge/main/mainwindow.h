@@ -66,6 +66,7 @@ class MainWindow : public QMainWindow, PatchView
     QMenuBar *menubar;
     QMenu *fileMenu;
     QMenu *recentFilesMenu;
+    QMenu *generatorsMenu;
     QMenu *windowMenu;
     QString initialFilename;
     QString filePath; // of loaded patch
@@ -94,6 +95,7 @@ public:
     void hideFindPanel();
     void saveMeLikeAll();
     QAction *btfAction() { return &bringToFrontAction; };
+    void updateGeneratorsShortcut(int index);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -111,7 +113,7 @@ private:
     void createMenus();
     void createFileMenu();
     void createRackMenu();
-    void createGeneratorsMenu(QMenu *menu);
+    void populateGeneratorsMenu();
     void createEditMenu();
     void createSectionMenu();
     void createViewMenu();

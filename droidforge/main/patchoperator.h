@@ -112,7 +112,7 @@ public slots:
     void save();
     void clearRecentFiles();
     void search(QString text, int direction);
-    void openPatchGenerator(PatchGenerator *gen);
+    void openPatchGenerator(int index, PatchGenerator *gen);
 
 private:
     void clearWithControllersFromOtherRack(const Patch *other);

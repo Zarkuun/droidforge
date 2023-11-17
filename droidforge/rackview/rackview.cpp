@@ -553,7 +553,8 @@ void RackView::updateRegisterHilites()
             else
                 prefix = g8;
 
-            if (ar.getController() == controller && ar.getG8Number() == prefix)
+            unsigned g8num = g8 + (ar.getRegisterType() == REGISTER_GATE ? g8_offset : 0);
+            if (ar.getController() == controller && ar.getG8Number() == g8num)
                 module->hiliteRegisters(1, ar.getRegisterType(), ar.getNumber());
         }
         for (auto ar: currentRegisters)
@@ -563,7 +564,8 @@ void RackView::updateRegisterHilites()
             else
                 prefix = g8;
 
-            if (ar.getController() == controller && ar.getG8Number() == prefix)
+            unsigned g8num = g8 + (ar.getRegisterType() == REGISTER_GATE ? g8_offset : 0);
+            if (ar.getController() == controller && ar.getG8Number() == g8num)
                 module->hiliteRegisters(2, ar.getRegisterType(), ar.getNumber());
         }
         module->update();
