@@ -16,7 +16,7 @@ void PatchGeneratorBase::loadGenerators()
         if (file.startsWith('.')) {
             continue;
         }
-        PatchGenerator *gen = new PatchGenerator(_directory.absoluteFilePath(file));
+        PatchGenerator *gen = new PatchGenerator(_directory.absoluteFilePath(file), file);
         if (gen->isValid())
             _generators.append(gen);
         else {

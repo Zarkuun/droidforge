@@ -4,6 +4,7 @@
 #include "patch.h"
 #include "patchparser.h"
 
+#include <QSettings>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QFormLayout>
@@ -119,18 +120,20 @@ void PatchGeneratorDialog::resetToDefaults()
 }
 void PatchGeneratorDialog::collectConfig(pgconfig_t &config)
 {
-    for (auto name: _numberFields.keys()) {
+    for (auto it = _numberFields.constKeyValueBegin();  it != _numberFields.constKeyValueEnd(); ++it) {
+        QString name = it->first;
         QLineEdit *le = _numberFields[name];
-        int number = le->text().toInt();
-        config[name] = number;
+        config[name] = le->text().toInt();
     }
 
-    for (auto name: _enumFields.keys()) {
+    for (auto it = _enumFields.constKeyValueBegin();  it != _enumFields.constKeyValueEnd(); ++it) {
+        QString name = it->first;
         QComboBox *cb = _enumFields[name];
         config[name] = cb->currentData();
     }
 
-    for (auto name: _booleanFields.keys()) {
+    for (auto it = _booleanFields.constKeyValueBegin();  it != _booleanFields.constKeyValueEnd(); ++it) {
+        QString name = it->first;
         QComboBox *cb = _booleanFields[name];
         config[name] = cb->currentIndex() == 0 ? true : false;
     }
@@ -152,8 +155,35 @@ void PatchGeneratorDialog::defaultConfig(pgconfig_t &config)
 }
 void PatchGeneratorDialog::setConfig(pgconfig_t &config)
 {
-    for (auto key: config.keys())
+    for (auto it = config.constKeyValueBegin();  it != config.constKeyValueEnd(); ++it)
+    {
+        QString key = it->first;
         setOption(key, config[key]);
+    }
+}
+void PatchGeneratorDialog::saveConfigToSettings(pgconfig_t &config)
+{
+    QSettings settings;
+    QString path = "patch_generators/" + _generator->name();
+    for (auto it = config.constKeyValueBegin();  it != config.constKeyValueEnd(); ++it)
+    {
+        QString key = it->first;
+        QVariant value = it->second;
+        settings.setValue(path + "/" + key, value);
+    }
+}
+void PatchGeneratorDialog::loadConfigFromSettings(pgconfig_t &config)
+{
+    QSettings settings;
+    QString path = "patch_generators/" + _generator->name();
+    defaultConfig(config);
+    for (auto it = config.constKeyValueBegin();  it != config.constKeyValueEnd(); ++it)
+    {
+        QString key = it->first;
+        QString vpath = path + "/" + key;
+        if (settings.contains(vpath))
+            config[key] = settings.value(vpath);
+    }
 }
 void PatchGeneratorDialog::setOption(QString name, QVariant value)
 {
@@ -181,14 +211,18 @@ void PatchGeneratorDialog::setOption(QString name, QVariant value)
 Patch *PatchGeneratorDialog::generatePatch(PatchGenerator *generator)
 {
     PatchGeneratorDialog dialog(generator);
-    dialog.resetToDefaults();
+    pgconfig_t startConfig;
+    dialog.loadConfigFromSettings(startConfig);
+    dialog.setConfig(startConfig);
 
     while (true) {
         if (dialog.exec() == QDialog::Accepted) {
             pgconfig_t config;
             dialog.collectConfig(config);
             QStringList args;
-            for (auto key: config.keys()) {
+            for (auto it = config.constKeyValueBegin();  it != config.constKeyValueEnd(); ++it)
+            {
+                QString key = it->first;
                 QString svalue;
                 QVariant value = config[key];
                 if (!strcmp(value.typeName(), "bool"))
@@ -200,6 +234,7 @@ Patch *PatchGeneratorDialog::generatePatch(PatchGenerator *generator)
             bool ok;
             QString patchSource = generator->run(args, ok);
             if (ok) {
+                dialog.saveConfigToSettings(config);
                 try {
                     PatchParser parser;
                     Patch parsed;

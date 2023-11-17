@@ -6,9 +6,10 @@
 #include <QProcess>
 #include <QJsonObject>
 
-PatchGenerator::PatchGenerator(QString path)
+PatchGenerator::PatchGenerator(QString path, QString name)
     : _valid(false)
     , _path(path)
+    , _name(name)
 {
     QStringList lines;
     QFile inputFile(_path);
