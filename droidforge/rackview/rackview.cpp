@@ -614,8 +614,7 @@ void RackView::openMenuOnItem(QGraphicsItem *item)
     if (item->data(DATA_INDEX_REGISTER_NAME).isValid())
         areg = item->data(DATA_INDEX_REGISTER_NAME).toString();
 
-    unsigned g8Number = item->data(DATA_INDEX_G8_NUMBER).toInt(0);
-
+    unsigned g8Number = module->g8Number();
     popupModuleContextMenu(index, g8Number, moduleName, areg);
 }
 void RackView::hoverIn(QGraphicsItem *item)

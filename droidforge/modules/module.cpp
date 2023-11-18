@@ -47,8 +47,9 @@ void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int con
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
             QRectF rect = registerRect(type, j+1, rectAspect(type), 1).translated(pos().x(), 0);
             auto item = scene->addRect(rect, QPen(QColor(0, 0, 0, 0), 0));
+            QString regname = registerAtom(type,  j+1).toString();
             item->setData(DATA_INDEX_DRAGGER_PRIO, 2);
-            item->setData(DATA_INDEX_REGISTER_NAME, registerAtom(type,  j+1).toString());
+            item->setData(DATA_INDEX_REGISTER_NAME, regname);
             item->setData(DATA_INDEX_MODULE_INDEX, moduleIndex);
             item->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
             item->setData(DATA_INDEX_G8_NUMBER, g8Number);
@@ -141,9 +142,15 @@ void Module::paintRegisterLabels(QPainter *painter)
     while (it.hasNext()) {
         it.next();
         AtomRegister atom = it.key();
+
         if (atom.getController() != controller)
             continue;
-        if (atom.getG8Number() != g8)
+
+        // Special handling for the reason that the gate on a MASTER18 begin
+        // with G1.
+        if (atom.getG8Number() == 1 && g8Number() == 0 && !isController() && atom.getRegisterType() == REGISTER_GATE)
+        {}
+        else if (atom.getG8Number() != g8)
             continue;
         if (!haveRegister(atom))
             continue;
