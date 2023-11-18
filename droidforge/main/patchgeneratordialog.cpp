@@ -50,14 +50,13 @@ void PatchGeneratorDialog::renderOptions(QLayout *layout)
         auto boxLayout = new QVBoxLayout;
         box->setLayout(boxLayout);
         layout->addWidget(box);
-        // boxLayout->setContentsMargins(0, 0, 0, 0);
 
         auto options = section["options"].toArray();
         for (auto o: options) {
             auto option = o.toObject();
             QString optionTitle = option["title"].toString();
             QString optionName  = option["name"].toString();
-            QHBoxLayout *hori = new QHBoxLayout(box);
+            QHBoxLayout *hori = new QHBoxLayout();
             hori->setContentsMargins(0, 0, 0, 0);
             boxLayout->addLayout(hori);
             QLabel *label = new QLabel(optionTitle);
