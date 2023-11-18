@@ -387,7 +387,7 @@ QString Circuit::toString() const
     QString s;
     for (qsizetype i=0; i<comment.size(); i++)
         if (comment[i].isEmpty())
-             s += "\n";
+             s += "#\n";
          else
              s += "# " + comment[i] + "\n";
 
