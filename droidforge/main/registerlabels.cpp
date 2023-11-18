@@ -28,8 +28,8 @@ QString RegisterLabels::toString() const
     for (unsigned i=0; i<sizeof(globalRegtypes) / sizeof(regtitle_t); i++)
         s += toString(globalRegtypes[i].reg, 0, 0, globalRegtypes[i].title);
 
-    for (unsigned g=1; g <= MAX_NUM_G8S; g++)
-        s += toString(REGISTER_GATE, 0, g, "GATES ON G8 " + QString::number(g));
+    for (unsigned g=1; g <= MAX_NUM_G8S + 1; g++)
+        s += toString(REGISTER_GATE, 0, g, "GATES ON MODULE " + QString::number(g));
 
     // And now the registers on the controllers
     static regtitle_t controllerRegtypes[] =  {

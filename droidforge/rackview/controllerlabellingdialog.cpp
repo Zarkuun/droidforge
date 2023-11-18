@@ -120,7 +120,11 @@ void ControllerLabellingDialog::populateRegisters(Module *module, char regType, 
             currentRow ++;
         }
 
-        AtomRegister atom(regType, controllerNumber, g8Number, num);
+        int g8prefix = 0;
+        if (!module->isController() && regType == REGISTER_GATE && g8Number == 0)
+            g8prefix = 1;
+
+        AtomRegister atom(regType, controllerNumber, g8Number + g8prefix, num);
         QString shorthand;
         QString description;
         if (labels.contains(atom)) {
