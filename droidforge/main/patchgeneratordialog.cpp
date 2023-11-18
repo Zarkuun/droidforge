@@ -108,6 +108,8 @@ void PatchGeneratorDialog::randomize()
     for (auto s: sections)
     {
         auto section = s.toObject();
+        if (!section["randomize"].toBool(true))
+            continue; // Probably section about module configuration
         auto options = section["options"].toArray();
         for (auto o: options) {
             quint32 rval = QRandomGenerator::global()->generate();
