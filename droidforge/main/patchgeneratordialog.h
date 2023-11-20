@@ -23,7 +23,7 @@ public:
     static Patch *generatePatch(PatchGenerator *generator);
 
 private:
-    void renderOptions(QLayout *layout);
+    void renderOptions(QLayout *mainLayout);
     void setOption(QString name, QVariant value);
     void collectConfig(pgconfig_t &config);
     void defaultConfig(pgconfig_t &config);
