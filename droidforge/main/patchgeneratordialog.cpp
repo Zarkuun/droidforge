@@ -39,17 +39,20 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
     mainLayout->addWidget(buttonBox);
 }
 
-void PatchGeneratorDialog::renderOptions(QLayout *layout)
+void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
 {
+    QTabWidget *tabWidget = new QTabWidget(this);
+    mainLayout->addWidget(tabWidget);
+
     const QJsonDocument &info = _generator->parameterInfo();
     auto sections = info.object()["sections"].toArray();
     for (auto s: sections)
     {
         auto section = s.toObject();
-        auto box = new QGroupBox(section["title"].toString());
+        QWidget *box = new QWidget();
+        tabWidget->addTab(box, section["title"].toString());
         auto boxLayout = new QVBoxLayout;
         box->setLayout(boxLayout);
-        layout->addWidget(box);
 
         auto options = section["options"].toArray();
         for (auto o: options) {
@@ -93,6 +96,7 @@ void PatchGeneratorDialog::renderOptions(QLayout *layout)
 
             label->setText(label->text() + ":");
         }
+        boxLayout->addStretch();
     }
 }
 void PatchGeneratorDialog::resetToDefaults()
