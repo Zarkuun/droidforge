@@ -7,6 +7,7 @@
 #include <QRandomGenerator>
 #include <QSettings>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QFormLayout>
 #include <QDialogButtonBox>
@@ -22,21 +23,31 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
 {
     setWindowTitle(tr("Generate patch") + " - " + _generator->title());
 
+    setStyleSheet("QCheckBox { margin-right: 3px; }"
+                  "QLineEdit { margin-right: 5px; }");
+
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    QHBoxLayout *bottomBox = new QHBoxLayout();
     setLayout(mainLayout);
 
     renderOptions(mainLayout);
     // Buttons with OK/Cancel
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-    QPushButton *defaultsButton = new QPushButton(tr("Reset to defaults"));
-    connect(defaultsButton, &QPushButton::clicked, this, &PatchGeneratorDialog::resetToDefaults);
-    buttonBox->addButton(defaultsButton, QDialogButtonBox::ActionRole);
+
+    QPushButton *presetButton = new QPushButton(tr("Load preset:"));
+    connect(presetButton, &QPushButton::clicked, this, &PatchGeneratorDialog::loadPreset);
+    bottomBox->addWidget(presetButton);
+    _presetChoice = createPresetChoice();
+    bottomBox->addWidget(_presetChoice);
+
     QPushButton *randomizeButton = new QPushButton(tr("Randomize"));
     connect(randomizeButton, &QPushButton::clicked, this, &PatchGeneratorDialog::randomize);
     buttonBox->addButton(randomizeButton, QDialogButtonBox::ActionRole);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-    mainLayout->addWidget(buttonBox);
+
+    bottomBox->addWidget(buttonBox);
+    mainLayout->addLayout(bottomBox);
 }
 
 void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
@@ -66,6 +77,7 @@ void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
             hori->addWidget(label);
             hori->addStretch(1);
 
+            // Enumerations
             if (option.contains("enum")) {
                 QComboBox *cb = new QComboBox(box);
                 _enumFields[optionName] = cb;
@@ -76,6 +88,8 @@ void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
                     cb->addItem(pair[1].toString(), pair[0].toString());
                 }
             }
+
+            // Numbers
             else if (option.contains("number")) {
                 QLineEdit *le = new QLineEdit(box);
                 _numberFields[optionName] = le;
@@ -86,24 +100,38 @@ void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
                 hori->addWidget(le);
                 label->setText(label->text() + " (" + QString::number(minimum) + " - " + QString::number(maximum) + ")");
             }
+
+            // Boolean (True/False)
             else { // checkbox
-                QComboBox *cb = new QComboBox(box);
+                QCheckBox *cb = new QCheckBox(box);
                 _booleanFields[optionName] = cb;
                 hori->addWidget(cb);
-                cb->addItem(tr("yes"));
-                cb->addItem(tr("no"));
+
+                // QComboBox *cb = new QComboBox(box);
+                // _booleanFields[optionName] = cb;
+                // hori->addWidget(cb);
+                // cb->addItem(tr("yes"));
+                // cb->addItem(tr("no"));
             }
 
             label->setText(label->text() + ":");
+
+            // This looks like shit
+            // if (option.contains("help")) {
+            //     QString helpText = option["help"].toString();
+            //     QLabel *label = new QLabel(helpText);
+            //     boxLayout->addWidget(label);
+            // }
         }
         boxLayout->addStretch();
     }
 }
-void PatchGeneratorDialog::resetToDefaults()
+void PatchGeneratorDialog::loadPreset()
 {
-    pgconfig_t options;
-    defaultConfig(options);
-    setConfig(options);
+    QString preset = _presetChoice->currentData().toString();
+    pgconfig_t config;
+    configForPreset(preset, config);
+    setConfig(config);
 }
 void PatchGeneratorDialog::randomize()
 {
@@ -153,22 +181,24 @@ void PatchGeneratorDialog::collectConfig(pgconfig_t &config)
 
     for (auto it = _booleanFields.constKeyValueBegin();  it != _booleanFields.constKeyValueEnd(); ++it) {
         QString name = it->first;
-        QComboBox *cb = _booleanFields[name];
-        config[name] = cb->currentIndex() == 0 ? true : false;
+        auto *cb = _booleanFields[name];
+        // config[name] = cb->currentIndex() == 0 ? true : false;
+        config[name] = cb->isChecked();
     }
 }
-void PatchGeneratorDialog::defaultConfig(pgconfig_t &config)
+void PatchGeneratorDialog::configForPreset(QString presetName, pgconfig_t &config)
 {
     const QJsonDocument &info = _generator->parameterInfo();
-    auto sections = info.object()["sections"].toArray();
-    for (auto s: sections)
-    {
-        auto section = s.toObject();
-        auto options = section["options"].toArray();
-        for (auto o: options) {
-            auto option = o.toObject();
-            auto def = option["default"];
-            config[option["name"].toString()] = def.toVariant();
+    auto presets = info["presets"].toArray();
+    for (auto p: presets) {
+        auto preset = p.toObject();
+        QString name = preset["name"].toString();
+        if (name != presetName)
+            continue;
+        auto parameters = preset["parameters"].toObject();
+        for (auto &key: parameters.keys()) {
+            auto value = parameters[key].toVariant();
+            config[key] = value;
         }
     }
 }
@@ -195,7 +225,7 @@ void PatchGeneratorDialog::loadConfigFromSettings(pgconfig_t &config)
 {
     QSettings settings;
     QString path = "patch_generators/" + _generator->name();
-    defaultConfig(config);
+    configForPreset("default", config);
     for (auto it = config.constKeyValueBegin();  it != config.constKeyValueEnd(); ++it)
     {
         QString key = it->first;
@@ -203,6 +233,20 @@ void PatchGeneratorDialog::loadConfigFromSettings(pgconfig_t &config)
         if (settings.contains(vpath))
             config[key] = settings.value(vpath);
     }
+}
+
+QComboBox *PatchGeneratorDialog::createPresetChoice()
+{
+    QComboBox *box = new QComboBox();
+    const QJsonDocument &info = _generator->parameterInfo();
+    auto presets = info.object()["presets"].toArray();
+    for (auto p: presets) {
+        auto preset = p.toObject();
+        QString name = preset["name"].toString();
+        QString title = preset["title"].toString();
+        box->addItem(title, name);
+    }
+    return box;
 }
 void PatchGeneratorDialog::setOption(QString name, QVariant value)
 {
@@ -222,9 +266,9 @@ void PatchGeneratorDialog::setOption(QString name, QVariant value)
         le->setText(QString::number(num));
     }
     else if (_booleanFields.contains(name)) {
-        QComboBox *cb = _booleanFields[name];
+        auto *cb = _booleanFields[name];
         bool checked = value.toBool();
-        cb->setCurrentIndex(checked ? 0 : 1);
+        cb->setChecked(checked);
     }
 }
 Patch *PatchGeneratorDialog::generatePatch(PatchGenerator *generator)

@@ -16,7 +16,8 @@ class PatchGeneratorDialog : public Dialog
     PatchGenerator *_generator;
     QMap <QString, QLineEdit *> _numberFields;
     QMap <QString, QComboBox *> _enumFields;
-    QMap <QString, QComboBox *> _booleanFields;
+    QMap <QString, QCheckBox *> _booleanFields;
+    QComboBox *_presetChoice;
 
 public:
     PatchGeneratorDialog(PatchGenerator *generator, QWidget *parent = nullptr);
@@ -27,12 +28,14 @@ private:
     void setOption(QString name, QVariant value);
     void collectConfig(pgconfig_t &config);
     void defaultConfig(pgconfig_t &config);
+    void configForPreset(QString preset, pgconfig_t &config);
     void setConfig(pgconfig_t &config);
     void saveConfigToSettings(pgconfig_t &config);
     void loadConfigFromSettings(pgconfig_t &config);
+    QComboBox *createPresetChoice();
 
 private slots:
-    void resetToDefaults();
+    void loadPreset();
     void randomize();
 };
 
