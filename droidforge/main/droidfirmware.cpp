@@ -552,8 +552,13 @@ QString DroidFirmware::delatexify(QString s, bool html) const
     s.replace(replace_, html ? "<sub>\\1</sub>" : "\\1");
     s.replace(replaceSqrt, "√\\1");
     s.replace("\\sqrt", "√");
+    s.replace("\\infty", "∞");
     s.replace(replaceFrac, "\\1 / \\2");
     s.replace(replaceFootnotesize, "\\1");
+
+    // cleanup some crap that our poor bogus parser did not catch
+    s.replace("{\\t", "");
+    s.replace("\\nth{13", "13th");
     return s;
 }
 void DroidFirmware::replaceLatexSymbols(QString &s) const
