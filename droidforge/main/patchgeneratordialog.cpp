@@ -22,9 +22,10 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
     , _generator(generator)
 {
     setWindowTitle(tr("Generate patch") + " - " + _generator->title());
+    setDefaultSize({500, 600});
 
-    setStyleSheet("QCheckBox { margin-right: 3px; }"
-                  "QLineEdit { margin-right: 5px; }");
+    setStyleSheet("QCheckBox { margin-right: 3px; } "
+                  "QLineEdit { margin-right: 5px; } ");
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     QHBoxLayout *bottomBox = new QHBoxLayout();
@@ -64,6 +65,14 @@ void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
         tabWidget->addTab(box, section["title"].toString());
         auto boxLayout = new QVBoxLayout;
         box->setLayout(boxLayout);
+
+        if (section.contains("help")) {
+            QString helptext = section["help"].toString();
+            QLabel *label = new QLabel(helptext);
+            label->setWordWrap(true);
+            boxLayout->addWidget(label);
+            boxLayout->addSpacing(20);
+        }
 
         auto options = section["options"].toArray();
         for (auto o: options) {
