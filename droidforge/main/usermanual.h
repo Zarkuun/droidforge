@@ -19,6 +19,8 @@ class UserManual : public Dialog
 public:
     UserManual(QWidget *parent = nullptr);
     void showCircuit(const QString &circuit);
+    void showTopic(const QString &pageref);
+    bool hasTopic(const QString &pageref);
 
 protected:
     void keyPressEvent(QKeyEvent *) override;

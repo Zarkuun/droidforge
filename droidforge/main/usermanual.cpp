@@ -71,11 +71,18 @@ void UserManual::openExternally()
 }
 void UserManual::showCircuit(const QString &circuit)
 {
-    // show();
     jumpToPage(the_firmware->circuitManualPage(circuit));
     exec();
 }
-
+void UserManual::showTopic(const QString &pageref)
+{
+    jumpToPage(the_firmware->manualPage(pageref));
+    exec();
+}
+bool UserManual::hasTopic(const QString &pageref)
+{
+    return the_firmware->hasManualPage(pageref);
+}
 void UserManual::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
@@ -83,7 +90,6 @@ void UserManual::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_Escape)
         hide();
 }
-
 void UserManual::wheelEvent(QWheelEvent *event)
 {
     if (event->angleDelta().y() > 0)

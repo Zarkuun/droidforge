@@ -37,6 +37,7 @@ private:
 private slots:
     void loadPreset();
     void randomize();
+    void manual();
 };
 
 #endif // PATCHGENERATORDIALOG_H

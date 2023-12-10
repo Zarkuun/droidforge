@@ -42,6 +42,7 @@ DroidFirmware::DroidFirmware()
         file.close();
         circuits = json["circuits"].toObject();
         controllers = json["controllers"].toObject();
+        pagerefs = json["manual_references"].toObject();
     }
 
     // Activate the following line for checking all circuit jack descriptions
@@ -56,6 +57,14 @@ unsigned DroidFirmware::availableMemory(unsigned master) const
 {
     QString key = "master" + QString::number(master);
     return json["available_memory"].toObject()[key].toInt();
+}
+unsigned DroidFirmware::manualPage(QString pageref) const
+{
+    return pagerefs[pageref].toInt(0);
+}
+unsigned DroidFirmware::hasManualPage(QString pageref) const
+{
+    return pagerefs.contains(pageref);
 }
 bool DroidFirmware::circuitExists(QString circuit) const
 {

@@ -3,6 +3,8 @@
 #include "parseexception.h"
 #include "patch.h"
 #include "patchparser.h"
+#include "usermanual.h"
+#include "hintdialog.h"
 
 #include <QRandomGenerator>
 #include <QSettings>
@@ -41,14 +43,39 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
     _presetChoice = createPresetChoice();
     bottomBox->addWidget(_presetChoice);
 
+#ifdef QT_DEBUG
     QPushButton *randomizeButton = new QPushButton(tr("Randomize"));
     connect(randomizeButton, &QPushButton::clicked, this, &PatchGeneratorDialog::randomize);
     buttonBox->addButton(randomizeButton, QDialogButtonBox::ActionRole);
+#endif
+
+    QString hinttext =
+      tr("Welcome to the patch generators!\n\n"
+         "A patch generator creates a complete and read-to-use DROID patch for\n"
+         "you, based on your decisions in the dialog that I will show you now.\n"
+         "You can load one of several example presets into the dialog wit the\n"
+         "button \"Load preset\".\n\n"
+         "Once you are done, press \"OK\". This will generate the patch. If you\n"
+         "like, you can rearrange the CV outputs and buttons via drag & drop.\n"
+         "Then load the patch as usually to your master with \"Activate!\" or \n"
+         "\"Save to SD!\".");
+
+    if (the_manual->hasTopic("pg-" + _generator->name())) {
+        QPushButton *manualButton = new QPushButton(tr("Manual"));
+        connect(manualButton, &QPushButton::clicked, this, &PatchGeneratorDialog::manual);
+        buttonBox->addButton(manualButton, QDialogButtonBox::ActionRole);
+        hinttext +=
+          tr("\n\nDon't forget the button \"Manual\"! It shows the comprehensive\n"
+             "user manual of this patch generator.");
+    }
+
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     bottomBox->addWidget(buttonBox);
     mainLayout->addLayout(bottomBox);
+
+    HintDialog::hint("patch_generator", hinttext);
 }
 
 void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
@@ -174,6 +201,10 @@ void PatchGeneratorDialog::randomize()
         }
     }
 }
+void PatchGeneratorDialog::manual()
+{
+    the_manual->showTopic("pg-" + _generator->name());
+}
 void PatchGeneratorDialog::collectConfig(pgconfig_t &config)
 {
     for (auto it = _numberFields.constKeyValueBegin();  it != _numberFields.constKeyValueEnd(); ++it) {
@@ -225,6 +256,7 @@ void PatchGeneratorDialog::saveConfigToSettings(pgconfig_t &config)
     QString path = "patch_generators/" + _generator->name();
     for (auto it = config.constKeyValueBegin();  it != config.constKeyValueEnd(); ++it)
     {
+
         QString key = it->first;
         QVariant value = it->second;
         settings.setValue(path + "/" + key, value);
