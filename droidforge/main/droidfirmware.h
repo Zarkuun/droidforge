@@ -12,11 +12,14 @@ class DroidFirmware
     QJsonDocument json;
     QJsonObject circuits;
     QJsonObject controllers;
+    QJsonObject pagerefs;
 
 public:
     DroidFirmware();
     QString version() const;
     unsigned availableMemory(unsigned master) const;
+    unsigned hasManualPage(QString pageref) const;
+    unsigned manualPage(QString pageref) const;
     bool circuitExists(QString circuit) const;
     unsigned circuitManualPage(QString circuit) const;
     unsigned circuitMemoryFootprint(QString circuit) const;

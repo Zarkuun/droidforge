@@ -355,5 +355,7 @@
         <file>images/circuits/outputcalibrator.png</file>
         <file>images/circuits/detune.png</file>
         <file>images/faceplates/master18.png</file>
+        <file>images/circuits/unusedfaders.png</file>
+        <file>images/circuits/case.png</file>
     </qresource>
 </RCC>
