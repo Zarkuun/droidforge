@@ -43,12 +43,6 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
     _presetChoice = createPresetChoice();
     bottomBox->addWidget(_presetChoice);
 
-#ifdef QT_DEBUG
-    QPushButton *randomizeButton = new QPushButton(tr("Randomize"));
-    connect(randomizeButton, &QPushButton::clicked, this, &PatchGeneratorDialog::randomize);
-    buttonBox->addButton(randomizeButton, QDialogButtonBox::ActionRole);
-#endif
-
     QString hinttext =
       tr("Welcome to the patch generators!\n\n"
          "A patch generator creates a complete and read-to-use DROID patch for\n"
@@ -161,6 +155,12 @@ void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
         }
         boxLayout->addStretch();
     }
+
+    int i = lastOpenTab();
+    if (i < tabWidget->count())
+        tabWidget->setCurrentIndex(i);
+
+    connect(tabWidget, &QTabWidget::currentChanged, this, &PatchGeneratorDialog::tabChanged);
 }
 void PatchGeneratorDialog::loadPreset()
 {
@@ -169,41 +169,19 @@ void PatchGeneratorDialog::loadPreset()
     configForPreset(preset, config);
     setConfig(config);
 }
-void PatchGeneratorDialog::randomize()
-{
-    const QJsonDocument &info = _generator->parameterInfo();
-    auto sections = info.object()["sections"].toArray();
-    for (auto s: sections)
-    {
-        auto section = s.toObject();
-        if (!section["randomize"].toBool(true))
-            continue; // Probably section about module configuration
-        auto options = section["options"].toArray();
-        for (auto o: options) {
-            quint32 rval = QRandomGenerator::global()->generate();
-            auto option = o.toObject();
-            QString name = option["name"].toString();
-            if (option.contains("enum")) {
-                auto e = option["enum"].toArray();
-                int index = rval % e.count();
-                setOption(name, e[index].toArray()[0].toString());
-            }
-            else if (option.contains("number")) {
-                int minimum = option["number"].toArray()[0].toInt();
-                int maximum = option["number"].toArray()[1].toInt();
-                int choices = maximum - minimum + 1;
-                int number = minimum + rval % choices;
-                setOption(name, number);
-            }
-            else  { // boolean
-                setOption(name, rval % 2 == 0);
-            }
-        }
-    }
-}
 void PatchGeneratorDialog::manual()
 {
     the_manual->showTopic("pg-" + _generator->name());
+}
+void PatchGeneratorDialog::tabChanged(int index)
+{
+    QSettings settings;
+    settings.setValue("pg-current-tab-" + _generator->name(), index);
+}
+int PatchGeneratorDialog::lastOpenTab()
+{
+    QSettings settings;
+    return settings.value("pg-current-tab-" + _generator->name(), 0).toInt();
 }
 void PatchGeneratorDialog::collectConfig(pgconfig_t &config)
 {

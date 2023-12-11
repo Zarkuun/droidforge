@@ -33,11 +33,12 @@ private:
     void saveConfigToSettings(pgconfig_t &config);
     void loadConfigFromSettings(pgconfig_t &config);
     QComboBox *createPresetChoice();
+    int lastOpenTab();
 
 private slots:
     void loadPreset();
-    void randomize();
     void manual();
+    void tabChanged(int index);
 };
 
 #endif // PATCHGENERATORDIALOG_H
