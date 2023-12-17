@@ -28,6 +28,8 @@ rm -f "$LOGFILE"
 
 # First build the project
 
+echo "Building version $VERSION."
+
 echo -n "Cleaning old build..."
 rm -rf "$APP_DIR"
 echo $OK
