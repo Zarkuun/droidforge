@@ -1,13 +1,12 @@
 #ifndef TUNING_H
 #define TUNING_H
 
-#include "os.h"
 
 #define APPLICATION_NAME                     "DROID Forge"
 #ifdef QT_DEBUG
 #define APPLICATION_VERSION                  ("SNAPSHOT " __DATE__)
 #else
-#define APPLICATION_VERSION                  "1.2.3-m18-beta1"
+#define APPLICATION_VERSION                  "1.2.3-m18-beta2"
 #endif
 #define LICENSE_URL                          "https://www.gnu.org/licenses/gpl.txt"
 #define DISCORD_URL                          "https://discord.com/invite/9TUcRmH"
