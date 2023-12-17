@@ -16,6 +16,7 @@ public:
     QList<PatchGenerator *> *generators() { return &_generators; };
 
 private:
+    void deployGenerators();
     void loadGenerators();
 };
 

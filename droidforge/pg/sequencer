@@ -1,0 +1,2900 @@
+#!/usr/bin/python3
+
+# ----------------------------------------------------------------
+# BEWARE!
+#
+# This file has been created by the DROID Forge. It is overwritten
+# every time you start the Forge! If you want to edit this file,
+# you need to create a copy with a different name here. Otherwise
+# your changes will be lost.
+# ----------------------------------------------------------------
+
+from pg import *
+import sys
+
+# ---------------------------------------------------------------------------
+# TESTEN:
+# - CV-Eingänge mit MASTER
+# - Clocking mit MASTER (internal,detect,external)
+
+# Schönheitsdinge:
+# - Irgendwie sinnvoll releasen. Das Ding umziehen in die Forge.
+# - Handbuch schreiben
+# - Aufkleber designen, mit so Streifen für die M4
+# ---------------------------------------------------------------------------
+
+# This is a patch generator for a motorfader sequencer
+# - The Droid user manual contains a chapter of how to use it.
+# - The circuits have comments on how the patch works.
+# - In the code there are some comments on how the generation works.
+#
+# And here is the allocation of the faders in the various menus:
+
+# Tonality menu:
+#  1) Root note
+#  2) Scale
+#  3) Global octave switch -2 ... +2
+#  4) Global diatonic transposition (within the selected notes)
+#  5) Global transposition (changes the scale)
+#  6) Length of glides
+#  7) (unused)
+#  8) normal mode - tuning mode - compose mode
+
+# Clock menu:
+#  1) 0 / 100 / 200 BPM
+#  2) 0, 10, ... 90 BPM
+#  3) 0, 1, .... 9  BPM
+#  4) Continous clock bend 0% ... 100% ... 200%
+#  5) Swing
+#  6) Start / stop
+#  7) Clock divider for optional divided output clock
+#  8) (unused)
+
+# Track menu:
+#  1) autoreset sequencer pattern
+#  2) shift steps
+#  3) octave switch -2 ... +2
+#  4) diatonic transposition (within the selected notes)
+#  5) activity (silence steps with lesser activity level)
+#  6) movement pattern (up, down, ping pong, >><, etc.)
+#  7) clock divider /8, /4, /2, 1:1, *2, *4, *8
+#  8) clock divider /7, /5, /3, 1:1, *3, *5, *7
+
+# Arpeggio menu:
+#  1) Autoreset arpeggio pattern
+#  2) up/pingpong/down
+#  3) octave switch -2 ... +2
+#  4) butterfly
+#  5) octaving pattern
+#  6) movement pattern
+#  7) drop notes from the scale
+#  8) clock: track gates /  x1  / x1.5 x2 x3 x4 x5 x6 x7 x8???
+
+
+
+
+# Suggested button positions
+BUTTONPOS_PRESETS           =  1
+BUTTONPOS_CLEAR             =  4
+BUTTONPOS_TRANSPOSE_BY_ROOT =  5
+BUTTONPOS_INVERT            =  6
+BUTTONPOS_FORM              =  7
+BUTTONPOS_DISABLE_QUANT     =  8
+BUTTONPOS_ARPEGGIATOR       =  9
+BUTTONPOS_LUCKY             = 10
+BUTTONPOS_RESET             = 11
+BUTTONPOS_STARTSTOP         = 12
+BUTTONPOS_GLOBALMENUS       = 13
+BUTTONPOS_RATCHETS          = 17
+BUTTONPOS_REPEATS           = 18
+BUTTONPOS_GATE_PATTERN      = 19
+BUTTONPOS_RANGE             = 20
+BUTTONPOS_PITCH_RANDOMIZE   = 21
+BUTTONPOS_ACTIVITY          = 22
+BUTTONPOS_GATE_RANDOMIZE    = 23
+BUTTONPOS_COPY              = 24
+BUTTONPOS_PITCH             = 25
+BUTTONPOS_VELOCITY          = 26
+BUTTONPOS_GL_GLIDE          = 27
+BUTTONPOS_PAGES             = 28
+BUTTONPOS_MUTE              = 29 # in case there is one track
+BUTTONPOS_TRACKS            = 29
+
+# Colors for the tonality menu
+COLOR_ROOT              = 1.1
+COLOR_DEGREE            = 1.2
+COLOR_TRANSPOSITION     = 0.85
+COLOR_TUNING_MODE       = 0
+COLOR_GLIDES            = 0.5
+
+# Colors for the clock menu
+COLOR_BPM_100           = 0.2
+COLOR_BPM_10            = 0.2
+COLOR_BPM_1             = 0.2
+COLOR_CLOCKBEND_ZERO    = 0.4
+COLOR_CLOCKBEND_ALTERED = 0.8
+COLOR_CLOCK_UNMUTED     = 0.4
+COLOR_CLOCK_MUTED       = 0.8
+COLOR_CLOCK_SWING       = 1.1
+COLOR_CLOCK_DIVIDER     = 0.7
+
+# Colors for the track / performance menu
+COLOR_SHIFTSTEPS        = 0.6
+COLOR_AUTORESET         = 0.8
+COLOR_OCTAVE_SWITCH     = 0.2
+COLOR_NOTESHIFT         = 0.4
+COLOR_ACTIVITY          = 0.55
+COLOR_PATTERN           = 0.3
+COLOR_CLOCKDIV_EVEN     = 1.1
+COLOR_CLOCKDIV_ODD      = 1.2
+
+# Additional color for the Arpeggio menu
+COLOR_DIRECTION         = 0.85
+COLOR_BUTTERFLY         = 1.15
+COLOR_ARP_OCTAVING      = 0.4
+COLOR_DROP              = 0.5
+
+# Other colors
+COLOR_EXTRAGATES        = 0.9
+
+
+def output_options():
+    options = []
+    for track in range(1, 9):
+        options.append({
+            "name" : "t%dout" % track,
+            "title" : "Output of track %d" % track,
+            "enum" : [
+                ( "cvgate", "CV / Gate" ),
+                ( "usb", "MIDI USB" ),
+                ( "trs1", "MIDI TRS 1" ),
+                ( "trs2", "MIDI TRS 2" ),
+            ]
+        })
+    return options
+
+def midi_channel_options():
+    options = []
+    for track in range(1, 9):
+        options.append({
+            "name" : "t%dchan" % track,
+            "title" : "MIDI channel for track %d" % track,
+            "number" : (1, 16)
+        })
+    return options
+
+synopsis = {
+    "title":
+        "Motor Fader Sequencer",
+    "description":
+        """This patch generator creates a patch for a melody performance sequencer
+for up to eight voices. You need one P2B8, one B32 and two or four
+M4 or E4 controller for this to work.
+
+There are many optional features. Each feature allocates one or more
+buttons on the B32 so make sure you don't select too many of these.
+
+The sequencer supports MIDI input clock and MIDI note output if
+you either select "MASTER + X7" or "MASTER18" when selecting
+the master module.
+""",
+
+    "sections" : [{
+
+        "title": "Modules",
+        "randomize" : False,
+        "options": [
+        {
+            "name" : "m",
+            "title" : "Master module",
+            "enum": [
+                ( "master", "MASTER - classic Droid master with 8 IN / 8 OUT (no MIDI)" ),
+                ( "master+x7", "MASTER + X7 - classic Droid master plus X7 expander" ),
+                ( "master18", "MASTER18 - master with MIDI, no CV inputs" )],
+        },
+        {
+            "name" : "c",
+            "title" : "Controller for the steps",
+            "enum": [
+                ( "m4", "M4 - motor fader controller" ),
+                # ( "e4", "E4 - encoder controller" )
+                ],
+        },
+        {
+            "name" : "nc",
+            "title" : "Number of M4 controllers",
+            "enum": [
+                ( "2", "two M4 (eight steps)" ),
+                ( "4", "four M4 (sixteen steps)" )],
+        },
+        {
+            "name" : "g8",
+            "title" : "Number of G8 expanders",
+            "number" : (0, 4),
+         }]},
+        {
+        "title" : "Configuration",
+        "options": [
+        {
+            "name" : "tracks",
+            "title" : "Number of tracks",
+            "number" : (1, 8),
+        },
+        {
+            "name" : "steps",
+            "title" : "Maximum number of sequence steps",
+            "enum" : [
+                ( "auto", "As many steps as faders" ),
+                ( "8", "8 steps" ),
+                ( "16", "16 steps" ),
+                ( "32", "32 steps" ),
+            ],
+        },
+        {
+            "name" : "presets",
+            "title" : "Number of presets",
+            "number": (0, 4),
+        },
+        {
+            "name" : "cvrange",
+            "title" : "Pitch range of sequencer faders",
+            "enum" : [
+                ( "2", "Two octaves" ),
+                ( "3", "Three octaves" ),
+                ( "4", "Four octaves" ),
+            ],
+        }]},
+        {
+            "title" : "Output",
+            "help" : "Here you configure where the pitch/gate signals of your "
+                     "individual tracks should be output. If you want to have tracks "
+                     "that output both to CV/gate and MIDI, put them at the top "
+                     "and set their count into 'Number of tracks using MIDI + CV/gate'. ",
+            "options" : output_options() + [
+               {
+                   "name" : "dualout",
+                   "title" : "Number of tracks using MIDI + CV/gate",
+                   "number" : (0, 8),
+               },
+            ],
+        },
+        {
+            "title" : "MIDI",
+            "options" : midi_channel_options()
+        },
+        {
+        "title" : "Step parameters",
+        "options" : [
+        {
+            "name" : "velo",
+            "title" : "Velocity and additional gate (MIDI: velocity + CC#1)",
+            "enum" : [
+                ( "off", "None of both" ),
+                ( "v", "Just the velocity" ),
+                ( "vg", "Velocity plus gate" ),
+            ]
+        },
+        {
+            "name" : "randpitch",
+            "title" : "Randomize pitch",
+        },
+        {
+            "name" : "randgate",
+            "title" : "Randomize gate",
+        },
+        {
+            "name" : "gl",
+            "title" : "Gate length + glides",
+        },
+        {
+            "name" : "skiprep",
+            "title" : "Step length (1 - 16), skipping of steps",
+        },
+        {
+            "name" : "ratchets",
+            "title" : "Ratchets (1 - 8)",
+        },
+        {
+            "name" : "act",
+            "title" : "Activity (mute steps based on activity level)",
+        },
+        {
+            "name" : "range",
+            "title" : "Set range of steps to play (start, end)",
+        },
+        ]
+        },
+
+        {
+        "title" : "Features",
+        "help" : "Each of the check boxes below enables a feature in the sequencer "
+                 "and allocates one button on your B32.",
+
+        "options": [
+        {
+            "name" : "intclk",
+            "title" : "Internal clock",
+        },
+        {
+            "name" : "arp",
+            "title" : "Enable arpeggiator (highly recommended!)",
+        },
+        {
+            "name" : "ssb",
+            "title" : "Start/Stop button for the complete sequencer",
+        },
+        {
+            "name" : "rb",
+            "title" : "Button for resetting the current (Ctrl: all) tracks to step 1",
+        },
+        {
+            "name" : "clear",
+            "title" : "Clear button: reset play mode, clear pattern, factory reset",
+        },
+        {
+            "name" : "copy",
+            "title" : "Copy & paste of sequence bars (does not work between tracks)",
+        },
+        {
+            "name" : "inv",
+            "title" : "Button for inverting the melody (switch low/high)",
+        },
+        {
+            "name" : "tbr",
+            "title" : "Button for transposing the melody when the root note changes",
+        },
+        {
+            "name" : "form",
+            "title" : "Button for switching the form (A / AAAB / AABB)",
+        },
+        {
+            "name" : "bq",
+            "title" : "Button for disabling the scale, allowing all 12 notes",
+        },
+        {
+            "name" : "lucky",
+            "title" : "Lucky: Randomly change the faders (with Ctrl: buttons)",
+        },
+
+
+        ]},
+        {
+            "title" : "Performance menu",
+            "help" :
+                "If you tick at least one checkbox here, one button will be added, "
+                "which opens a peformance menu on the faders that offers certain parameters "
+                "for every individual track. "
+                "Make sure that the number of options times the number of tracks does not exceed "
+                "your number of faders, or else some options will be missing. ",
+            "options" : [
+            {
+                "name" : "par",
+                "title" : "Auto reset: Force reset after that many steps",
+            },
+            {
+                "name" : "pss",
+                "title" : "Shift steps: Shift sequence steps by this number",
+            },
+            {
+                "name" : "poct",
+                "title" : "Octave switch",
+            },
+            {
+                "name" : "pdt",
+                "title" : "Diatonic transposition: move up or down the melody within the selected scale",
+            },
+            {
+                "name" : "pact",
+                "title" : "Activity: play or mute steps based on their activity",
+            },
+            {
+                "name" : "ppat",
+                "title" : "Pattern: go to the steps in some non-linear mode",
+            },
+            {
+                "name" : "pcdeven",
+                "title" : "Set clock to /8, /4, /2, normal, x2, x4 or x8",
+            },
+            {
+                "name" : "pcdodd",
+                "title" : "Set clock to /7, /5, /3, normal, x3, x5 or x7",
+            },
+            ],
+
+        },
+
+        {
+        "title" : "Connectivity",
+        "options" : [
+        {
+            "name" : "clockin",
+            "title" : "Input for external clock",
+        },
+        {
+            "name" : "resetin",
+            "title" : "Input for external reset",
+        },
+        {
+            "name" : "clockout",
+            "title" : "Output for permanent clock signal",
+        },
+        {
+            "name" : "divclock",
+            "title" : "Output for clock with user defined divider",
+        },
+        {
+            "name" : "runclock",
+            "title" : "Output for clock signal while running",
+        },
+        {
+            "name" : "resetout",
+            "title" : "Output for reset",
+        },
+        {
+            "name" : "sos1",
+            "title" : "Trigger for start of sequence of track 1",
+        },
+        {
+            "name" : "sinflink",
+            "title" : "Receive state of Sinfonion on I1 of MASTER18",
+            "enum" : [
+                ( "off", "No Sinfonion link" ),
+                ( "ton", "Get tonality and clock (as fallback)" ),
+                ( "res", "Get tonality, clock and reset on start of song" ),
+            ],
+        },
+        ]},
+    ],
+    "presets" : [
+    {
+        "name" : "default",
+        "title" : "Default (4 tracks)",
+        "parameters" : {
+            "m"        : "master18", "c"        : "m4"    , "nc"       : "2"     , "g8"       : 0       ,
+            "tracks"   : 4         , "steps"    : "16"    , "cvrange"  : "2"     , "t1out"    : "cvgate",
+            "t2out"    : "cvgate"  , "t3out"    : "cvgate", "t4out"    : "cvgate", "t5out"    : "cvgate",
+            "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
+            "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
+            "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
+            "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
+            "ratchets" : True      , "range"    : True    , "par"      : False   , "pss"      : False   ,
+            "poct"     : True      , "pdt"      : True    , "pact"     : False   , "ppat"     : False   ,
+            "pcdeven"  : False     , "pcdodd"   : False   , "presets"  : 3       , "intclk"   : True    ,
+            "arp"      : True      , "ssb"      : True    , "tbr"      : True    , "act"      : True    ,
+            "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
+            "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
+            "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
+            "resetout" : False     , "sos1"     : False   , "dualout"  : 0       , "divclock" : False,
+        }
+    },
+    {
+        "name" : "minimum",
+        "title" : "Minimum (1 track)",
+        "parameters" : {
+            "m"         : "master18", "c"        : "m4"     , "nc"       : '2'     , "g8"       : 0       ,
+            "tracks"    : 1         , "steps"    : "auto"   , "cvrange"  : "2"     , "t1out"    : "cvgate",
+            "t2out"     : "cvgate"  , "t3out"    : "cvgate" , "t4out"    : "cvgate", "t5out"    : "cvgate",
+            "t6out"     : "cvgate"  , "t7out"    : "cvgate" , "t8out"    : "cvgate", "t1chan"   : 1       ,
+            "t2chan"    : 2         , "t3chan"   : 3        , "t4chan"   : 4       , "t5chan"   : 5       ,
+            "t6chan"    : 6         , "t7chan"   : 7        , "t8chan"   : 8       , "velo"     : "off"   ,
+            "randpitch" : False     , "randgate" : False    , "skiprep"  : False   , "gl"       : False   ,
+            "ratchets"  : False     , "range"    : False    , "par"      : False   , "pss"      : False   ,
+            "poct"      : False     , "pdt"      : False    , "pact"     : False   , "ppat"     : False   ,
+            "pcdeven"   : False     , "pcdodd"   : False    , "intclk"   : True    , "arp"      : False   ,
+            "presets"   : 0         , "ssb"      : False    , "tbr"      : False   , "act"      : False   ,
+            "form"      : False     , "bq"       : False    , "rb"       : False   , "lucky"    : False   ,
+            "clear"     : True      , "copy"     : False    , "inv"      : False   , "sinflink" : "off"   ,
+            "clockin"   : False     , "resetin"  : False    , "clockout" : False   , "runclock" : False   ,
+            "resetout"  : False     , "sos1"     : False    , "dualout"  : 0       , "divclock" : False,
+        }
+    },
+    {
+        "name" : "dmmdm",
+        "title" : "DMMDM's authentic live setup",
+        "parameters" : {
+            "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "g8"       : 1       ,
+            "tracks"   : 4         , "steps"    : "32"    , "cvrange"  : "2"     , "t1out"    : "trs1",
+            "t2out"    : "trs1"    , "t3out"    : "trs2"  , "t4out"    : "trs2"  , "t5out"    : "cvgate",
+            "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
+            "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
+            "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "vg"    ,
+            "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
+            "ratchets" : True      , "range"    : True    , "par"      : True    , "pss"      : False   ,
+            "poct"     : True      , "pdt"      : True    , "pact"     : True    , "ppat"     : False   ,
+            "pcdeven"  : False     , "pcdodd"   : False   , "presets"  : 3       , "intclk"   : True    ,
+            "arp"      : True      , "ssb"      : True    , "tbr"      : True    , "act"      : True    ,
+            "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
+            "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "ton"   ,
+            "clockin"  : True      , "resetin"  : True    , "clockout" : True    , "runclock" : True    ,
+            "resetout" : True      , "sos1"     : False   , "dualout"  : 4       , "divclock" : False,
+        }
+    },
+    ],
+}
+
+
+# --------------------------------------------------------------------------------
+# Sequencer pactch
+#
+# Selection: Many motor faders, button groups, etc, are overlayed with multiple
+# functions. Here is how the selection works.
+#
+# _GLOBAL_FADER_SELECTION:
+#    Determines who "owns" the faders currently. There are the following possible
+#    values:
+#       1 - Sequencer for track 1
+#       2 - Sequencer for track 1
+#       3 - Sequencer for track 1
+#       ...
+#      11 - track/arp menu for track 1
+#      12 - track/arp menu for track 2
+#      13 - track/arp menu for track 3
+#       ...
+#      97 - Tonality menu
+#      98 - Performance menu
+#      99 - Clocking menu
+#
+# _SELECTED_TRACK:
+#     The currently selected track. There is *always* a track selected, even
+#     if the clock menu or stuff is open. This value is needed for all the
+#     button groups and settings a track can have.
+#     Note: This patch cable is missing when there is just one track.
+#
+# _FADERMODE:
+#     This is used in situations where the sequencer of a track is selected
+#     (i.e. when _GLOBAL_FADER_SELECTION in 1 ... 8). Then the motoquencer
+#     is told what its faders currently do. That's *no* select/selectat logic
+#     here but an internal feature of the motorfader circuit.
+#
+# --------------------------------------------------------------------------------
+
+def create_patch():
+    collect_ios()
+    allocate_gate_outputs()
+    allocate_cv_inputs()
+    allocate_pots()
+    allocate_track_buttons()
+    prepare_performance_menu()
+
+    sections = \
+        section_clock() + \
+        section_global_buttons() + \
+        track_sections() + \
+        performance_menu_unused_faders() + \
+        section_midiout() + \
+        section_cv_outputs()
+
+    return \
+        patch_title() + \
+        patch_labels() + \
+        patch_controllers() + \
+        section_tonality() + \
+        sections
+
+def prepare_performance_menu():
+    global performance_menu
+    performance_menu = {}
+    fader = 1
+    for track in range(1, arguments["tracks"] + 1):
+        faders = {}
+        performance_menu[track] = faders
+        if not have_performance_menu():
+            continue
+
+        for feature in [ "par", "pss", "poct", "pdt",
+                         "pact", "ppat", "pcdeven", "pcdodd", ]:
+            if feature == "pact" and not arguments["act"]:
+                bail_out("You cannot add \"Activity\" to the performance menu "
+                         "when you have not enabled activity in the step parameters.")
+            if arguments[feature]:
+                faders[feature] = fader
+                fader += 1
+
+def performance_menu_unused_faders():
+    patch = ""
+    if have_performance_menu():
+        num_used = len(performance_menu[1]) * arguments["tracks"]
+        patch += unused_faders(num_used + 1, [
+            ( "select", "_GLOBAL_FADER_SELECTION" ),
+            ( "selectat", 98 ),
+        ])
+    return patch
+
+def patch_title():
+    patch = "# Melody sequencer with %d tracks\n" % arguments["tracks"]
+    if arguments["m"] == "master18":
+        patch += "# LABELS: master=18\n"
+    return patch
+
+def patch_controllers():
+    controllers = [ "p2b8", "b32" ]
+    for i in range(int(arguments["nc"])):
+        controllers.append(arguments["c"])
+    return "".join([ "[%s]\n" % c for c in controllers])
+
+def section_header(title):
+    line = "# " + "-" * 50 + "\n"
+    return "\n" + line + "# " + title + "\n" + line + "\n"
+
+
+
+def section_tonality():
+    patch = section_header("Tonality")
+
+    if arguments["sinflink"] != "off":
+        args = [
+            ( "root", "_SINFLINK_ROOT" ),
+            ( "degree", "_SINFLINK_DEGREE" ),
+            ( "transpose", "_SINFLINK_TRANSPOSE" ),
+            ( "clock", "_SINFONION_CLOCK" ),
+        ]
+        if arguments["sinflink"] == "res":
+            args.append(( "reset", "_SINFLINK_RESET" ))
+        patch += circuit("sinfonionlink", args,
+                         "Get tonality and stuff from Sinfonion")
+
+    select = [
+        ( "select", "_GLOBAL_FADER_SELECTION" ),
+        ( "selectat", 97 ),
+    ]
+
+    # Root note and scale
+    root_sources = [ "_ROOT_FADER" ]
+    degree_sources = [ "_DEGREE_FADER" ]
+
+    if arguments["sinflink"] != "off":
+        root_sources.append("_SINFLINK_ROOT")
+        degree_sources.append("_SINFLINK_DEGREE")
+
+    if have_cv_inputs():
+        root_sources.append( "%s * 120" % cv_inputs["root"] )
+        degree_sources.append( "%s * 120" % cv_inputs["degree"] )
+
+    if len(root_sources) > 1:
+        args = []
+        for nr, source in enumerate(root_sources):
+            args.append(( "input%d" % (nr+1), source ))
+        args.append(( "output", "_ROOT" ))
+        patch += circuit("mixer", args, "Mix together all sources for the root note")
+        root_cable = "_ROOT_FADER"
+    else:
+        root_cable = "_ROOT"
+
+    if len(degree_sources) > 1:
+        args = []
+        for nr, source in enumerate(degree_sources):
+            args.append(( "input%d" % (nr+1), source ))
+        args.append(( "output", "_DEGREE" ))
+        patch += circuit("mixer", args, "Mix together sources for the scale")
+        degree_cable = "_DEGREE_FADER"
+    else:
+        degree_cable = "_DEGREE"
+
+    # Root note
+    patch += circuit("motorfader", select + [
+        ( "fader", 1 ),
+        ( "notches", 13 ),
+        ( "ledcolor", COLOR_ROOT ),
+        ( "ledvalue", 1 ),
+        ( "output", root_cable ),
+    ], "Set the root note (from C, C#, D, ... to C again)")
+
+    # Scale
+    patch += circuit("motorfader", select + [
+        ( "fader", 2 ),
+        ( "notches", 12 ),
+        ( "ledcolor", COLOR_DEGREE ),
+        ( "ledvalue", 1 ),
+        ( "output", degree_cable ),
+    ], "Set the musical scale")
+
+    # Transposition by octaves
+    patch += circuit("motorfader", select + [
+        ( "fader", 3 ),
+        ( "notches", 5 ),
+        ( "startvalue", 2 ),
+        ( "ledcolor", COLOR_OCTAVE_SWITCH ),
+        ( "ledvalue", "_LED_GLOBAL_OCTAVE" ),
+        ( "output", "_GLOBAL_OCTAVE_SWITCH" ),
+        ( "button", "_RESET_OCTAVE_SWITCH" ),
+        ( "clear", "_RESET_OCTAVE_SWITCH" ),
+    ], "Global octave switch for all tracks")
+
+    patch += circuit("compare", [
+        ( "input", "_GLOBAL_OCTAVE_SWITCH" ),
+        ( "compare", 2 ),
+        ( "ifequal", 1 ),
+        ( "else", 0.3 ),
+        ( "output", "_LED_GLOBAL_OCTAVE" ),
+    ], "Make the LED just a bit brighter if the switch is at neutral position" )
+
+    # Diatonic transposition (note shift)
+    patch += circuit("motorfader", select + [
+        ( "fader", 4 ),
+        ( "notches", 15 ),
+        ( "startvalue", 7 ),
+        ( "ledcolor", COLOR_NOTESHIFT ),
+        ( "ledvalue", "_LED_GLOBAL_NOTESHIFT" ),
+        ( "output", "_GLOBAL_NOTESHIFT" ),
+        ( "button", "_RESET_NOTESHIFT" ),
+        ( "clear", "_RESET_NOTESHIFT" ),
+    ], "Global diatonic transposition for all tracks")
+
+    patch += circuit("sample", [
+        ( "input", "_GLOBAL_NOTESHIFT" ),
+        ( "sample", "_CLOCK" ),
+        ( "output", "_GLOBAL_NOTESHIFT_CLOCKED" ),
+    ], "Prevent the pitch to change between clock ticks")
+
+    patch += circuit("compare", [
+        ( "input", "_GLOBAL_NOTESHIFT" ),
+        ( "compare", 7 ),
+        ( "ifequal", 1 ),
+        ( "else", 0.3 ),
+        ( "output", "_LED_GLOBAL_NOTESHIFT" ),
+    ], "Make the LED just a bit brighter if the switch is at neutral position" )
+
+    # Fader 5: Transposition by semitones
+    patch += circuit("motorfader", select + [
+        ( "fader", 5 ),
+        ( "notches", 25 ),
+        ( "startvalue", 12 ),
+        ( "ledcolor", COLOR_TRANSPOSITION ),
+        ( "ledvalue", "_LED_GLOBAL_TRANSPOSITION" ),
+        ( "output", "_GLOBAL_TRANSPOSITION" ),
+        ( "button", "_RESET_TRANSPOSITION" ),
+        ( "clear", "_RESET_TRANSPOSITION" ),
+    ], "Global transposition by semitones for all tracks")
+
+    patch += circuit("compare", [
+        ( "input", "_GLOBAL_TRANSPOSITION" ),
+        ( "compare", 12 ),
+        ( "ifequal", 1 ),
+        ( "else", 0.3 ),
+        ( "output", "_LED_GLOBAL_TRANSPOSITION" ),
+    ], "Make the LED just a bit brighter if the switch is at neutral position" )
+
+    # Fader 6: Glide length
+    if arguments["gl"] and have_cvgate_tracks():
+        patch += circuit("motorfader", select + [
+            ( "fader", 6 ),
+            ( "startvalue", 0.3 ),
+            ( "ledcolor", COLOR_GLIDES ),
+            ( "ledvalue", 1 ),
+            ( "output", "_GLIDE_LENGTH_FADER" ),
+        ], "Glide length (duration of slides)")
+
+        patch += circuit("math", [
+            ( "input1", "_GLIDE_LENGTH_FADER * 0.5" ),
+            ( "input2", 3.0 ),
+            ( "power", "_GLIDE_LENGTH" ),
+        ], "Make glide reasonably fast, make fader curve zoomed in in "
+           "the short glide times.")
+    else:
+        patch += unused_fader(6, select)
+
+    # Fader 8: Tuning mode
+    patch += circuit("motorfader", select + [
+        ( "fader", 8 ),
+        ( "notches", 3 ),
+        ( "startvalue", 0 ),
+        ( "ledcolor", COLOR_TUNING_MODE ),
+        ( "ledvalue", "_TUNING_LED + 0.3" ),
+        ( "output", "_TUNING_COMPOSE" ),
+    ], "Global transposition by semitones for all tracks")
+
+    patch += circuit("switch", [
+        ( "input1", 1 ),
+        ( "offset", "_TUNING_COMPOSE" ),
+        ( "output2", "_COMPOSEMODE" ),
+        ( "output3", "_TUNINGMODE" ),
+    ], "Make tuning mode or compose mode active depending on the fader position.")
+
+    patch += circuit("lfo", [
+        ( "hz", 5 ),
+        ( "level", "0.7 * _TUNING_COMPOSE" ),
+        ( "square" , "_TUNING_LED" ),
+    ], "Let the LED blink so that we are aware of the special mode")
+
+
+    patch += unused_fader(7, select)
+    patch += unused_faders(9, select)
+
+    return patch
+
+def section_clock():
+    patch = section_header("Clocking")
+
+    # The clocking tries to use all available clock sources
+    # in a defined order of precedence. Top precedence has
+    # the internal clock, if there is any. Because in the
+    # menu the user can switch it off and hand over to the
+    # other sources.
+
+    # Each clock source is defined by:
+    # a) The name of the patch cable or register of its source
+    # b) The name of a patch cable that is 1, when the clock is present
+    # We collect these two things in clock_sources[] so that we can
+    # later do the arbitration.
+
+    # This is the order of precedence:
+    #  1. Internal if it is running
+    #  2. External clock on gate input
+    #  3. TRS-MIDI1 (MASTER18 or X7)
+    #  4. TRS-MIDI2 (MASTER18)
+    #  4. USB-MIDI  (MASTER18 or X7)
+    #  5. Sinfonion-Link (MASTER18)
+
+    clock_sources = []
+
+    if arguments["intclk"]:
+        patch += add_internal_clock(clock_sources)
+
+    if arguments["clockin"]:
+        patch += add_external_clock(clock_sources)
+
+    if have_midi():
+        patch += add_midi_clock( "trs", 1, clock_sources)
+        if arguments["m"] == "master18":
+            patch += add_midi_clock( "trs", 2, clock_sources)
+        patch += add_midi_clock( "usb", 1, clock_sources)
+
+    if arguments["sinflink"] != "off":
+        patch += add_sinfonion_clock(clock_sources)
+
+    if not clock_sources:
+        bail_out("You don't have a clock for your sequencer.\n\n"
+                 "If you don't have MIDI, you need to add either\n"
+                 "an internal clock or an external clock or get\n"
+                 "a clock from your Sinfonion (if you have one).")
+
+    # Clock arbitration
+    if len(clock_sources) == 1:
+        patch += circuit("copy", [
+            ( "input", clock_sources[0][0] ),
+            ( "output", "_CLOCK" ),
+        ], "Make clock available at the cable _CLOCK" )
+
+    else: # there are up to 6 clock sources
+        args = []
+        i = 1
+        for clock_cable, clock_present in clock_sources:
+            args += [
+                ( "case%d" % i, clock_present ),
+                ( "value%d" % i, clock_cable ),
+            ]
+            i += 1
+        patch += circuit("case", args + [
+            ( "output", "_CLOCK" ),
+        ], "Select first avaiable clock in defined precedence order")
+
+    if arguments["lucky"]:
+        patch += circuit("lfo", [
+            ( "hz", 40 ),
+            ( "square", "_LUCKY_CLOCK" ),
+        ], "Pulses for changes via lucky buttons / lucky faders")
+
+
+    if arguments["arp"]:
+        for mul, div in [ (3,2), (2,1), (3,1), (4,1), (6,1), (8,1) ]:
+            patch += circuit("clocktool", [
+                ( "clock", "_CLOCK" ),
+                ( "output", "_CLOCK_%d_%d" % (mul, div) ),
+                ( "multiply", mul ),
+                ( "divide", div ),
+            ], "Clock division %d/%d for the arpeggiators" % (mul, div))
+
+    return patch
+
+def add_internal_clock(clock_sources):
+    patch = clock_menu()
+
+    patch += circuit("pot", [
+        ( "pot", "_CLOCK_BEND" ),
+        ( "lefthalfinv", "_CLOCK_BEND_LINEAR" ),
+        ( "righthalf", "_CLOCK_BEND_EXP" ),
+    ], "Split clock bending fader in two hemispheres, so the the "
+       "lower one is linear and can go to 0 Hz, while the upper "
+       "half is going to exactly double speed." )
+
+    patch += circuit("copy", [
+        ( "input", "_CLOCK_BPM / 15" ),
+        ( "output", "_CLOCK_HZ" ),
+    ], "Convert BPM (beat = quarter note) to 16th note clock measured in Hz" )
+
+    patch += circuit("lfo", [
+        ( "hz", "_CLOCK_HZ * _CLOCK_BEND_LINEAR" ),
+        ( "rate", "_CLOCK_BEND_EXP * 1V" ),
+        ( "pulsewidth", 0.1 ),
+        ( "square", "_CLOCK_UNSWUNG" ),
+    ], "The actual clock, use a very short pulse so we have essentially just triggers" )
+
+    patch += circuit("timing", [
+        ( "clock", "_CLOCK_UNSWUNG" ),
+        ( "reset", "_RESET" ),
+        ( "timing1", 0 ),
+        ( "timing2", "_CLOCK_SWING * 0.3" ),
+        ( "output", "_INT_CLOCK" ),
+    ], "Swing for our internal clock" )
+
+    clock_sources.append(("_INT_CLOCK", "_INT_CLOCK_UNMUTED" ))
+    return patch
+
+
+def add_external_clock(clock_sources):
+    patch = circuit("gatetool", [
+        ( "inputtrigger", cv_inputs["clock"] ),
+        ( "gatelength", 2),
+        ( "outputgate", "_EXTERNAL_CLOCK_PRESENT" ),
+    ], "Detect an external clock signal, if within the last 2 seconds "
+       "there was a trigger" )
+    clock_sources.append((cv_inputs["clock"], "_EXTERNAL_CLOCK_PRESENT"))
+    return patch
+
+
+def add_midi_clock(porttype, portnumber, clock_sources):
+    prefix = "_%s%d" % (porttype.upper(), portnumber)
+    clock_cable = prefix + "_CLOCK"
+    patch = circuit("midiin", [
+        ( porttype, portnumber ),
+        ( "clock", clock_cable ),
+        ], "Get clock via MIDI %s jack port %d" % (porttype.upper(), portnumber))
+
+    patch += circuit("gatetool", [
+        ( "inputtrigger", clock_cable ),
+        ( "gatelength", 2 ),
+        ( "outputgate", clock_cable + "_PRESENT" ),
+    ], "Detect a clock signal, if within the last 2 seconds there is a pulse" )
+
+    clock_sources.append(( clock_cable, clock_cable + "_PRESENT" ))
+    return patch
+
+def add_sinfonion_clock(clock_sources):
+    clock_cable = "_SINFONION_CLOCK"
+    patch = circuit("gatetool", [
+        ( "inputtrigger", clock_cable ),
+        ( "gatelength", 2 ),
+        ( "outputgate", clock_cable + "_PRESENT" ),
+    ], "Detect a clock signal, if within the last 2 seconds there is a clock "
+       "signal coming from the Sinfonion" )
+    clock_sources.append(( clock_cable, clock_cable + "_PRESENT" ))
+    return patch
+
+
+
+def allocate_cv_inputs():
+    global cv_inputs
+    cv_inputs = {}
+
+    if arguments["sinflink"] != "off":
+        if arguments["m"] != "master18":
+            bail_out("You need a MASTER18 to support Sinfonion link.")
+        ios["gateins"].remove("I1")
+        add_label("I1", "Link", "Sinfonion Link")
+
+    if arguments["clockin"]:
+        cv_inputs["clock"] = get_gate_input("CLK In", "External clock")
+
+    if arguments["resetin"]:
+        cv_inputs["reset"] = get_gate_input("RST In",
+                "Reset all sequences to step 1 on a gate or trigger here")
+
+    if have_cv_inputs():
+        cv_inputs["root"] = get_cv_input("Root", "Root note, in 1/12V steps.")
+        cv_inputs["degree"] = get_cv_input("Scale", "Scale, in 1/12V steps.")
+        cv_inputs["transpose"] = get_cv_input("Transp", "Global transposition of all tracks")
+
+def allocate_gate_outputs():
+    global gate_outputs
+    gate_outputs = {}
+
+    for track in range(1, arguments["tracks"] + 1):
+        if track_is_cvgate(track):
+            gate_outputs["gate%d" % track] = get_gate_output(
+                "Gate %d" % track,
+                "Gate output track %d" % track)
+
+    for track in range(1, arguments["tracks"] + 1):
+        if arguments["velo"] == "vg" and track_is_cvgate(track):
+            gate_outputs["xgate%d" % track] = get_gate_output(
+                "GateB %d" % track,
+                "Additional gate for track %d" % track)
+
+        if arguments.get("sos%d" % track):
+            gate_outputs["sos%d" % track] = get_gate_output(
+                "Sos 1",
+                "Start of sequences track %d" % track)
+
+    if arguments["clockout"]:
+        gate_outputs["clock"] = get_gate_output("PCLK/O", "Permanent Clock output")
+
+    if arguments["runclock"]:
+        gate_outputs["runclock"] = get_gate_output("CLK/O", "Clock output while running")
+
+    if arguments["divclock"]:
+        gate_outputs["divclock"] = get_gate_output("Divclk", "Permanent clock with custom divisor")
+
+
+    if arguments["resetout"]:
+        gate_outputs["reset"] = get_gate_output("RST/O", "Reset output")
+
+def allocate_pots():
+    global pots
+    pots = {}
+    if arguments["arp"]:
+        pots["arp_range"] = get_pot("Arp range", "Arpeggio pitch range")
+        pots["arp_pitch"] = get_pot("Arp pitch", "Arpeggio base pitch")
+
+
+
+# Some buttons exists logically per track. We need to make sure
+# that these buttons are allocated just once and that we use the
+# same button position for every track.
+def allocate_track_buttons():
+    global track_buttons
+    track_buttons = {}
+    if arguments["arp"]:
+        track_buttons["arp"] = get_button(BUTTONPOS_ARPEGGIATOR,
+                                          "Arp",
+                                          "Switch this track to arpeggio mode")
+
+    for p in range(1, arguments["presets"] + 1):
+        pname = chr(ord('A') - 1 + p)
+        track_buttons["preset%d" % p] = \
+            get_button(BUTTONPOS_PRESETS, "Preset %s" % pname,
+                       "Ctrl: Switch to preset %s, long press: save to preset %s"
+                       % (pname, pname))
+
+    if arguments["rb"]:
+        track_buttons["reset"] = get_button(BUTTONPOS_RESET,
+		"Reset",
+		"Reset current track (Ctrl: all track) to step 1 immediately")
+
+    if arguments["clear"]:
+        track_buttons["clear"] = get_button(BUTTONPOS_CLEAR,
+		"Clear",
+		"Short press: reset play mode, with CTRL: clear track, long press factory reset")
+
+    if arguments["copy"]:
+        track_buttons["copy"] = get_button(BUTTONPOS_COPY,
+                "Copy",
+                "Copy current page of current track. With CTRL: Paste")
+
+    if arguments["inv"]:
+        track_buttons["inv"] = get_button(BUTTONPOS_INVERT,
+		"Invert",
+		"Invert the melody (change low to high and vice versa)")
+
+    if arguments["form"]:
+        track_buttons["form"] = get_button(BUTTONPOS_FORM,
+		"Form",
+		"Switch between the song from A, AAAB and AABB")
+
+    if arguments["bq"]:
+        track_buttons["bq"] = get_button(BUTTONPOS_DISABLE_QUANT,
+		"12-Tone",
+		"Disable scale and note selection, allow all 12 notes")
+
+    if arguments["lucky"]:
+        track_buttons["lucky"] = get_button(BUTTONPOS_LUCKY,
+		"Lucky",
+		"Randomly change step buttons, if Ctrl is held, change the gates instead.")
+
+    if arguments["tbr"]:
+        track_buttons["tbr"] = get_button(BUTTONPOS_TRANSPOSE_BY_ROOT,
+		"Trans/BR",
+		"If enabled, transposes the melody when the root note changes.")
+
+
+def section_global_buttons():
+    patch = section_header("Global buttons")
+
+    patch += track_selection()
+    patch += global_fader_selection()
+
+    if arguments["clear"]:
+        patch += circuit("button", [
+            ( "button", "B" + track_buttons["clear"] ),
+            ( "states", 1 ),
+            ( "longpress", "_FACTORY_RESET" ),
+        ], "A long press on the clear button resets all settings of the sequencer to its default state" )
+
+        patch += circuit("droid", [
+            ( "clearall", "_FACTORY_RESET" ),
+        ], "Do the factory reset")
+
+    if need_control_button():
+        patch += circuit("copy", [
+            ( "input", "B1.8" ),
+            ( "output", "_CONTROL" ),
+        ], "Provide state of the control button in a patch cable.")
+
+        # At various places we use _NO_CONTROL for conveniance.
+        if arguments["tracks"] > 1 or arguments["presets"] > 1 or arguments["copy"] or arguments["lucky"]:
+            patch += circuit("copy", [
+                ( "input", "1 - B1.8" ),
+                ( "output", "_NO_CONTROL" ),
+            ], "Inverted state of control button, is 1 of not held.")
+
+    # Sequencer Fader mode
+    if have_fadermode_buttons():
+        basemode = 0
+        # Pitch is the only thing that is always there
+
+        buttons = [ (0, get_button(BUTTONPOS_PITCH, "Pitch", "Set motor faders to pitch")) ]
+
+        if arguments["velo"] != "off":
+            basemode += 10
+            buttons.append((basemode, get_button(BUTTONPOS_VELOCITY, "Velocity", "Velocity / Additional gate")))
+
+        if arguments["skiprep"]:
+            buttons += [
+              (3, get_button(BUTTONPOS_REPEATS, "Repeats", "Number of repeats, skip steps")),
+              (4, get_button(BUTTONPOS_GATE_PATTERN, "Gatepat", "Pattern for repeated gates")),
+            ]
+
+        if arguments["randpitch"]:
+            buttons.append((1, get_button(BUTTONPOS_PITCH_RANDOMIZE, "Pitch?", "Pitch randomization")))
+
+        if arguments["gl"]:
+            basemode += 10
+            buttons.append((basemode, get_button(BUTTONPOS_GL_GLIDE, "Gl/Glide", "Gate length and glide")))
+            fadermode_for_glide = basemode
+
+        if arguments["ratchets"]:
+            buttons.append((5, get_button(BUTTONPOS_RATCHETS, "Ratchets", "Number of sub gates per clock")))
+
+        if arguments["randgate"]:
+            buttons.append((2, get_button(BUTTONPOS_GATE_RANDOMIZE, "Gate?", "Gate randomization")))
+
+        if arguments["act"]:
+            basemode += 10
+            buttons.append((basemode, get_button(BUTTONPOS_ACTIVITY, "Activity", "Set step activities")))
+
+        args = []
+        n = 1
+        for fm, b in buttons:
+            args.append(( "button%d" % n, "B" + b ))
+            args.append(( "led%d" % n, "L" + b ))
+            args.append(( "value%d" % n, fm ))
+            n += 1
+
+        patch += circuit("buttongroup", args + [
+            ( "buttonpress", "_FADERMODE_CHANGED" ),
+            ( "output", "_FADERMODE" )],
+            "Select the current mode of the faders for the sequencer")
+
+        # Buttonmode, depends on fadermode and range-button
+        if arguments["range"]:
+            bmout = "_BM"
+        else:
+            bmout = "_BUTTONMODE"
+
+        mcargs = [
+            ( "input",    "_FADERMODE" ),
+            ( "compare1",  3 ),  # fadermode repeats
+            ( "ifequal1",  3 ),  # buttonmode skip
+            ( "compare2",  4 ),  # fadermode gate pattern
+            ( "ifequal2",  2 ),  # buttonmode gate pattern
+            ( "else",      0 ),  # gates
+            ( "output",   bmout ),
+        ]
+
+        if arguments["gl"]:
+            mcargs += [
+                ( "compare3", fadermode_for_glide ),
+                ( "ifequal3", fadermode_for_glide ),
+            ]
+
+        if arguments["velo"] == "vg":
+            mcargs += [
+                ( "compare4", 10 ),
+                ( "ifequal4", 10 ),
+            ]
+
+        patch += circuit("multicompare", mcargs,
+            "Select a button mode that is most useful in the current fader mode")
+
+        if arguments["range"]:
+            patch += circuit("switch", [
+                ( "input1", "_BM" ),
+                ( "input2", 1 ), # startend
+                ( "offset", "_RANGE" ),
+                ( "output", "_BUTTONMODE" ),
+            ], "When the range button is active, it always has precedence")
+
+        # Range (set start and end point)
+        if arguments["range"]:
+            b = get_button(BUTTONPOS_RANGE, "Range", "Set start and end (range of steps to play)")
+            patch += circuit("button", [
+                ( "button", "B" + b ),
+                ( "led", "L" + b ),
+                ( "output", "_RANGE" )],
+                "Button for choosing between gates on/off and start/end")
+
+    elif arguments["range"]: # no fader mode buttongroup
+        patch += circuit("copy", [
+            ( "input", "_RANGE" ),
+            ( "output", "_BUTTONMODE" ),
+        ], "Set the button mode to 1 if the range button is active")
+
+    else:
+        patch += circuit("copy", [
+            ( "input", 0 ),
+            ( "output", "_BUTTONMODE" ),
+        ], "The button mode is always 0 in this configuration")
+
+    # Reset
+    reset_sources = []
+
+    if arguments["rb"]:
+        b = track_buttons["reset"]
+        patch += circuit("button", [
+            ( "button", "B" + b + " * _CONTROL" ),
+            ( "led", "L" + b ),
+            ( "states", 1 ),
+            ( "output", "_RESET_BUTTON" ),
+        ], "Button for reseting all tracks to step 1")
+        reset_sources.append("_RESET_BUTTON")
+
+    if arguments["resetin"]:
+        reset_sources.append(cv_inputs["reset"])
+
+    if arguments["ssb"]:
+        reset_sources.append(( "_STARTSTOP_RESET" ))
+
+    if arguments["sinflink"] == "res":
+        reset_sources.append(( "_SINFLINK_RESET" ))
+
+    args = []
+    for nr, source in enumerate(reset_sources):
+        args.append(( "input%d" % (nr+1), source))
+    patch += circuit("mixer", args + [
+        ( "output", "_RESET"),
+    ], "Combine all source of global reset")
+
+    # Start/stop
+    if arguments["ssb"]:
+        b = get_button(BUTTONPOS_STARTSTOP,
+                       "Start/Stop",
+                       "Start/stop sequencer - start also does reset")
+        patch += circuit("button", [
+            ( "button", "B" + b ),
+            ( "led", "L" + b ),
+            ( "startvalue", 1 ),
+            ( "output", "_RUNNING"),
+        ], "Button for run/stop")
+        patch += circuit("gatetool", [
+            ( "inputgate", "_RUNNING" ),
+            ( "outputtrigger", "_STARTSTOP_RESET" ),
+        ], "Create a reset trigger when the button changes to 'running'")
+
+
+    # Page button(s). Pages can be 1, 2 or 4
+    pages = num_pages()
+    steps = num_steps()
+    if pages == 2:
+        b = get_button(BUTTONPOS_PAGES,
+            "%d - %d" % (steps / 2 + 1, steps),
+            "Select second page of steps")
+
+        patch += circuit("button", [
+            ( "button", "B" + b ),
+            ( "led", "L" + b ),
+            ( "output", "_PAGE" ),
+        ], "Button for selecting the second page of steps")
+    elif pages > 2:
+        args = []
+        steps_per_page = steps / pages
+        for page in range(pages):
+            b = get_button(BUTTONPOS_PAGES + page,
+                "%d - %d" % (page * steps_per_page + 1,
+                          (page+1) * steps_per_page),
+                "Select page %d of the sequence" % (page + 1))
+            args += [
+                ( "button%d" % (page+1), "B" + b ),
+                ( "led%d" % (page+1), "L" + b ),
+            ]
+        patch += circuit("buttongroup", args + [
+            ( "output", "_PAGE" ),
+        ], "Buttongroup for selecting the page of steps to edit")
+
+    return patch
+
+def track_presets(track):
+    patch = ""
+
+    if arguments["presets"] == 0:
+        return ""
+
+    load_mixing = []
+    save_mixing = []
+    for p in range(1, arguments["presets"] + 1):
+        b = track_buttons[ "preset%d" % p]
+
+        patch += circuit("button", track_selected(track) + [
+            ( "button", "B" + b  + "* _CONTROL"),
+            ( "states", 1 ),
+            ( "onvalue", p ),
+            ( "output", "_T%d_P%d_LOAD" % (track, p ) ),
+        ], "Button for loading preset %d on track %d" % (p, track))
+        load_mixing.append(( "input%d" % p, "_T%d_P%d_LOAD" % (track, p )))
+
+        patch += circuit("button", track_selected(track) + [
+            ( "button", "B" + b ),
+            ( "states", 1 ),
+            ( "onvalue", p ),
+            ( "longpress", "_T%d_P%d_SAVE" % (track, p ) ),
+        ], "Button for saving preset %d on track %d" % (p, track))
+        save_mixing.append(( "input%d" % p, "_T%d_P%d_SAVE" % (track, p )))
+
+        patch += circuit("burst", [
+            ( "trigger", "_T%d_P%d_SAVE" % (track, p) ),
+            ( "hz", 5 ),
+            ( "count", 5 ),
+            ( "output", "_T%d_P%d_SAVE_LED" % (track, p) ),
+        ], "Five blinks for the LED of the preset button on saving")
+
+        patch += circuit("select", track_selected(track) + [
+            ( "input", "_T%d_P%d_SAVE_LED + 0.3" % (track, p) ),
+            ( "output", "L" + b ),
+        ], "Write the save LED animation to the LED if the track is still selected." )
+
+    patch += circuit("mixer", load_mixing + [
+        ( "output", "_T%d_LOAD_PRESET" % track )
+    ], "Create a trigger with the preset as value when any of the presets is loaded" )
+    patch += circuit("mixer", save_mixing + [
+        ( "output", "_T%d_SAVE_PRESET" % track )
+    ], "Create a trigger with the preset as value when any of the presets is saved" )
+
+
+    return patch
+
+def track_preset_params(track):
+    if arguments["presets"] == 0:
+        return []
+
+    params = [
+        ( "loadpreset", "_T%d_LOAD_PRESET" % track ),
+        ( "savepreset", "_T%d_SAVE_PRESET" % track ),
+    ]
+    return params
+
+
+def track_sections():
+    patch = ""
+    num_tracks = arguments["tracks"]
+    for track in range(1, num_tracks + 1):
+        patch += track_section(track)
+    return patch
+
+def section_midiout():
+    if not have_midi_tracks():
+        return ""
+
+    elif not have_midi():
+        bail_out("If you set one or more track to MIDI output, "
+                 "you need to select MASTER18 or MASTER + X7. "
+                 "The plain MASTER does not have any MIDI output. ")
+
+    patch = section_header("MIDI Output")
+    for track in range(1, arguments["tracks"] + 1):
+        if track_is_midi(track):
+            patch += track_midi_output(track)
+    return patch
+
+def track_midi_output(track):
+    out = arguments["t%dout" % track]
+    parameters = []
+    if out == "usb":
+        parameters.append(( "usb", 1 ))
+    elif out == "trs1":
+        parameters.append(( "trs", 1 ))
+    else:
+        parameters.append(( "trs", 2 ))
+
+    if arguments["velo"] in [ "v", "vg" ]:
+        parameters.append(( "velocity", "_T%d_VELOCITY * 0.9 + 0.1" % track ))
+
+    if arguments["velo"] == "vg":
+        parameters += [
+            ( "ccnumber1", 1 ),
+            ( "cc1", "_T%d_EXTRAGATE" % track ),
+        ]
+
+    return circuit("midiout", parameters + [
+        ( "channel", arguments["t%dchan" % track ]),
+        ( "pitch", "_T%d_FINAL_PITCH" % track ),
+        ( "gate", "_T%d_FINAL_GATE" % track ),
+        ( "activesensing", 0 ),
+    ], "MIDI output for track %d" % track )
+
+
+def clock_menu():
+    patch = ""
+
+    select = [ ( "select", "_GLOBAL_FADER_SELECTION" ),
+               ( "selectat", 99 ) ]
+
+    patch += circuit("motorfader", select + [
+        ( "fader", 1 ),
+        ( "notches", 3 ), # 0, 100, 200
+        ( "output", "_CLOCK_BPM_100" ),
+        ( "startvalue", 1 ), # 100
+        ( "ledcolor", COLOR_BPM_100 ),
+        ( "ledvalue", 1 ),
+    ], "Selects 100s of BPM")
+
+    patch += circuit("motorfader", select + [
+        ( "fader", 2 ),
+        ( "notches", 10 ), # 0, 100, 200
+        ( "output", "_CLOCK_BPM_10" ),
+        ( "startvalue", 2 ), # 100
+        ( "ledcolor", COLOR_BPM_10 ),
+        ( "ledvalue", 1 ),
+    ], "Selects 10s of BPM")
+
+    patch += circuit("motorfader", select + [
+        ( "fader", 3 ),
+        ( "notches", 10 ), # 0, 100, 200
+        ( "output", "_CLOCK_BPM_1" ),
+        ( "startvalue", 0 ), # 100
+        ( "ledcolor", COLOR_BPM_1 ),
+        ( "ledvalue", 1 ),
+    ], "Selects 1s of BPM")
+
+    patch += circuit("motorfader", select + [
+        ( "fader", 4 ),
+        ( "output", "_CLOCK_BEND_FADER" ),
+        ( "startvalue", 0.5 ), # 100
+        ( "ledcolor", "_CLOCK_BEND_COLOR" ),
+        ( "ledvalue", 1 ),
+        ( "button", "_RESET_CLOCK_BEND" ),
+        ( "clear", "_RESET_CLOCK_BEND" ),
+    ], "Clock bend half speed / double speed. Touch button to reset.")
+
+    patch += circuit("pot", [
+        ( "pot", "_CLOCK_BEND_FADER" ),
+        ( "notch", 0.01 ),
+        ( "output", "_CLOCK_BEND" ),
+    ], "Snap to the perfectly neutral position if the fader is almost there." )
+
+    patch += circuit("compare",  [
+        ( "input", "_CLOCK_BEND" ),
+        ( "compare", 0.5 ),
+        ( "precision", 0.0 ),
+        ( "ifequal", COLOR_CLOCKBEND_ZERO ), # green
+        ( "else", COLOR_CLOCKBEND_ALTERED ), # red
+        ( "output", "_CLOCK_BEND_COLOR" ),
+    ], "Let the LED light bright if the bending alteration is exactly zero." )
+
+
+    patch += circuit("mixer", [
+        ( "input1", "_CLOCK_BPM_100 * 100" ),
+        ( "input2", "_CLOCK_BPM_10 * 10" ),
+        ( "input3", "_CLOCK_BPM_1" ),
+        ( "output", "_CLOCK_BPM_UNMUTED" ),
+    ], "Add up all three BPM faders" )
+
+
+    # Swing
+    patch += circuit("motorfader", select + [
+        ( "fader", 5 ),
+        ( "output", "_CLOCK_SWING" ),
+        ( "ledcolor", COLOR_CLOCK_SWING ),
+        ( "ledvalue", "_CLOCK_SWING * 0.9 + 0.1" ),
+    ], "Clock swing (shuffle)")
+
+    # On/off
+
+    # The tricky part: the button toggles the state, the
+    # factory reset sets it to 1.
+    if arguments["clear"]:
+        patch += circuit("switch", [
+            ( "input1", "1 - _INT_CLOCK_UNMUTED" ),
+            ( "input2", 1 ),
+            ( "offset", "B" + track_buttons["clear"] ),
+            ( "output", "_CLOCK_MUTE_STARTVALUE" ),
+        ], "Small hack for letting the user toggle the state with the touch button" )
+        startvalue = "_CLOCK_MUTE_STARTVALUE"
+    else:
+        startvalue = "1 - _INT_CLOCK_UNMUTED"
+
+    patch += circuit("motorfader", select + [
+        ( "fader", 6 ),
+        ( "notches", 2 ),
+        ( "output", "_INT_CLOCK_UNMUTED" ),
+        ( "button", "_TOGGLE_CLOCK_MUTE" ),
+        ( "clear", "_TOGGLE_CLOCK_MUTE" ),
+        ( "startvalue", startvalue ),
+        ( "ledcolor", "_INT_CLOCK_UNMUTED * -%f + %f" % (COLOR_CLOCK_UNMUTED, COLOR_CLOCK_MUTED)),
+        ( "ledvalue", 1 ),
+    ], "Mute the clock, switch to external clocks if present. Touch button to toggle.")
+
+    patch += circuit("copy", [
+        ( "input", "_CLOCK_BPM_UNMUTED * _INT_CLOCK_UNMUTED" ),
+        ( "output", "_CLOCK_BPM" ),
+    ], "Set the BPM to zero while the clock is muted.")
+
+    if arguments["divclock"]:
+        patch += circuit("motorfader", select + [
+            ( "fader", 7 ),
+            ( "notches", 16 ),
+            ( "output", "_CLOCK_DIV" ),
+            ( "ledcolor", COLOR_CLOCK_DIVIDER ),
+            ( "ledvalue", 1 ),
+        ], "Divider for custom output clock" )
+        patch += unused_faders(8, select)
+
+    else:
+        patch += unused_faders(7, select)
+
+    return patch
+
+def track_selection():
+    patch = ""
+    # more than one track: we need track selection radio buttons
+
+    num_tracks = arguments["tracks"]
+    if num_tracks > 1:
+
+        buttongroup_params = [("output", "_SELECTED_TRACK")]
+
+        # While CTRL is held, disable the track selection, since CTRL
+        # gives access to the underlying mute buttons
+        buttongroup_params += [ ( "select", "_NO_CONTROL" ) ]
+
+        # Prepare an LFO for the mute animation
+        patch += circuit("lfo", [
+            ( "level", 0.8 ),
+            ( "bipolar", 0 ),
+            ( "square", "_MUTE_BLINK" ),
+            ( "pulsewidth", 0.2 ),
+            ( "hz", 2.5 ),
+        ], "Animation of track buttons when muted.")
+
+        # Add one button for each track to the button group
+        for track in range(1, num_tracks+1):
+            button = get_button(BUTTONPOS_TRACKS, "Track %d" % track, "Select track %d" % track)
+            buttongroup_params.append(("button%d" % track, "B" + button))
+            buttongroup_params.append(("value%d" % track, track))
+
+            # Animation of the track button if its muted. In this case
+            # the LED is controlled "manually", not by the buttongroup.
+
+            # Catch the LED state in a patch cable. That state is 1 when
+            # a track is selected and the mute button is not held
+            buttongroup_params.append(("led%d" % track, "_T%d_SELECTED" % track))
+            # Mute button for this track
+            patch += circuit("button", [
+                ( "select", "_CONTROL" ),
+                ( "button", "B" + button ),
+                ( "led", "L" + button ),
+                ( "output", "_T%d_MUTED" % track )
+            ], "Mute button for track %d (same as track button)" % track)
+
+            # The LED of the track button has four states:
+            # 1. Track not selected, not muted -> 0
+            # 2. Track selected, not muted -> 1
+            # 3. Track not selected, muted -> blinks between 0 and 0.3
+            # 4. Track select, muted -> blinks between 0.3 and 1
+
+            patch += circuit("switch", [
+                ( "offset", "_T%d_SELECTED * 2 + _T%d_MUTED" % (track, track) ),
+                ( "input1", 0 ),
+                ( "input2", "_MUTE_BLINK" ),
+                ( "input3", 1 ),
+                ( "input4", "1 - _MUTE_BLINK" ),
+                ( "output", "_T%d_TRACKLED" % track ),
+            ], "Compute state of track LED based on wether it is selected and/or muted")
+
+            patch += circuit("switch", [
+                ( "input1", "_T%d_TRACKLED" % track ),
+                ( "input2", "_T%d_MUTED" % track ),
+                ( "offset", "_CONTROL" ),
+                ( "output", "L" + button ),
+            ], "Show mute state of track while Ctrl is held")
+
+        patch += circuit("buttongroup",
+            buttongroup_params,
+            "Track selection")
+
+    else: # Just one track. Need single mute button. Without CTRL
+        # Mute button for this track
+        button = get_button(BUTTONPOS_MUTE, "Mute", "Mute the gate outputs")
+        patch += circuit("button", [
+            ( "button", "B" + button ),
+            ( "led", "L" + button ),
+            ( "output", "_T1_MUTE" ),
+        ], "Mute the gate outputs" )
+
+    return patch
+
+def global_fader_selection():
+    patch = section_header("Special menus")
+
+    if arguments["tracks"] > 1:
+        selected_track = "_SELECTED_TRACK"
+    else:
+        selected_track = "1"
+
+    # Create list of fader menus
+    menu_buttons = []
+
+    menu_buttons.append((
+        97,
+        get_button(BUTTONPOS_GLOBALMENUS, "Tonality", "Tonality menu")))
+
+    if arguments["intclk"]:
+        menu_buttons.append((
+            99,
+            get_button(BUTTONPOS_GLOBALMENUS, "Clock", "Menu for clock speed and swing")))
+
+    menu_buttons.append((
+        selected_track + "+ 10",
+        get_button(BUTTONPOS_GLOBALMENUS, "Track", "Track menu")))
+
+    if have_performance_menu():
+        menu_buttons.append((
+            98,
+            get_button(BUTTONPOS_GLOBALMENUS, "Perform", "Performance menu")))
+
+
+    # Just one menu -> simple toggle button
+    if len(menu_buttons) == 1:
+        mode, b = menu_buttons[0]
+        patch += circuit("button", [
+            ( "button", "B" + b ),
+            ( "led", "L" + b ),
+            ( "offvalue", selected_track ),
+            ( "onvalue", mode ),
+            ( "output", "_GLOBAL_FADER_SELECTION" ),
+        ], "Button for switching the mode of the faders" )
+
+    else:
+        parameters = []
+        nr = 1
+        for mode, b in menu_buttons:
+            parameters += [
+                ( "button%d" % nr, "B" + b ),
+                ( "led%d" % nr, "L" + b ),
+                ( "value%d" % nr, mode ),
+            ]
+            nr += 1
+        if have_fadermode_buttons():
+            clear_args = [ ( "clear", "_FADERMODE_CHANGED" ) ]
+        else:
+            clear_args = []
+
+        patch += circuit("buttongroup", parameters + clear_args + [
+            ( "startbutton", 0 ),
+            ( "minactive", 0 ),
+            ( "maxactive", 1 ),
+            ( "output", "_GLOBAL_MENU" ),
+        ], "Select a global menu function of the faders. There is no "
+           "button for \"normal\" in order to save buttons. Simply "
+           "press the currently lit button to deactivate all menu "
+           "buttons and go back to controlling the sequence. ")
+
+        patch += circuit("compare", [
+            ( "input", "_GLOBAL_MENU" ),
+            ( "compare", 0 ),
+            ( "ifequal", selected_track ),
+            ( "else", "_GLOBAL_MENU" ),
+            ( "output", "_GLOBAL_FADER_SELECTION" ),
+        ], "If there is no menu active, the fader edit the sequence "
+           "of the currently selected track.")
+
+    return patch
+
+
+def track_section(track):
+    patch = section_header("Track %d" % track)
+
+    tracksel = [
+        ("select", "_GLOBAL_FADER_SELECTION" ),
+        ("selectat", track )]
+
+    # Clear button (long press)
+    if arguments["clear"]:
+        b = track_buttons["clear"]
+        patch += circuit("button", track_selected(track) + [
+            ( "button", "B" + b ), #  + "* _CONTROL" ),
+            ( "shortpress", "_T%d_CLEAR_BUTTON" % track),
+            ( "states", 1 ),
+        ], "Provide trigger when the clear button is pressed (no Ctrl needed)")
+
+        patch += circuit("copy", [
+            ( "input", "_T%d_CLEAR_BUTTON * _CONTROL" % track ),
+            ( "output", "_T%d_CLEAR" % track ),
+        ], "Clear button with control together clears the track" )
+
+        patch += circuit("logic", [
+            ( "input1", "_T%d_CLEAR_BUTTON" % track ),
+            ( "input2", "1 - _CONTROL" ),
+            ( "and", "_T%d_PEACE" % track ),
+        ], "Clear button without control removes all mode that alter the pattern length" )
+
+        patch += circuit("burst", [
+            ( "trigger", "_T%d_CLEAR + _FACTORY_RESET" % track ),
+            ( "hz", 5 ),
+            ( "count", 5 ),
+            ( "output", "_T%d_CLEAR_LED" % track ),
+        ], "Five blinks for the clear LED")
+
+        patch += circuit("select", track_selected(track) + [
+            ( "input", "_T%d_CLEAR_LED + 0.3" % track ),
+            ( "output", "L" + b ),
+        ], "LED only blinks when track is selected")
+
+    # Reset track to step 1
+    if arguments["rb"]:
+        patch += circuit("button", track_selected(track) + [
+            ( "button", "B" + track_buttons["reset"] + " * _NO_CONTROL" ),
+            ( "states", 1 ),
+            ( "output", "_T%d_RESET" % track ),
+        ], "Reset track immediately" )
+
+    # Copy & paste
+    if arguments["copy"]:
+        if num_pages() == 1:
+            bail_out("Copy & paste does not work nor make sense if you "
+                     "have %d steps and %d faders. It only works if you "
+                     "have more steps than faders and "
+                     "thus buttons for switching pages." % (num_steps(), num_faders()))
+
+        patch += circuit("button", track_selected(track) + [
+            ( "button", "B" + track_buttons["copy"] ),
+            ( "states", 1 ),
+            ( "output", "_T%d_COPY_BUTTON" % track ),
+        ], "Button for copying the current page of the curren track" )
+
+    # Form button
+    if arguments["form"]:
+        b = track_buttons["form"]
+        button = "B" + b
+
+        patch += circuit("button",
+            track_selected(track) +
+            clear_on_clear_arguments(track) +
+            track_preset_params(track) + [
+            ( "button", "B" + b ),
+            ( "led", "L" + b ),
+            ( "output", "_T%d_FORM" % track),
+            ( "states", 3 ),
+        ], "This button cycles between the song froms A, AAAB and AABB")
+
+    # Disable quantization
+    if arguments["bq"]:
+        b = track_buttons["bq"]
+        button = "B" + b
+
+        patch += circuit("button",
+            track_selected(track) +
+            track_preset_params(track) + [
+            ( "button", "B" + b ),
+            ( "led", "L" + b ),
+            ( "output", "_T%d_12TONE" % track),
+        ], "Disables scale and note selection if on")
+
+    # Transpose by root note
+    if arguments["tbr"]:
+        patch += circuit("button",
+            track_selected(track) +
+            track_preset_params(track) + [
+            ( "button", "B" + track_buttons["tbr"] ),
+            ( "led", "L" + track_buttons["tbr"] ),
+            ( "output", "_T%d_TBR_ON" % track ),
+            ( "inverted", "_T%d_TBR_OFF" % track ),
+        ], "Enable transposing the melody by the difference of the root note to C" )
+
+        patch += circuit("compare", [
+            ( "input", "_T%d_TBR_ON" % track ),
+            ( "compare", 1 ),
+            ( "ifequal", "_ROOT / 120" ),
+            ( "output", "_T%d_TBR" % track ),
+        ], "Provide the amount of 'transpose by root' in a patch cable")
+
+    # Lucky faders / buttons
+    if arguments["lucky"]:
+        patch += circuit("button", track_selected(track) + [
+            ( "button", "B" + track_buttons["lucky"] ),
+            ( "states", 1 ),
+            ( "onvalue", "_LUCKY_CLOCK" ),
+            ( "output", "_T%d_LUCKY" % track ),
+        ], "Hold to contiously step faders to random positions, hold with Ctrl to change buttons" )
+
+    if arguments["inv"]:
+        b = track_buttons["inv"]
+        button = "B" + b
+
+        patch += circuit("button",
+            track_selected(track) +
+            clear_on_clear_arguments(track) +
+            track_preset_params(track) + [
+            ( "button", "B" + b ),
+            ( "led", "L" + b ),
+            ( "output", "_T%d_INVERT" % track),
+        ], "Selects melodic inversion (swap low and high notes)")
+
+
+    patch += track_menu(track)
+    if arguments["arp"]:
+        patch += arpeggio_menu(track)
+
+    patch += track_presets(track)
+
+    for s in range(1, 8):
+        patch += circuit("button", track_selected(track) + [
+            ( "button", "B1.%d" % s ),
+            ( "led", "L1.%d" % s ),
+            ( "startvalue", 1 ),
+            ( "output", "_T%d_SEL_%d" % (track, s) ),
+        ], "Select interval note %d from the current scale" % s)
+
+    # Compute clock for this track
+    patch += circuit("clocktool", [
+        ( "clock", "_CLOCK" ),
+        ( "reset", "_RESET" ),
+        ( "divide", "_T%d_CD_DIV" % track),
+        ( "multiply", "_T%d_CD_MULT" % track),
+        ( "output", "_T%d_CLOCK" % track)
+    ], "Clock divider for track %d" % track)
+
+
+    if num_pages() > 1:
+        paging = [ ( "page", "_PAGE" ) ]
+    else:
+        paging = []
+
+    if arguments["copy"]:
+        paging += [
+            ( "copy", "_T%d_COPY_BUTTON * _NO_CONTROL" % track ),
+            ( "paste", "_T%d_COPY_BUTTON * _CONTROL" % track ),
+            ( "copymode", 1 ),
+        ]
+
+
+    gate = "_T%d_SEQUENCER_GATE" % track # here comes our gate
+
+    clock = "_T%d_CLOCK" % track
+    if arguments["ssb"]:
+        clock += " * _RUNNING"
+
+    if arguments["rb"]:
+        extra_reset = " + _T%d_RESET" % track
+    else:
+        extra_reset = ""
+
+    # The actual motoquencer circuit
+    params = \
+        tracksel +  \
+        paging + \
+        track_preset_params(track) + \
+        clear_on_clear_arguments(track) + \
+        track_note_selects(track, False) + [
+        ( "degree", "_DEGREE" ),
+        ( "clock", clock ),
+        ( "taptempo", "_T%d_CLOCK" % track ),
+        ( "reset", "_RESET" + extra_reset ),
+        ( "cv", "_T%d_PITCH" % track ),
+        ( "cvrange", arguments["cvrange"] + "V"),
+        ( "gate", gate ),
+        ( "numfaders", num_faders()),
+        ( "numsteps", num_steps()),
+        ( "linktonext", 1 if (arguments["velo"] != "off" or arguments["act"] or arguments["gl"]) else 0),
+        ( "autoreset", "_T%d_AUTORESET" % track),
+        ( "shiftsteps", "_T%d_SHIFTSTEPS" % track),
+        ( "pattern", "_T%d_PATTERN_FADER - 2" % track),
+        ( "direction", "_T%d_DIRECTION" % track),
+        ( "pingpong", "_T%d_PINGPONG" % track),
+    ]
+
+    if arguments["tbr"]:
+        params += [
+            ( "root", "_ROOT * _T%d_TBR_OFF" % track ),
+            ( "transpose", "_T%d_TBR" % track ),
+        ]
+    else:
+        params.append(( "root", "_ROOT" ))
+
+
+    if arguments["lucky"]:
+        params += [
+            ( "luckybuttons", "_T%d_LUCKY * _CONTROL" % track ),
+            ( "luckyfaders", "_T%d_LUCKY * _NO_CONTROL" % track ),
+            ( "luckychance", "1/%d" % num_faders() ),
+            ( "luckyamount", "0.5 * _NO_CONTROL + 0.5" ),
+            ( "luckyscope", 3 ),
+        ]
+
+    if have_fadermode_buttons():
+        params.append(( "fadermode", "_FADERMODE" ))
+
+    if arguments["ssb"]:
+        params.append(( "mute", "1 - _RUNNING" ))
+
+    if arguments["form"]:
+        params.append(("form", "_T%d_FORM" % track))
+
+    if arguments["inv"]:
+        params.append(("invert", "_T%d_INVERT" % track))
+
+    if arguments.get("sos%d" % track):
+        params.append(("startofsequence", gate_outputs["sos1"]))
+
+    params.append(("buttonmode", "_BUTTONMODE"))
+
+    labels["B1.1"] = ( "ROOT", "Allow root note" )
+    labels["B1.2"] = ( "3RD", "Allow third note" )
+    labels["B1.3"] = ( "5TH", "Allow fifth note" )
+    labels["B1.4"] = ( "7TH", "Allow seventh note" )
+    labels["B1.5"] = ( "9TH", "Allow nineth note" )
+    labels["B1.6"] = ( "11TH", "Allow eleventh note" )
+    labels["B1.7"] = ( "13TH", "Allow thirtheenth note" )
+
+    if need_control_button():
+        labels["B1.8"] = ( "CTRL", "Switch some of the button functions" )
+
+    params.append(("composemode", "_COMPOSEMODE"))
+
+    if clear_on_peace(track):
+        params += [
+            ( "clearskips", clear_on_peace(track) ),
+            ( "clearrepeats", clear_on_peace(track) ),
+            ( "clearstartend",clear_on_peace(track) ),
+        ]
+
+    patch += circuit("motoquencer", params, "Sequencer for pitch and gate of track %d" % track)
+
+    # Allocate CV ouputs
+    if track_is_cvgate(track):
+        pitch_output_jack = get_cv_output(
+                "V/O %d" % track,
+                "Pitch CV output track %d" % track)
+
+        if arguments["velo"] in [ "v", "vg" ]:
+            velo_output_jack = get_cv_output(
+                "Velo %d" % track,
+                "Modulation CV output track %d" % track)
+
+        if arguments["velo"] == "vg":
+            extragate_output_jack = gate_outputs["xgate%d" % track]
+
+    # Linked sequencer for extra CV --------------------------
+    if arguments["velo"] != "off":
+        if track_is_midi(track):
+            out = "_T%d_VELOCITY" % track
+        else:
+            out = velo_output_jack
+
+        if arguments["velo"] == "vg":
+            gate_params = [
+                ( "gate", "_T%d_EXTRAGATE" % track
+                             if track_is_midi(track)
+                             else extragate_output_jack ),
+                ( "buttoncolor", COLOR_EXTRAGATES ),
+                ( "gatelength", 0.99 ),
+            ]
+            extra_comment = " and extra gate"
+        else:
+            gate_params = []
+            extra_comment = ""
+
+        patch += circuit("motoquencer",
+            tracksel + \
+            paging + \
+            clear_on_clear_arguments(track) + \
+            track_preset_params(track) + \
+            gate_params + \
+            [
+                ( "cv", out ),
+                ( "cvrange", 1 ),
+                ( "defaultcv", 0.5 ),
+                ( "quantize", 0),
+                ( "linktonext", 1 if (arguments["act"] or arguments["gl"]) else 0),
+            ], "Sequencer for velocity" + extra_comment )
+
+        if track_is_midi(track) and track_is_cvgate(track):
+            patch += circuit("copy", [
+                ( "input", out ),
+                ( "output", velo_output_jack ),
+            ], "Copy velocity to CV output" )
+
+    # Linked sequencer for gate length and glide ----------------
+    if arguments["gl"]:
+        patch += circuit("motoquencer",
+            tracksel + \
+            paging + \
+            clear_on_clear_arguments(track) + \
+            track_preset_params(track) + \
+            [
+                ( "cv", "_T%d_GATELENGTH" % track ),
+                ( "cvrange", 1 ),
+                ( "defaultcv", 0.5 ),
+                ( "defaultgate", 0 ), # NO glide
+                ( "quantize", 0 ),
+                ( "buttoncolor", COLOR_GLIDES ),
+                ( "linktonext", 1 if arguments["act"] else 0),
+            ] + ([( "gate", "_T%d_GLIDE" % track )] if track_is_cvgate(track) else []),
+
+        "Sequencer for gate length and glide" )
+
+    # Linked sequencer for activity ----------------------------
+    if arguments["act"]:
+        patch += circuit("motoquencer",
+            tracksel + \
+            clear_on_clear_arguments(track) + \
+            track_preset_params(track) + \
+            [
+                ( "cv", "_T%d_STEP_ACTIVITY" % track ),
+                ( "quantize", 0 ),
+                ( "defaultcv", 7 ),
+                ( "cvnotches", 8 ),
+            ]
+        , "Sequencer for activity level per step")
+
+        patch += circuit("compare", [
+            ( "input", "_T%d_STEP_ACTIVITY" % track ),
+            ( "compare", "_T%d_ACTIVITY" % track ),
+            ( "ifless", 0 ),
+            ( "else", gate ),
+            ( "output", "_T%d_ACT_GATE" % track ),
+        ], "Silence the gate if the step does not reach the required activity" )
+        gate = "_T%d_ACT_GATE" % track
+
+    # Switch gate to arpeggiator if active ---------------------
+    if arguments["arp"]:
+        patch += circuit("switch", [
+            ( "input1", gate ),
+            ( "input2", "_T%d_ARP_CLOCK" % track ),
+            ( "offset", "_T%d_ARP" % track ),
+            ( "output", "_T%d_SWITCHED_GATE" % track ),
+        ], "Switch gate to arpeggiator if active" )
+        gate = "_T%d_SWITCHED_GATE" % track
+
+    # Mute logic -----------------------------------------------
+    patch += circuit("logic", [
+        ( "input1", "1 - _T%d_MUTED" % track ),
+        ( "input2", gate ),
+        ( "and", "_T%d_MUTED_GATE" % track ),
+    ], "Logic for make the gate silent if the track is muted")
+    gate = "_T%d_MUTED_GATE" % track
+
+    # Diatonic transposition (noteshift)
+    patch += circuit("mixer", [
+        ( "input1", "-1 * 7 + _T%d_NOTESHIFT_CLOCKED" % track ),
+        ( "input2", "-1 * 7 + _GLOBAL_NOTESHIFT_CLOCKED" ),
+        ( "output", "_T%d_NOTESHIFT_SUM" % track ),
+    ], "Mix global and per-track diatonic transposition" )
+
+    params = track_note_selects(track, False) + [
+        ( "root", "_ROOT" ),
+        ( "degree", "_DEGREE" ),
+        ( "input", "_T%d_PITCH" % track ),
+        ( "output", "_T%d_PITCH_SHIFTED" % track ),
+        ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
+        ( "tuningmode", "_TUNINGMODE" ),
+        ( "tuningpitch", "_GLOBAL_OCTAVE_SWITCH * 1V" ),
+    ]
+
+    patch += circuit("minifonion", params,
+                     "Diatonic transposition" )
+
+    if arguments["arp"]:
+        patch += track_arpeggiator(track)
+
+    # Switch pitch between sequencer and arpeggio
+    if arguments["arp"]:
+        patch += circuit("switch", [
+            ( "input1", "_T%d_PITCH_SHIFTED" % track ), # sequencer
+            ( "input2", "_T%d_ARP_OUTPUT + _T%d_ARP_OCTAVE" % (track, track )), # arpeggio
+            ( "offset", "_T%d_ARP" % track ),
+            ( "output", "_T%d_SWITCHED_PITCH" % track ),
+        ], "Switch pitch output between sequencer and arpeggiator" )
+        pitch_from_sequencer = "_T%d_SWITCHED_PITCH" % track
+    else:
+        pitch_from_sequencer = "_T%d_PITCH_SHIFTED" % track
+
+
+    # Mixer for all that consitues the final pitch
+    pitch_mixes = [
+        ( "input1", "_T%d_OCTAVE * 1V - 2V" % track ),
+        ( "input2", pitch_from_sequencer ),
+        ( "input3", "_GLOBAL_OCTAVE_SWITCH * 1V - 2V" ),
+        ( "input4", "_GLOBAL_TRANSPOSITION * 0.00833333 - 1V" ) ]
+
+    if "transpose" in cv_inputs:
+        pitch_mixes.append(( "input5", cv_inputs["transpose"] ))
+
+    if arguments["sinflink"] != "off":
+        pitch_mixes.append(( "input6", "_SINFLINK_TRANSPOSE" ))
+
+    patch += circuit("mixer", pitch_mixes + [
+        ( "output", "_T%d_FINAL_PITCH" % track ),
+    ], "Mix all sources of pitch together" )
+
+    if track_is_cvgate(track):
+        if arguments["gl"]:
+            patch += circuit("slew", [
+                ( "input", "_T%d_FINAL_PITCH" % track ),
+                ( "exponential", pitch_output_jack ),
+                ( "slew", "_T%d_GLIDE * _GLIDE_LENGTH" % track ),
+            ], "Slew limiter for glides" )
+        else:
+            patch += circuit("copy", [
+                ( "input", "_T%d_FINAL_PITCH" % track ),
+                ( "output", pitch_output_jack ),
+            ], "Copy final pitch to CV output")
+
+    # Final output of the gate
+    gate_jack = "_T%d_FINAL_GATE" % track
+
+    # Start/Stop button needs to mute the gate because of the
+    # arpeggiator (it has not gate)
+    if arguments["ssb"]:
+        patch += circuit("copy", [
+            ( "input", gate + " * _RUNNING" ),
+            ( "output", "_T%d_GATE_RUNNING" % track ),
+        ], "Mute the output gate if the sequencer is not running" )
+        gate = "_T%d_GATE_RUNNING" % track
+
+    # Now apply gate length
+    if arguments["gl"]:
+        if arguments["arp"]:
+            patch += circuit("switch", [
+                ( "input1", "_T%d_CLOCK" % track ),
+                ( "input2", "_T%d_ARP_TAPTEMPO" % track ),
+                ( "offset", "_T%d_ARP" % track ),
+                ( "output", "_T%d_GATEREF" % track ),
+            ], "Provide steady tap tempo for arpeggiator's gate length" )
+            taptempo = "_T%d_GATEREF" % track
+        else:
+            taptempo = "_T%d_CLOCK" % track
+
+        patch += circuit("gatetool", [
+            ( "taptempo", taptempo ),
+            ( "inputgate", gate ),
+            ( "outputgate", "_T%d_FINAL_GATE" % track ),
+            ( "gatelength", "_T%d_GATELENGTH * 0.9 + 0.05" % track ),
+        ], "Compute gate length for arpeggiator output" )
+    else:
+        patch += circuit("copy", [
+            ( "input", gate ),
+            ( "output", "_T%d_FINAL_GATE" % track ),
+        ], "Copy the gate to its final destination" )
+
+    if track_is_cvgate(track):
+        patch += circuit("copy", [
+            ( "input", "_T%d_FINAL_GATE" % track ),
+            ( "output",  gate_outputs["gate%d" % track] ),
+        ], "Copy the gate signal to the CV jack")
+    return patch
+
+def track_arpeggiator(track):
+    patch = ""
+
+    patch += circuit("switch", [
+        ( "input1", "_CLOCK" ),
+        ( "input2", "_T%d_SEQUENCER_GATE" % track ),
+        ( "input3", "_CLOCK_3_2" ),
+        ( "input4", "_CLOCK_2_1" ),
+        ( "input5", "_CLOCK_3_1" ),
+        ( "input6", "_CLOCK_4_1" ),
+        ( "input7", "_CLOCK_6_1" ),
+        ( "input8", "_CLOCK_8_1" ),
+        ( "output", "_T%d_ARP_CLOCK" % track),
+        ( "offset", "_T%d_ARP_CLOCKING" % track),
+    ], "Select clock for arpeggiator of track %d" % track)
+
+    if arguments["gl"]:
+        patch += circuit("switch", [
+            ( "input1", "_CLOCK" ),
+            ( "input2", "_T%d_CLOCK" % track ),
+            ( "input3", "_CLOCK_3_2" ),
+            ( "input4", "_CLOCK_2_1" ),
+            ( "input5", "_CLOCK_3_1" ),
+            ( "input6", "_CLOCK_4_1" ),
+            ( "input7", "_CLOCK_6_1" ),
+            ( "input8", "_CLOCK_8_1" ),
+            ( "output", "_T%d_ARP_TAPTEMPO" % track),
+            ( "offset", "_T%d_ARP_CLOCKING * _T%d_ARP" % (track, track)),
+        ], "Create taptempo for arp clock to be used for gate length")
+
+    # Pitch base and range are on overlayed pots
+    patch += circuit("pot", track_selected(track) + [
+        ( "pot", pots["arp_pitch"] ),
+        ( "outputscale", "3V" ),
+        ( "output", "_T%d_ARP_PITCH" % track ),
+    ], "Virtual pot for base pitch of arpeggiator" )
+
+    patch += circuit("pot", track_selected(track) + [
+        ( "pot", pots["arp_range"] ),
+        ( "outputscale", "4V" ),
+        ( "output", "_T%d_ARP_RANGE" % track ),
+    ], "Virtual pot for pitch range of arpeggiator" )
+
+    clock = "_T%d_ARP_CLOCK" % track
+    if arguments["ssb"]:
+        clock += " * _RUNNING"
+
+    patch += circuit("arpeggio",
+        track_note_selects(track, True) + [
+        ( "root", "_ROOT" ),
+        ( "degree", "_DEGREE" ),
+        ( "clock", clock ),
+        ( "reset", "_RESET" ),
+        ( "tuningmode", "_TUNINGMODE" ),
+        ( "direction", "_T%d_ARP_UPDOWN" % track ),
+        ( "pingpong", "_T%d_ARP_PINGPONG" % track ),
+        ( "butterfly", "_T%d_ARP_BUTTERFLY" % track),
+        ( "octaves", "_T%d_ARP_OCTAVING" % track),
+        ( "drop", "_T%d_ARP_DROP" % track),
+        ( "pattern", "_T%d_ARP_PATTERN" % track),
+        ( "autoreset", "_T%d_ARP_AUTORESET" % track),
+        ( "pitch", "_T%d_ARP_PITCH" % track),
+        ( "range", "_T%d_ARP_RANGE" % track),
+        ( "output", "_T%d_ARP_OUTPUT" % track),
+    ], "Arpeggiator for track %d" % track)
+
+    return patch
+
+
+def track_note_selects(track, for_arp):
+    if arguments["bq"] and not for_arp:
+        def sel(n):
+            return "_T%d_SEL_%d + _T%d_12TONE" % (track, n, track)
+        fill ="_T%d_12TONE" % track
+    else:
+        def sel(n):
+            return "_T%d_SEL_%d" % (track, n)
+        fill = 0
+
+    return [
+        ( "select1",     sel(1) ),
+        ( "select3",     sel(2) ),
+        ( "select5",     sel(3) ),
+        ( "select7",     sel(4) ),
+        ( "select9",     sel(5) ),
+        ( "select11",    sel(6) ),
+        ( "select13",    sel(7) ),
+        ( "selectfill1", fill   ),
+        ( "selectfill2", fill   ),
+        ( "selectfill3", fill   ),
+        ( "selectfill4", fill   ),
+        ( "selectfill5", fill   ),
+    ]
+
+
+def arpeggio_menu(track):
+    patch = ""
+
+    b = track_buttons["arp"]
+    patch += circuit("button", track_selected(track) + [
+        ( "button", "B" + b ),
+        ( "led", "L" + b ),
+        ( "output", "_T%d_ARP" % track ),
+    ], "Switch on/off arpeggio mode for track %d" % track)
+
+    patch += circuit("copy", [
+        ( "input", "1 - _T%d_ARP" % track ),
+        ( "output", "_T%d_ARP_OFF" % track ),
+    ], "Provide negated state of arpeggiator setting" )
+
+    select = [
+        ( "select", "_GLOBAL_FADER_SELECTION * _T%d_ARP" % track ),
+        ( "selectat", track + 10 )]
+
+    params = select + track_preset_params(track)
+
+    patch += circuit("motorfader", params + [
+        ( "fader", 1 ),
+        ( "notches", 17 ),
+        ( "ledcolor", COLOR_AUTORESET ),
+        ( "ledvalue", 1 ),
+        ( "output", "_T%d_ARP_AUTORESET" % track ),
+    ], "Auto reset arpeggiator after N number of steps")
+
+    patch += circuit("motorfader", params + [
+        ( "fader", 2 ),
+        ( "notches", 3 ),
+        ( "ledcolor", COLOR_DIRECTION ),
+        ( "ledvalue", 1 ),
+        ( "output", "_T%d_ARP_DIRECTION" % track ),
+    ], "Enable ping pong mode" )
+
+    patch += circuit("compare", [
+        ( "input", "_T%d_ARP_DIRECTION" % track ),
+        ( "compare", 2 ),
+        ( "ifequal", 1 ),
+        ( "else", 0 ),
+        ( "output", "_T%d_ARP_UPDOWN" % track ),
+    ], "Provide gate for reversed direction of arpeggio" )
+
+    patch += circuit("compare", [
+        ( "input", "_T%d_ARP_DIRECTION" % track ),
+        ( "compare", 1 ),
+        ( "ifequal", 1 ),
+        ( "else", 0 ),
+        ( "output", "_T%d_ARP_PINGPONG" % track ),
+    ], "Provide gate for ping pong of arpeggio" )
+
+    patch += circuit("motorfader", params + [
+        ( "fader", 3 ),
+        ( "notches", 5 ),
+        ( "ledcolor", COLOR_OCTAVE_SWITCH ),
+        ( "startvalue", 2 ),
+        ( "ledvalue", 1 ),
+        ( "output", "_T%d_ARP_OCTAVE_SWITCH" % track ),
+    ], "Seperate octave switch for the arpeggio" )
+
+    patch += circuit("motorfader", params + [
+        ( "fader", 4 ),
+        ( "notches", 2 ),
+        ( "ledcolor", COLOR_BUTTERFLY ),
+        ( "ledvalue", 1 ),
+        ( "output", "_T%d_ARP_BUTTERFLY" % track ),
+    ], "Enable butterfly mode" )
+
+    patch += circuit("motorfader", params + [
+        ( "fader", 5 ),
+        ( "notches", 3 ),
+        ( "ledcolor", COLOR_ARP_OCTAVING ),
+        ( "ledvalue", 1 ),
+        ( "output", "_T%d_ARP_OCTAVING" % track ),
+    ], "Select one of three octaving patterns" )
+
+    patch += circuit("copy", [
+        ( "input", "_T%d_ARP_OCTAVE_SWITCH * 1V - 2V" % track ),
+        ( "output", "_T%d_ARP_OCTAVE" % track ),
+    ], "Compute octave offset pitches from fader setting" )
+
+    patch += circuit("motorfader", params + [
+        ( "fader", 6 ),
+        ( "notches", 7 ),
+        ( "ledcolor", COLOR_PATTERN ),
+        ( "ledvalue", 1 ),
+        ( "output", "_T%d_ARP_PATTERN" % track ),
+    ], "Select the arpeggio pattern" )
+
+    patch += circuit("motorfader", params + [
+        ( "fader", 7 ),
+        ( "notches", 4 ),
+        ( "ledcolor", COLOR_DROP ),
+        ( "ledvalue", 1 ),
+        ( "output", "_T%d_ARP_DROP" % track ),
+    ], "Select one of four different drop patterns" )
+
+
+    patch += circuit("motorfader", params + [
+        ( "fader", 8 ),
+        ( "notches", 8 ),
+        ( "ledcolor", COLOR_CLOCKDIV_EVEN ),
+        ( "ledvalue", 1 ),
+        ( "output", "_T%d_ARP_CLOCKING" % track ),
+    ], "Select one of several clocking patterns" )
+
+    patch += unused_faders(9, select)
+
+    # 0: use the master clock
+    # 1: use the gates of the track
+    # 2: master clock * 3/2
+    # 3: master clock * 2
+    # 4: master clock * 3
+    # 5: master clock * 4
+    # 7: master clock * 6
+    # 6: master clock * 8
+
+    return patch
+
+
+
+def track_menu(track):
+    # clear: trigger for resetting things to defaults
+    # peace: trigger for resetting just those things that change
+    #        the pattern length
+    # peace is always triggered when clear is triggered, so at any
+    # setting there needs to be peace or clear attached to "clear"
+
+    patch = ""
+
+    # The track menu is replaced by the arpeggio menu if the arpeggio
+    # mode is on. This is the case if _T1_ARP is 1. or _T1_ARP_OFF
+    # is 0.
+
+    if arguments["arp"]:
+        select = [ ( "select", "_GLOBAL_FADER_SELECTION * _T%d_ARP_OFF" % track) ]
+    else:
+        select = [ ( "select", "_GLOBAL_FADER_SELECTION" ) ]
+
+    select += [ ( "selectat", track + 10 ) ]
+
+    # 1. Autoreset
+    patch += add_track_fader(
+            track,
+            fader = 1,
+            select = select,
+            pname = "par",
+            peace = True,
+            notches = 17,
+            startvalue = 0,
+            ledcolor = COLOR_AUTORESET,
+            outname = "AUTORESET",
+            comment = "Reset track after X clock ticks")
+
+    # 2. Shift steps (= offset)
+    patch += add_track_fader(
+            track,
+            fader = 2,
+            select = select,
+            pname = "pss",
+            peace = True,
+            notches = 17,
+            startvalue = 0,
+            ledcolor = COLOR_SHIFTSTEPS,
+            outname = "SHIFTSTEPS",
+            comment = "Shift the steps of the sequence by this number")
+
+    # 3. Octave switch
+    patch += add_track_fader(
+            track,
+            fader = 3,
+            select = select,
+            pname = "poct",
+            peace = False,
+            notches = 5,
+            startvalue = 2,
+            ledcolor = COLOR_OCTAVE_SWITCH,
+            outname = "OCTAVE",
+            comment = "Octave switch: -2, -1, 0, +1, +2")
+
+    # 4. Diatonic transposition
+    patch += add_track_fader(
+            track,
+            fader = 4,
+            select = select,
+            pname = "pdt",
+            peace = False,
+            notches = 15,
+            startvalue = 7,
+            ledcolor = COLOR_NOTESHIFT,
+            outname = "NOTESHIFT",
+            comment = "Diatonic transposition")
+
+    patch += circuit("sample", [
+        ( "input", "_T%d_NOTESHIFT" % track),
+        ( "sample", "_CLOCK" ),
+        ( "output", "_T%d_NOTESHIFT_CLOCKED" % track),
+    ], "Prevent diatonic transposition from happending between clock ticks" )
+
+    # 5. Activity
+    if arguments["act"]:
+        patch += add_track_fader(
+            track,
+            fader = 5,
+            select = select,
+            pname = "pact",
+            peace = False,
+            notches = 8,
+            startvalue = 0,
+            ledcolor = COLOR_ACTIVITY,
+            outname = "ACTIVITY",
+            comment = "Minimum activity a step needs to have to be played")
+
+    else:
+        patch += unused_fader(5, select)
+
+    # 6. Pattern: normal, backward, pingpong, >><, 2><, etc.
+    # We smuggle in two "patterns" that are none: reversed at
+    # position 1 and ping pong on position 2.
+    patch += add_track_fader(
+        track,
+        fader = 6,
+        select = select,
+        pname = "ppat",
+        peace = True,
+        notches = 10,
+        startvalue = 0,
+        ledcolor = COLOR_PATTERN,
+        outname = "PATTERN_FADER",
+        comment = "Movement pattern: normal, reverse, ping pong, >><, 2><, etc.")
+
+    patch += circuit("compare", [
+        ( "input", "_T%d_PATTERN_FADER" % track ),
+        ( "compare", 1 ),
+        ( "ifequal", 1 ),
+        ( "output", "_T%d_DIRECTION" % track ),
+    ], "Set the direction to reverse on fader position 1")
+
+    patch += circuit("compare", [
+        ( "input", "_T%d_PATTERN_FADER" % track ),
+        ( "compare", 2 ),
+        ( "ifequal", 1 ),
+        ( "output", "_T%d_PINGPONG" % track ),
+    ], "Enable ping pong on fader position 2")
+
+    # 7. + 8. Clock division
+    patch += clock_division_fader("EVEN", track, select, 7,
+        COLOR_CLOCKDIV_EVEN,
+        [ (1,8), (1,4), (1,2), (1,1), (2,1), (4,1), (8,1) ])
+    patch += clock_division_fader("ODD", track, select, 8,
+        COLOR_CLOCKDIV_ODD,
+        [ (1,7), (1,5), (1,3), (1,1), (3,1), (5,1), (7,1) ])
+
+    patch += circuit("copy", [
+        ( "input", "_T%d_CD_EVEN_DIV * _T%d_CD_ODD_DIV" % (track, track)),
+        ( "output", "_T%d_CD_DIV" % track),
+    ], "Compute clock division for track %d" % track)
+
+    patch += circuit("copy", [
+        ( "input", "_T%d_CD_EVEN_MULT * _T%d_CD_ODD_MULT" % (track, track)),
+        ( "output", "_T%d_CD_MULT" % track),
+    ], "Compute clock multiplier for track %d" % track)
+
+    patch += unused_faders(9, select)
+    return patch
+
+def unused_faders(first, select):
+    unusedfaders = num_faders() - first + 1
+    if unusedfaders:
+        return circuit("unusedfaders", select + [
+            ( "firstfader", first ),
+            ( "numfaders", unusedfaders ),
+        ], "Disable faders that are not in use" )
+    else:
+        return ""
+
+def unused_fader(fader, select):
+    return circuit("unusedfaders", select + [
+            ( "firstfader", fader ),
+        ], "Disable this unused fader ")
+
+
+
+def add_track_fader(track, fader, pname, select, peace,
+                    notches, startvalue, ledcolor, outname, comment):
+
+    patch = ""
+    output = "_T%d_%s" % (track, outname)
+    ledvalue = output + "_LED"
+
+    # Make LED reflect the current status
+    patch += circuit("compare", [
+        ( "input", output ),
+        ( "compare", startvalue ),
+        ( "ifequal", 1 ),
+        ( "else", 0.3 ),
+        ( "output", ledvalue ),
+    ], "Make LED brighter if the fader is in its default position" )
+
+
+    args = track_preset_params(track) + [
+        ( "notches", notches ),
+        ( "startvalue", startvalue ),
+        ( "ledcolor", ledcolor ),
+        ( "ledvalue", ledvalue ),
+    ]
+
+    # Clearing is complex. There are five possible sources
+    # of clearing (setting the startvalue)
+    # 1. The clear button (-> "peace")
+    # 2. The clear button with CTRL ("clear")
+    # 3. The clear button with long press (factory reset)
+    # 4. The button below the fader in the track menu
+    # 5. The button below the fader in the the performance menu
+
+    # Should this fader cleared on "peace"?
+    if peace:
+        clear_sources_1 = clear_on_peace(track)
+    else:
+        clear_sources_1 = clear_on_clear(track)
+
+    # Now the one or two buttons
+    if pname in performance_menu[track]:
+        clear_sources_2 = "_T%d_B%s_1 + _T%d_B%s_2" % \
+                            (track, pname, track, pname)
+    else:
+        clear_sources_2 = "_T%d_B%s_1" % (track, pname)
+
+    # Check if we need a mixer because of too many clear sources
+    if not clear_sources_1:
+        clear_button =  [ ( "clear", clear_sources_2 ) ]
+    else:
+        # need extra circuit
+        clear_source = "_T%d_CLEAR_%s" % (track, pname)
+        patch += circuit("mixer", [
+            ( "input1", clear_sources_1 ),
+            ( "input2", clear_sources_2 ),
+            ( "output", clear_source ),
+        ], "Combine all triggers for clearing" )
+        clear_button = [ ( "clear", clear_source ) ]
+
+    args += clear_button
+
+    if pname in performance_menu[track]:
+        share = [ ("sharewithnext", 1 ) ]
+    else:
+        share = [ ( "output", output ) ]
+
+    patch += circuit("motorfader", select + args + share + [
+        ( "fader", fader ),
+        ( "button", "_T%d_B%s_1" % (track, pname))
+    ], comment)
+
+    # Add this fader to the performance menu?
+    if pname in performance_menu[track]:
+        args = args + [
+            ( "select", "_GLOBAL_FADER_SELECTION" ),
+            ( "selectat", 98 ),
+            ( "fader", performance_menu[track][pname] ),
+            ( "button", "_T%d_B%s_2" % (track, pname) ),
+            ( "output", output )]
+        patch += circuit("motorfader", args, comment)
+
+    return patch
+
+
+def clock_division_fader(what, track, select, fader, color, divisions):
+    patch = add_track_fader(
+            track,
+            fader = fader,
+            select = select,
+            pname = "pcdodd" if (what == "ODD") else "pcdeven",
+            peace = False,
+            notches = len(divisions),
+            startvalue = divisions.index((1,1)),
+            ledcolor = color,
+            outname = "CD_%s" % what,
+            comment = "Clock division for %s divides/multipliers" % what.lower())
+
+    patch += circuit("switch",
+        [ ("input%d" % (n+1), divisions[n][0]) for n in range(len(divisions)) ] + [
+        ( "offset", "_T%d_CD_%s" % (track, what)),
+        ( "output", "_T%d_CD_%s_MULT" % (track, what)),
+    ], "Select the multiplier based on the fader position")
+
+    patch += circuit("switch",
+        [ ("input%d" % (n+1), divisions[n][1]) for n in range(len(divisions)) ] + [
+        ( "offset", "_T%d_CD_%s" % (track, what)),
+        ( "output", "_T%d_CD_%s_DIV" % (track, what)),
+    ], "Select the division based on the fader position")
+
+    return patch
+
+def section_cv_outputs():
+    patch = ""
+    if arguments["clockout"]:
+        patch += circuit("copy", [
+            ( "input", "_CLOCK" ),
+            ( "output", gate_outputs["clock"] ),
+        ], "Output the steady clock at " + gate_outputs["clock"])
+
+    if arguments["runclock"]:
+        patch += circuit("copy", [
+            ( "input", "_CLOCK * _RUNNING" ),
+            ( "output", gate_outputs["runclock"] ),
+        ], "Output the clock at " + gate_outputs["runclock"])
+
+    if arguments["divclock"]:
+        patch += circuit("clocktool", [
+            ( "clock", "_CLOCK" ),
+            ( "divide", "_CLOCK_DIV + 1" ),
+            ( "output", gate_outputs["divclock"] ),
+        ], "Output clock with custom clock division" )
+
+    if arguments["resetout"]:
+        patch += circuit("copy", [
+            ( "input", "_RESET" ),
+            ( "output",  gate_outputs["reset"] ),
+        ], "Output the reset signal at " + gate_outputs["reset"])
+
+    return patch
+
+def track_selected(track):
+    if arguments["tracks"] > 1:
+        return [
+            ( "select", "_SELECTED_TRACK" ),
+            ( "selectat", track ),
+        ]
+    else:
+        return []
+
+
+def collect_ios():
+    global ios
+    ios = {
+        "pots"       : [ "P1.1", "P1.2" ],
+        "buttons"    : [ "2.%d" % b for b in range(1, 33) ],
+        "gateouts"   : [],
+        "gateins"    : [],
+        "gateinouts" : [], # G8 gates
+        "cvins"      : [],
+        "cvouts"     : [],
+    }
+
+    if arguments["m"] in [ "master", "master+x7", "master18" ]:
+        ios["cvouts"] += [ "O1", "O2", "O3", "O4", "O5", "O6", "O7", "O8" ]
+
+    if arguments["m"] in [ "master", "master+x7"] :
+        ios["cvins"] += [ "I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8" ]
+
+    if arguments["m"] == "master18":
+        ios["gateins"] += [ "I1", "I2" ]
+        ios["gateouts"] += [ "G1.1", "G1.2", "G1.3", "G1.4" ]
+
+    if arguments["m"] == "master+x7":
+        ios["gateouts"] += [ "G9", "G10", "G11", "G12" ]
+
+    for g in range(arguments["g8"]):
+        if arguments["m"] == "master18":
+            gnum = g + 2
+        else:
+            gnum = g + 1
+        ios["gateinouts"] += [ "G%d.%d" % (gnum, n) for n in [ 1, 3, 5, 7, 2, 4, 6, 8 ] ]
+
+
+def track_is_midi(track):
+    return arguments["t%dout" % track] != "cvgate" or \
+        arguments["dualout"] >= track
+
+def track_is_cvgate(track):
+    t = arguments["t%dout" % track] 
+    if t == "cvgate" and arguments["dualout"] >= track:
+        bail_out("You have set the number of tracks with\n"
+                 "output to both MIDI and CV/gate to %d\n"
+                 "but track %d is not set to MIDI. Please\n"
+                 "set track %d to one of the MIDI output\n"
+                 "options." % (arguments["dualout"], track, track))
+
+    return t == "cvgate" or arguments["dualout"] >= track
+
+def get_pot(short, long):
+    if ios["pots"]:
+        return add_label(ios["pots"].pop(0), short, long)
+    else:
+        bail_out("You don't have enough pots for this configuration.")
+
+def get_cv_input(short, long):
+    if ios["cvins"]:
+        return add_label(ios["cvins"].pop(0), short, long)
+    else:
+        bail_out("There is no free CV input left for '%s'" % long)
+
+def get_cv_output(short, long):
+    if ios["cvouts"]:
+        return add_label(ios["cvouts"].pop(0), short, long)
+    else:
+        bail_out("There is no free CV output left for '%s'" % long)
+
+def get_gate_input(short, long):
+    if ios["gateins"]:
+        return add_label(ios["gateins"].pop(0), short, long)
+    elif ios["cvins"]: # Prefer CV inputs over G8, since they are "cheaper".
+        return get_cv_input(short, long)
+    elif ios["gateinouts"]:
+        return add_label(ios["gateinouts"].pop(0), short, long)
+    else:
+        bail_out("There is no gate or CV input left for '%s'" % long)
+
+
+def get_gate_output(short, long):
+    if ios["gateouts"]:
+        return add_label(ios["gateouts"].pop(0), short, long)
+    elif ios["gateinouts"]:
+        return add_label(ios["gateinouts"].pop(0), short, long)
+    else:
+        return get_cv_output(short, long)
+
+def have_midi():
+    return arguments["m"] in [ "master+x7", "master18" ]
+
+def clear_on_clear(track):
+    if arguments["clear"]:
+        return "_T%d_CLEAR" % track
+    else:
+        return None
+
+# Arguments for circuits that clear on CTRL-(Clear) or Factory reset
+def clear_on_clear_arguments(track):
+    if arguments["clear"]:
+        return [ ( "clear", clear_on_clear(track) ) ]
+    else:
+        return []
+
+def clear_on_peace(track):
+    if arguments["clear"]:
+        return "_T%d_CLEAR + _T%d_PEACE" % (track, track)
+    else:
+        return None
+
+# Arguments for circuits that clear on (Clear), CTRL-(Clear) or Factory reset
+def clear_on_peace_arguments(track):
+    if arguments["clear"]:
+        return [ ( "clear", clear_on_peace(track) )]
+    else:
+        return []
+
+
+def have_performance_menu():
+    return arguments["par"] \
+        or arguments["pss"] \
+        or arguments["poct"] \
+        or arguments["pdt"] \
+        or arguments["pact"] \
+        or arguments["ppat"] \
+        or arguments["pcdeven"] \
+        or arguments["pcdodd"]
+
+def have_fadermode_buttons():
+    return arguments["velo"] \
+        or arguments["randpitch"] \
+        or arguments["randgate"] \
+        or arguments["skiprep"] \
+        or arguments["gl"] \
+        or arguments["ratchets"] \
+        or arguments["act"]
+
+def have_midi_tracks():
+    for track in range(1, arguments["tracks"] + 1):
+        if track_is_midi(track):
+            return True
+    return False
+
+def have_cvgate_tracks():
+    for track in range(1, arguments["tracks"] + 1):
+        if track_is_cvgate(track):
+            return True
+    return False
+
+def have_cv_inputs():
+    return arguments["m"] in [ "master", "master+x7" ]
+
+def need_control_button():
+    return arguments["clear"] or arguments["presets"]
+
+def num_faders():
+    return int(arguments["nc"]) * 4
+
+def num_steps():
+    if arguments["steps"] == "auto":
+        return num_faders()
+    else:
+        return int(arguments["steps"])
+
+def num_pages():
+    steps = num_steps()
+    if steps < num_faders():
+        bail_out("If you have %d faders you need to select at least %d steps. "
+                 "you have selected just %d steps." % (
+                 num_faders(), num_faders(), steps))
+    return steps // num_faders()
+
+def get_button(preferred, short, long):
+    if len(ios["buttons"]) == 0:
+        bail_out("You don't have enough buttons on your B32 for all the selected features.")
+
+    button = None
+    if preferred:
+        for i in range(32):
+            b = "2.%d" % (((preferred - 1 + i) % 32) + 1)
+            try:
+                index = ios["buttons"].index(b)
+                button = ios["buttons"][index]
+                del ios["buttons"][index]
+                break
+            except:
+                pass
+        # one free button *must* be found
+
+    else:
+        button = ios["buttons"].pop(0)
+
+    add_label("B" + button, short, long)
+    return button
+
+
+# Main function
+
+arguments = set_synopsis(synopsis)
+print(create_patch())
+
