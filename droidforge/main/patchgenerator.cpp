@@ -1,5 +1,4 @@
 #include "patchgenerator.h"
-#include "globals.h"
 #include "tuning.h"
 
 #include <QFile>
@@ -8,8 +7,8 @@
 
 PatchGenerator::PatchGenerator(QString path, QString name)
     : _valid(false)
-    , _path(path)
     , _name(name)
+    , _path(path)
 {
     QStringList lines;
     QFile inputFile(_path);

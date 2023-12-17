@@ -1,0 +1,765 @@
+#!/usr/bin/python3
+
+# ----------------------------------------------------------------
+# BEWARE!
+#
+# This file has been created by the DROID Forge. It is overwritten
+# every time you start the Forge! If you want to edit this file,
+# you need to create a copy with a different name here. Otherwise
+# your changes will be lost.
+# ----------------------------------------------------------------
+
+from pg import *
+
+# Patch generator for the Mega Sequencer with 16 B32s. Currently
+# there is no options. If there is demand, we can improve this
+# in the future.
+
+synopsis = {
+    "title":
+        "Droid Megasequencer",
+    "description":
+        """This generater creates the patch for the Droid Megasequencer
+It needs one master, an X7 and 16 B32. The B32 need to be arranged in two
+rows of eight each, to form a 32x16 button matrix.""",
+    "sections" : [{
+        "title" : "Configuration",
+        "help" : "Currently there is no configuration option for this "
+                 "patch generator. ",
+        "options" : [],
+    }],
+    "presets" : [{
+        "name" : "default",
+        "title" : "Default (16 B32)",
+        "parameters" : {}
+    }]
+}
+
+# TODO:
+# - use new clearall in [droid] instead of clearall in all individual
+#   buttons and buttongroups
+
+# ------------------------------------------------------------------
+# This stuff can be adapted
+# ------------------------------------------------------------------
+
+# Slowest speed of the internal clock
+base_bpm        = 40
+
+scales = [
+    ( 0,  2,  4,  5,  7,  9, 11, 12, 14, 16, 17, 19, 21, 23, 24, 26 ), # 0: ionian
+    ( 0,  2,  3,  5,  7,  9, 10, 12, 14, 15, 17, 19, 21, 22, 24, 26 ), # 1: dorian
+    ( 0,  1,  3,  5,  7,  9, 10, 12, 13, 15, 17, 19, 21, 22, 24, 25 ), # 2: phrygian
+    ( 0,  2,  4,  6,  7,  9, 11, 12, 14, 16, 18, 19, 21, 23, 24, 26 ), # 3: lydian
+    ( 0,  2,  4,  5,  7,  9, 10, 12, 14, 16, 17, 19, 21, 22, 24, 26 ), # 4: mixolydian
+    ( 0,  2,  3,  5,  7,  8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26 ), # 5: aeolian
+    ( 0,  1,  3,  5,  6,  8, 10, 12, 13, 15, 17, 18, 20, 22, 24, 25 ), # 6: locrian
+    ( 0,  2,  3,  5,  7,  9, 11, 12, 14, 15, 17, 19, 21, 23, 24, 26 ), # 7: melodic minor
+
+    ( 0,  2,  4,  6,  7,  9, 10, 12, 14, 16, 18, 19, 21, 22, 24, 26 ), # 8: mixo #11
+    ( 0,  1,  3,  4,  6,  8, 10, 12, 13, 15, 16, 18, 20, 22, 24, 25 ), # 9: altered
+    ( 0,  2,  3,  5,  7,  8, 11, 12, 14, 15, 17, 19, 20, 23, 24, 26 ), # 10: harmonic minor
+    ( 0,  1,  4,  5,  7,  8, 10, 12, 13, 16, 17, 19, 20, 22, 24, 25 ), # 11: HM5 - spanish
+    ( 0,  2,  4,  6,  8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 ), # 12: whole tone
+    ( 0,  2,  3,  5,  6,  8,  9, 11, 12, 14, 15, 17, 18, 20, 21, 23 ), # 13: diminished 1
+    ( 0,  1,  3,  4,  6,  7,  9, 10, 12, 13, 15, 16, 18, 19, 21, 22 ), # 14: diminished 2
+    ( 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 ), # 15: chromatic
+]
+
+default_scale = 5 # aeolian
+
+
+# ------------------------------------------------------------------
+# Don't touch anything below this line
+#
+# BEWARE: The settings below currently only work if they are
+# unchanged. This whole script really only works with 16 B32s.
+# If you want to adapt it to 8 or 4 you need to change quite a bunch
+# of things.
+# ------------------------------------------------------------------
+
+# Number of physically present B32 modules (maximum is 16)
+num_b32s        = 16
+
+# There are two instruments: the white (1) and the blue (2)
+instruments = [ 1, 2 ]
+
+# Each row of buttons corresponds to one note (one pitch). Row number 1
+# is at the bottom and corresponds to the root note of the selected scale.
+rows = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
+
+# Steps per instrument/row
+steps = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
+
+
+# Location of various buttons
+menubutton      = "9.29"
+startstopbutton = "9.30"
+resetbutton     = "9.31"
+
+
+def section_header(text):
+    return "\n# ----------------------------------\n" \
+         + "# " + text + "\n" \
+         + "# ----------------------------------\n"
+
+def render_controllers():
+    return "".join([ "[b32]\n" ] * num_b32s)
+
+
+def render_clock():
+    return f"""
+# ----------------------------------------------
+# Master clock
+# There are four options for clocking the sequencer:
+# 1. Clock via USB MIDI
+# 2. Clock via TRS MIDI
+# 3. Internal clock
+# 4. Analog clock into I1
+# The resulting clock is use for the sequencer and in addition
+# output at G9 (on the X7) and via TRS and USB MIDI
+# ----------------------------------------------
+
+# Clock option 1: External clock via MIDI USB
+[midiin]
+    usb = 1
+    clock = _MIDI_USB_CLOCK
+    start = _MIDI_USB_IN_RESET
+
+# This circuit detects an incoming MIDI clock via USB. If the clock signal is
+# active at least once every two seconds, we give the MIDI clock precedence
+# over the internal clock.
+[clocktool]
+    clock = _MIDI_USB_CLOCK
+    gatelength = 2
+    output = _MIDI_USB_CLOCK_PRESENT
+
+# Clock option 2: External clock via MIDI TRS
+[midiin]
+    usb = 0
+    clock = _MIDI_DIN_CLOCK
+    start = _MIDI_DIN_IN_RESET
+
+# Detect the presence of the MIDI TRS clock
+[clocktool]
+    clock = _MIDI_DIN_CLOCK
+    gatelength = 2
+    output = _MIDI_DIN_CLOCK_PRESENT
+
+# Clock option 3: Internal master clock
+[lfo]
+  hz = {base_bpm / 60.0 * 4:.6f}
+  rate = _SPEEDINDEX / 150
+  square = _INTERNAL_CLOCK
+  level = _RUNNING
+
+[mixer]
+    input1 = _MIDI_USB_CLOCK_PRESENT * 1
+    input2 = _MIDI_DIN_CLOCK_PRESENT * 2
+    output = _MIDI_CLOCK_SWITCH
+
+# Select the clock to use. If both MID clocks are present, the clock switch
+# is 3.  In this case we use the USB MIDI clock.
+[switch]
+    input1 = _INTERNAL_CLOCK
+    input2 = _MIDI_USB_CLOCK
+    input3 = _MIDI_DIN_CLOCK
+    input4 = _MIDI_USB_CLOCK
+    offset = _MIDI_CLOCK_SWITCH
+    output1 = N1 # Fourth option: external analog clock in I1
+
+# Clock option 4: External analog clock
+[copy]
+    input = I1 * _RUNNING
+    output = _CLOCK
+
+# Make clock available at output G9
+[copy]
+  input = _CLOCK
+  output = G9
+
+# ----------------------------------------------
+# Reset
+# Similar to the clock there are various ways for resetting the sequencer
+# to step 1:
+# 1. Using START via MIDI USB
+# 2. Using START via MIDI TRS
+# 3. Manually: pressing the reset button in the menu page
+# 4. Externally analog with a trigger into I2
+# ----------------------------------------------
+
+[burst]
+    trigger = I2
+    output = _EXTERNAL_RESET
+
+[logic]
+    input1 = _MIDI_USB_IN_RESET
+    input2 = _MIDI_DIN_IN_RESET
+    input3 = _EXTERNAL_RESET
+    input4 = _MANUAL_RESET
+    or = _RESET
+
+"""
+
+
+
+def render_menu():
+    return (section_header("Menu")
+    + f"""
+[button]
+  button = B{menubutton}
+  shortpress = _MENUBUTTON
+  longpress = _MENUMODE
+  longpresstime = 0.2
+
+[copy]
+  input = _MENUMODE
+  output = R1
+
+[copy]
+  input = 1 - _MENUMODE
+  output = _MENUINACTIVE
+
+[copy]
+  input = _NORMALMODE * 0.2
+  output = R13
+
+[copy]
+  input = _ALTMODE * 0.4
+  output = R14
+
+[copy]
+  input = _ACCENTMODE * 0.6
+  output = R15
+
+[copy]
+  input = _SCALEMODE * 0.8
+  output = R17
+
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  button1 = B10.29
+  button2 = B10.30
+  button3 = B10.31
+  button4 = B10.32
+  led1 = L10.29
+  led2 = L10.30
+  led3 = L10.31
+  led4 = L10.32
+  value1 = _MENUINACTIVE
+  value2 = 1
+  value3 = 1
+  value4 = _MENUINACTIVE
+  buttonoutput1 = _NORMALMODE
+  buttonoutput2 = _ALTBUTTON
+  buttonoutput3 = _ACCENTBUTTON
+  buttonoutput4 = _SCALEMODE
+
+[logic]
+  input1 = _ALTBUTTON
+  input2 = _MENUINACTIVE
+  and = _ALTMODE
+
+[logic]
+  input1 = _ACCENTBUTTON
+  input2 = _MENUINACTIVE
+  and = _ACCENTMODE
+
+# Select the algoquencers when either of the three sequencer
+# buttons normal / alt / accents is active
+[logic]
+  input1 = _NORMALMODE
+  input2 = _ALTMODE +_ACCENTMODE
+  or = _SEQMODE
+
+[logic]
+  input1 = _CA_1
+  input2 = _CA_2
+  or = _CA
+
+[button]
+  select = _MENUMODE
+  clearall = _CA
+  startvalue = 1
+  button = B{startstopbutton}
+  led = L{startstopbutton}
+  output = _RUNNING
+
+[button]
+  select = _MENUMODE
+  states = 1
+  button = B{resetbutton}
+  led = L{resetbutton}
+  output = _MANUAL_RESET
+""" +
+
+    render_speed_control() +
+    render_transpose_control() +
+    render_empty_group(range(9, 17), range(1,  5), []) +
+    render_empty_group(range(9, 17), range(5,  9), []) +
+    render_empty_group(range(9, 17), range(9,  13), []) +
+    render_empty_group(range(9, 17), range(13, 17), []) +
+    render_empty_group(range(9, 17), range(17, 21), []) +
+    render_empty_group(range(11, 17), range(29, 33), [])
+    )
+
+
+def make_buttons(crange, brange, from_n=1):
+    buttons = ""
+    leds = ""
+    n = from_n
+    for c in crange:
+        for b in brange:
+            buttons += "  button%d = B%d.%d\n" % (n, c, b)
+            leds += "  led%d = L%d.%d\n" % (n, c, b)
+            n += 1
+    return buttons + leds
+
+
+
+def render_empty_group(crange, brange, extra):
+    code = """
+# Switch off LEDs of sequencer while in menu mode
+[buttongroup]
+  select = _MENUMODE
+  maxactive = 0
+  minactive = 0
+"""
+
+    n = 1
+    for c, b in extra:
+        code += "  led%d = L%d.%d\n" % (n, c, b)
+        n += 1
+
+    code += make_buttons(crange, brange, n)
+    return code
+
+
+def render_speed_control():
+    return f"""
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 17
+  output = _SPEEDINDEX
+""" + make_buttons(range(9,17), range(25, 29))
+
+def render_transpose_control():
+    return f"""
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 13
+  output = _TRANSPOSE
+""" + make_buttons(range(9,17), range(21,25))
+
+
+def render_instrument_menu(inst):
+    code = section_header(f"Instrument {inst} menu")
+    i = inst - 1
+    code += f"""
+
+# MIDI-Split into two channels
+[button]
+  select      = _MENUMODE
+  clearall    = _CA
+  button      = B{i*4+1}.1
+  led         = L{i*4+1}.1
+  offvalue    = 0
+  onvalue     = 1
+  output      = _MIDISPLIT_{inst}
+
+# Legato
+[button]
+  select      = _MENUMODE
+  clearall    = _CA
+  button      = B{i*4+1}.2
+  led         = L{i*4+1}.2
+  offvalue    = 0.5
+  onvalue     = 1.1
+  output      = _GATELENGTH_{inst}
+
+# Reset
+[button]
+  select      = _MENUMODE
+  button      = B{i*4+1}.3
+  led         = L{i*4+1}.3
+  output      = _RESET_{inst}
+  states      = 1
+
+# Clock x2 (double time)
+[button]
+  select      = _MENUMODE
+  clearall    = _CA
+  button      = B{i*4+1}.4
+  led         = L{i*4+1}.4
+  offvalue    = 1
+  onvalue     = 2
+  output      = _CLOCKMULT_{inst}
+
+# Clear (long press is a global facory reset)
+[button]
+  select      = _MENUMODE
+  button      = B{i*4+4}.4
+  led         = L{i*4+4}.4
+  output      = _CLEAR_{inst}
+  longpress   = _CA_{inst}
+  states      = 1
+"""
+
+    code += (
+        render_octave_control(inst) +
+        render_preset_control(inst) +
+        render_midi_channel_control(inst) +
+        render_volume_control(inst) +
+        render_nonaccent_velocity(inst) +
+        render_midi_modwheel(inst) +
+        render_clockdiv_control(inst) +
+        render_length_control(inst) +
+        render_activity_control(inst) +
+        render_instrument_unused(inst)
+    )
+    return code
+
+
+
+def render_length_control(inst):
+    return f"""
+# Pattern length
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 16
+  output = _LENGTH_{inst}
+""" + make_buttons(range((inst-1)*4+1, (inst-1)*4+5), range(25, 29))
+
+
+def render_volume_control(inst):
+    return f"""
+# Volume control
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 16
+  output = _VOLUME_{inst}
+""" + make_buttons(range((inst-1)*4+1, (inst-1)*4+5), range(9, 13))
+
+
+def render_nonaccent_velocity(inst):
+    return f"""
+# Velocity of notes without an accent
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 14
+  output = _NAVELO_{inst}
+""" + make_buttons(range((inst-1)*4+1, (inst-1)*4+5), range(13, 17))
+
+
+def render_midi_modwheel(inst):
+    return f"""
+# Modwheel (MIDI CC#1)
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 0
+  output = _MODWHEEL_{inst}
+""" + make_buttons(range((inst-1)*4+1, (inst-1)*4+5), range(17, 21))
+
+
+def render_midi_channel_control(inst):
+    return (f"""
+# Select the output MIDI channel for instrument {inst} In split mode, the lower
+# half of the sequencer sends to that channel plus one. Note: the output
+# range is 0 ... 15, not 1 ... 16. That saves 16 value inputs. We need to
+# add 1 later.
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = {(inst-1)*2+1}
+  output = _CH_{inst}
+""" + make_buttons(range((inst-1)*4+1, (inst-1)*4+5), range(5, 9))
+    + f"""
+# Move the MIDI channel into the range 1 ... 16
+[copy]
+  input = _CH_{inst} + 1
+  output = _CHANNEL_{inst}
+""")
+
+
+
+def render_octave_control(inst):
+    i = inst-1
+    return f"""
+# Octave switch
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 3
+  output = _OCTAVE_{inst}
+  button1 = B{i*4+2}.1
+  button2 = B{i*4+2}.2
+  button3 = B{i*4+2}.3
+  button4 = B{i*4+2}.4
+  button5 = B{i*4+3}.1
+  led1 = L{i*4+2}.1
+  led2 = L{i*4+2}.2
+  led3 = L{i*4+2}.3
+  led4 = L{i*4+2}.4
+  led5 = L{i*4+3}.1
+"""
+
+def render_preset_control(inst):
+    i = inst-1
+    return f"""
+# Presets
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 1
+  output = _PRESET_{inst}
+  button1 = B{i*4+3}.2
+  button2 = B{i*4+3}.3
+  button3 = B{i*4+3}.4
+  button4 = B{i*4+4}.1
+  button5 = B{i*4+4}.2
+  button6 = B{i*4+4}.3
+  led1 = L{i*4+3}.2
+  led2 = L{i*4+3}.3
+  led3 = L{i*4+3}.4
+  led4 = L{i*4+4}.1
+  led5 = L{i*4+4}.2
+  led6 = L{i*4+4}.3
+"""
+
+def render_activity_control(inst):
+    return f"""
+# Activity (will omit notes when not at maximum)
+[buttongroup]
+  select = _MENUMODE
+  clearall = _CA
+  startbutton = 16
+  output = _ACTIVITY_{inst}
+""" + make_buttons(range((inst-1)*4+1, (inst-1)*4+5), range(29, 33))
+
+
+def render_instrument_unused(inst):
+    return ""
+
+
+def render_clockdiv_control(inst):
+    return f"""
+# Clock divider from 1 to 16
+[buttongroup]
+  select      = _MENUMODE
+  clearall    = _CA
+  startbutton = 1
+  output      = _CLOCKDIV_{inst}
+""" + make_buttons(range((inst-1)*4+1, (inst-1)*4+5), range(21, 25)) + f"""
+
+[clocktool]
+  clock    = _CLOCK
+  multiply = _CLOCKMULT_{inst}
+  divide   = _CLOCKDIV_{inst} + 1
+  output   = _CLOCK_{inst}
+  reset    = _RESET + _RESET_{inst}
+"""
+
+
+def render_instrument_row(inst, row):
+    code = section_header("Instrument %d voice %d" % (inst, row))
+
+    code += f"""
+[algoquencer]
+  select          = _SEQMODE
+  clearpage       = _CLEAR_{inst}
+  clearall        = _CA
+  preset          = _PRESET_{inst}
+  reset           = _RESET + _RESET_{inst}
+  alternatebutton = _ALTBUTTON
+  accentbutton    = _ACCENTBUTTON
+  clock           = _CLOCK_{inst}
+  length          = _LENGTH_{inst} + 1
+  gate            = _G{inst}{row}
+  accenthigh      = 1.0
+  accentlow       = _NAVELO_{inst} / 30 + 0.5
+  accent          = _A{inst}{row}
+  activity        = _ACTIVITY_{inst} / 30
+  pattern         = {inst*16+row}
+  morphs          = 0.05
+  gatelength      = _GATELENGTH_{inst}
+"""
+
+    leds = ""
+    buttons = ""
+
+    for step in steps:
+        button = sequencer_button(inst, row, step)
+        if button == menubutton:
+            buttons += f"  button{step} = _MENUBUTTON\n"
+        else:
+            buttons += f"  button{step} = B{button}\n"
+        leds += f"  led{step} = L{button}\n"
+    code += buttons + leds
+    return code
+
+
+def sequencer_button(inst, row, step):
+    # The buttom row is row 1, the top row is row 16
+    controller = 9 if row <= 8 else 1
+    controller += (step-1) // 4
+    if inst == 2:
+        controller += 4
+    if row > 8:
+        row -= 8 # now 1 ... 8
+    r = 8 - row # now 7 ... 0
+    button = r * 4 + (step - 1) % 4 + 1
+    return f"{controller}.{button}"
+
+
+def render_midiout(inst, split):
+    code = f"""
+# MIDI output for instrument {inst} {"row 9-16" if split else "row 1-8"}
+[midiout]
+  usb               = 1
+  trs               = 1
+  volume            = _VOLUME_{inst} / 15
+  activesensing     = 0
+  running           = _RUNNING
+  ccnumber1         = 1
+  cc1               = _MODWHEEL_{inst} / 15
+  clock             = _CLOCK
+"""
+
+    if split:
+        code += f"  channel           = _CHANNEL_{inst} + _MIDISPLIT_{inst}\n"
+    else:
+        code += f"  channel           = _CHANNEL_{inst}\n"
+
+    n = ""
+    ng = ""
+    ngv = ""
+    for v in range(1,9):
+        s = v + 8 * split
+        n += f"  note{v}             = _O{inst} + _N{s}\n"
+        ng += f"  notegate{v}         = _G{inst}{s}\n"
+        ngv += f"  notegatevelocity{v} = _A{inst}{s}\n"
+    return code + n + ng + ngv
+
+def render_instrument(inst):
+    code = render_instrument_menu(inst)
+    for row in rows:
+        code += render_instrument_row(inst, row)
+    code += render_instrument_midi_output(inst)
+    return code
+
+def render_instrument_midi_output(inst):
+    return (section_header(f"Instrument {inst} MIDI output")
+        + f"""
+[mixer]
+  input1 = _OCTAVE_{inst} * 12
+  input2 = _TRANSPOSE
+  output = _O{inst}
+""" + render_midiout(inst, 0)
+    + render_midiout(inst, 1))
+
+
+def render_scalemode():
+    code = section_header("Scale mode")
+    code += render_default_scale_buttons()
+    for row in rows:
+        code += render_scale_step(row)
+    return code
+
+
+def render_default_scale_buttons():
+    code = """
+[logic]
+  input1 = B8.4  + B16.4
+  input2 = B8.8  + B16.8
+  input3 = B8.12 + B16.12
+  input4 = B8.16 + B16.16
+  input5 = B8.20 + B16.20
+  input6 = B8.24 + B16.24
+  input7 = B8.28 + B16.28
+  input8 = B8.32 + B16.32
+  or = _LOAD_SCALE
+"""
+
+    for scalenote in range(16):
+        code += "\n[mixer]\n"
+        i = 1
+        for snr, scale in enumerate(scales):
+            controller = 16 if snr >= 8 else 8
+            button = ((snr % 8) * 4) + 4
+            dif = scale[scalenote] - scales[default_scale][scalenote]
+            if dif != 0:
+                if i == 8:
+                    code += f"""  output = _SUBMIX_{scalenote+1}
+
+[mixer]
+  input1 = _SUBMIX_{scalenote+1}
+"""
+                    i = 2
+
+                code += f"  input{i} = B{controller}.{button} * {dif}\n"
+                i += 1
+
+        code += f"  output = _SN_{scalenote+1}\n"
+
+    for snr, scale in enumerate(scales):
+        controller = 16 if snr >= 8 else 8
+        button = ((snr % 8) * 4) + 4
+        code += f"""
+[lfo]
+  hz = 0.66
+  bipolar = 0
+  triangle = _SLED_{snr+1}
+  phase = {1.0 - (snr / 16):.3f}
+
+[select]
+  select = _SCALEMODE
+  input = _SLED_{snr+1}
+  output = L{controller}.{button}
+"""
+    return code
+
+
+def render_scale_step(row):
+    code = f"""
+# Select the note that is played by the sequencer row {row}
+[buttongroup]
+  select = _SCALEMODE
+  clearall = _LOAD_SCALE * _SCALEMODE + _CA
+  startbutton = _SN_{row} + {scales[default_scale][row-1]+1}
+  output = _N{row}
+"""
+
+    buttons = ""
+    leds = ""
+    for b in range(31):
+        controller = 1 + (b // 4 + (((16-row) // 8) * 8))
+        button = 1 + (b % 4) + (((16-row) % 8) * 4)
+        if (controller, button) == menubutton:
+            buttons += "  button%d = _MENUBUTTON\n" % (b+1)
+        else:
+            buttons += "  button%d = B%d.%d\n" % (b+1, controller, button)
+        leds += "  led%d = L%d.%d\n" % (b+1, controller, button)
+    code += buttons
+    code += leds
+    return code
+
+# MAIN
+arguments = set_synopsis(synopsis)
+
+patch = (
+  render_controllers() +
+  render_clock() +
+  render_menu() +
+  render_scalemode())
+
+for inst in instruments:
+    patch += render_instrument(inst)
+
+sys.stdout.write(patch)

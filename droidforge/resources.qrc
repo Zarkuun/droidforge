@@ -357,5 +357,8 @@
         <file>images/faceplates/master18.png</file>
         <file>images/circuits/unusedfaders.png</file>
         <file>images/circuits/case.png</file>
+        <file>pg/megaseq</file>
+        <file>pg/pg.py</file>
+        <file>pg/sequencer</file>
     </qresource>
 </RCC>
