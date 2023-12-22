@@ -1060,7 +1060,6 @@ void PatchOperator::restoreBackup(const QString &backupPath)
 void PatchOperator::createBackup()
 {
     QString backupname = backupFilePath(patch->getFilePath());
-    shout << "backupname: " << backupname;
     patch->saveToFile(backupname);
 }
 void PatchOperator::removeBackup()

@@ -1,5 +1,4 @@
 #include "iconmarker.h"
-#include "colorscheme.h"
 #include "iconbase.h"
 #include "tuning.h"
 
@@ -9,7 +8,6 @@
 IconMarker::IconMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip)
     : type(type)
     , position(pos)
-    , image(IMAGE(iconName()))
 {
     setZValue(60);
     setToolTip(toolTip);
@@ -26,9 +24,7 @@ void IconMarker::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWid
 {
     painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QRectF r(4, 4, size()-8, size()-8);
-    // painter->setRenderHint(QPainter::Antialiasing);
-            //| QPainter::SmoothPixmapTransform);
-    painter->drawImage(r, image);
+    painter->drawImage(r, IMAGE(iconName()));
 }
 
 QString IconMarker::iconName() const

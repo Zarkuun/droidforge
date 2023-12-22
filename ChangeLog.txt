@@ -14,6 +14,8 @@
 	  special hidden files in "DROID Patches". If you start the Forge
 	  after a crash and such a file is present, you are asked for a
 	  real file to save it to (found by @eising).
+	* Fix crash when there is a switch from dark mode to light mode or
+	  vice versa if a program icon is currently visible (found by @eising).
 
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)

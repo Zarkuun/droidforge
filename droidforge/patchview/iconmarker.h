@@ -18,7 +18,6 @@ class IconMarker : public QGraphicsItem
 {
     icon_marker_t type;
     CursorPosition position;
-    const QImage &image;
 
 public:
     IconMarker(const CursorPosition &pos, icon_marker_t type, const QString &toolTip);
