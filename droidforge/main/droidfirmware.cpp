@@ -329,6 +329,7 @@ QMap<double, QString> DroidFirmware::jackValueTable(QString circuit, QString whe
         QString desc = jackinfo.toObject()["description"].toString();
         QStringList parts = desc.split('\n');
         for (auto &line: parts) {
+            line.replace(replaceT, "<tt>\\1</tt>");
             auto match = regJacktable.match(line);
             if (!match.hasMatch())
                 match =  regJacktableE.match(line);
@@ -567,4 +568,5 @@ void DroidFirmware::replaceLatexSymbols(QString &s) const
     s.replace("\\sharp", "♯");
     s.replace("\\flat", "♭");
     s.replace("\\#", "#");
+    s.replace("\\infty", "∞");
 }
