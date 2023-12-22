@@ -6,7 +6,8 @@
 	* Fix freeze when sorting the parameters of a circuit when the parameter
 	  names contain two numbers, like "outputmix9in13".
 	* Fix popping up G8 when from the X7 a gate is used (found by @Seaweed).
-	* Fix clicking and hiliting of the RGB-LEDs on G8 and X7
+	* Fix clicking and hiliting of the RGB-LEDs on G8 and X7 (found by
+	  @reheller + @Steven Nance)
 
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)
