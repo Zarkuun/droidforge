@@ -20,6 +20,13 @@
 	  patch. Circuits with presets (such as pot or button) can only be
 	  up to 255 times in a patch. This check avoids confusion when the
 	  Forge shows the patch as OK but the Droid master will not load it.
+	* Fix the problem with the Forge being unresponsive on Windows systems
+	  with network drives that are not connected.  When "Poll regularly for
+	  DROID SD card" is unchecked, all drives will only be scanned until the
+	  DROID SD-Card path is found. This path will then be stored in the
+	  settings and other drives won't be polled anymore.  The stored path
+	  can be reset by checking "Poll regularly for DROID SD card" again and
+	  restart the Forge. This patch was contributed by @Sublett.
 
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)
