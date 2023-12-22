@@ -38,6 +38,7 @@ class PatchOperator : public QObject
     int lastShownStatusDumpNr;
     QMenu *dumpsMenu;
     QAction *actionLoadDumps;
+    unsigned untitledBackupNumber;
 
 public:
     explicit PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch, QString initialFilename, const Patch *initialRack=0);
@@ -45,6 +46,7 @@ public:
     QMenu *statusDumpsMenu() { return dumpsMenu; };
     void createStatusDumpsMenu();
     void loadFile(const QString &filename, int how);
+    void loadUntitledBackup(const QString &filename);
     bool checkModified();
     void jumpTo(int sectionIndex, const CursorPosition &pos);
     void clearSelection();
@@ -56,6 +58,7 @@ public:
     bool isPatchingFrom(const CursorPosition &pos) const;
     void addToRecentFiles(const QString &path);
     void openFileFromExternal(const QString &filePath);
+    static QString untitledBackupPath(unsigned number);
 
 protected:
     PatchSection *section() { return patch->currentSection(); };
@@ -119,6 +122,7 @@ private:
     void showSource(const QString &title, QString source);
     bool saveAndCheck(QString path);
     QString backupFilePath(QString path);
+    unsigned nextFreeUntitledBackup();
     void restoreBackup(const QString &backupPath);
     void createBackup();
     void removeBackup();

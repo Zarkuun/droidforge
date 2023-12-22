@@ -1,11 +1,9 @@
 #include "globals.h"
 #include "iconbase.h"
 #include "mainwindow.h"
-#include "parseexception.h"
 #include "patch.h"
 #include "rackview.h"
 #include "modulebuilder.h"
-#include "patchparser.h"
 #include "tuning.h"
 #include "os.h"
 #include "updatehub.h"
@@ -121,6 +119,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     connect(the_colorscheme, &ColorScheme::changed, theHub(), &UpdateHub::patchModified);
 
     the_windowlist->add(this);
+
     // setAcceptDrops(true); Geht irgendwie noch nicht
 }
 MainWindow::~MainWindow()

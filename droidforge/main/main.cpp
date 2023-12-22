@@ -1,9 +1,6 @@
 #include "globals.h"
-#include "parseexception.h"
 #include "mainwindow.h"
-#include "patch.h"
 #include "cablecolorizer.h"
-#include "updatehub.h"
 #include "clipboard.h"
 #include "colorscheme.h"
 #include "usermanual.h"
@@ -15,6 +12,7 @@
 #include <QSettings>
 #include <QFile>
 #include <QMessageBox>
+#include <QFileDialog>
 
 // http://www.mardy.it/blog/2019/10/implementing-open-with-on-macos-with-qt.html
 
@@ -72,6 +70,33 @@ int main(int argc, char *argv[])
     }
     dir.cd(PATCH_DIRECTORY_NAME);
     QDir::setCurrent(dir.absolutePath());
+
+    for (unsigned n=1; n < MAX_UNTITLED_BACKUPS; n++) {
+        QString path = PatchOperator::untitledBackupPath(n);
+        QFile file(path);
+        if (file.exists()) {
+            QMessageBox box(
+                QMessageBox::Warning,
+                TR("Backup of untitled patch detected!"),
+                TR("There is a backup file of a patch that has never been saved, "
+                   "and the Forge seems to have crashed or was killed otherwise. "
+                   "Do you want to save that backup into a real patch file? "),
+                QMessageBox::Ok | QMessageBox::Cancel);
+
+            if (box.exec() == QMessageBox::Ok)
+            {
+                QString newFilePath = QFileDialog::getSaveFileName(
+                    0,
+                    TR("Save patch to file"),
+                    "",
+                    TR("DROID patch files (*.ini)"));
+
+                if (!newFilePath.isEmpty())
+                    file.rename(newFilePath);
+            }
+        }
+    }
+
 
     QString initialFilename;
     QSettings settings;

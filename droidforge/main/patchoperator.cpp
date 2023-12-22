@@ -103,6 +103,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     , statusDumpPresent(false)
     , x7Present(false)
     , lastShownStatusDumpNr(-1)
+    , untitledBackupNumber(0)
 {
     dumpsMenu = new QMenu(tr("Status dumps"));
     updateStatusDumpsMenu(false);
@@ -891,6 +892,8 @@ void PatchOperator::save()
 }
 void PatchOperator::saveAs()
 {
+    QString oldBackupPath = backupFilePath(patch->getFilePath());
+
     QString newFilePath = QFileDialog::getSaveFileName(
                 mainWindow,
                 tr("Save patch to new file"),
@@ -906,8 +909,12 @@ void PatchOperator::saveAs()
             otherWindow->bringToFront();
             return;
         }
-        if (saveAndCheck(newFilePath))
+        if (saveAndCheck(newFilePath)) {
             addToRecentFiles(newFilePath);
+            QFile file(oldBackupPath);
+            if (file.exists())
+                file.remove();
+        }
         the_windowlist->update();
     }
 }
@@ -929,7 +936,28 @@ bool PatchOperator::saveAndCheck(QString path)
 }
 QString PatchOperator::backupFilePath(QString path)
 {
-    return path + ".save";
+    if (path != "") // File has already a name
+        return path + ".save";
+    else {
+        if (!untitledBackupNumber)
+            untitledBackupNumber = nextFreeUntitledBackup();
+        return untitledBackupPath(untitledBackupNumber);
+    }
+}
+QString PatchOperator::untitledBackupPath(unsigned int number)
+{
+    return QString(UNTITLED_BACKUP_FILENAME).arg(number);
+
+}
+unsigned int PatchOperator::nextFreeUntitledBackup()
+{
+    for (unsigned n=1; n < MAX_UNTITLED_BACKUPS; n++) {
+        QString path = untitledBackupPath(n);
+        QFile file(path);
+        if (!file.exists())
+            return n;
+    }
+    return 0;
 }
 void PatchOperator::openEnclosingFolder()
 {
@@ -1032,6 +1060,7 @@ void PatchOperator::restoreBackup(const QString &backupPath)
 void PatchOperator::createBackup()
 {
     QString backupname = backupFilePath(patch->getFilePath());
+    shout << "backupname: " << backupname;
     patch->saveToFile(backupname);
 }
 void PatchOperator::removeBackup()

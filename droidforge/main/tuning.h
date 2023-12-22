@@ -1,7 +1,6 @@
 #ifndef TUNING_H
 #define TUNING_H
 
-#include "os.h"
 
 #define APPLICATION_NAME                     "DROID Forge"
 #ifdef QT_DEBUG
@@ -20,6 +19,8 @@
 #define MAX_DUMP_FILE_NUMBER                 99 // from Droid:tuning.h
 #define SHOP_PRODUCTS_URL                    "https://shop.dermannmitdermaschine.de/products/"
 #define PATCH_DIRECTORY_NAME                 "DROID Patches"
+#define UNTITLED_BACKUP_FILENAME             ".untitled-%1.save"
+#define MAX_UNTITLED_BACKUPS                 100
 #define SECTION_DEFAULT_NAME                 TR("Untitled section")
 #define CIRCUIT_ICON_PATH                    ":images/circuits/"
 #define ICON_PATH_TEMPLATE                   ":images/icons/%1/%2.png"
