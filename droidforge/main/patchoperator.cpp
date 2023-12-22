@@ -181,7 +181,8 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     }
     else {
         // reset SDCard path in settings. In case of path change.
-        pollingSettings.setValue(SD_PATH_SETTINGS_KEY_NAME, "");
+        QSettings settings;
+        settings.setValue(SD_PATH_SETTINGS_KEY_NAME, "");
 
         QTimer *sdTimer = new QTimer(this);
         connect(sdTimer, &QTimer::timeout, this, &PatchOperator::updateSDAndX7State);
@@ -564,7 +565,8 @@ QString PatchOperator::sdCardDirSansPolling()
             if (storage.isValid() && storage.isReady() && !storage.isReadOnly()) {
                 if (isDroidVolume(storage.rootPath())) {
                     // found SDCard, safe to settings and return it
-                    pollingSettings.setValue(SD_PATH_SETTINGS_KEY_NAME, storage.rootPath());
+                    QSettings settings;
+                    settings.setValue(SD_PATH_SETTINGS_KEY_NAME, storage.rootPath());
                     return storage.rootPath();
                 }
             }
@@ -697,13 +699,16 @@ bool PatchOperator::isDroidVolume(const QString &rootPath) const
     return dir.exists("DROIDCAL.BIN") || dir.exists("DROIDSTA.BIN");
 }
 bool PatchOperator::pollSD() const {
-    return pollingSettings.value(POLL_SD_SETTINGS_KEY_NAME, SETTING_POLL_DEFAULT).toBool();
+    QSettings settings;
+    return settings.value(POLL_SD_SETTINGS_KEY_NAME, SETTING_POLL_DEFAULT).toBool();
 }
 bool PatchOperator::pollX7() const {
-    return pollingSettings.value(POLL_X7_SETTINGS_KEY_NAME, SETTING_POLL_DEFAULT).toBool();
+    QSettings settings;
+    return settings.value(POLL_X7_SETTINGS_KEY_NAME, SETTING_POLL_DEFAULT).toBool();
 }
 QString PatchOperator::savedSDCardDir() const {
-    return pollingSettings.value(SD_PATH_SETTINGS_KEY_NAME, "").toString();
+    QSettings settings;
+    return settings.value(SD_PATH_SETTINGS_KEY_NAME, "").toString();
 }
 void PatchOperator::updateSDAndX7State()
 {

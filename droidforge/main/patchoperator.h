@@ -8,7 +8,6 @@
 #include "patcheditengine.h"
 #include "editoractions.h"
 #include "patchparser.h"
-#include "os.h"
 
 #ifdef Q_OS_MAC
 #include "macmidihost.h"
@@ -133,7 +132,6 @@ private:
     void removeBackup();
     bool bringToFrontIfOpen(const QString &filePath, bool inOthers);
     void updateStatusDumpsMenu(bool newDumpAvailable);
-    QSettings pollingSettings;
     bool pollSD() const;
     bool pollX7() const;
     QString savedSDCardDir() const;
