@@ -5,6 +5,7 @@
 	* Add support for the new E4 encoder controller
 	* Fix freeze when sorting the parameters of a circuit when the parameter
 	  names contain two numbers, like "outputmix9in13".
+	* Fix popping up G8 when from the X7 a gate is used (found by @Seaweed).
 
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)

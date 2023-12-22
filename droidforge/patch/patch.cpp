@@ -739,7 +739,8 @@ unsigned Patch::neededG8s()
         auto &atom = *it;
         if (atom->isRegister()) {
             AtomRegister *reg = (AtomRegister *)atom;
-            if (reg->getRegisterType() == REGISTER_GATE) {
+            if (reg->getRegisterType() == REGISTER_GATE &&
+                reg->getNumber() < 9 /* don't confuse with X7 */) {
                 highest_g8 = 1;
             }
         }
