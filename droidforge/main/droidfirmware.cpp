@@ -368,7 +368,7 @@ unsigned DroidFirmware::numGlobalRegisters(char registerType) const
     case REGISTER_NORMALIZE: return 8;
     case REGISTER_OUTPUT:    return 8;
     case REGISTER_GATE:      return 12;
-    case REGISTER_RGB_LED:   return 32;
+    case REGISTER_RGB_LED:   return 56;
     case REGISTER_EXTRA:     return 1;
     default:                 return 0;
     }

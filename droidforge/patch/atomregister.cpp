@@ -182,8 +182,8 @@ bool AtomRegister::needsX7() const
 
     if (registerType == REGISTER_RGB_LED
             && controller == 0
-            && number >= 25
-            && number <= 32)
+            && number >= 49
+            && number <= 56)
         return true;
 
     return false;

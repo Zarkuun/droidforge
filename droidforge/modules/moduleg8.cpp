@@ -8,11 +8,10 @@ unsigned ModuleG8::numRegisters(register_type_t type) const
     else
         return 0;
 }
-
 unsigned ModuleG8::numberOffset(register_type_t type) const
 {
     if (type == REGISTER_RGB_LED)
-        return 16;
+        return 16 + 8 * (g8Number() - 1);
     else
         return 0;
 }
@@ -20,6 +19,8 @@ AtomRegister ModuleG8::registerAtom(register_type_t type, unsigned number) const
 {
     if (type == REGISTER_GATE)
         return AtomRegister(type, 0, g8Number(), number); // eg. G3.8
+    else if (type == REGISTER_RGB_LED)
+        return AtomRegister(type, 0, 0, number + numberOffset(type)); // eg. R17
     else
         return Module::registerAtom(type, number);
 }
@@ -43,7 +44,6 @@ QPointF ModuleG8::registerPosition(register_type_t type, unsigned number) const
     }
     return QPointF(x, y);
 }
-
 float ModuleG8::registerSize(register_type_t type, unsigned) const
 {
     if (type == REGISTER_RGB_LED)
@@ -51,12 +51,10 @@ float ModuleG8::registerSize(register_type_t type, unsigned) const
     else
         return CONTROL_JACK_SIZE;
 }
-
 float ModuleG8::labelDistance(register_type_t, unsigned) const
 {
     return -2.45;
 }
-
 float ModuleG8::rectAspect(register_type_t type) const
 {
     if (type == REGISTER_RGB_LED)

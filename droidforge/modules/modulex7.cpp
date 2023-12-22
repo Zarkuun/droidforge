@@ -60,7 +60,7 @@ unsigned ModuleX7::numberOffset(register_type_t type) const
     if (type == REGISTER_GATE)
         return 8;
     else if (type == REGISTER_RGB_LED)
-        return 24;
+        return 48;
     else
         return 0;
 }

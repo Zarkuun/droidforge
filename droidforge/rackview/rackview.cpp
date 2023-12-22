@@ -488,6 +488,8 @@ void RackView::updateRegisterHilites()
     RegisterList usedRegisters;
     patch->collectUsedRegisterAtoms(usedRegisters);
 
+    // Collect registers that are in relation to the current
+    // cursor position
     RegisterList currentRegisters;
     const Circuit *circuit = section()->currentCircuit();
     if (circuit)
@@ -516,14 +518,25 @@ void RackView::updateRegisterHilites()
             g8 = module->data(DATA_INDEX_G8_NUMBER).toInt();
 
         module->clearHilites();
+        unsigned prefix;
         for (auto ar: usedRegisters)
         {
-            if (ar.getController() == controller && ar.getG8Number() == g8)
+            if (ar.getRegisterType() == REGISTER_RGB_LED)
+                prefix = 0;
+            else
+                prefix = g8;
+
+            if (ar.getController() == controller && ar.getG8Number() == prefix)
                 module->hiliteRegisters(1, ar.getRegisterType(), ar.getNumber());
         }
         for (auto ar: currentRegisters)
         {
-            if (ar.getController() == controller && ar.getG8Number() == g8)
+            if (ar.getRegisterType() == REGISTER_RGB_LED)
+                prefix = 0;
+            else
+                prefix = g8;
+
+            if (ar.getController() == controller && ar.getG8Number() == prefix)
                 module->hiliteRegisters(2, ar.getRegisterType(), ar.getNumber());
         }
         module->update();
