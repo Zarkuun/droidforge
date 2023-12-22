@@ -594,10 +594,12 @@ void Patch::updateProblems()
         }
     }
 
-    // Check memory consumption of circuits
+    // Check memory consumption of circuits, also their count
     unsigned usedMemory = 0;
     unsigned availableMemory = the_firmware->availableMemory();
     unsigned sectionIndex = 0;
+    QMap<QString, unsigned> circuitCounts;
+
     for (auto section: sections) {
         unsigned circuitNr = 0;
         for (auto circuit: section->getCircuits()) {
@@ -611,6 +613,20 @@ void Patch::updateProblems()
                     problems.append(prob);
                 }
                 usedMemory += circuit->memoryFootprint();
+                QString c = circuit->getName();
+                if (!circuitCounts.contains(c))
+                    circuitCounts[c] = 0;
+                circuitCounts[c] ++;
+                if (circuitCounts[c] == 255) { // one too much
+                    if (the_firmware->circuitIsPersisted(c)) {
+                        PatchProblem *prob = new PatchProblem(
+                                    ROW_CIRCUIT, 0,
+                                    TR("You have too many circuits of this type. The maximum number is 255."));
+                        prob->setCircuit(circuitNr);
+                        prob->setSection(sectionIndex);
+                        problems.append(prob);
+                    }
+                }
             }
             circuitNr++;
         }

@@ -16,6 +16,10 @@
 	  real file to save it to (found by @eising).
 	* Fix crash when there is a switch from dark mode to light mode or
 	  vice versa if a program icon is currently visible (found by @eising).
+	* Show problem, when there are too many circuits of a type in the
+	  patch. Circuits with presets (such as pot or button) can only be
+	  up to 255 times in a patch. This check avoids confusion when the
+	  Forge shows the patch as OK but the Droid master will not load it.
 
 1.2.1:
 	* Fix crash when pasting the contents of a cell (e.g. a cable name)

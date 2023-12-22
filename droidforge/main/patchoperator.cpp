@@ -254,6 +254,7 @@ bool PatchOperator::checkModified()
             return !patch->isModified();
 
         case QMessageBox::Discard:
+            removeBackup();
             return true;
 
         default: // QMessageBox::Cancel:

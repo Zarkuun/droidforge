@@ -68,6 +68,11 @@ unsigned DroidFirmware::circuitMemoryFootprint(QString circuit) const
 {
     return circuits[circuit].toObject()["ramsize"].toInt();
 }
+bool DroidFirmware::circuitIsPersisted(QString circuit) const
+{
+    // All circuits that have presets (und thus a preset input) are persisted.
+    return jackIsInput(circuit, "preset");
+}
 unsigned DroidFirmware::jackMemoryFootprint(QString circuit, QString jack) const
 {
     QJsonValue jackinfo = findJack(circuit, "inputs", jack);
