@@ -16,13 +16,27 @@ PatchGeneratorBase::PatchGeneratorBase(QDir directory)
 }
 void PatchGeneratorBase::deployGenerators()
 {
+    QString failed;
+
     QDirIterator it(":pg");
     while (it.hasNext()) {
         QString ressourcePath = it.next();
         auto parts = ressourcePath.split("/");
         QString fileName = parts[1];
         QString absPath = _directory.absoluteFilePath(fileName);
-        QFile::copy(ressourcePath, absPath);
+        if (QFile::exists(absPath))
+            QFile::remove(absPath);
+        if (!QFile::copy(ressourcePath, absPath))
+            failed += absPath + "\n";
+    }
+
+    if (failed != "") {
+        QMessageBox::warning(
+            0,
+            TR("Failed to install patch generators"),
+            TR("The following patch generator files "
+               "could not be installed:\n\n") + failed,
+            QMessageBox::Ok);
     }
 }
 void PatchGeneratorBase::loadGenerators()

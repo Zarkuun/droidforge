@@ -1874,7 +1874,6 @@ def track_section(track):
         paging += [
             ( "copy", "_T%d_COPY_BUTTON * _NO_CONTROL" % track ),
             ( "paste", "_T%d_COPY_BUTTON * _CONTROL" % track ),
-            ( "copymode", 1 ),
         ]
 
 
