@@ -1,3 +1,7 @@
+1.2.3-m18-beta4:
+	* Patch generator: Fix saving of presets (it would always save
+	  into Preset A, even if the button for B or C was pressed).
+
 1.3:
     See releases notes of Droid blue-4 firmware
 
