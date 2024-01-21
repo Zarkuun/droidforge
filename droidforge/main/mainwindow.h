@@ -119,7 +119,7 @@ private:
     void createViewMenu();
     void createHelpMenu();
     void createVideoActions(QMenu *menu);
-    void createWindowsMenu();
+    void createWindowMenu();
     void createToolbar();
     void createStatusBar();
     void updateStatusbarMessage();
