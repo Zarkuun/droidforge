@@ -255,7 +255,7 @@ void MainWindow::createMenus()
     createEditMenu();
     createSectionMenu();
     createViewMenu();
-    createWindowsMenu();
+    createWindowMenu();
     createHelpMenu();
 
     // Add actions to the main window that have no menu entry
@@ -509,7 +509,7 @@ void MainWindow::createVideoActions(QMenu *menu)
         menu->addAction(action);
     }
 }
-void MainWindow::createWindowsMenu()
+void MainWindow::createWindowMenu()
 {
     windowMenu = menuBar()->addMenu(tr("&Window"));
     updateWindowMenu();
