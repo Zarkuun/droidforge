@@ -360,5 +360,6 @@
         <file>pg/megaseq</file>
         <file>pg/pg.py</file>
         <file>pg/sequencer</file>
+        <file>images/circuits/multicompare.png</file>
     </qresource>
 </RCC>
