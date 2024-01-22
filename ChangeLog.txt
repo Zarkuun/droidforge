@@ -1,37 +1,5 @@
 1.3:
-	* Update to Droid firmware magenta-25
-	* Fix loosing parts of a circuit comment when it contains empty lines
-	  (found by @eising).
-	* Add support for the new E4 encoder controller
-	* Fix freeze when sorting the parameters of a circuit when the parameter
-	  names contain two numbers, like "outputmix9in13".
-	* Fix popping up G8 when from the X7 a gate is used (found by @Seaweed).
-	* Fix clicking and hiliting of the RGB-LEDs on G8 and X7 (found by
-	  @reheller + @Steven Nance)
-	* Automatic backup files had not been created for patches that had
-	  never been saved (well, they did, but were ignored). No the Forge
-	  creates auto backup for patches that have never been saved, in
-	  special hidden files in "DROID Patches". If you start the Forge
-	  after a crash and such a file is present, you are asked for a
-	  real file to save it to (found by @eising).
-	* Fix crash when there is a switch from dark mode to light mode or
-	  vice versa if a program icon is currently visible (found by @eising).
-	* Show problem, when there are too many circuits of a type in the
-	  patch. Circuits with presets (such as pot or button) can only be
-	  up to 255 times in a patch. This check avoids confusion when the
-	  Forge shows the patch as OK but the Droid master will not load it.
-	* Fix the problem with the Forge being unresponsive on Windows systems
-	  with network drives that are not connected.  When "Poll regularly for
-	  DROID SD card" is unchecked, all drives will only be scanned until the
-	  DROID SD-Card path is found. This path will then be stored in the
-	  settings and other drives won't be polled anymore.  The stored path
-	  can be reset by checking "Poll regularly for DROID SD card" again and
-	  restart the Forge. This patch was contributed by @Sublett.
-
-1.2.1:
-	* Fix crash when pasting the contents of a cell (e.g. a cable name)
-	  when the cursor is in the header line of a circuit or on the
-	  name of a parameter (first column).
+    See releases notes of Droid blue-4 firmware
 
 1.2:
     See releases notes of Droid blue-3 firmware
