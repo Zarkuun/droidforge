@@ -1888,6 +1888,13 @@ def track_section(track):
     else:
         extra_reset = ""
 
+    # Diatonic transposition (noteshift)
+    patch += circuit("mixer", [
+        ( "input1", "-1 * 7 + _T%d_NOTESHIFT_CLOCKED" % track ),
+        ( "input2", "-1 * 7 + _GLOBAL_NOTESHIFT_CLOCKED" ),
+        ( "output", "_T%d_NOTESHIFT_SUM" % track ),
+    ], "Mix global and per-track diatonic transposition" )
+
     # The actual motoquencer circuit
     params = \
         tracksel +  \
@@ -1910,6 +1917,9 @@ def track_section(track):
         ( "pattern", "_T%d_PATTERN_FADER - 2" % track),
         ( "direction", "_T%d_DIRECTION" % track),
         ( "pingpong", "_T%d_PINGPONG" % track),
+        ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
+        ( "tuningmode", "_TUNINGMODE" ),
+        ( "tuningpitch", "_GLOBAL_OCTAVE_SWITCH * 1V" ),
     ]
 
     if arguments["tbr"]:
@@ -2083,25 +2093,12 @@ def track_section(track):
     ], "Logic for make the gate silent if the track is muted")
     gate = "_T%d_MUTED_GATE" % track
 
-    # Diatonic transposition (noteshift)
-    patch += circuit("mixer", [
-        ( "input1", "-1 * 7 + _T%d_NOTESHIFT_CLOCKED" % track ),
-        ( "input2", "-1 * 7 + _GLOBAL_NOTESHIFT_CLOCKED" ),
-        ( "output", "_T%d_NOTESHIFT_SUM" % track ),
-    ], "Mix global and per-track diatonic transposition" )
-
     params = track_note_selects(track, False) + [
         ( "root", "_ROOT" ),
         ( "degree", "_DEGREE" ),
         ( "input", "_T%d_PITCH" % track ),
         ( "output", "_T%d_PITCH_SHIFTED" % track ),
-        ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
-        ( "tuningmode", "_TUNINGMODE" ),
-        ( "tuningpitch", "_GLOBAL_OCTAVE_SWITCH * 1V" ),
     ]
-
-    patch += circuit("minifonion", params,
-                     "Diatonic transposition" )
 
     if arguments["arp"]:
         patch += track_arpeggiator(track)
@@ -2109,14 +2106,14 @@ def track_section(track):
     # Switch pitch between sequencer and arpeggio
     if arguments["arp"]:
         patch += circuit("switch", [
-            ( "input1", "_T%d_PITCH_SHIFTED" % track ), # sequencer
+            ( "input1", "_T%d_PITCH" % track ), # sequencer
             ( "input2", "_T%d_ARP_OUTPUT + _T%d_ARP_OCTAVE" % (track, track )), # arpeggio
             ( "offset", "_T%d_ARP" % track ),
             ( "output", "_T%d_SWITCHED_PITCH" % track ),
         ], "Switch pitch output between sequencer and arpeggiator" )
         pitch_from_sequencer = "_T%d_SWITCHED_PITCH" % track
     else:
-        pitch_from_sequencer = "_T%d_PITCH_SHIFTED" % track
+        pitch_from_sequencer = "_T%d_PITCH" % track
 
 
     # Mixer for all that consitues the final pitch
