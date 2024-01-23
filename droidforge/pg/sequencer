@@ -1628,7 +1628,7 @@ def track_selection():
         patch += circuit("button", [
             ( "button", "B" + button ),
             ( "led", "L" + button ),
-            ( "output", "_T1_MUTE" ),
+            ( "output", "_T1_MUTED" ),
         ], "Mute the gate outputs" )
 
     return patch
