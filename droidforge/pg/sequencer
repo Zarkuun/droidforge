@@ -1037,7 +1037,6 @@ def allocate_gate_outputs():
     if arguments["divclock"]:
         gate_outputs["divclock"] = get_gate_output("Divclk", "Permanent clock with custom divisor")
 
-
     if arguments["resetout"]:
         gate_outputs["reset"] = get_gate_output("RST/O", "Reset output")
 
@@ -1045,8 +1044,8 @@ def allocate_pots():
     global pots
     pots = {}
     if arguments["arp"]:
-        pots["arp_range"] = get_pot("Arp range", "Arpeggio pitch range")
-        pots["arp_pitch"] = get_pot("Arp pitch", "Arpeggio base pitch")
+        pots["arp_range"] = get_pot("A range / Rep shift", "Arpeggio pitch range / Repeat note shift")
+        pots["arp_pitch"] = get_pot("A pitch / Rat shift", "Arpeggio base pitch / Ratchet note shift")
 
 
 
@@ -1918,6 +1917,9 @@ def track_section(track):
         ( "direction", "_T%d_DIRECTION" % track),
         ( "pingpong", "_T%d_PINGPONG" % track),
         ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
+        ( "accushift", 1 ),
+        ( "accuperiod", num_steps() ),
+        ( "accureset", num_steps() * 4 ),
         ( "tuningmode", "_TUNINGMODE" ),
         ( "tuningpitch", "_GLOBAL_OCTAVE_SWITCH * 1V" ),
     ]
@@ -1976,6 +1978,24 @@ def track_section(track):
             ( "clearrepeats", clear_on_peace(track) ),
             ( "clearstartend",clear_on_peace(track) ),
         ]
+
+    if arguments["skiprep"]:
+        patch += circuit("pot", track_and_nonarp_selected(track) + [
+            ( "pot", pots["arp_range"] ), # upper pot
+            ( "discrete", 15 ), # -7 ... 7
+            ( "startvalue", 7 ),
+            ( "output", "_T%d_REPEATSHIFT" % track ),
+        ], "Note shift for each step repetition")
+        params.append(( "repeatshift", "_T%d_REPEATSHIFT - 7" % track))
+
+    if arguments["ratchets"]:
+        patch += circuit("pot", track_and_nonarp_selected(track) + [
+            ( "pot", pots["arp_pitch"] ), # lower pot
+            ( "discrete", 15 ), # -7 ... 7
+            ( "startvalue", 7 ),
+            ( "output", "_T%d_RATCHETSHIFT" % track ),
+        ], "Note shift for each ratchet")
+        params.append(( "ratchetshift", "_T%d_RATCHETSHIFT - 7" % track))
 
     patch += circuit("motoquencer", params, "Sequencer for pitch and gate of track %d" % track)
 
@@ -2221,13 +2241,13 @@ def track_arpeggiator(track):
         ], "Create taptempo for arp clock to be used for gate length")
 
     # Pitch base and range are on overlayed pots
-    patch += circuit("pot", track_selected(track) + [
+    patch += circuit("pot", track_and_arp_selected(track) + [
         ( "pot", pots["arp_pitch"] ),
         ( "outputscale", "3V" ),
         ( "output", "_T%d_ARP_PITCH" % track ),
     ], "Virtual pot for base pitch of arpeggiator" )
 
-    patch += circuit("pot", track_selected(track) + [
+    patch += circuit("pot", track_and_arp_selected(track) + [
         ( "pot", pots["arp_range"] ),
         ( "outputscale", "4V" ),
         ( "output", "_T%d_ARP_RANGE" % track ),
@@ -2717,6 +2737,30 @@ def track_selected(track):
         ]
     else:
         return []
+
+def track_and_arp_selected(track):
+    if arguments["tracks"] > 1:
+        return [
+            ( "select", "_T%d_ARP * 100 + _SELECTED_TRACK" % track ),
+            ( "selectat", 100 + track ),
+        ]
+    else:
+        return [
+            ( "select", "_T%d_ARP" % track ),
+        ]
+
+def track_and_nonarp_selected(track):
+    if arguments["tracks"] > 1:
+        return [
+            ( "select", "_T%d_ARP * 100 + _SELECTED_TRACK" % track ),
+            ( "selectat", track ),
+        ]
+    else:
+        return [
+            ( "select", "_T%d_ARP" % track ),
+            ( "selectat", 0 ),
+        ]
+
 
 
 def collect_ios():
