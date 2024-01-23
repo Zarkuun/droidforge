@@ -606,10 +606,10 @@ def prepare_performance_menu():
 
         for feature in [ "par", "pss", "poct", "pdt",
                          "pact", "ppat", "pcdeven", "pcdodd", ]:
-            if feature == "pact" and not arguments["act"]:
-                bail_out("You cannot add \"Activity\" to the performance menu "
-                         "when you have not enabled activity in the step parameters.")
             if arguments[feature]:
+                if feature == "pact" and not arguments["act"]:
+                    bail_out("You cannot add \"Activity\" to the performance menu "
+                             "when you have not enabled activity in the step parameters.")
                 faders[feature] = fader
                 fader += 1
 
