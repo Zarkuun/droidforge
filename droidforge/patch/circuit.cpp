@@ -275,9 +275,10 @@ bool Circuit::checkLEDMismatches(bool fixit)
     // Phase 1: add missing LED assignments
     QList<JackAssignment *> toBeAdded;
     for (auto ja: jackAssignments) {
-        if (ja->jackPrefix() == "button" ||
-            ja->jackName() == "buttonup" ||
-            ja->jackName() == "buttondown")
+        if (ja->isInput() && ( // [encoder] has a button output
+               ja->jackPrefix() == "button" ||
+               ja->jackName() == "buttonup" ||
+               ja->jackName() == "buttondown"))
         {
             Atom *atom = ja->atomAt(1);
             if (!atom || !atom->isRegister())
@@ -337,7 +338,7 @@ bool Circuit::checkLEDMismatches(bool fixit)
     QList<unsigned> toBeRemoved; // indices of to assignment to be removed
     unsigned nr = 0;
     for (auto ja: jackAssignments) {
-        if (ja->jackPrefix() == "led") {
+        if (ja->isOutput() && ja->jackPrefix() == "led") { // [encoder] has a LED input
             QString suffix = ja->jackName().mid(3);
             if (!findJack("button" + suffix)) {
                 if (fixit)

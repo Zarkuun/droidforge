@@ -1,6 +1,11 @@
 1.3:
     See releases notes of Droid blue-4 firmware
 
+	New features since last beta:
+	* Fix: [encoder] and [encoderbank]: Fix bogus LED/Button mismatch warning
+	  (found by @oedoen)
+
+
 1.2:
     See releases notes of Droid blue-3 firmware
 
