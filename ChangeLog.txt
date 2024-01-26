@@ -4,7 +4,12 @@
 	New features since last beta:
 	* Fix: [encoder] and [encoderbank]: Fix bogus LED/Button mismatch warning
 	  (found by @oedoen)
-
+	* Fix: Doing "Add remaining parameters" to a circuit that is *disabled*
+	  would add the parameters enabled. When saving the patch, these parameters
+	  would then be without the needed comment character and thus be part
+	  of the *previous* circuit! This has been fixed. The added parameters
+	  now automatically get disabled when the circuit is disabled (found
+	  by @oedoen).
 
 1.2:
     See releases notes of Droid blue-3 firmware

@@ -161,8 +161,8 @@ void EditorActions::createActions()
     actions[ACTION_EXPAND_ARRAY_MAX] = new QAction(tr("Expand parameter array to ma&x"), this);
     actions[ACTION_EXPAND_ARRAY_MAX]->setShortcut(QKeySequence(tr("Shift+Ctrl+E")));
 
-    actions[ACTION_ADD_MISSING_JACKS] = new QAction(tr("Add &remaining parameters"), this);
-    actions[ACTION_ADD_MISSING_JACKS]->setShortcut(QKeySequence(tr("Ctrl+R")));
+    actions[ACTION_ADD_REMAINING_JACKS] = new QAction(tr("Add &remaining parameters"), this);
+    actions[ACTION_ADD_REMAINING_JACKS]->setShortcut(QKeySequence(tr("Ctrl+R")));
 
     actions[ACTION_REMOVE_UNDEFINED_JACKS] = new QAction(tr("&Remove undefined parameters"), this);
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setShortcut(QKeySequence(tr("Shift+Ctrl+R")));
@@ -484,7 +484,7 @@ void EditorActions::moveCursor()
                     ja->jackName(), ja->jackType() == JACKTYPE_INPUT) != "";
     actions[ACTION_EXPAND_ARRAY]->setEnabled(expandPossible);
     actions[ACTION_EXPAND_ARRAY_MAX]->setEnabled(expandPossible);
-    actions[ACTION_ADD_MISSING_JACKS]->setEnabled(circuit && circuit->hasMissingJacks());
+    actions[ACTION_ADD_REMAINING_JACKS]->setEnabled(circuit && circuit->hasMissingJacks());
     actions[ACTION_REMOVE_UNDEFINED_JACKS]->setEnabled(circuit && circuit->hasUndefinedJacks());
     actions[ACTION_FIX_LED_MISMATCH]->setEnabled(circuit && circuit->hasLEDMismatch());
     updateDisablingActions();

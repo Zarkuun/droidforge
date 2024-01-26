@@ -86,7 +86,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_PASTE, &PatchSectionView::paste);
     CONNECT_ACTION(ACTION_PASTE_SMARTLY, &PatchSectionView::pasteSmartly);
     CONNECT_ACTION(ACTION_DUPLICATE_CIRCUIT, &PatchSectionView::duplicateCircuit);
-    CONNECT_ACTION(ACTION_ADD_MISSING_JACKS, &PatchSectionView::addMissingJacks);
+    CONNECT_ACTION(ACTION_ADD_REMAINING_JACKS, &PatchSectionView::addRemainingJacks);
     CONNECT_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, &PatchSectionView::removeUndefinedJacks);
 
     CONNECT_ACTION(ACTION_SELECT_ALL, &PatchSectionView::selectAll);
@@ -651,7 +651,7 @@ void PatchSectionView::duplicateCircuit()
     patch->commit(tr("duplicating circuit"));
     emit patchModified();
 }
-void PatchSectionView::addMissingJacks()
+void PatchSectionView::addRemainingJacks()
 {
     Circuit *circuit = currentCircuit();
     for (auto jackName: circuit->missingJacks(JACKTYPE_INPUT))
@@ -993,7 +993,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_SORT_JACKS, menu);
         ADD_ACTION(ACTION_EXPAND_ARRAY, menu);
         ADD_ACTION(ACTION_EXPAND_ARRAY_MAX, menu);
-        ADD_ACTION(ACTION_ADD_MISSING_JACKS, menu);
+        ADD_ACTION(ACTION_ADD_REMAINING_JACKS, menu);
         ADD_ACTION(ACTION_REMOVE_UNDEFINED_JACKS, menu);
         ADD_ACTION_IF_ENABLED(ACTION_FIX_LED_MISMATCH, menu);
 

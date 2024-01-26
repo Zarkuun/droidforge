@@ -31,6 +31,8 @@ Circuit *Circuit::clone() const
 void Circuit::addJackAssignment(JackAssignment *ja)
 {
     jackAssignments.append(ja);
+    if (isDisabled())
+        ja->setDisabled(true);
 }
 void Circuit::insertJackAssignment(JackAssignment *ja, int index)
 {
