@@ -438,6 +438,17 @@ the master module.
             "title" : "Input for external reset",
         },
         {
+            "name" : "runningin",
+            "title" : "Get start/stop state from external",
+            "enum" : [
+                ( "off", "No external start/stop signal" ),
+                ( "gate", "Analog gate jack" ),
+                ( "usb", "MIDI USB" ),
+                ( "trs1", "MIDI TRS 1" ),
+                ( "trs2", "MIDI TRS 2" ),
+            ],
+        },
+        {
             "name" : "clockout",
             "title" : "Output for permanent clock signal",
         },
@@ -487,7 +498,8 @@ the master module.
             "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
             "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
-            "resetout" : False     , "sos1"     : False   , "dualout"  : 0       , "divclock" : False,
+            "resetout" : False     , "sos1"     : False   , "dualout"  : 0       , "divclock" : False   ,
+            "runningin" : "off",
         }
     },
     {
@@ -508,7 +520,8 @@ the master module.
             "form"      : False     , "bq"       : False    , "rb"       : False   , "lucky"    : False   ,
             "clear"     : True      , "copy"     : False    , "inv"      : False   , "sinflink" : "off"   ,
             "clockin"   : False     , "resetin"  : False    , "clockout" : False   , "runclock" : False   ,
-            "resetout"  : False     , "sos1"     : False    , "dualout"  : 0       , "divclock" : False,
+            "resetout"  : False     , "sos1"     : False    , "dualout"  : 0       , "divclock" : False   ,
+            "runningin" : "off",
         }
     },
     {
@@ -529,7 +542,8 @@ the master module.
             "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
             "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "ton"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : True    , "runclock" : True    ,
-            "resetout" : True      , "sos1"     : False   , "dualout"  : 4       , "divclock" : False,
+            "resetout" : True      , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
+            "runningin" : "trs1",
         }
     },
     ],
@@ -1002,6 +1016,10 @@ def allocate_cv_inputs():
         cv_inputs["reset"] = get_gate_input("RST In",
                 "Reset all sequences to step 1 on a gate or trigger here")
 
+    if arguments["runningin"] == "gate":
+        cv_inputs["runningin"] = get_gate_input("Running",
+                "Set the running state of the sequencer")
+
     if have_cv_inputs():
         cv_inputs["root"] = get_cv_input("Root", "Root note, in 1/12V steps.")
         cv_inputs["degree"] = get_cv_input("Scale", "Scale, in 1/12V steps.")
@@ -1276,16 +1294,57 @@ def section_global_buttons():
     ], "Combine all source of global reset")
 
     # Start/stop
+    if arguments["runningin"] != "off":
+        if arguments["runningin"] == "gate":
+            running_in = cv_inputs["runningin"]
+        else:
+            midiargs = [
+                ( "running", "_RUNNING_EXT" ),
+            ]
+            if arguments["runningin"] == "usb":
+                midiargs.append(( "usb", 1 ))
+            elif arguments["runningin"] == "trs1":
+                midiargs.append(( "trs", 1 ))
+            elif arguments["runningin"] == "trs2":
+                midiargs.append(( "trs", 2 ))
+            patch += circuit("midiin", midiargs,
+                "Get running state via MIDI")
+            running_in = "_RUNNING_EXT"
+
+        patch += circuit("gatetool", [
+            ( "inputgate", "1 - " + running_in ),
+            ( "outputtrigger", "_EXT_RUNNING_STOPPED" )],
+            "Send trigger when external running state stopped" )
+
+        patch += circuit("gatetool", [
+            ( "inputgate", running_in ),
+            ( "outputtrigger", "_EXT_RUNNING_STARTED" )],
+            "Send trigger when external running state started" )
+
     if arguments["ssb"]:
         b = get_button(BUTTONPOS_STARTSTOP,
                        "Start/Stop",
                        "Start/stop sequencer - start also does reset")
-        patch += circuit("button", [
-            ( "button", "B" + b ),
+
+        buttonargs = [
             ( "led", "L" + b ),
-            ( "startvalue", 1 ),
-            ( "output", "_RUNNING"),
-        ], "Button for run/stop")
+            ( "output", "_RUNNING") ]
+
+        if arguments["runningin"] == "off":
+            buttonargs += [
+                ( "button", "B" + b ),
+                ( "startvalue", 1 )
+            ]
+        else:
+            buttonargs += [
+                ( "button", "B" + b + " + _EXT_RUNNING_STARTED" ),
+                ( "startvalue", running_in ),
+                ( "clear", "_EXT_RUNNING_STOPPED" ),
+            ]
+
+        patch += circuit("button", buttonargs,
+            "Button for run/stop")
+
         patch += circuit("gatetool", [
             ( "inputgate", "_RUNNING" ),
             ( "outputtrigger", "_STARTSTOP_RESET" ),
@@ -1879,7 +1938,7 @@ def track_section(track):
     gate = "_T%d_SEQUENCER_GATE" % track # here comes our gate
 
     clock = "_T%d_CLOCK" % track
-    if arguments["ssb"]:
+    if have_running():
         clock += " * _RUNNING"
 
     if arguments["rb"]:
@@ -1945,7 +2004,7 @@ def track_section(track):
     if have_fadermode_buttons():
         params.append(( "fadermode", "_FADERMODE" ))
 
-    if arguments["ssb"]:
+    if have_running():
         params.append(( "mute", "1 - _RUNNING" ))
 
     if arguments["form"]:
@@ -2052,6 +2111,12 @@ def track_section(track):
                 ( "input", out ),
                 ( "output", velo_output_jack ),
             ], "Copy velocity to CV output" )
+
+            if arguments["velo"] == "vg":
+                patch += circuit("copy", [
+                    ( "input", "_T%d_EXTRAGATE" % track ),
+                    ( "output", extragate_output_jack ),
+                ], "Copy extra gate to CV output" )
 
     # Linked sequencer for gate length and glide ----------------
     if arguments["gl"]:
@@ -2171,7 +2236,7 @@ def track_section(track):
 
     # Start/Stop button needs to mute the gate because of the
     # arpeggiator (it has not gate)
-    if arguments["ssb"]:
+    if have_running():
         patch += circuit("copy", [
             ( "input", gate + " * _RUNNING" ),
             ( "output", "_T%d_GATE_RUNNING" % track ),
@@ -2254,7 +2319,7 @@ def track_arpeggiator(track):
     ], "Virtual pot for pitch range of arpeggiator" )
 
     clock = "_T%d_ARP_CLOCK" % track
-    if arguments["ssb"]:
+    if have_running():
         clock += " * _RUNNING"
 
     patch += circuit("arpeggio",
@@ -2709,8 +2774,13 @@ def section_cv_outputs():
         ], "Output the steady clock at " + gate_outputs["clock"])
 
     if arguments["runclock"]:
+        if have_running():
+            inp = "_CLOCK * _RUNNING"
+        else:
+            inp = "_CLOCK"
+
         patch += circuit("copy", [
-            ( "input", "_CLOCK * _RUNNING" ),
+            ( "input", inp ),
             ( "output", gate_outputs["runclock"] ),
         ], "Output the clock at " + gate_outputs["runclock"])
 
@@ -2801,7 +2871,7 @@ def track_is_midi(track):
         arguments["dualout"] >= track
 
 def track_is_cvgate(track):
-    t = arguments["t%dout" % track] 
+    t = arguments["t%dout" % track]
     if t == "cvgate" and arguments["dualout"] >= track:
         bail_out("You have set the number of tracks with\n"
                  "output to both MIDI and CV/gate to %d\n"
@@ -2850,6 +2920,9 @@ def get_gate_output(short, long):
 
 def have_midi():
     return arguments["m"] in [ "master+x7", "master18" ]
+
+def have_running():
+    return arguments["ssb"] or (arguments["runningin"] != "off")
 
 def clear_on_clear(track):
     if arguments["clear"]:
