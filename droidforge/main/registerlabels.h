@@ -26,6 +26,7 @@ public:
 
 private:
     QString toString(char reg, unsigned controller, unsigned g8, const QString &title=0) const;
+    QString removeNewlines(const QString &s) const;
 };
 
 #endif // REGISTERLABELS_H

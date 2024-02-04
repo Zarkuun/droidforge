@@ -157,6 +157,8 @@ QString RegisterLabels::toString(char reg, unsigned controller, unsigned g8, con
     bool first = true;
 
     QMapIterator<AtomRegister, RegisterLabel> it(*this);
+    // TODO: Check if this is not too slow. For each register we have
+    // to check all existing labels. This has complexity O(n^2).
     while (it.hasNext()) {
         it.next();
         AtomRegister atom = it.key();
@@ -172,16 +174,24 @@ QString RegisterLabels::toString(char reg, unsigned controller, unsigned g8, con
             }
             s += "#  " + atom.toString() + ": ";
             if (!label.shorthand.isEmpty()) {
-                s += "[" + label.shorthand + "]";
+                s += "[" + removeNewlines(label.shorthand) + "]";
                 if (label.description != "")
                     s += " ";
             }
             if (label.description != "")
-                s += label.description;
+                s += removeNewlines(label.description);
             s += "\n";
         }
     }
     if (title != "" && s != "")
         s += "\n";
     return s;
+}
+QString RegisterLabels::removeNewlines(const QString &s) const
+{
+    QString ret = s;
+    ret.replace("\r\n", " ");
+    ret.replace("\r", " ");
+    ret.replace("\n", " ");
+    return ret;
 }
