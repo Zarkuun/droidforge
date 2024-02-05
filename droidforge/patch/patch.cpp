@@ -253,7 +253,7 @@ void Patch::setCursorTo(int section, const CursorPosition &pos)
     sectionIndex = section;
     currentSection()->setCursor(pos);
 }
-bool Patch::moveCursorForward()
+bool Patch::moveCursorForward(bool autoUnfold)
 {
     bool wrapped = false;
 
@@ -311,10 +311,13 @@ bool Patch::moveCursorForward()
         wrapped = true;
     }
 
-    currentSection()->setCursor(CursorPosition(circuitNr, row, column));
+    if (autoUnfold)
+        currentSection()->setCursor(CursorPosition(circuitNr, row, column));
+    else
+        currentSection()->setCursorNoUnfold(CursorPosition(circuitNr, row, column));
     return wrapped;
 }
-void Patch::moveCursorBackward()
+void Patch::moveCursorBackward(bool autoUnfold)
 {
     // Move the cursor to the previous possible atom, jack, circuit, whatever
     CursorPosition pos = currentSection()->cursorPosition();
@@ -360,7 +363,10 @@ void Patch::moveCursorBackward()
         }
     }
 
-    currentSection()->setCursor(CursorPosition(circuitNr, row, column));
+    if (autoUnfold)
+        currentSection()->setCursor(CursorPosition(circuitNr, row, column));
+    else
+        currentSection()->setCursorNoUnfold(CursorPosition(circuitNr, row, column));
     return;
 }
 unsigned Patch::searchHitPosition(const QString &text, unsigned *count)
@@ -374,18 +380,18 @@ unsigned Patch::searchHitPosition(const QString &text, unsigned *count)
     currentSection()->setCursor(CursorPosition(0, ROW_CIRCUIT, 0));
     currentSection()->sanitizeCursor();
     while (true) {
-        if (currentSection()->searchHit(text)) {
+        if (currentSection()->searchHitAtCursor(text)) {
             (*count)++;
             if (startSectionIndex == sectionIndex &&
                     startCursor == currentSection()->cursorPosition()) {
                 position = *count;
             }
         }
-        if (moveCursorForward())
+        if (moveCursorForward(false /* autoUnfold */))
             break; // wrapped around
     }
     sectionIndex = startSectionIndex;
-    currentSection()->setCursor(startCursor);
+    currentSection()->setCursor(startCursor); // unfolds if neccessary
     return position;
 }
 void Patch::setTitle(const QString &newTitle)

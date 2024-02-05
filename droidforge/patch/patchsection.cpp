@@ -560,6 +560,10 @@ void PatchSection::setCursor(const CursorPosition &pos)
     if (pos.row != ROW_CIRCUIT && currentCircuit()->isFolded())
         currentCircuit()->setFold(false);
 }
+void PatchSection::setCursorNoUnfold(const CursorPosition &pos)
+{
+    cursor = pos;
+}
 Circuit *PatchSection::currentCircuit()
 {
     if (circuits.size())
@@ -665,7 +669,7 @@ bool PatchSection::needsX7() const
     return false;
 }
 
-bool PatchSection::searchHit(const QString &text)
+bool PatchSection::searchHitAtCursor(const QString &text)
 {
     if (isEmpty())
         return false;

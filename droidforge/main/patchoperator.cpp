@@ -885,19 +885,20 @@ void PatchOperator::search(QString text, int direction)
 {
     int startSectionIndex = patch->currentSectionIndex();
     CursorPosition startPos = patch->currentSection()->cursorPosition();
+    bool found = false;
 
     while (true) {
         if (direction == 1)
-            patch->moveCursorForward();
+            patch->moveCursorForward(false /* no auto unfold */);
         else
-            patch->moveCursorBackward();
+            patch->moveCursorBackward(false /* no auto unfold */);
         int nextSectionIndex = patch->currentSectionIndex();
         CursorPosition nextPos = patch->currentSection()->cursorPosition();
-        if (nextSectionIndex == startSectionIndex && nextPos == startPos) {
+        if (nextSectionIndex == startSectionIndex && nextPos == startPos)
             break;
-        }
 
-        else if (patch->currentSection()->searchHit(text)) {
+        else if (patch->currentSection()->searchHitAtCursor(text)) {
+            found = true;
             if (patch->currentSectionIndex() != startSectionIndex)
                 emit sectionSwitched();
             else
@@ -909,6 +910,7 @@ void PatchOperator::search(QString text, int direction)
     // First round: We count the number of search hits
     unsigned pos, count;
     pos = patch->searchHitPosition(text, &count);
+    if (found) emit patchModified(); // circuit might have been unfolded. We need a repaint.
     emit searchStatsChanged(pos, count);
 }
 void PatchOperator::integrate()

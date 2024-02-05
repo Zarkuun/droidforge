@@ -72,6 +72,7 @@ public:
 
     const CursorPosition &cursorPosition() const { return cursor; };
     void setCursor(const CursorPosition &pos);
+    void setCursorNoUnfold(const CursorPosition &pos);
     Circuit *currentCircuit();
     const Circuit *currentCircuit() const;
     int currentCircuitId() const { return cursor.circuitNr; };
@@ -93,7 +94,7 @@ public:
     void removeRegisterReferences(RegisterList &rl);
     unsigned memoryFootprint() const;
     bool needsX7() const;
-    bool searchHit(const QString &text);
+    bool searchHitAtCursor(const QString &text);
     void clearBookmarks();
     bool findBookmark(CursorPosition *pos);
     void setBookmark();
