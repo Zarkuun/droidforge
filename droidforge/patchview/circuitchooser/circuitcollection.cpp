@@ -139,7 +139,6 @@ void CircuitCollection::loadCircuitCategory(QString category, QString search)
         QString circuit = circuitNames[i];
         if (!search.isEmpty()
             && !circuit.contains(search, Qt::CaseInsensitive))
-            // && !description.contains(search, Qt::CaseInsensitive))
         {
             continue;
         }

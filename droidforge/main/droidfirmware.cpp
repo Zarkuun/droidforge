@@ -155,6 +155,8 @@ QStringList DroidFirmware::circuitsOfCategory(QString category) const
     {
         QString name = i.key();
         QString cat = i.value().toObject()["category"].toString();
+        if (cat == "deprecated")
+            continue; // Omit deprecated circuits in search
         if (category.isEmpty() || cat == category)
             result.append(name);
     }

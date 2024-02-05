@@ -36,7 +36,7 @@ CircuitChooseDialog::CircuitChooseDialog(QWidget *parent)
     addCategoryTab("pitch", tr("Pitch"));
     addCategoryTab("midi", tr("MIDI"));
     addCategoryTab("other", tr("Other"));
-    addCategoryTab("deprecated", tr("Deprecated"));
+    // addCategoryTab("deprecated", tr("Deprecated"));
     tabWidget->setTabVisible(TAB_INDEX_SEARCH, false);
     tabWidget->setCurrentIndex(TAB_INDEX_FIRST_CATEGORY);
     tabWidget->setFocusPolicy(Qt::NoFocus);
