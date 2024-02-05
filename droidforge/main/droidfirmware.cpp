@@ -73,6 +73,12 @@ bool DroidFirmware::circuitIsPersisted(QString circuit) const
     // All circuits that have presets (und thus a preset input) are persisted.
     return jackIsInput(circuit, "preset");
 }
+bool DroidFirmware::circuitIsDeprecated(QString circuit) const
+{
+    auto object = circuits[circuit].toObject();
+    QString cat = object["category"].toString();
+    return cat == "deprecated";
+}
 unsigned DroidFirmware::jackMemoryFootprint(QString circuit, QString jack) const
 {
     QJsonValue jackinfo = findJack(circuit, "inputs", jack);

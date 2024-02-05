@@ -30,6 +30,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     layout = new QVBoxLayout(box);
     checkboxIgnoreUnknownJacks = new QCheckBox(tr("Do not treat unknown parameters as errors"));
     layout->addWidget(checkboxIgnoreUnknownJacks);
+    checkboxDenounceDeprecatedCircuits = new QCheckBox(tr("Denounce deprecated circuits"));
+    layout->addWidget(checkboxDenounceDeprecatedCircuits);
     mainLayout->addWidget(box);
 
     // Polling for activation
@@ -53,6 +55,7 @@ void PreferencesDialog::loadSettings()
     checkboxRenameCables->setChecked(settings.value("compression/rename_cables", false).toBool());
     checkboxRemoveEmptyLines->setChecked(settings.value("compression/remove_empty_lines", false).toBool());
     checkboxIgnoreUnknownJacks->setChecked(settings.value("validation/ignore_unknown_jacks", false).toBool());
+    checkboxDenounceDeprecatedCircuits->setChecked(settings.value("validation/denounce_deprecated_circuits", true).toBool());
     checkboxPollX7->setChecked(settings.value("activation/poll_for_x7", SETTING_POLL_DEFAULT).toBool());
     checkboxPollSD->setChecked(settings.value("activation/poll_for_sd", SETTING_POLL_DEFAULT).toBool());
 
@@ -63,6 +66,7 @@ void PreferencesDialog::saveSettings() const
     settings.setValue("compression/rename_cables", checkboxRenameCables->isChecked());
     settings.setValue("compression/remove_empty_lines", checkboxRemoveEmptyLines->isChecked());
     settings.setValue("validation/ignore_unknown_jacks", checkboxIgnoreUnknownJacks->isChecked());
+    settings.setValue("validation/denounce_deprecated_circuits", checkboxDenounceDeprecatedCircuits->isChecked());
     settings.setValue("activation/poll_for_x7", checkboxPollX7->isChecked());
     settings.setValue("activation/poll_for_sd", checkboxPollSD->isChecked());
 }

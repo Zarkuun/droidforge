@@ -1,9 +1,9 @@
 #include "circuit.h"
 #include "droidfirmware.h"
-#include "globals.h"
 #include "jackassignmentoutput.h"
 
 #include <QCoreApplication>
+#include <QSettings>
 
 #define tr(s) QCoreApplication::translate("Patch", s)
 
@@ -210,12 +210,23 @@ void Circuit::rewriteCableNames(const QString &remove, const QString &insert, Re
 }
 QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {
+    QSettings settings;
     QList<PatchProblem *> allProblems;
 
     if (!the_firmware->circuitExists(name)) {
         allProblems.append(
             new PatchProblem(ROW_CIRCUIT, 0, tr("There is no such circuit with the name '%1'").arg(name)));
     }
+
+    if (the_firmware->circuitIsDeprecated(name) &&
+        settings.value("validation/denounce_deprecated_circuits", true).toBool())
+    {
+        allProblems.append(
+            new PatchProblem(ROW_CIRCUIT, 0, tr("This circuit is deprecated. It will be removed "
+                                                "in future firmwares. You can disable this error"
+                                                " in the preferences.")));
+    }
+
 
     QSet<QString> usedJacks;
 

@@ -21,6 +21,7 @@ public:
     unsigned circuitManualPage(QString circuit) const;
     unsigned circuitMemoryFootprint(QString circuit) const;
     bool circuitIsPersisted(QString circuit) const;
+    bool circuitIsDeprecated(QString circuit) const;
     unsigned jackMemoryFootprint(QString circuit, QString jack) const;
     unsigned controllerMemoryFootprint(QString circuit) const;
     QString canonizeJackName(QString circuit, QString jack) const;
