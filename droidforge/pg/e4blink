@@ -51,6 +51,16 @@ synopsis = {
             "title" : "Animation speed",
             "number" : (1, 30),
         },
+
+        {
+            "name" : "waveform",
+            "title" : "Wave form of animation",
+            "enum" : [
+                ( "triangle", "Triangle" ),
+                ( "sine", "Sine" ),
+                ( "sawtooth", "Sawtooth" ),
+            ],
+        },
         {
             "name" : "color",
             "title" : "Color of the LEDs",
@@ -82,6 +92,7 @@ synopsis = {
             "color" : "rainbow",
             "lfospeed" : 30,
             "ledfill" : "0",
+            "waveform" : "sawtooth",
         },
     }],
 }
@@ -97,13 +108,13 @@ def create_patch():
 
     if animation == "lfo":
         patch += circuit("lfo", lfospeed_options + [
-            ( "triangle", "_LFO" ),
+            ( arguments["waveform"], "_LFO" ),
         ])
 
     elif animation in [ "lfo2", "lfo3" ]:
         for lfo in range(1, 5):
             patch += circuit("lfo", lfospeed_options + [
-                ( "triangle", "_LFO%d" % lfo ),
+                ( arguments["waveform"], "_LFO%d" % lfo ),
                 ( "phase", 0.25 * lfo ),
             ])
 
