@@ -1,0 +1,153 @@
+#!/usr/bin/python3
+
+from pg import *
+import sys
+
+colors = [
+  ( "cyan"    , 0.2 ),
+  ( "green"   , 0.4 ),
+  ( "yellow"  , 0.6 ),
+  ( "orange"  , 0.73 ),
+  ( "red"     , 0.8 ),
+  ( "magenta" , 1.0 ),
+  ( "violet"  , 1.1 ),
+  ( "blue"    , 1.2 ),
+]
+
+color_options = [ ( c[0], c[0] ) for c in colors ]
+
+shiftfour_colors = [ 0.6, 0.73, 0.8, 1.0 ]
+shiftfour_colors = [ 0.2, 0.9, 1.0, 1.2 ]
+
+
+
+synopsis = {
+    "title":
+        "Binkenlights with E4s",
+    "description":
+        """This patch creates various LED animations with E4 controllers.
+""",
+
+    "sections" : [{
+        "title" : "Options",
+        "options" : [
+        {
+            "name" : "num",
+            "title" : "Number of E4 controllers",
+            "number" : (1, 8),
+        },
+        {
+            "name" : "type",
+            "title" : "Type of animation",
+            "enum" : [
+                ( "manual", "Encoders are turned manually" ),
+                ( "lfo",    "LEDs are moved by a slow LFO in sync" ),
+                ( "lfo2",   "LEDs are moved, phase shifted" ),
+                ( "lfo3",   "LEDs are moved, phase shifted, diagnoal" ),
+            ],
+        },
+        {
+            "name" : "lfospeed",
+            "title" : "Animation speed",
+            "number" : (1, 30),
+        },
+        {
+            "name" : "color",
+            "title" : "Color of the LEDs",
+            "enum" : [
+                ( "rainbow", "Rainbow: Every encoder has a different color"),
+                ( "sunrise", "Sunrise: Same but moving color for every encoder"),
+                ( "shiftfour", "Use four colors in a kind of chess pattern"),
+                ] + color_options
+        },
+        {
+            "name" : "ledfill",
+            "title" : "Rendering of LEDs",
+            "enum" : [
+                 ( "0", "Just a singled LED" ),
+                 ( "1", "Filled from zero" ),
+            ],
+        },
+        ],
+    }],
+
+
+    "presets" : [
+    {
+        "name" : "default",
+        "title" : "Default",
+        "parameters" : {
+            "num" : 4,
+            "type" : "lfo3",
+            "color" : "rainbow",
+            "lfospeed" : 30,
+            "ledfill" : "0",
+        },
+    }],
+}
+
+
+def create_patch():
+    patch = "[e4]\n" * arguments["num"]
+
+    animation = arguments["type"]
+    lfospeed_options = [
+            ( "hz", "0.05" ),
+            ( "rate", arguments["lfospeed"] / 100.0 ) ]
+
+    if animation == "lfo":
+        patch += circuit("lfo", lfospeed_options + [
+            ( "triangle", "_LFO" ),
+        ])
+
+    elif animation in [ "lfo2", "lfo3" ]:
+        for lfo in range(1, 5):
+            patch += circuit("lfo", lfospeed_options + [
+                ( "triangle", "_LFO%d" % lfo ),
+                ( "phase", 0.25 * lfo ),
+            ])
+
+    color = arguments["color"]
+    if color == "sunrise":
+        patch += circuit("lfo", [
+            ( "hz", 0.05 ),
+            ( "sawtooth", "_COLOR" ),
+            ( "level", 1.2 ),
+        ])
+
+
+    num = 0
+    for e4 in range(1, arguments["num"] + 1):
+        for enc in range(1, 5):
+            num += 1
+
+            shiftedphase = (e4 + enc) % 4
+
+            encoder = "E%d.%d" % (e4, enc)
+            args = [
+                ( "encoder", encoder ),
+                ( "ledfill", arguments["ledfill" ]),
+            ]
+            if color == "rainbow":
+                pass # no color option needed
+            elif color == "sunrise":
+                args.append(( "color", "_COLOR" ))
+            elif color == "shiftfour":
+                args.append(( "color", shiftfour_colors[shiftedphase] ))
+            else:
+                args.append(( "color", dict(colors)[color] ))
+
+            if animation == "lfo":
+                args.append(( "override", "_LFO" ))
+            elif animation == "lfo2":
+                args.append(( "override", "_LFO%d"  % ((num % 4) + 1)))
+            elif animation == "lfo3":
+                args.append(( "override", "_LFO%d"  % (shiftedphase + 1)))
+
+            patch += circuit("encoder", args)
+    return patch
+
+
+arguments = set_synopsis(synopsis)
+print(create_patch())
+
