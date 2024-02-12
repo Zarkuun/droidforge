@@ -1,11 +1,9 @@
 #include "atom.h"
 #include "atominvalid.h"
 #include "atomoneliner.h"
-#include "globals.h"
 #include "jackassignment.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
-#include "tuning.h"
 
 #include <QGridLayout>
 #include <QLineEdit>

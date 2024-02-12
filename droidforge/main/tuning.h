@@ -27,7 +27,7 @@
 #define JACK_TYPE_SYMBOLS_PATH_TEMPLATE      ":images/jacktypes/%1/%2.png"
 #define CIRCUIT_ICON_SUFFIX                  ".png"
 #define FRACTION_PRECISION                   0.0001
-#define NUMBER_DIGITS                        15
+#define NUMBER_DIGITS                        14
 #define MAC_UMOUNT_TIMEOUT_MS                25000 // ms
 #define SD_CHECK_INTERVAL                    300  // ms
 #define SD_CHECK_INTERVAL_SANS_POLLING       1000   // ms
