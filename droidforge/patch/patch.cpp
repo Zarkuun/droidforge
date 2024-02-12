@@ -517,6 +517,29 @@ bool Patch::registerUsed(AtomRegister reg)
     }
     return false;
 }
+
+bool Patch::registerIsOutputOnly(AtomRegister reg) const
+{
+    switch (reg.getRegisterType()) {
+         case REGISTER_INPUT:
+         case REGISTER_POT:
+         case REGISTER_BUTTON:
+         case REGISTER_SWITCH:
+         case REGISTER_ENCODER:
+             return false;
+
+         case REGISTER_NORMALIZE:
+         case REGISTER_OUTPUT:
+         case REGISTER_LED:
+         case REGISTER_RGB_LED:
+         case REGISTER_EXTRA:
+             return true;
+
+         case REGISTER_GATE:
+             return reg.getNumber() >= 9; // TODO master18: depends
+    }
+   return false; // never reached
+}
 bool Patch::controlUsed(AtomRegister reg)
 {
     for (auto &atom: *this) {
@@ -578,27 +601,53 @@ void Patch::updateProblems()
             continue;
 
         const AtomRegister *reg = (const AtomRegister *)atom;
-        if (reg->getRegisterType() != REGISTER_OUTPUT &&
-            reg->getRegisterType() != REGISTER_NORMALIZE)
-            continue;
-
         const CursorPosition &pos = it.cursorPosition();
         const PatchSection *sec = section(it.sectionIndex());
         const Circuit *circuit = sec->circuit(pos.circuitNr);
         const JackAssignment *ja = circuit->jackAssignment(pos.row);
         if (!ja->isDisabled())
         {
-            if (usedOutputs.contains(*reg)) {
+            if ((reg->getRegisterType() == REGISTER_OUTPUT ||
+                reg->getRegisterType() == REGISTER_GATE ||
+                 reg->getRegisterType() == REGISTER_NORMALIZE) &&
+                usedOutputs.contains(*reg))
+            {
                 PatchProblem *prob = new PatchProblem(pos.row, pos.column,
                                                       TR("Duplicate usage of %1 as output").arg(reg->toString()));
                 prob->setCircuit(pos.circuitNr);
                 prob->setSection(it.sectionIndex());
                 problems.append(prob);
             }
-            else
-                usedOutputs.append(*reg);
+            usedOutputs.append(*reg);
         }
     }
+
+    // Check usage of output registers as inputs, if they are not also used
+    // as outputs
+    for (auto it = begin(); it != end(); ++it)
+    {
+        const Atom *atom = *it;
+        if (!atom->isRegister() || it.isOutput())
+            continue;
+        const AtomRegister *reg = (const AtomRegister *)atom;
+        if (!registerIsOutputOnly(*reg))
+            continue; // we are looking for output registers
+        if (!usedOutputs.contains(*reg)) {
+            const CursorPosition &pos = it.cursorPosition();
+            const PatchSection *sec = section(it.sectionIndex());
+            const Circuit *circuit = sec->circuit(pos.circuitNr);
+            const JackAssignment *ja = circuit->jackAssignment(pos.row);
+            if (!ja->isDisabled())
+            {
+                PatchProblem *prob = new PatchProblem(pos.row, pos.column,
+                                                      TR("Output register %1 is just used as an input.").arg(reg->toString()));
+                prob->setCircuit(pos.circuitNr);
+                prob->setSection(it.sectionIndex());
+                problems.append(prob);
+            }
+        }
+    }
+
 
     // Check memory consumption of circuits, also their count
     unsigned usedMemory = 0;

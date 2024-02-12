@@ -72,6 +72,7 @@ public:
     QString freshCableName() const;
     void collectUsedRegisterAtoms(RegisterList &, bool skipOverlayedControls = false) const;
     bool registerUsed(AtomRegister reg);
+    bool registerIsOutputOnly(AtomRegister reg) const;
     bool controlUsed(AtomRegister reg);
     void collectAvailableRegisterAtoms(RegisterList &) const;
     bool hasProblems() const { return problems.count() > 0; };
