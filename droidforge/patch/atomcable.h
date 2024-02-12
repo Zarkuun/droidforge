@@ -11,15 +11,16 @@ class AtomCable : public Atom
 
 public:
     AtomCable(QString n) : name(n) {};
-    AtomCable *clone() const;
-    QString toString() const;
-    bool isCable() const { return true; };
+    AtomCable *clone() const override;
+    QString toString() const override;
+    bool isCable() const  override{ return true; };
     QString getCable() const { return name; };
     void setCable(const QString &n) { name = n; };
-    QString problemAsInput(const Patch *patch) const;
-    QString problemAsOutput(const Patch *patch) const;
+    QString problemAsInput(const Patch *patch) const override;
+    QString problemAsOutput(const Patch *patch) const override;
     static QString nextCableName(const QString &name);
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
+    void incrementForExpansion(const Patch *patch) override;
 };
 
 #endif // ATOMCABLE_H

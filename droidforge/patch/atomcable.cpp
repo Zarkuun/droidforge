@@ -61,3 +61,14 @@ void AtomCable::rewriteCableNames(const QString &remove, const QString &insert, 
         break;
     }
 }
+
+void AtomCable::incrementForExpansion(const Patch *)
+{
+    // Idea: _FOO_BAR_2 --> _FOO_FOO_BAR_3.
+    // Cables without a number suffix stay as they are
+
+    if (!name.back().isDigit())
+        return;
+
+    name = nextCableName(name);
+}
