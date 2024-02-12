@@ -12,6 +12,7 @@
 #include "modulee4.h"
 #include "modulem4.h"
 #include "modulebling.h"
+#include "globals.h"
 
 #include <QStringList>
 
@@ -61,7 +62,7 @@ void ModuleBuilder::allRegistersOf(QString name, unsigned controller, unsigned g
     ModuleBuilder mb(0);
     Module *m = mb.buildModule(name);
     if (controller)
-        m->setData(DATA_INDEX_CONTROLLER_INDEX, controller);
+        m->setData(DATA_INDEX_CONTROLLER_INDEX, controller - 1);
     else if (g8)
         m->setData(DATA_INDEX_G8_NUMBER, g8);
 

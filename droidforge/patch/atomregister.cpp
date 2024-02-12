@@ -1,7 +1,6 @@
 #include "atomregister.h"
-#include "patchproblem.h"
-#include "tuning.h"
 #include "patch.h"
+#include "globals.h"
 
 #include <QStringList>
 #include <QDebug>
@@ -195,10 +194,10 @@ void AtomRegister::swapControllerNumbers(int fromController, int toController)
     else if ((int)controller == toController)
         controller = fromController;
 }
-void AtomRegister::shiftControllerNumbers(int controller, int by)
+void AtomRegister::shiftControllerNumbers(int firstController, int by)
 {
-    if ((int)controller > controller)
-        this->controller += by;
+    if ((int)controller > firstController)
+        controller += by;
 }
 QString AtomRegister::problemAsInput(const Patch *patch) const
 {

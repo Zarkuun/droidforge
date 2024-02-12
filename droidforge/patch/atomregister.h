@@ -31,7 +31,7 @@ public:
     void setRegisterType(register_type_t t) { registerType = t; };
     register_type_t getRegisterType() const { return registerType; };
     void swapControllerNumbers(int fromController, int toController);
-    void shiftControllerNumbers(int controller, int by);
+    void shiftControllerNumbers(int firstController, int by);
 
     bool canHaveLabel() const override;
     bool isRegister() const  override { return true; };
