@@ -71,6 +71,14 @@ int main(int argc, char *argv[])
     dir.cd(PATCH_DIRECTORY_NAME);
     QDir::setCurrent(dir.absolutePath());
 
+    // Open same file as last time - or the one give on the command line.
+    QString initialFilename;
+    QSettings settings;
+    if (argc > 1)
+        initialFilename = argv[1];
+    else if (settings.contains("lastfile"))
+        initialFilename = settings.value("lastfile").toString();
+
     for (unsigned n=1; n < MAX_UNTITLED_BACKUPS; n++) {
         QString path = PatchOperator::untitledBackupPath(n);
         QFile file(path);
@@ -91,19 +99,17 @@ int main(int argc, char *argv[])
                     "",
                     TR("DROID patch files (*.ini)"));
 
-                if (!newFilePath.isEmpty())
+                if (!newFilePath.isEmpty()) {
+                    file.remove(newFilePath); // rename does not do this
                     file.rename(newFilePath);
+                    // open the restored file instead of the default one.
+                    initialFilename = newFilePath;
+                }
             }
         }
     }
 
 
-    QString initialFilename;
-    QSettings settings;
-    if (argc > 1)
-        initialFilename = argv[1];
-    else if (settings.contains("lastfile"))
-        initialFilename = settings.value("lastfile").toString();
     MainWindow *mainWindow = new MainWindow(initialFilename);
     hirn_mainwindow = mainWindow;
     mainWindow->show();
