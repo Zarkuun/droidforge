@@ -85,6 +85,8 @@ public:
     unsigned memoryFootprint(QStringList &breakdown) const;
     unsigned countUniqueCables();
     unsigned countUniqueConstants();
+    unsigned countEncoders() const;
+    unsigned countFaders() const;
     unsigned neededG8s();
     bool needsX7();
 

@@ -3,7 +3,7 @@
 #include "atominvalid.h"
 #include "atomnumber.h"
 #include "globals.h"
-#include "parseexception.h"
+#include "patch.h"
 
 #include <QRegularExpression>
 #include <QException>
@@ -265,6 +265,37 @@ QList<PatchProblem *> JackAssignmentInput::collectSpecificProblems(const Patch *
             QString text = atoms[i]->problemAsInput(patch);
             if (text != "")
                 problems.append(new PatchProblem(-1, i+1, text));
+        }
+    }
+
+
+    // Some hard coded cases, to better support the user
+    if (atoms[0] && !atoms[1] && !atoms[2] && atoms[0]->isNumber()) {
+        QString problemText;
+        double number = ((AtomNumber *)atoms[0])->getNumber();
+        if (jack == "encoder" || jack == "firstencoder" || jack == "fader" || jack == "firstfader" ) {
+            if (number != round(number))
+                problemText = TR("This value needs to be an integer number");
+            else {
+                int n = (int)number;
+                if (n < 1)
+                    problemText = TR("This value needs to be 1 or greater");
+                else {
+                    if (jack == "encoder" || jack == "firstencoder") {
+                        unsigned numEncoders = patch->countEncoders();
+                        if ((unsigned)n > numEncoders)
+                            problemText = TR("Your setup has just %1 encoders, so you cannot use %2 here.").arg(numEncoders).arg(n);
+                    }
+                    else { // fader or firstfader
+                        unsigned numFaders = patch->countFaders();
+                        if ((unsigned)n > numFaders)
+                            problemText = TR("Your setup has just %1 motorfaders, so you cannot use %2 here.").arg(numFaders).arg(n);
+                    }
+                }
+            }
+        }
+        if (problemText != "") {
+            problems.append(new PatchProblem(-1, 1, problemText));
         }
     }
     return problems;

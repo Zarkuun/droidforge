@@ -801,7 +801,26 @@ unsigned Patch::countUniqueConstants()
     }
     return constants.count();
 }
-
+unsigned int Patch::countEncoders() const
+{
+    unsigned count = 0;
+    for (auto &controller: controllers) {
+        if (controller == "e4")
+            count += 4;
+        else if (controller == "db8e")
+            count += 1;
+    }
+    return count;
+}
+unsigned int Patch::countFaders() const
+{
+    unsigned count = 0;
+    for (auto &controller: controllers) {
+        if (controller == "m4")
+            count += 4;
+    }
+    return count;
+}
 unsigned Patch::neededG8s()
 {
     unsigned highest_g8 = 0;
