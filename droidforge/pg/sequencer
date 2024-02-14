@@ -14,36 +14,27 @@ import sys
 
 # ---------------------------------------------------------------------------
 # IDEE:
-# - Ratchetarp: Mini-Arpeggiator in die Ratchets einbauen. Das ist ein
-#   Eingang pro motoquencer: ratchetarp = 2. Die Zahl zeigt den
-#   diatonicnoteschift pro Ratchet an, die der Ton in eine Richtung
-#   verschoben wird. das kann auch negativ sein.
-# - Sollen wir dass nicht auch für die Repeats machen?
-# - Track-Menu: Einer der Fader wird Kontextspezifisch und hängt
-#   davon ab, welcher Fadermode gerade herrscht. Damit ich einen
-#   Fader freibekomme, muss ich einen der jetzigen Fader Kontext-
-#   spezifisch machen.
-#   * Gatelength + Glide: Die Glidelänge dieses Tracks
-#   * Ratchets: Ratchetarp
-#   * Repeats: Repeatarp???
-#   * Pitch:  Was könnte man hier machen? Vielleicht den Diatonicnoteshift?
-#   * Pitchrand: Hier den Akkumulator einklinken?
-#   * Gateprob:
-#   * Activity: Aktuelle Trackactivity
-#   * Velocity: Eine allgemeine Grundvelocity? Oder ein Skalierungsfaktor?
-#   Hm. Was an dieser ganze Sache doof ist, ist die Tatsache, dass
-#   man während man im Trackmenü ist, nicht diesen Fadermode umschalten kann,
-#   ohne das Trackemnü zu verlassen.
-
+# - Fader für die Tonleiter: Hier können wir einige wichtige Skalen
+#   rauspicken und der LED dann ne passende Farbe geben. Alle anderen
+#   sind halbweiß. z.B. Moll: Aeolisch: dunkelblau. Dorisch: cyan.
+#   ionisch: rot. lydisch: orange. Den Rest lassen wir ohne Farbe.
+#   Und: Der Defaultwert ist nicht mehr 0 (lydisch), sondern aeolisch.
+#   Das dürfte für fast alle die bessere Wahl sein.
+# - Eine Postkarte machen, vielleicht sogar noch kleiner (Visitenkarte)
+#   auf der die Stellungen der wichtigsten Fader sind. Das sind:
+#   * Track movement patterns
+#   * Gate propabilities
+#   * Pitch randomization
+#   * Clockdivisions even/odd
+#   * Arpeggio movement patterns
+#   * Arpeggio drop notes pattern
+#   * Scales
+#   -> Bei der Menge vielleicht doch ne Postkarte
 
 # TESTEN:
 # - CV-Eingänge mit MASTER
 # - Clocking mit MASTER (internal,detect,external)
 
-# Schönheitsdinge:
-# - Irgendwie sinnvoll releasen. Das Ding umziehen in die Forge.
-# - Handbuch schreiben
-# - Aufkleber designen, mit so Streifen für die M4
 # ---------------------------------------------------------------------------
 
 # This is a patch generator for a motorfader sequencer
