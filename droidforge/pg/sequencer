@@ -20,6 +20,12 @@ import sys
 #   ionisch: rot. lydisch: orange. Den Rest lassen wir ohne Farbe.
 #   Und: Der Defaultwert ist nicht mehr 0 (lydisch), sondern aeolisch.
 #   Das dürfte für fast alle die bessere Wahl sein.
+#
+# - Die CV-Outputs, die pitches ausgeben, sollten lpfilter = 0 gestellt
+#   werden. Eigentlich die mit Velocity auch, weil hier auch steps am
+#   Werk sind. Wobei da ja die Autoerkennung greifen sollen. Aber sicher
+#   ist sicher
+#
 # - Eine Postkarte machen, vielleicht sogar noch kleiner (Visitenkarte)
 #   auf der die Stellungen der wichtigsten Fader sind. Das sind:
 #   * Track movement patterns
