@@ -280,7 +280,16 @@ the master module.
                 ( "3", "Three octaves" ),
                 ( "4", "Four octaves" ),
             ],
-        }]},
+        },
+        {
+            "name" : "defgate",
+            "title" : "State of the gate after clearing a track",
+            "enum" : [
+                ( "0", "not set" ),
+                ( "1", "set" ),
+            ],
+        },
+        ]},
         {
             "title" : "Output",
             "help" : "Here you configure where the pitch/gate signals of your "
@@ -514,7 +523,7 @@ the master module.
             "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
             "resetout" : False     , "sos1"     : False   , "dualout"  : 0       , "divclock" : False   ,
-            "runningin" : "off",
+            "runningin" : "off"    , "defgate"  : "1",
         }
     },
     {
@@ -536,7 +545,7 @@ the master module.
             "clear"     : True      , "copy"     : False    , "inv"      : False   , "sinflink" : "off"   ,
             "clockin"   : False     , "resetin"  : False    , "clockout" : False   , "runclock" : False   ,
             "resetout"  : False     , "sos1"     : False    , "dualout"  : 0       , "divclock" : False   ,
-            "runningin" : "off",
+            "runningin" : "off"     , "defgate"  : "1",
         }
     },
     {
@@ -558,7 +567,7 @@ the master module.
             "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "ton"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : True    , "runclock" : True    ,
             "resetout" : True      , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
-            "runningin" : "trs1",
+            "runningin" : "trs1"   , "defgate"  : "0",
         }
     },
     ],
@@ -2000,6 +2009,7 @@ def track_section(track):
         ( "reset", "_RESET" + extra_reset ),
         ( "cv", "_T%d_PITCH" % track ),
         ( "cvrange", arguments["cvrange"] + "V"),
+        ( "defaultgate", arguments["defgate"] ),
         ( "gate", gate ),
         ( "numfaders", num_faders()),
         ( "numsteps", num_steps()),
