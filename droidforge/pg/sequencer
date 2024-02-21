@@ -14,13 +14,6 @@ import sys
 
 # ---------------------------------------------------------------------------
 # IDEE:
-# - Fader für die Tonleiter: Hier können wir einige wichtige Skalen
-#   rauspicken und der LED dann ne passende Farbe geben. Alle anderen
-#   sind halbweiß. z.B. Moll: Aeolisch: dunkelblau. Dorisch: cyan.
-#   ionisch: rot. lydisch: orange. Den Rest lassen wir ohne Farbe.
-#   Und: Der Defaultwert ist nicht mehr 0 (lydisch), sondern aeolisch.
-#   Das dürfte für fast alle die bessere Wahl sein.
-#
 # - Die CV-Outputs, die pitches ausgeben, sollten lpfilter = 0 gestellt
 #   werden. Eigentlich die mit Velocity auch, weil hier auch steps am
 #   Werk sind. Wobei da ja die Autoerkennung greifen sollen. Aber sicher
@@ -90,7 +83,22 @@ import sys
 #  7) drop notes from the scale
 #  8) clock: track gates /  x1  / x1.5 x2 x3 x4 x5 x6 x7 x8???
 
+# This is the order of the scales on fader 2 in tonality mode
+# (from top to bottom). The six most common scales have a color
+# code so that you can find them faster:
 
+#        Augmented
+#        Diminished
+# violet Phrygion minor
+#        Harmonic minor
+# blue   Natural minor (aolian)
+# cyan   Dorian minor
+#        Harmonic minor fromt he 5th (spanish scale)
+#        Altered scale
+#        Dominant sept with 3/4 exchanged (SUS 4)
+# orange Dominant sept (mixolydian)
+# green  Major (Ionian)
+# yellow Lydian major (#11)
 
 
 # Suggested button positions
@@ -121,41 +129,50 @@ BUTTONPOS_MUTE              = 29 # in case there is one track
 BUTTONPOS_TRACKS            = 29
 
 # Colors for the tonality menu
-COLOR_ROOT              = 1.1
-COLOR_DEGREE            = 1.2
-COLOR_TRANSPOSITION     = 0.85
-COLOR_TUNING_MODE       = 0
-COLOR_GLIDES            = 0.5
+COLOR_ROOT                  = 1.1
+COLOR_DEGREE                = 1.2
+COLOR_TRANSPOSITION         = 0.85
+COLOR_TUNING_MODE           = 0
+COLOR_GLIDES                = 0.5
 
 # Colors for the clock menu
-COLOR_BPM_100           = 0.2
-COLOR_BPM_10            = 0.2
-COLOR_BPM_1             = 0.2
-COLOR_CLOCKBEND_ZERO    = 0.4
-COLOR_CLOCKBEND_ALTERED = 0.8
-COLOR_CLOCK_UNMUTED     = 0.4
-COLOR_CLOCK_MUTED       = 0.8
-COLOR_CLOCK_SWING       = 1.1
-COLOR_CLOCK_DIVIDER     = 0.7
+COLOR_BPM_100               = 0.2
+COLOR_BPM_10                = 0.2
+COLOR_BPM_1                 = 0.2
+COLOR_CLOCKBEND_ZERO        = 0.4
+COLOR_CLOCKBEND_ALTERED     = 0.8
+COLOR_CLOCK_UNMUTED         = 0.4
+COLOR_CLOCK_MUTED           = 0.8
+COLOR_CLOCK_SWING           = 1.1
+COLOR_CLOCK_DIVIDER         = 0.7
 
 # Colors for the track / performance menu
-COLOR_SHIFTSTEPS        = 0.6
-COLOR_AUTORESET         = 0.8
-COLOR_OCTAVE_SWITCH     = 0.2
-COLOR_NOTESHIFT         = 0.4
-COLOR_ACTIVITY          = 0.55
-COLOR_PATTERN           = 0.3
-COLOR_CLOCKDIV_EVEN     = 1.1
-COLOR_CLOCKDIV_ODD      = 1.2
+COLOR_SHIFTSTEPS            = 0.6
+COLOR_AUTORESET             = 0.8
+COLOR_OCTAVE_SWITCH         = 0.2
+COLOR_NOTESHIFT             = 0.4
+COLOR_ACTIVITY              = 0.55
+COLOR_PATTERN               = 0.3
+COLOR_CLOCKDIV_EVEN         = 1.1
+COLOR_CLOCKDIV_ODD          = 1.2
 
 # Additional color for the Arpeggio menu
-COLOR_DIRECTION         = 0.85
-COLOR_BUTTERFLY         = 1.15
-COLOR_ARP_OCTAVING      = 0.4
-COLOR_DROP              = 0.5
+COLOR_DIRECTION             = 0.85
+COLOR_BUTTERFLY             = 1.15
+COLOR_ARP_OCTAVING          = 0.4
+COLOR_DROP                  = 0.5
+
+# Colors for the common scales
+COLOR_SCALE_PHRYGIAN        = 1.1
+COLOR_SCALE_MINOR           = 1.2
+COLOR_SCALE_DORIAN          = 0.2
+COLOR_SCALE_MIXOLYDIAN      = 0.73
+COLOR_SCALE_MAJOR           = 0.4
+COLOR_SCALE_LYDIAN          = 0.5
+COLOR_SCALE_OTHER           = 0.0
 
 # Other colors
-COLOR_EXTRAGATES        = 0.9
+COLOR_EXTRAGATES            = 0.9
 
 
 def output_options():
@@ -268,8 +285,9 @@ the master module.
             "title" : "Output",
             "help" : "Here you configure where the pitch/gate signals of your "
                      "individual tracks should be output. If you want to have tracks "
-                     "that output both to CV/gate and MIDI, put them at the top "
-                     "and set their count into 'Number of tracks using MIDI + CV/gate'. ",
+                     "that output both to CV/gate and MIDI, put them at the top, "
+                     "set them to MIDI and set their count into 'Number of tracks "
+                     "using MIDI + CV/gate'. ",
             "options" : output_options() + [
                {
                    "name" : "dualout",
@@ -717,10 +735,29 @@ def section_tonality():
     patch += circuit("motorfader", select + [
         ( "fader", 2 ),
         ( "notches", 12 ),
-        ( "ledcolor", COLOR_DEGREE ),
+        ( "startvalue", 7 ), # natural minor
+        ( "ledcolor", "_COLOR_DEGREE_FADER" ),
         ( "ledvalue", 1 ),
         ( "output", degree_cable ),
     ], "Set the musical scale")
+
+    patch += circuit("multicompare", [
+        ( "input", degree_cable ),
+        ( "compare1", 0 ),
+        ( "ifequal1", COLOR_SCALE_LYDIAN ),
+        ( "compare2", 1 ),
+        ( "ifequal2", COLOR_SCALE_MAJOR ),
+        ( "compare3", 2 ),
+        ( "ifequal3", COLOR_SCALE_MIXOLYDIAN ),
+        ( "compare4", 6 ),
+        ( "ifequal4", COLOR_SCALE_DORIAN ),
+        ( "compare5", 7 ),
+        ( "ifequal5", COLOR_SCALE_MINOR ),
+        ( "compare6", 9 ),
+        ( "ifequal6", COLOR_SCALE_PHRYGIAN ),
+        ( "else", COLOR_SCALE_OTHER ),
+        ( "output", "_COLOR_DEGREE_FADER" ),
+    ], "Select the color for the scale fader" )
 
     # Transposition by octaves
     patch += circuit("motorfader", select + [
