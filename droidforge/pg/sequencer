@@ -14,10 +14,22 @@ import sys
 
 # ---------------------------------------------------------------------------
 # IDEE:
-# - Auf den freien Fader im Tonality-Menü könnte man die Wahl der
-#   Anzahl der Oktaven legen, 2 - 3 - 4. Für alle Stimmen gemeinsam.
-#   Und nicht vom Einzelreset betroffen.
 #
+
+# TESTEN:
+# - CV-Eingänge mit MASTER
+# - Clocking mit MASTER (internal,detect,external)
+
+# HANDBUCH:
+# - Hinweis auf Shortcut
+# - Start/Stop-Button ist tempororary
+# - Shift Start/Stop -> clear start/stop
+# - Neuer RANGE fader. 1 Oktave ... 6 Oktaven. Dann ohne Notches
+# - GLIDE-Fader jetzt pro Track
+# - Neue Reihenfolge im Tonality-Menü
+# - AUX erwähnen. Als Future-Erweiterung
+# - Accumulator neu erklären. Mit dem neuen Fader. Fadermenü Clock erklären.
+#   Aufkleber für den Clockfader statt AUX ACCU.
 # - Eine Postkarte machen, vielleicht sogar noch kleiner (Visitenkarte)
 #   auf der die Stellungen der wichtigsten Fader sind. Das sind:
 #   * Track movement patterns
@@ -28,16 +40,8 @@ import sys
 #   * Arpeggio drop notes pattern
 #   * Scales
 #   -> Bei der Menge vielleicht doch ne Postkarte
-
-# TESTEN:
-# - CV-Eingänge mit MASTER
-# - Clocking mit MASTER (internal,detect,external)
-
-# HANDBUCH:
-# - Hinweis auf Shortcut
-# - Neuer RANGE fader. 1 Oktave ... 6 Oktaven. Dann ohne Notches
-# - GLIDE-Fader jetzt pro Track
-# - Neue Reihenfolge im Tonality-Menü
+# - Vielleicht eine Grafik, welche jeweils die CTRL-Version der Buttons
+#   erklärt.
 
 # ---------------------------------------------------------------------------
 
@@ -66,7 +70,7 @@ import sys
 #  5) Swing
 #  6) Start / stop
 #  7) Clock divider for optional divided output clock
-#  8) (unused)
+#  8) Accumulator range
 
 # Track menu:
 #  1) autoreset sequencer pattern
@@ -151,6 +155,7 @@ COLOR_CLOCK_UNMUTED         = 0.4
 COLOR_CLOCK_MUTED           = 0.8
 COLOR_CLOCK_SWING           = 1.1
 COLOR_CLOCK_DIVIDER         = 0.7
+COLOR_ACCU_RANGE            = 1.2
 
 # Colors for the track / performance menu
 COLOR_SHIFTSTEPS            = 0.6
@@ -484,7 +489,7 @@ the master module.
         },
         {
             "name" : "divclock",
-            "title" : "Output for clock with user defined divider",
+            "title" : "Output for clock signal with user defined divider",
         },
         {
             "name" : "runclock",
@@ -1317,6 +1322,7 @@ def section_global_buttons():
             patch += circuit("button", [
                 ( "button", "B" + b ),
                 ( "led", "L" + b ),
+                ( "states", 1 ),
                 ( "output", "_RANGE" )],
                 "Button for choosing between gates on/off and start/end")
 
@@ -1665,6 +1671,7 @@ def clock_menu():
         ( "output", "_CLOCK_BPM" ),
     ], "Set the BPM to zero while the clock is muted.")
 
+    # Fader 7: Division of custom clock output
     if arguments["divclock"]:
         patch += circuit("motorfader", select + [
             ( "fader", 7 ),
@@ -1673,11 +1680,29 @@ def clock_menu():
             ( "ledcolor", COLOR_CLOCK_DIVIDER ),
             ( "ledvalue", 1 ),
         ], "Divider for custom output clock" )
-        patch += unused_faders(8, select)
+        patch += unused_fader(7, select)
+
+    # Fader 8: Pitch accumulator range (per track)
+    if arguments["randpitch"]:
+        for track in range(1, arguments["tracks"] + 1):
+            this_select = [
+                ( "select", "_GLOBAL_FADER_SELECTION * _SELECTED_TRACK" ),
+                ( "selectat", 99 * track )]
+
+            patch += circuit("motorfader", this_select + [
+                ( "fader", 8 ),
+                ( "startvalue", 3 ),
+                ( "notches", 17 ),
+                ( "ledcolor", COLOR_ACCU_RANGE ),
+                ( "ledvalue", 1 ),
+                ( "output", "_T%d_ACCU_RANGE" % track ),
+            ], "Range of pitch accumulator")
 
     else:
-        patch += unused_faders(7, select)
+        patch += unused_fader(8, select)
 
+    # Fader 9 - 16 have no meaning here
+    patch += unused_faders(9, select)
     return patch
 
 def track_selection():
@@ -2045,9 +2070,7 @@ def track_section(track):
         ( "direction", "_T%d_DIRECTION" % track),
         ( "pingpong", "_T%d_PINGPONG" % track),
         ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
-        ( "accushift", 1 ),
-        ( "accuperiod", num_steps() ),
-        ( "accureset", num_steps() * 4 ),
+        ( "accumulatorrange", "_T%d_ACCU_RANGE" % track ),
         ( "tuningmode", "_TUNINGMODE" ),
         ( "tuningpitch", "_GLOBAL_OCTAVE_SWITCH * 1V" ),
     ]
@@ -2101,10 +2124,19 @@ def track_section(track):
     params.append(("composemode", "_COMPOSEMODE"))
 
     if clear_on_peace(track):
+        if arguments["range"]:
+            clearstartend = "_T%d_CLEARSTARTEND" % track
+            patch += circuit("logic", [
+                ( "input1", clear_on_peace(track) ),
+                ( "input2", "_RANGE * _CONTROL" ),
+                ( "or", clearstartend ),
+            ], "collect different sources of resetting the start/end point")
+        else:
+            clearstartend = clear_on_peace(track)
         params += [
             ( "clearskips", clear_on_peace(track) ),
             ( "clearrepeats", clear_on_peace(track) ),
-            ( "clearstartend",clear_on_peace(track) ),
+            ( "clearstartend", clearstartend ),
         ]
 
     if arguments["skiprep"]:
