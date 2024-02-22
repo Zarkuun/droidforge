@@ -46,7 +46,7 @@ import sys
 # ---------------------------------------------------------------------------
 
 # This is a patch generator for a motorfader sequencer
-# - The Droid user manual contains a chapter of how to use it.
+# - The Droid user manual contains a chapter about it.
 # - The circuits have comments on how the patch works.
 # - In the code there are some comments on how the generation works.
 #
@@ -70,7 +70,7 @@ import sys
 #  5) Swing
 #  6) Start / stop
 #  7) Clock divider for optional divided output clock
-#  8) Accumulator range
+#  8) Accumulator range (per track!)
 
 # Track menu:
 #  1) autoreset sequencer pattern
