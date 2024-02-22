@@ -1135,8 +1135,8 @@ def allocate_pots():
     global pots
     pots = {}
     if arguments["arp"]:
-        pots["arp_range"] = get_pot("A range / Rep shift", "Arpeggio pitch range / Repeat note shift")
-        pots["arp_pitch"] = get_pot("A pitch / Rat shift", "Arpeggio base pitch / Ratchet note shift")
+        pots["arp_range"] = get_pot("RANGE/REPEAT", "Arpeggio pitch range / Repeat note shift")
+        pots["arp_pitch"] = get_pot("BASE/RATCH", "Arpeggio base pitch / Ratchet note shift")
 
 
 
@@ -1148,7 +1148,7 @@ def allocate_track_buttons():
     track_buttons = {}
     if arguments["arp"]:
         track_buttons["arp"] = get_button(BUTTONPOS_ARPEGGIATOR,
-                                          "Arp",
+                                          "ARP",
                                           "Switch this track to arpeggio mode")
 
     for p in range(1, arguments["presets"] + 1):
@@ -1160,42 +1160,42 @@ def allocate_track_buttons():
 
     if arguments["rb"]:
         track_buttons["reset"] = get_button(BUTTONPOS_RESET,
-		"Reset",
+		"RST",
 		"Reset current track (Ctrl: all track) to step 1 immediately")
 
     if arguments["clear"]:
         track_buttons["clear"] = get_button(BUTTONPOS_CLEAR,
-		"Clear",
+		"CLR",
 		"Short press: reset play mode, with CTRL: clear track, long press factory reset")
 
     if arguments["copy"]:
         track_buttons["copy"] = get_button(BUTTONPOS_COPY,
-                "Copy",
+                "COPY",
                 "Copy current page of current track. With CTRL: Paste")
 
     if arguments["inv"]:
         track_buttons["inv"] = get_button(BUTTONPOS_INVERT,
-		"Invert",
+		"INV",
 		"Invert the melody (change low to high and vice versa)")
 
     if arguments["form"]:
         track_buttons["form"] = get_button(BUTTONPOS_FORM,
-		"Form",
+		"AAAB",
 		"Switch between the song from A, AAAB and AABB")
 
     if arguments["bq"]:
         track_buttons["bq"] = get_button(BUTTONPOS_DISABLE_QUANT,
-		"12-Tone",
+		"CHRO",
 		"Disable scale and note selection, allow all 12 notes")
 
     if arguments["lucky"]:
         track_buttons["lucky"] = get_button(BUTTONPOS_LUCKY,
-		"Lucky",
+		"LUCK",
 		"Randomly change step buttons, if Ctrl is held, change the gates instead.")
 
     if arguments["tbr"]:
         track_buttons["tbr"] = get_button(BUTTONPOS_TRANSPOSE_BY_ROOT,
-		"Trans/BR",
+		"TBR",
 		"If enabled, transposes the melody when the root note changes.")
 
 
@@ -1234,35 +1234,35 @@ def section_global_buttons():
         basemode = 0
         # Pitch is the only thing that is always there
 
-        buttons = [ (0, get_button(BUTTONPOS_PITCH, "Pitch", "Set motor faders to pitch")) ]
+        buttons = [ (0, get_button(BUTTONPOS_PITCH, "NOTE", "Set motor faders to pitch")) ]
 
         if arguments["velo"] != "off":
             basemode += 10
-            buttons.append((basemode, get_button(BUTTONPOS_VELOCITY, "Velocity", "Velocity / Additional gate")))
+            buttons.append((basemode, get_button(BUTTONPOS_VELOCITY, "VELO", "Velocity / Additional gate")))
 
         if arguments["skiprep"]:
             buttons += [
-              (3, get_button(BUTTONPOS_REPEATS, "Repeats", "Number of repeats, skip steps")),
-              (4, get_button(BUTTONPOS_GATE_PATTERN, "Gatepat", "Pattern for repeated gates")),
+              (3, get_button(BUTTONPOS_REPEATS, "REP", "Number of repeats, skip steps")),
+              (4, get_button(BUTTONPOS_GATE_PATTERN, "PAT", "Pattern for repeated gates")),
             ]
 
         if arguments["randpitch"]:
-            buttons.append((1, get_button(BUTTONPOS_PITCH_RANDOMIZE, "Pitch?", "Pitch randomization")))
+            buttons.append((1, get_button(BUTTONPOS_PITCH_RANDOMIZE, "RAND", "Pitch randomization")))
 
         if arguments["gl"]:
             basemode += 10
-            buttons.append((basemode, get_button(BUTTONPOS_GL_GLIDE, "Gl/Glide", "Gate length and glide")))
+            buttons.append((basemode, get_button(BUTTONPOS_GL_GLIDE, "GL", "Gate length and glide")))
             fadermode_for_glide = basemode
 
         if arguments["ratchets"]:
-            buttons.append((5, get_button(BUTTONPOS_RATCHETS, "Ratchets", "Number of sub gates per clock")))
+            buttons.append((5, get_button(BUTTONPOS_RATCHETS, "RATC", "Number of sub gates per clock")))
 
         if arguments["randgate"]:
-            buttons.append((2, get_button(BUTTONPOS_GATE_RANDOMIZE, "Gate?", "Gate randomization")))
+            buttons.append((2, get_button(BUTTONPOS_GATE_RANDOMIZE, "PROB", "Gate probability")))
 
         if arguments["act"]:
             basemode += 10
-            buttons.append((basemode, get_button(BUTTONPOS_ACTIVITY, "Activity", "Set step activities")))
+            buttons.append((basemode, get_button(BUTTONPOS_ACTIVITY, "ACT", "Set step activities")))
 
         args = []
         n = 1
@@ -1318,7 +1318,7 @@ def section_global_buttons():
 
         # Range (set start and end point)
         if arguments["range"]:
-            b = get_button(BUTTONPOS_RANGE, "Range", "Set start and end (range of steps to play)")
+            b = get_button(BUTTONPOS_RANGE, "S/E", "Set start and end (range of steps to play)")
             patch += circuit("button", [
                 ( "button", "B" + b ),
                 ( "led", "L" + b ),
@@ -1397,7 +1397,7 @@ def section_global_buttons():
 
     if arguments["ssb"]:
         b = get_button(BUTTONPOS_STARTSTOP,
-                       "Start/Stop",
+                       "START",
                        "Start/stop sequencer - start also does reset")
 
         buttonargs = [
@@ -1797,21 +1797,21 @@ def global_fader_selection():
 
     menu_buttons.append((
         97,
-        get_button(BUTTONPOS_GLOBALMENUS, "Tonality", "Tonality menu")))
+        get_button(BUTTONPOS_GLOBALMENUS, "TON", "Tonality menu")))
 
     if arguments["intclk"]:
         menu_buttons.append((
             99,
-            get_button(BUTTONPOS_GLOBALMENUS, "Clock", "Menu for clock speed and swing")))
+            get_button(BUTTONPOS_GLOBALMENUS, "CLK", "Menu for clock speed and swing")))
 
     menu_buttons.append((
         selected_track + "+ 10",
-        get_button(BUTTONPOS_GLOBALMENUS, "Track", "Track menu")))
+        get_button(BUTTONPOS_GLOBALMENUS, "TRK", "Track menu")))
 
     if have_performance_menu():
         menu_buttons.append((
             98,
-            get_button(BUTTONPOS_GLOBALMENUS, "Perform", "Performance menu")))
+            get_button(BUTTONPOS_GLOBALMENUS, "PERF", "Performance menu")))
 
 
     # Just one menu -> simple toggle button
