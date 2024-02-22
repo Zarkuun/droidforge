@@ -14,10 +14,9 @@ import sys
 
 # ---------------------------------------------------------------------------
 # IDEE:
-# - Die CV-Outputs, die pitches ausgeben, sollten lpfilter = 0 gestellt
-#   werden. Eigentlich die mit Velocity auch, weil hier auch steps am
-#   Werk sind. Wobei da ja die Autoerkennung greifen sollen. Aber sicher
-#   ist sicher
+# - Auf den freien Fader im Tonality-Menü könnte man die Wahl der
+#   Anzahl der Oktaven legen, 2 - 3 - 4. Für alle Stimmen gemeinsam.
+#   Und nicht vom Einzelreset betroffen.
 #
 # - Eine Postkarte machen, vielleicht sogar noch kleiner (Visitenkarte)
 #   auf der die Stellungen der wichtigsten Fader sind. Das sind:
@@ -33,6 +32,10 @@ import sys
 # TESTEN:
 # - CV-Eingänge mit MASTER
 # - Clocking mit MASTER (internal,detect,external)
+
+# HANDBUCH:
+# - Hinweis auf Shortcut
+# - Neuer RANGE fader. 1 Oktave ... 6 Oktaven. Dann ohne Notches
 
 # ---------------------------------------------------------------------------
 
@@ -132,6 +135,7 @@ BUTTONPOS_TRACKS            = 29
 COLOR_ROOT                  = 1.1
 COLOR_DEGREE                = 1.2
 COLOR_TRANSPOSITION         = 0.85
+COLOR_CVRANGE               = 0.65
 COLOR_TUNING_MODE           = 0
 COLOR_GLIDES                = 0.5
 
@@ -272,15 +276,15 @@ the master module.
             "title" : "Number of presets",
             "number": (0, 4),
         },
-        {
-            "name" : "cvrange",
-            "title" : "Pitch range of sequencer faders",
-            "enum" : [
-                ( "2", "Two octaves" ),
-                ( "3", "Three octaves" ),
-                ( "4", "Four octaves" ),
-            ],
-        },
+        # {
+        #     "name" : "cvrange",
+        #     "title" : "Pitch range of sequencer faders",
+        #     "enum" : [
+        #         ( "2", "Two octaves" ),
+        #         ( "3", "Three octaves" ),
+        #         ( "4", "Four octaves" ),
+        #     ],
+        # },
         {
             "name" : "defgate",
             "title" : "State of the gate after clearing a track",
@@ -509,7 +513,7 @@ the master module.
         "title" : "Default (4 tracks)",
         "parameters" : {
             "m"        : "master18", "c"        : "m4"    , "nc"       : "2"     , "g8"       : 0       ,
-            "tracks"   : 4         , "steps"    : "16"    , "cvrange"  : "2"     , "t1out"    : "cvgate",
+            "tracks"   : 4         , "steps"    : "16"    ,                        "t1out"    : "cvgate",
             "t2out"    : "cvgate"  , "t3out"    : "cvgate", "t4out"    : "cvgate", "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
@@ -531,7 +535,7 @@ the master module.
         "title" : "Minimum (1 track)",
         "parameters" : {
             "m"         : "master18", "c"        : "m4"     , "nc"       : '2'     , "g8"       : 0       ,
-            "tracks"    : 1         , "steps"    : "auto"   , "cvrange"  : "2"     , "t1out"    : "cvgate",
+            "tracks"    : 1         , "steps"    : "auto"   ,                        "t1out"    : "cvgate",
             "t2out"     : "cvgate"  , "t3out"    : "cvgate" , "t4out"    : "cvgate", "t5out"    : "cvgate",
             "t6out"     : "cvgate"  , "t7out"    : "cvgate" , "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"    : 2         , "t3chan"   : 3        , "t4chan"   : 4       , "t5chan"   : 5       ,
@@ -553,7 +557,7 @@ the master module.
         "title" : "DMMDM's authentic live setup",
         "parameters" : {
             "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "g8"       : 1       ,
-            "tracks"   : 4         , "steps"    : "32"    , "cvrange"  : "2"     , "t1out"    : "trs1",
+            "tracks"   : 4         , "steps"    : "32"    ,                        "t1out"    : "trs1",
             "t2out"    : "trs1"    , "t3out"    : "trs2"  , "t4out"    : "trs2"  , "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
@@ -853,6 +857,22 @@ def section_tonality():
     else:
         patch += unused_fader(6, select)
 
+    # Fader 7: CV range (per track)
+    for track in range(1, arguments["tracks"] + 1):
+        # This fader is selected when the global menu is selected
+        # and the track is selected. We use a trick in order to
+        # save circuits.
+        patch += circuit("motorfader", [
+            ( "select", "_GLOBAL_FADER_SELECTION * _SELECTED_TRACK" ),
+            ( "selectat", 97 * track ),
+            ( "fader", 7 ),
+            ( "notches", 6 ),
+            ( "startvalue", 0 ),
+            ( "ledcolor", COLOR_CVRANGE ),
+            ( "ledvalue", "_TUNING_LED + 0.3" ),
+            ( "output", "_T%d_CVRANGE" % track ),
+        ], "Set the CV range for track %d" % track )
+
     # Fader 8: Tuning mode
     patch += circuit("motorfader", select + [
         ( "fader", 8 ),
@@ -876,8 +896,6 @@ def section_tonality():
         ( "square" , "_TUNING_LED" ),
     ], "Let the LED blink so that we are aware of the special mode")
 
-
-    patch += unused_fader(7, select)
     patch += unused_faders(9, select)
 
     return patch
@@ -2008,7 +2026,7 @@ def track_section(track):
         ( "taptempo", "_T%d_CLOCK" % track ),
         ( "reset", "_RESET" + extra_reset ),
         ( "cv", "_T%d_PITCH" % track ),
-        ( "cvrange", arguments["cvrange"] + "V"),
+        ( "cvrange", "_T%d_CVRANGE * 1V + 1V" % track ),
         ( "defaultgate", arguments["defgate"] ),
         ( "gate", gate ),
         ( "numfaders", num_faders()),
