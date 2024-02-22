@@ -36,6 +36,8 @@ import sys
 # HANDBUCH:
 # - Hinweis auf Shortcut
 # - Neuer RANGE fader. 1 Oktave ... 6 Oktaven. Dann ohne Notches
+# - GLIDE-Fader jetzt pro Track
+# - Neue Reihenfolge im Tonality-Menü
 
 # ---------------------------------------------------------------------------
 
@@ -52,9 +54,9 @@ import sys
 #  3) Global octave switch -2 ... +2
 #  4) Global diatonic transposition (within the selected notes)
 #  5) Global transposition (changes the scale)
-#  6) Length of glides
-#  7) (unused)
-#  8) normal mode - tuning mode - compose mode
+#  6) normal mode - tuning mode - compose mode
+#  7) Length of glides (per track!)
+#  8) Note range from 1 octave to 6 octaves (per track!)
 
 # Clock menu:
 #  1) 0 / 100 / 200 BPM
@@ -838,44 +840,9 @@ def section_tonality():
         ( "output", "_LED_GLOBAL_TRANSPOSITION" ),
     ], "Make the LED just a bit brighter if the switch is at neutral position" )
 
-    # Fader 6: Glide length
-    if arguments["gl"] and have_cvgate_tracks():
-        patch += circuit("motorfader", select + [
-            ( "fader", 6 ),
-            ( "startvalue", 0.3 ),
-            ( "ledcolor", COLOR_GLIDES ),
-            ( "ledvalue", 1 ),
-            ( "output", "_GLIDE_LENGTH_FADER" ),
-        ], "Glide length (duration of slides)")
-
-        patch += circuit("math", [
-            ( "input1", "_GLIDE_LENGTH_FADER * 0.5" ),
-            ( "input2", 3.0 ),
-            ( "power", "_GLIDE_LENGTH" ),
-        ], "Make glide reasonably fast, make fader curve zoomed in in "
-           "the short glide times.")
-    else:
-        patch += unused_fader(6, select)
-
-    # Fader 7: CV range (per track)
-    for track in range(1, arguments["tracks"] + 1):
-        # This fader is selected when the global menu is selected
-        # and the track is selected. We use a trick in order to
-        # save circuits.
-        patch += circuit("motorfader", [
-            ( "select", "_GLOBAL_FADER_SELECTION * _SELECTED_TRACK" ),
-            ( "selectat", 97 * track ),
-            ( "fader", 7 ),
-            ( "notches", 6 ),
-            ( "startvalue", 0 ),
-            ( "ledcolor", COLOR_CVRANGE ),
-            ( "ledvalue", "_TUNING_LED + 0.3" ),
-            ( "output", "_T%d_CVRANGE" % track ),
-        ], "Set the CV range for track %d" % track )
-
-    # Fader 8: Tuning mode
+    # Fader 6: Tuning mode
     patch += circuit("motorfader", select + [
-        ( "fader", 8 ),
+        ( "fader", 6 ),
         ( "notches", 3 ),
         ( "startvalue", 0 ),
         ( "ledcolor", COLOR_TUNING_MODE ),
@@ -895,6 +862,46 @@ def section_tonality():
         ( "level", "0.7 * _TUNING_COMPOSE" ),
         ( "square" , "_TUNING_LED" ),
     ], "Let the LED blink so that we are aware of the special mode")
+
+
+    # Fader 7 & 8 are track values
+    for track in range(1, arguments["tracks"] + 1):
+        this_select = [
+            ( "select", "_GLOBAL_FADER_SELECTION * _SELECTED_TRACK" ),
+            ( "selectat", 97 * track )]
+
+        if arguments["gl"] and track_is_cvgate(track):
+            patch += circuit("motorfader", this_select + [
+                ( "fader", 7 ),
+                ( "startvalue", 0.3 ),
+                ( "ledcolor", COLOR_GLIDES ),
+                ( "ledvalue", 1 ),
+                ( "output", "_T%d_GLIDE_LENGTH_FADER" % track ),
+            ], "Glide length (duration of slides)")
+
+            patch += circuit("math", [
+                ( "input1", "_T%d_GLIDE_LENGTH_FADER * 0.5" % track ),
+                ( "input2", 3.0 ),
+                ( "power", "_T%d_GLIDE_LENGTH" % track ),
+            ], "Make glide reasonably fast, make fader curve zoomed in in "
+               "the short glide times.")
+
+        else: # this track has no glides
+            patch += unused_fader(7, this_select)
+
+
+        # Fader 8: CV range (per track)
+        # This fader is selected when the global menu is selected
+        # and the track is selected. We use a trick in order to
+        # save circuits.
+        patch += circuit("motorfader", this_select + [
+            ( "fader", 8 ),
+            ( "notches", 6 ),
+            ( "startvalue", 0 ),
+            ( "ledcolor", COLOR_CVRANGE ),
+            ( "ledvalue", "_TUNING_LED + 0.3" ),
+            ( "output", "_T%d_CVRANGE" % track ),
+        ], "Set the CV range for track %d" % track )
 
     patch += unused_faders(9, select)
 
@@ -2285,7 +2292,7 @@ def track_section(track):
             patch += circuit("slew", [
                 ( "input", "_T%d_FINAL_PITCH" % track ),
                 ( "exponential", pitch_output_jack ),
-                ( "slew", "_T%d_GLIDE * _GLIDE_LENGTH" % track ),
+                ( "slew", "_T%d_GLIDE * _T%d_GLIDE_LENGTH" % (track, track) ),
             ], "Slew limiter for glides" )
         else:
             patch += circuit("copy", [
