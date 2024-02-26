@@ -1,11 +1,8 @@
-#include "globals.h"
 #include "iconbase.h"
 #include "mainwindow.h"
-#include "parseexception.h"
 #include "patch.h"
 #include "rackview.h"
 #include "modulebuilder.h"
-#include "patchparser.h"
 #include "tuning.h"
 #include "os.h"
 #include "updatehub.h"
@@ -100,6 +97,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     CONNECT_ACTION(ACTION_MINIMIZE_WINDOW, &MainWindow::showMinimized);
     CONNECT_ACTION(ACTION_NEXT_WINDOW, &MainWindow::nextWindow);
     CONNECT_ACTION(ACTION_PREVIOUS_WINDOW, &MainWindow::previousWindow);
+    CONNECT_ACTION(ACTION_ENABLE_PATCH_GENERATORS, &MainWindow::enablePatchGenerators);
 
     connect(&bringToFrontAction, &QAction::triggered, this, &MainWindow::bringToFront);
 
@@ -338,9 +336,14 @@ void MainWindow::createRackMenu()
 }
 void MainWindow::populateGeneratorsMenu()
 {
+    ADD_ACTION(ACTION_ENABLE_PATCH_GENERATORS, generatorsMenu);
+
     int i = 0;
     for (auto &gen: *the_patch_generator_base->generators())
     {
+        if (i == 0)
+            generatorsMenu->addSeparator();
+
         QAction *action = new QAction(gen->title(), this);
         connect(action, &QAction::triggered, this, [this, i, gen]() { patchOperator.openPatchGenerator(i, gen); });
         generatorsMenu->addAction(action);
@@ -357,7 +360,7 @@ void MainWindow::updateGeneratorsShortcut(int index)
     settings.setValue("last_patch_generator", index);
     QList<QAction *> actions = generatorsMenu->actions();
     for (int i=0; i<actions.count(); i++) {
-        if (i == index)
+        if (i == index + 2) // first two actions are "enable" and the separator
             actions[i]->setShortcut(QKeySequence(tr("Ctrl+Shift+G")));
         else
             actions[i]->setShortcut(QKeySequence());
@@ -623,6 +626,33 @@ void MainWindow::nextWindow()
 void MainWindow::previousWindow()
 {
     the_windowlist->previousWindow(this)->bringToFront();
+}
+void MainWindow::enablePatchGenerators()
+{
+    QSettings settings;
+    if (settings.value("patch_generators_enabled", false).toBool())
+    {
+        settings.setValue("patch_generators_enabled", false);
+        ACTION(ACTION_ENABLE_PATCH_GENERATORS)->setChecked(false);
+        the_patch_generator_base->disableGenerators();
+        generatorsMenu->clear();
+        populateGeneratorsMenu();
+    }
+    else {
+        ACTION(ACTION_ENABLE_PATCH_GENERATORS)->setChecked(false);
+        if (the_patch_generator_base->informAndAsk()) {
+            if (the_patch_generator_base->enableGenerators()) {
+                QMessageBox::information(
+                    this,
+                    tr("Success"),
+                    tr("The patch generators have successfully been enabled."));
+                ACTION(ACTION_ENABLE_PATCH_GENERATORS)->setChecked(true);
+                settings.setValue("patch_generators_enabled", true);
+                generatorsMenu->clear();
+                populateGeneratorsMenu();
+            }
+        }
+    }
 }
 void MainWindow::updateStatusbarMessage()
 {

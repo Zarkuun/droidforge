@@ -1,9 +1,5 @@
-#include "globals.h"
-#include "parseexception.h"
 #include "mainwindow.h"
-#include "patch.h"
 #include "cablecolorizer.h"
-#include "updatehub.h"
 #include "clipboard.h"
 #include "colorscheme.h"
 #include "usermanual.h"
@@ -60,6 +56,7 @@ int main(int argc, char *argv[])
     IconBase iconBase;
     CableColorizer cableColorizer;
     ColorScheme colorscheme;
+    QSettings settings;
 
     if (colorscheme.isDevelopment())
         colorscheme.dumpHeaderFile();
@@ -72,13 +69,21 @@ int main(int argc, char *argv[])
     dir.cd(PATCH_DIRECTORY_NAME);
     QDir::setCurrent(dir.absolutePath());
 
+    // Patch generators
     if (!dir.cd(PATCH_GENERATORS_SUBDIR))
         dir.mkdir(PATCH_GENERATORS_SUBDIR);
     dir.cd(PATCH_GENERATORS_SUBDIR);
     PatchGeneratorBase pgBase(dir);
 
+    if (settings.value("patch_generators_enabled", false).toBool())
+    {
+        // If this setting is true, the generators had been enabled successfully
+        // previously. If it fails now, we better disable them.
+        if (!pgBase.enableGenerators())
+            settings.setValue("patch_generators_enabled", false);
+    }
+
     QString initialFilename;
-    QSettings settings;
     if (argc > 1)
         initialFilename = argv[1];
     else if (settings.contains("lastfile"))
