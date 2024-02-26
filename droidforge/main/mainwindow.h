@@ -147,6 +147,7 @@ private slots:
     void abortAllActions();
     void nextWindow();
     void previousWindow();
+    void enablePatchGenerators();
 
 signals:
     void allActionsAborted();

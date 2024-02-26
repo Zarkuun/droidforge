@@ -1,5 +1,4 @@
 #include "patchgeneratordialog.h"
-#include "globals.h"
 #include "parseexception.h"
 #include "patch.h"
 #include "patchparser.h"

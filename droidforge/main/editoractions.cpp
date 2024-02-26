@@ -399,6 +399,10 @@ void EditorActions::createActions()
     actions[ACTION_CIRCUIT_MANUAL] = new QAction(tr("User manual of &circuit"), this);
     actions[ACTION_CIRCUIT_MANUAL]->setShortcut(QKeySequence(tr("Ctrl+T")));
 
+    actions[ACTION_ENABLE_PATCH_GENERATORS] = new QAction(tr("Enable patch generators"), this);
+    actions[ACTION_ENABLE_PATCH_GENERATORS]->setCheckable(true);
+    actions[ACTION_ENABLE_PATCH_GENERATORS]->setChecked(settings.value("patch_generators_enabled", false).toBool());
+
     for (auto action: actions)
          action->setShortcutVisibleInContextMenu(true);
 }

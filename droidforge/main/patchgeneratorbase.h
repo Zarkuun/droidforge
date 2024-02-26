@@ -14,10 +14,13 @@ class PatchGeneratorBase
 public:
     PatchGeneratorBase(QDir directory);
     QList<PatchGenerator *> *generators() { return &_generators; };
+    bool enableGenerators();
+    void disableGenerators();
+    bool informAndAsk() const;
 
 private:
-    void deployGenerators();
-    void loadGenerators();
+    bool deployGenerators();
+    bool loadGenerators();
 };
 
 extern PatchGeneratorBase *the_patch_generator_base;
