@@ -5,14 +5,14 @@
 
 class JackValueTableDialog : public QDialog
 {
-    float selectedValue;
+    double selectedValue;
 
 public:
     JackValueTableDialog(QString circuit, QString jack, QWidget *parent=nullptr);
-    float getSelectedValue() const { return selectedValue; };
+    double getSelectedValue() const { return selectedValue; };
 
 private:
-    void valueSelected(float value);
+    void valueSelected(double value);
 };
 
 #endif // JACKVALUETABLEDIALOG_H
