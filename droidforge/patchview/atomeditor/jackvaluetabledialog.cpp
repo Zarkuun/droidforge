@@ -15,11 +15,8 @@ JackValueTableDialog::JackValueTableDialog(QString circuit, QString jack, QWidge
     setLayout(mainLayout);
 
     int row = 0;
-    for (auto it = jackValueTable.keyBegin();
-         it != jackValueTable.keyEnd();
-         ++it)
+    for (auto value: jackValueTable.keys())
     {
-        float value = *it;
         QString description = jackValueTable[value];
         QPushButton *button = new QPushButton(QString::number(value), this);
         connect(button, &QPushButton::pressed, this, [this,value] () { valueSelected(value); });
@@ -30,7 +27,7 @@ JackValueTableDialog::JackValueTableDialog(QString circuit, QString jack, QWidge
     }
 }
 
-void JackValueTableDialog::valueSelected(float value)
+void JackValueTableDialog::valueSelected(double value)
 {
     selectedValue = value;
     accept();
