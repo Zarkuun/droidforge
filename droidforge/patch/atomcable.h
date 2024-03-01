@@ -19,7 +19,7 @@ public:
     QString problemAsInput(const Patch *patch) const override;
     QString problemAsOutput(const Patch *patch) const override;
     static QString nextCableName(const QString &name);
-    void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
+    void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode) override;
     void incrementForExpansion(const Patch *patch) override;
 };
 

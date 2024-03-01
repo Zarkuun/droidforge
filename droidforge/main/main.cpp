@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 #include "globals.h"
-=======
->>>>>>> Patch generators: need to be enabled now
 #include "mainwindow.h"
 #include "cablecolorizer.h"
 #include "clipboard.h"
