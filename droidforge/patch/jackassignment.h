@@ -2,7 +2,6 @@
 #define JACKASSIGNMENT_H
 
 #include "atom.h"
-#include "atomregister.h"
 #include "patchproblem.h"
 #include "registerlist.h"
 #include "rewritecablesdialog.h"
@@ -42,7 +41,6 @@ public:
     void changeJack(QString j) { jack = j; };
     void collectRegisterAtoms(RegisterList &, bool skipControls=false) const;
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
-    void incrementForExpansion(const Patch *patch);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     virtual ~JackAssignment();
@@ -59,6 +57,7 @@ public:
     virtual void findCableConnections(const QString &, int &, int &) const {};
     virtual void parseExpression(const QString &expression) = 0;
     virtual void removeRegisterReferences(RegisterList &rl) = 0;
+    virtual void incrementForExpansion(const Patch *patch) {};
     virtual QList<PatchProblem *> collectSpecificProblems(const Patch *patch) const = 0;
     virtual bool isUndefined() const = 0;
     static JackAssignment *parseJackLine(const QString &circuit, QString line);

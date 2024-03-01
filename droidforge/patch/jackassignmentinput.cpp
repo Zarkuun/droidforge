@@ -304,6 +304,13 @@ bool JackAssignmentInput::isUndefined() const
 {
     return atoms[0] == 0 && atoms[1] == 0 && atoms[2] == 0;
 }
+void JackAssignmentInput::incrementForExpansion(const Patch *patch)
+{
+    for (int a=0; a<=2; a++) {
+        if (atoms[a])
+            atoms[a]->incrementForExpansion(patch);
+    }
+}
 Atom *JackAssignmentInput::parseOnOff(QString s)
 {
     if (s == "on")

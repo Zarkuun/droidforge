@@ -94,14 +94,6 @@ void JackAssignment::rewriteCableNames(const QString &remove, const QString &ins
              atom->rewriteCableNames(remove, insert, mode);
     }
 }
-void JackAssignment::incrementForExpansion(const Patch *patch)
-{
-    for (int a=1; a<=3; a++) {
-        Atom *atom = atomAt(a);
-        if (atom)
-            atom->incrementForExpansion(patch);
-    }
-}
 QList<PatchProblem *> JackAssignment::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *>problems = collectSpecificProblems(patch);

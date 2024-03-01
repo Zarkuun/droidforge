@@ -25,6 +25,7 @@ public:
     static Atom *parseInputFraction(const QString &s);
     QList<PatchProblem *> collectSpecificProblems(const Patch *patch) const;
     bool isUndefined() const;
+    void incrementForExpansion(const Patch *patch);
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_INPUT; };

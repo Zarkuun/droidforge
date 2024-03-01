@@ -85,6 +85,11 @@ void JackAssignmentOutput::removeRegisterReferences(RegisterList &rl)
         }
     }
 }
+void JackAssignmentOutput::incrementForExpansion(const Patch *patch)
+{
+    if (atom)
+        atom->incrementForExpansion(patch);
+}
 QList<PatchProblem *> JackAssignmentOutput::collectSpecificProblems(const Patch *patch) const
 {
     QList<PatchProblem *>problems;
