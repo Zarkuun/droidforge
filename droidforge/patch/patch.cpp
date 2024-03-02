@@ -1,4 +1,5 @@
 #include "patch.h"
+#include "QtWidgets/qmessagebox.h"
 #include "atomcable.h"
 #include "atomnumber.h"
 #include "droidfirmware.h"
@@ -1113,14 +1114,53 @@ bool Patch::saveToFile(const QString filePath, bool compressed) const
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
           return false;
-    QTextStream stream(&file);
+    QString contents;
     if (compressed)
-        stream << toCompressed();
+        contents = toCompressed();
     else
-        stream << toString();
+        contents = toString();
+
+    QTextStream stream(&file);
+    stream << contents;
     stream.flush();
     file.close();
-    return stream.status() == QTextStream::Ok;
+    if (stream.status() != QTextStream::Ok)
+        return false; // failed to save
+
+    QFile testFile(filePath);
+    if (!testFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::critical(
+            0,
+            TR("File cannot be opened"),
+            TR("Saving the patch to the file\n\n"
+               "%1\n\n"
+               "seems to have succeeded, but now I cannot open the file "
+               "for test reading! Please check if the file has been saved "
+               "correctly or maybe choose another storage destination "
+               "for your patch. Otherwise you might loose your changes.").arg(filePath),
+            QMessageBox::Ok);
+        return false;
+    }
+
+    QTextStream testStream(&testFile);
+    QString testContents = testStream.readAll();
+    testFile.close();
+
+    if (testContents != contents) {
+        QMessageBox::critical(
+            0,
+            TR("File content modified after saving"),
+            TR("Saving the patch to the file\n\n"
+               "%1\n\n"
+               "seems to have succeeded, but now when I read the contents "
+               "of the file they do not match the data I have written to "
+               "it. It seems like the file was not saved correctly.").arg(filePath),
+            QMessageBox::Ok);
+        return false;
+    }
+
+    return true;
 }
 void Patch::iterator::moveToFirstAtom()
 {
