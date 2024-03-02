@@ -57,7 +57,7 @@ public:
     virtual void findCableConnections(const QString &, int &, int &) const {};
     virtual void parseExpression(const QString &expression) = 0;
     virtual void removeRegisterReferences(RegisterList &rl) = 0;
-    virtual void incrementForExpansion(const Patch *patch) {};
+    virtual void incrementForExpansion(const Patch *) {};
     virtual QList<PatchProblem *> collectSpecificProblems(const Patch *patch) const = 0;
     virtual bool isUndefined() const = 0;
     static JackAssignment *parseJackLine(const QString &circuit, QString line);
