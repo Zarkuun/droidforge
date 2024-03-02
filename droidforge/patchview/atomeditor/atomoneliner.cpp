@@ -16,8 +16,10 @@ AtomOneliner::AtomOneliner(QWidget *parent)
 {
     setWindowTitle(tr("Edit value"));
     lineEdit = new KeyCaptureLineEdit(this);
+
     connect(lineEdit, &QLineEdit::returnPressed, this, &AtomOneliner::returnPressed);
     connect(lineEdit, &QLineEdit::selectionChanged, this, &AtomOneliner::selectionChanged);
+    connect(lineEdit, &QLineEdit::textChanged, this, &AtomOneliner::textChanged);
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(lineEdit, 0, 0);
     mainLayout->setContentsMargins(2, 2, 2, 2);
@@ -56,10 +58,8 @@ void AtomOneliner::showEvent(QShowEvent *)
 }
 void AtomOneliner::keyPressed(int key)
 {
-    if (key != ' ') {
-        lastKey = key;
-        accept();
-    }
+    lastKey = key;
+    accept();
 }
 void AtomOneliner::selectionChanged()
 {
@@ -106,4 +106,11 @@ void AtomOneliner::setGeometry()
 {
     move(geometry.topLeft().toPoint());
     resize(geometry.width(), geometry.height());
+}
+void AtomOneliner::textChanged(QString text)
+{
+    if (text.startsWith('_')) // patch cable
+        lineEdit->setSpaceHandling(SPACE_TO_UNDERSCORE);
+    else
+        lineEdit->setSpaceHandling(SPACE_IGNORED);
 }

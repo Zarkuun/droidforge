@@ -34,6 +34,7 @@ protected:
 private slots:
     void keyPressed(int);
     void setGeometry();
+    void textChanged(QString text);
 };
 
 #endif // ATOMONELINER_H
