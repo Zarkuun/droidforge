@@ -824,6 +824,12 @@ void PatchSectionView::pasteAtomsFromClipboard()
     if (column == 0)
         column = 1; // paste into parameter name column
 
+    // Even in output parameters the cursor can be in column 3, if it
+    // just moved up from column 3 of an input column. For pasting
+    // we need to go to the "real" first and only column.
+    if (column > ja->numColumns())
+        column = ja->numColumns();
+
     const QList<Atom *> &atoms = the_clipboard->getAtoms();
     for (auto atom: atoms) {
         // We need to reparse, as people might copy an input
@@ -853,9 +859,9 @@ void PatchSectionView::pasteAtomsFromClipboard()
         }
         ja->replaceAtom(column, newAtom);
         section()->setCursorColumn(column);
-        column ++;
-        if (column > 3)
+        if (column >= ja->numColumns())
             break;
+        column ++;
     }
     patch->commit(tr("pasting parameters"));
     emit patchModified();
