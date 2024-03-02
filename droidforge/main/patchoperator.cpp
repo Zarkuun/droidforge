@@ -836,14 +836,11 @@ void PatchOperator::loadFile(const QString &filePath, int how)
 }
 void PatchOperator::openFileFromExternal(const QString &filePath)
 {
-    if (checkModified() && !bringToFrontIfOpen(filePath, true))
+    if (!bringToFrontIfOpen(filePath, true))
         loadFile(filePath, FILE_MODE_LOAD);
 }
 void PatchOperator::open()
 {
-    if (!checkModified())
-        return;
-
     QString filePath = QFileDialog::getOpenFileName(
                 mainWindow, "", "", "DROID patches (*.ini)");
 
