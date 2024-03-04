@@ -59,8 +59,19 @@ bool PatchGeneratorBase::deployGenerators()
         auto parts = ressourcePath.split("/");
         QString fileName = parts[1];
         QString absPath = _directory.absoluteFilePath(fileName);
-        if (QFile::exists(absPath))
-            QFile::remove(absPath);
+        if (QFile::exists(absPath)) {
+            QFile f(absPath);
+            f.setPermissions(
+                        f.permissions()
+                        | QFileDevice::WriteOwner
+                        | QFileDevice::WriteUser
+                        | QFileDevice::WriteGroup
+                        | QFileDevice::WriteOther);
+
+            if (!f.remove()) {
+                failed += TR("Could not delete old version of %1: %2\n").arg(absPath).arg(f.errorString());
+            }
+        }
         if (!QFile::copy(ressourcePath, absPath))
             failed += absPath + "\n";
     }
@@ -82,7 +93,7 @@ bool PatchGeneratorBase::loadGenerators()
     bool oneLoaded = false;
 
     for (auto &fileName: _directory.entryList()) {
-        if (fileName.startsWith('.') || fileName.endsWith(".py")) {
+        if (fileName.startsWith('.') || fileName.endsWith(".py") || fileName.startsWith("_")) {
             continue;
         }
         QString absPath = _directory.absoluteFilePath(fileName);
