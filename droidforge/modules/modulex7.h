@@ -2,6 +2,7 @@
 #define MODULEX7_H
 
 #include "module.h"
+#include "tuning.h"
 
 class ModuleX7 : public Module
 {

@@ -2,6 +2,7 @@
 #define MODULEG8_H
 
 #include "module.h"
+#include "tuning.h"
 
 class ModuleG8 : public Module
 {

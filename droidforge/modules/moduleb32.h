@@ -2,6 +2,7 @@
 #define MODULEB32_H
 
 #include "module.h"
+#include "tuning.h"
 
 class ModuleB32 : public Module
 {

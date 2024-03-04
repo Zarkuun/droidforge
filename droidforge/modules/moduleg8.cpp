@@ -11,7 +11,7 @@ unsigned ModuleG8::numRegisters(register_type_t type) const
 unsigned ModuleG8::numberOffset(register_type_t type) const
 {
     if (type == REGISTER_RGB_LED)
-        return 16 + 8 * (g8Number() - 1);
+        return data(DATA_INDEX_G8_RGB_OFFSET).toInt();
     else
         return 0;
 }

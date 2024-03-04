@@ -2,6 +2,7 @@
 #define MODULEMASTER18_H
 
 #include "module.h"
+#include "tuning.h"
 
 class ModuleMaster18 : public Module
 {

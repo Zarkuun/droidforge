@@ -6,6 +6,7 @@
 #include "modulebuilder.h"
 #include "registerlabels.h"
 #include "globals.h"
+#include "tuning.h"
 
 #include <QFileInfo>
 #include <QSettings>

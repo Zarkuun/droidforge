@@ -49,7 +49,7 @@ public:
 
 private:
     void connectDragger();
-    void addModule(const QString &name, int controllerIndex=-1, int g8Number=0);
+    void addModule(const QString &name, int controllerIndex=-1, int g8Number=0, int rgbOffset=0);
     unsigned numControllers() const;
     void removeModule(int controllerIndex);
     RegisterList findCurrentRegisters() const;

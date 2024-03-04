@@ -4,8 +4,6 @@
 #include "atomregister.h"
 #include "registerlabels.h"
 #include "registerlist.h"
-#include "mousedragger.h"
-#include "tuning.h"
 
 #include <QString>
 #include <QPixmap>
@@ -26,6 +24,7 @@ QT_END_NAMESPACE
 #define DATA_INDEX_REGISTER_NAME    3 // QString, e.g. "L1.4"
 #define DATA_INDEX_REGISTER         4
 #define DATA_INDEX_G8_NUMBER        5 // starting from 1
+#define DATA_INDEX_G8_RGB_OFFSET    6 // starting from 16
 
 
 class MainWindow;

@@ -405,13 +405,13 @@ void RackView::refreshScene()
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
             addModule("x7");
         for (unsigned g=show_g8s; g>=1; g--)
-            addModule("g8", -1, g + g8_offset);
+            addModule("g8", -1, g + g8_offset, 8 + g * 8);
         addModule(masterModuleName());
     }
     else {
         addModule(masterModuleName());
         for (unsigned g=1; g<=show_g8s; g++)
-            addModule("g8", -1, g + g8_offset);
+            addModule("g8", -1, g + g8_offset, 8 + g * 8);
         if (!ACTION(ACTION_SHOW_X7_ON_DEMAND)->isChecked() || patch->needsX7())
             addModule("x7");
         addModule("bling");
@@ -478,7 +478,7 @@ void RackView::updateSize()
 
     updateModuleHeights();
 }
-void RackView::addModule(const QString &name, int controllerIndex, int g8Number)
+void RackView::addModule(const QString &name, int controllerIndex, int g8Number, int rgbOffset)
 {
     Module *module = moduleBuilder.buildModule(name, patch->getRegisterLabelsPointer());
     module->setData(DATA_INDEX_MODULE_NAME, name);
@@ -488,8 +488,10 @@ void RackView::addModule(const QString &name, int controllerIndex, int g8Number)
     modules.append(module);
     if (controllerIndex >= 0)
         module->setData(DATA_INDEX_CONTROLLER_INDEX, controllerIndex);
-    if (g8Number > 0)
+    if (g8Number > 0) {
         module->setData(DATA_INDEX_G8_NUMBER, g8Number);
+        module->setData(DATA_INDEX_G8_RGB_OFFSET, rgbOffset);
+    }
     module->setPos(x, 0); //RACV_TOP_MARGIN);
     x += module->hp() * RACV_PIXEL_PER_HP + RACK_MODULE_MARGIN;
     module->createRegisterItems(scene(), modules.count() - 1, controllerIndex, g8Number);

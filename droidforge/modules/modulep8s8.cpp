@@ -1,4 +1,5 @@
 #include "modulep8s8.h"
+#include "tuning.h"
 
 unsigned ModuleP8S8::numRegisters(register_type_t type) const
 {
