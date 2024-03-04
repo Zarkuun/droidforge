@@ -764,7 +764,7 @@ void MainWindow::about()
                            "This version of DROID Forge assumes that your "
                            "DROID master is running firmware version %2 or newer.\n\n"
 
-                           "Copyright Mathias Kettner 2023.\n\n"
+                           "Copyright Mathias Kettner 2024.\n\n"
 
                            "This program is free software: you can redistribute it and/or modify it under "
                            "the terms of the GNU General Public License as published by the Free Software "
