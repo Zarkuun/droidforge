@@ -635,7 +635,9 @@ void Patch::updateProblems()
     //    LEDs are fine! Since many circuits work with select and allow
     //    overloading of LEDs.
     // 2) Look for registers not present on the chosen master
+    // 3) Collect additional registers used as output for a check below
     RegisterList usedOutputs;
+    RegisterList usedAsOutput;
     for (auto it = begin(); it != end(); ++it)
     {
         const Atom *atom = *it;
@@ -649,6 +651,9 @@ void Patch::updateProblems()
         const JackAssignment *ja = circuit->jackAssignment(pos.row);
         if (ja->isDisabled())
             continue;
+
+        if (ja->isOutput())
+            usedAsOutput.append(*reg);
 
         // 1) Check registers used as ouput twice. We *don't* check LED registers
         // because it's quite common to use them twice - as a part of layered
@@ -714,7 +719,7 @@ void Patch::updateProblems()
         const AtomRegister *reg = (const AtomRegister *)atom;
         if (!registerIsOutputOnly(*reg))
             continue; // we are looking for output registers
-        if (!usedOutputs.contains(*reg)) {
+        if (!usedAsOutput.contains(*reg)) {
             const CursorPosition &pos = it.cursorPosition();
             const PatchSection *sec = section(it.sectionIndex());
             const Circuit *circuit = sec->circuit(pos.circuitNr);
