@@ -1308,16 +1308,16 @@ def section_global_buttons():
         patch += circuit("multicompare", mcargs,
             "Select a button mode that is most useful in the current fader mode")
 
+        # Range (set start and end point)
         if arguments["range"]:
-            patch += circuit("switch", [
-                ( "input1", "_BM" ),
-                ( "input2", 1 ), # startend
-                ( "offset", "_RANGE" ),
+            patch += circuit("compare", [
+                ( "input", "_RANGE" ),
+                ( "compare", 0 ),
+                ( "ifequal", "_BM" ),
+                ( "else", 1 ), # startend
                 ( "output", "_BUTTONMODE" ),
             ], "When the range button is active, it always has precedence")
 
-        # Range (set start and end point)
-        if arguments["range"]:
             b = get_button(BUTTONPOS_RANGE, "S/E", "Set start and end (range of steps to play)")
             patch += circuit("button", [
                 ( "button", "B" + b ),
@@ -1762,12 +1762,13 @@ def track_selection():
                 ( "output", "_T%d_TRACKLED" % track ),
             ], "Compute state of track LED based on wether it is selected and/or muted")
 
-            patch += circuit("switch", [
-                ( "input1", "_T%d_TRACKLED" % track ),
-                ( "input2", "_T%d_MUTED" % track ),
-                ( "offset", "_CONTROL" ),
+            patch += circuit("compare", [
+                ( "input", "_CONTROL" ),
+                ( "compare", 1 ),
+                ( "ifequal", "_T%d_MUTED" % track ),
+                ( "else", "_T%d_TRACKLED" % track ),
                 ( "output", "L" + button ),
-            ], "Show mute state of track while Ctrl is held")
+            ], "Show mute state of track while CTRL is held")
 
         patch += circuit("buttongroup",
             buttongroup_params,
@@ -1921,7 +1922,7 @@ def track_section(track):
             ( "button", "B" + track_buttons["copy"] ),
             ( "states", 1 ),
             ( "output", "_T%d_COPY_BUTTON" % track ),
-        ], "Button for copying the current page of the curren track" )
+        ], "Button for copying the current page of the current track" )
 
     # Form button
     if arguments["form"]:
@@ -2010,8 +2011,8 @@ def track_section(track):
     patch += circuit("clocktool", [
         ( "clock", "_CLOCK" ),
         ( "reset", "_RESET" ),
-        ( "divide", "_T%d_CD_DIV" % track),
-        ( "multiply", "_T%d_CD_MULT" % track),
+        ( "divide", "_T%d_CD_EVEN_DIV * _T%d_CD_ODD_DIV" % (track, track)),
+        ( "multiply", "_T%d_CD_EVEN_MULT * _T%d_CD_ODD_MULT" % (track, track)),
         ( "output", "_T%d_CLOCK" % track)
     ], "Clock divider for track %d" % track)
 
@@ -2263,10 +2264,11 @@ def track_section(track):
 
     # Switch gate to arpeggiator if active ---------------------
     if arguments["arp"]:
-        patch += circuit("switch", [
-            ( "input1", gate ),
-            ( "input2", "_T%d_ARP_CLOCK" % track ),
-            ( "offset", "_T%d_ARP" % track ),
+        patch += circuit("compare", [
+            ( "input", "_T%d_ARP" % track ),
+            ( "compare", 0 ),
+            ( "ifequal", gate ),
+            ( "else", "_T%d_ARP_CLOCK" % track ),
             ( "output", "_T%d_SWITCHED_GATE" % track ),
         ], "Switch gate to arpeggiator if active" )
         gate = "_T%d_SWITCHED_GATE" % track
@@ -2291,10 +2293,11 @@ def track_section(track):
 
     # Switch pitch between sequencer and arpeggio
     if arguments["arp"]:
-        patch += circuit("switch", [
-            ( "input1", "_T%d_PITCH" % track ), # sequencer
-            ( "input2", "_T%d_ARP_OUTPUT + _T%d_ARP_OCTAVE" % (track, track )), # arpeggio
-            ( "offset", "_T%d_ARP" % track ),
+        patch += circuit("compare", [
+            ( "input", "_T%d_ARP" % track ),
+            ( "compare", 0 ),
+            ( "ifequal", "_T%d_PITCH" % track ), # sequencer
+            ( "else", "_T%d_ARP_OUTPUT + _T%d_ARP_OCTAVE" % (track, track )), # arpeggio
             ( "output", "_T%d_SWITCHED_PITCH" % track ),
         ], "Switch pitch output between sequencer and arpeggiator" )
         pitch_from_sequencer = "_T%d_SWITCHED_PITCH" % track
@@ -2338,19 +2341,16 @@ def track_section(track):
     # Start/Stop button needs to mute the gate because of the
     # arpeggiator (it has not gate)
     if have_running():
-        patch += circuit("copy", [
-            ( "input", gate + " * _RUNNING" ),
-            ( "output", "_T%d_GATE_RUNNING" % track ),
-        ], "Mute the output gate if the sequencer is not running" )
-        gate = "_T%d_GATE_RUNNING" % track
+        gate = gate + " * _RUNNING"
 
     # Now apply gate length
     if arguments["gl"]:
         if arguments["arp"]:
-            patch += circuit("switch", [
-                ( "input1", "_T%d_CLOCK" % track ),
-                ( "input2", "_T%d_ARP_TAPTEMPO" % track ),
-                ( "offset", "_T%d_ARP" % track ),
+            patch += circuit("compare", [
+                ( "input", "_T%d_ARP" % track ),
+                ( "compare", 0 ),
+                ( "ifequal", "_T%d_CLOCK" % track ),
+                ( "else", "_T%d_ARP_TAPTEMPO" % track ),
                 ( "output", "_T%d_GATEREF" % track ),
             ], "Provide steady tap tempo for arpeggiator's gate length" )
             taptempo = "_T%d_GATEREF" % track
@@ -2479,12 +2479,8 @@ def arpeggio_menu(track):
         ( "button", "B" + b ),
         ( "led", "L" + b ),
         ( "output", "_T%d_ARP" % track ),
+        ( "negated", "_T%d_ARP_OFF" % track ),
     ], "Switch on/off arpeggio mode for track %d" % track)
-
-    patch += circuit("copy", [
-        ( "input", "1 - _T%d_ARP" % track ),
-        ( "output", "_T%d_ARP_OFF" % track ),
-    ], "Provide negated state of arpeggiator setting" )
 
     select = [
         ( "select", "_GLOBAL_FADER_SELECTION * _T%d_ARP" % track ),
@@ -2725,16 +2721,6 @@ def track_menu(track):
     patch += clock_division_fader("ODD", track, select, 8,
         COLOR_CLOCKDIV_ODD,
         [ (1,7), (1,5), (1,3), (1,1), (3,1), (5,1), (7,1) ])
-
-    patch += circuit("copy", [
-        ( "input", "_T%d_CD_EVEN_DIV * _T%d_CD_ODD_DIV" % (track, track)),
-        ( "output", "_T%d_CD_DIV" % track),
-    ], "Compute clock division for track %d" % track)
-
-    patch += circuit("copy", [
-        ( "input", "_T%d_CD_EVEN_MULT * _T%d_CD_ODD_MULT" % (track, track)),
-        ( "output", "_T%d_CD_MULT" % track),
-    ], "Compute clock multiplier for track %d" % track)
 
     patch += unused_faders(9, select)
     return patch
