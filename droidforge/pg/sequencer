@@ -283,15 +283,6 @@ the master module.
             "title" : "Number of presets",
             "number": (0, 4),
         },
-        # {
-        #     "name" : "cvrange",
-        #     "title" : "Pitch range of sequencer faders",
-        #     "enum" : [
-        #         ( "2", "Two octaves" ),
-        #         ( "3", "Three octaves" ),
-        #         ( "4", "Four octaves" ),
-        #     ],
-        # },
         {
             "name" : "defgate",
             "title" : "State of the gate after clearing a track",
@@ -902,7 +893,7 @@ def section_tonality():
         patch += circuit("motorfader", this_select + [
             ( "fader", 8 ),
             ( "notches", 6 ),
-            ( "startvalue", 0 ),
+            ( "startvalue", 1 ),
             ( "ledcolor", COLOR_CVRANGE ),
             ( "ledvalue", "_TUNING_LED + 0.3" ),
             ( "output", "_T%d_CVRANGE" % track ),
