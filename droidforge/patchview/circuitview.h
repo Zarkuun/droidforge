@@ -2,7 +2,6 @@
 #define CIRCUITVIEW_H
 
 #include "circuit.h"
-#include "cursorposition.h"
 #include "selection.h"
 
 #include <QGraphicsItem>

@@ -127,7 +127,7 @@ void CircuitView::paintHeader(QPainter *painter)
         name += circuit->getName().toLower() + "]";
         if (circuit->isFolded())
             name += " ...";
-            painter->drawText(headerRect().translated(circuit->isDisabled() ? 0 : -3, 0), Qt::AlignVCenter, name);
+        painter->drawText(headerRect().translated(circuit->isDisabled() ? 0 : -3, 0), Qt::AlignVCenter, name);
     }
     else {
         // Icon and circuit name
@@ -149,7 +149,20 @@ void CircuitView::paintHeader(QPainter *painter)
                        headerRect().height());
         painter->drawText(textRect,
                           Qt::AlignVCenter,
-                          circuit->getName().toUpper()); //  + (isFolded() ? " (FOLDED)" : ""));
+                          circuit->getName().toUpper());
+
+        // Memory consumption
+        if (ACTION(ACTION_SHOW_CIRCUIT_BYTES)->isChecked()) {
+            QString mem = QString::number(circuit->memoryFootprint());
+            QRectF memRect(textRect.left(),
+                     textRect.top(),
+                     textRect.width() - 80,
+                     textRect.height());
+            painter->drawText(memRect,
+                              Qt::AlignVCenter | Qt::AlignRight,
+                              mem);
+        }
+
 
         if (isFolded()) {
             if (circuit->hasComment()) {

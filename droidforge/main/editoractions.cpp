@@ -24,6 +24,7 @@ EditorActions::EditorActions(MainWindow *mainWindow, PatchEditEngine *patch, QOb
     connect(mainWindow->theHub(), &UpdateHub::droidStateChanged, this, &EditorActions::changeDroidState);
     connect(the_clipboard, &Clipboard::changed, this, &EditorActions::changeClipboard);
 
+    CONNECT_ACTION(ACTION_SHOW_CIRCUIT_BYTES, &EditorActions::persistViewToggles);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_LABELS, &EditorActions::persistViewToggles);
     CONNECT_ACTION(ACTION_SHOW_REGISTER_USAGE, &EditorActions::persistViewToggles);
     CONNECT_ACTION(ACTION_TEXT_MODE, &EditorActions::persistViewToggles);
@@ -317,6 +318,10 @@ void EditorActions::createActions()
     actions[ACTION_DUPLICATE_CIRCUIT] = new QAction(tr("Duplicate circuit"), this);
     actions[ACTION_DUPLICATE_CIRCUIT]->setShortcut(QKeySequence(tr("Ctrl+D")));
     actions[ACTION_DUPLICATE_CIRCUIT]->setEnabled(false);
+
+    actions[ACTION_SHOW_CIRCUIT_BYTES] = new QAction(tr("Show RAM used by circuits"), this);
+    actions[ACTION_SHOW_CIRCUIT_BYTES]->setCheckable(true);
+    actions[ACTION_SHOW_CIRCUIT_BYTES]->setChecked(settings.value("show_circuit_bytes", false).toBool());
 
     actions[ACTION_SHOW_REGISTER_LABELS] = new QAction(tr("Show &register labels"), this);
     actions[ACTION_SHOW_REGISTER_LABELS]->setShortcut(QKeySequence(tr("F3")));
@@ -620,6 +625,7 @@ void EditorActions::updateSaveToSDAction(action_t action)
 void EditorActions::persistViewToggles()
 {
     QSettings settings;
+    settings.setValue("show_circuit_bytes", actions[ACTION_SHOW_CIRCUIT_BYTES]->isChecked());
     settings.setValue("show_register_labels", actions[ACTION_SHOW_REGISTER_LABELS]->isChecked());
     settings.setValue("show_register_usage", actions[ACTION_SHOW_REGISTER_USAGE]->isChecked());
     settings.setValue("simplified_text_mode", actions[ACTION_TEXT_MODE]->isChecked());

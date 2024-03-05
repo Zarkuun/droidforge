@@ -69,6 +69,7 @@ PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *init
     connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
     connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &PatchSectionView::changePatching);
     CONNECT_ACTION(ACTION_TEXT_MODE, &PatchSectionView::modifyPatch);
+    CONNECT_ACTION(ACTION_SHOW_CIRCUIT_BYTES, &PatchSectionView::modifyPatch);
     installEventFilter(this);
 
     QTimer *timer = new QTimer(this);
