@@ -83,6 +83,8 @@ QtApplication {
         "parser/statusdump.h",
         "patchview/findpanel.cpp",
         "patchview/findpanel.h",
+        "patchview/memoryanalysiswindow.cpp",
+        "patchview/memoryanalysiswindow.h",
         "patchview/rewritecablesdialog.cpp",
         "patchview/rewritecablesdialog.h",
         "patchview/sectioncommentview.cpp",

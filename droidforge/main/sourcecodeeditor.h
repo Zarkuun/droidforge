@@ -17,6 +17,8 @@ class SourceCodeEditor : public Dialog
 
 public:
     SourceCodeEditor(const QString &title, const QString &originalSource, QWidget *parent, bool readonly);
+    void addButton(QPushButton *button);
+    void updateContent(const QString &content);
     bool edit();
     void showReadOnly();
     QString getEditedText() const;

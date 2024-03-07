@@ -12,6 +12,7 @@
 #include "windowlist.h"
 #include "namechoosedialog.h"
 #include "tuning.h"
+#include "memoryanalysiswindow.h"
 #include "patchgeneratordialog.h"
 
 #include <QFileDialog>
@@ -144,6 +145,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_EDIT_SECTION_SOURCE, &PatchOperator::editSectionSource);
     CONNECT_ACTION(ACTION_EDIT_PATCH_SOURCE, &PatchOperator::editPatchSource);
     CONNECT_ACTION(ACTION_BARE_PATCH_SOURCE, &PatchOperator::barePatchSource);
+    CONNECT_ACTION(ACTION_MEMORY_ANALYSIS, &PatchOperator::patchMemoryAnalysis);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &PatchOperator::abortAllActions);
 
     CONNECT_ACTION(ACTION_FIX_LED_MISMATCH, &PatchOperator::fixLEDMismatch);
@@ -1433,6 +1435,11 @@ void PatchOperator::editCircuitSource()
 void PatchOperator::barePatchSource()
 {
     showSource(tr("Patch source without comments"), patch->toCleanString());
+}
+void PatchOperator::patchMemoryAnalysis()
+{
+    MemoryAnalysisWindow maw(patch, mainWindow);
+    maw.exec();
 }
 void PatchOperator::fixLEDMismatch()
 {

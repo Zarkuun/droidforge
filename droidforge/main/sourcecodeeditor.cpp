@@ -38,6 +38,7 @@ SourceCodeEditor::SourceCodeEditor(const QString &title, const QString &original
         QPushButton *resetButton = buttonBox->button(QDialogButtonBox::Reset);
         connect(resetButton, &QPushButton::pressed, this, &SourceCodeEditor::reset);
     }
+
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     layout->addWidget(buttonBox);
@@ -64,6 +65,18 @@ SourceCodeEditor::SourceCodeEditor(const QString &title, const QString &original
     else if (zoomLevel < 0)
         textEdit->zoomOut(-zoomLevel);
 
+}
+void SourceCodeEditor::addButton(QPushButton *button)
+{
+    buttonBox->addButton(button, QDialogButtonBox::ActionRole);
+}
+
+void SourceCodeEditor::updateContent(const QString &content)
+{
+    originalSource = content;
+    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    textEdit->setFontFamily(fixedFont.family());
+    textEdit->setText(originalSource);
 }
 void SourceCodeEditor::increaseFontSize()
 {
