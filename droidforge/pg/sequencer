@@ -12,39 +12,6 @@
 from pg import *
 import sys
 
-# ---------------------------------------------------------------------------
-# IDEE:
-#
-
-# TESTEN:
-# - CV-Eingänge mit MASTER
-# - Clocking mit MASTER (internal,detect,external)
-
-# HANDBUCH:
-# - Hinweis auf Shortcut
-# - Start/Stop-Button ist tempororary
-# - Shift Start/Stop -> clear start/stop
-# - Neuer RANGE fader. 1 Oktave ... 6 Oktaven. Dann ohne Notches
-# - GLIDE-Fader jetzt pro Track
-# - Neue Reihenfolge im Tonality-Menü
-# - AUX erwähnen. Als Future-Erweiterung
-# - Accumulator neu erklären. Mit dem neuen Fader. Fadermenü Clock erklären.
-#   Aufkleber für den Clockfader statt AUX ACCU.
-# - Eine Postkarte machen, vielleicht sogar noch kleiner (Visitenkarte)
-#   auf der die Stellungen der wichtigsten Fader sind. Das sind:
-#   * Track movement patterns
-#   * Gate propabilities
-#   * Pitch randomization
-#   * Clockdivisions even/odd
-#   * Arpeggio movement patterns
-#   * Arpeggio drop notes pattern
-#   * Scales
-#   -> Bei der Menge vielleicht doch ne Postkarte
-# - Vielleicht eine Grafik, welche jeweils die CTRL-Version der Buttons
-#   erklärt.
-
-# ---------------------------------------------------------------------------
-
 # This is a patch generator for a motorfader sequencer
 # - The Droid user manual contains a chapter about it.
 # - The circuits have comments on how the patch works.
