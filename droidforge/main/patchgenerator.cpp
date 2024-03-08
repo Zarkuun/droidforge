@@ -1,5 +1,6 @@
 #include "patchgenerator.h"
 #include "tuning.h"
+#include "globals.h"
 
 #include <QFile>
 #include <QProcess>
@@ -43,20 +44,21 @@ PatchGenerator::PatchGenerator(QString path, QString name)
     QStringList params;
     params << "-s";
     bool ok;
-    QString jsonString = run(params, ok);
+    _jsonSource = run(params, ok);
     if (!ok)
         return;
 
     QJsonParseError jsonError;
-    _parameterInfo = QJsonDocument::fromJson(jsonString.toUtf8(), &jsonError);
+    _parameterInfo = QJsonDocument::fromJson(_jsonSource.toUtf8(), &jsonError);
     if (jsonError.error != QJsonParseError::NoError) {
-        _error = "Invalid output from patch generator: JSON parse error";
+        _error = TR("Invalid output from patch generator: JSON parse error:\n\n\"%1\"")
+                     .arg(jsonError.errorString());
         return;
     }
 
     _title = _parameterInfo.object()["title"].toString();
     if (_title == "") {
-        _error = "Invalid output from patch generator: missing global key \"title\"";
+        _error = TR("Invalid output from patch generator: missing global key \"title\"");
         return;
     }
 

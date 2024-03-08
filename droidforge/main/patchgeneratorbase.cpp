@@ -1,6 +1,7 @@
 #include "patchgeneratorbase.h"
 #include "globals.h"
 #include "patchgenerator.h"
+#include "sourcecodeeditor.h"
 
 #include <QMessageBox>
 #include <QMessageBox>
@@ -15,7 +16,7 @@ PatchGeneratorBase::PatchGeneratorBase(QDir directory)
 }
 bool PatchGeneratorBase::enableGenerators()
 {
-    return deployGenerators() &&  loadGenerators();
+    return deployGenerators() && loadGenerators();
 }
 void PatchGeneratorBase::disableGenerators()
 {
@@ -103,13 +104,28 @@ bool PatchGeneratorBase::loadGenerators()
             oneLoaded = true;
         }
         else {
-            QString title = TR("Failed to load patch generator '") + absPath + "'";
+            QString title = TR("Failed to load patch generator '") + absPath + "'" +
+                            "\n\n" +
+                            TR("Do you want to check the output?");
 
-            QMessageBox::warning(
-                        0,
-                        title,
-                        title + "\n\n" + gen->error(),
-                        QMessageBox::Ok);
+            QMessageBox box(
+                QMessageBox::Warning,
+                title,
+                title + "\n\n" + gen->error(),
+                QMessageBox::Ok | QMessageBox::Cancel);
+
+            shout << title;
+
+            if (box.exec() == QMessageBox::Ok)
+            {
+                SourceCodeEditor sce(
+                    TR("JSON output from patch generator"),
+                    gen->jsonSource(),
+                    0,
+                    true /* read-only */);
+                sce.edit();
+            }
+
             delete gen;
         }
     }

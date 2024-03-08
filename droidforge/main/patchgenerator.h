@@ -4,7 +4,6 @@
 #include <QString>
 #include <QJsonDocument>
 
-#include "patch.h"
 
 class PatchGenerator
 {
@@ -15,6 +14,7 @@ class PatchGenerator
     QString _error;
     QString _title;
     QJsonDocument _parameterInfo;
+    QString _jsonSource; // for error analysis
 
 public:
     PatchGenerator(QString path, QString name);
@@ -23,6 +23,7 @@ public:
     QString title() const { return _title; };
     QString name() const { return _name; };
     QString error() const { return _error; }
+    QString jsonSource() const { return _jsonSource; };
     const QJsonDocument &parameterInfo() const { return _parameterInfo; };
 };
 

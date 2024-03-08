@@ -20,7 +20,6 @@ public:
     void addButton(QPushButton *button);
     void updateContent(const QString &content);
     bool edit();
-    void showReadOnly();
     QString getEditedText() const;
 
 private slots:
