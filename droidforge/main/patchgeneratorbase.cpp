@@ -114,8 +114,6 @@ bool PatchGeneratorBase::loadGenerators()
                 title + "\n\n" + gen->error(),
                 QMessageBox::Ok | QMessageBox::Cancel);
 
-            shout << title;
-
             if (box.exec() == QMessageBox::Ok)
             {
                 SourceCodeEditor sce(
