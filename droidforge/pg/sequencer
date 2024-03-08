@@ -492,7 +492,7 @@ the master module.
             "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
             "resetout" : False     , "sos1"     : False   , "dualout"  : 0       , "divclock" : False   ,
-            "runningin" : "off"    , "defgate"  : "1",
+            "runningin" : "off"    , "defgate"  : "0",
         }
     },
     {
@@ -829,8 +829,12 @@ def section_tonality():
 
     # Fader 7 & 8 are track values
     for track in range(1, arguments["tracks"] + 1):
+        if arguments["tracks"] > 1:
+            selected_track = " * _SELECTED_TRACK"
+        else:
+            selected_track = ""
         this_select = [
-            ( "select", "_GLOBAL_FADER_SELECTION * _SELECTED_TRACK" ),
+            ( "select", "_GLOBAL_FADER_SELECTION" + selected_track ),
             ( "selectat", 97 * track )]
 
         if arguments["gl"] and track_is_cvgate(track):
@@ -1643,8 +1647,12 @@ def clock_menu():
     # Fader 8: Pitch accumulator range (per track)
     if arguments["randpitch"]:
         for track in range(1, arguments["tracks"] + 1):
+            if arguments["tracks"] > 1:
+                selected_track = " * _SELECTED_TRACK"
+            else:
+                selected_track = ""
             this_select = [
-                ( "select", "_GLOBAL_FADER_SELECTION * _SELECTED_TRACK" ),
+                ( "select", "_GLOBAL_FADER_SELECTION" + selected_track),
                 ( "selectat", 99 * track )]
 
             patch += circuit("motorfader", this_select + [
@@ -2029,10 +2037,12 @@ def track_section(track):
         ( "direction", "_T%d_DIRECTION" % track),
         ( "pingpong", "_T%d_PINGPONG" % track),
         ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
-        ( "accumulatorrange", "_T%d_ACCU_RANGE" % track ),
         ( "tuningmode", "_TUNINGMODE" ),
         ( "tuningpitch", "_GLOBAL_OCTAVE_SWITCH * 1V" ),
     ]
+
+    if arguments["randpitch"]:
+        params += [ ( "accumulatorrange", "_T%d_ACCU_RANGE" % track ) ]
 
     if arguments["tbr"]:
         params += [
