@@ -478,8 +478,8 @@ the master module.
         "title" : "Default (4 tracks)",
         "parameters" : {
             "m"        : "master18", "c"        : "m4"    , "nc"       : "2"     , "g8"       : 0       ,
-            "tracks"   : 4         , "steps"    : "16"    ,                        "t1out"    : "cvgate",
-            "t2out"    : "cvgate"  , "t3out"    : "cvgate", "t4out"    : "cvgate", "t5out"    : "cvgate",
+            "tracks"   : 4         , "steps"    : "16"    ,                        "t1out"    : "trs1"  ,
+            "t2out"    : "trs2"    , "t3out"    : "usb"   , "t4out"    : "usb"   , "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
@@ -491,7 +491,7 @@ the master module.
             "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
             "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
-            "resetout" : False     , "sos1"     : False   , "dualout"  : 0       , "divclock" : False   ,
+            "resetout" : False     , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
             "runningin" : "off"    , "defgate"  : "0",
         }
     },
@@ -1509,6 +1509,10 @@ def track_midi_output(track):
         parameters.append(( "trs", 1 ))
     else:
         parameters.append(( "trs", 2 ))
+        if arguments["m"] != "m18":
+            bail_out(("Track %d is sending MIDI output to TRS port 2, but "
+                     "that port is just available on the MASTER18, not on the "
+                     "X7.") % track)
 
     if arguments["velo"] in [ "v", "vg" ]:
         parameters.append(( "velocity", "_T%d_VELOCITY * 0.9 + 0.1" % track ))
