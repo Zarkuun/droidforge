@@ -304,7 +304,7 @@ the master module.
         },
         {
             "name" : "skiprep",
-            "title" : "Step length (1 - 16), skipping of steps",
+            "title" : "Step length / repeats, skipping of steps",
         },
         {
             "name" : "ratchets",
@@ -1096,9 +1096,25 @@ def allocate_gate_outputs():
 def allocate_pots():
     global pots
     pots = {}
-    if arguments["arp"]:
-        pots["arp_range"] = get_pot("RANGE/REPEAT", "Arpeggio pitch range / Repeat note shift")
-        pots["arp_pitch"] = get_pot("BASE/RATCH", "Arpeggio base pitch / Ratchet note shift")
+    if arguments["arp"] or arguments["skiprep"]:
+        if arguments["arp"] and arguments["skiprep"]:
+            pot = get_pot("RANGE/REPEAT", "Arpeggio pitch range / Repeat note shift")
+        elif arguments["arp"]:
+            pot = get_pot("RANGE", "Arpeggio pitch rang")
+        else:
+            pot = get_pot("REPEAT", "Repeat note shift")
+        pots["arp_range"] = pot
+        pots["repeat_note_shift"] = pot
+
+    if arguments["arp"] or arguments["ratchets"]:
+        if arguments["arp"] and arguments["ratchets"]:
+            pot = get_pot("BASE/RATCH", "Arpeggio base pitch / Ratchet note shift")
+        elif arguments["arp"]:
+            pot = get_pot("BASE", "Arpeggio base pitch")
+        else:
+            pot = get_pot("RATCH", "Ratchet note shift")
+        pots["arp_pitch"] = pot
+        pots["ratchet_note_shift"] = pot
 
 
 
@@ -1509,7 +1525,7 @@ def track_midi_output(track):
         parameters.append(( "trs", 1 ))
     else:
         parameters.append(( "trs", 2 ))
-        if arguments["m"] != "m18":
+        if arguments["m"] != "master18":
             bail_out(("Track %d is sending MIDI output to TRS port 2, but "
                      "that port is just available on the MASTER18, not on the "
                      "X7.") % track)
@@ -2114,7 +2130,7 @@ def track_section(track):
 
     if arguments["skiprep"]:
         patch += circuit("pot", track_and_nonarp_selected(track) + [
-            ( "pot", pots["arp_range"] ), # upper pot
+            ( "pot", pots["repeat_note_shift"] ), # upper pot
             ( "discrete", 15 ), # -7 ... 7
             ( "startvalue", 7 ),
             ( "output", "_T%d_REPEATSHIFT" % track ),
@@ -2123,7 +2139,7 @@ def track_section(track):
 
     if arguments["ratchets"]:
         patch += circuit("pot", track_and_nonarp_selected(track) + [
-            ( "pot", pots["arp_pitch"] ), # lower pot
+            ( "pot", pots["ratchet_note_shift"] ), # lower pot
             ( "discrete", 15 ), # -7 ... 7
             ( "startvalue", 7 ),
             ( "output", "_T%d_RATCHETSHIFT" % track ),
@@ -2879,6 +2895,9 @@ def track_and_arp_selected(track):
         ]
 
 def track_and_nonarp_selected(track):
+    if not arguments["arp"]:
+        return track_selected(track)
+
     if arguments["tracks"] > 1:
         return [
             ( "select", "_T%d_ARP * 100 + _SELECTED_TRACK" % track ),
