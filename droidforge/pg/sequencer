@@ -2062,7 +2062,11 @@ def track_section(track):
     ]
 
     if arguments["randpitch"]:
-        params += [ ( "accumulatorrange", "_T%d_ACCU_RANGE" % track ) ]
+        if arguments["intclk"]:
+            params += [ ( "accumulatorrange", "_T%d_ACCU_RANGE" % track ) ]
+        else:
+            params += [ ( "accumulatorrange", 4 ) ]
+
 
     if arguments["tbr"]:
         params += [
