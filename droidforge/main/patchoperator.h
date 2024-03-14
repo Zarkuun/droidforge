@@ -139,6 +139,8 @@ private:
     bool pollX7() const;
     QString savedSDCardDir() const;
     QString sdCardDirSansPolling();
+    void examinePatchSize() const;
+
 
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);

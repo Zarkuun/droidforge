@@ -14,6 +14,7 @@
 #include "tuning.h"
 #include "memoryanalysiswindow.h"
 #include "patchgeneratordialog.h"
+#include "hintdialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -578,6 +579,43 @@ QString PatchOperator::sdCardDirSansPolling()
     // path not valid atm, return ""
     return "";
 }
+void PatchOperator::examinePatchSize() const
+{
+    QSettings settings;
+    unsigned compressedSize = patch->toCompressed().length();
+    if (compressedSize > MAX_DROID_INI) {
+        bool renameCables = settings.value("compression/rename_cables", false).toBool();
+        bool removeEmptyLines = settings.value("compression/remove_empty_lines", false).toBool();
+        if (!renameCables || !removeEmptyLines) {
+            HintDialog::hint("pg_compression_off",
+              tr("The patch that you have generated has a size of %1 characters.\n"
+                 "This exceed the maximum patch size of %2.\n"
+                 "\n"
+                 "Hint: Go to the preferences and look at the box\n"\
+                 "\"Compress patch before loading into master\".\n"
+                 "Enable the options for removing empty lines and for renaming\n"
+                 "patch cables to reduce the patch size.\n")
+                 .arg(compressedSize)
+                 .arg(MAX_DROID_INI));
+        }
+    }
+
+    unsigned memoryAvailable = the_firmware->availableMemory(patch->typeOfMaster());
+    QStringList breakdown;
+    unsigned memoryNeeded = patch->memoryFootprint(breakdown);
+    if (memoryNeeded > memoryAvailable) {
+            HintDialog::hint("pg_exceeds_ram",
+               tr("Your generated patch needs too much memory. \n"
+                  "It needs %1 bytes, but your master only has %2,\n"
+                  "so that's %3 bytes too much.\n\n"
+                  "Try reducing the patch size by removing a feature\n"
+                            "or by choosing a smaller configuration\n")
+                             .arg(memoryNeeded)
+                             .arg(memoryAvailable)
+                             .arg(memoryNeeded - memoryAvailable));
+    }
+
+}
 QString PatchOperator::sdCardDir()
 {
     if (!pollSD()) {
@@ -940,6 +978,9 @@ void PatchOperator::openPatchGenerator(int index, PatchGenerator *gen)
     patch->commit(tr("generating patch"));
     setLastFilePath("");
     emit patchModified();
+
+    examinePatchSize();
+
 }
 void PatchOperator::integrate()
 {
