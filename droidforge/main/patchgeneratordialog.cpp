@@ -17,6 +17,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QMessageBox>
+#include <QPushButton>
 
 PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *parent)
     : Dialog(generator->title(), parent)

@@ -2,6 +2,7 @@
 #include "droidfirmware.h"
 #include "jackassignmentoutput.h"
 #include "patch.h"
+#include "globals.h"
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -72,6 +73,29 @@ unsigned Circuit::memoryFootprint() const
             ram += the_firmware->jackMemoryFootprint(name, ja->jackName());
     }
     return ram;
+}
+unsigned int Circuit::countDuplicateInputLines(QList<const JackAssignmentInput *> &inputLines) const
+{
+    // TODO: Some intelligent sorting
+    unsigned count = 0;
+    for (auto ja: jackAssignments) {
+        if (!ja->isDisabled() && ja->isInput()) {
+            if (the_firmware->jackMemoryFootprint(name, ja->jackName()) == 12) {
+                const JackAssignmentInput *jai = (const JackAssignmentInput *)ja;
+                bool found = false;
+                for (auto j: inputLines) {
+                    if (j->sameAs(jai)) {
+                        count ++;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    inputLines.append(jai);
+            }
+        }
+    }
+    return count;
 }
 bool Circuit::needsMIDI() const
 {

@@ -6,6 +6,7 @@
 #include "dialog.h"
 
 #include <QMap>
+#include <QComboBox>
 
 typedef QMap<QString, QVariant> pgconfig_t;
 

@@ -1,7 +1,5 @@
 #include "atomnumber.h"
 #include "tuning.h"
-#include "patchproblem.h"
-#include "globals.h"
 
 #include <QCoreApplication>
 

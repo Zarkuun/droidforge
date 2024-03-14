@@ -660,6 +660,15 @@ unsigned PatchSection::memoryFootprint() const
         memory += circuit->memoryFootprint();
     return memory;
 }
+unsigned PatchSection::countDuplicateInputLines(QList<const JackAssignmentInput *> &inputLines) const
+{
+    unsigned count = 0;
+    for (auto circuit: circuits) {
+        if (!circuit->isDisabled())
+            count += circuit->countDuplicateInputLines(inputLines);
+    }
+    return count;
+}
 bool PatchSection::needsMIDI() const
 {
     for (auto circuit: circuits) {
@@ -668,7 +677,6 @@ bool PatchSection::needsMIDI() const
     }
     return false;
 }
-
 bool PatchSection::searchHitAtCursor(const QString &text)
 {
     if (isEmpty())

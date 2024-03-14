@@ -14,6 +14,7 @@ class Atom
 {
 public:
     Atom() {};
+    bool sameAs(const Atom *other) const;
     virtual ~Atom() {};
     virtual QString toString() const = 0;
     virtual QString toDisplay() const { return toString(); };

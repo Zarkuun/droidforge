@@ -311,6 +311,18 @@ void JackAssignmentInput::incrementForExpansion(const Patch *patch)
             atoms[a]->incrementForExpansion(patch);
     }
 }
+bool JackAssignmentInput::sameAs(const JackAssignmentInput *other) const
+{
+    for (int a=0; a<=2; a++) {
+        if (atoms[a] && !other->atoms[a])
+            return false;
+        else if (!atoms[a] && other->atoms[a])
+            return false;
+        else if (atoms[a] && other->atoms[a] && !atoms[a]->sameAs(other->atoms[a]))
+            return false;
+    }
+    return true;
+}
 Atom *JackAssignmentInput::parseOnOff(QString s)
 {
     if (s == "on")

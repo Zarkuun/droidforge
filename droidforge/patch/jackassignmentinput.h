@@ -26,6 +26,7 @@ public:
     QList<PatchProblem *> collectSpecificProblems(const Patch *patch) const;
     bool isUndefined() const;
     void incrementForExpansion(const Patch *patch);
+    bool sameAs(const JackAssignmentInput *other) const;
 
 protected:
     jacktype_t jackType() const { return JACKTYPE_INPUT; };

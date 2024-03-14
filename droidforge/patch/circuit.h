@@ -4,6 +4,8 @@
 #include "jackassignment.h"
 #include "patchproblem.h"
 
+class JackAssignmentInput;
+
 #include <QList>
 #include <QString>
 #include <QStringList>
@@ -75,6 +77,7 @@ public:
     bool jackIsArray(int row) const;
     QString prefixOfJack(const QString &jackName);
     unsigned memoryFootprint() const;
+    unsigned countDuplicateInputLines(QList<const JackAssignmentInput *> &inputLines) const;
     bool needsMIDI() const;
     bool needsMASTER18() const;
     bool usesSelect() const;

@@ -1,10 +1,10 @@
 #include "atomregister.h"
 #include "patch.h"
-#include "globals.h"
 
 #include <QStringList>
 #include <QDebug>
 #include <QCoreApplication>
+#include <QRegularExpression>
 
 #define tr(s) QCoreApplication::translate("Patch", s)
 

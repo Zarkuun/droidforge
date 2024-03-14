@@ -2,8 +2,8 @@
 #define PATCHSECTION_H
 
 #include "circuit.h"
-#include "circuitchoosedialog.h"
 #include "cursorposition.h"
+#include "jackassignmentinput.h"
 #include "patchproblem.h"
 #include "selection.h"
 #include "rewritecablesdialog.h"
@@ -93,6 +93,7 @@ public:
     void collectRegisterAtoms(RegisterList &, bool skipOverlayedControls) const;
     void removeRegisterReferences(RegisterList &rl);
     unsigned memoryFootprint() const;
+    unsigned countDuplicateInputLines(QList<const JackAssignmentInput *> &inputLines) const;
     bool searchHitAtCursor(const QString &text);
     bool needsMIDI() const;
     void clearBookmarks();

@@ -7,6 +7,7 @@
 #include "registerlabels.h"
 #include "globals.h"
 #include "tuning.h"
+#include "jackassignmentinput.h"
 
 #include <QFileInfo>
 #include <QSettings>
@@ -847,15 +848,31 @@ unsigned Patch::memoryFootprint(QStringList &breakdown) const
     memory += byX7;
 
 
+    // Every unique constant needs 4 bytes
     unsigned numConstants = ((Patch *)this)->countUniqueConstants();
     memory += numConstants * 4;
     breakdown.append(TR("%1 bytes are used by %2 unique constants.")
                      .arg(numConstants * 4).arg(numConstants));
 
+    // Every (unique) patch cable needs 8 bytes
     unsigned numCables = ((Patch *)this)->countUniqueCables();
     memory += numCables * 8;
     breakdown.append(TR("%1 bytes are used by %2 unique Cables.")
                      .arg(numCables * 8).arg(numCables));
+
+
+    // Newest optimization: input parameters with identical values
+    // in all three columns can be shared among circuits and save
+    // 12 bytes per shared copy (trigger inputs and tap tempo inputs
+    // are not handled by this optimization)
+    // unsigned dedup = countDuplicateInputLines();
+    // if (dedup > 0) {
+    //     breakdown.append(
+    //         TR("-%1 bytes less due to %2 identical input lines.")
+    //             .arg(dedup * 12).arg(dedup));
+    //     memory -= dedup * 12;
+    // }
+
     return memory;
 }
 unsigned Patch::countUniqueCables()
@@ -897,7 +914,14 @@ unsigned Patch::countUniqueConstants()
     }
     return constants.count();
 }
-
+unsigned int Patch::countDuplicateInputLines() const
+{
+    unsigned count = 0;
+    QList<const JackAssignmentInput *>inputLines;
+    for (auto section: sections)
+        count += section->countDuplicateInputLines(inputLines);
+    return count;
+}
 unsigned int Patch::countEncoders() const
 {
     unsigned count = 0;
