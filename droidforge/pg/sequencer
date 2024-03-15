@@ -1335,6 +1335,9 @@ def section_global_buttons():
     if arguments["ssb"]:
         reset_sources.append(( "_STARTSTOP_RESET" ))
 
+    elif arguments["runningin"] != "off":
+        reset_sources.append(( "_EXT_RUNNING_STARTED" ))
+
     if arguments["sinflink"] == "res":
         reset_sources.append(( "_SINFLINK_RESET" ))
 
@@ -1401,6 +1404,16 @@ def section_global_buttons():
             ( "inputgate", "_RUNNING" ),
             ( "outputtrigger", "_STARTSTOP_RESET" ),
         ], "Create a reset trigger when the button changes to 'running'")
+
+    # If there is an external input for running, but we don't have
+    # a start stop button, we need a different way to make that
+    # signal work.
+    elif arguments["runningin"] != "off":
+        patch += circuit("flipflop", [
+            ( "set", "_EXT_RUNNING_STARTED" ),
+            ( "reset", "_EXT_RUNNING_STOPPED" ),
+            ( "output", "_RUNNING" ),
+        ], "Remember external start/stop state in a flip flop")
 
 
     # Page button(s). Pages can be 1, 2 or 4
