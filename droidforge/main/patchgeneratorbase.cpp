@@ -35,13 +35,22 @@ bool PatchGeneratorBase::informAndAsk() const
                         "you make in a dialog.\n\n"
                         ""
                         "These generators are written in the programming language "
-                        "Python3, so just must have installed Python3 in order to "
-                        "enable the generators.\n\n"
-                        ""
-                        "If you proceed and Python3 is not "
-                        "yet installed, you will be guided through an installation "
-                        "procedure by your operating system.\n\n"
-                        "Do you want to proceeed?");
+                        "Python3, so just must have installed Python 3 in order to "
+                        "enable the generators.\n\n");
+
+#ifdef Q_OS_MAC
+    hint += TR("If you proceed and Python 3 is not "
+               "yet installed, you will be guided through an installation "
+               "procedure by your operating system.");
+#endif
+#ifdef Q_OS_WIN
+    hint += TR("Please make sure you have installed Python 3. If not, you "
+               "can either install it from the Microsoft store or from the "
+               "official web site of Python at https://www.python.org/downloads/windows/. \n\n"
+               "Important: If asked, check to box \"Add Python to environment variables\".");
+#endif
+
+    hint += TR("\n\nDo you want to proceeed?");
 
     return QMessageBox::question(
                0,
