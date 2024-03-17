@@ -1420,9 +1420,7 @@ def section_global_buttons():
     pages = num_pages()
     steps = num_steps()
     if pages == 2:
-        b = get_button(BUTTONPOS_PAGES,
-            "%d - %d" % (steps / 2 + 1, steps),
-            "Select second page of steps")
+        b = get_button(BUTTONPOS_PAGES, "PAGE", "Select second page of steps")
 
         patch += circuit("button", [
             ( "button", "B" + b ),
