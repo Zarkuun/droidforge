@@ -523,7 +523,7 @@ the master module.
         "parameters" : {
             "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "g8"       : 1       ,
             "tracks"   : 4         , "steps"    : "32"    ,                        "t1out"    : "trs1",
-            "t2out"    : "trs1"    , "t3out"    : "trs2"  , "t4out"    : "trs2"  , "t5out"    : "cvgate",
+            "t2out"    : "trs1"    , "t3out"    : "trs2"  , "t4out"    : "cvgate", "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "vg"    ,
@@ -535,7 +535,7 @@ the master module.
             "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
             "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "ton"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : True    , "runclock" : True    ,
-            "resetout" : True      , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
+            "resetout" : True      , "sos1"     : False   , "dualout"  : 3       , "divclock" : False   ,
             "runningin" : "trs1"   , "defgate"  : "0",
         }
     },
@@ -2130,9 +2130,16 @@ def track_section(track):
     if clear_on_peace(track):
         if arguments["range"]:
             clearstartend = "_T%d_CLEARSTARTEND" % track
+            patch += circuit("compare", [
+                ( "input", "_SELECTED_TRACK * _RANGE" ),
+                ( "compare", track ),
+                ( "ifequal", 1 ),
+                ( "output", "_T%d_CLEAR_RANGE" % track ),
+            ])
             patch += circuit("logic", [
                 ( "input1", clear_on_peace(track) ),
-                ( "input2", "_RANGE * _CONTROL" ),
+                # ( "input2", "_RANGE * _CONTROL" ),
+                ( "input2", "_T%d_CLEAR_RANGE" % track ),
                 ( "or", clearstartend ),
             ], "collect different sources of resetting the start/end point")
         else:
