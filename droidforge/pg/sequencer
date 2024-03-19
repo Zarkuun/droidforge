@@ -2138,8 +2138,7 @@ def track_section(track):
             ])
             patch += circuit("logic", [
                 ( "input1", clear_on_peace(track) ),
-                # ( "input2", "_RANGE * _CONTROL" ),
-                ( "input2", "_T%d_CLEAR_RANGE" % track ),
+                ( "input2", "_T%d_CLEAR_RANGE * _CONTROL" % track ),
                 ( "or", clearstartend ),
             ], "collect different sources of resetting the start/end point")
         else:
