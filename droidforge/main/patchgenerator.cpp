@@ -44,9 +44,16 @@ PatchGenerator::PatchGenerator(QString path, QString name)
     QStringList params;
     params << "-s";
     bool ok;
-    _jsonSource = run(params, ok);
+    _jsonSource = run(params, ok).trimmed();
     if (!ok)
         return;
+
+    if (_jsonSource == "") {
+        _error = TR("The generator has produced an empty output. This could be "
+                    "an issue with an installed security scanner. Try quitting "
+                    "and restarting the Forge.");
+        return;
+    }
 
     QJsonParseError jsonError;
     _parameterInfo = QJsonDocument::fromJson(_jsonSource.toUtf8(), &jsonError);

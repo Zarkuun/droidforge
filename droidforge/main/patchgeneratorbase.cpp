@@ -113,17 +113,27 @@ bool PatchGeneratorBase::loadGenerators()
             oneLoaded = true;
         }
         else {
-            QString title = TR("Failed to load patch generator '") + absPath + "'" +
-                            "\n\n" +
-                            TR("Do you want to check the output?");
+            QString title = TR("Failed to load patch generator '") + absPath + "'";
 
-            QMessageBox box(
-                QMessageBox::Warning,
-                title,
-                title + "\n\n" + gen->error(),
-                QMessageBox::Ok | QMessageBox::Cancel);
+            int result;
+            if (gen->jsonSource() != "") {
+                QMessageBox box(
+                    QMessageBox::Warning,
+                    title,
+                    title + "\n\n" + gen->error() + "\n\n" + TR("Do you want to check the output?"),
+                    QMessageBox::Ok | QMessageBox::Cancel);
+                result = box.exec();
+            }
+            else {
+                QMessageBox box(
+                    QMessageBox::Warning,
+                    title,
+                    title + "\n\n" + gen->error(),
+                    QMessageBox::Cancel);
+                result = box.exec();
+            }
 
-            if (box.exec() == QMessageBox::Ok)
+            if (result == QMessageBox::Ok)
             {
                 SourceCodeEditor sce(
                     TR("JSON output from patch generator"),
