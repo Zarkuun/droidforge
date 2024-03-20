@@ -72,7 +72,7 @@ void PatchSectionManager::connectActions()
     CONNECT_ACTION(ACTION_PREVIOUS_SECTION, &PatchSectionManager::switchBackward);
     CONNECT_ACTION(ACTION_NEXT_SECTION, &PatchSectionManager::switchForward);
     CONNECT_ACTION(ACTION_NEW_PATCH_SECTION, &PatchSectionManager::newSectionAfterCurrent);
-    CONNECT_ACTION(ACTION_SAVE_SECTION, &PatchSectionManager::saveSectionAsPatch);
+    CONNECT_ACTION(ACTION_SAVE_SECTION, &PatchSectionManager::prepareSaveSectionAsPatch);
     CONNECT_ACTION(ACTION_PASTE_AS_SECTION, &PatchSectionManager::pasteAsSection);
     CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION, &PatchSectionManager::duplicateSectionDumb);
     CONNECT_ACTION(ACTION_DUPLICATE_PATCH_SECTION_SMARTLY, &PatchSectionManager::duplicateSectionSmartly);
@@ -283,6 +283,7 @@ void PatchSectionManager::newSectionAtEnd()
 }
 void PatchSectionManager::saveSectionAsPatch()
 {
+   // QString titel = section->getTitle();
     const PatchSection *section = patch->currentSection();
     QString newFilePath = QFileDialog::getSaveFileName(
                 mainWindow,
@@ -292,6 +293,9 @@ void PatchSectionManager::saveSectionAsPatch()
 
     if (newFilePath == "")
         return; // aborted
+
+    //shout << "Ich wuerde jetzt in " << newFilePath << "saven, tu es aer nicht";
+    //return;
 
     QString sectionSource = section->toString(true /* supress empty header */);
     Patch sectionPatch;
@@ -308,6 +312,21 @@ void PatchSectionManager::saveSectionAsPatch()
                     tr("Error"),
                     tr("There was an error saving your patch to disk"));
     }
+}
+void PatchSectionManager::prepareSaveSectionAsPatch()
+{
+    // If you are wondering why we don't call saveSectionAsPatch directly
+    // on the signal from the popup menu. The answer is: Because it almost
+    // always crashes on Windows and sometimes on Mac. The crash even happens,
+    // if just getSaveFileName() is called and the answer just printed and
+    // the function ended. My only explanation for this is some weird bug
+    // in Qt that is triggered by getSaveFileName() from a temporary menu.
+    // Or maybe some dangling pointers from my side.
+    //
+    // Anyway: By moving the action into the main loop and away from the
+    // popup menu context seems to solve this problem. This is done by
+    // a timer that immediately fires as soon as the main loop is entered.
+    QTimer::singleShot(0, this, &PatchSectionManager::saveSectionAsPatch);
 }
 void PatchSectionManager::newSectionAtIndex(int index)
 {
