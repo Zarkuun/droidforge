@@ -19,9 +19,7 @@ synopsis = {
     "title":
         "Droid Megasequencer",
     "description":
-        """This generater creates the patch for the Droid Megasequencer
-It needs one master, an X7 and 16 B32. The B32 need to be arranged in two
-rows of eight each, to form a 32x16 button matrix.""",
+        """This generater creates the patch for the Droid Megasequencer. It needs one master, an X7 and 16 B32. The B32 need to be arranged in two rows of eight each, to form a 32x16 button matrix.""",
     "sections" : [{
         "title" : "Configuration",
         "help" : "Currently there is no configuration option for this "

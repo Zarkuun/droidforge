@@ -182,16 +182,11 @@ synopsis = {
     "title":
         "Motor Fader Sequencer",
     "description":
-        """This patch generator creates a patch for a melody performance sequencer
-for up to eight voices. You need one P2B8, one B32 and two or four
-M4 or E4 controller for this to work.
+        """This patch generator creates a patch for a melody performance sequencer for up to eight voices. You need one P2B8, one B32 and two or four M4 controllers.
 
-There are many optional features. Each feature allocates one or more
-buttons on the B32 so make sure you don't select too many of these.
+There are many optional features. Each feature allocates one or more buttons on the B32 so make sure you don't select too many of these.
 
-The sequencer supports MIDI input clock and MIDI note output if
-you either select "MASTER + X7" or "MASTER18" when selecting
-the master module.
+The sequencer supports MIDI input clock and MIDI note output if you either select "MASTER + X7" or "MASTER18" when selecting the master module.
 """,
 
     "sections" : [{
