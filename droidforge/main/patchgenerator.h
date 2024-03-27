@@ -13,6 +13,7 @@ class PatchGenerator
     QString _interpreter;
     QString _error;
     QString _title;
+    QString _description;
     QJsonDocument _parameterInfo;
     QString _jsonSource; // for error analysis
 
@@ -21,6 +22,7 @@ public:
     bool isValid() const { return _valid; };
     QString run(const QStringList &args, bool &ok);
     QString title() const { return _title; };
+    QString description() const { return _description; };
     QString name() const { return _name; };
     QString error() const { return _error; }
     QString jsonSource() const { return _jsonSource; };

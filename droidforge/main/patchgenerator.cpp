@@ -69,6 +69,8 @@ PatchGenerator::PatchGenerator(QString path, QString name)
         return;
     }
 
+    _description = _parameterInfo.object()["description"].toString();
+
     _valid = true;
 }
 

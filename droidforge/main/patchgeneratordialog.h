@@ -39,6 +39,7 @@ private:
 private slots:
     void loadPreset();
     void manual();
+    void showInfo();
     void tabChanged(int index);
 };
 

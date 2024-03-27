@@ -63,6 +63,12 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
              "user manual of this patch generator.");
     }
 
+    if (_generator->description() != "") {
+        QPushButton *infoButton = new QPushButton(tr("Info"));
+        connect(infoButton, &QPushButton::clicked, this, &PatchGeneratorDialog::showInfo);
+        buttonBox->addButton(infoButton, QDialogButtonBox::ActionRole);
+    }
+
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
@@ -78,6 +84,7 @@ void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
     mainLayout->addWidget(tabWidget);
 
     const QJsonDocument &info = _generator->parameterInfo();
+
     auto sections = info.object()["sections"].toArray();
     for (auto s: sections)
     {
@@ -172,6 +179,13 @@ void PatchGeneratorDialog::loadPreset()
 void PatchGeneratorDialog::manual()
 {
     the_manual->showTopic("pg-" + _generator->name());
+}
+void PatchGeneratorDialog::showInfo()
+{
+    QMessageBox::information(
+        this,
+        _generator->title(),
+        _generator->description());
 }
 void PatchGeneratorDialog::tabChanged(int index)
 {
