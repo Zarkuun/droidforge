@@ -218,6 +218,23 @@ void PatchGeneratorDialog::collectConfig(pgconfig_t &config)
         config[name] = cb->isChecked();
     }
 }
+void PatchGeneratorDialog::defaultConfig(pgconfig_t &config)
+{
+    const QJsonDocument &info = _generator->parameterInfo();
+    auto presets = info["presets"].toArray();
+    QString first;
+    for (auto p: presets) {
+        auto preset = p.toObject();
+        QString name = preset["name"].toString();
+        if (name == "default") {
+            configForPreset(name, config);
+            return;
+        }
+        else if (first == "")
+            first = name;
+    }
+    configForPreset(first, config);
+}
 void PatchGeneratorDialog::configForPreset(QString presetName, pgconfig_t &config)
 {
     const QJsonDocument &info = _generator->parameterInfo();
@@ -258,7 +275,7 @@ void PatchGeneratorDialog::loadConfigFromSettings(pgconfig_t &config)
 {
     QSettings settings;
     QString path = "patch_generators/" + _generator->name();
-    configForPreset("default", config);
+    defaultConfig(config);
     for (auto it = config.constKeyValueBegin();  it != config.constKeyValueEnd(); ++it)
     {
         QString key = it->first;
@@ -267,7 +284,6 @@ void PatchGeneratorDialog::loadConfigFromSettings(pgconfig_t &config)
             config[key] = settings.value(vpath);
     }
 }
-
 QComboBox *PatchGeneratorDialog::createPresetChoice()
 {
     QComboBox *box = new QComboBox();
