@@ -30,23 +30,29 @@ PatchGenerator::PatchGenerator(QString path, QString name)
         return;
     }
 
-    if (!lines[0].startsWith("#!/usr/bin/python")) {
-        _error = "Invalid patch generator: line 1 does not start with #!/usr/bin/python";
+    if (!lines[0].startsWith("#!/usr/bin/python") &&
+        !lines[0].startsWith("#!/usr/bin/env python"))
+    {
+        _error = TR("Invalid patch generator: line 1 must either start "
+                    "with \"#!/usr/bin/python\" or with "
+                    "\"#!/usr/bin/env python\" but starts with \"%1\".").arg(lines[0]);
         return;
     }
+
 
 #ifdef Q_OS_WIN
     _interpreter = "python.exe";
 #else
-    _interpreter = lines[0].mid(2);
+    if (lines[0].startsWith("#!/usr/bin/env "))
+        _interpreter = lines[0].mid(14).trimmed();
+    else
+        _interpreter = lines[0].mid(2).trimmed();
 #endif
 
     QStringList params;
     params << "-s";
     bool ok;
     _jsonSource = run(params, ok).trimmed();
-    if (!ok)
-        return;
 
     if (_jsonSource == "") {
         _error = TR("The generator has produced an empty output. This could be "
