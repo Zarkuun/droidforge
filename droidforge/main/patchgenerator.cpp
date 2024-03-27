@@ -14,7 +14,7 @@ PatchGenerator::PatchGenerator(QString path, QString name)
     QStringList lines;
     QFile inputFile(_path);
     if (!inputFile.open(QIODevice::ReadOnly)) {
-        _error = "Cannot open file: " + inputFile.errorString();
+        _error = TR("Cannot open file: ") + inputFile.errorString();
         return;
     }
 
@@ -26,7 +26,7 @@ PatchGenerator::PatchGenerator(QString path, QString name)
     }
     inputFile.close();
     if (lines.length() != 2) {
-        _error = "Invalid patch generator: file empty or too short";
+        _error = TR("Invalid patch generator: file empty or too short");
         return;
     }
 
