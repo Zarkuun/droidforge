@@ -1,10 +1,10 @@
 #include "jackselector.h"
 #include "colorscheme.h"
-#include "globals.h"
 #include "jackcircuitview.h"
 #include "tuning.h"
 #include "jackview.h"
 #include "jackline.h"
+#include "hintdialog.h"
 
 #include <QKeyEvent>
 #include <QtGlobal>
@@ -26,6 +26,26 @@ void JackSelector::setCircuit(const QString &c, const QString &current, const QS
     circuit = c;
     usedJacks = &uj;
     jackType = onlyType;
+    if (jackType == JACKTYPE_INPUT) {
+        HintDialog::hint("edit_input_jack",
+            tr("You pressed ENTER on an existing input parameter.\n"
+               "This way you can change this into another input\n"
+               "parameter while keeping the parameter values.\n\n"
+               "Please don't get confused by the fact that the output\n"
+               "parameters are grayed out in the parameter selection.\n"
+               "This is because you cannot change an input into an\n"
+               "output parameter."));
+    }
+    else if (jackType == JACKTYPE_OUTPUT) {
+        HintDialog::hint("edit_output_jack",
+            tr("You pressed ENTER on an existing output parameter.\n"
+               "This way you can change this into another output\n"
+               "parameter while keeping the parameter value.\n\n"
+               "Please don't get confused by the fact that the input\n"
+               "parameters are grayed out in the parameter selection.\n"
+               "This is because you cannot change an output into an\n"
+               "input parameter."));
+    }
     loadJacks(circuit, search);
     setCursor(current);
 }
