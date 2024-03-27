@@ -54,6 +54,12 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
          "Then load the patch as usually to your master with \"Activate!\" or \n"
          "\"Save to SD!\".");
 
+    if (_generator->description() != "") {
+        QPushButton *infoButton = new QPushButton(tr("Info"));
+        connect(infoButton, &QPushButton::clicked, this, &PatchGeneratorDialog::showInfo);
+        buttonBox->addButton(infoButton, QDialogButtonBox::ActionRole);
+    }
+
     if (the_manual->hasTopic("pg-" + _generator->name())) {
         QPushButton *manualButton = new QPushButton(tr("Manual"));
         connect(manualButton, &QPushButton::clicked, this, &PatchGeneratorDialog::manual);
@@ -61,12 +67,6 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
         hinttext +=
           tr("\n\nDon't forget the button \"Manual\"! It shows the comprehensive\n"
              "user manual of this patch generator.");
-    }
-
-    if (_generator->description() != "") {
-        QPushButton *infoButton = new QPushButton(tr("Info"));
-        connect(infoButton, &QPushButton::clicked, this, &PatchGeneratorDialog::showInfo);
-        buttonBox->addButton(infoButton, QDialogButtonBox::ActionRole);
     }
 
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);

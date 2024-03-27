@@ -61,6 +61,11 @@ PatchGenerator::PatchGenerator(QString path, QString name)
         return;
     }
 
+    else if (!ok) {
+        _error = TR("The patch generator exited with an error. Output:\n\n%1").arg(_jsonSource);
+        return;
+    }
+
     QJsonParseError jsonError;
     _parameterInfo = QJsonDocument::fromJson(_jsonSource.toUtf8(), &jsonError);
     if (jsonError.error != QJsonParseError::NoError) {
