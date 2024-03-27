@@ -1,0 +1,164 @@
+#!/usr/bin/python3
+
+import sys
+import json
+
+# This patch generator (PG) is a minimal example for how
+# patch generators work. It is not intended as a template
+# for your own PGs, since it's too simplistic. But it
+# illustrates, how the communication between the Forge
+# and the PG works.
+
+# Note: We do a completely hacked, much too simple
+# argument parsing here. If you write a real PG,
+# you might want to use something more elaborate.
+
+arguments = sys.argv[1:] # argv[0] is the script name
+
+# When loading the PGs, the Forge calls each PG with
+# the option -s. The PG then outputs the "synopsis".
+# This is a structured description of all its parameters
+# that should be displayed in the configuration
+# dialog. The output is a JSON object.
+
+
+if arguments[0] == '-s':
+    # Write the JSON direct to the standard output
+    # and exit. In order to make the code simpler,
+    # we create it as Python object and then convert
+    # it to JSON with the Python json module.
+
+    synopsis = {
+
+        # The title of the PG appears in the menu "Patch Generators"
+        "title" : "Minimal example",
+
+        # If you specify a "description" in your synopsis, the PG
+        # dialog gets a button [Info], which shows this description
+        # to the user, when pressed.
+        "description" : "This patch generator (PG) is a minimal example without any actual use. It just illustrates how the Droid Forge interacts with the PGs and helps you writing your own PG.",
+
+        # Now comes a list of sections. You need at least one section.
+        # Each section creates one tab in the PG dialog.
+        "sections" : [
+            {
+                "title" : "Settings", # will be the name of the tab
+                "options" : [
+                    # An option taking an integer number
+                    {
+                         "name" : "v",
+                         "title" : "Output voltage",
+                         "number" : (0, 10) # range 0 ... 10
+                    },
+                    # An option with drop down choice
+                    {
+                         "name" : "o",
+                         "title" : "Output jack",
+                         "enum" : [ # list available options
+                            ( "o1", "Output O1" ),
+                            ( "o2", "Output O2" ),
+                            ( "o3", "Output O3" ),
+                         ]
+                    },
+                    # A checkbox option
+                    {
+                        "name" : "neg",
+                        "title" : "Make it negative",
+                    }
+                ]
+            }
+        ],
+        # Define presets that can be loaded with the
+        # drop down choice and the [load preset] button
+        # at the bottom left of the PG dialog.
+        # Note: If one of the presets has the name "default",
+        # it is automatically loaded into the dialog
+        # when the users opens it for the first time. Otherwise
+        # one random preset is used. So it is always good
+        # to have a "default" preset.
+        "presets" : [
+            {
+                "name" : "default",
+                "title" : "Preset A (default)",
+                # For each preset you need to define
+                # a value for every parameter
+                "parameters" : {
+                    "v" : 5,
+                    "o" : "o1",
+                    "neg" : False,
+                }
+            },
+            {
+                "name" : "full",
+                "title" : "Preset B (something else)",
+                # For each preset you need to define
+                # a value for every parameter
+                "parameters" : {
+                    "v" : 1,
+                    "o" : "o2",
+                    "neg" : True,
+                }
+            },
+        ]
+    }
+
+    sys.stdout.write(json.dumps(synopsis))
+    sys.exit(0)
+
+# If you get it right until here, your PG should be shown
+# in the PG menu and a dialog should appear if you
+# select it.
+
+# When you press [OK] in the PG dialog, the PG is called
+# without any option, but with the list of chosen parameters
+# as command line arguments. For example if the users loads
+# the "Preset A" from the upper example, the command line
+# arguments # looks like this: neg=0 o=o1 v=0
+# Checkbox arguments are stated as 0 or 1 (not True or False).
+
+# So now we need to parse these arguments and build a patch
+# using this information. Our parsing here is just for illustration!
+# You might want to implement something cleaner.
+# Hint: If you don't want to overcomplicate things, you can
+# rely on the fact that the Forge creates a correct command line that
+# exactly matches your synopsis. You PG won't be very stable
+# when run manually without the Forge then, though. Here
+# in this example we don't care ;-)
+
+for arg in arguments:
+    if arg.startswith("neg="):
+        arg_negative = arg[4:] == "1"
+    elif arg.startswith("o="):
+        arg_output = arg[2:]
+    elif arg.startswith("v="):
+        arg_voltage = int(arg[2:])
+
+# If you want your PG to fail, output an error text
+# and exit with a code != 0. This will popup an error
+# dialog in the Forge and displayed the text to the
+# user. Let's assume that the option neg=1 does not
+# work for voltages > 5.
+
+if arg_negative and arg_voltage > 5:
+    sys.stderr.write("Negative voltages are limited to 5.")
+    sys.exit(1)
+
+
+# Now we are ready to create the patch. All you have to
+# do is to output a valid Droid patch source on stdout.
+voltage = arg_voltage
+if arg_negative:
+    arg_voltage *= -1
+
+sys.stdout.write(f"""# Minimal PG example
+[copy]
+    input = {voltage}V
+    output = {arg_output}
+""")
+
+# Further hints:
+# If you like, you can use the Python module pg.py for your own patch generator.
+# Just have in mind, that pg.py is not yet official, it's functions and all
+# might change. That module has some helper functions for parsing the options,
+# providing an online help for command line users and also has some helpers
+# for patch creation.

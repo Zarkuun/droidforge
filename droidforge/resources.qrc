@@ -362,5 +362,6 @@
         <file>pg/sequencer</file>
         <file>images/circuits/multicompare.png</file>
         <file>pg/e4blink</file>
+        <file>pg/minimal</file>
     </qresource>
 </RCC>
