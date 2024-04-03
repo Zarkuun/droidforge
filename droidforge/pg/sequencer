@@ -2107,6 +2107,9 @@ def track_section(track):
     if arguments.get("sos%d" % track):
         params.append(("startofsequence", gate_outputs["sos1"]))
 
+    if arguments["gl"]:
+        params.append(( "gatelength", "_T%d_GATELENGTH" % track ))
+
     params.append(("buttonmode", "_BUTTONMODE"))
 
     labels["B1.1"] = ( "ROOT", "Allow root note" )
@@ -2233,7 +2236,8 @@ def track_section(track):
             track_preset_params(track) + \
             [
                 ( "cv", "_T%d_GATELENGTH" % track ),
-                ( "cvrange", 1 ),
+                ( "cvbase", 0.05 ), # minimal gate length
+                ( "cvrange", 0.9 ), # maximum gate length is 0.95
                 ( "defaultcv", 0.5 ),
                 ( "defaultgate", 0 ), # NO glide
                 ( "quantize", 0 ),
@@ -2268,11 +2272,24 @@ def track_section(track):
 
     # Switch gate to arpeggiator if active ---------------------
     if arguments["arp"]:
+        if arguments["gl"]:
+            gatelength = "_T%d_GATELENGTH" % track
+        else:
+            gatelength = 0.5
+
+        arp_gate = "_T%d_ARP_MODULATED_GATE" % track
+        patch += circuit("gatetool", [
+            ( "taptempo", "_T%d_ARP_TAPTEMPO" % track ),
+            ( "gatelength", gatelength ),
+            ( "inputgate", "_T%d_ARP_CLOCK" % track ),
+            ( "outputgate", arp_gate ),
+        ], "Modulate gate length for gate output in arpeggiator mode" )
+
         patch += circuit("compare", [
             ( "input", "_T%d_ARP" % track ),
             ( "compare", 0 ),
             ( "ifequal", gate ),
-            ( "else", "_T%d_ARP_CLOCK" % track ),
+            ( "else", arp_gate ),
             ( "output", "_T%d_SWITCHED_GATE" % track ),
         ], "Switch gate to arpeggiator if active" )
         gate = "_T%d_SWITCHED_GATE" % track
@@ -2347,31 +2364,10 @@ def track_section(track):
     if have_running():
         gate = gate + " * _RUNNING"
 
-    # Now apply gate length
-    if arguments["gl"]:
-        if arguments["arp"]:
-            patch += circuit("compare", [
-                ( "input", "_T%d_ARP" % track ),
-                ( "compare", 0 ),
-                ( "ifequal", "_T%d_CLOCK" % track ),
-                ( "else", "_T%d_ARP_TAPTEMPO" % track ),
-                ( "output", "_T%d_GATEREF" % track ),
-            ], "Provide steady tap tempo for arpeggiator's gate length" )
-            taptempo = "_T%d_GATEREF" % track
-        else:
-            taptempo = "_T%d_CLOCK" % track
-
-        patch += circuit("gatetool", [
-            ( "taptempo", taptempo ),
-            ( "inputgate", gate ),
-            ( "outputgate", "_T%d_FINAL_GATE" % track ),
-            ( "gatelength", "_T%d_GATELENGTH * 0.9 + 0.05" % track ),
-        ], "Compute gate length for arpeggiator output" )
-    else:
-        patch += circuit("copy", [
-            ( "input", gate ),
-            ( "output", "_T%d_FINAL_GATE" % track ),
-        ], "Copy the gate to its final destination" )
+    patch += circuit("copy", [
+        ( "input", gate ),
+        ( "output", "_T%d_FINAL_GATE" % track ),
+    ], "Copy the gate to its final destination" )
 
     if track_is_cvgate(track):
         patch += circuit("copy", [
@@ -2394,21 +2390,21 @@ def track_arpeggiator(track):
         ( "input8", "_CLOCK_8_1" ),
         ( "output", "_T%d_ARP_CLOCK" % track),
         ( "offset", "_T%d_ARP_CLOCKING" % track),
-    ], "Select clock for arpeggiator of track %d" % track)
+    ], "Select clock for arpeggiator of track %d. It is either the master "
+       "clock or a multiplication of it, or the sequencer gate output. " % track)
 
-    if arguments["gl"]:
-        patch += circuit("switch", [
-            ( "input1", "_CLOCK" ),
-            ( "input2", "_T%d_CLOCK" % track ),
-            ( "input3", "_CLOCK_3_2" ),
-            ( "input4", "_CLOCK_2_1" ),
-            ( "input5", "_CLOCK_3_1" ),
-            ( "input6", "_CLOCK_4_1" ),
-            ( "input7", "_CLOCK_6_1" ),
-            ( "input8", "_CLOCK_8_1" ),
-            ( "output", "_T%d_ARP_TAPTEMPO" % track),
-            ( "offset", "_T%d_ARP_CLOCKING * _T%d_ARP" % (track, track)),
-        ], "Create taptempo for arp clock to be used for gate length")
+    patch += circuit("switch", [
+        ( "input1", "_CLOCK" ),
+        ( "input2", "_T%d_CLOCK" % track ),
+        ( "input3", "_CLOCK_3_2" ),
+        ( "input4", "_CLOCK_2_1" ),
+        ( "input5", "_CLOCK_3_1" ),
+        ( "input6", "_CLOCK_4_1" ),
+        ( "input7", "_CLOCK_6_1" ),
+        ( "input8", "_CLOCK_8_1" ),
+        ( "output", "_T%d_ARP_TAPTEMPO" % track),
+        ( "offset", "_T%d_ARP_CLOCKING * _T%d_ARP" % (track, track)),
+    ], "Create taptempo for arp clock to be used for gate length")
 
     # Pitch base and range are on overlayed pots
     patch += circuit("pot", track_and_arp_selected(track) + [
