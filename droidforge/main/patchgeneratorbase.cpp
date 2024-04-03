@@ -71,19 +71,20 @@ bool PatchGeneratorBase::deployGenerators()
         QString absPath = _directory.absoluteFilePath(fileName);
         if (QFile::exists(absPath)) {
             QFile f(absPath);
-            f.setPermissions(
-                        f.permissions()
-                        | QFileDevice::WriteOwner
-                        | QFileDevice::WriteUser
-                        | QFileDevice::WriteGroup
-                        | QFileDevice::WriteOther);
-
-            if (!f.remove()) {
+            if (!f.remove())
                 failed += TR("Could not delete old version of %1: %2\n").arg(absPath).arg(f.errorString());
-            }
         }
         if (!QFile::copy(ressourcePath, absPath))
             failed += absPath + "\n";
+
+        QFile f(absPath);
+        f.setPermissions(
+                    f.permissions()
+                    | QFileDevice::WriteOwner
+                    | QFileDevice::WriteUser
+                    | QFileDevice::WriteGroup
+                    | QFileDevice::WriteOther);
+
     }
 
     if (failed == "")
