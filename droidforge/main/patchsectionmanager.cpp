@@ -294,9 +294,6 @@ void PatchSectionManager::saveSectionAsPatch()
     if (newFilePath == "")
         return; // aborted
 
-    //shout << "Ich wuerde jetzt in " << newFilePath << "saven, tu es aer nicht";
-    //return;
-
     QString sectionSource = section->toString(true /* supress empty header */);
     Patch sectionPatch;
     PatchParser parser;

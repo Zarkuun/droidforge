@@ -23,10 +23,6 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     labelDescription->setMaximumWidth(JSEL_DESCRIPTION_WIDTH);
     labelDescription->setTextFormat(Qt::RichText);
     labelDescription->setAlignment(Qt::AlignTop);
-    labelDescription->setStyleSheet(
-       QString("QLabel { padding: 10px; background-color : #%1; color: #%2; }")
-                .arg(COLOR(JSEL_COLOR_DESCRIPTION_BACKGROUND).name(),
-                     COLOR(JSEL_COLOR_DESCRIPTION).name()));
 
     labelJackType = new QLabel(this);
     labelJackType->setWordWrap(true);
@@ -34,10 +30,6 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     labelJackType->setMaximumWidth(JSEL_DESCRIPTION_WIDTH);
     labelJackType->setTextFormat(Qt::RichText);
     labelJackType->setAlignment(Qt::AlignBottom);
-    labelJackType->setStyleSheet(
-       QString("QLabel { padding: 10px; background-color : #%1; color: #%2; }")
-                .arg(COLOR(JSEL_COLOR_DESCRIPTION_BACKGROUND).name(),
-                     COLOR(JSEL_COLOR_DESCRIPTION).name()));
 
     // Buttons with OK/Cancel
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
