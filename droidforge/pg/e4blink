@@ -23,7 +23,7 @@ shiftfour_colors = [ 0.2, 0.9, 1.0, 1.2 ]
 
 synopsis = {
     "title":
-        "Binkenlights with E4s",
+        "Blinkenlights with E4s",
     "description":
         """This patch creates various LED animations with E4 controllers.
 """,
