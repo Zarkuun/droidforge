@@ -4,6 +4,7 @@
 #include "patchparser.h"
 #include "usermanual.h"
 #include "hintdialog.h"
+#include "globals.h"
 
 #include <QRandomGenerator>
 #include <QSettings>
@@ -280,8 +281,9 @@ void PatchGeneratorDialog::loadConfigFromSettings(pgconfig_t &config)
     {
         QString key = it->first;
         QString vpath = path + "/" + key;
-        if (settings.contains(vpath))
+        if (settings.contains(vpath)) {
             config[key] = settings.value(vpath);
+        }
     }
 }
 QComboBox *PatchGeneratorDialog::createPresetChoice()

@@ -1,4 +1,5 @@
 #include "patchgenerator.h"
+#include "QtCore/qjsonarray.h"
 #include "tuning.h"
 #include "globals.h"
 
@@ -81,6 +82,13 @@ PatchGenerator::PatchGenerator(QString path, QString name)
     }
 
     _description = _parameterInfo.object()["description"].toString();
+
+    auto presets = _parameterInfo.object()["presets"].toArray();
+    if (presets.empty()) {
+        _error = TR("The patch generator has no presets. Each patch generator must "
+                    "at least define one preset.");
+        return;
+    }
 
     _valid = true;
 }
