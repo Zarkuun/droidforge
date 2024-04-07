@@ -80,6 +80,10 @@ bool PatchGeneratorBase::deployGenerators()
         QFile f(absPath);
         f.setPermissions(
                     f.permissions()
+                    | QFileDevice::ExeOwner
+                    | QFileDevice::ExeUser
+                    | QFileDevice::ExeGroup
+                    | QFileDevice::ExeOther
                     | QFileDevice::WriteOwner
                     | QFileDevice::WriteUser
                     | QFileDevice::WriteGroup
