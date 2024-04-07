@@ -10,7 +10,6 @@ unsigned ModuleX7::numRegisters(register_type_t type) const
     else
         return 0;
 }
-
 QPointF ModuleX7::registerPosition(register_type_t type, unsigned number) const
 {
     int column = (number - 1) % 2;
@@ -32,7 +31,6 @@ QPointF ModuleX7::registerPosition(register_type_t type, unsigned number) const
     return QPointF(x, y);
 
 }
-
 float ModuleX7::registerSize(register_type_t type, unsigned) const
 {
     if (type == REGISTER_RGB_LED)
@@ -41,12 +39,10 @@ float ModuleX7::registerSize(register_type_t type, unsigned) const
         return CONTROL_JACK_SIZE;
 
 }
-
 float ModuleX7::labelDistance(register_type_t, unsigned) const
 {
     return -2.45;
 }
-
 float ModuleX7::rectAspect(register_type_t type) const
 {
     if (type == REGISTER_RGB_LED)
@@ -54,7 +50,6 @@ float ModuleX7::rectAspect(register_type_t type) const
     else
         return 0.0;
 }
-
 unsigned ModuleX7::numberOffset(register_type_t type) const
 {
     if (type == REGISTER_GATE)
