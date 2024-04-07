@@ -85,9 +85,7 @@ bool PatchGeneratorBase::deployGenerators()
                     | QFileDevice::ExeGroup
                     | QFileDevice::ExeOther
                     | QFileDevice::WriteOwner
-                    | QFileDevice::WriteUser
-                    | QFileDevice::WriteGroup
-                    | QFileDevice::WriteOther);
+                    | QFileDevice::WriteUser);
 
     }
 
