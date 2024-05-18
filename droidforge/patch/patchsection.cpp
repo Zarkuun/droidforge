@@ -1,10 +1,10 @@
 #include "patchsection.h"
 #include "clipboard.h"
 #include "droidfirmware.h"
+#include "globals.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "tuning.h"
-#include "globals.h"
 #include "atomnumber.h"
 
 

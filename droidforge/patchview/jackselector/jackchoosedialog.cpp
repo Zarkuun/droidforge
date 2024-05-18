@@ -1,9 +1,9 @@
 #include "jackchoosedialog.h"
-#include "colorscheme.h"
-#include "globals.h"
 #include "jackselector.h"
 #include "droidfirmware.h"
 
+
+#include <QPushButton>
 #include <QGridLayout>
 #include <QLabel>
 #include <QKeyEvent>

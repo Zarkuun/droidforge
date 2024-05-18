@@ -1,6 +1,7 @@
 #include "preferencesdialog.h"
-#include "globals.h"
+#include "droidfirmware.h"
 #include "tuning.h"
+#include "hintdialog.h"
 
 #include <QVBoxLayout>
 #include <QDialogButtonBox>

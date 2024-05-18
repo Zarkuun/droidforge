@@ -1,9 +1,9 @@
 #include "jackvaluetabledialog.h"
 #include "droidfirmware.h"
-#include "globals.h"
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QPushButton>
 
 JackValueTableDialog::JackValueTableDialog(QString circuit, QString jack, QWidget *parent)
     : QDialog(parent)

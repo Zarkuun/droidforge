@@ -2,7 +2,6 @@
 #include "droidfirmware.h"
 #include "jackassignmentoutput.h"
 #include "patch.h"
-#include "globals.h"
 
 #include <QCoreApplication>
 #include <QSettings>

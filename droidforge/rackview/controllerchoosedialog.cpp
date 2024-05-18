@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QKeyEvent>
 #include <QDesktopServices>
+#include <QPushButton>
 
 ControllerChooseDialog::ControllerChooseDialog(MainWindow *mainWindow)
     : Dialog("controllerchooser", mainWindow)

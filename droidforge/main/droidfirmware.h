@@ -1,8 +1,7 @@
 #ifndef DROIDFIRMWARE_H
 #define DROIDFIRMWARE_H
 
-#include "circuitchoosedialog.h"
-
+#include "circuit.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 

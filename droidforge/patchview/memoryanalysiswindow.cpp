@@ -1,6 +1,8 @@
 #include "memoryanalysiswindow.h"
 #include "droidfirmware.h"
 
+#include <QPushButton>
+
 MemoryAnalysisWindow::MemoryAnalysisWindow(const Patch *patch, QWidget *parent)
     : SourceCodeEditor(tr("Memory Analysis"), "", parent, true /* read-only */)
     , patch(patch)

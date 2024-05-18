@@ -4,12 +4,6 @@
 #include "circuitview.h"
 #include "framecursor.h"
 #include "iconmarker.h"
-#include "patchsection.h"
-#include "selection.h"
-#include "tuning.h"
-#include "circuitchoosedialog.h"
-#include "atomselectordialog.h"
-#include "clipboard.h"
 #include "patcheditengine.h"
 #include "patchview.h"
 

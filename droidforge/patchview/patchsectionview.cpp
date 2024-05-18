@@ -7,7 +7,6 @@
 #include "circuitview.h"
 #include "cablecolorizer.h"
 #include "colorscheme.h"
-#include "globals.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
@@ -22,6 +21,7 @@
 #include "jackchoosedialog.h"
 #include "patchview.h"
 #include "hintdialog.h"
+#include "atomselectordialog.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
