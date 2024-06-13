@@ -81,6 +81,8 @@ QtApplication {
         "main/editoractions.h",
         "parser/statusdump.cpp",
         "parser/statusdump.h",
+        "patch/jackdeduplicator.cpp",
+        "patch/jackdeduplicator.h",
         "patchview/findpanel.cpp",
         "patchview/findpanel.h",
         "patchview/memoryanalysiswindow.cpp",

@@ -28,6 +28,14 @@ PatchSection *PatchSection::clone() const
         newsection->circuits.append(circuits[i]->clone());
     return newsection;
 }
+
+QString PatchSection::toDeployString(JackDeduplicator &jdd) const
+{
+    QString s;
+    for (qsizetype i=0; i<circuits.length(); i++)
+        s += circuits[i]->toDeployString(jdd);
+    return s;
+}
 QString PatchSection::toString(bool suppressEmptyHeader) const
 {
     QString s;
@@ -45,23 +53,15 @@ QString PatchSection::toString(bool suppressEmptyHeader) const
 
     return s;
 }
-QString PatchSection::toCleanString() const
+QString PatchSection::toBareString() const
 {
     QString s;
     for (qsizetype i=0; i<circuits.length(); i++) {
         if (!circuits[i]->isDisabled()) {
-            s += circuits[i]->toCleanString();
+            s += circuits[i]->toBareString();
             s += "\n";
         }
     }
-    return s;
-}
-
-QString PatchSection::toBare() const
-{
-    QString s;
-    for (qsizetype i=0; i<circuits.length(); i++)
-        s += circuits[i]->toBare();
     return s;
 }
 QString PatchSection::getNonemptyTitle() const
@@ -653,21 +653,12 @@ void PatchSection::removeRegisterReferences(RegisterList &rl)
     for (auto circuit: circuits)
         circuit->removeRegisterReferences(rl);
 }
-unsigned PatchSection::memoryFootprint() const
+unsigned PatchSection::ramUsedByCircuits() const
 {
     unsigned memory = 0;
     for (auto circuit: circuits)
-        memory += circuit->memoryFootprint();
+        memory += circuit->baseRAMUsage();
     return memory;
-}
-unsigned PatchSection::countDuplicateInputLines(QList<const JackAssignmentInput *> &inputLines) const
-{
-    unsigned count = 0;
-    for (auto circuit: circuits) {
-        if (!circuit->isDisabled())
-            count += circuit->countDuplicateInputLines(inputLines);
-    }
-    return count;
 }
 bool PatchSection::needsMIDI() const
 {

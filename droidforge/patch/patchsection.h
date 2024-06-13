@@ -7,6 +7,7 @@
 #include "patchproblem.h"
 #include "selection.h"
 #include "rewritecablesdialog.h"
+#include "jackdeduplicator.h"
 
 #include <QList>
 
@@ -26,8 +27,8 @@ public:
     ~PatchSection();
     PatchSection *clone() const;
     QString toString(bool suppressEmptyHeader) const;
-    QString toCleanString() const;
-    QString toBare() const;
+    QString toBareString() const;
+    QString toDeployString(JackDeduplicator &jdd) const;
     QString getTitle() const { return title; };
     QString getNonemptyTitle() const;
     void setComment(const QStringList &c);
@@ -92,8 +93,7 @@ public:
     JackAssignment *jackAssignmentAt(const CursorPosition &pos);
     void collectRegisterAtoms(RegisterList &, bool skipOverlayedControls) const;
     void removeRegisterReferences(RegisterList &rl);
-    unsigned memoryFootprint() const;
-    unsigned countDuplicateInputLines(QList<const JackAssignmentInput *> &inputLines) const;
+    unsigned ramUsedByCircuits() const;
     bool searchHitAtCursor(const QString &text);
     bool needsMIDI() const;
     void clearBookmarks();

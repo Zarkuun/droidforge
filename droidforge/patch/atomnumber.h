@@ -18,13 +18,14 @@ class AtomNumber : public Atom
     atom_number_t numberType;
 
 public:
-    AtomNumber(double n, atom_number_t t)
-        : number(n), numberType(t) {};
+    AtomNumber(double n, atom_number_t t) : number(n) , numberType(t) {}
+        // : number(n), numberType(t) {};
     double getNumber() const { return number; };
     atom_number_t getType() const { return numberType; };
     bool isFraction() const { return numberType == ATOM_NUMBER_FRACTION; };
     AtomNumber *clone() const;
     QString toString() const;
+    QString toCanonicalString() const;
     QString toDisplay() const;
     bool isNegatable() const;
     QString toNegatedString() const;

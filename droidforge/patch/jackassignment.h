@@ -11,6 +11,7 @@
 
 class Patch;
 class Circuit;
+class JackDeduplicator;
 
 typedef enum {
     JACKTYPE_INPUT = 0,
@@ -22,6 +23,7 @@ typedef enum {
 
 class JackAssignment
 {
+
 protected:
     QString jack;
     QString comment;
@@ -31,8 +33,9 @@ public:
     JackAssignment(QString jack, QString comment = "");
     void setDisabled(bool d) { disabled = d; };
     bool isDisabled() const { return disabled; };
+    QString toDeployString(JackDeduplicator &jdd) const;
     QString toString() const;
-    QString toBare() const;
+    QString toBareString() const;
     QString jackName() const { return jack; };
     QString jackPrefix() const;
     void setJackName(const QString &name) { jack = name; };

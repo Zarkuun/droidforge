@@ -10,8 +10,8 @@ class PreferencesDialog : public Dialog
 {
     Q_OBJECT
 
-    QCheckBox *checkboxRemoveEmptyLines;
     QCheckBox *checkboxRenameCables;
+    QCheckBox *checkboxDeduplicateJacks;
     QCheckBox *checkboxIgnoreUnknownJacks;
     QCheckBox *checkboxDenounceDeprecatedCircuits;
     QCheckBox *checkboxPollX7;

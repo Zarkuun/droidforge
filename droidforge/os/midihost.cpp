@@ -5,7 +5,7 @@ MIDIHost::MIDIHost()
 }
 unsigned MIDIHost::prepareSysexMessage(const Patch *patch)
 {
-    QString droidini = patch->toCompressed();
+    QString droidini = patch->toDeployString();
     if (droidini.length() > MAX_DROID_INI)
         return 0;
 

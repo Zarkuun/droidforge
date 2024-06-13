@@ -2,6 +2,7 @@
 #include "droidfirmware.h"
 
 #include <QPushButton>
+#include <QSettings>
 
 MemoryAnalysisWindow::MemoryAnalysisWindow(const Patch *patch, QWidget *parent)
     : SourceCodeEditor(tr("Memory Analysis"), "", parent, true /* read-only */)
@@ -41,6 +42,10 @@ void MemoryAnalysisWindow::update(sortby_t sortby)
     unsigned total_count = 0;
     unsigned total_ram = 0;
 
+    QSettings settings;
+    bool dedup = settings.value("compression/deduplicate_jacks", false).toBool();
+    JackDeduplicator jdd(dedup);
+
     for (unsigned s=0; s<patch->numSections(); s++) {
         const PatchSection *section = patch->section(s);
         for (unsigned c=0; c<section->numCircuits(); c++) {
@@ -49,13 +54,13 @@ void MemoryAnalysisWindow::update(sortby_t sortby)
             if (!stats.contains(name)) {
                 stats[name] = {
                     name,
-                    the_firmware->circuitMemoryFootprint(name),
+                    circuit->baseRAMUsage(),
                     0, // count
                     0, // total
                     0.0 // average
                 };
             }
-            unsigned memoryFootprint = circuit->memoryFootprint();
+            unsigned memoryFootprint = circuit->RAMUsage(jdd);
             stats[name].count += 1;
             stats[name].total += memoryFootprint;
             stats[name].average = (double)stats[name].total / stats[name].count;
@@ -114,6 +119,7 @@ void MemoryAnalysisWindow::update(sortby_t sortby)
     text += tr("avg:   average actual RAM usage per circuit\n");
     text += tr("total: total amount of RAM used by this circuit type\n");
     text += tr("perc:  percentage of used RAM contributed by this circuit type\n");
+    text += "\n\n";
 
     updateContent(text);
 }

@@ -7,7 +7,8 @@
 #include "registerlabels.h"
 #include "globals.h"
 #include "tuning.h"
-#include "jackassignmentinput.h"
+#include "utilities.h"
+
 
 #include <QFileInfo>
 #include <QSettings>
@@ -619,6 +620,71 @@ void Patch::updateProblems()
         delete problem;
     problems.clear();
 
+    updateSectionProblems();
+    updateRegisterProblems();
+    updateMemoryProblems();
+}
+
+void Patch::updateMemoryProblems()
+{
+    // Check memory consumption of circuits, also their count
+    unsigned availableMemory = the_firmware->availableMemory(typeOfMaster());
+    unsigned usedMemory = usedRAMByControllers() +
+                          4 * ((Patch *)this)->countUniqueConstants() +
+                          8 * ((Patch *)this)->countUniqueCables();
+
+
+    if (typeOfMaster() == 16)
+        usedMemory += the_firmware->controllerUsedRAM("x7");
+
+    QSettings settings;
+    bool dedup = settings.value("compression/deduplicate_jacks", false).toBool();
+    JackDeduplicator jdd(dedup);
+
+    // TODO: Das war evtl. schon vorher falsch. Der RAM von X7, Controllern,
+    // etc. wird hier nicht mitgezählt. Daher kommt dann kein Patchproblemn,
+    // selbst wenn der Speicher aus ist.
+
+    QMap<QString, unsigned> circuitCounts;
+    unsigned sectionIndex = 0;
+    for (auto section: sections) {
+        unsigned circuitNr = 0;
+        for (auto circuit: section->getCircuits()) {
+            if (!circuit->isDisabled()) {
+                unsigned circuitMem = circuit->RAMUsage(jdd);
+                if (usedMemory + circuitMem > availableMemory) {
+                    QString error = TR("This circuit exceeds the available memory.");
+                    if (!dedup)
+                        error += TR(" Hint: activate \"Detect and share duplicate values for inputs and outputs\" in the preferences.");
+                    PatchProblem *prob = new PatchProblem(ROW_CIRCUIT, 0, error);
+
+                    prob->setCircuit(circuitNr);
+                    prob->setSection(sectionIndex);
+                    problems.append(prob);
+                }
+                usedMemory += circuitMem;
+                QString c = circuit->getName();
+                if (!circuitCounts.contains(c))
+                    circuitCounts[c] = 0;
+                circuitCounts[c] ++;
+                if (circuitCounts[c] == 255) { // one too much
+                    if (the_firmware->circuitIsPersisted(c)) {
+                        PatchProblem *prob = new PatchProblem(
+                                    ROW_CIRCUIT, 0,
+                                    TR("You have too many circuits of this type. The maximum number is 255."));
+                        prob->setCircuit(circuitNr);
+                        prob->setSection(sectionIndex);
+                        problems.append(prob);
+                    }
+                }
+            }
+            circuitNr++;
+        }
+        sectionIndex++;
+    }
+}
+void Patch::updateSectionProblems()
+{
     // Collect problems locally in the sections
     int sectionNr=0;
     for (auto section: sections) {
@@ -628,7 +694,9 @@ void Patch::updateProblems()
         problems += sectionProblems;
         sectionNr++;
     }
-
+}
+void Patch::updateRegisterProblems()
+{
     unsigned master = typeOfMaster();
 
     // Invalid registers:
@@ -736,45 +804,6 @@ void Patch::updateProblems()
         }
     }
 
-
-    // Check memory consumption of circuits, also their count
-    unsigned usedMemory = 0;
-    unsigned availableMemory = the_firmware->availableMemory(typeOfMaster());
-    unsigned sectionIndex = 0;
-    QMap<QString, unsigned> circuitCounts;
-
-    for (auto section: sections) {
-        unsigned circuitNr = 0;
-        for (auto circuit: section->getCircuits()) {
-            if (!circuit->isDisabled()) {
-                if (usedMemory + circuit->memoryFootprint() > availableMemory) {
-                    PatchProblem *prob = new PatchProblem(
-                                ROW_CIRCUIT, 0,
-                                TR("This circuit exceeds the available memory."));
-                    prob->setCircuit(circuitNr);
-                    prob->setSection(sectionIndex);
-                    problems.append(prob);
-                }
-                usedMemory += circuit->memoryFootprint();
-                QString c = circuit->getName();
-                if (!circuitCounts.contains(c))
-                    circuitCounts[c] = 0;
-                circuitCounts[c] ++;
-                if (circuitCounts[c] == 255) { // one too much
-                    if (the_firmware->circuitIsPersisted(c)) {
-                        PatchProblem *prob = new PatchProblem(
-                                    ROW_CIRCUIT, 0,
-                                    TR("You have too many circuits of this type. The maximum number is 255."));
-                        prob->setCircuit(circuitNr);
-                        prob->setSection(sectionIndex);
-                        problems.append(prob);
-                    }
-                }
-            }
-            circuitNr++;
-        }
-        sectionIndex++;
-    }
 }
 QString Patch::problemAt(int section, const CursorPosition &pos)
 {
@@ -811,68 +840,79 @@ bool Patch::registerAvailable(AtomRegister ar) const
 
     return ar.getNumber() >= 1 && ar.getNumber() <= max;
 }
-unsigned Patch::memoryFootprint(QStringList &breakdown) const
+unsigned Patch::usedRAMByCircuits() const
+{
+    if (numCircuits() == 0 && controllers.size() == 0) {
+        return the_firmware->circuitBaseRAM("droid");
+    }
+    else {
+        // Count the RAM used by circuits (not counting their parameters)
+        unsigned byCircuits = 0;
+        for (auto section: sections)
+            byCircuits += section->ramUsedByCircuits();
+        return byCircuits;
+    }
+}
+unsigned Patch::usedRAMByControllers() const
+{
+    unsigned byControllers = 0;
+    for (const QString &controller: controllers)
+        byControllers += the_firmware->controllerUsedRAM(controller);
+    return byControllers;
+}
+unsigned Patch::usedRAM(QStringList &breakdown) const
 {
     unsigned memory = 0;
 
-    // If the patch is completely empty, Droid will replace it with
-    // one that consists of the sole circuit "[droid]". Because it
-    // cannot save an empty patch to the flash.
-    if (numCircuits() == 0 && controllers.size() == 0) {
-        memory = the_firmware->circuitMemoryFootprint("droid");
-    }
-    else {
-        unsigned byCircuits = 0;
-        for (auto section: sections)
-            byCircuits += section->memoryFootprint();
-        memory += byCircuits;
-        memory -= 12; // Somehow neccessary in blue-2
+    unsigned byCircuits = usedRAMByCircuits();
+    if (numCircuits() || numControllers())
         breakdown.append(TR("%1 bytes are needed by %2 circuits.")
-                         .arg(byCircuits).arg(numCircuits()));
+                             .arg(niceBytes(byCircuits)).arg(numCircuits()));
+    else
+        breakdown.append(TR("%1 bytes are needed by a hidden default circuit.")
+                             .arg(niceBytes(byCircuits)));
 
-        unsigned byControllers = 0;
-        for (const QString &controller: controllers)
-            byControllers += the_firmware->controllerMemoryFootprint(controller);
-        memory += byControllers;
-        breakdown.append(TR("%1 bytes are needed by %2 controllers.")
-                         .arg(byControllers).arg(controllers.count()));
-    }
+    memory += byCircuits;
+
+    unsigned byControllers = usedRAMByControllers();
+    memory += byControllers;
+    breakdown.append(TR("%1 bytes are needed by %2 controllers.")
+                         .arg(niceBytes(byControllers)).arg(controllers.count()));
 
     // We must assume an attached X7. The X7 need 1k RAM just because
     // it's attached.
-    unsigned byX7 = the_firmware->controllerMemoryFootprint("x7");
-    if (((Patch *)this)->needsX7())
-        breakdown.append(TR("%1 bytes are used by the X7.").arg(byX7));
-    else
-        breakdown.append(TR("%1 bytes could be used by a potential X7.").arg(byX7));
-    memory += byX7;
-
+    if (typeOfMaster() == 16)
+    {
+        unsigned byX7 = the_firmware->controllerUsedRAM("x7");
+        if (((Patch *)this)->needsX7())
+            breakdown.append(TR("%1 bytes are used by the X7.").arg(niceBytes(byX7)));
+        else
+            breakdown.append(TR("%1 bytes could be used by a potential X7.").arg(niceBytes(byX7)));
+        memory += byX7;
+    }
 
     // Every unique constant needs 4 bytes
     unsigned numConstants = ((Patch *)this)->countUniqueConstants();
     memory += numConstants * 4;
     breakdown.append(TR("%1 bytes are used by %2 unique constants.")
-                     .arg(numConstants * 4).arg(numConstants));
+                         .arg(niceBytes(numConstants * 4)).arg(numConstants));
 
     // Every (unique) patch cable needs 8 bytes
     unsigned numCables = ((Patch *)this)->countUniqueCables();
     memory += numCables * 8;
-    breakdown.append(TR("%1 bytes are used by %2 unique Cables.")
-                     .arg(numCables * 8).arg(numCables));
+    breakdown.append(TR("%1 bytes are used by %2 unique cables.")
+                         .arg(niceBytes(numCables * 8)).arg(numCables));
 
-
-    // Newest optimization: input parameters with identical values
-    // in all three columns can be shared among circuits and save
-    // 12 bytes per shared copy (trigger inputs and tap tempo inputs
-    // are not handled by this optimization)
-    // unsigned dedup = countDuplicateInputLines();
-    // if (dedup > 0) {
-    //     breakdown.append(
-    //         TR("-%1 bytes less due to %2 identical input lines.")
-    //             .arg(dedup * 12).arg(dedup));
-    //     memory -= dedup * 12;
-    // }
-
+    // Count memory needed by the parameter values. This is a side product
+    // of the deduplication happending at toCompressed
+    unsigned jacktableSize;
+    unsigned savedBytes;
+    toDeployString(&jacktableSize, &savedBytes);
+    unsigned byParameters = jacktableSize - the_firmware->initialJacktableSize();
+    memory += byParameters;
+    breakdown.append(TR("%1 bytes are used by parameter values.").arg(niceBytes(byParameters)));
+    if (savedBytes)
+        breakdown.append(TR("%1 bytes are saved by sharing duplicate input values").arg(niceBytes(savedBytes)));
     return memory;
 }
 unsigned Patch::countUniqueCables()
@@ -889,38 +929,42 @@ unsigned Patch::countUniqueCables()
     return cables.count();
 }
 
+QString Patch::canonizeNumber(double number) const
+{
+    // We need some rounding in order to avoid duplicating constants
+    // just because of internal rounding errors.
+    return QString::number(number, 'f', 10);
+}
 unsigned Patch::countUniqueConstants()
 {
     // This algo is quite complex. Please have a look at the Droid firmware
     // thedroid.cc for the mirrored code that is the basis for this.
-    QSet<float> constants;
-    constants.insert(0.0);
-    constants.insert(1.0);
+    QSet<QString> constants;
+    constants.insert(canonizeNumber(0.0));
+    constants.insert(canonizeNumber(1.0));
     for (auto it = beginEnabled(); it != this->end(); ++it)
     {
         auto &atom = *it;
         if (atom->isNumber()) {
             AtomNumber *an = (AtomNumber *)atom;
-            float number = an->getNumber();
+            double number = an->getNumber();
+
             if (number == 0.0)
                 continue;
-            constants.insert(number);
-            constants.insert(-number);
+            constants.insert(canonizeNumber(-number));
+            constants.insert(canonizeNumber(number));
             if (an->isFraction()) {
-                constants.insert(1.0 / number);
-                constants.insert(1.0 / -number);
+                constants.insert(canonizeNumber(1.0 / -number));
+                constants.insert(canonizeNumber(1.0 / number));
             }
         }
     }
-    return constants.count();
-}
-unsigned int Patch::countDuplicateInputLines() const
-{
-    unsigned count = 0;
-    QList<const JackAssignmentInput *>inputLines;
-    for (auto section: sections)
-        count += section->countDuplicateInputLines(inputLines);
-    return count;
+    // The memory consumption of the constants in the Droid is aligned
+    // to 8, so an odd number of constants need to be rounded up.
+    if (constants.count() % 2 == 0)
+        return constants.count() + 1;
+    else
+        return constants.count();
 }
 unsigned int Patch::countEncoders() const
 {
@@ -1082,7 +1126,7 @@ QString Patch::toString() const
     return s;
 }
 
-QString Patch::toCleanString() const
+QString Patch::toBareString() const
 {
     QString s;
     for (qsizetype i=0; i<controllers.length(); i++)
@@ -1090,7 +1134,7 @@ QString Patch::toCleanString() const
     if (controllers.length())
         s += "\n";
     for (qsizetype i=0; i<sections.length(); i++) {
-        s += sections[i]->toCleanString();
+        s += sections[i]->toBareString();
     }
     if (s.endsWith("\n\n"))
         s.chop(1);
@@ -1098,57 +1142,45 @@ QString Patch::toCleanString() const
     return s;
 
 }
-QString Patch::toBare() const
-{
-    QString s;
-    for (qsizetype i=0; i<controllers.length(); i++)
-        s += "[" + controllers[i] + "]\n";
-    for (qsizetype i=0; i<sections.length(); i++)
-        s += sections[i]->toBare();
-    return s;
-}
-QString Patch::toCompressed() const
+QString Patch::toDeployString(unsigned *jacktableSize, unsigned *savedBytes) const
 {
     QSettings settings;
     bool renameCables = settings.value("compression/rename_cables", false).toBool();
-    bool removeEmptyLines = settings.value("compression/remove_empty_lines", false).toBool();
-    QString source;
+    bool deduplicateJacks = settings.value("compression/deduplicate_jacks", false).toBool();
+    JackDeduplicator jdd(deduplicateJacks);
+
+    const Patch *patch;
+    Patch *clonedPatch = 0;
+
     if (renameCables) {
-         Patch *patch = clone();
-         patch->compressCables();
-         source = patch->toString();
-         delete patch;
+         clonedPatch = clone();
+         clonedPatch->compressCables();
+         patch = clonedPatch;
     }
     else
-        source = toString();
+        patch = this;
 
-    // Remove spaces and tabs
-    source.remove(' ');
-    source.remove('\t');
 
-    // Remove comments
-    static QRegularExpression comment("#.*");
-    source.remove(comment);
+    QString s;
+    for (qsizetype i=0; i<patch->controllers.length(); i++)
+        s += "[" + patch->controllers[i] + "]\n";
+    for (qsizetype i=0; i<patch->sections.length(); i++)
+        s += patch->sections[i]->toDeployString(jdd);
 
-    // Remove empty lines
-    if (removeEmptyLines) {
-        while (source.startsWith("\n"))
-            source.remove(0, 1);
-        while (source.contains("\n\n"))
-            source.replace("\n\n", "\n");
-    }
-    return source;
+    if (clonedPatch)
+        delete clonedPatch;
+
+    if (jacktableSize)
+        *jacktableSize = jdd.jacktableSize();
+    if (savedBytes)
+        *savedBytes = jdd.saved();
+    return s;
 }
-bool Patch::saveToFile(const QString filePath, bool compressed) const
+bool Patch::saveContentsToFile(const QString filePath, const QString &contents) const
 {
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
           return false;
-    QString contents;
-    if (compressed)
-        contents = toCompressed();
-    else
-        contents = toString();
 
     QTextStream stream(&file);
     stream << contents;

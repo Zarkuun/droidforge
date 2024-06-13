@@ -6,6 +6,7 @@
 #include "registerlabels.h"
 #include "patchproblem.h"
 #include "rewritecablesdialog.h"
+#include "jackdeduplicator.h"
 
 #include <QStringList>
 #include <QMap>
@@ -30,11 +31,10 @@ public:
     ~Patch();
     Patch *clone() const;
     void cloneInto(Patch *otherPatch) const;
-    QString toString() const;
-    QString toCleanString() const;
-    QString toBare() const;
-    QString toCompressed() const;
-    bool saveToFile(const QString filePath, bool bare = false) const;
+    QString toString() const; // normal "user" centric string representation
+    QString toBareString() const; // for "Show bare patch source"
+    QString toDeployString(unsigned *jacktableSize = 0, unsigned *savedBytes = 0) const; // for final droid.ini
+    bool saveContentsToFile(const QString filePath, const QString &contents) const;
 
     // Simple access functions
     const QString &getTitle() const { return title; }
@@ -84,10 +84,9 @@ public:
     const QList<PatchProblem *> &allProblems() const { return problems; };
     const PatchProblem *problem(unsigned nr) { return problems[nr]; };
     bool registerAvailable(AtomRegister ar) const;
-    unsigned memoryFootprint(QStringList &breakdown) const;
+    unsigned usedRAM(QStringList &breakdown) const;
     unsigned countUniqueCables();
     unsigned countUniqueConstants();
-    unsigned countDuplicateInputLines() const;
     unsigned countEncoders() const;
     unsigned countFaders() const;
     unsigned highestGatePrefix();
@@ -139,6 +138,12 @@ protected:
 private:
     QString createCompressedCableName(unsigned id);
     QString labelsToString() const;
+    void updateSectionProblems();
+    void updateRegisterProblems();
+    void updateMemoryProblems();
+    unsigned usedRAMByCircuits() const;
+    unsigned usedRAMByControllers() const;
+    QString canonizeNumber(double number) const;
 
 public:
     // Iteration of all atoms in this patch

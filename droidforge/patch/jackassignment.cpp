@@ -10,6 +10,7 @@
 #include "atomregister.h"
 #include "tuning.h"
 #include "globals.h"
+#include "jackdeduplicator.h"
 
 #include <QRegularExpression>
 #include <QSettings>
@@ -23,23 +24,33 @@ JackAssignment::JackAssignment(QString jack, QString comment)
 JackAssignment::~JackAssignment()
 {
 }
+QString JackAssignment::toDeployString(JackDeduplicator &jdd) const
+{
+    if (disabled)
+        return "";
+    return jack + "=" + jdd.processJackAssignment(this);
+}
 QString JackAssignment::toString() const
 {
-    QString s = disabled ? "#   " : "    ";
+    QString s;
+    if (disabled)
+        s = "#   ";
+
     s += jack + " =";
     QString v = valueToString();
     if (v != "")
         s += " " + v;
+
     if (!comment.isEmpty())
         s += " # " + comment;
     return s;
 }
-QString JackAssignment::toBare() const
+QString JackAssignment::toBareString() const
 {
     if (disabled)
         return "";
     else
-        return jack + "=" + valueToString().replace(" ", "");
+        return jack + " = " + valueToString();
 }
 QString JackAssignment::jackPrefix() const
 {
@@ -102,7 +113,7 @@ QList<PatchProblem *> JackAssignment::collectProblems(const Patch *patch) const
     QSettings settings;
     bool renameCables = settings.value("compression/rename_cables", false).toBool();
     if (!renameCables) {
-        QString  line = toBare();
+        QString  line = toBareString();
         if (line.length() > MAX_PATCH_LINE_LENGTH)
             problems.append(new PatchProblem(-1, 0,
               TR("Line too long: "

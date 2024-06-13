@@ -738,19 +738,11 @@ def section_tonality():
         ( "notches", 5 ),
         ( "startvalue", 2 ),
         ( "ledcolor", COLOR_OCTAVE_SWITCH ),
-        ( "ledvalue", "_LED_GLOBAL_OCTAVE" ),
+        ( "ledvalue", -0.3 ),
         ( "output", "_GLOBAL_OCTAVE_SWITCH" ),
         ( "button", "_RESET_OCTAVE_SWITCH" ),
         ( "clear", "_RESET_OCTAVE_SWITCH" ),
     ], "Global octave switch for all tracks")
-
-    patch += circuit("compare", [
-        ( "input", "_GLOBAL_OCTAVE_SWITCH" ),
-        ( "compare", 2 ),
-        ( "ifequal", 1 ),
-        ( "else", 0.3 ),
-        ( "output", "_LED_GLOBAL_OCTAVE" ),
-    ], "Make the LED just a bit brighter if the switch is at neutral position" )
 
     # Diatonic transposition (note shift)
     patch += circuit("motorfader", select + [
@@ -758,7 +750,7 @@ def section_tonality():
         ( "notches", 15 ),
         ( "startvalue", 7 ),
         ( "ledcolor", COLOR_NOTESHIFT ),
-        ( "ledvalue", "_LED_GLOBAL_NOTESHIFT" ),
+        ( "ledvalue", -0.3 ),
         ( "output", "_GLOBAL_NOTESHIFT" ),
         ( "button", "_RESET_NOTESHIFT" ),
         ( "clear", "_RESET_NOTESHIFT" ),
@@ -770,33 +762,17 @@ def section_tonality():
         ( "output", "_GLOBAL_NOTESHIFT_CLOCKED" ),
     ], "Prevent the pitch to change between clock ticks")
 
-    patch += circuit("compare", [
-        ( "input", "_GLOBAL_NOTESHIFT" ),
-        ( "compare", 7 ),
-        ( "ifequal", 1 ),
-        ( "else", 0.3 ),
-        ( "output", "_LED_GLOBAL_NOTESHIFT" ),
-    ], "Make the LED just a bit brighter if the switch is at neutral position" )
-
     # Fader 5: Transposition by semitones
     patch += circuit("motorfader", select + [
         ( "fader", 5 ),
         ( "notches", 25 ),
         ( "startvalue", 12 ),
         ( "ledcolor", COLOR_TRANSPOSITION ),
-        ( "ledvalue", "_LED_GLOBAL_TRANSPOSITION" ),
+        ( "ledvalue", -0.3 ),
         ( "output", "_GLOBAL_TRANSPOSITION" ),
         ( "button", "_RESET_TRANSPOSITION" ),
         ( "clear", "_RESET_TRANSPOSITION" ),
     ], "Global transposition by semitones for all tracks")
-
-    patch += circuit("compare", [
-        ( "input", "_GLOBAL_TRANSPOSITION" ),
-        ( "compare", 12 ),
-        ( "ifequal", 1 ),
-        ( "else", 0.3 ),
-        ( "output", "_LED_GLOBAL_TRANSPOSITION" ),
-    ], "Make the LED just a bit brighter if the switch is at neutral position" )
 
     # Fader 6: Tuning mode
     patch += circuit("motorfader", select + [
@@ -1283,9 +1259,9 @@ def section_global_buttons():
 
         # Range (set start and end point)
         if arguments["range"]:
-            patch += circuit("compare", [
-                ( "input", "_RANGE" ),
-                ( "compare", 0 ),
+            patch += circuit("ifequal", [
+                ( "input1", "_RANGE" ),
+                ( "input2", 0 ),
                 ( "ifequal", "_BM" ),
                 ( "else", 1 ), # startend
                 ( "output", "_BUTTONMODE" ),
@@ -1602,10 +1578,9 @@ def clock_menu():
         ( "output", "_CLOCK_BEND" ),
     ], "Snap to the perfectly neutral position if the fader is almost there." )
 
-    patch += circuit("compare",  [
-        ( "input", "_CLOCK_BEND" ),
-        ( "compare", 0.5 ),
-        ( "precision", 0.0 ),
+    patch += circuit("ifequal",  [
+        ( "input1", "_CLOCK_BEND" ),
+        ( "input2", 0.5 ),
         ( "ifequal", COLOR_CLOCKBEND_ZERO ), # green
         ( "else", COLOR_CLOCKBEND_ALTERED ), # red
         ( "output", "_CLOCK_BEND_COLOR" ),
@@ -1754,9 +1729,9 @@ def track_selection():
                 ( "output", "_T%d_TRACKLED" % track ),
             ], "Compute state of track LED based on wether it is selected and/or muted")
 
-            patch += circuit("compare", [
-                ( "input", "_CONTROL" ),
-                ( "compare", 1 ),
+            patch += circuit("ifequal", [
+                ( "input1", "_CONTROL" ),
+                ( "input2", 1 ),
                 ( "ifequal", "_T%d_MUTED" % track ),
                 ( "else", "_T%d_TRACKLED" % track ),
                 ( "output", "L" + button ),
@@ -1843,9 +1818,9 @@ def global_fader_selection():
            "press the currently lit button to deactivate all menu "
            "buttons and go back to controlling the sequence. ")
 
-        patch += circuit("compare", [
-            ( "input", "_GLOBAL_MENU" ),
-            ( "compare", 0 ),
+        patch += circuit("ifequal", [
+            ( "input1", "_GLOBAL_MENU" ),
+            ( "input2", 0 ),
             ( "ifequal", selected_track ),
             ( "else", "_GLOBAL_MENU" ),
             ( "output", "_GLOBAL_FADER_SELECTION" ),
@@ -1955,9 +1930,9 @@ def track_section(track):
             ( "inverted", "_T%d_TBR_OFF" % track ),
         ], "Enable transposing the melody by the difference of the root note to C" )
 
-        patch += circuit("compare", [
-            ( "input", "_T%d_TBR_ON" % track ),
-            ( "compare", 1 ),
+        patch += circuit("ifequal", [
+            ( "input1", "_T%d_TBR_ON" % track ),
+            ( "input2", 1 ),
             ( "ifequal", "_ROOT / 120" ),
             ( "output", "_T%d_TBR" % track ),
         ], "Provide the amount of 'transpose by root' in a patch cable")
@@ -2128,9 +2103,9 @@ def track_section(track):
     if clear_on_peace(track):
         if arguments["range"]:
             clearstartend = "_T%d_CLEARSTARTEND" % track
-            patch += circuit("compare", [
-                ( "input", "_SELECTED_TRACK * _RANGE" ),
-                ( "compare", track ),
+            patch += circuit("ifequal", [
+                ( "input1", "_SELECTED_TRACK * _RANGE" ),
+                ( "input2", track ),
                 ( "ifequal", 1 ),
                 ( "output", "_T%d_CLEAR_RANGE" % track ),
             ])
@@ -2285,9 +2260,9 @@ def track_section(track):
             ( "outputgate", arp_gate ),
         ], "Modulate gate length for gate output in arpeggiator mode" )
 
-        patch += circuit("compare", [
-            ( "input", "_T%d_ARP" % track ),
-            ( "compare", 0 ),
+        patch += circuit("ifequal", [
+            ( "input1", "_T%d_ARP" % track ),
+            ( "input2", 0 ),
             ( "ifequal", gate ),
             ( "else", arp_gate ),
             ( "output", "_T%d_SWITCHED_GATE" % track ),
@@ -2314,9 +2289,9 @@ def track_section(track):
 
     # Switch pitch between sequencer and arpeggio
     if arguments["arp"]:
-        patch += circuit("compare", [
-            ( "input", "_T%d_ARP" % track ),
-            ( "compare", 0 ),
+        patch += circuit("ifequal", [
+            ( "input1", "_T%d_ARP" % track ),
+            ( "input2", 0 ),
             ( "ifequal", "_T%d_PITCH" % track ), # sequencer
             ( "else", "_T%d_ARP_OUTPUT + _T%d_ARP_OCTAVE" % (track, track )), # arpeggio
             ( "output", "_T%d_SWITCHED_PITCH" % track ),
@@ -2504,17 +2479,17 @@ def arpeggio_menu(track):
         ( "output", "_T%d_ARP_DIRECTION" % track ),
     ], "Enable ping pong mode" )
 
-    patch += circuit("compare", [
-        ( "input", "_T%d_ARP_DIRECTION" % track ),
-        ( "compare", 2 ),
+    patch += circuit("ifequal", [
+        ( "input1", "_T%d_ARP_DIRECTION" % track ),
+        ( "input2", 2 ),
         ( "ifequal", 1 ),
         ( "else", 0 ),
         ( "output", "_T%d_ARP_UPDOWN" % track ),
     ], "Provide gate for reversed direction of arpeggio" )
 
-    patch += circuit("compare", [
-        ( "input", "_T%d_ARP_DIRECTION" % track ),
-        ( "compare", 1 ),
+    patch += circuit("ifequal", [
+        ( "input1", "_T%d_ARP_DIRECTION" % track ),
+        ( "input2", 1 ),
         ( "ifequal", 1 ),
         ( "else", 0 ),
         ( "output", "_T%d_ARP_PINGPONG" % track ),
@@ -2700,16 +2675,16 @@ def track_menu(track):
         outname = "PATTERN_FADER",
         comment = "Movement pattern: normal, reverse, ping pong, >><, 2><, etc.")
 
-    patch += circuit("compare", [
-        ( "input", "_T%d_PATTERN_FADER" % track ),
-        ( "compare", 1 ),
+    patch += circuit("ifequal", [
+        ( "input1", "_T%d_PATTERN_FADER" % track ),
+        ( "input2", 1 ),
         ( "ifequal", 1 ),
         ( "output", "_T%d_DIRECTION" % track ),
     ], "Set the direction to reverse on fader position 1")
 
-    patch += circuit("compare", [
-        ( "input", "_T%d_PATTERN_FADER" % track ),
-        ( "compare", 2 ),
+    patch += circuit("ifequal", [
+        ( "input1", "_T%d_PATTERN_FADER" % track ),
+        ( "input2", 2 ),
         ( "ifequal", 1 ),
         ( "output", "_T%d_PINGPONG" % track ),
     ], "Enable ping pong on fader position 2")
@@ -2747,23 +2722,13 @@ def add_track_fader(track, fader, pname, select, peace,
 
     patch = ""
     output = "_T%d_%s" % (track, outname)
-    ledvalue = output + "_LED"
-
-    # Make LED reflect the current status
-    patch += circuit("compare", [
-        ( "input", output ),
-        ( "compare", startvalue ),
-        ( "ifequal", 1 ),
-        ( "else", 0.3 ),
-        ( "output", ledvalue ),
-    ], "Make LED brighter if the fader is in its default position" )
 
 
     args = track_preset_params(track) + [
         ( "notches", notches ),
         ( "startvalue", startvalue ),
         ( "ledcolor", ledcolor ),
-        ( "ledvalue", ledvalue ),
+        ( "ledvalue", -0.3 ),
     ]
 
     # Clearing is complex. There are five possible sources

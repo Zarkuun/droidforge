@@ -72,7 +72,7 @@ void CircuitInfoView::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
     // Description
     QString description = the_firmware->circuitDescription(circuit);
-    unsigned ramsize = the_firmware->circuitMemoryFootprint(circuit);
+    unsigned ramsize = the_firmware->circuitBaseRAM(circuit);
     QString ramString = QString::number(ramsize) + " " + TR("bytes");
     painter->setPen(COLOR(CICH_COLOR_DESCRIPTION));
     paintMultilineText(painter, text_x, CICH_PADDING + CICH_TITLE_HEIGHT, *circuitViewWidth - text_x - CICH_PADDING, 2, description);

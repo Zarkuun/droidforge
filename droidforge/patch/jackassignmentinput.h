@@ -12,6 +12,7 @@ public:
     JackAssignmentInput(QString jack, QString comment="");
     ~JackAssignmentInput();
     bool isInput() const { return true; };
+    bool isSimple() const;
     Atom *getAtom(int index) { return atoms[index]; };
     virtual int numColumns() const { return 3; };
     const Atom *atomAt(int column) const;
@@ -19,6 +20,7 @@ public:
     void replaceAtom(int column, Atom *newAtom);
     void removeRegisterReferences(RegisterList &rl);
     QString valueToString() const;
+    QString valueToCanonicalString() const;
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     static Atom *parseInputAtom(const QString &s);

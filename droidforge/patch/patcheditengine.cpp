@@ -43,7 +43,7 @@ void PatchEditEngine::clearModified()
 }
 bool PatchEditEngine::save(QString filePath)
 {
-    if (saveToFile(filePath)) {
+    if (saveContentsToFile(filePath, toString())) {
         versionOnDisk = redoPointer;
         setFilePath(filePath);
         return true;

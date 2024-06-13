@@ -153,7 +153,7 @@ void CircuitView::paintHeader(QPainter *painter)
 
         // Memory consumption
         if (ACTION(ACTION_SHOW_CIRCUIT_BYTES)->isChecked()) {
-            QString mem = QString::number(circuit->memoryFootprint());
+            QString mem = QString::number(circuit->baseRAMUsage());
             QRectF memRect(textRect.left(),
                      textRect.top(),
                      textRect.width() - 80,

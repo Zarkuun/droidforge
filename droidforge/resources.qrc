@@ -363,5 +363,6 @@
         <file>images/circuits/multicompare.png</file>
         <file>pg/e4blink</file>
         <file>pg/minimal</file>
+        <file>images/circuits/ifequal.png</file>
     </qresource>
 </RCC>

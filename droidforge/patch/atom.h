@@ -17,6 +17,7 @@ public:
     bool sameAs(const Atom *other) const;
     virtual ~Atom() {};
     virtual QString toString() const = 0;
+    virtual QString toCanonicalString() const { return toString(); };
     virtual QString toDisplay() const { return toString(); };
     virtual Atom *clone() const = 0;
     virtual bool isNegatable() const { return false; };

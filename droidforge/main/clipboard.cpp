@@ -1,5 +1,4 @@
 #include "clipboard.h"
-#include "globals.h"
 #include "parseexception.h"
 #include "patch.h"
 #include "patchparser.h"
@@ -113,6 +112,7 @@ void Clipboard::copyFromGlobalClipboard()
 QString Clipboard::toString() const
 {
     QString text;
+    JackDeduplicator jdd(false);
     for (auto circuit: circuits)
         text += circuit->toString();
     if (text != "")

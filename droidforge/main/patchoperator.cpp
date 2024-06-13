@@ -9,6 +9,7 @@
 #include "sourcecodeeditor.h"
 #include "atomcable.h"
 #include "mainwindow.h"
+#include "utilities.h"
 #include "windowlist.h"
 #include "namechoosedialog.h"
 #include "tuning.h"
@@ -146,6 +147,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_EDIT_SECTION_SOURCE, &PatchOperator::editSectionSource);
     CONNECT_ACTION(ACTION_EDIT_PATCH_SOURCE, &PatchOperator::editPatchSource);
     CONNECT_ACTION(ACTION_BARE_PATCH_SOURCE, &PatchOperator::barePatchSource);
+    CONNECT_ACTION(ACTION_COMPRESSED_PATCH_SOURCE, &PatchOperator::compressedPatchSource);
     CONNECT_ACTION(ACTION_MEMORY_ANALYSIS, &PatchOperator::patchMemoryAnalysis);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &PatchOperator::abortAllActions);
 
@@ -409,7 +411,7 @@ void PatchOperator::saveToSD()
         return;
     }
 
-    QString compressed = patch->toCompressed();
+    QString compressed = patch->toDeployString();
     if (compressed.size() > MAX_DROID_INI) {
         QMessageBox::critical(
                     mainWindow,
@@ -424,7 +426,7 @@ void PatchOperator::saveToSD()
 
     QDir dir(dirPath);
     QFileInfo droidIni(dir, DROID_PATCH_FILENAME);
-    if (!patch->saveToFile(droidIni.absoluteFilePath(), true /* compressed */))
+    if (!patch->saveContentsToFile(droidIni.absoluteFilePath(), compressed))
     {
         QMessageBox::critical(
                     mainWindow,
@@ -582,19 +584,18 @@ QString PatchOperator::sdCardDirSansPolling()
 void PatchOperator::examinePatchSize() const
 {
     QSettings settings;
-    unsigned compressedSize = patch->toCompressed().length();
+    unsigned compressedSize = patch->toDeployString().length();
     if (compressedSize > MAX_DROID_INI) {
         bool renameCables = settings.value("compression/rename_cables", false).toBool();
-        bool removeEmptyLines = settings.value("compression/remove_empty_lines", false).toBool();
-        if (!renameCables || !removeEmptyLines) {
+        if (!renameCables) {
             HintDialog::hint("pg_compression_off",
               tr("The patch that you have generated has a size of %1 characters.\n"
                  "This exceed the maximum patch size of %2.\n"
                  "\n"
                  "Hint: Go to the preferences and look at the box\n"\
                  "\"Compress patch before loading into master\".\n"
-                 "Enable the options for removing empty lines and for renaming\n"
-                 "patch cables to reduce the patch size.\n")
+                 "Enable the option \"Rename patch cables\" "
+                 "to reduce the patch size.\n")
                  .arg(compressedSize)
                  .arg(MAX_DROID_INI));
         }
@@ -602,17 +603,24 @@ void PatchOperator::examinePatchSize() const
 
     unsigned memoryAvailable = the_firmware->availableMemory(patch->typeOfMaster());
     QStringList breakdown;
-    unsigned memoryNeeded = patch->memoryFootprint(breakdown);
+    unsigned memoryNeeded = patch->usedRAM(breakdown);
     if (memoryNeeded > memoryAvailable) {
-            HintDialog::hint("pg_exceeds_ram",
-               tr("Your generated patch needs too much memory. \n"
-                  "It needs %1 bytes, but your master only has %2,\n"
-                  "so that's %3 bytes too much.\n\n"
-                  "Try reducing the patch size by removing a feature\n"
-                            "or by choosing a smaller configuration\n")
-                             .arg(memoryNeeded)
-                             .arg(memoryAvailable)
-                             .arg(memoryNeeded - memoryAvailable));
+        QString text =
+            tr("Your generated patch needs too much memory. \n"
+               "It needs %1 bytes, but your master only has %2,\n"
+               "so that's %3 bytes too much.\n")
+                           .arg(niceBytes(memoryNeeded))
+                           .arg(niceBytes(memoryAvailable))
+                           .arg(niceBytes(memoryNeeded - memoryAvailable));
+        QSettings settings;
+        if  (!settings.value("compression/deduplicate_jacks", false).toBool()) {
+             text += tr("\nTry the setting \"Detect and share duplicate values \n"
+                        "for inputs\" in the preferences.\"\n");
+        }
+        else
+            text += tr("\nTry reducing the patch size by removing a feature\n"
+                            "or by choosing a smaller configuration.\n");
+        HintDialog::hint("pg_exceeds_ram", text);
     }
 
 }
@@ -997,7 +1005,7 @@ void PatchOperator::exportSelection()
                 tr("DROID patch files (*.ini)"));
     if (!filePath.isEmpty()) {
         Patch *patch = section()->getSelectionAsPatch();
-        if (!patch->saveToFile(filePath))
+        if (!patch->saveContentsToFile(filePath, patch->toString()))
         {
             QMessageBox::warning(
                         mainWindow,
@@ -1186,7 +1194,7 @@ void PatchOperator::restoreBackup(const QString &backupPath)
 void PatchOperator::createBackup()
 {
     QString backupname = backupFilePath(patch->getFilePath());
-    patch->saveToFile(backupname);
+    patch->saveContentsToFile(backupname, patch->toString());
 }
 void PatchOperator::removeBackup()
 {
@@ -1475,7 +1483,12 @@ void PatchOperator::editCircuitSource()
 }
 void PatchOperator::barePatchSource()
 {
-    showSource(tr("Patch source without comments"), patch->toCleanString());
+    showSource(tr("Patch source without comments"), patch->toBareString());
+}
+void PatchOperator::compressedPatchSource()
+{
+    // TODO: Vielleicht lieber export anstelle von view
+    showSource(tr("Compressed patch (final droid.ini)"), patch->toDeployString());
 }
 void PatchOperator::patchMemoryAnalysis()
 {

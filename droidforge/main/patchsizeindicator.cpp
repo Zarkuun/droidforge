@@ -2,7 +2,7 @@
 #include "colorscheme.h"
 #include "droidfirmware.h"
 #include "updatehub.h"
-#include "globals.h"
+#include "utilities.h"
 #include "mainwindow.h"
 
 #define MI_WIDTH 200
@@ -59,37 +59,42 @@ void PatchSizeIndicator::updateStatus()
 {
     QStringList breakdown;
     memoryAvailable = the_firmware->availableMemory(patch->typeOfMaster());
-    memoryNeeded = patch->memoryFootprint(breakdown);
-    QString tooltipRAM = tr("Your patch needs %1 bytes of RAM.\n").arg(memoryNeeded);
-    for (auto& hint: breakdown)
-        tooltipRAM += " * " + hint + "\n";
+    memoryNeeded = patch->usedRAM(breakdown);
+    QString tooltipRAM = tr("Your patch needs %1 bytes of RAM.").arg(niceBytes(memoryNeeded));
+    bool bad = false;
 
     if (memoryNeeded <= memoryAvailable) {
         unsigned perc = memoryNeeded * 100 / memoryAvailable;
-        tooltipRAM += tr("This is %1% of the available RAM. You have %2 bytes left.\n").arg(perc).arg(memoryAvailable - memoryNeeded);
+        tooltipRAM += " " + tr("This is %1% of the available RAM.\nYou have %2 bytes left.\n").arg(perc).arg(niceBytes(memoryAvailable - memoryNeeded));
     }
     else {
-        tooltipRAM += tr("This is %1 bytes more than there is available! "
-                            "Try to remove some circuits.\n").arg(memoryNeeded - memoryAvailable);
+        QSettings settings;
+        tooltipRAM += " " + tr("This is %1 bytes more than there is available!\n").arg(niceBytes(memoryNeeded - memoryAvailable));
+        if (!settings.value("compression/deduplicate_jacks", false).toBool())
+            tooltipRAM += tr("Hint: Try activating sharing of duplicate input values in the preferences.\n");
+        bad = true;
     }
 
-    unsigned sectionRam = patch->currentSection()->memoryFootprint();
-    QString tooltipSection = tr("The section '%1' needs %2 bytes.")
-            .arg(patch->currentSection()->getNonemptyTitle())
-            .arg(sectionRam);
-    tooltipSection += " " + tr("This is %1% of the patch size and %2% of the available RAM.")
-            .arg(100 * sectionRam / memoryNeeded)
-            .arg(100 * sectionRam / memoryAvailable);
+    tooltipRAM += "\n";
+    for (auto& hint: breakdown)
+        tooltipRAM += "   " + hint + "\n";
 
-    patchSize = patch->toCompressed().size();
-    QString tooltipSize = tr("Your patch size is %1 bytes.").arg(patchSize);
-    if (patchSize > MAX_DROID_INI)
-        tooltipSize += " " + tr("That's more than the allowed %1! Check compression in the preferences.").arg(MAX_DROID_INI);
-    else
+    patchSize = patch->toDeployString().size();
+    QString tooltipSize = tr("Your patch size is %1 bytes.").arg(niceBytes(patchSize));
+    QString color;
+    if (patchSize > MAX_DROID_INI) {
+        tooltipSize += " " + tr("That's more than the allowed %1! Check compression in the preferences.").arg(niceBytes(MAX_DROID_INI));
+        bad = true;
+    }
+
+    else {
         tooltipSize += " " + tr("That is %1% of the maximum of %2.")
                              .arg(QString::number((unsigned)(patchSize * 100 / MAX_DROID_INI)))
                              .arg(MAX_DROID_INI);
+    }
 
-    setToolTip(tooltipRAM + "\n" + tooltipSection + "\n" + tooltipSize);
+    setStyleSheet(QString("QToolTip{background-color : %1 ; padding: 5px; color: black ; font: 14pt}")
+                      .arg(bad ? "#ff8080" : "#ffffd0"));
+    setToolTip(tooltipRAM + "\n" + tooltipSize);
     update();
 }

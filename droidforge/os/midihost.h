@@ -2,7 +2,6 @@
 #define MIDIHOST_H
 
 #include <QtGlobal>
-#include "os.h"
 #include "patch.h"
 #include "tuning.h"
 

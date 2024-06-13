@@ -1,5 +1,4 @@
 #include "droidfirmware.h"
-#include "circuitchoosedialog.h"
 #include "globals.h"
 #include "registertypes.h"
 
@@ -58,6 +57,10 @@ unsigned DroidFirmware::availableMemory(unsigned master) const
     QString key = "master" + QString::number(master);
     return json["available_memory"].toObject()[key].toInt();
 }
+unsigned int DroidFirmware::initialJacktableSize() const
+{
+    return json["initial_jacktable_size"].toInt();
+}
 unsigned DroidFirmware::manualPage(QString pageref) const
 {
     return pagerefs[pageref].toInt(0);
@@ -74,7 +77,7 @@ unsigned DroidFirmware::circuitManualPage(QString circuit) const
 {
     return circuits[circuit].toObject()["manual"].toInt();
 }
-unsigned DroidFirmware::circuitMemoryFootprint(QString circuit) const
+unsigned DroidFirmware::circuitBaseRAM(QString circuit) const
 {
     return circuits[circuit].toObject()["ramsize"].toInt();
 }
@@ -89,17 +92,18 @@ bool DroidFirmware::circuitIsDeprecated(QString circuit) const
     QString cat = object["category"].toString();
     return cat == "deprecated";
 }
-unsigned DroidFirmware::jackMemoryFootprint(QString circuit, QString jack) const
+QString DroidFirmware::jackRamHint(QString circuit, QString jack) const
 {
     QJsonValue jackinfo = findJack(circuit, "inputs", jack);
     if (!jackinfo.isNull())
-        return jackinfo["ramsize"].toInt();
+        return jackinfo["ramhint"].toString();
     jackinfo = findJack(circuit, "outputs", jack);
     if (!jackinfo.isNull())
-        return jackinfo["ramsize"].toInt();
-    return 12; // Should never be reached.
+        return jackinfo["ramhint"].toString();
+    return "undefined"; // Should never be reached.
+
 }
-unsigned DroidFirmware::controllerMemoryFootprint(QString controller) const
+unsigned DroidFirmware::controllerUsedRAM(QString controller) const
 {
     return controllers[controller].toObject()["ramsize"].toInt();
 }

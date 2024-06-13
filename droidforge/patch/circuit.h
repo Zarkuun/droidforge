@@ -3,6 +3,7 @@
 
 #include "jackassignment.h"
 #include "patchproblem.h"
+#include "jackdeduplicator.h"
 
 class JackAssignmentInput;
 
@@ -35,8 +36,9 @@ public:
     Circuit(QString name, const QStringList &comment, bool disabled);
     ~Circuit();
     Circuit *clone() const;
+    QString toDeployString(JackDeduplicator &jdd) const;
     QString toString() const;
-    QString toCleanString() const;
+    QString toBareString() const;
     QString toBare() const;
     QString getName() const { return name; };
     QString getComment() const;
@@ -76,8 +78,8 @@ public:
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
     bool jackIsArray(int row) const;
     QString prefixOfJack(const QString &jackName);
-    unsigned memoryFootprint() const;
-    unsigned countDuplicateInputLines(QList<const JackAssignmentInput *> &inputLines) const;
+    unsigned baseRAMUsage() const;
+    unsigned RAMUsage(JackDeduplicator &jdd) const;
     bool needsMIDI() const;
     bool needsMASTER18() const;
     bool usesSelect() const;

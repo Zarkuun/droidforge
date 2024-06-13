@@ -30,6 +30,10 @@ JackAssignmentInput::~JackAssignmentInput()
         if (atoms[i])
             delete atoms[i];
 }
+bool JackAssignmentInput::isSimple() const
+{
+    return atoms[0] && !atoms[1] && !atoms[2];
+}
 const Atom *JackAssignmentInput::atomAt(int column) const
 {
     if (column > 0)
@@ -118,6 +122,26 @@ QString JackAssignmentInput::valueToString() const
         else
             return atoms[0]->toString() + bOperator + atoms[1]->toString() + op + sc;
     }
+}
+
+QString JackAssignmentInput::valueToCanonicalString() const
+{
+    if (!atoms[0] && !atoms[1] && !atoms[2]) // none defined
+        return "";
+    else if (atoms[0] && !atoms[1] && !atoms[2]) // just A
+        return atoms[0]->toCanonicalString();
+    else if (!atoms[0] && atoms[1] && !atoms[2]) // just B
+        return atoms[1]->toCanonicalString();
+    else if (!atoms[0] && !atoms[1] && atoms[2]) // just C
+        return atoms[2]->toCanonicalString();
+    else if (atoms[0] && atoms[1] && !atoms[2]) // just A and B
+        return atoms[0]->toCanonicalString() + " * " + atoms[1]->toCanonicalString();
+    else if (atoms[0] && !atoms[1] && atoms[2]) // just A and C
+        return atoms[0]->toCanonicalString() + " + " + atoms[2]->toCanonicalString();
+    else if (!atoms[0] && atoms[1] && atoms[2]) // just B and C
+        return atoms[1]->toCanonicalString() + " + " + atoms[2]->toCanonicalString();
+    else // A B and C
+        return atoms[0]->toCanonicalString() + " * " + atoms[1]->toCanonicalString() + " + " + atoms[2]->toCanonicalString();
 }
 void JackAssignmentInput::collectCables(QStringList &cables) const
 {

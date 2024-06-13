@@ -2,6 +2,7 @@
 #include "droidfirmware.h"
 #include "jackassignmentoutput.h"
 #include "patch.h"
+#include "globals.h"
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -60,41 +61,22 @@ QString Circuit::prefixOfJack(const QString &jackName)
     }
     return jackName;
 }
-unsigned Circuit::memoryFootprint() const
+unsigned Circuit::baseRAMUsage() const
 {
-    unsigned ram = isDisabled() ? 0 : the_firmware->circuitMemoryFootprint(name);
-    for (auto ja: jackAssignments) {
-        if (ja->isDisabled())
-            ram += 0;
-        else if (ja->jackType() == JACKTYPE_UNKNOWN)
-            ram += 12; // just as a guess
-        else
-            ram += the_firmware->jackMemoryFootprint(name, ja->jackName());
-    }
-    return ram;
+    if (isDisabled())
+        return 0;
+    else
+        return the_firmware->circuitBaseRAM(name);
 }
-unsigned int Circuit::countDuplicateInputLines(QList<const JackAssignmentInput *> &inputLines) const
+unsigned int Circuit::RAMUsage(JackDeduplicator &jdd) const
 {
-    // TODO: Some intelligent sorting
-    unsigned count = 0;
-    for (auto ja: jackAssignments) {
-        if (!ja->isDisabled() && ja->isInput()) {
-            if (the_firmware->jackMemoryFootprint(name, ja->jackName()) == 12) {
-                const JackAssignmentInput *jai = (const JackAssignmentInput *)ja;
-                bool found = false;
-                for (auto j: inputLines) {
-                    if (j->sameAs(jai)) {
-                        count ++;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                    inputLines.append(jai);
-            }
-        }
-    }
-    return count;
+    jdd.setCircuit(name);
+    unsigned before = jdd.jacktableSize();
+
+    for (qsizetype i=0; i<jackAssignments.length(); i++)
+        jackAssignments[i]->toDeployString(jdd);
+
+    return baseRAMUsage() + jdd.jacktableSize() - before;
 }
 bool Circuit::needsMIDI() const
 {
@@ -411,6 +393,7 @@ void Circuit::changeCircuit(QString newCircuit)
     name = newCircuit;
     QList<JackAssignment *> newJacks;
     for (auto ja: jackAssignments) {
+        JackDeduplicator jdd(false);
         QString asString = ja->toString();
         delete ja;
         JackAssignment *newJa = JackAssignment::parseJackLine(newCircuit, asString);
@@ -433,6 +416,22 @@ void Circuit::removeRegisterReferences(RegisterList &rl)
         ja->removeRegisterReferences(rl);
 
 }
+QString Circuit::toDeployString(JackDeduplicator &jdd) const
+{
+    if (disabled)
+        return "";
+
+    jdd.setCircuit(name);
+
+    QString s;
+    s += "[" + name + "]\n";
+    for (qsizetype i=0; i<jackAssignments.length(); i++)
+    {
+        QString jackLine = jackAssignments[i]->toDeployString(jdd) + "\n";
+        s += jackLine;
+    }
+    return s;
+}
 QString Circuit::toString() const
 {
     QString s;
@@ -454,18 +453,14 @@ QString Circuit::toString() const
     s += "\n";
     return s;
 }
-QString Circuit::toCleanString() const
+QString Circuit::toBareString() const
 {
     QString s = "[" + name + "]\n";
     for (qsizetype i=0; i<jackAssignments.length(); i++)
     {
-        QString jackLine = jackAssignments[i]->toBare();
-        if (jackLine != "") {
-            jackLine.replace("=", " = ");
-            jackLine.replace("*", " * ");
-            jackLine.replace("+", " + ");
+        QString jackLine = jackAssignments[i]->toBareString();
+        if (jackLine != "")
             s += "    " + jackLine + "\n";
-        }
     }
     return s;
 }
@@ -476,7 +471,7 @@ QString Circuit::toBare() const
     QString s = "[" + name + "]\n";
     for (qsizetype i=0; i<jackAssignments.length(); i++)
     {
-        QString jackLine = jackAssignments[i]->toBare() + "\n";
+        QString jackLine = jackAssignments[i]->toBareString() + "\n";
         s += jackLine;
     }
     return s;

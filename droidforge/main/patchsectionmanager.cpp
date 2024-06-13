@@ -1,7 +1,6 @@
 #include "patchsectionmanager.h"
 #include "clipboard.h"
 #include "colorscheme.h"
-#include "globals.h"
 #include "patchoperator.h"
 #include "mainwindow.h"
 #include "tuning.h"
@@ -301,7 +300,7 @@ void PatchSectionManager::saveSectionAsPatch()
     if (section->getTitle() != "")
         sectionPatch.setTitle(section->getTitle());
 
-    if (sectionPatch.saveToFile(newFilePath))
+    if (sectionPatch.saveContentsToFile(newFilePath, sectionPatch.toString()))
         theOperator()->addToRecentFiles(newFilePath);
     else {
         QMessageBox::warning(

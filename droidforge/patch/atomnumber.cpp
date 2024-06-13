@@ -5,6 +5,7 @@
 
 #define tr(s) QCoreApplication::translate("Patch", s)
 
+
 AtomNumber *AtomNumber::clone() const
 {
     return new AtomNumber(number, numberType);
@@ -32,6 +33,10 @@ QString AtomNumber::toString() const
         suffix = "V";
     }
     return niceNumber(num * factor) + suffix;
+}
+QString AtomNumber::toCanonicalString() const
+{
+    return niceNumber(number);
 }
 QString AtomNumber::toDisplay() const
 {

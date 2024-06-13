@@ -96,6 +96,7 @@ private slots:
     void editSectionSource();
     void editCircuitSource();
     void barePatchSource();
+    void compressedPatchSource();
     void patchMemoryAnalysis();
     void fixLEDMismatch();
     void rewriteCableNames();

@@ -1,6 +1,8 @@
 #ifndef TUNING_H
 #define TUNING_H
 
+#include "globals.h"
+
 
 #define APPLICATION_NAME                     "DROID Forge"
 #ifdef QT_DEBUG
