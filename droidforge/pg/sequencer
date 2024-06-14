@@ -891,12 +891,22 @@ def section_clock():
                  "an internal clock or an external clock or get\n"
                  "a clock from your Sinfonion (if you have one).")
 
+
+    # If the internal clock is enable, there is a fader for the "swing".
+    # Various users suggested that this fader should also work when an
+    # external clock is used. Why not? So *if* we have an internal clock,
+    # we feed the arbitrated clock through one more stage.
+    if arguments["intclk"]:
+        clock_output = "_CLOCK_UNSWUNG"
+    else:
+        clock_output = "_CLOCK"
+
     # Clock arbitration
     if len(clock_sources) == 1:
         patch += circuit("copy", [
             ( "input", clock_sources[0][0] ),
-            ( "output", "_CLOCK" ),
-        ], "Make clock available at the cable _CLOCK" )
+            ( "output", clock_output ),
+        ], "Make clock available at the cable " + clock_output )
 
     else: # there are up to 6 clock sources
         args = []
@@ -908,15 +918,24 @@ def section_clock():
             ]
             i += 1
         patch += circuit("case", args + [
-            ( "output", "_CLOCK" ),
+            ( "output", clock_output ),
         ], "Select first avaiable clock in defined precedence order")
+
+    # ... and now apply the swing, if the fader for it is present
+    if arguments["intclk"]:
+        patch += circuit("timing", [
+            ( "clock", "_CLOCK_UNSWUNG" ),
+            ( "reset", "_RESET" ),
+            ( "timing1", 0 ),
+            ( "timing2", "_CLOCK_SWING * 0.33" ),
+            ( "output", "_CLOCK" ),
+        ], "Apply swing to the clock" )
 
     if arguments["lucky"]:
         patch += circuit("lfo", [
             ( "hz", 40 ),
             ( "square", "_LUCKY_CLOCK" ),
         ], "Pulses for changes via lucky buttons / lucky faders")
-
 
     if arguments["arp"]:
         for mul, div in [ (3,2), (2,1), (3,1), (4,1), (6,1), (8,1) ]:
@@ -949,16 +968,8 @@ def add_internal_clock(clock_sources):
         ( "hz", "_CLOCK_HZ * _CLOCK_BEND_LINEAR" ),
         ( "rate", "_CLOCK_BEND_EXP * 1V" ),
         ( "pulsewidth", 0.1 ),
-        ( "square", "_CLOCK_UNSWUNG" ),
+        ( "square", "_INT_CLOCK" ),
     ], "The actual clock, use a very short pulse so we have essentially just triggers" )
-
-    patch += circuit("timing", [
-        ( "clock", "_CLOCK_UNSWUNG" ),
-        ( "reset", "_RESET" ),
-        ( "timing1", 0 ),
-        ( "timing2", "_CLOCK_SWING * 0.3" ),
-        ( "output", "_INT_CLOCK" ),
-    ], "Swing for our internal clock" )
 
     clock_sources.append(("_INT_CLOCK", "_INT_CLOCK_UNMUTED" ))
     return patch
