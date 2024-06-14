@@ -2285,13 +2285,6 @@ def track_section(track):
     ], "Logic for make the gate silent if the track is muted")
     gate = "_T%d_MUTED_GATE" % track
 
-    params = track_note_selects(track, False) + [
-        ( "root", "_ROOT" ),
-        ( "degree", "_DEGREE" ),
-        ( "input", "_T%d_PITCH" % track ),
-        ( "output", "_T%d_PITCH_SHIFTED" % track ),
-    ]
-
     if arguments["arp"]:
         patch += track_arpeggiator(track)
 
