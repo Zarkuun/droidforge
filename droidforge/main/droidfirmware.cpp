@@ -59,7 +59,7 @@ unsigned DroidFirmware::availableMemory(unsigned master) const
 }
 unsigned int DroidFirmware::initialJacktableSize() const
 {
-    return json["initial_jacktable_size"].toInt();
+    return json["jacktable_initial_size"].toInt();
 }
 unsigned DroidFirmware::manualPage(QString pageref) const
 {

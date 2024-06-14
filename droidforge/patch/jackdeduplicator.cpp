@@ -2,6 +2,7 @@
 #include "droidfirmware.h"
 #include "jackassignmentinput.h"
 #include "atomnumber.h"
+#include "globals.h"
 
 JackDeduplicator::JackDeduplicator(bool dedup)
     : deduplicate(dedup)
