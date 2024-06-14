@@ -1609,12 +1609,12 @@ def clock_menu():
     # factory reset sets it to 1.
     if arguments["clear"]:
         patch += circuit("switch", [
-            ( "input1", "1 - _INT_CLOCK_UNMUTED" ),
-            ( "input2", 1 ),
+            ( "input1", "_INT_CLOCK_UNMUTED" ),
+            ( "input2", 0 ),
             ( "offset", "B" + track_buttons["clear"] ),
             ( "output", "_CLOCK_MUTE_STARTVALUE" ),
         ], "Small hack for letting the user toggle the state with the touch button" )
-        startvalue = "_CLOCK_MUTE_STARTVALUE"
+        startvalue = "1 - _CLOCK_MUTE_STARTVALUE"
     else:
         startvalue = "1 - _INT_CLOCK_UNMUTED"
 
@@ -2039,7 +2039,7 @@ def track_section(track):
         ( "pingpong", "_T%d_PINGPONG" % track),
         ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
         ( "tuningmode", "_TUNINGMODE" ),
-        ( "tuningpitch", "_GLOBAL_OCTAVE_SWITCH * 1V" ),
+        ( "tuningpitch", "1V" ),
     ]
 
     if arguments["randpitch"]:
