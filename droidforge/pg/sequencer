@@ -2103,17 +2103,25 @@ def track_section(track):
     if clear_on_peace(track):
         if arguments["range"]:
             clearstartend = "_T%d_CLEARSTARTEND" % track
-            patch += circuit("ifequal", [
-                ( "input1", "_SELECTED_TRACK * _RANGE" ),
-                ( "input2", track ),
-                ( "ifequal", 1 ),
-                ( "output", "_T%d_CLEAR_RANGE" % track ),
-            ])
-            patch += circuit("logic", [
-                ( "input1", clear_on_peace(track) ),
-                ( "input2", "_T%d_CLEAR_RANGE * _CONTROL" % track ),
-                ( "or", clearstartend ),
-            ], "collect different sources of resetting the start/end point")
+            if arguments["tracks"] > 1:
+                patch += circuit("ifequal", [
+                    ( "input1", "_SELECTED_TRACK * _RANGE" ),
+                    ( "input2", track ),
+                    ( "ifequal", 1 ),
+                    ( "output", "_T%d_CLEAR_RANGE" % track ),
+                ], "The clear range logic should just affect the current track")
+                patch += circuit("logic", [
+                    ( "input1", clear_on_peace(track) ),
+                    ( "input2", "_T%d_CLEAR_RANGE * _CONTROL" % track ),
+                    ( "or", clearstartend ),
+                ], "Collect different sources of resetting the start/end point")
+            else:
+                patch += circuit("logic", [
+                    ( "input1", clear_on_peace(track) ),
+                    ( "input2", "_RANGE * _CONTROL" ),
+                    ( "or", clearstartend ),
+                ], "Collect different sources of resetting the start/end point")
+
         else:
             clearstartend = clear_on_peace(track)
         params += [
@@ -2702,7 +2710,7 @@ def track_menu(track):
 
 def unused_faders(first, select):
     unusedfaders = num_faders() - first + 1
-    if unusedfaders:
+    if unusedfaders > 0:
         return circuit("unusedfaders", select + [
             ( "firstfader", first ),
             ( "numfaders", unusedfaders ),
@@ -2746,7 +2754,8 @@ def add_track_fader(track, fader, pname, select, peace,
         clear_sources_1 = clear_on_clear(track)
 
     # Now the one or two buttons
-    if pname in performance_menu[track]:
+    if pname in performance_menu[track] \
+        and performance_menu[track][pname] <= num_faders():
         clear_sources_2 = "_T%d_B%s_1 + _T%d_B%s_2" % \
                             (track, pname, track, pname)
     else:
@@ -2767,7 +2776,11 @@ def add_track_fader(track, fader, pname, select, peace,
 
     args += clear_button
 
-    if pname in performance_menu[track]:
+    perfmenu_fader = performance_menu[track].get(pname)
+    if not perfmenu_fader or perfmenu_fader > num_faders():
+        perfmenu_fader = None
+
+    if perfmenu_fader:
         share = [ ("sharewithnext", 1 ) ]
     else:
         share = [ ( "output", output ) ]
@@ -2778,11 +2791,11 @@ def add_track_fader(track, fader, pname, select, peace,
     ], comment)
 
     # Add this fader to the performance menu?
-    if pname in performance_menu[track]:
+    if perfmenu_fader:
         args = args + [
             ( "select", "_GLOBAL_FADER_SELECTION" ),
             ( "selectat", 98 ),
-            ( "fader", performance_menu[track][pname] ),
+            ( "fader",  perfmenu_fader ),
             ( "button", "_T%d_B%s_2" % (track, pname) ),
             ( "output", output )]
         patch += circuit("motorfader", args, comment)
