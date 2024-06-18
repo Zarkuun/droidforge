@@ -398,7 +398,7 @@ void EditorActions::createActions()
     actions[ACTION_BARE_PATCH_SOURCE] = new QAction(tr("Show &bare patch source"), this);
     actions[ACTION_BARE_PATCH_SOURCE]->setShortcut(QKeySequence(tr("Alt+Ctrl+U")));
 
-    actions[ACTION_COMPRESSED_PATCH_SOURCE] = new QAction(tr("Show compressed patch source"), this);
+    actions[ACTION_EXPORT_COMPRESSED_PATCH] = new QAction(tr("Export compressed patch"), this);
 
     actions[ACTION_MEMORY_ANALYSIS] = new QAction(tr("Analyse patch RAM usage"), this);
     actions[ACTION_MEMORY_ANALYSIS]->setShortcut(QKeySequence(tr("Shift+Ctrl+M")));

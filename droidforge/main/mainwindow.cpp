@@ -296,7 +296,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_PREFERENCES, fileMenu);
     ADD_ACTION(ACTION_EDIT_PATCH_SOURCE, fileMenu);
     ADD_ACTION(ACTION_BARE_PATCH_SOURCE, fileMenu);
-    ADD_ACTION(ACTION_COMPRESSED_PATCH_SOURCE, fileMenu);
+    ADD_ACTION(ACTION_EXPORT_COMPRESSED_PATCH, fileMenu);
     ADD_ACTION(ACTION_MEMORY_ANALYSIS, fileMenu);
     if (the_colorscheme->isDevelopment())
         ADD_ACTION(ACTION_CONFIGURE_COLORS, fileMenu);

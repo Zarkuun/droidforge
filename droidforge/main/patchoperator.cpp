@@ -147,7 +147,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_EDIT_SECTION_SOURCE, &PatchOperator::editSectionSource);
     CONNECT_ACTION(ACTION_EDIT_PATCH_SOURCE, &PatchOperator::editPatchSource);
     CONNECT_ACTION(ACTION_BARE_PATCH_SOURCE, &PatchOperator::barePatchSource);
-    CONNECT_ACTION(ACTION_COMPRESSED_PATCH_SOURCE, &PatchOperator::compressedPatchSource);
+    CONNECT_ACTION(ACTION_EXPORT_COMPRESSED_PATCH, &PatchOperator::exportCompressedPatch);
     CONNECT_ACTION(ACTION_MEMORY_ANALYSIS, &PatchOperator::patchMemoryAnalysis);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &PatchOperator::abortAllActions);
 
@@ -1485,10 +1485,57 @@ void PatchOperator::barePatchSource()
 {
     showSource(tr("Patch source without comments"), patch->toBareString());
 }
-void PatchOperator::compressedPatchSource()
+void PatchOperator::exportCompressedPatch()
 {
-    // TODO: Vielleicht lieber export anstelle von view
-    showSource(tr("Compressed patch (final droid.ini)"), patch->toDeployString());
+    HintDialog::hint("export_compressed_patch",
+                     tr("When you deploy a patch to your master with \"Activate\"\n"
+                        "or \"Save to SD\", the patch source code is optimized\n"
+                        "and compressed in various ways, to make it smaller and use\n"
+                        "less RAM. There are various options in the Preferences for\n"
+                        "tweaking this.\n"
+                        "\n"
+                        "You are going to export such a compressed version of your\n"
+                        "patch to a file. There you can examine it or copy it manually\n"
+                        "to a SD card for a Droid master.\n"
+                        "\n"
+                        "Note: This is not the same as saving a patch. The exported\n"
+                        "patch does not contain comments or section titles. Maybe patch\n"
+                        "cable names are replaced by short abbreviations, etc.\n"
+                        "Depending on your settings the exported file may not even\n"
+                        "be loadable by the Forge later. It is only meant for deploying\n"
+                        "a patch on a master.\n"
+                        ));
+
+    QString exportPath = QFileDialog::getSaveFileName(
+                mainWindow,
+                tr("Export compressed patch"),
+                "",
+                tr("DROID patch files (*.ini)"));
+
+    QFile file(exportPath);
+
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(
+            0,
+            TR("File cannot be opened"),
+            TR("Exporting the patch to the file\n\n"
+               "%1\n\n"
+               "does not work. I cannot create that file.").arg(exportPath),
+            QMessageBox::Ok);
+        return;
+    }
+
+    QTextStream stream(&file);
+    stream << patch->toDeployString();
+    stream.flush();
+    file.close();
+    if (stream.status() != QTextStream::Ok) {
+        QMessageBox::critical(
+            0,
+            tr("Write error"),
+            tr("There was an error while writing the contents to the file"),
+            QMessageBox::Ok);
+    }
 }
 void PatchOperator::patchMemoryAnalysis()
 {
