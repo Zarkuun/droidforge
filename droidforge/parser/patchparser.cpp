@@ -1,12 +1,6 @@
-#include "globals.h"
-#include "mainwindow.h"
 #include "patchparser.h"
 #include "modulebuilder.h"
-#include "jackassignmentinput.h"
-#include "jackassignmentoutput.h"
-#include "jackassignmentunknown.h"
 #include "parseexception.h"
-#include "registerlabels.h"
 
 #include <QTextStream>
 #include <QRegularExpression>

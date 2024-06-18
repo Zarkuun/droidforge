@@ -639,7 +639,8 @@ void Patch::updateMemoryProblems()
 
     QSettings settings;
     bool dedup = settings.value("compression/deduplicate_jacks", false).toBool();
-    JackDeduplicator jdd(dedup);
+    bool shorts = settings.value("compression/use_shortnames", false).toBool();
+    JackDeduplicator jdd(dedup, shorts);
 
     // TODO: Das war evtl. schon vorher falsch. Der RAM von X7, Controllern,
     // etc. wird hier nicht mitgezählt. Daher kommt dann kein Patchproblemn,
@@ -1146,8 +1147,9 @@ QString Patch::toDeployString(unsigned *jacktableSize, unsigned *savedBytes) con
 {
     QSettings settings;
     bool renameCables = settings.value("compression/rename_cables", false).toBool();
+    bool useShortnames = settings.value("compression/use_shortnames", false).toBool();
     bool deduplicateJacks = settings.value("compression/deduplicate_jacks", false).toBool();
-    JackDeduplicator jdd(deduplicateJacks);
+    JackDeduplicator jdd(deduplicateJacks, useShortnames);
 
     const Patch *patch;
     Patch *clonedPatch = 0;

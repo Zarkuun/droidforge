@@ -109,17 +109,53 @@ unsigned DroidFirmware::controllerUsedRAM(QString controller) const
 }
 QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
 {
-    // Some circuits have array like pitch1...pitch16. In the DROID patch,
-    // however, the user may write "pitch" as a shorthand for pitch1. In
-    // Order to avoid problems we always use the full names in the DROID forge.
-    if (jackIsInput(circuit, jack) || jackIsOutput(circuit, jack))
-        return jack;
+    // "buttongroup", "button" -> "button1"
+    // "copy", "i" -> "input"
+    // "mixer", "i2" -> "input2"
+    // "matrixmixer", "b13" -> "button13"
 
-    QString withone = jack + "1";
-    if (jackIsInput(circuit, withone) || jackIsOutput(circuit, withone))
-        return withone;
+    QString whence = "inputs";
+    while (true) {
+        // Loop through all jacks of the current type (inputs or outputs)
+        QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
+        for (qsizetype i=0; i<jacklist.size(); i++) {
+            QJsonObject jackinfo = jacklist[i].toObject();
+            QString shortname = jackinfo["short"].toString("");
 
-    return jack;
+            if (jackinfo.contains("count")) { // array
+
+                // First try full name. Example "buttonoutput1"
+                // Beware: don't parse "buttonoutput1" into "button1" for [buttongroup]
+                QString prefix = jackinfo["prefix"].toString(); // e.g "button"
+                int prefixlen = prefix.length(); // 6
+                QString front = jack.mid(0, prefixlen); //  "button"
+                if (front == prefix && front.length() < jack.length() && isDigits(jack.mid(prefixlen)))
+                    return jack;
+                else if (jack == prefix)
+                    return prefix + "1"; // "buttongroup", "button" -> "button1"
+
+                // Now try short name
+                int shortlen = shortname.length();
+                front = jack.mid(0, shortlen);
+                if (front == shortname && front.length() < jack.length() && isDigits(jack.mid(shortlen)))
+                    return prefix + jack.mid(shortlen); // replace short by long prefix
+                else if (jack == shortname)
+                    return prefix + "1"; // "buttongroup", "b" -> "button1"
+            }
+
+            else { // single parameter
+                QString name = jackinfo["name"].toString("");
+                if (jack == shortname || jack == name)
+                    return name;
+            }
+        }
+
+        if (whence == "outputs")
+            break;
+        else
+            whence = "outputs";
+    }
+    return jack; // unknown
 }
 bool DroidFirmware::jackIsInput(QString circuit, QString jack) const
 {
@@ -130,19 +166,6 @@ bool DroidFirmware::jackIsOutput(QString circuit, QString jack) const
 {
     QJsonValue jackinfo = findJack(circuit, "outputs", jack);
     return !jackinfo.isNull();
-}
-bool DroidFirmware::jackIsArray(QString circuit, QString jack) const
-{
-    QString prefix = jack;
-    while (prefix != "" && prefix.back().isDigit())
-        prefix.chop(1);
-
-    if (jackIsInput(circuit, jack))
-        return jackArraySize(circuit, prefix, true) > 1;
-    else if (jackIsOutput(circuit, jack))
-        return jackArraySize(circuit, prefix, false) > 1;
-    else
-        return false; // unknown jacks
 }
 unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isInput) const
 {
@@ -155,6 +178,26 @@ unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isIn
         return jackinfo["count"].toInt(1);
     else
         return 0;
+}
+
+QString DroidFirmware::jackShortname(QString circuit, QString jack) const
+{
+    QJsonValue jackinfo = findJack(circuit, "inputs", jack);
+    if (jackinfo.isNull())
+        jackinfo = findJack(circuit, "outputs", jack);
+    if (jackinfo.isNull())
+        return ""; // unknown jack
+
+    QString prefix = jackinfo["prefix"].toString("");
+    QString suffix;
+    if (prefix != "")
+        suffix = jack.mid(prefix.length());
+
+    QString shortname = jackinfo["short"].toString("");
+    if (shortname == "")
+        return "";
+
+    return shortname + suffix;
 }
 QString DroidFirmware::jackTypeSymbol(QString circuit, QString prefix, bool isInput) const
 {
@@ -347,6 +390,14 @@ QString DroidFirmware::jackTypeExplanation(QString symbol, bool isInput) const
     }
 
     return "ARGL:" + symbol;
+}
+bool DroidFirmware::isDigits(QString s) const
+{
+    for (int i=0; i<s.length(); i++) {
+        if (!s[i].isDigit())
+            return false;
+    }
+    return true;
 }
 QMap<double, QString> DroidFirmware::jackValueTable(QString circuit, QString whence, QString jack) const
 {

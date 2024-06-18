@@ -30,8 +30,8 @@ public:
     QString canonizeJackName(QString circuit, QString jack) const;
     bool jackIsInput(QString circuit, QString jack) const;
     bool jackIsOutput(QString circuit, QString jack) const;
-    bool jackIsArray(QString circuit, QString jack) const;
     unsigned jackArraySize(QString circuit, QString prefix, bool isInput) const;
+    QString jackShortname(QString circuit, QString jack) const;
     QString jackTypeSymbol(QString circuit, QString prefix, bool isInput) const;
     QStringList circuitsOfCategory(QString category) const;
     QString circuitDescription(QString circuit) const;
@@ -59,6 +59,7 @@ private:
     void replaceLatexSymbols(QString &s) const;
     QString jackTableAsString(const QMap<double, QString> &table) const;
     QString jackTypeExplanation(QString symbol, bool isInput) const;
+    bool isDigits(QString s) const;
 };
 
 extern DroidFirmware *the_firmware;

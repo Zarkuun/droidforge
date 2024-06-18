@@ -2,10 +2,10 @@
 #include "droidfirmware.h"
 #include "jackassignmentinput.h"
 #include "atomnumber.h"
-#include "globals.h"
 
-JackDeduplicator::JackDeduplicator(bool dedup)
+JackDeduplicator::JackDeduplicator(bool dedup, bool shorts)
     : deduplicate(dedup)
+    , useShortnames(shorts)
     , savedBytes(0)
 {
     jacktableOffset = the_firmware->initialJacktableSize();

@@ -272,10 +272,6 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
     }
     return allProblems;
 }
-bool Circuit::jackIsArray(int row) const
-{
-    return the_firmware->jackIsArray(name, jackAssignments[row]->jackName());
-}
 QStringList Circuit::missingJacks(jacktype_t jackType) const
 {
     QStringList jacks = jackType == JACKTYPE_INPUT
@@ -393,7 +389,7 @@ void Circuit::changeCircuit(QString newCircuit)
     name = newCircuit;
     QList<JackAssignment *> newJacks;
     for (auto ja: jackAssignments) {
-        JackDeduplicator jdd(false);
+        JackDeduplicator jdd(false, false);
         QString asString = ja->toString();
         delete ja;
         JackAssignment *newJa = JackAssignment::parseJackLine(newCircuit, asString);

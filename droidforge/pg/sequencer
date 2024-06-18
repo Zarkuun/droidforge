@@ -180,7 +180,7 @@ def midi_channel_options():
 
 synopsis = {
     "title":
-        "Motor Fader Sequencer",
+        "Motor Fader Performance Sequencer (MFPS)",
     "description":
         """This patch generator creates a patch for a melody performance sequencer for up to eight voices. You need one P2B8, one B32 and two or four M4 controllers.
 
@@ -1404,8 +1404,14 @@ def section_global_buttons():
     if pages == 2:
         b = get_button(BUTTONPOS_PAGES, "PAGE", "Select second page of steps")
 
+        button = "B" + b
+        # If you press the track button of the already selected
+        # track, the page is toggled.
+        if arguments["tracks"] > 1:
+            button += "+ _TRACK_EXTRA_PRESS"
+
         patch += circuit("button", [
-            ( "button", "B" + b ),
+            ( "button", button ),
             ( "led", "L" + b ),
             ( "output", "_PAGE" ),
         ], "Button for selecting the second page of steps")
@@ -1690,11 +1696,14 @@ def track_selection():
     num_tracks = arguments["tracks"]
     if num_tracks > 1:
 
-        buttongroup_params = [("output", "_SELECTED_TRACK")]
+        buttongroup_params = [
+            ("output", "_SELECTED_TRACK"),
+            # While CTRL is held, disable the track selection, since CTRL
+            # gives access to the underlying mute buttons
+            ( "select", "_NO_CONTROL" ) ]
 
-        # While CTRL is held, disable the track selection, since CTRL
-        # gives access to the underlying mute buttons
-        buttongroup_params += [ ( "select", "_NO_CONTROL" ) ]
+        if num_pages() == 2:
+            buttongroup_params.append(("extrapress", "_TRACK_EXTRA_PRESS"))
 
         # Prepare an LFO for the mute animation
         patch += circuit("lfo", [
@@ -1977,13 +1986,20 @@ def track_section(track):
 
     patch += track_presets(track)
 
-    for s in range(1, 8):
-        patch += circuit("button", track_selected(track) + [
-            ( "button", "B1.%d" % s ),
-            ( "led", "L1.%d" % s ),
-            ( "startvalue", 1 ),
-            ( "output", "_T%d_SEL_%d" % (track, s) ),
-        ], "Select interval note %d from the current scale" % s)
+    bgroupargs = track_selected(track)  + [
+        ( "minactive", 1 ),
+        ( "maxactive", "_CONTROL * -6 + 7" ),
+        ( "startbutton", -1 ),
+    ]
+    for b in range(1, 8):
+        bgroupargs += [
+            ( "button%d" % b, "B1.%d" % b ),
+            ( "led%d" % b, "L1.%d" % b ),
+            ( "buttonoutput%d" % b, "_T%d_SEL_%d" % (track, b)),
+        ]
+    patch += circuit("buttongroup", bgroupargs,
+        "Select which notes from the current scale should be played")
+
 
     # Compute clock for this track
     patch += circuit("clocktool", [
@@ -2051,6 +2067,7 @@ def track_section(track):
         ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
         ( "tuningmode", "_TUNINGMODE" ),
         ( "tuningpitch", "1V" ),
+        ( "constantlength", "_CONTROL" ),
     ]
 
     if arguments["randpitch"]:

@@ -11,6 +11,7 @@ class PreferencesDialog : public Dialog
     Q_OBJECT
 
     QCheckBox *checkboxRenameCables;
+    QCheckBox *checkboxUseShortnames;
     QCheckBox *checkboxDeduplicateJacks;
     QCheckBox *checkboxIgnoreUnknownJacks;
     QCheckBox *checkboxDenounceDeprecatedCircuits;

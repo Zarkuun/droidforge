@@ -112,7 +112,7 @@ void Clipboard::copyFromGlobalClipboard()
 QString Clipboard::toString() const
 {
     QString text;
-    JackDeduplicator jdd(false);
+    JackDeduplicator jdd(false, false);
     for (auto circuit: circuits)
         text += circuit->toString();
     if (text != "")

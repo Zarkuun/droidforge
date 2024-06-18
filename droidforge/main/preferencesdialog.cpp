@@ -21,8 +21,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     box = new QGroupBox(tr("Compress patch before loading into master"));
     layout = new QVBoxLayout(box);
     checkboxRenameCables = new QCheckBox(tr("Rename patch cables to _A, _B, etc. (makes patch less readable)"));
+    checkboxUseShortnames = new QCheckBox(tr("Use abbreviated parameter names like b instead of button"));
     checkboxDeduplicateJacks = new QCheckBox(tr("Detect and share duplicate values for inputs"));
     layout->addWidget(checkboxRenameCables);
+    layout->addWidget(checkboxUseShortnames);
     layout->addWidget(checkboxDeduplicateJacks);
     mainLayout->addWidget(box);
 
@@ -54,6 +56,7 @@ void PreferencesDialog::loadSettings()
 {
     QSettings settings;
     checkboxRenameCables->setChecked(settings.value("compression/rename_cables", false).toBool());
+    checkboxUseShortnames->setChecked(settings.value("compression/use_shortnames", false).toBool());
     checkboxDeduplicateJacks->setChecked(settings.value("compression/deduplicate_jacks", false).toBool());
     checkboxIgnoreUnknownJacks->setChecked(settings.value("validation/ignore_unknown_jacks", false).toBool());
     checkboxDenounceDeprecatedCircuits->setChecked(settings.value("validation/denounce_deprecated_circuits", true).toBool());
@@ -64,6 +67,7 @@ void PreferencesDialog::saveSettings() const
 {
     QSettings settings;
     settings.setValue("compression/rename_cables", checkboxRenameCables->isChecked());
+    settings.setValue("compression/use_shortnames", checkboxUseShortnames->isChecked());
     settings.setValue("compression/deduplicate_jacks", checkboxDeduplicateJacks->isChecked());
     settings.setValue("validation/ignore_unknown_jacks", checkboxIgnoreUnknownJacks->isChecked());
     settings.setValue("validation/denounce_deprecated_circuits", checkboxDenounceDeprecatedCircuits->isChecked());

@@ -44,7 +44,8 @@ void MemoryAnalysisWindow::update(sortby_t sortby)
 
     QSettings settings;
     bool dedup = settings.value("compression/deduplicate_jacks", false).toBool();
-    JackDeduplicator jdd(dedup);
+    bool shorts = settings.value("compression/use_shortnames", false).toBool();
+    JackDeduplicator jdd(dedup, shorts);
 
     for (unsigned s=0; s<patch->numSections(); s++) {
         const PatchSection *section = patch->section(s);

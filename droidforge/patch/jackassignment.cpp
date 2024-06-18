@@ -28,7 +28,13 @@ QString JackAssignment::toDeployString(JackDeduplicator &jdd) const
 {
     if (disabled)
         return "";
-    return jack + "=" + jdd.processJackAssignment(this);
+
+    QString name;
+    if (jdd.useShorts())
+        name = the_firmware->jackShortname(jdd.circuit(), jack);
+    if (name == "")
+        name = jack;
+    return name + "=" + jdd.processJackAssignment(this);
 }
 QString JackAssignment::toString() const
 {
