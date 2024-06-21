@@ -1512,6 +1512,9 @@ void PatchOperator::exportCompressedPatch()
                 "",
                 tr("DROID patch files (*.ini)"));
 
+    if (exportPath == "")
+        return;
+
     QFile file(exportPath);
 
     if (!file.open(QIODevice::WriteOnly)) {
