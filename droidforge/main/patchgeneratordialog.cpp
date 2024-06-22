@@ -1,10 +1,9 @@
 #include "patchgeneratordialog.h"
-#include "parseexception.h"
-#include "patch.h"
-#include "patchparser.h"
 #include "usermanual.h"
 #include "hintdialog.h"
 #include "globals.h"
+#include "patchparser.h"
+#include "parseexception.h"
 
 #include <QRandomGenerator>
 #include <QSettings>
@@ -77,6 +76,7 @@ PatchGeneratorDialog::PatchGeneratorDialog(PatchGenerator *generator, QWidget *p
     mainLayout->addLayout(bottomBox);
 
     HintDialog::hint("patch_generator", hinttext);
+    validatePresets();
 }
 
 void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
@@ -251,6 +251,54 @@ void PatchGeneratorDialog::configForPreset(QString presetName, pgconfig_t &confi
             config[key] = value;
         }
     }
+}
+void PatchGeneratorDialog::validatePresets()
+{
+    const QJsonDocument &info = _generator->parameterInfo();
+    auto presets = info.object()["presets"].toArray();
+    for (auto p: presets)
+        if (!validatePreset(p.toObject()))
+            break;
+}
+bool PatchGeneratorDialog::validatePreset(QJsonObject preset)
+{
+    for (auto it = _numberFields.constKeyValueBegin();  it != _numberFields.constKeyValueEnd(); ++it)
+        if (!validatePresetParameter(preset, it->first))
+            return false;
+
+    for (auto it = _enumFields.constKeyValueBegin();  it != _enumFields.constKeyValueEnd(); ++it)
+        if (!validatePresetParameter(preset, it->first))
+            return false;
+
+    for (auto it = _booleanFields.constKeyValueBegin();  it != _booleanFields.constKeyValueEnd(); ++it)
+        if (!validatePresetParameter(preset, it->first))
+            return false;
+
+    return true;
+}
+bool PatchGeneratorDialog::validatePresetParameter(QJsonObject preset, QString name)
+{
+    auto parameters = preset["parameters"].toObject();
+
+    if (!parameters.contains(name)) {
+        QString pName = preset["name"].toString();
+        QString pTitle = preset["title"].toString();
+
+        QMessageBox::warning(
+            0,
+            TR("Incomplete preset %1").arg(pName),
+            TR("The preset '%1' (internal key '%2') is incomplete. "
+               "It does not have an entry for the parameter '%3'. "
+               "Incomplete presets lead to a disfunctional dialog. "
+               "Please add the missing parameter to the preset.")
+                .arg(pTitle)
+                .arg(pName)
+                .arg(name),
+            QMessageBox::Ok);
+        return false;
+    }
+    else
+        return true;
 }
 void PatchGeneratorDialog::setConfig(pgconfig_t &config)
 {

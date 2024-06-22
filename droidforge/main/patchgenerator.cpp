@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QProcess>
 #include <QJsonObject>
+#include <QSettings>
 
 PatchGenerator::PatchGenerator(QString path, QString name)
     : _valid(false)
@@ -40,15 +41,20 @@ PatchGenerator::PatchGenerator(QString path, QString name)
         return;
     }
 
-
-#ifdef Q_OS_WIN
-    _interpreter = "python.exe";
-#else
-    if (lines[0].startsWith("#!/usr/bin/env "))
-        _interpreter = lines[0].mid(14).trimmed();
-    else
-        _interpreter = lines[0].mid(2).trimmed();
-#endif
+    QSettings settings;
+    QString pythonPath = settings.value("system/python_path", "").toString();
+    if (pythonPath != "")
+        _interpreter = pythonPath;
+    else {
+        #ifdef Q_OS_WIN
+        _interpreter = "python.exe";
+        #else
+        if (lines[0].startsWith("#!/usr/bin/env "))
+            _interpreter = lines[0].mid(14).trimmed();
+        else
+            _interpreter = lines[0].mid(2).trimmed();
+        #endif
+    }
 
     QStringList params;
     params << "-s";
@@ -59,6 +65,13 @@ PatchGenerator::PatchGenerator(QString path, QString name)
         _error = TR("The generator has produced an empty output. This could be "
                     "an issue with an installed security scanner. Try quitting "
                     "and restarting the Forge.");
+
+        if (pythonPath != "") {
+            _error += TR("\n\nIn the preferences you have specified the custom path '%1' "
+                         "to the Python3 interpreter. Maybe this path "
+                         "is wrong. Leave the setting empty to use the default.").arg(pythonPath);
+        }
+
         return;
     }
 

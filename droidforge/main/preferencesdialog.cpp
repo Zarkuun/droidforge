@@ -7,6 +7,8 @@
 #include <QDialogButtonBox>
 #include <QGroupBox>
 #include <QSettings>
+#include <QFile>
+#include <QMessageBox>
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
     : Dialog("Preferences", parent)
@@ -46,11 +48,36 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     layout->addWidget(checkboxPollSD);
     mainLayout->addWidget(box);
 
+    // Patch generators
+    box = new QGroupBox(tr("Patch generators"));
+    auto *hlayout = new QHBoxLayout(box);
+    QLabel *lab = new QLabel(tr("Path to Python3 executable"));
+    lineEditPythonExecutable = new QLineEdit();
+    hlayout->addWidget(lab);
+    hlayout->addWidget(lineEditPythonExecutable);
+    mainLayout->addWidget(box);
+
     // Buttons with OK/Cancel
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     mainLayout->addWidget(buttonBox);
+}
+bool PreferencesDialog::validate() const
+{
+    QString pp = lineEditPythonExecutable->text().trimmed();
+    if (pp == "")
+        return true; // no path set
+
+    QFile file(pp);
+    if (!file.exists()) {
+        QMessageBox::critical(
+            0,
+            tr("File not found"),
+            tr("Invalid path of the Python interpreter. This file does not exist."));
+        return false;
+    }
+    return true;
 }
 void PreferencesDialog::loadSettings()
 {
@@ -62,6 +89,7 @@ void PreferencesDialog::loadSettings()
     checkboxDenounceDeprecatedCircuits->setChecked(settings.value("validation/denounce_deprecated_circuits", true).toBool());
     checkboxPollX7->setChecked(settings.value("activation/poll_for_x7", SETTING_POLL_DEFAULT).toBool());
     checkboxPollSD->setChecked(settings.value("activation/poll_for_sd", SETTING_POLL_DEFAULT).toBool());
+    lineEditPythonExecutable->setText(settings.value("system/python_path", "").toString());
 }
 void PreferencesDialog::saveSettings() const
 {
@@ -73,6 +101,7 @@ void PreferencesDialog::saveSettings() const
     settings.setValue("validation/denounce_deprecated_circuits", checkboxDenounceDeprecatedCircuits->isChecked());
     settings.setValue("activation/poll_for_x7", checkboxPollX7->isChecked());
     settings.setValue("activation/poll_for_sd", checkboxPollSD->isChecked());
+    settings.setValue("system/python_path", lineEditPythonExecutable->text().trimmed());
 }
 void PreferencesDialog::editPreferences()
 {
@@ -81,20 +110,26 @@ void PreferencesDialog::editPreferences()
         dialog = new PreferencesDialog();
 
     dialog->loadSettings();
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        dialog->saveSettings();
-        QSettings settings;
-        if (settings.value("compression/deduplicate_jacks", false).toBool())
+    while (true) {
+        if (dialog->exec() == QDialog::Accepted)
         {
-            HintDialog::hint("jack_deduplication",
-                             tr("You have enabled sharing of common values of inputs and outputs.\n\n"
-                                "For this to work just must make sure that your master module has\n"
-                                "the firmware version %1. Otherwise the patch might not load\n"
-                                "or even crash in an endless loop.\n\n"
-                                "In case of trouble disable this setting and do a factory reset\n"
-                                "on your master.")
-                                 .arg(the_firmware->version()));
+            if (!dialog->validate())
+                continue;
+
+            dialog->saveSettings();
+            QSettings settings;
+            if (settings.value("compression/deduplicate_jacks", false).toBool())
+            {
+                HintDialog::hint("jack_deduplication",
+                                 tr("You have enabled sharing of common values of inputs and outputs.\n\n"
+                                    "For this to work just must make sure that your master module has\n"
+                                    "the firmware version %1. Otherwise the patch might not load\n"
+                                    "or even crash in an endless loop.\n\n"
+                                    "In case of trouble disable this setting and do a factory reset\n"
+                                    "on your master.")
+                                     .arg(the_firmware->version()));
+            }
         }
+        break;
     }
 }

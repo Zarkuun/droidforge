@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QCheckBox>
+#include <QLineEdit>
 
 class PreferencesDialog : public Dialog
 {
@@ -17,12 +18,14 @@ class PreferencesDialog : public Dialog
     QCheckBox *checkboxDenounceDeprecatedCircuits;
     QCheckBox *checkboxPollX7;
     QCheckBox *checkboxPollSD;
+    QLineEdit *lineEditPythonExecutable;
 
 public:
     static void editPreferences();
 
 private:
     PreferencesDialog(QWidget *parent = nullptr);
+    bool validate() const;
     void loadSettings();
     void saveSettings() const;
 };

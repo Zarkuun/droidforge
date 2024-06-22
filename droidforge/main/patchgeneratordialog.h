@@ -7,6 +7,7 @@
 
 #include <QMap>
 #include <QComboBox>
+#include <QJsonObject>
 
 typedef QMap<QString, QVariant> pgconfig_t;
 
@@ -30,6 +31,9 @@ private:
     void collectConfig(pgconfig_t &config);
     void defaultConfig(pgconfig_t &config);
     void configForPreset(QString preset, pgconfig_t &config);
+    void validatePresets();
+    bool validatePreset(QJsonObject preset);
+    bool validatePresetParameter(QJsonObject preset, QString name);
     void setConfig(pgconfig_t &config);
     void saveConfigToSettings(pgconfig_t &config);
     void loadConfigFromSettings(pgconfig_t &config);

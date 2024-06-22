@@ -109,7 +109,12 @@ bool PatchGeneratorBase::loadGenerators()
         if (fileName.startsWith('.') || fileName.endsWith(".py") || fileName.startsWith("_")) {
             continue;
         }
+
         QString absPath = _directory.absoluteFilePath(fileName);
+        QFileInfo fi(absPath);
+        if (fi.isDir()) // ignore directories. They might by part of Python modules.
+            continue;
+
         PatchGenerator *gen = new PatchGenerator(absPath, fileName);
         if (gen->isValid()) {
             _generators.append(gen);
