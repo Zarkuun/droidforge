@@ -55,6 +55,8 @@ QtApplication {
         "main/patchsizeindicator.h",
         "main/preferencesdialog.cpp",
         "main/preferencesdialog.h",
+        "main/waitforsddialog.cpp",
+        "main/waitforsddialog.h",
         "main/windowlist.cpp",
         "main/windowlist.h",
         "modules/modulebling.cpp",

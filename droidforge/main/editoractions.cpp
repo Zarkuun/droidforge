@@ -98,6 +98,8 @@ void EditorActions::createActions()
     actions[ACTION_SAVE_TO_SD]->setShortcut(QKeySequence(tr("F10")));
     actions[ACTION_TOOLBAR_SAVE_TO_SD] = new QAction(ICON("save_to_sd"), tr("Save to SD"), this);
 
+    actions[ACTION_UPGRADE_MASTER_FIRMWARE] = new QAction(tr("Upgrade firmware of master"), this);
+
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS
     QString title = tr("Reveal in finder");

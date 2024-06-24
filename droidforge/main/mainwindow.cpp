@@ -306,6 +306,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, fileMenu);
     ADD_ACTION(ACTION_UPLOAD_TO_DROID, fileMenu);
     ADD_ACTION(ACTION_SAVE_TO_SD, fileMenu);
+    ADD_ACTION(ACTION_UPGRADE_MASTER_FIRMWARE, fileMenu);
     ADD_ACTION(ACTION_CLEAR_SETTINGS, fileMenu);
     fileMenu->addMenu(patchOperator.statusDumpsMenu());
     ADD_ACTION(ACTION_QUIT, fileMenu);

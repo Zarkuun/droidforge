@@ -57,6 +57,7 @@ public:
     void clearSelection();
     bool droidSDCardPresent() const { return sdCardPresent; };
     bool droidStatusDumpPresent() const { return statusDumpPresent; };
+    QString sdCardDir();
     bool droidX7Present() const { return x7Present; };
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
     bool isPatching() const { return patch->isPatching(); };
@@ -73,6 +74,7 @@ private slots:
     void abortAllActions();
     void upload();
     void saveToSD();
+    void upgradeMasterFirmware();
     void loadStatusDumps();
     void newPatch();
     void showStatusDumpNr(int nr);
@@ -125,7 +127,6 @@ private:
     void integratePatch(const QString &aFilePath);
     bool isDroidVolume(const QString &rootPath) const;
     void updateSDAndX7State();
-    QString sdCardDir();
     Patch *editSource(const QString &title, QString oldSource);
     void showSource(const QString &title, QString source);
     bool saveAndCheck(QString path);
@@ -141,6 +142,8 @@ private:
     QString savedSDCardDir() const;
     QString sdCardDirSansPolling();
     void examinePatchSize() const;
+    void ejectSDCard(QString dirPath);
+    bool copyFile(QString src, QString dest);
 
 
 #ifdef Q_OS_WIN

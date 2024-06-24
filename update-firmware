@@ -2,4 +2,4 @@
 RELEASE=../mk/modular/droid/releases/latest
 cp -v $RELEASE/utilities/editors/circuits.json droidforge/droidfirmware.json
 cp -v $RELEASE/manual/droid-manual-*.pdf droidforge/droid-manual.pdf
-
+cp -v $RELEASE/firmware/*.fw droidforge/firmware/

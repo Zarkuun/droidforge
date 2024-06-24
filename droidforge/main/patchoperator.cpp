@@ -16,6 +16,7 @@
 #include "memoryanalysiswindow.h"
 #include "patchgeneratordialog.h"
 #include "hintdialog.h"
+#include "waitforsddialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -118,6 +119,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, &PatchOperator::saveToSD);
+    CONNECT_ACTION(ACTION_UPGRADE_MASTER_FIRMWARE, &PatchOperator::upgradeMasterFirmware);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_NEW_WITH_SAME_RACK, &PatchOperator::newPatchWithSameRack);
     CONNECT_ACTION(ACTION_TOOLBAR_NEW, &PatchOperator::newPatchWithSameRack);
@@ -436,6 +438,13 @@ void PatchOperator::saveToSD()
         return;
     }
 
+    ejectSDCard(dirPath);
+}
+
+void PatchOperator::ejectSDCard(QString dirPath)
+{
+    QDir dir(dirPath);
+
 #ifdef Q_OS_WIN
     if (ejectSDWindows(dir.absolutePath().mid(0, 1)))
     {
@@ -477,8 +486,7 @@ void PatchOperator::saveToSD()
         QMessageBox::warning(
                     mainWindow,
                     tr("Could not eject SD card"),
-                    tr("I have saved your patch to the SD card.\n\n"
-                       "However, I could not eject it.\n\n"
+                    tr("I could not eject the SD card.\n\n"
                        "Probably the card is in use by some other application. "
                        "Better go and check and eject the card with Finder before "
                        "you remove it from the card reader."),
@@ -491,6 +499,63 @@ void PatchOperator::saveToSD()
         emit droidStateChanged();
     }
 #endif
+}
+void PatchOperator::upgradeMasterFirmware()
+{
+    WaitForSDDialog dialog(
+        tr("DROID master firmware upgrade"),
+        tr("You are going to upgrade the firmware of your MASTER or\n"
+           "MASTER18 module to %1.\n\n"
+           "Please insert the Droid SD card.\n").arg(the_firmware->version()),
+        mainWindow,
+        this);
+
+    QString sddir = dialog.waitForSD();
+    if (sddir == "")
+        return; // Aborted by user
+
+    QString version = the_firmware->version();
+
+    bool ok = copyFile(QString(":firmware/droid-%1.fw").arg(version),  sddir + "/droid.fw")
+           && copyFile(QString(":firmware/master18-%1.fw").arg(version),  sddir + "/master18.fw");
+
+    ejectSDCard(sddir);
+
+    if (ok) {
+        QMessageBox::information(
+            mainWindow,
+            tr("Success"),
+            tr("I have copied the firmware file to your SD card.\n\n"
+               "Now put the SD card into your master module and press "
+               "the button to start the upgrade.\n\n"
+               "Hint: pressing the button only works if there is a valid "
+               "Droid patch on the card. If you want to upgrade without a "
+               "patch, power off and on the master while the card is inserted."));
+    }
+}
+bool PatchOperator::copyFile(QString src, QString dest)
+{
+    if (QFile::exists(dest)) {
+        if (!QFile::remove(dest)) {
+            QMessageBox::critical(
+                mainWindow,
+                tr("Error"),
+                tr("Failed to remove in-the-way file %1:\n").arg(dest));
+            return false;
+        }
+    }
+
+    QFile srcFile(src);
+    if (srcFile.copy(dest))
+        return true;
+    else {
+        QMessageBox::critical(
+            mainWindow,
+            tr("Error"),
+            tr("Could not copy the file %1 to %2:\n"
+               "%3").arg(src).arg(dest).arg(srcFile.errorString()));
+        return false;
+    }
 }
 void PatchOperator::createStatusDumpsMenu()
 {
