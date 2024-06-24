@@ -648,10 +648,6 @@ void Patch::updateMemoryProblems()
     bool shorts = settings.value("compression/use_shortnames", false).toBool();
     JackDeduplicator jdd(dedup, shorts);
 
-    // TODO: Das war evtl. schon vorher falsch. Der RAM von X7, Controllern,
-    // etc. wird hier nicht mitgezählt. Daher kommt dann kein Patchproblemn,
-    // selbst wenn der Speicher aus ist.
-
     QMap<QString, unsigned> circuitCounts;
     unsigned sectionIndex = 0;
     for (auto section: sections) {

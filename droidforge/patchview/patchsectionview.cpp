@@ -1392,7 +1392,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             if (*arx == ar && ar.getRegisterType() == REGISTER_BUTTON)
             {
                 HintDialog::hint("click_button_led",
-                  tr("You just clicked on button %1 to assign this button\n" // TODO: "encoder"
+                  tr("You just clicked on button %1 to assign this button\n"
                      "to the input parameter \"%2\" in your patch. But that\n"
                      "button was already assigned or you clicked two times in a row.\n\n"
                      "Clicking a button for a second time changes the reference to\n"
