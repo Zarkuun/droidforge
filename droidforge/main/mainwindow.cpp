@@ -766,7 +766,7 @@ void MainWindow::about()
                         tr("DROID Forge version %1.\n\n"
 
                            "This version of DROID Forge assumes that your "
-                           "DROID master is running firmware version %2 or newer.\n\n"
+                           "DROID master is running firmware version %2.\n\n"
 
                            "Copyright Mathias Kettner 2024.\n\n"
 
