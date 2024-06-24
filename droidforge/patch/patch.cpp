@@ -575,8 +575,14 @@ bool Patch::registerIsOutputOnly(AtomRegister reg) const
          case REGISTER_EXTRA:
              return true;
 
-         case REGISTER_GATE:
-             return reg.getNumber() >= 9; // TODO master18: depends
+         case REGISTER_GATE: {
+             if (reg.getNumber() >= 9)
+                 return true; // gates on X7
+             else if (typeOfMaster() == 18 && reg.getG8Number() == 1)
+                 return true;
+             else
+                 return false;
+         }
     }
    return false; // never reached
 }
