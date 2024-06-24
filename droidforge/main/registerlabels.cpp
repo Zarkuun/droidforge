@@ -157,8 +157,6 @@ QString RegisterLabels::toString(char reg, unsigned controller, unsigned g8, con
     bool first = true;
 
     QMapIterator<AtomRegister, RegisterLabel> it(*this);
-    // TODO: Check if this is not too slow. For each register we have
-    // to check all existing labels. This has complexity O(n^2).
     while (it.hasNext()) {
         it.next();
         AtomRegister atom = it.key();

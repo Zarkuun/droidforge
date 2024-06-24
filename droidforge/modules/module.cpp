@@ -73,7 +73,6 @@ void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
     painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
     QRect r = moduleRect().toRect();
 
-    // TODO: Das hier auf Windows ausprobieren und eventuell cachen
     QImage scaledImage = faceplateImage.scaledToHeight(pixelHeight, Qt::SmoothTransformation);
     painter->drawImage(r, scaledImage);
 

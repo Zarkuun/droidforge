@@ -7,7 +7,7 @@
 
 class MIDIHost
 {
-    uint8_t sysexBuffer[MAX_DROID_INI + 16 + 1000 /* test */]; // TODO:Korrekte Groesse
+    uint8_t sysexBuffer[MAX_DROID_INI + 16 + 1000 /* Some space for bogus bytews */];
 
 public:
     MIDIHost();

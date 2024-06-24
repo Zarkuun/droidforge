@@ -27,6 +27,16 @@ unsigned MIDIHost::prepareSysexMessage(const Patch *patch)
     uint8_t *write = &sysexBuffer[5];
     while (i < droidini.size()) {
         // Hack for MacOS that is missing one byte every 255 bytes.
+        // Meanwhile I have found out that Mac is indeed *sending* these
+        // bytes, albeit not in the normal SYSEX-packets but in special
+        // packet of the type "single byte" (nibble 0xf). Maybe the reason
+        // is that it wants to pad everything to 256 bytes and the sysex
+        // packets contain 3 bytes each. So after sending 255 bytes one byte
+        // is left and is send "out of band" as a single byte.
+        // Neither Droid master nor X7 handle these "single bytes", sorry. So
+        // we insert one bogus space at exactly the positions where this single
+        // byte is packed. If the spaces get lost, it doesn't matter. If it
+        // is sent (Windows), if will be stripped by the Droid anyway.
         if (needLostBytesHack() && offset == SYSEX_MAX_CHUNK) {
             *write++ = ' ';
             offset = 0;

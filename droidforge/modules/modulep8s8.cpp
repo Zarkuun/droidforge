@@ -16,8 +16,6 @@ bool ModuleP8S8::labelNeedsBackground(register_type_t, unsigned) const
 {
     return true;
 }
-// TODO: Muss ich das mit dem Anklicken der Register so ähnlich machen wie
-// bei button -> LED?
 QPointF ModuleP8S8::registerPosition(register_type_t type, unsigned number) const
 {
     float x = (((number-1) % 4) * 1.985 + 1.05) * (hp() / 8);

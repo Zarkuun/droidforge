@@ -79,7 +79,6 @@ class MainWindow : public QMainWindow, PatchView
 public:
     MainWindow(QString initialFilename, const Patch *initialRack=0);
     ~MainWindow();
-    // TODO: This is so sick
     bool searchActive() const;
     void setStatusbarText(QString text);
     void addStatusDumpsMenu(QMenu *menu);
@@ -104,10 +103,6 @@ protected:
     void moveEvent(QMoveEvent *) override;
     void showEvent(QShowEvent *) override;
     bool eventFilter(QObject *obj, QEvent *event) override;
-    // Das hier geht nicht. Wir bekommen drag aber kein drop
-    // void dragEnterEvent(QDragEnterEvent *event) override;
-    // void dragMoveEvent(QDragMoveEvent *event) override;
-    // void dropEvent(QDropEvent *event) override;
 
 private:
     void createMenus();
