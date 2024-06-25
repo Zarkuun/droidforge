@@ -114,46 +114,59 @@ QString DroidFirmware::canonizeJackName(QString circuit, QString jack) const
     // "mixer", "i2" -> "input2"
     // "matrixmixer", "b13" -> "button13"
 
-    QString whence = "inputs";
-    while (true) {
-        // Loop through all jacks of the current type (inputs or outputs)
-        QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
-        for (qsizetype i=0; i<jacklist.size(); i++) {
-            QJsonObject jackinfo = jacklist[i].toObject();
-            QString shortname = jackinfo["short"].toString("");
+    // We need to first check all singular jacks, than the arrays.
+    // This is in order not to mix up [algoquencer] pitch, which must
+    // not be converted to "pitch1", since it means the output "pitch".
 
-            if (jackinfo.contains("count")) { // array
+    for (int check_array = 0; check_array < 2; check_array ++)
+    {
+        QString whence = "inputs";
+        while (true) {
+            // Loop through all jacks of the current type (inputs or outputs)
+            // twice. First for singular jacks, than for arrays (because of
+            // the algoquencer pitch problem.
+            QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
+            for (qsizetype i=0; i<jacklist.size(); i++) {
+                QJsonObject jackinfo = jacklist[i].toObject();
 
-                // First try full name. Example "buttonoutput1"
-                // Beware: don't parse "buttonoutput1" into "button1" for [buttongroup]
-                QString prefix = jackinfo["prefix"].toString(); // e.g "button"
-                int prefixlen = prefix.length(); // 6
-                QString front = jack.mid(0, prefixlen); //  "button"
-                if (front == prefix && front.length() < jack.length() && isDigits(jack.mid(prefixlen)))
-                    return jack;
-                else if (jack == prefix)
-                    return prefix + "1"; // "buttongroup", "button" -> "button1"
+                int is_array = jackinfo.contains("count") ? 1 : 0;
+                if (check_array != is_array)
+                    continue;
 
-                // Now try short name
-                int shortlen = shortname.length();
-                front = jack.mid(0, shortlen);
-                if (front == shortname && front.length() < jack.length() && isDigits(jack.mid(shortlen)))
-                    return prefix + jack.mid(shortlen); // replace short by long prefix
-                else if (jack == shortname)
-                    return prefix + "1"; // "buttongroup", "b" -> "button1"
+                QString shortname = jackinfo["short"].toString("");
+
+                if (is_array) {
+                    // First try full name. Example "buttonoutput1"
+                    // Beware: don't parse "buttonoutput1" into "button1" for [buttongroup]
+                    QString prefix = jackinfo["prefix"].toString(); // e.g "button"
+                    int prefixlen = prefix.length(); // 6
+                    QString front = jack.mid(0, prefixlen); //  "button"
+                    if (front == prefix && front.length() < jack.length() && isDigits(jack.mid(prefixlen)))
+                        return jack;
+                    else if (jack == prefix)
+                        return prefix + "1"; // "buttongroup", "button" -> "button1"
+
+                    // Now try short name
+                    int shortlen = shortname.length();
+                    front = jack.mid(0, shortlen);
+                    if (front == shortname && front.length() < jack.length() && isDigits(jack.mid(shortlen)))
+                        return prefix + jack.mid(shortlen); // replace short by long prefix
+                    else if (jack == shortname)
+                        return prefix + "1"; // "buttongroup", "b" -> "button1"
+                }
+
+                else { // single parameter
+                    QString name = jackinfo["name"].toString("");
+                    if (jack == shortname || jack == name)
+                        return name;
+                }
             }
 
-            else { // single parameter
-                QString name = jackinfo["name"].toString("");
-                if (jack == shortname || jack == name)
-                    return name;
-            }
+            if (whence == "outputs")
+                break;
+            else
+                whence = "outputs";
         }
-
-        if (whence == "outputs")
-            break;
-        else
-            whence = "outputs";
     }
     return jack; // unknown
 }
