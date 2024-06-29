@@ -78,7 +78,7 @@ QString JackDeduplicator::processJackAssignment(const JackAssignment *ja)
         }
     }
 
-    if (sharable && deduplicate) {
+    if (ja->isInput() && sharable && deduplicate) {
         JackAssignmentInput *jai = (JackAssignmentInput *)ja;
         QString value = jai->valueToCanonicalString();
         // Now comes the magic: If this values has appeared somewhere in the patch
