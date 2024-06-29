@@ -600,11 +600,12 @@ QString DroidFirmware::delatexify(QString s, bool html) const
     s.replace("<", html ? "&lt;" : "<");
     s.replace(">", html ? "&gt;" : ">");
 
+    s.replace("\\msixteen", "MASTER");
+    s.replace("\\meighteen", "MASTER18");
     s.replace("\\nth1", html ? "1<sup>st</sup>" : "first");
     s.replace("\\nth2", html ? "2<sup>nd</sup>" : "second");
     s.replace("\\nth3", html ? "3<sup>rd</sup>" : "third");
-    s.replace("\\msixteen", "MASTER");
-    s.replace("\\meighteen", "MASTER18");
+    s.replace("\\th", html ? "<sup>th</sup>" : "th");
     s.replace(replaceNth, html ? "\\1<sup>th</sup>" : "\\1th");
     s.replace(replaceNthX, html ? "\\1<sup>th</sup>" : "\\1th");
     s.replace(regSup, html ? "<sup>\\1</sup>" : "\\1");
@@ -636,6 +637,7 @@ QString DroidFirmware::delatexify(QString s, bool html) const
     // cleanup some crap that our poor bogus parser did not catch
     s.replace("{\\t", "");
     s.replace("\\nth{13", "13th");
+
     return s;
 }
 void DroidFirmware::replaceLatexSymbols(QString &s) const
