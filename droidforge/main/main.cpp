@@ -85,6 +85,20 @@ int main(int argc, char *argv[])
             settings.setValue("patch_generators_enabled", false);
     }
 
+    // Preflight check .. maybe move this to a function some day
+    QString version = the_firmware->version();
+    if (!QFile(QString(":firmware/droid-%1.fw").arg(version)).exists()
+       || !QFile(QString(":firmware/master18-%1.fw").arg(version)).exists())
+    {
+        QMessageBox::warning(
+            0,
+            TR("Firmware file missing"),
+            TR("The master firmware files for the version %1 are not included "
+               "in this version of the Forge. You cannot do a firmware upgrade "
+               "of the master. Sorry.").arg(version));
+    }
+
+
     // Open same file as last time - or the one give on the command line.
     QString initialFilename;
     if (argc > 1)
