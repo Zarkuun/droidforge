@@ -364,10 +364,10 @@
         <file>pg/e4blink</file>
         <file>pg/minimal</file>
         <file>images/circuits/ifequal.png</file>
+        <file>firmware/droid-magenta-3.fw</file>
         <file>firmware/e4-magenta-1.fw</file>
         <file>firmware/m4-orange-3.fw</file>
+        <file>firmware/master18-magenta-3.fw</file>
         <file>firmware/x7-orange-1012.fw</file>
-        <file>firmware/master18-magenta-2.fw</file>
-        <file>firmware/droid-magenta-2.fw</file>
     </qresource>
 </RCC>
