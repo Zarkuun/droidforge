@@ -1,21 +1,18 @@
 #include "rackview.h"
 #include "colorscheme.h"
 #include "controllerlabellingdialog.h"
-#include "iconbase.h"
 #include "mainwindow.h"
 #include "modulebuilder.h"
 #include "tuning.h"
 #include "controllerchoosedialog.h"
 #include "editoractions.h"
 #include "updatehub.h"
-#include "globals.h"
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
 #include <QResizeEvent>
 #include <QMenu>
 #include <QMessageBox>
-#include <algorithm>
 
 RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     : QGraphicsView()
@@ -161,11 +158,19 @@ void RackView::swapRegisters(AtomRegister regA, AtomRegister regB)
         AtomRegister nB('N', regB.getController(), 0, regB.getNumber());
         patch->swapRegisters(nA, nB);
     }
+    // The LEDs in buttons
     else if (regA.getRegisterType() == 'B') {
         AtomRegister lA('L', regA.getController(), 0, regA.getNumber());
         AtomRegister lB('L', regB.getController(), 0, regB.getNumber());
         patch->swapRegisters(lA, lB);
     }
+    // The buttons in encoders
+    else if (regA.getRegisterType() == 'E') {
+        AtomRegister lA('B', regA.getController(), 0, regA.getNumber());
+        AtomRegister lB('B', regB.getController(), 0, regB.getNumber());
+        patch->swapRegisters(lA, lB);
+    }
+
     patch->commit(tr("Exchanging registers '%1' and '%2'").arg(regA.toString()).arg(regB.toString()));
     emit patchModified();
 }
