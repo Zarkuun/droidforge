@@ -18,6 +18,7 @@ class PreferencesDialog : public Dialog
     QCheckBox *checkboxDenounceDeprecatedCircuits;
     QCheckBox *checkboxPollX7;
     QCheckBox *checkboxPollSD;
+    QCheckBox *checkboxShipFirmware;
     QLineEdit *lineEditPythonExecutable;
 
 public:

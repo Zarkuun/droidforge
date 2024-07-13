@@ -143,6 +143,7 @@ private:
     QString sdCardDirSansPolling();
     void examinePatchSize() const;
     void ejectSDCard(QString dirPath);
+    bool shipFirmware(QString sddir);
     bool copyFile(QString src, QString dest);
 
 

@@ -40,12 +40,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mainLayout->addWidget(box);
 
     // Polling for activation
-    box = new QGroupBox(tr("Activation / Loading of patches"));
+    box = new QGroupBox(tr("Activation (Loading of patches)"));
     layout = new QVBoxLayout(box);
     checkboxPollX7 = new QCheckBox(tr("Poll regularly for X7 connection"));
     checkboxPollSD = new QCheckBox(tr("Poll regularly for DROID SD card"));
+    checkboxShipFirmware = new QCheckBox(tr("Always save master's firmware to SD card (firmware upgrade)"));
     layout->addWidget(checkboxPollX7);
     layout->addWidget(checkboxPollSD);
+    layout->addWidget(checkboxShipFirmware);
     mainLayout->addWidget(box);
 
     // Patch generators
@@ -89,6 +91,7 @@ void PreferencesDialog::loadSettings()
     checkboxDenounceDeprecatedCircuits->setChecked(settings.value("validation/denounce_deprecated_circuits", true).toBool());
     checkboxPollX7->setChecked(settings.value("activation/poll_for_x7", SETTING_POLL_DEFAULT).toBool());
     checkboxPollSD->setChecked(settings.value("activation/poll_for_sd", SETTING_POLL_DEFAULT).toBool());
+    checkboxShipFirmware->setChecked(settings.value("activation/ship_firmware", false).toBool());
     lineEditPythonExecutable->setText(settings.value("system/python_path", "").toString());
 }
 void PreferencesDialog::saveSettings() const
@@ -101,6 +104,7 @@ void PreferencesDialog::saveSettings() const
     settings.setValue("validation/denounce_deprecated_circuits", checkboxDenounceDeprecatedCircuits->isChecked());
     settings.setValue("activation/poll_for_x7", checkboxPollX7->isChecked());
     settings.setValue("activation/poll_for_sd", checkboxPollSD->isChecked());
+    settings.setValue("activation/ship_firmware", checkboxShipFirmware->isChecked());
     settings.setValue("system/python_path", lineEditPythonExecutable->text().trimmed());
 }
 void PreferencesDialog::editPreferences()

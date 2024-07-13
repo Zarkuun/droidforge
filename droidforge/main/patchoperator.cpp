@@ -438,7 +438,28 @@ void PatchOperator::saveToSD()
         return;
     }
 
+    QSettings settings;
+    bool ok;
+    if (settings.value("activation/ship_firmware", false).toBool())
+        ok = shipFirmware(dirPath);
+    else
+        ok = false;
+
     ejectSDCard(dirPath);
+
+    if (ok) {
+        HintDialog::hint("shipped_firmware",
+                         tr("I have copied the firmware files for an upgrade of\n"
+                            "your MASTER and MASTER18 to version %1\n"
+                            "to the SD card, because you have enabled this in\n"
+                            "the Preferences.\n\n"
+                            "When this SD card is inserted, your master will automatically\n"
+                            "upgrade to that version the next time you load the patch or power\n"
+                            "up the module.\n\n"
+                            "If you master already is on %1, it detects this\n"
+                            "and skips the upgrade.").
+                         arg(the_firmware->version()));
+    }
 }
 
 void PatchOperator::ejectSDCard(QString dirPath)
@@ -514,11 +535,7 @@ void PatchOperator::upgradeMasterFirmware()
     if (sddir == "")
         return; // Aborted by user
 
-    QString version = the_firmware->version();
-
-    bool ok = copyFile(QString(":firmware/droid-%1.fw").arg(version),  sddir + "/droid.fw")
-           && copyFile(QString(":firmware/master18-%1.fw").arg(version),  sddir + "/master18.fw");
-
+    bool ok = shipFirmware(sddir);
     ejectSDCard(sddir);
 
     if (ok) {
@@ -532,6 +549,14 @@ void PatchOperator::upgradeMasterFirmware()
                "Droid patch on the card. If you want to upgrade without a "
                "patch, power off and on the master while the card is inserted."));
     }
+}
+bool PatchOperator::shipFirmware(QString sddir)
+{
+    QString version = the_firmware->version();
+
+    return copyFile(QString(":firmware/droid-%1.fw").arg(version),  sddir + "/droid.fw")
+        && copyFile(QString(":firmware/master18-%1.fw").arg(version),  sddir + "/master18.fw");
+
 }
 bool PatchOperator::copyFile(QString src, QString dest)
 {
