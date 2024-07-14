@@ -51,7 +51,7 @@ QList<PatchProblem *> JackAssignmentUnknown::collectSpecificProblems(const Patch
 {
     QList<PatchProblem *>problems;
     QSettings settings;
-    if (!settings.value("loading/ignore_unknown_jacks", false).toBool())
+    if (!settings.value("validation/ignore_unknown_jacks", false).toBool())
         problems.append(new PatchProblem(-1, 0, TR("Unknown parameter '%1' in this circuit'").arg(jackName())));
     return problems;
 }
