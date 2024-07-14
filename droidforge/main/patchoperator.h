@@ -127,7 +127,7 @@ private:
     void integratePatch(const QString &aFilePath);
     bool isDroidVolume(const QString &rootPath) const;
     void updateSDAndX7State();
-    Patch *editSource(const QString &title, QString oldSource);
+    Patch *editSource(const QString &title, QString oldSource, bool wholePatch);
     void showSource(const QString &title, QString source);
     bool saveAndCheck(QString path);
     QString backupFilePath(QString path);

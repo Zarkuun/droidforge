@@ -1522,7 +1522,7 @@ void PatchOperator::moveCircuitDown()
 }
 void PatchOperator::editPatchSource()
 {
-    Patch *parsed = editSource(tr("Patch source code"), patch->toString());
+    Patch *parsed = editSource(tr("Patch source code"), patch->toString(), true /* whole patch */);
     if (parsed) {
         parsed->cloneInto(patch);
         patch->commit(tr("editing patch source code"));
@@ -1533,7 +1533,7 @@ void PatchOperator::editPatchSource()
 void PatchOperator::editSectionSource()
 {
     QString title = tr("Source code of section '%1'").arg(patch->currentSection()->getNonemptyTitle());
-    Patch *parsed = editSource(title, section()->toString(true /* supress empty header */));
+    Patch *parsed = editSource(title, section()->toString(true /* supress empty header */), false);
     if (parsed) {
         int sectionIndex = patch->currentSectionIndex();
         patch->removeSection(sectionIndex);
@@ -1546,9 +1546,7 @@ void PatchOperator::editSectionSource()
 }
 void PatchOperator::editCircuitSource()
 {
-    // Add one empty line, otherwise we will lose the first comment
-    // line of the circuit if it has any
-    Patch *parsed = editSource(tr("Circuit source code"), "\n" + section()->currentCircuit()->toString());
+    Patch *parsed = editSource(tr("Circuit source code"), section()->currentCircuit()->toString(), false);
     if (parsed) {
         int circuitIndex = section()->currentCircuitId();
         section()->deleteCircuit(circuitIndex);
@@ -1700,7 +1698,7 @@ void PatchOperator::close()
     if (checkModified())
         mainWindow->close();
 }
-Patch *PatchOperator::editSource(const QString &title, QString oldSource)
+Patch *PatchOperator::editSource(const QString &title, QString oldSource, bool wholePatch)
 {
     SourceCodeEditor editor(title, oldSource, mainWindow, false /* readonly */);
     PatchParser parser;
@@ -1709,6 +1707,13 @@ Patch *PatchOperator::editSource(const QString &title, QString oldSource)
             return 0; // User aborted
         try {
             QString newSource = editor.getEditedText();
+            // The parser will interprete the first line of the patch as
+            // the Title if it starts with '#'. So when the source code
+            // is just that of a circuit or section, the first comment line
+            // will be missing. In order to avoid that, we add a dummy
+            // title here.
+            if (!wholePatch)
+                newSource = "# TITLE\n" + newSource;
             Patch parsed;
             parser.parseString(newSource, &parsed);
             return parsed.clone();
