@@ -423,8 +423,9 @@ QString Circuit::toDeployString(JackDeduplicator &jdd) const
     s += "[" + name + "]\n";
     for (qsizetype i=0; i<jackAssignments.length(); i++)
     {
-        QString jackLine = jackAssignments[i]->toDeployString(jdd) + "\n";
-        s += jackLine;
+        QString jackline = jackAssignments[i]->toDeployString(jdd);
+        if (jackline != "")
+            s += jackline + "\n";
     }
     return s;
 }
