@@ -369,5 +369,6 @@
         <file>firmware/m4-orange-3.fw</file>
         <file>firmware/master18-blue-6.fw</file>
         <file>firmware/x7-orange-1012.fw</file>
+        <file>images/faceplates/db8e.png</file>
     </qresource>
 </RCC>

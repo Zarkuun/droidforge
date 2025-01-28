@@ -557,6 +557,13 @@ unsigned DroidFirmware::numControllerRegisters(const QString &module, char regis
         case REGISTER_LED:     return 4;
         }
     }
+    else if (module == "db8e") {
+        switch (registerType) {
+        case REGISTER_ENCODER: return 1;
+        case REGISTER_BUTTON:  return 9;
+        case REGISTER_LED:     return 9;
+        }
+    }
 
     return 0;
 }

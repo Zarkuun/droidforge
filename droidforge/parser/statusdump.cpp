@@ -4,7 +4,6 @@
 #include "atomregister.h"
 #include "parseexception.h"
 #include "statusdump.h"
-#include "globals.h"
 
 /*
 DROID status

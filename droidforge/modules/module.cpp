@@ -1,6 +1,5 @@
 #include "module.h"
 #include "colorscheme.h"
-#include "globals.h"
 #include "tuning.h"
 #include "editoractions.h"
 #include "mainwindow.h"
@@ -45,7 +44,7 @@ void Module::createRegisterItems(QGraphicsScene *scene, int moduleIndex, int con
         if (type == REGISTER_EXTRA || type == REGISTER_LED || type == REGISTER_NORMALIZE)
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
-            QRectF rect = registerRect(type, j+1, rectAspect(type), 1).translated(pos().x(), 0);
+            QRectF rect = registerRect(type, j+1, rectAspect(type, j+1), 1).translated(pos().x(), 0);
             auto item = scene->addRect(rect, QPen(QColor(0, 0, 0, 0), 0));
             QString regname = registerAtom(type,  j+1).toString();
             item->setData(DATA_INDEX_DRAGGER_PRIO, 2);
@@ -100,7 +99,7 @@ void Module::paintRegisterHilites(QPainter *painter, int usage)
 }
 void Module::paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number)
 {
-    float ra = rectAspect(type);
+    float ra = rectAspect(type, number);
     QRectF r = registerRect(type, number, ra, 1); // usage);
     QPen pen;
 
@@ -165,7 +164,7 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
     register_type_t regtype = atom.getRegisterType();
     unsigned regnum = atom.getNumber() - numberOffset(regtype);
 
-    QRectF rr = registerRect(regtype, regnum, rectAspect(regtype), 1);
+    QRectF rr = registerRect(regtype, regnum, rectAspect(regtype, regnum), 1);
     qreal mid = (rr.left() + rr.right()) / 2;
     float dist = RACV_PIXEL_PER_HP * labelDistance(regtype, regnum);
     float width = RACV_PIXEL_PER_HP * labelWidth(regtype, regnum);
@@ -218,7 +217,7 @@ AtomRegister *Module::registerAt(const QPoint &pos) const
         if (type == REGISTER_EXTRA)
             continue; // This should not be clickable
         for (unsigned j=0; j<numRegisters(register_types[i]); j++) {
-            QRectF r = registerRect(type, j+1, rectAspect(type), 1);
+            QRectF r = registerRect(type, j+1, rectAspect(type, j+1), 1);
             if (r.contains(pos)) {
                 return registerAtom(type, j+1).clone();
             }

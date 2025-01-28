@@ -19,7 +19,7 @@ float ModuleE4::registerSize(register_type_t type, unsigned) const
     if (type == REGISTER_ENCODER || type == REGISTER_BUTTON)
         return CONTROL_LARGE_POT_SIZE;
     else
-        return 7.0;
+        return CONTROL_ENCODER_LEDRING_SIZE;
 }
 float ModuleE4::labelDistance(register_type_t type, unsigned) const
 {
@@ -32,7 +32,7 @@ float ModuleE4::labelWidth(register_type_t, unsigned) const
 {
     return 5.0;
 }
-float ModuleE4::rectAspect(register_type_t type) const
+float ModuleE4::rectAspect(register_type_t type, unsigned) const
 {
     if (type == REGISTER_LED)
         return 1.0;

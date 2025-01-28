@@ -16,7 +16,7 @@ protected:
     float registerSize(register_type_t type, unsigned number) const;
     float labelDistance(register_type_t, unsigned) const; // in HP
     float labelWidth(register_type_t, unsigned) const;
-    float rectAspect(register_type_t) const;
+    float rectAspect(register_type_t, unsigned) const;
 };
 
 #endif // MODULEM4_H

@@ -43,7 +43,7 @@ float ModuleX7::labelDistance(register_type_t, unsigned) const
 {
     return -2.45;
 }
-float ModuleX7::rectAspect(register_type_t type) const
+float ModuleX7::rectAspect(register_type_t type, unsigned) const
 {
     if (type == REGISTER_RGB_LED)
         return 1.0;
