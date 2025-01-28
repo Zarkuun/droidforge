@@ -134,6 +134,7 @@
 #define CONTROL_JACK_SIZE                    2.5
 #define CONTROL_E4_LED_RING_SIZE             2.8
 #define CONTROL_EXTRA_SIZE                   11.5
+#define CONTROL_ENCODER_LEDRING_SIZE                 7.0
 
 // Source code editor
 #define SCD_WIDTH                            600

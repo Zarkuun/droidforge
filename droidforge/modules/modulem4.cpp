@@ -46,7 +46,7 @@ float ModuleM4::labelWidth(register_type_t, unsigned) const
     return 3.4;
 }
 
-float ModuleM4::rectAspect(register_type_t type) const
+float ModuleM4::rectAspect(register_type_t type, unsigned) const
 {
     if (type == REGISTER_POT)
         return 2.2;

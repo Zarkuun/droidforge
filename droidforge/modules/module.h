@@ -71,7 +71,7 @@ public:
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
-    virtual float rectAspect(register_type_t) const { return 0.0; };
+    virtual float rectAspect(register_type_t, unsigned) const { return 0.0; };
 
 private:
     void paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number);

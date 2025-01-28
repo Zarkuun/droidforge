@@ -63,6 +63,8 @@ QtApplication {
         "main/windowlist.h",
         "modules/modulebling.cpp",
         "modules/modulebling.h",
+        "modules/moduledb8e.cpp",
+        "modules/moduledb8e.h",
         "modules/modulee4.cpp",
         "modules/modulee4.h",
         "modules/modulemaster18.cpp",
