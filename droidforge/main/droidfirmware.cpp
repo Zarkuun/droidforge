@@ -381,6 +381,8 @@ QString DroidFirmware::jackTypeExplanation(QString symbol, bool isInput) const
             return TR("This input expects a value between 0.0 and 1.0. The value 0.5 is special and means the neutral or center position. Negative input values are converted to 0.0. Values about 1.0 are regarded as 1.0.");
         else if (symbol == "fraction")
             return TR("This input expects a value between 0.0 and 1.0 (or 0% and 100%). Negative input values are converted to 0.0. Values about 1.0 are regarded as 1.0");
+        else if (symbol == "text")
+            return TR("This input expects a text for the display of a DB8E controller.");
 
     }
     else {
