@@ -170,16 +170,22 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
     float dist = RACV_PIXEL_PER_HP * labelDistance(regtype, regnum);
     float width = RACV_PIXEL_PER_HP * labelWidth(regtype, regnum);
 
-    QRectF r(mid - width / 2, rr.bottom() + dist,
-             width, RACV_LABEL_HEIGHT);
+    QRectF labelRect;
+    QPointF p = labelPosition(regtype, regnum);
+    if (p.isNull())
+        labelRect = QRectF(mid - width / 2, rr.bottom() + dist,
+                 width, RACV_LABEL_HEIGHT);
+    else
+        labelRect = QRectF(RACV_PIXEL_PER_HP * p.x(), RACV_PIXEL_PER_HP * p.y(),
+                           width, RACV_LABEL_HEIGHT);
 
     painter->setPen(QColor(0, 0, 0));
     painter->setBrush(QColor(255, 255, 255));
-    painter->drawRoundedRect(r, 10, 10);
+    painter->drawRoundedRect(labelRect, 10, 10);
     QFont font;
     font.setPixelSize(50);
     painter->setFont(font);
-    painter->drawText(r, Qt::TextSingleLine | Qt::AlignCenter | Qt::AlignVCenter, text);
+    painter->drawText(labelRect, Qt::TextSingleLine | Qt::AlignCenter | Qt::AlignVCenter, text);
 }
 bool Module::haveRegister(AtomRegister atom)
 {

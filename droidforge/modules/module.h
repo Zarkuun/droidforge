@@ -51,6 +51,7 @@ public:
     virtual QPointF registerPosition(register_type_t, unsigned) const = 0; // in HP
     virtual float registerSize(register_type_t, unsigned) const = 0; // in HP
     virtual float labelDistance(register_type_t, unsigned) const { return 0; }; // in HP
+    virtual QPointF labelPosition(register_type_t, unsigned) const { return QPointF(0,0); };
     virtual float labelWidth(register_type_t, unsigned) const { return 2.0; }; // never called
     virtual bool labelNeedsBackground(register_type_t, unsigned) const { return false; };
     virtual AtomRegister registerAtom(register_type_t type, unsigned number) const;
