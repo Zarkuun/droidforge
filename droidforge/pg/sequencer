@@ -283,6 +283,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
                 ( "off", "None of both" ),
                 ( "v", "Just the velocity" ),
                 ( "vg", "Velocity plus gate" ),
+                ( "g", "Just extra gate (using fader)" ),
             ]
         },
         {
@@ -517,11 +518,11 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
         "title" : "DMMDM's authentic live setup",
         "parameters" : {
             "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "g8"       : 1       ,
-            "tracks"   : 4         , "steps"    : "32"    ,                        "t1out"    : "trs1",
-            "t2out"    : "trs1"    , "t3out"    : "trs2"  , "t4out"    : "cvgate", "t5out"    : "cvgate",
+            "tracks"   : 4         , "steps"    : "32"    ,                        "t1out"    : "cvgate",
+            "t2out"    : "cvgate"  , "t3out"    : "cvgate", "t4out"    : "cvgate", "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
-            "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "vg"    ,
+            "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "g"     ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : True    , "pss"      : False   ,
             "poct"     : True      , "pdt"      : True    , "pact"     : True    , "ppat"     : False   ,
@@ -1053,7 +1054,7 @@ def allocate_gate_outputs():
                 "Gate output track %d" % track)
 
     for track in range(1, arguments["tracks"] + 1):
-        if arguments["velo"] == "vg" and track_is_cvgate(track):
+        if arguments["velo"] in [ "vg", "g" ]  and track_is_cvgate(track):
             gate_outputs["xgate%d" % track] = get_gate_output(
                 "GateB %d" % track,
                 "Additional gate for track %d" % track)
@@ -1532,7 +1533,7 @@ def track_midi_output(track):
     if arguments["velo"] in [ "v", "vg" ]:
         parameters.append(( "velocity", "_T%d_VELOCITY * 0.9 + 0.1" % track ))
 
-    if arguments["velo"] == "vg":
+    if arguments["velo"] in [ "vg", "g" ]:
         parameters += [
             ( "ccnumber1", 1 ),
             ( "cc1", "_T%d_EXTRAGATE" % track ),
@@ -2189,18 +2190,22 @@ def track_section(track):
                 "Velo %d" % track,
                 "Modulation CV output track %d" % track)
 
-        if arguments["velo"] == "vg":
+        if arguments["velo"] in [ "vg", "g" ]:
             extragate_output_jack = gate_outputs["xgate%d" % track]
 
     # Linked sequencer for extra CV --------------------------
     if arguments["velo"] != "off":
+        gate_params = []
+        default_cv = 0.5
         if track_is_midi(track):
             out = "_T%d_VELOCITY" % track
+        elif arguments["velo"] == "g":
+            out = extragate_output_jack
         else:
             out = velo_output_jack
 
         if arguments["velo"] == "vg":
-            gate_params = [
+            gate_params += [
                 ( "gate", "_T%d_EXTRAGATE" % track
                              if track_is_midi(track)
                              else extragate_output_jack ),
@@ -2208,8 +2213,12 @@ def track_section(track):
                 ( "gatelength", 0.99 ),
             ]
             extra_comment = " and extra gate"
+        elif arguments["velo"] == "g":
+            gate_params.append(( "cvnotches", 2 ))
+            extra_comment = " (used as extra gate)"
+            default_cv = 1
+
         else:
-            gate_params = []
             extra_comment = ""
 
         patch += circuit("motoquencer",
@@ -2221,7 +2230,7 @@ def track_section(track):
             [
                 ( "cv", out ),
                 ( "cvrange", 1 ),
-                ( "defaultcv", 0.5 ),
+                ( "defaultcv", default_cv ),
                 ( "quantize", 0),
                 ( "linktonext", 1 if (arguments["act"] or arguments["gl"]) else 0),
             ], "Sequencer for velocity" + extra_comment )
