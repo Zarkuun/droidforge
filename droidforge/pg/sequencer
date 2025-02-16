@@ -457,6 +457,14 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "name" : "sos1",
             "title" : "Trigger for start of sequence of track 1",
         },
+        {   "name" : "rootscalemidi",
+            "title" : "Set root and scale from MIDI IN",
+            "enum" : [
+                ( "off", "No root/scale from MIDI" ),
+                ( "trs1", "TRS1: Channel 16 note = root, CC#1 = scale" ),
+                ( "trs2", "TRS2: Channel 16 note = root, CC#1 = scale" ),
+            ],
+        },
         {
             "name" : "sinflink",
             "title" : "Receive state of Sinfonion on I1 of MASTER18",
@@ -488,7 +496,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
             "resetout" : False     , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
-            "runningin" : "off"    , "defgate"  : "0",
+            "rootscalemidi" : "off", "runningin" : "off"    , "defgate"  : "0",
         }
     },
     {
@@ -510,7 +518,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "clear"     : True      , "copy"     : False    , "inv"      : False   , "sinflink" : "off"   ,
             "clockin"   : False     , "resetin"  : False    , "clockout" : False   , "runclock" : False   ,
             "resetout"  : False     , "sos1"     : False    , "dualout"  : 0       , "divclock" : False   ,
-            "runningin" : "off"     , "defgate"  : "1",
+            "rootscalemidi" : "off", "runningin" : "off"     , "defgate"  : "1",
         }
     },
     {
@@ -529,10 +537,10 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "pcdeven"  : False     , "pcdodd"   : False   , "presets"  : 3       , "intclk"   : True    ,
             "arp"      : True      , "ssb"      : True    , "tbr"      : True    , "act"      : True    ,
             "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
-            "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "ton"   ,
+            "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : True    , "runclock" : True    ,
-            "resetout" : True      , "sos1"     : False   , "dualout"  : 3       , "divclock" : False   ,
-            "runningin" : "trs1"   , "defgate"  : "0",
+            "resetout" : True      , "sos1"     : False   , "dualout"  : 0       , "divclock" : False   ,
+            "rootscalemidi" : "trs2", "runningin" : "trs1"   , "defgate"  : "0",
         }
     },
     ],
@@ -667,6 +675,18 @@ def section_tonality():
     # Root note and scale
     root_sources = [ "_ROOT_FADER" ]
     degree_sources = [ "_DEGREE_FADER" ]
+
+    # Get root and scale via MIDI
+    if arguments["rootscalemidi"] != "off":
+        patch += circuit("midiin", [
+                            ( "trs", 1 if arguments["rootscalemidi"] == "trs1" else 2 ),
+                            ( "pitch1", "_MIDI_IN_ROOT_PITCH" ),
+                            ( "ccnumber1", 1 ),
+                            ( "cc1", "_MIDI_IN_SCALE_CC" ),
+                        ],
+                        "Get root and scale from MIDI IN")
+        root_sources.append("_MIDI_IN_ROOT_PITCH * 120")
+        degree_sources.append("_MIDI_IN_SCALE_CC * 127")
 
     if arguments["sinflink"] != "off":
         root_sources.append("_SINFLINK_ROOT")
