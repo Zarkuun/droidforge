@@ -1,5 +1,4 @@
 #include "cableselector.h"
-#include "globals.h"
 #include "tuning.h"
 #include "cablecolorizer.h"
 
@@ -80,8 +79,11 @@ void CableSelector::installFocusFilter(QWidget *w)
 }
 void CableSelector::cableEdited(QString text)
 {
-    if (text != text.toUpper())
+    if (text != text.toUpper()) {
+        int pos = lineEdit->cursorPosition();
         lineEdit->setText(text.toUpper());
+        lineEdit->setCursorPosition(pos);
+    }
     updateIcon();
     updateList(lineEdit->text());
 }

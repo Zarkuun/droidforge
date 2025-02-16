@@ -1,14 +1,10 @@
 #include "atomselector.h"
-#include "atomnumber.h"
-#include "atomregister.h"
 #include "cableselector.h"
 #include "colorscheme.h"
 #include "controlselector.h"
-#include "globals.h"
 #include "numberselector.h"
 #include "inputoutputselector.h"
 #include "droidfirmware.h"
-#include "iconbase.h"
 #include "tuning.h"
 
 #include <QGridLayout>
