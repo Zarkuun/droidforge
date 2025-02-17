@@ -760,10 +760,16 @@ def section_tonality():
         ( "startvalue", 2 ),
         ( "ledcolor", COLOR_OCTAVE_SWITCH ),
         ( "ledvalue", -0.3 ),
-        ( "output", "_GLOBAL_OCTAVE_SWITCH" ),
+        ( "output", "_GLOBAL_OCTAVE_SWITCH_UNCLOCKED" ),
         ( "button", "_RESET_OCTAVE_SWITCH" ),
         ( "clear", "_RESET_OCTAVE_SWITCH" ),
     ], "Global octave switch for all tracks")
+
+    patch += circuit("sample", [
+        ( "input", "_GLOBAL_OCTAVE_SWITCH_UNCLOCKED" ),
+        ( "sample", "_CLOCK" ),
+        ( "output", "_GLOBAL_OCTAVE_SWITCH" ),
+    ])
 
     # Diatonic transposition (note shift)
     patch += circuit("motorfader", select + [
@@ -2559,8 +2565,14 @@ def arpeggio_menu(track):
         ( "ledcolor", COLOR_OCTAVE_SWITCH ),
         ( "startvalue", 2 ),
         ( "ledvalue", 1 ),
-        ( "output", "_T%d_ARP_OCTAVE_SWITCH" % track ),
+        ( "output", "_T%d_ARP_OCTAVE_SWITCH_UNCLOCKED" % track ),
     ], "Seperate octave switch for the arpeggio" )
+
+    patch += circuit("sample", [
+        ( "input", "_T%d_ARP_OCTAVE_SWITCH_UNCLOCKED" % track ),
+        ( "sample", "_CLOCK" ),
+        ( "output", "_T%d_ARP_OCTAVE_SWITCH" % track ),
+    ], "Prevent ugly switches at bad timing" )
 
     patch += circuit("motorfader", params + [
         ( "fader", 4 ),
@@ -2679,7 +2691,7 @@ def track_menu(track):
             notches = 5,
             startvalue = 2,
             ledcolor = COLOR_OCTAVE_SWITCH,
-            outname = "OCTAVE",
+            outname = "OCTAVE_UNCLOCKED",
             comment = "Octave switch: -2, -1, 0, +1, +2")
 
     # 4. Diatonic transposition
@@ -2694,6 +2706,12 @@ def track_menu(track):
             ledcolor = COLOR_NOTESHIFT,
             outname = "NOTESHIFT",
             comment = "Diatonic transposition")
+
+    patch += circuit("sample", [
+        ( "input", "_T%d_OCTAVE_UNCLOCKED" % track),
+        ( "sample", "_CLOCK" ),
+        ( "output", "_T%d_OCTAVE" % track),
+    ], "Prevent octave switches happending between clock ticks" )
 
     patch += circuit("sample", [
         ( "input", "_T%d_NOTESHIFT" % track),
