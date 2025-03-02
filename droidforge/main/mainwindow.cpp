@@ -410,9 +410,6 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_FOLLOW_CABLE, menu);
     ADD_ACTION(ACTION_RENAME_CABLE, menu);
     ADD_ACTION(ACTION_REWRITE_CABLE_NAMES, menu);
-
-    menu->addSeparator();
-
     ADD_ACTION(ACTION_START_PATCHING, menu);
     ADD_ACTION(ACTION_FINISH_PATCHING, menu);
     ADD_ACTION(ACTION_ABORT_PATCHING, menu);
@@ -424,6 +421,7 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
     ADD_ACTION(ACTION_EDIT_LABEL, menu);
     ADD_ACTION(ACTION_EDIT_CIRCUIT_SOURCE, menu);
+    ADD_ACTION(ACTION_FOLLOW_PARAMETER, menu);
 }
 void MainWindow::createSectionMenu()
 {

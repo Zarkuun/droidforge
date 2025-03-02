@@ -208,6 +208,9 @@ void EditorActions::createActions()
     actions[ACTION_FOLLOW_REGISTER] = new QAction(tr("Find related control"), this);
     actions[ACTION_FOLLOW_REGISTER]->setShortcut(QKeySequence(tr("?")));
 
+    actions[ACTION_FOLLOW_PARAMETER] = new QAction(tr("Find same parameter in other circuits"), this);
+    actions[ACTION_FOLLOW_PARAMETER]->setShortcut(QKeySequence(tr("?")));
+
     actions[ACTION_FIND] = new QAction(tr("Find..."), this);
     actions[ACTION_FIND]->setShortcut(QKeySequence(tr("Ctrl+F")));
 
@@ -497,20 +500,22 @@ void EditorActions::changeSelection()
 void EditorActions::moveCursor()
 {
     Circuit *circuit = section()->currentCircuit();
-
     const Atom *atom = section()->currentAtom();
+    const JackAssignment *ja = section()->currentJackAssignment();
+
     actions[ACTION_EDIT_VALUE]->setEnabled(circuit);
     actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_FOLLOW_REGISTER]->setEnabled(atom && atom->isRegister());
+    actions[ACTION_FOLLOW_PARAMETER]->setEnabled(ja && section()->cursorPosition().column == 0);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(circuit);
-    actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(section()->currentJackAssignment());
+    actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(ja);
     actions[ACTION_EDIT_LABEL]->setEnabled(atom && atom->canHaveLabel());
     actions[ACTION_SORT_JACKS]->setEnabled(circuit);
 
     actions[ACTION_MOVE_CIRCUIT_UP]->setEnabled(circuit && section()->currentCircuitId() > 0);
     actions[ACTION_MOVE_CIRCUIT_DOWN]->setEnabled(circuit && section()->currentCircuitId() + 1 < (int)section()->numCircuits());
-    JackAssignment *ja = section()->currentJackAssignment();
+
     bool expandPossible = circuit && ja && circuit->nextJackArrayName(
                     ja->jackName(), ja->jackType() == JACKTYPE_INPUT) != "";
     actions[ACTION_EXPAND_ARRAY]->setEnabled(expandPossible);

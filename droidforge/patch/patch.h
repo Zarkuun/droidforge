@@ -65,6 +65,7 @@ public:
     void setCursorTo(int section, const CursorPosition &pos);
     bool moveCursorForward(bool autoUnfold);
     void moveCursorBackward(bool autoUnfold);
+    void moveCursorToNextJa(bool autoUnfold);
     unsigned searchHitPosition(const QString &text, unsigned *count);
 
     // More complex analysis

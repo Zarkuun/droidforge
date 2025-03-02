@@ -277,6 +277,53 @@ void Patch::setCursorTo(int section, const CursorPosition &pos)
     sectionIndex = section;
     currentSection()->setCursor(pos);
 }
+void Patch::moveCursorToNextJa(bool autoUnfold)
+{
+    // We assume that the cursor is positioned at a jack assignment.
+    int sectionIndex = currentSectionIndex();
+    CursorPosition pos = currentSection()->cursorPosition();
+
+    if (pos.row + 1 < currentCircuit()->numJackAssignments()) {
+        pos.row ++;
+        setCursorTo(sectionIndex, pos);
+        return;
+    }
+
+    // Need to switch to next non-empty circuit
+    pos.row = 0;
+    while (true) {
+        pos.circuitNr ++;
+        if (pos.circuitNr >= (int)currentSection()->numCircuits())
+            break;
+
+        const Circuit *circ = currentSection()->circuit(pos.circuitNr);
+        if (circ->numJackAssignments() > 0) {
+            pos.row = 0;
+            setCursorTo(sectionIndex, pos);
+            return;
+        }
+    }
+
+    // Need to switch to next non-empty section
+    pos.circuitNr = 0;
+    while (true) {
+        sectionIndex ++;
+        if (sectionIndex >= numSections())
+            sectionIndex = 0;
+
+        const PatchSection *sec = section(sectionIndex);
+        pos.circuitNr = 0;
+        while (pos.circuitNr < (int)sec->numCircuits() &&
+               sec->circuit(pos.circuitNr)->numJackAssignments() == 0)
+            pos.circuitNr ++;
+        if (pos.circuitNr < (int)sec->numCircuits()) {
+            setCursorTo(sectionIndex, pos);
+            return;
+        }
+        // This loop must end since there must be one non-empty circuit
+        // as our assumption was that we start at a jack assignment
+    }
+}
 bool Patch::moveCursorForward(bool autoUnfold)
 {
     bool wrapped = false;
