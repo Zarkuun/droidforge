@@ -75,6 +75,7 @@ public:
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode, int fromRow=0, int toRow=-1);
+    void rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
     QString prefixOfJack(const QString &jackName);
     unsigned baseRAMUsage() const;

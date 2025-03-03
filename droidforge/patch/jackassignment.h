@@ -44,6 +44,7 @@ public:
     void changeJack(QString j) { jack = j; };
     void collectRegisterAtoms(RegisterList &, bool skipControls=false) const;
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
+    void rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     virtual ~JackAssignment();

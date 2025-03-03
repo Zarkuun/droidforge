@@ -113,6 +113,14 @@ void JackAssignment::rewriteCableNames(const QString &remove, const QString &ins
              atom->rewriteCableNames(remove, insert, mode);
     }
 }
+void JackAssignment::rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix)
+{
+    for (int i=1; i<=3; i++) {
+         Atom *atom = atomAt(i);
+         if (atom)
+             atom->rewriteCablePrefix(fromPrefix, toPrefix);
+    }
+}
 QList<PatchProblem *> JackAssignment::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *>problems = collectSpecificProblems(patch);

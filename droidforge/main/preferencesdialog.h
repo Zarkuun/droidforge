@@ -16,6 +16,7 @@ class PreferencesDialog : public Dialog
     QCheckBox *checkboxDeduplicateJacks;
     QCheckBox *checkboxIgnoreUnknownJacks;
     QCheckBox *checkboxDenounceDeprecatedCircuits;
+    QCheckBox *checkboxSyncClonedSections;
     QCheckBox *checkboxPollX7;
     QCheckBox *checkboxPollSD;
     QCheckBox *checkboxShipFirmware;

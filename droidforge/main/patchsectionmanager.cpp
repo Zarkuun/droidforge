@@ -478,19 +478,21 @@ void PatchSectionManager::rebuildGraphics()
     QRectF titleRect(PSM_SIDE_PADDING, PSM_TOP_PADDING,
                             viewport()->width() - 2 * PSM_SIDE_PADDING,
                             CIRV_HEADER_HEIGHT);
-    // scene()->addRect(titleRect, QColor(255, 255, 255));
-    // QGraphicsTextItem *text = scene()->addText(tr("SECTIONS"));
-    // int textWidth = text->boundingRect().width();
-    // text->setPos((viewport()->width() - textWidth) / 2, 12);
-    // text->setDefaultTextColor(COLOR(PSM_COLOR_TITLE));
 
     int y = 11; // titleRect.bottom() + 5;
     int width = viewport()->width() - 2 * PSM_SIDE_PADDING;
 
+
+    QSettings settings;
+    bool showSyncedSections = settings.value("editing/sync_cloned_sections", false).toBool();
+
     for (qsizetype i=0; i<patch->numSections(); i++) {
         PatchSection *section = patch->section(i);
         unsigned numProblems = patch->numProblemsInSection(i);
-        PatchSectionTitleView *item = new PatchSectionTitleView(section->getNonemptyTitle(), width, numProblems);
+        QString title = section->getNonemptyTitle();
+        if (showSyncedSections && patch->sectionHasClones(i))
+            title += " ↯";
+        PatchSectionTitleView *item = new PatchSectionTitleView(title, width, numProblems);
         titleViews.append(item);
         item->setData(DATA_INDEX_SECTION_INDEX, i);
         item->setData(DATA_INDEX_DRAGGER_PRIO, 1);

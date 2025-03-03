@@ -52,6 +52,8 @@ public:
 
 private:
     void clearVersions();
+    void sectionCopyDetection();
+    void intelligentSectionSync(const PatchSection *source, int targetIndex, QString fromPrefix, QString toPrefix);
 };
 
 #endif // PATCHEDITENGINE_H

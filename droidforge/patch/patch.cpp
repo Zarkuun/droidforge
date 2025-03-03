@@ -277,7 +277,7 @@ void Patch::setCursorTo(int section, const CursorPosition &pos)
     sectionIndex = section;
     currentSection()->setCursor(pos);
 }
-void Patch::moveCursorToNextJa(bool autoUnfold)
+void Patch::moveCursorToNextJa(bool)
 {
     // We assume that the cursor is positioned at a jack assignment.
     int sectionIndex = currentSectionIndex();
@@ -1076,6 +1076,17 @@ bool Patch::needsX7()
                 return true;
     }
 
+    return false;
+}
+bool Patch::sectionHasClones(unsigned si) const
+{
+    for (unsigned s=0; s<numSections(); s++) {
+        if (s == si)
+            continue;
+        QString ignoreA, ignoreB;
+        if (section(s)->isCopyOf(section(si), ignoreA, ignoreB))
+            return true;
+    }
     return false;
 }
 void Patch::remapRegister(AtomRegister from, AtomRegister to)

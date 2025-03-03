@@ -31,12 +31,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mainLayout->addWidget(box);
 
     // Patch validation
-    box = new QGroupBox(tr("Patch validation"));
+    box = new QGroupBox(tr("Patch validation and editing"));
     layout = new QVBoxLayout(box);
     checkboxIgnoreUnknownJacks = new QCheckBox(tr("Do not treat unknown parameters as errors"));
     layout->addWidget(checkboxIgnoreUnknownJacks);
     checkboxDenounceDeprecatedCircuits = new QCheckBox(tr("Denounce deprecated circuits"));
     layout->addWidget(checkboxDenounceDeprecatedCircuits);
+    checkboxSyncClonedSections = new QCheckBox(tr("Keep cloned sections in sync"));
+    layout->addWidget(checkboxSyncClonedSections);
     mainLayout->addWidget(box);
 
     // Polling for activation
@@ -89,6 +91,7 @@ void PreferencesDialog::loadSettings()
     checkboxDeduplicateJacks->setChecked(settings.value("compression/deduplicate_jacks", false).toBool());
     checkboxIgnoreUnknownJacks->setChecked(settings.value("validation/ignore_unknown_jacks", false).toBool());
     checkboxDenounceDeprecatedCircuits->setChecked(settings.value("validation/denounce_deprecated_circuits", true).toBool());
+    checkboxSyncClonedSections->setChecked(settings.value("editing/sync_cloned_sections", false).toBool());
     checkboxPollX7->setChecked(settings.value("activation/poll_for_x7", SETTING_POLL_DEFAULT).toBool());
     checkboxPollSD->setChecked(settings.value("activation/poll_for_sd", SETTING_POLL_DEFAULT).toBool());
     checkboxShipFirmware->setChecked(settings.value("activation/ship_firmware", false).toBool());
@@ -102,6 +105,7 @@ void PreferencesDialog::saveSettings() const
     settings.setValue("compression/deduplicate_jacks", checkboxDeduplicateJacks->isChecked());
     settings.setValue("validation/ignore_unknown_jacks", checkboxIgnoreUnknownJacks->isChecked());
     settings.setValue("validation/denounce_deprecated_circuits", checkboxDenounceDeprecatedCircuits->isChecked());
+    settings.setValue("editing/sync_cloned_sections", checkboxSyncClonedSections->isChecked());
     settings.setValue("activation/poll_for_x7", checkboxPollX7->isChecked());
     settings.setValue("activation/poll_for_sd", checkboxPollSD->isChecked());
     settings.setValue("activation/ship_firmware", checkboxShipFirmware->isChecked());
@@ -131,6 +135,32 @@ void PreferencesDialog::editPreferences()
                                     "or even crash in an endless loop.\n\n"
                                     "In case of trouble disable this setting and do a factory reset\n"
                                     "on your master.")
+                                     .arg(the_firmware->version()));
+            }
+
+            if (settings.value("editing/sync_cloned_sections", false).toBool())
+            {
+                HintDialog::hint("sync_cloned_sections",
+                                 tr("You have enabled the syncing of cloned sections.\n\n"
+                                    "This feature helps you to manage more complex patches in situations where you\n"
+                                    "have multiple \"instances\" of something. Let's assume your patch does the same\n"
+                                    "thing, but for four different synth voices or tracks.\n"
+                                    "\n"
+                                    "Create one section for each voice. Make them completely identical except for\n"
+                                    "prefixes in the cable names. For example each cable in the section for voice 1\n"
+                                    "starts with VOICE1_.  Global cables like CLOCK do not have these prefixes, of\n"
+                                    "course.  Remove all inputs and ouputs and controlls registers out of these sections\n"
+                                    "somewhere else, because they would be different in each section. Use copy circuits\n"
+                                    "in some other section and use cables to refer to them.\n"
+                                    "\n"
+                                    "You can create cloned sections very easily by duplicating the first section,\n"
+                                    "selecting all circuits and then applying \"Rewrite cable names...\".\n"
+                                    "\n"
+                                    "If you have setup your patch in this way and enabled the global option we talk\n"
+                                    "about, any change in one of your sections will automatically applied to all its\n"
+                                    "clones, so that they always keep in sync.\n"
+                                    "\n"
+                                    "Sections that have clones are marked with ↯ in the section list.\n")
                                      .arg(the_firmware->version()));
             }
         }

@@ -65,6 +65,11 @@ void AtomCable::rewriteCableNames(const QString &remove, const QString &insert, 
         break;
     }
 }
+void AtomCable::rewriteCablePrefix(const QString &fromPrefix, const QString &toPrefix)
+{
+    if (name.startsWith(fromPrefix))
+        name = toPrefix + name.mid(fromPrefix.length());
+}
 
 void AtomCable::incrementForExpansion(const Patch *)
 {

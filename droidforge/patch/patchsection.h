@@ -3,7 +3,6 @@
 
 #include "circuit.h"
 #include "cursorposition.h"
-#include "jackassignmentinput.h"
 #include "patchproblem.h"
 #include "selection.h"
 #include "rewritecablesdialog.h"
@@ -58,6 +57,7 @@ public:
     bool allCircuitsFolded() const;
     void toggleFold();
     void rewriteSelectedCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
+    void rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix);
 
     const Selection *getSelection() const { return selection; };
     const Selection * const *getSelectionPointer() const { return &selection; };
@@ -99,11 +99,13 @@ public:
     void clearBookmarks();
     bool findBookmark(CursorPosition *pos);
     void setBookmark();
+    bool isCopyOf(const PatchSection *otherSection, QString &myPrefix, QString &otherPrefix) const;
 
 private:
     bool nextCursorPosition(CursorPosition &pos) const;
     bool nextCircuitCursorPosition(CursorPosition &pos) const;
     bool previousCursorPosition(CursorPosition &pos) const;
+    bool findCommonSuffix(QString a, QString b, QString &preA, QString &preB, QString &suffix) const;
 };
 
 

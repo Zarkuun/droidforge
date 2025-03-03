@@ -219,6 +219,11 @@ void Circuit::rewriteCableNames(const QString &remove, const QString &insert, Re
         ja->rewriteCableNames(remove, insert, mode);
     }
 }
+void Circuit::rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix)
+{
+    for (auto ja: jackAssignments)
+        ja->rewriteCablePrefixes(fromPrefix, toPrefix);
+}
 QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {
     QSettings settings;

@@ -92,6 +92,7 @@ public:
     unsigned countFaders() const;
     unsigned highestGatePrefix();
     bool needsX7();
+    bool sectionHasClones(unsigned si) const;
 
     // Modifications
     void addDescriptionLine(const QString &line);

@@ -6,6 +6,7 @@
 #include "jackassignmentoutput.h"
 #include "tuning.h"
 #include "atomnumber.h"
+#include "atomcable.h"
 
 
 PatchSection::PatchSection() : selection(0)
@@ -307,6 +308,29 @@ bool PatchSection::previousCursorPosition(CursorPosition &pos) const
         return true;
     }
 }
+bool PatchSection::findCommonSuffix(QString a, QString b, QString &preA, QString &preB, QString &suffix) const
+{
+    // Try to find non-empty strings preA and preB and suffix so that
+    // preA + suffix = a and preB + suffix = b
+
+    suffix = "";
+    while (a.size() > 0 && b.size() > 0) {
+        if (a.last(1) == b.last(1)) {
+            suffix = a.last(1) + suffix;
+            a.chop(1);
+            b.chop(1);
+        }
+        else
+            break;
+    }
+    if (a.size() > 0 && b.size() > 0 && suffix.size() > 0) {
+        preA = a;
+        preB = b;
+        return true;
+    }
+    else
+        return false;
+}
 void PatchSection::setCursorRow(int row)
 {
     cursor.row = row;
@@ -469,6 +493,11 @@ void PatchSection::rewriteSelectedCableNames(const QString &remove, const QStrin
                 atom->rewriteCableNames(remove, insert, mode);
         }
     }
+}
+void PatchSection::rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix)
+{
+    for (auto circuit: circuits)
+        circuit->rewriteCablePrefixes(fromPrefix, toPrefix);
 }
 Patch *PatchSection::getSelectionAsPatch() const
 {
@@ -716,4 +745,78 @@ void PatchSection::setBookmark()
 {
     Circuit *circuit = currentCircuit();
     circuit->setBookmark(cursor.row, cursor.column);
+}
+bool PatchSection::isCopyOf(const PatchSection *otherSection, QString &myPrefix, QString &otherPrefix) const
+{
+    if (numCircuits() != otherSection->numCircuits()) {
+        return false;
+    }
+
+    if (numCircuits() == 0)
+        return false; // trivial
+
+    // Prefix candidate
+    QString myPre, otherPre;
+
+    // Compare each circuit
+    for (unsigned c=0; c<numCircuits(); c++) {
+        const Circuit *myCircuit = circuits[c];
+        const Circuit *otherCircuit = otherSection->circuits[c];
+        if (myCircuit->getName() != otherCircuit->getName())
+            return false;
+
+        // Compare jack assignment lines (comment is ignored)
+        if (myCircuit->numJackAssignments() != otherCircuit->numJackAssignments())
+            return false;
+        for (unsigned j=0; j<myCircuit->numJackAssignments(); j++) {
+            const JackAssignment *myJa = myCircuit->jackAssignment(j);
+            const JackAssignment *otherJa = otherCircuit->jackAssignment(j);
+            if (myJa->jackName() != otherJa->jackName())
+                return false;
+
+            if (myJa->isUndefined())
+                return false;
+
+            // Compare atoms
+            int nc = myJa->numColumns();
+            for (int col=1; col<=nc; col++) {
+                const Atom *myAtom = myJa->atomAt(col);
+                const Atom *otherAtom = otherJa->atomAt(col);
+                if (myAtom == 0 && otherAtom == 0)
+                    continue;
+                else if (!(myAtom != 0 && otherAtom != 0))
+                    return false;
+                else if (myAtom->isCable() != otherAtom->isCable())
+                    return false;
+
+                // Non-cable atoms must be identical
+                else if (!myAtom->isCable()) {
+                    if (myAtom->toCanonicalString() != otherAtom->toCanonicalString())
+                        return false;
+                }
+
+                // Both are cables? Now comes the interesting part
+                else {
+                    QString myCable =  ((const AtomCable *)myAtom)->getCable();
+                    QString otherCable =  ((const AtomCable *)otherAtom)->getCable();
+                    if (myCable != otherCable) {
+                        QString myP, otherP, suffix; // all three will be non-empty
+                        if (!findCommonSuffix(myCable, otherCable, myP, otherP, suffix))
+                            return false;
+                        if (myPre == "") {
+                            myPre = myP;
+                            otherPre = otherP;
+                        }
+                        else if (myPre != myP || otherPre != otherP)
+                            return false;
+                        // else: Again same prefix renaming scheme
+                    }
+                }
+            }
+        }
+    }
+
+    myPrefix = myPre;
+    otherPrefix = otherPre;
+    return true;
 }
