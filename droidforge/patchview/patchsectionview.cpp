@@ -808,6 +808,13 @@ void PatchSectionView::pasteJacksFromClipboard()
         if (circuit->isDisabled() || jackDisabled)
             jaReparsed->setDisabled(true); // not allowed to paste enabled jacks into disabled circuit
 
+        // Remove any existent jack assignment in order to avoid duplicates
+        if (circuit->removeExistingJack(jaReparsed->jackName())) {
+            HintDialog::hint("paste_existing_jack",
+                             tr("You have pasted the parameter '%1' into a circuit\n"
+                                "that already has this parameter. This previous parameter\n"
+                                "has automatically been removed in order to avoid duplicates.").arg(jaReparsed->jackName()));
+        }
         circuit->insertJackAssignment(jaReparsed, index);
         if (!circuit->isFolded())
             section()->setCursorRow(index);

@@ -58,6 +58,7 @@ public:
     JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
     const JackAssignment *jackAssignment(unsigned i) const { return jackAssignments[i]; };
     const JackAssignment *findJack(const QString name) const;
+    bool removeExistingJack(const QString name);
     bool hasUndefinedJacks() const;
     void removeUndefinedJacks();
     QStringList missingJacks(jacktype_t jackType) const;

@@ -2,7 +2,6 @@
 #include "droidfirmware.h"
 #include "jackassignmentoutput.h"
 #include "patch.h"
-#include "globals.h"
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -108,6 +107,19 @@ const JackAssignment *Circuit::findJack(const QString name) const
             return ja;
     return 0;
 }
+
+bool Circuit::removeExistingJack(const QString name)
+{
+    bool oneRemoved = false;
+    for (qsizetype i=0; i<jackAssignments.count(); i++) {
+        if (jackAssignments[i]->jackName() == name) {
+            deleteJackAssignment(i);
+            i--;
+            oneRemoved = true;
+        }
+    }
+    return oneRemoved;
+}
 bool Circuit::hasUndefinedJacks() const
 {
     for (auto ja: jackAssignments)
@@ -119,13 +131,7 @@ void Circuit::removeUndefinedJacks()
 {
     for (qsizetype i=0; i<jackAssignments.count(); i++) {
         if (jackAssignments[i]->isUndefined()) {
-            jackAssignments.remove(i);
-            if (haveBookmark) {
-                if (bmRow > i)
-                    bmRow--;
-                else if (bmRow == i)
-                    clearBookmark();
-            }
+            deleteJackAssignment(i);
             i--;
         }
     }
