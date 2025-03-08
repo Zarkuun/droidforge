@@ -29,6 +29,7 @@ public:
             jacktype_t jackType = JACKTYPE_DONT_CARE);
 
 public slots:
+    void noJackFound();
     void cursorMoved(QString jack, jacktype_t jacktype, bool onActive);
 
 private:

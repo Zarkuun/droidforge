@@ -1,7 +1,6 @@
 #ifndef JACKSELECTOR_H
 #define JACKSELECTOR_H
 
-#include "droidfirmware.h"
 #include "jackview.h"
 #include "jackassignment.h"
 
@@ -45,6 +44,7 @@ private:
     void sanitizeCursorPosition();
 
 signals:
+    void noJackFound();
     void cursorMoved(QString jack, jacktype_t jacktype, bool onActive);
     void accepted();
 

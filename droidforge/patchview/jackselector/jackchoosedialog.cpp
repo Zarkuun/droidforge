@@ -55,6 +55,7 @@ JackChooseDialog::JackChooseDialog(QWidget *parent)
     mainLayout->setColumnStretch(2, 1);
     setLayout(mainLayout);
 
+    connect(jackSelector, &JackSelector::noJackFound, this, &JackChooseDialog::noJackFound);
     connect(jackSelector, &JackSelector::cursorMoved, this, &JackChooseDialog::cursorMoved);
     connect(jackSelector, &JackSelector::accepted, this, &JackChooseDialog::accept);
 }
@@ -92,6 +93,11 @@ QString JackChooseDialog::chooseJack(const QString &circuit, const QString &curr
         return dialog->getSelectedJack();
     else
         return "";
+}
+void JackChooseDialog::noJackFound()
+{
+    labelDescription->clear();
+    labelJackType->clear();
 }
 void JackChooseDialog::cursorMoved(QString jack, jacktype_t jacktype, bool onActive)
 {

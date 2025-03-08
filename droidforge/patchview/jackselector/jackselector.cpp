@@ -5,6 +5,7 @@
 #include "jackview.h"
 #include "jackline.h"
 #include "hintdialog.h"
+#include "droidfirmware.h"
 
 #include <QKeyEvent>
 #include <QtGlobal>
@@ -102,7 +103,6 @@ void JackSelector::initScene()
 void JackSelector::loadJacks(QString circuit, QString search)
 {
     initScene();
-    // scene()->clear();
     for (int i=0; i<2; i++)
         jackViews[i].clear();
 
@@ -343,8 +343,10 @@ const JackView *JackSelector::currentJack() const
 void JackSelector::selectCurrentJack(bool sel)
 {
     JackView *jv = currentJack();
-    if (!jv)
+    if (!jv) {
+        emit noJackFound();
         return;
+    }
 
     if (sel)
         jv->select(currentSubjack);
