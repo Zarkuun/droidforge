@@ -160,7 +160,7 @@ void Module::paintRegisterLabel(QPainter *painter, AtomRegister atom, const Regi
 {
     QString text = label.shorthand;
     if (text == "")
-        text = label.description.mid(0, 3); // MAX_LENGTH_SHORTHAND);
+        text = label.description.mid(0, MAX_LENGTH_SHORTHAND);
 
     register_type_t regtype = atom.getRegisterType();
     unsigned regnum = atom.getNumber() - numberOffset(regtype);
