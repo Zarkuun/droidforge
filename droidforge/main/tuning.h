@@ -39,7 +39,7 @@
 #define MAX_NUM_G8S                          4
 #define GENERATOR_START_TIMEOUT_MS           1000
 
-#define MAX_LENGTH_SHORTHAND                 12 // for register labels
+#define MAX_LENGTH_SHORTHAND                 18 // for register labels
 #define MAX_RECENT_FILES                     10
 #define UNDO_HISTORY_SIZE                    1000
 #define MAX_NUM_CONTROLLERS                  32 // When parsing a patch

@@ -1,7 +1,6 @@
 #include "controllerlabellingdialog.h"
 #include "modulebuilder.h"
 #include "registerlabelwidget.h"
-#include "globals.h"
 #include "mainwindow.h"
 
 #include <QGridLayout>
