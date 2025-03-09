@@ -57,6 +57,8 @@ public:
     void clearSelection();
     bool droidSDCardPresent() const { return sdCardPresent; };
     bool droidStatusDumpPresent() const { return statusDumpPresent; };
+    unsigned numStatusDumps() const { return statusDumps.count(); };
+    int currentStatusDumpIndex() const { return lastShownStatusDumpNr; };
     QString sdCardDir();
     bool droidX7Present() const { return x7Present; };
     bool interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPatch=0);
@@ -77,7 +79,6 @@ private slots:
     void upgradeMasterFirmware();
     void loadStatusDumps();
     void newPatch();
-    void showStatusDumpNr(int nr);
     void newPatchWithSameRack();
     void open();
     void openRecentFile(const QString filePath);
@@ -117,6 +118,8 @@ public slots:
     void clearRecentFiles();
     void search(QString text, int direction);
     void openPatchGenerator(int index, PatchGenerator *gen);
+    void showStatusDumpNr(int nr);
+    void showStatusDumpInfo();
 
 private:
     void clearWithControllersFromOtherRack(const Patch *other);

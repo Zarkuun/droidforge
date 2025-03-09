@@ -38,6 +38,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     , patchSizeIndicator(this, &thePatch)
     , cableStatusIndicator(this, &thePatch)
     , patchProblemIndicator(this, &thePatch)
+    , statusDumpIndicator(this, &thePatch)
     , clipboardIndicator(this)
     , moduleBuilder(this)
     , currentStatusDump(0)
@@ -140,9 +141,10 @@ void MainWindow::addStatusDumpsMenu(QMenu *menu)
 {
     fileMenu->addMenu(menu);
 }
-void MainWindow::showStatusDump(const StatusDump *dump)
+void MainWindow::showStatusDump(const StatusDump *dump, unsigned int count, int index)
 {
     currentStatusDump = dump;
+    statusDumpIndicator.updateStatus(count, index);
     emit patchModified();
 }
 QString MainWindow::patchTitle() const
@@ -534,6 +536,7 @@ void MainWindow::createStatusBar()
     statusbar->addPermanentWidget(&patchSizeIndicator);
     statusbar->addPermanentWidget(&patchProblemIndicator);
     statusbar->addPermanentWidget(&clipboardIndicator);
+    statusbar->addPermanentWidget(&statusDumpIndicator);
     findPanel.setDisabled(true);
     findPanel.hide();
     statusbar->addPermanentWidget(&findPanel);

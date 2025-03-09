@@ -13,10 +13,10 @@
 #include "patchsizeindicator.h"
 #include "cablestatusindicator.h"
 #include "patchproblemindicator.h"
+#include "statusdumpindicator.h"
 #include "findpanel.h"
 #include "modulebuilder.h"
 #include "updatehub.h"
-#include "patchgenerator.h"
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -53,6 +53,7 @@ class MainWindow : public QMainWindow, PatchView
     PatchSizeIndicator patchSizeIndicator;
     CableStatusIndicator cableStatusIndicator;
     PatchProblemIndicator patchProblemIndicator;
+    StatusDumpIndicator statusDumpIndicator;
     ClipboardIndicator clipboardIndicator;
 
     ModuleBuilder moduleBuilder;
@@ -83,7 +84,7 @@ public:
     void setStatusbarText(QString text);
     void addStatusDumpsMenu(QMenu *menu);
     const StatusDump *statusDump() { return currentStatusDump; };
-    void showStatusDump(const StatusDump *dump);
+    void showStatusDump(const StatusDump *dump, unsigned count, int index);
     PatchOperator *theOperator() { return &patchOperator; };
     EditorActions *theActions() { return &editorActions; };
     ModuleBuilder *theModuleBuilder() { return &moduleBuilder; };

@@ -17,6 +17,7 @@
 #include "patchgeneratordialog.h"
 #include "hintdialog.h"
 #include "waitforsddialog.h"
+#include "sourcecodeeditor.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -589,7 +590,7 @@ void PatchOperator::createStatusDumpsMenu()
 }
 void PatchOperator::loadStatusDumps()
 {
-    mainWindow->showStatusDump(0); // clear current status dump (avoids crash)
+    mainWindow->showStatusDump(0, 0, -1); // clear current status dump (avoids crash)
     statusDumps.clear();
 
     for (int nr=1; nr<MAX_DUMP_FILE_NUMBER; nr++) {
@@ -630,12 +631,25 @@ void PatchOperator::loadStatusDumps()
 void PatchOperator::showStatusDumpNr(int nr)
 {
     if (nr >= 0 && nr < statusDumps.count()) {
-        mainWindow->showStatusDump(&statusDumps[nr]);
+        mainWindow->showStatusDump(&statusDumps[nr], statusDumps.count(), nr);
         lastShownStatusDumpNr = nr;
     }
-    else
-        mainWindow->showStatusDump(0);
+    else {
+        mainWindow->showStatusDump(0, 0, -1);
+        lastShownStatusDumpNr = 0;
+    }
     updateStatusDumpsMenu(false);
+}
+void PatchOperator::showStatusDumpInfo()
+{
+    const StatusDump *dump = &statusDumps[lastShownStatusDumpNr];
+    QString text = dump->contentLines().join("\n") + "\n";
+    SourceCodeEditor sce(
+        tr("Status dump %1").arg(dump->title()),
+        text,
+        0,
+        true /* read-only */);
+    sce.edit();
 }
 QString PatchOperator::sdCardDirSansPolling()
 {
@@ -791,6 +805,9 @@ void PatchOperator::updateStatusDumpsMenu(bool newDumpAvailable)
         QAction *actionHide = new QAction(tr("Hide status dump"), this);
         connect(actionHide, &QAction::triggered, this, [this]() { this->showStatusDumpNr(-1); });
         if (mainWindow->statusDump()) {
+            QAction *actionInfo = new QAction(tr("Show contents of current status dump"), this);
+            connect(actionInfo, &QAction::triggered, this, &PatchOperator::showStatusDumpInfo);
+            dumpsMenu->addAction(actionInfo);
             actionHide->setEnabled(true);
             if (!shortcut_set) {
                 actionHide->setShortcut(shortcut); // Shift+F10 hides if one is shown

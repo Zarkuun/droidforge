@@ -72,7 +72,6 @@ Internal patch cables:
 StatusDump::StatusDump(const QString &filePath)
     : filePath(filePath)
 {
-    QStringList lines;
     QFile inputFile(filePath);
     if (!inputFile.open(QIODevice::ReadOnly)) {
         throw ParseException("Cannot open file: " + inputFile.errorString());

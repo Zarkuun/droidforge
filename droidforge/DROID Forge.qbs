@@ -55,6 +55,8 @@ QtApplication {
         "main/patchsizeindicator.h",
         "main/preferencesdialog.cpp",
         "main/preferencesdialog.h",
+        "main/statusdumpindicator.cpp",
+        "main/statusdumpindicator.h",
         "main/waitforsddialog.cpp",
         "main/waitforsddialog.h",
         "main/windowlist.cpp",

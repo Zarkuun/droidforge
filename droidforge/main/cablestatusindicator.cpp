@@ -6,7 +6,6 @@
 #include "updatehub.h"
 #include "editoractions.h"
 #include "iconbase.h"
-#include "globals.h"
 #include "mainwindow.h"
 
 #include <QMouseEvent>

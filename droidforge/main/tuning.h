@@ -88,6 +88,9 @@
 #define CSI_ANIMATION_RANGE                  20
 #define CSI_ANIMATION_DURATION               1000
 
+// Status dump indicator in status bar
+#define SDI_WIDTH                            200
+
 #ifdef Q_OS_WIN
 #define CSI_MARKER_FONT_SIZE                 6
 #define CSI_LABEL_FONT_SIZE                  8

@@ -9,6 +9,7 @@
 class StatusDump
 {
     QString filePath;
+    QStringList lines;
     QMap<QString, double> cables;
     QMap<QString, double> registers;
     QMap<QString, QString> cableCompressionMapping; // compensate compression
@@ -19,6 +20,7 @@ public:
     const QString &title() const { return filePath; };
     bool hasAtom(const Atom *atom) const;
     double valueOfAtom(const Atom *atom) const;
+    const QStringList &contentLines() const { return lines; };
 
 private:
     bool hasCable(QString name) const;
