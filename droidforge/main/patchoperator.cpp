@@ -402,6 +402,7 @@ void PatchOperator::saveToSD()
 {
     if (patch->isModified())
         save();
+
     QString dirPath = sdCardDir();
     if (dirPath == "") {
         QMessageBox::critical(

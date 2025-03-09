@@ -32,23 +32,6 @@ QString AtomCable::problemAsOutput(const Patch *patch) const
     else
         return "";
 }
-QString AtomCable::nextCableName(const QString &name)
-{
-    // HIRN -> HIRN2
-    if (!name.back().isDigit())
-        return name + "2";
-
-    // HIRN1 -> HIRN2
-    // HIRN17 -> HIRN18
-    int i = name.length();
-    while (name[i-1].isDigit())
-        i--;
-
-    // i now points to first digit of the end part
-    QString stem = name.mid(0, i);
-    int number = name.mid(i).toInt();
-    return stem + QString::number(number+1);
-}
 void AtomCable::rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode)
 {
     switch (mode) {
@@ -70,14 +53,53 @@ void AtomCable::rewriteCablePrefix(const QString &fromPrefix, const QString &toP
     if (name.startsWith(fromPrefix))
         name = toPrefix + name.mid(fromPrefix.length());
 }
-
 void AtomCable::incrementForExpansion(const Patch *)
 {
-    // Idea: _FOO_BAR_2 --> _FOO_FOO_BAR_3.
-    // Cables without a number suffix stay as they are
-
-    if (!name.back().isDigit())
-        return;
-
     name = nextCableName(name);
+}
+QString AtomCable::nextCableName(const QString &name)
+{
+    // Split name into groups of digits and non-digits.
+    // The use last group of digits and increase it by
+    // one. Then recombine.
+
+    QStringList groups;
+    QString group;
+    enum {
+        DIGITS,
+        OTHER,
+        NONE,
+    } currentType = NONE, newType;
+    int lastDigitGroup = -1;
+
+    for (int i=0; i<name.size(); i++) {
+        QChar c = name[i];
+        if (c.isDigit())
+            newType = DIGITS;
+        else
+            newType = OTHER;
+        if (newType != currentType) {
+            if (group.size())
+                groups.append(group);
+            if (newType == DIGITS)
+                lastDigitGroup = groups.size();
+            group = "";
+        }
+        currentType = newType;
+        group.append(c);
+    }
+    if (group.size())
+        groups.append(group);
+
+    QString newName = "";
+    for (int g=0; g<groups.size(); g++) {
+        if (g == lastDigitGroup) {
+            QString digitgroup = groups[lastDigitGroup];
+            int number = digitgroup.toInt() + 1;
+            newName += QString::number(number);
+        }
+        else
+            newName += groups[g];
+    }
+    return newName;
 }
