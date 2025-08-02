@@ -12,7 +12,7 @@ public:
     JackAssignmentOutput(QString jack, QString comment="");
     ~JackAssignmentOutput();
     Atom *getAtom() const;
-    QString valueToString() const;
+    QString valueToString(bool compressed) const;
     bool isOutput() const { return true; };
     const Atom *atomAt(int a) const { return a >= 1 ? atom : 0; };
     Atom *atomAt(int a) { return a >= 1 ? atom : 0; };

@@ -11,7 +11,7 @@ class JackAssignmentUnknown : public JackAssignment
 public:
     JackAssignmentUnknown(QString jack, QString comment="", QString valueString="");
     ~JackAssignmentUnknown();
-    QString valueToString() const;
+    QString valueToString(bool compressed) const;
     jacktype_t jackType() const { return JACKTYPE_UNKNOWN; };
     const Atom *atomAt(int) const { return atom; };
     Atom *atomAt(int);
