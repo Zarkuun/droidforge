@@ -1,10 +1,8 @@
 #include "numberselector.h"
 #include "droidfirmware.h"
-#include "globals.h"
-#include "iconbase.h"
 #include "jackvaluetabledialog.h"
 #include "tuning.h"
-#include "atomselector.h"
+#include "atomtext.h"
 
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -16,15 +14,16 @@
 NumberSelector::NumberSelector(QWidget *parent)
     : AtomSubSelector{parent}
     , number(0.0)
+    , isText(false)
     , numberType(ATOM_NUMBER_NUMBER)
 {
     // Text entry for manual values
-    labelFraction = new QLabel(tr("1 /"), this);
+    labelPrefix = new QLabel(tr("1 /"), this);
     lineEdit = new QLineEdit(this);
     labelUnit = new QLabel(this);
 
     QHBoxLayout *valueBox = new QHBoxLayout();
-    valueBox->addWidget(labelFraction);
+    valueBox->addWidget(labelPrefix);
     valueBox->addWidget(lineEdit);
     valueBox->addWidget(labelUnit);
 
@@ -36,12 +35,14 @@ NumberSelector::NumberSelector(QWidget *parent)
     buttonPercentage = new QPushButton("➞ " + tr("%"), this);
     buttonOnOff = new QPushButton("➞ " + tr("□ / ▣"), this);
     buttonFraction = new QPushButton(tr("1 / X"), this);
+    buttonText = new QPushButton("➞ " + tr("Text"), this);
     buttonBox->addWidget(buttonTable, 0, 0, 1, 2);
     buttonBox->addWidget(buttonNumber, 1, 0);
     buttonBox->addWidget(buttonVoltage, 1, 1);
     buttonBox->addWidget(buttonPercentage, 2, 0);
     buttonBox->addWidget(buttonOnOff, 2, 1);
     buttonBox->addWidget(buttonFraction, 3, 0, 1, 2);
+    buttonBox->addWidget(buttonText, 4, 0, 1, 2);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(valueBox);
@@ -55,6 +56,7 @@ NumberSelector::NumberSelector(QWidget *parent)
     connect(buttonVoltage, &QPushButton::pressed, this, &NumberSelector::switchToVoltage);
     connect(buttonPercentage, &QPushButton::pressed, this, &NumberSelector::switchToPercentage);
     connect(buttonOnOff, &QPushButton::pressed, this, &NumberSelector::switchToOnOff);
+    connect(buttonText, &QPushButton::pressed, this, &NumberSelector::switchToText);
 }
 
 bool NumberSelector::handlesAtom(const Atom *atom) const
@@ -67,24 +69,28 @@ bool NumberSelector::handlesAtom(const Atom *atom) const
             return false;
     }
     else
-        return atom->isNumber();
+        return atom->isNumber() || atom->isText();
 }
-
-
 void NumberSelector::setAtom(const Patch *, const Atom *atom)
 {
     if (atom->isInvalid()) {
         setNumberType(ATOM_NUMBER_NUMBER);
         lineEdit->setText("1");
         buttonFraction->setChecked(false);
-        labelFraction->setVisible(false);
+        labelPrefix->setVisible(false);
+    }
+
+    else if (atom->isText()) {
+        AtomText *at = (AtomText *)atom;
+        lineEdit->setText(at->getText());
+        setTextType();
     }
 
     else {
         AtomNumber *an = (AtomNumber *)atom;
         setNumberType(an->getType());
         buttonFraction->setChecked(an->isFraction());
-        labelFraction->setVisible(an->isFraction());
+        labelPrefix->setVisible(an->isFraction());
         number = an->getNumber();
         if (number != 0 && an->isFraction())
             number = 1.0 / number;
@@ -101,12 +107,10 @@ void NumberSelector::setAtom(const Patch *, const Atom *atom)
         }
     }
 }
-
 void NumberSelector::setAllowFraction(bool af)
 {
     buttonFraction->setVisible(af);
 }
-
 void NumberSelector::setCircuitAndJack(QString c, QString j)
 {
     circuit = c;
@@ -119,19 +123,31 @@ void NumberSelector::setCircuitAndJack(QString c, QString j)
         buttonTable->setVisible(true);
     }
 }
-
 void NumberSelector::clearAtom()
 {
     setNumberType(ATOM_NUMBER_NUMBER);
     number = 0;
     lineEdit->setText("");
     buttonFraction->setChecked(false);
-    labelFraction->setVisible(false);
+    labelPrefix->setVisible(false);
 }
-
+void NumberSelector::setTextType()
+{
+    isText = true;
+    buttonNumber->setEnabled(true);
+    buttonVoltage->setEnabled(true);
+    buttonPercentage->setEnabled(true);
+    buttonOnOff->setEnabled(true);
+    buttonFraction->setEnabled(true);
+    buttonText->setEnabled(false);
+    labelPrefix->setText("\"");
+    labelPrefix->setVisible(true);
+    labelUnit->setText("\"");
+}
 void NumberSelector::setNumberType(atom_number_t t)
 {
     numberType = t;
+    isText = false;
     QString unitName;
     switch (numberType) {
     case ATOM_NUMBER_NUMBER:
@@ -140,7 +156,8 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonPercentage->setEnabled(true);
         buttonOnOff->setEnabled(true);
         buttonFraction->setEnabled(true);
-        labelFraction->setVisible(false);
+        buttonText->setEnabled(true);
+        labelPrefix->setVisible(false);
         unitName = "";
         break;
 
@@ -150,7 +167,8 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonPercentage->setEnabled(true);
         buttonOnOff->setEnabled(true);
         buttonFraction->setEnabled(true);
-        labelFraction->setVisible(false);
+        buttonText->setEnabled(true);
+        labelPrefix->setVisible(false);
         unitName = tr("V");
         break;
 
@@ -161,7 +179,8 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonPercentage->setEnabled(false);
         buttonOnOff->setEnabled(true);
         buttonFraction->setEnabled(true);
-        labelFraction->setVisible(false);
+        buttonText->setEnabled(true);
+        labelPrefix->setVisible(false);
         break;
 
     case ATOM_NUMBER_ONOFF:
@@ -170,7 +189,8 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonPercentage->setEnabled(true);
         buttonOnOff->setEnabled(false);
         buttonFraction->setEnabled(true);
-        labelFraction->setVisible(false);
+        buttonText->setEnabled(true);
+        labelPrefix->setVisible(false);
         unitName = "";
         break;
 
@@ -180,13 +200,14 @@ void NumberSelector::setNumberType(atom_number_t t)
         buttonPercentage->setEnabled(true);
         buttonOnOff->setEnabled(true);
         buttonFraction->setEnabled(false);
-        labelFraction->setVisible(true);
+        buttonText->setEnabled(true);
+        labelPrefix->setText("1 / ");
+        labelPrefix->setVisible(true);
         unitName = "";
         break;
     }
     labelUnit->setText(unitName);
 }
-
 void NumberSelector::getFocus()
 {
     if (lineEdit->text().isEmpty()) {
@@ -197,14 +218,18 @@ void NumberSelector::getFocus()
     lineEdit->setFocus();
     lineEdit->selectAll();
 }
-
 void NumberSelector::installFocusFilter(QWidget *w)
 {
     lineEdit->installEventFilter(w);
 }
-
 Atom *NumberSelector::getAtom() const
 {
+    if (isText) {
+        QString text = lineEdit->text();
+        shout << "Der text ist " << text;
+        return new AtomText(text); // TODO: Remove non-ascii-chars
+    }
+
     double value = number;
     if (numberType == ATOM_NUMBER_VOLTAGE)
         value /= 10;
@@ -219,10 +244,26 @@ Atom *NumberSelector::getAtom() const
 
     return new AtomNumber(value, numberType);
 }
-
-
 void NumberSelector::lineEdited(QString text)
 {
+    if (text.contains("\""))
+        setTextType();
+
+    if (isText) {
+        QString cleanedText = "";
+        QString text = lineEdit->text();
+        QChar c;
+        for (unsigned i=0; i<text.length(); i++) {
+            c = text[i];
+            int ord = c.unicode();
+            shout << "[" << i << "] = " << ord;
+            if (ord >= 32 && ord <= 126 and ord != 34 /* quote */)
+                cleanedText += c;
+        }
+        lineEdit->setText(cleanedText);
+        return;
+    }
+
     if (text.endsWith("V", Qt::CaseInsensitive)) {
         text.chop(1);
         lineEdit->setText(text);
@@ -254,9 +295,15 @@ void NumberSelector::lineEdited(QString text)
         number = text.toDouble();
     }
 }
-
+void NumberSelector::guessNumberFromText()
+{
+    if (isText)
+        number = lineEdit->text().toDouble();
+}
 void NumberSelector::switchToNumber()
 {
+    guessNumberFromText();
+    isText = false;
     if (numberType == ATOM_NUMBER_VOLTAGE)
         number /= 10;
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
@@ -267,9 +314,10 @@ void NumberSelector::switchToNumber()
     lineEdit->setText(AtomNumber::niceNumber(number));
     lineEdit->setFocus();
 }
-
 void NumberSelector::switchToVoltage()
 {
+    guessNumberFromText();
+    isText = false;
     if (numberType == ATOM_NUMBER_NUMBER ||
         numberType == ATOM_NUMBER_ONOFF)
         number *= 10;
@@ -281,9 +329,10 @@ void NumberSelector::switchToVoltage()
     lineEdit->setText(AtomNumber::niceNumber(number));
     lineEdit->setFocus();
 }
-
 void NumberSelector::switchToPercentage()
 {
+    guessNumberFromText();
+    isText = false;
     if (numberType == ATOM_NUMBER_NUMBER ||
         numberType == ATOM_NUMBER_ONOFF)
         number *= 100;
@@ -295,9 +344,9 @@ void NumberSelector::switchToPercentage()
     lineEdit->setText(AtomNumber::niceNumber(number));
     lineEdit->setFocus();
 }
-
 void NumberSelector::switchToOnOff()
 {
+    isText = false;
     if (numberType == ATOM_NUMBER_VOLTAGE)
         number /= 10;
     else if (numberType == ATOM_NUMBER_PERCENTAGE)
@@ -309,9 +358,10 @@ void NumberSelector::switchToOnOff()
     lineEdit->setText(number ? "on" : "off");
     lineEdit->setFocus();
 }
-
 void NumberSelector::switchToFraction()
 {
+    guessNumberFromText();
+    isText = false;
     if (numberType == ATOM_NUMBER_NUMBER ||
         numberType == ATOM_NUMBER_ONOFF)
         number = (number == 0) ? ONE_OVER_ZERO : 1.0 / number;
@@ -323,7 +373,12 @@ void NumberSelector::switchToFraction()
     lineEdit->setText(AtomNumber::niceNumber(number));
     lineEdit->setFocus();
 }
-
+void NumberSelector::switchToText()
+{
+    shout << "Switch to text";
+    lineEdit->setFocus();
+    setTextType();
+}
 void NumberSelector::openTable()
 {
     JackValueTableDialog jvtd(circuit, jack, this);
