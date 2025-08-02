@@ -164,8 +164,6 @@ void JackAssignmentInput::parseInputExpression(QString, QString value)
     // Beware: value is *not* converted to lowercase in order to conserve
     // upper/lower case of texts. Also spaces are still contained
 
-    shout << "Parsing" << value;
-    // TODO: on off?
     static QString RSPACES("\\s*");
     static QString RPOSITIVEINTEGER("[0-9]+[V%]?");
     static QString RPOSITIVEFLOAT("[0-9]+[.][0-9]+[V%]?");
@@ -175,7 +173,7 @@ void JackAssignmentInput::parseInputExpression(QString, QString value)
     static QString RONOFF("on|off|ON|OFF|On|Off");
     static QString RCABLE("_[a-zA-Z0-9_]*");
     static QString REGISTER("[a-zA-Z][0-9.]+");
-    static QString RTEXT("\"[^\"]*\"");
+    static QString RTEXT("\"[ !#-\\[\\]-~]*\""); // Texsts with printable Ascii-characters other than "
     static QString RATOM = QString("(") + RNUMBER + "|" + RONOFF + "|" + RCABLE + "|" + REGISTER + "|" + RTEXT + ")";
     static QString RSPACEDATOM = RSPACES + RATOM + RSPACES;
     static QString RSPACEDNUMBER = RSPACES + "(" + RNUMBER + ")" + RSPACES;
@@ -191,8 +189,6 @@ void JackAssignmentInput::parseInputExpression(QString, QString value)
     static QRegularExpression form8(QString("^") + RSPACEDATOM + "[/]" + RSPACEDNUMBER + "[+]" + RSPACEDATOM + "$");
     static QRegularExpression form9(QString("^") + RSPACEDATOM + "[/]" + RSPACEDNUMBER + "[-]" + RSPACEDNUMBER + "$");
 
-    shout << "RE" << RNUMBER;
-
     QString a, b, c;
 
     QRegularExpressionMatch m;
@@ -200,11 +196,9 @@ void JackAssignmentInput::parseInputExpression(QString, QString value)
         // empty atoms
     }
     else if ((m = form1.match(value)).hasMatch()) {
-        shout << "Form 1 match with" << a;
         a = m.captured(1);
     }
     else if ((m = form2.match(value)).hasMatch()) {
-        shout << "Form 2 match with" << m;
         a = m.captured(1);
         b = m.captured(2);
     }
@@ -401,7 +395,6 @@ Atom *JackAssignmentInput::parseText(QString s)
     // assume s starts and ends with ", (has been checked by
     // the regex
     QString text = s.mid(1).mid(0, s.length() - 2);
-    shout << "Text von Atom: [" << text << "]";
     for (int i=0; i<text.length(); i++) {
         QChar c = text[i];
         if (c.unicode() < 32 || c.unicode() > 127)
