@@ -19,7 +19,7 @@ public:
     Atom *atomAt(int column);
     void replaceAtom(int column, Atom *newAtom);
     void removeRegisterReferences(RegisterList &rl);
-    QString valueToString() const;
+    QString valueToString(bool compressed) const;
     QString valueToCanonicalString() const;
     void collectCables(QStringList &cables) const;
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;

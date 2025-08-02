@@ -49,7 +49,7 @@ public:
     virtual ~JackAssignment();
     virtual JackAssignment *clone() const = 0;
     virtual jacktype_t jackType() const = 0;
-    virtual QString valueToString() const = 0;
+    virtual QString valueToString(bool compressed) const = 0;
     virtual bool isInput() const { return false; };
     virtual bool isOutput() const { return false; };
     virtual int numColumns() const { return 1; };

@@ -45,7 +45,7 @@ QString JackAssignment::toString() const
         s = "    ";
 
     s += jack + " =";
-    QString v = valueToString();
+    QString v = valueToString(false /* compressed */);
     if (v != "")
         s += " " + v;
 
@@ -58,7 +58,7 @@ QString JackAssignment::toBareString() const
     if (disabled)
         return "";
     else
-        return jack + " = " + valueToString();
+        return jack + " = " + valueToString(false /* compressed */);
 }
 QString JackAssignment::jackPrefix() const
 {

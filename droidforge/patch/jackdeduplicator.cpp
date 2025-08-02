@@ -94,5 +94,5 @@ QString JackDeduplicator::processJackAssignment(const JackAssignment *ja)
     }
 
     jacktableOffset += size;
-    return ja->valueToString().replace(" ", "");;
+    return ja->valueToString(true /* compressed */);
 }

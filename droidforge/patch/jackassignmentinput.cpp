@@ -86,13 +86,13 @@ void JackAssignmentInput::parseExpression(const QString &expression)
 {
     parseInputExpression(jack, expression);
 }
-QString JackAssignmentInput::valueToString() const
+QString JackAssignmentInput::valueToString(bool compressed) const
 {
     QString bOperator;
     if (atoms[1] && atoms[1]->isNumber() && ((AtomNumber *)atoms[1])->isFraction())
-        bOperator = " / ";
+        bOperator = compressed ? "/" : " / ";
     else
-        bOperator = " * ";
+        bOperator = compressed ? "*" : " * ";
 
     // Do more intelligent work for a nice transformation
     // into A * B + C
@@ -110,11 +110,11 @@ QString JackAssignmentInput::valueToString() const
         QString sc, op;
         if (atoms[2]->isNegatable()) {
             sc = atoms[2]->toNegatedString();
-            op = " - ";
+            op = compressed ? "-" : " - ";
         }
         else {
             sc = atoms[2]->toString();
-            op = " + ";
+            op = compressed ? "+" : " + ";
         }
         if (atoms[0] && !atoms[1] && atoms[2]) // just A and C
             return atoms[0]->toString() + op + sc;

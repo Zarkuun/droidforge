@@ -31,7 +31,7 @@ JackAssignment *JackAssignmentOutput::clone() const
         newas->atom = atom->clone();
     return newas;
 }
-QString JackAssignmentOutput::valueToString() const
+QString JackAssignmentOutput::valueToString(bool) const
 {
     if (atom)
         return atom->toString();

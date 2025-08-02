@@ -463,7 +463,7 @@ void CircuitView::paintJack(QPainter *painter, JackAssignment *ja, unsigned row)
         else  // UNKNOWN
         {
             JackAssignmentUnknown *jau = (JackAssignmentUnknown *)ja;
-            AtomInvalid atom(jau->valueToString());
+            AtomInvalid atom(jau->valueToString(false /* compressed */));
             paintAtom(painter, ar, atomColor, &atom, false, row, 1);
         }
         if (*selection && (*selection)->atomSelected(circuitNumber, row, 1))

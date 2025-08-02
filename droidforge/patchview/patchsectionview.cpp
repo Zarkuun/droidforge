@@ -1251,7 +1251,7 @@ void PatchSectionView::editJack(int key)
         // we need to reparse the still unparsed value expression
         if (ja->jackType() == JACKTYPE_UNKNOWN) {
             JackAssignment *newJa = buildJackAssignment(name);
-            newJa->parseExpression(ja->valueToString());
+            newJa->parseExpression(ja->valueToString(false));
             int insertAt = section()->cursorPosition().row;
             section()->deleteCurrentJackAssignment();
             bool moveDown = (insertAt == currentCircuit()->numJackAssignments());

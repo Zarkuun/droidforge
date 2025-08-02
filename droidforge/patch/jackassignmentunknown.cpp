@@ -16,7 +16,7 @@ JackAssignmentUnknown::~JackAssignmentUnknown()
         delete atom;
 }
 
-QString JackAssignmentUnknown::valueToString() const
+QString JackAssignmentUnknown::valueToString(bool) const
 {
     if (atom)
         return atom->toString();
