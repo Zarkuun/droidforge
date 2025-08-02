@@ -36,6 +36,7 @@
 #define SD_CHECK_INTERVAL_SANS_POLLING       1000   // ms
 #define MAX_DROID_INI                        64000 // from x7.h
 #define MAX_PATCH_LINE_LENGTH                63 // from master:tuning.h
+#define DB8E_MAX_TEXT_LENGTH                 18 // from master:db8elink.h
 #define MAX_NUM_G8S                          4
 #define GENERATOR_START_TIMEOUT_MS           1000
 
