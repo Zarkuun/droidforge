@@ -23,6 +23,7 @@ public:
     virtual bool isNegatable() const { return false; };
     virtual QString toNegatedString() const { return ""; };
     virtual bool isNumber() const { return false; };
+    virtual bool isText() const { return false; };
     virtual bool isRegister() const { return false; };
     virtual bool canHaveLabel() const { return false; };
     virtual bool isCable() const { return false; };
