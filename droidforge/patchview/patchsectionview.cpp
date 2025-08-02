@@ -384,20 +384,55 @@ bool PatchSectionView::handleKeyPress(int key, int modifiers)
     bool moved = false;
 
     switch (key) {
-    case Qt::Key_Up:        moveCursorUpDown(-1);     moved = true; break;
-    case Qt::Key_Down:      moveCursorUpDown(1);      moved = true; break;
-    case Qt::Key_Left:      moveCursorLeftRight(-1);  moved = true; break;
-    case Qt::Key_Right:     moveCursorLeftRight(1);   moved = true; break;
-    case Qt::Key_PageUp:    moveCursorPageUpDown(-1); moved = true; break;
-    case Qt::Key_PageDown:  moveCursorPageUpDown(1);  moved = true; break;
-    case Qt::Key_Home:      moveCursorHome();         moved = true; break;
-    case Qt::Key_End:       moveCursorEnd();          moved = true; break;
-    case Qt::Key_Backspace: deleteCursorOrSelection(); return true;
-    case Qt::Key_Tab:       moveCursorTab(1);         moved = true; break;
-    case Qt::Key_Backtab:   moveCursorTab(-1);        shiftHeld = false; moved = true; break;
+    case Qt::Key_Up:
+        moveCursorUpDown(-1);
+        moved = true;
+        break;
+    case Qt::Key_Down:
+        moveCursorUpDown(1);
+        moved = true;
+        break;
+    case Qt::Key_Left:
+        moveCursorLeftRight(-1);
+        moved = true;
+        break;
+    case Qt::Key_Right:
+        moveCursorLeftRight(1);
+        moved = true;
+        break;
+    case Qt::Key_PageUp:
+        moveCursorPageUpDown(-1);
+        moved = true;
+        break;
+    case Qt::Key_PageDown:
+        moveCursorPageUpDown(1);
+        moved = true;
+        break;
+    case Qt::Key_Home:
+        moveCursorHome();
+        moved = true;
+        break;
+    case Qt::Key_End:
+        moveCursorEnd();
+        moved = true;
+        break;
+    case Qt::Key_Backspace:
+        deleteCursorOrSelection();
+        return true;
+    case Qt::Key_Tab:
+        moveCursorTab(1);
+        moved = true;
+        break;
+    case Qt::Key_Backtab:
+        moveCursorTab(-1);
+        shiftHeld = false;
+        moved = true;
+        break;
     case Qt::Key_Return:
-    case Qt::Key_Enter:     if (!mainWindow->searchActive())
-                                editValue(Qt::Key_Return); break;
+    case Qt::Key_Enter:
+        if (!mainWindow->searchActive())
+            editValue(Qt::Key_Return);
+        break;
     }
 
     if (moved) {
@@ -417,8 +452,9 @@ bool PatchSectionView::handleKeyPress(int key, int modifiers)
         && ((key >= Qt::Key_A && key <= Qt::Key_Z)
         || key == Qt::Key_Underscore
         || (key >= Qt::Key_0 && key <= Qt::Key_9)
-         || key == Qt::Key_Period
-         || key == Qt::Key_Minus))
+        || key == Qt::Key_Period
+        || key == Qt::Key_Minus
+        || key == Qt::Key_QuoteDbl))
     {
         editValue(key);
         return true;
@@ -1245,6 +1281,7 @@ void PatchSectionView::editValueByShortcut()
 }
 void PatchSectionView::editValue(int key)
 {
+    shout << "editvalue" << key;
     if (isEmpty())
         return;
 
@@ -1270,6 +1307,7 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 }
 void PatchSectionView::editAtom(int key)
 {
+    shout << "editAtom(" << key;
     int lastKey = 0;
 
     if ((key == 0 || key == Qt::Key_Return) && patch->isPatching()) {

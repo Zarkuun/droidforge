@@ -15,6 +15,7 @@ public:
     QString getText() const { return text; };
     QString problemAsInput(const Patch *patch) const;
     QString problemAsOutput(const Patch *patch) const;
+    static QString cleanText(QString text);
 };
 
 #endif // ATOMTEXT_H
