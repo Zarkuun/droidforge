@@ -2,6 +2,7 @@
 #include "atomcable.h"
 #include "atominvalid.h"
 #include "atomnumber.h"
+#include "atomtext.h"
 #include "globals.h"
 #include "patch.h"
 
@@ -157,27 +158,40 @@ void JackAssignmentInput::findCableConnections(const QString &cable, int &asInpu
     }
 }
 
-#define RATOMA "[^*/+-]+"
-#define RATOMB "-[0-9][^*/+-]*"
-#define RATOM "(" RATOMA "|" RATOMB ")"
-#define RNUMBER "(-?([0-9]+[.])?[0-9]+)"
 
-void JackAssignmentInput::parseInputExpression(QString, QString valueString)
+void JackAssignmentInput::parseInputExpression(QString, QString value)
 {
-    static QRegularExpression spaces("\\s");
-    QString value = valueString.toLower();
-    value.replace(spaces, "");
+    // Beware: value is *not* converted to lowercase in order to conserve
+    // upper/lower case of texts. Also spaces are still contained
+
+    shout << "Parsing" << value;
+    // TODO: on off?
+    static QString RSPACES("\\s*");
+    static QString RPOSITIVEINTEGER("[0-9]+[V%]?");
+    static QString RPOSITIVEFLOAT("[0-9]+[.][0-9]+[V%]?");
+    static QString RPOSITIVENUMBER = QString("") + RPOSITIVEINTEGER + "|" + RPOSITIVEFLOAT;
+    static QString RNEGATIVENUMBER = QString("-") + RPOSITIVEINTEGER + "|-" + RPOSITIVEFLOAT;
+    static QString RNUMBER = RPOSITIVENUMBER + "|" + RNEGATIVENUMBER;
+    static QString RONOFF("on|off|ON|OFF|On|Off");
+    static QString RCABLE("_[a-zA-Z0-9_]*");
+    static QString REGISTER("[a-zA-Z][0-9.]+");
+    static QString RTEXT("\"[^\"]*\"");
+    static QString RATOM = QString("(") + RNUMBER + "|" + RONOFF + "|" + RCABLE + "|" + REGISTER + "|" + RTEXT + ")";
+    static QString RSPACEDATOM = RSPACES + RATOM + RSPACES;
+    static QString RSPACEDNUMBER = RSPACES + "(" + RNUMBER + ")" + RSPACES;
 
     static QRegularExpression form0("^$");
-    static QRegularExpression form1("^" RATOM "$");
-    static QRegularExpression form2("^" RATOM "[*]" RATOM "$");
-    static QRegularExpression form3("^" RATOM "[*]" RATOM "[+]" RATOM "$");
-    static QRegularExpression form4("^" RATOM "[+]" RATOM "$");
-    static QRegularExpression form5("^" RATOM "[*]" RATOM "[-]" RATOM "$");
-    static QRegularExpression form6("^" RATOM "[-]" RATOM "$");
-    static QRegularExpression form7("^" RATOM "[/]" RNUMBER "$");
-    static QRegularExpression form8("^" RATOM "[/]" RNUMBER "[+]" RATOM "$");
-    static QRegularExpression form9("^" RATOM "[/]" RNUMBER "[-]" RNUMBER "$");
+    static QRegularExpression form1(QString("^") + RSPACEDATOM + "$");
+    static QRegularExpression form2(QString("^") + RSPACEDATOM + "[*]" + RSPACEDATOM + "$");
+    static QRegularExpression form3(QString("^") + RSPACEDATOM + "[*]" + RSPACEDATOM + "[+]" + RSPACEDATOM + "$");
+    static QRegularExpression form4(QString("^") + RSPACEDATOM + "[+]" + RSPACEDATOM + "$");
+    static QRegularExpression form5(QString("^") + RSPACEDATOM + "[*]" + RSPACEDATOM + "[-]" + RSPACEDATOM + "$");
+    static QRegularExpression form6(QString("^") + RSPACEDATOM + "[-]" + RSPACEDATOM + "$");
+    static QRegularExpression form7(QString("^") + RSPACEDATOM + "[/]" + RSPACEDNUMBER + "$");
+    static QRegularExpression form8(QString("^") + RSPACEDATOM + "[/]" + RSPACEDNUMBER + "[+]" + RSPACEDATOM + "$");
+    static QRegularExpression form9(QString("^") + RSPACEDATOM + "[/]" + RSPACEDNUMBER + "[-]" + RSPACEDNUMBER + "$");
+
+    shout << "RE" << RNUMBER;
 
     QString a, b, c;
 
@@ -185,9 +199,12 @@ void JackAssignmentInput::parseInputExpression(QString, QString valueString)
     if ((m = form0.match(value)).hasMatch()) {
         // empty atoms
     }
-    else if ((m = form1.match(value)).hasMatch())
+    else if ((m = form1.match(value)).hasMatch()) {
+        shout << "Form 1 match with" << a;
         a = m.captured(1);
+    }
     else if ((m = form2.match(value)).hasMatch()) {
+        shout << "Form 2 match with" << m;
         a = m.captured(1);
         b = m.captured(2);
     }
@@ -249,14 +266,16 @@ Atom *JackAssignmentInput::parseInputAtom(const QString &atom)
 {
     if (atom == "")
         return 0;
+    else if (atom[0] == '"')
+        return parseText(atom);
     else if (atom[0] == '_')
-        return parseCable(atom);
+        return parseCable(atom.toLower());
     else if (atom == "on" || atom == "off")
-        return parseOnOff(atom);
+        return parseOnOff(atom.toLower());
     else if (atom[0].isDigit() || atom[0] == '-' || atom[0] == '.')
         return parseNumber(atom);
     else
-        return parseRegister(atom);
+        return parseRegister(atom.toLower());
 }
 Atom *JackAssignmentInput::parseInputFraction(const QString &s)
 {
@@ -376,4 +395,17 @@ Atom *JackAssignmentInput::parseNumber(QString s)
         return 0;
     else
         return new AtomNumber(number * factor, at);
+}
+Atom *JackAssignmentInput::parseText(QString s)
+{
+    // assume s starts and ends with ", (has been checked by
+    // the regex
+    QString text = s.mid(1).mid(0, s.length() - 2);
+    shout << "Text von Atom: [" << text << "]";
+    for (int i=0; i<text.length(); i++) {
+        QChar c = text[i];
+        if (c.unicode() < 32 || c.unicode() > 127)
+            return 0;
+    }
+    return new AtomText(text);
 }

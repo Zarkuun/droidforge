@@ -39,6 +39,7 @@ private:
     void parseInputExpression(QString, QString valueString);
     static Atom *parseOnOff(QString s);
     static Atom *parseNumber(QString s);
+    static Atom *parseText(QString s);
     bool isInRegisterList(const RegisterList &rl, Atom *atom);
 
 };
