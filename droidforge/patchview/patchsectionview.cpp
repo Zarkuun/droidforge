@@ -1311,7 +1311,6 @@ void PatchSectionView::editValueByShortcut()
 }
 void PatchSectionView::editValue(int key)
 {
-    shout << "editvalue" << key;
     if (isEmpty())
         return;
 
@@ -1337,7 +1336,6 @@ void PatchSectionView::editValueByMouse(CursorPosition &pos)
 }
 void PatchSectionView::editAtom(int key)
 {
-    shout << "editAtom(" << key;
     int lastKey = 0;
 
     if ((key == 0 || key == Qt::Key_Return) && patch->isPatching()) {

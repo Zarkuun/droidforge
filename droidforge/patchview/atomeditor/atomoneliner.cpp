@@ -39,7 +39,6 @@ void AtomOneliner::returnPressed()
 Atom *AtomOneliner::getAtom()
 {
     QString text = lineEdit->text();
-    shout << "Parsing" << text;
     if (jacktype == JACKTYPE_INPUT) {
         Atom *a = JackAssignmentInput::parseInputAtom(text);
         if (a)
@@ -75,7 +74,6 @@ void AtomOneliner::selectionChanged()
 }
 Atom *AtomOneliner::editAtom(QRectF geometry, const Patch *, jacktype_t jacktype, QString start, int &lastKey)
 {
-    shout << "Ich soll atyom editeiren mit" << lastKey;
     lastKey = 0;
     static AtomOneliner *dialog = 0;
     if (!dialog)

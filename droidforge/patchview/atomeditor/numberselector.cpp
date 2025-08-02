@@ -226,7 +226,6 @@ Atom *NumberSelector::getAtom() const
 {
     if (isText) {
         QString text = lineEdit->text();
-        shout << "Der text ist " << text;
         return new AtomText(text); // TODO: Remove non-ascii-chars
     }
 
@@ -365,7 +364,6 @@ void NumberSelector::switchToFraction()
 }
 void NumberSelector::switchToText()
 {
-    shout << "Switch to text";
     lineEdit->setFocus();
     setTextType();
 }
