@@ -1,5 +1,6 @@
 #include "atomtext.h"
 #include "globals.h"
+#include "tuning.h"
 
 AtomText *AtomText::clone() const
 {
@@ -13,7 +14,12 @@ QString AtomText::toString() const
 
 QString AtomText::problemAsInput(const Patch *) const
 {
-    return "";
+    if (text.length() > DB8E_MAX_TEXT_LENGTH)
+        return TR("The maximum allowed text length is %1, yours is %2")
+            .arg(DB8E_MAX_TEXT_LENGTH)
+            .arg(text.length());
+    else
+        return "";
 }
 
 QString AtomText::problemAsOutput(const Patch *) const
