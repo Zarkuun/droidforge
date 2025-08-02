@@ -5,15 +5,14 @@
 
 class AtomText : public Atom
 {
-    QString text;
+    QString text; // Must not contain ", only chars 32 .. 127
 
 public:
-    AtomText(QString t) : text(t) {}
+    AtomText(QString t) : text(t) {};
     AtomText *clone() const;
     QString toString() const;
-    QString problemAsInput(const Patch *) const { return ""; };
+    QString problemAsInput(const Patch *patch) const;
     QString problemAsOutput(const Patch *patch) const;
-
 };
 
 #endif // ATOMTEXT_H

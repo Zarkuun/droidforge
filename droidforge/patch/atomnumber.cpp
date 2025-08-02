@@ -60,7 +60,7 @@ QString AtomNumber::problemAsInput(const Patch *) const
 }
 QString AtomNumber::problemAsOutput(const Patch *) const
 {
-    return tr("You cannot use a fixed number for an output parameter");
+    return tr("You cannot use a fixed number as an output parameter");
 }
 QString AtomNumber::niceNumber(double num)
 {
