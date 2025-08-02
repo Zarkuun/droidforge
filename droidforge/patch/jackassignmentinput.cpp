@@ -392,13 +392,11 @@ Atom *JackAssignmentInput::parseNumber(QString s)
 }
 Atom *JackAssignmentInput::parseText(QString s)
 {
-    // assume s starts and ends with ", (has been checked by
-    // the regex
-    QString text = s.mid(1).mid(0, s.length() - 2);
-    for (int i=0; i<text.length(); i++) {
-        QChar c = text[i];
-        if (c.unicode() < 32 || c.unicode() > 127)
-            return 0;
-    }
+    // If the text comes from the parser, it ends with ". But
+    // When you use the atom oneliner, the last quote might
+    // be missing. So we simply remove the quotes within the text.
+    // Also we remove any other disallowed characters that might
+    // come from the AtomOnliner
+    QString text = AtomText::cleanText(s);
     return new AtomText(text);
 }
