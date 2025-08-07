@@ -1,6 +1,5 @@
 #include "atomselectordialog.h"
 #include "atomselector.h"
-#include "globals.h"
 #include "usermanual.h"
 
 #include <QGridLayout>

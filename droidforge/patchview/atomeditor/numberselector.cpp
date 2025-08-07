@@ -249,7 +249,9 @@ void NumberSelector::lineEdited(QString text)
         setTextType();
 
     if (isText) {
+        int posBefore = lineEdit->cursorPosition();
         lineEdit->setText(AtomText::cleanText(lineEdit->text()));
+        lineEdit->setCursorPosition(posBefore);
         return;
     }
 
