@@ -93,6 +93,8 @@ public:
     unsigned highestGatePrefix();
     bool needsX7();
     bool sectionHasClones(unsigned si) const;
+    bool haveDisplay();
+    bool cableNeededByDisplay(const QString &cable) const;
 
     // Modifications
     void addDescriptionLine(const QString &line);

@@ -507,6 +507,9 @@ void Patch::compressCables(QMap<QString,QString> *mapping)
     unsigned nextId = 0;
     QStringList cables = allCables();
     for (auto& cable: cables) {
+        if (haveDisplay() && cableNeededByDisplay(cable))
+            continue;
+
         QString newName = createCompressedCableName(nextId++);
         while (cables.contains(newName))
            newName = createCompressedCableName(nextId++);
@@ -1071,7 +1074,7 @@ bool Patch::needsX7()
     // Some circuits need MIDI. This can be provided by
     // the X7 or by a master18/36
     if (typeOfMaster() == 16) {
-        for (auto section: sections)
+        for (auto &section: sections)
             if (section->needsMIDI())
                 return true;
     }
@@ -1087,6 +1090,20 @@ bool Patch::sectionHasClones(unsigned si) const
         if (section(s)->isCopyOf(section(si), ignoreA, ignoreB))
             return true;
     }
+    return false;
+}
+bool Patch::haveDisplay()
+{
+    for (qsizetype i=0; i<controllers.length(); i++)
+        if (controllers[i] == "db8e")
+            return true;
+    return false;
+}
+bool Patch::cableNeededByDisplay(const QString &cable) const
+{
+    for (auto &section: sections)
+        if (section->cableNeededByDisplay(cable))
+            return true;
     return false;
 }
 void Patch::remapRegister(AtomRegister from, AtomRegister to)
@@ -1115,7 +1132,7 @@ void Patch::swapRegisters(AtomRegister regA, AtomRegister regB)
 }
 void Patch::removeRegisterReferences(RegisterList &rl)
 {
-    for (auto section: sections)
+    for (auto &section: sections)
         section->removeRegisterReferences(rl);
 }
 void Patch::swapControllerNumbers(int fromNumber, int toNumber)

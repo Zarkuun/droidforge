@@ -180,6 +180,26 @@ bool DroidFirmware::jackIsOutput(QString circuit, QString jack) const
     QJsonValue jackinfo = findJack(circuit, "outputs", jack);
     return !jackinfo.isNull();
 }
+bool DroidFirmware::jackIsAutotitle(QString circuit, QString jack) const
+{
+    // Auto title is a trick needed for the DB8E display. For example
+    // here:
+    // [pot]
+    //    pot = P1.1
+    //    select = _SEL_FOO_BAR
+    //    output = _PITCH_RANGE
+    // The display uses the name of the patch cable _PITCH_RANGE to show
+    // a useful header in the display. This would break on patch cable
+    // renaming (a compression option). Thouse outputs are marked. If there
+    // is a DB8E in the patch, cables used at outputs marked with "auto title"
+    // are not renamed.
+    QJsonValue jackinfo = findJack(circuit, "outputs", jack);
+    if (jackinfo.isNull())
+    return false; // auto title only used for outputs
+
+    bool auto_title = jackinfo["autotitle"].toBool(false);
+    return auto_title;
+}
 unsigned DroidFirmware::jackArraySize(QString circuit, QString prefix, bool isInput) const
 {
     QJsonValue jackinfo = findJackArray(circuit, isInput ? "inputs" : "outputs", prefix);

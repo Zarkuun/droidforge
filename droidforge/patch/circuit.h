@@ -83,6 +83,7 @@ public:
     unsigned RAMUsage(JackDeduplicator &jdd) const;
     bool needsMIDI() const;
     bool needsMASTER18() const;
+    bool cableNeededByDisplay(const QString &cable) const;
     bool usesSelect() const;
     bool hasBookmark() const { return haveBookmark; };
     void setBookmark(int row, int column);
