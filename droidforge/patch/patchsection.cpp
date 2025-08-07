@@ -668,6 +668,14 @@ bool PatchSection::needsMIDI() const
     }
     return false;
 }
+bool PatchSection::cableNeededByDisplay(const QString &cable) const
+{
+    for (auto circuit: circuits) {
+        if (circuit->cableNeededByDisplay(cable))
+            return true;
+    }
+    return false;
+}
 bool PatchSection::searchHitAtCursor(const QString &text)
 {
     if (isEmpty())

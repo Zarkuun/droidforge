@@ -30,6 +30,7 @@ public:
     QString canonizeJackName(QString circuit, QString jack) const;
     bool jackIsInput(QString circuit, QString jack) const;
     bool jackIsOutput(QString circuit, QString jack) const;
+    bool jackIsAutotitle(QString circuit, QString jack) const;
     unsigned jackArraySize(QString circuit, QString prefix, bool isInput) const;
     QString jackShortname(QString circuit, QString jack) const;
     QString jackTypeSymbol(QString circuit, QString prefix, bool isInput) const;

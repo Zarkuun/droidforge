@@ -1,7 +1,8 @@
 #include "circuit.h"
 #include "droidfirmware.h"
-#include "jackassignmentoutput.h"
+#include "atomcable.h"
 #include "patch.h"
+#include "jackassignmentoutput.h"
 #include "globals.h"
 
 #include <QCoreApplication>
@@ -44,7 +45,7 @@ void Circuit::insertJackAssignment(JackAssignment *ja, int index)
 }
 JackAssignment *Circuit::findJack(const QString name)
 {
-    for (auto ja: jackAssignments)
+    for (auto &ja: jackAssignments)
         if (ja->jackName() == name)
             return ja;
     return 0;
@@ -86,6 +87,27 @@ bool Circuit::needsMIDI() const
 bool Circuit::needsMASTER18() const
 {
     return the_firmware->circuitNeedsMaster18(name);
+}
+
+bool Circuit::cableNeededByDisplay(const QString &cable) const
+{
+    if (isDisabled())
+        return false;
+
+    for (auto ja: jackAssignments)
+    {
+        if (!ja->isDisabled() && ja->isOutput()
+            && the_firmware->jackIsAutotitle(name, ja->jackName()))
+        {
+            const Atom *atom = ja->atomAt(1);
+            if (atom && atom->isCable()) {
+                const AtomCable *ac = (const AtomCable *)atom;
+                if (cable == ac->getCable())
+                    return true;
+            }
+        }
+    }
+    return false;
 }
 bool Circuit::usesSelect() const
 {

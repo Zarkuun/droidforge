@@ -3,7 +3,6 @@
 
 #include "circuit.h"
 #include "cursorposition.h"
-#include "jackassignmentinput.h"
 #include "patchproblem.h"
 #include "selection.h"
 #include "rewritecablesdialog.h"
@@ -96,6 +95,7 @@ public:
     unsigned ramUsedByCircuits() const;
     bool searchHitAtCursor(const QString &text);
     bool needsMIDI() const;
+    bool cableNeededByDisplay(const QString &cable) const;
     void clearBookmarks();
     bool findBookmark(CursorPosition *pos);
     void setBookmark();

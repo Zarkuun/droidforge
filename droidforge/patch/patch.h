@@ -91,6 +91,8 @@ public:
     unsigned countFaders() const;
     unsigned highestGatePrefix();
     bool needsX7();
+    bool haveDisplay();
+    bool cableNeededByDisplay(const QString &cable) const;
 
     // Modifications
     void addDescriptionLine(const QString &line);
