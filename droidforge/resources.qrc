@@ -367,11 +367,12 @@
         <file>images/faceplates/db8e.png</file>
         <file>images/jacktypes/dark/text.png</file>
         <file>images/jacktypes/light/text.png</file>
-        <file>firmware/droid-blue-6.fw</file>
-        <file>firmware/e4-magenta-1.fw</file>
-        <file>firmware/m4-orange-3.fw</file>
-        <file>firmware/master18-blue-6.fw</file>
-        <file>firmware/x7-orange-1012.fw</file>
         <file>images/circuits/display.png</file>
+        <file>firmware/db8e-magenta-1.fw</file>
+        <file>firmware/droid-magenta-7.fw</file>
+        <file>firmware/e4-magenta-1.fw</file>
+        <file>firmware/m4-orange-4.fw</file>
+        <file>firmware/master18-magenta-7.fw</file>
+        <file>firmware/x7-orange-1012.fw</file>
     </qresource>
 </RCC>
