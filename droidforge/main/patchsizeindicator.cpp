@@ -4,6 +4,7 @@
 #include "updatehub.h"
 #include "utilities.h"
 #include "mainwindow.h"
+#include "globals.h"
 
 #define MI_WIDTH 200
 
@@ -81,7 +82,6 @@ void PatchSizeIndicator::updateStatus()
 
     patchSize = patch->toDeployString().size();
     QString tooltipSize = tr("Your patch size is %1 bytes.").arg(niceBytes(patchSize));
-    QString color;
     if (patchSize > MAX_DROID_INI) {
         tooltipSize += " " + tr("That's more than the allowed %1! Check compression in the preferences.").arg(niceBytes(MAX_DROID_INI));
         bad = true;

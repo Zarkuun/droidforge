@@ -90,6 +90,7 @@ public:
     unsigned countUniqueConstants();
     unsigned countEncoders() const;
     unsigned countFaders() const;
+    unsigned countTexts();
     unsigned highestGatePrefix();
     bool needsX7();
     bool sectionHasClones(unsigned si) const;

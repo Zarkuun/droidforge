@@ -689,7 +689,6 @@ void Patch::updateMemoryProblems()
                           4 * ((Patch *)this)->countUniqueConstants() +
                           8 * ((Patch *)this)->countUniqueCables();
 
-
     if (typeOfMaster() == 16)
         usedMemory += the_firmware->controllerUsedRAM("x7");
 
@@ -700,7 +699,7 @@ void Patch::updateMemoryProblems()
 
     QMap<QString, unsigned> circuitCounts;
     unsigned sectionIndex = 0;
-    for (auto section: sections) {
+    for (auto &section: sections) {
         unsigned circuitNr = 0;
         for (auto circuit: section->getCircuits()) {
             if (!circuit->isDisabled()) {
@@ -895,16 +894,11 @@ bool Patch::registerAvailable(AtomRegister ar) const
 }
 unsigned Patch::usedRAMByCircuits() const
 {
-    if (numCircuits() == 0 && controllers.size() == 0) {
-        return the_firmware->circuitBaseRAM("droid");
-    }
-    else {
-        // Count the RAM used by circuits (not counting their parameters)
-        unsigned byCircuits = 0;
-        for (auto section: sections)
-            byCircuits += section->ramUsedByCircuits();
-        return byCircuits;
-    }
+    // Count the RAM used by circuits (not counting their parameters)
+    unsigned byCircuits = 0;
+    for (auto section: sections)
+        byCircuits += section->ramUsedByCircuits();
+    return byCircuits;
 }
 unsigned Patch::usedRAMByControllers() const
 {
@@ -937,11 +931,12 @@ unsigned Patch::usedRAM(QStringList &breakdown) const
     if (typeOfMaster() == 16)
     {
         unsigned byX7 = the_firmware->controllerUsedRAM("x7");
-        if (((Patch *)this)->needsX7())
+        if (((Patch *)this)->needsX7()) {
             breakdown.append(TR("%1 bytes are used by the X7.").arg(niceBytes(byX7)));
+            memory += byX7;
+        }
         else
-            breakdown.append(TR("%1 bytes could be used by a potential X7.").arg(niceBytes(byX7)));
-        memory += byX7;
+            breakdown.append(TR("%1 bytes could be used by a potential X7 (not counted).").arg(niceBytes(byX7)));
     }
 
     // Every unique constant needs 4 bytes
@@ -949,6 +944,24 @@ unsigned Patch::usedRAM(QStringList &breakdown) const
     memory += numConstants * 4;
     breakdown.append(TR("%1 bytes are used by %2 unique constants.")
                          .arg(niceBytes(numConstants * 4)).arg(numConstants));
+
+    // Every (non-unique) text needs 6 bytes, but there is a uint16_t
+    // that is align to a 4 byte boundary
+    unsigned numTexts = ((Patch *)this)->countTexts();
+    unsigned usedByTexts = 6 * numTexts;
+    // Reflect alignment effects within the Droid stack
+    unsigned fourend = numTexts % 4;
+    switch (fourend) {
+    case 0: break;
+    case 1: usedByTexts -= 6; break;
+    case 2: usedByTexts -= 4; break;
+    case 3: usedByTexts -= 2; break;
+    }
+    breakdown.append(TR("%1 bytes are used by %2 texts.")
+                    .arg(niceBytes(usedByTexts))
+                    .arg(numTexts));
+    memory += usedByTexts;
+
 
     // Every (unique) patch cable needs 8 bytes
     unsigned numCables = ((Patch *)this)->countUniqueCables();
@@ -1013,7 +1026,9 @@ unsigned Patch::countUniqueConstants()
         }
     }
     // The memory consumption of the constants in the Droid is aligned
-    // to 8, so an odd number of constants need to be rounded up.
+    // to 8, so an odd number of constants need to be rounded up. But because
+    // of some alignment issues, we seem to change this for even numbers,
+    // not odd numbers.
     if (constants.count() % 2 == 0)
         return constants.count() + 1;
     else
@@ -1039,7 +1054,17 @@ unsigned int Patch::countFaders() const
     }
     return count;
 }
-
+unsigned int Patch::countTexts()
+{
+    unsigned num_texts = 0;
+    for (auto it = beginEnabled(); it != this->end(); ++it)
+    {
+        auto &atom = *it;
+        if (atom->isText())
+            num_texts ++;
+    }
+    return num_texts;
+}
 unsigned Patch::highestGatePrefix()
 {
     unsigned highest_g8 = 0;
