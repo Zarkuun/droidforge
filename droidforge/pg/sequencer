@@ -2258,8 +2258,8 @@ def track_section(track):
     if arguments["skiprep"]:
         if arguments["cn"] == "d":
             patch += circuit("logic", [
-                ( "input1", "_T%d_SELECTED * _NO_CONTROL" % track ),
-                ( "input2", "_T%d_ARP_OFF" % track ),
+                ( "input1", track_select_argument(track, False) ),
+                ( "input2", "_T%d_ARP_OFF" % track if arguments["arp"] else 1 ),
                 ( "and", "_T%d_ENC_1_SELECTED" % track ),
             ], "Select encoder if track %d is selected, arp is off and control is not held" % track)
 
@@ -2268,8 +2268,9 @@ def track_section(track):
                 ( "encoder", 1 ),
                 ( "header", '"Repeat shift"' ),
                 ( "color", 0.6 ),
-                ( "discrete", 15 ), # -7 ... 7
+                ( "discrete", 15 ),
                 ( "startvalue", 7 ),
+                ( "outputoffset", -7 ), # -7 ... 7
                 ( "output", "_T%d_REPEATSHIFT" % track ),
             ], "Note shift for each step repetition")
         else:
@@ -2277,15 +2278,16 @@ def track_section(track):
                     ( "pot", pots["repeat_note_shift"] ), # upper pot
                     ( "discrete", 15 ), # -7 ... 7
                     ( "startvalue", 7 ),
+                    ( "outputoffset", -7 ), # -7 ... 7
                     ( "output", "_T%d_REPEATSHIFT" % track ),
             ], "Note shift for each step repetition")
-        params.append(( "repeatshift", "_T%d_REPEATSHIFT - 7" % track))
+        params.append(( "repeatshift", "_T%d_REPEATSHIFT" % track))
 
     if arguments["ratchets"]:
         if arguments["cn"] == "d":
             patch += circuit("logic", [
-                ( "input1", "_T%d_SELECTED * _CONTROL" % track ),
-                ( "input2", "_T%d_ARP_OFF" % track ),
+                ( "input1", track_select_argument(track, True) ),
+                ( "input2", "_T%d_ARP_OFF" % track if arguments["arp"] else 1 ),
                 ( "and", "_T%d_ENC_2_SELECTED" % track ),
             ], "Select encoder if track %d is selected, arp is off and control is held" % track)
 
@@ -2296,6 +2298,7 @@ def track_section(track):
                 ( "color", 0.8 ),
                 ( "discrete", 15 ), # -7 ... 7
                 ( "startvalue", 7 ),
+                ( "outputoffset", -7 ), # -7 ... 7
                 ( "output", "_T%d_RATCHETSHIFT" % track ),
             ], "Note shift for each ratchet")
         else:
@@ -2303,9 +2306,10 @@ def track_section(track):
                 ( "pot", pots["ratchet_note_shift"] ), # lower pot
                 ( "discrete", 15 ), # -7 ... 7
                 ( "startvalue", 7 ),
+                ( "outputoffset", -7 ), # -7 ... 7
                 ( "output", "_T%d_RATCHETSHIFT" % track ),
             ], "Note shift for each ratchet")
-        params.append(( "ratchetshift", "_T%d_RATCHETSHIFT - 7" % track))
+        params.append(( "ratchetshift", "_T%d_RATCHETSHIFT" % track))
 
     patch += circuit("motoquencer", params, "Sequencer for pitch and gate of track %d" % track)
 
@@ -2552,7 +2556,7 @@ def track_arpeggiator(track):
     # Pitch base and range are on overlayed pots
     if arguments["cn"] == "d":
         patch += circuit("logic", [
-                ( "input1", "_T%d_SELECTED * _NO_CONTROL" % track ),
+                ( "input1", track_select_argument(track, False) ),
                 ( "input2", "_T%d_ARP" % track ),
                 ( "and", "_T%d_ENC_3_SELECTED" % track ),
         ], "Select encoder if track %d is selected, arp is on and control is not held" % track)
@@ -2567,7 +2571,7 @@ def track_arpeggiator(track):
         ], "Encoder for base pitch of arpeggiator" )
 
         patch += circuit("logic", [
-                ( "input1", "_T%d_SELECTED * _CONTROL" % track ),
+                ( "input1", track_select_argument(track, True) ),
                 ( "input2", "_T%d_ARP" % track ),
                 ( "and", "_T%d_ENC_4_SELECTED" % track ),
         ], "Select encoder if track %d is selected, arp is on and control is held" % track)
@@ -3086,6 +3090,19 @@ def track_selected_with_ctrl(track, ctrl):
         return [ ( "select", "_CONTROL" ) ]
     else:
         return [ ( "select", "_NO_CONTROL" ) ]
+
+def track_select_argument(track, ctrl):
+    if arguments["tracks"] > 1:
+        if ctrl:
+            return "_T%d_SELECTED * _CONTROL" % track
+        else:
+            return "_T%d_SELECTED * _NO_CONTROL" % track
+    elif ctrl:
+        return "_CONTROL"
+    else:
+        return "_NO_CONTROL"
+
+
 
 def track_and_arp_selected(track):
     if arguments["tracks"] > 1:
