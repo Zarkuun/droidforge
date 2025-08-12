@@ -38,13 +38,16 @@ float ModuleDB8E::registerSize(register_type_t type, unsigned number) const
 float ModuleDB8E::labelDistance(register_type_t type, unsigned) const
 {
     if (type == REGISTER_ENCODER)
-        return -4.40;
+        return -4.60;
     else
-        return -3.68; // button
+        return -2.65; // button
 }
-float ModuleDB8E::labelWidth(register_type_t, unsigned) const
+float ModuleDB8E::labelWidth(register_type_t type, unsigned) const
 {
-    return 5.0;
+    if (type == REGISTER_ENCODER)
+        return 6.0;
+    else
+        return 2.6;
 }
 float ModuleDB8E::rectAspect(register_type_t type, unsigned number) const
 {
