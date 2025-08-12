@@ -69,17 +69,24 @@ QString JackAssignment::jackPrefix() const
 }
 JackAssignment *JackAssignment::parseJackLine(const QString &circuit, QString line)
 {
-    QStringList parts = line.split("#");
-    if (parts[0].count('=') != 1)
-        throw ParseException("Duplicate =");
-
+    int commentMark = findCommentMark(line);
     QString comment;
-    if (parts.size() > 1)
-        comment = parts.mid(1).join('#').trimmed();
+    QString noncomment;
+    if (commentMark != -1) {
+        noncomment = line.left(commentMark).trimmed();
+        comment = line.mid(commentMark + 1).trimmed();
+    }
+    else {
+        noncomment = line.trimmed();
+        comment = "";
+    }
 
-    parts = parts[0].split("=");
-    QString jack = parts[0].trimmed().toLower();
-    QString valueString = parts[1].trimmed();
+    int equal_pos = noncomment.indexOf('=');
+    if (equal_pos == -1)
+        throw ParseException("Missing =");
+
+    QString jack = noncomment.left(equal_pos).toLower().trimmed();
+    QString valueString = noncomment.mid(equal_pos + 1).trimmed();
 
     JackAssignment *ja;
     jack = the_firmware->canonizeJackName(circuit, jack); // e.g. pitch -> pitch1
@@ -158,6 +165,31 @@ Atom *JackAssignment::parseRegister(QString s)
         return new AtomInvalid(s);
     else
         return ar.clone();
+}
+int JackAssignment::findCommentMark(QString text)
+{
+    // Examples:
+    // "foo = 12"
+    // "foo = 12 # This is 12"
+    // "foo = 12 # This is 12 and this is a hash: #"
+    // "header = \"A hash #\"
+    // "header = \"A hash #\" # comment
+
+    bool inQuotes = false;
+    int hashPos = -1;
+
+    for (int i = 0; i < text.size(); ++i) {
+        QChar c = text.at(i);
+
+        if (c == '"') {
+            inQuotes = !inQuotes; // Quote-Zustand umschalten
+        }
+        else if (c == '#' && !inQuotes) {
+            hashPos = i;
+            break;
+        }
+    }
+    return hashPos;
 }
 unsigned long prefixNumber(const QString &s)
 {

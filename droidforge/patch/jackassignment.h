@@ -70,6 +70,9 @@ protected:
     static Atom *parseCable(QString s);
     static Atom *parseRegister(QString s);
     friend bool operator<(const JackAssignment &a, const JackAssignment &b);
+
+private:
+    static int findCommentMark(QString line);
 };
 
 bool operator<(const JackAssignment &a, const JackAssignment &b);
