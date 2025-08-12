@@ -57,10 +57,7 @@ bool PatchEditEngine::save(QString filePath)
 }
 void PatchEditEngine::commit(QString message)
 {
-    QTime before = QTime::currentTime();
-
     sectionCopyDetection();
-    QTime after = QTime::currentTime();
 
     // One new edit step erases all possible redos
     while (redoPointer + 1 < versions.size()) {
