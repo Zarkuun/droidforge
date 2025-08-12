@@ -218,10 +218,23 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
                 ( "4", "four M4 (sixteen steps)" )],
         },
         {
+            "name" : "cn",
+            "title" : "Controller for scale note selection",
+            "enum": [
+              ( "p", "P2B8" ),
+              ( "d", "DB8E display controller" ),
+              ( "pd", "P2B8 for notes, extra DB8E for the display ")],
+        },
+        {
+            "name" : "dcon",
+            "title" : "Access to DB8E display controls via encoder push button",
+        },
+        {
             "name" : "g8",
             "title" : "Number of G8 expanders",
             "number" : (0, 4),
-         }]},
+         },
+        ]},
         {
         "title" : "Configuration",
         "options": [
@@ -479,10 +492,32 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
     "presets" : [
     {
         "name" : "default",
-        "title" : "Default (4 tracks)",
+        "title" : "Motokit 1.0 (until 2025)",
         "parameters" : {
-            "m"        : "master18", "c"        : "m4"    , "nc"       : "2"     , "g8"       : 0       ,
-            "tracks"   : 4         , "steps"    : "16"    ,                        "t1out"    : "trs1"  ,
+            "m"        : "master18", "c"        : "m4"    , "nc"       : "2"     , "cn"       : "p"     , "dcon" : False,
+            "g8"       : 0         , "tracks"   : 4       , "steps"    : "16"    , "t1out"    : "trs1"  ,
+            "t2out"    : "trs2"    , "t3out"    : "usb"   , "t4out"    : "usb"   , "t5out"    : "cvgate",
+            "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
+            "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
+            "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
+            "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
+            "ratchets" : True      , "range"    : True    , "par"      : False   , "pss"      : False   ,
+            "poct"     : True      , "pdt"      : True    , "pact"     : False   , "ppat"     : False   ,
+            "pcdeven"  : False     , "pcdodd"   : False   , "presets"  : 3       , "intclk"   : True    ,
+            "arp"      : True      , "ssb"      : True    , "tbr"      : True    , "act"      : True    ,
+            "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
+            "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
+            "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
+            "resetout" : False     , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
+            "rootscalemidi" : "off", "runningin" : "off"    , "defgate"  : "0",
+        }
+    },
+    {
+        "name" : "default2",
+        "title" : "Motokit 2.0 (from 2026)",
+        "parameters" : {
+            "m"        : "master18", "c"        : "m4"    , "nc"       : "2"     , "cn"       : "d"     , "dcon" : False,
+            "g8"       : 0         , "tracks"   : 4       , "steps"    : "16"    , "t1out"    : "trs1"  ,
             "t2out"    : "trs2"    , "t3out"    : "usb"   , "t4out"    : "usb"   , "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
@@ -503,8 +538,8 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
         "name" : "minimum",
         "title" : "Minimum (1 track)",
         "parameters" : {
-            "m"         : "master18", "c"        : "m4"     , "nc"       : '2'     , "g8"       : 0       ,
-            "tracks"    : 1         , "steps"    : "auto"   ,                        "t1out"    : "cvgate",
+            "m"         : "master18", "c"        : "m4"     , "nc"       : '2'     , "cn"       : "p"     , "dcon" : False,
+            "g8"        : 0         , "tracks"    : 1       , "steps"    : "auto"  , "t1out"    : "cvgate",
             "t2out"     : "cvgate"  , "t3out"    : "cvgate" , "t4out"    : "cvgate", "t5out"    : "cvgate",
             "t6out"     : "cvgate"  , "t7out"    : "cvgate" , "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"    : 2         , "t3chan"   : 3        , "t4chan"   : 4       , "t5chan"   : 5       ,
@@ -525,8 +560,8 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
         "name" : "dmmdm",
         "title" : "DMMDM's authentic live setup",
         "parameters" : {
-            "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "g8"       : 1       ,
-            "tracks"   : 4         , "steps"    : "32"    ,                        "t1out"    : "cvgate",
+            "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "cn"       : "d"     , "dcon" : True,
+            "g8"       : 1         , "tracks"   : 4       , "steps"    : "32"    , "t1out"    : "cvgate",
             "t2out"    : "cvgate"  , "t3out"    : "cvgate", "t4out"    : "cvgate", "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
@@ -583,10 +618,13 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
 # --------------------------------------------------------------------------------
 
 def create_patch():
+    controllers = patch_controllers()
+
     collect_ios()
     allocate_gate_outputs()
     allocate_cv_inputs()
-    allocate_pots()
+    if "p" in arguments["cn"]:
+        allocate_pots()
     allocate_track_buttons()
     prepare_performance_menu()
 
@@ -601,7 +639,7 @@ def create_patch():
     return \
         patch_title() + \
         patch_labels() + \
-        patch_controllers() + \
+        controllers + \
         section_tonality() + \
         sections
 
@@ -641,7 +679,24 @@ def patch_title():
     return patch
 
 def patch_controllers():
-    controllers = [ "p2b8", "b32" ]
+    global b32_position
+    global notesel_position
+
+    controllers = []
+
+    if arguments["cn"] == "p": # P2B8
+        controllers = [ "p2b8" ]
+        notesel_position = 1
+        b32_position = 2
+    elif arguments["cn"] == "d": # DB8E
+        controllers = [ "db8e" ]
+        notesel_position = 1
+        b32_position = 2
+    else: # P2B8 + DB8E
+        controllers = [ "db8e", "p2b8" ]
+        notesel_position = 2
+        b32_position = 3
+    controllers.append("b32")
     for i in range(int(arguments["nc"])):
         controllers.append(arguments["c"])
     return "".join([ "[%s]\n" % c for c in controllers])
@@ -1205,14 +1260,14 @@ def section_global_buttons():
 
     if need_control_button():
         patch += circuit("copy", [
-            ( "input", "B1.8" ),
+            ( "input", "B%d.8" % notesel_position ),
             ( "output", "_CONTROL" ),
         ], "Provide state of the control button in a patch cable.")
 
         # At various places we use _NO_CONTROL for conveniance.
         if arguments["tracks"] > 1 or arguments["presets"] > 1 or arguments["copy"] or arguments["lucky"]:
             patch += circuit("copy", [
-                ( "input", "1 - B1.8" ),
+                ( "input", "1 - B%d.8" % notesel_position ),
                 ( "output", "_NO_CONTROL" ),
             ], "Inverted state of control button, is 1 of not held.")
 
@@ -1457,6 +1512,20 @@ def section_global_buttons():
         patch += circuit("buttongroup", args + [
             ( "output", "_PAGE" ),
         ], "Buttongroup for selecting the page of steps to edit")
+
+    # DB8E
+    if arguments["cn"] == "d":
+        if arguments["dcon"]:
+            patch += circuit("button", [
+                ( "button", "B1.9" ),
+                ( "output", "_TAKOVER_CONTROLS" ),
+                ( "startvalue", 1 ),
+                ( "dontsave", 1 ),
+            ], "Toggle display mode via push button in the encoder")
+
+        patch += circuit("display", [
+                ( "takeovercontrols", "_TAKOVER_CONTROLS" if arguments["dcon"] else 1 ),
+            ], "Use buttons on DB8E for note selection")
 
     return patch
 
@@ -2020,8 +2089,8 @@ def track_section(track):
     ]
     for b in range(1, 8):
         bgroupargs += [
-            ( "button%d" % b, "B1.%d" % b ),
-            ( "led%d" % b, "L1.%d" % b ),
+            ( "button%d" % b, "B%d.%d" % (notesel_position, b) ),
+            ( "led%d" % b, "L%d.%d" % (notesel_position, b) ),
             ( "buttonoutput%d" % b, "_T%d_SEL_%d" % (track, b)),
         ]
     patch += circuit("buttongroup", bgroupargs,
@@ -2142,16 +2211,17 @@ def track_section(track):
 
     params.append(("buttonmode", "_BUTTONMODE"))
 
-    labels["B1.1"] = ( "ROOT", "Allow root note" )
-    labels["B1.2"] = ( "3RD", "Allow third note" )
-    labels["B1.3"] = ( "5TH", "Allow fifth note" )
-    labels["B1.4"] = ( "7TH", "Allow seventh note" )
-    labels["B1.5"] = ( "9TH", "Allow nineth note" )
-    labels["B1.6"] = ( "11TH", "Allow eleventh note" )
-    labels["B1.7"] = ( "13TH", "Allow thirtheenth note" )
+    prefix = "B%d." % notesel_position
+    labels[prefix + "1"] = ( "ROOT", "Allow root note" )
+    labels[prefix + "2"] = ( "3RD", "Allow third note" )
+    labels[prefix + "3"] = ( "5TH", "Allow fifth note" )
+    labels[prefix + "4"] = ( "7TH", "Allow seventh note" )
+    labels[prefix + "5"] = ( "9TH", "Allow nineth note" )
+    labels[prefix + "6"] = ( "11TH", "Allow eleventh note" )
+    labels[prefix + "7"] = ( "13TH", "Allow thirtheenth note" )
 
     if need_control_button():
-        labels["B1.8"] = ( "CTRL", "Switch some of the button functions" )
+        labels[prefix + "8"] = ( "CTRL", "Switch some of the button functions" )
 
     params.append(("composemode", "_COMPOSEMODE"))
 
@@ -2186,21 +2256,55 @@ def track_section(track):
         ]
 
     if arguments["skiprep"]:
-        patch += circuit("pot", track_and_nonarp_selected(track) + [
-            ( "pot", pots["repeat_note_shift"] ), # upper pot
-            ( "discrete", 15 ), # -7 ... 7
-            ( "startvalue", 7 ),
-            ( "output", "_T%d_REPEATSHIFT" % track ),
-        ], "Note shift for each step repetition")
+        if arguments["cn"] == "d":
+            patch += circuit("logic", [
+                ( "input1", "_T%d_SELECTED * _NO_CONTROL" % track ),
+                ( "input2", "_T%d_ARP_OFF" % track ),
+                ( "and", "_T%d_ENC_1_SELECTED" % track ),
+            ], "Select encoder if track %d is selected, arp is off and control is not held" % track)
+
+            patch += circuit("encoder", [
+                ( "select", "_T%d_ENC_1_SELECTED" % track ),
+                ( "encoder", 1 ),
+                ( "header", '"Repeat shift"' ),
+                ( "color", 0.6 ),
+                ( "discrete", 15 ), # -7 ... 7
+                ( "startvalue", 7 ),
+                ( "output", "_T%d_REPEATSHIFT" % track ),
+            ], "Note shift for each step repetition")
+        else:
+            patch += circuit("pot", track_and_nonarp_selected(track) + [
+                    ( "pot", pots["repeat_note_shift"] ), # upper pot
+                    ( "discrete", 15 ), # -7 ... 7
+                    ( "startvalue", 7 ),
+                    ( "output", "_T%d_REPEATSHIFT" % track ),
+            ], "Note shift for each step repetition")
         params.append(( "repeatshift", "_T%d_REPEATSHIFT - 7" % track))
 
     if arguments["ratchets"]:
-        patch += circuit("pot", track_and_nonarp_selected(track) + [
-            ( "pot", pots["ratchet_note_shift"] ), # lower pot
-            ( "discrete", 15 ), # -7 ... 7
-            ( "startvalue", 7 ),
-            ( "output", "_T%d_RATCHETSHIFT" % track ),
-        ], "Note shift for each ratchet")
+        if arguments["cn"] == "d":
+            patch += circuit("logic", [
+                ( "input1", "_T%d_SELECTED * _CONTROL" % track ),
+                ( "input2", "_T%d_ARP_OFF" % track ),
+                ( "and", "_T%d_ENC_2_SELECTED" % track ),
+            ], "Select encoder if track %d is selected, arp is off and control is held" % track)
+
+            patch += circuit("encoder", [
+                ( "select", "_T%d_ENC_2_SELECTED" % track ),
+                ( "encoder", 1 ),
+                ( "header", '"Ratchet shift"' ),
+                ( "color", 0.8 ),
+                ( "discrete", 15 ), # -7 ... 7
+                ( "startvalue", 7 ),
+                ( "output", "_T%d_RATCHETSHIFT" % track ),
+            ], "Note shift for each ratchet")
+        else:
+            patch += circuit("pot", track_and_nonarp_selected(track) + [
+                ( "pot", pots["ratchet_note_shift"] ), # lower pot
+                ( "discrete", 15 ), # -7 ... 7
+                ( "startvalue", 7 ),
+                ( "output", "_T%d_RATCHETSHIFT" % track ),
+            ], "Note shift for each ratchet")
         params.append(( "ratchetshift", "_T%d_RATCHETSHIFT - 7" % track))
 
     patch += circuit("motoquencer", params, "Sequencer for pitch and gate of track %d" % track)
@@ -2446,17 +2550,48 @@ def track_arpeggiator(track):
     ], "Create taptempo for arp clock to be used for gate length")
 
     # Pitch base and range are on overlayed pots
-    patch += circuit("pot", track_and_arp_selected(track) + [
-        ( "pot", pots["arp_pitch"] ),
-        ( "outputscale", "3V" ),
-        ( "output", "_T%d_ARP_PITCH" % track ),
-    ], "Virtual pot for base pitch of arpeggiator" )
+    if arguments["cn"] == "d":
+        patch += circuit("logic", [
+                ( "input1", "_T%d_SELECTED * _NO_CONTROL" % track ),
+                ( "input2", "_T%d_ARP" % track ),
+                ( "and", "_T%d_ENC_3_SELECTED" % track ),
+        ], "Select encoder if track %d is selected, arp is on and control is not held" % track)
 
-    patch += circuit("pot", track_and_arp_selected(track) + [
-        ( "pot", pots["arp_range"] ),
-        ( "outputscale", "4V" ),
-        ( "output", "_T%d_ARP_RANGE" % track ),
-    ], "Virtual pot for pitch range of arpeggiator" )
+        patch += circuit("encoder", [
+            ( "encoder", 1 ),
+            ( "select", "_T%d_ENC_3_SELECTED" % track ),
+            ( "header", '"Arp base pitch"' ),
+            ( "color", 0.2 ),
+            ( "outputscale", "3V" ),
+            ( "output", "_T%d_ARP_PITCH" % track ),
+        ], "Encoder for base pitch of arpeggiator" )
+
+        patch += circuit("logic", [
+                ( "input1", "_T%d_SELECTED * _CONTROL" % track ),
+                ( "input2", "_T%d_ARP" % track ),
+                ( "and", "_T%d_ENC_4_SELECTED" % track ),
+        ], "Select encoder if track %d is selected, arp is on and control is held" % track)
+
+        patch += circuit("encoder", [
+            ( "encoder", 1 ),
+            ( "select", "_T%d_ENC_4_SELECTED" % track ),
+            ( "header", '"Arp pitch range"' ),
+            ( "color", 0.4 ),
+            ( "outputscale", "4V" ),
+            ( "output", "_T%d_ARP_RANGE" % track ),
+        ], "Encoder for pitch range of arpeggiator" )
+    else:
+        patch += circuit("pot", track_and_arp_selected(track) + [
+            ( "pot", pots["arp_pitch"] ),
+            ( "outputscale", "3V" ),
+            ( "output", "_T%d_ARP_PITCH" % track ),
+        ], "Virtual pot for base pitch of arpeggiator" )
+
+        patch += circuit("pot", track_and_arp_selected(track) + [
+            ( "pot", pots["arp_range"] ),
+            ( "outputscale", "4V" ),
+            ( "output", "_T%d_ARP_RANGE" % track ),
+        ], "Virtual pot for pitch range of arpeggiator" )
 
     clock = "_T%d_ARP_CLOCK" % track
     if have_running():
@@ -2941,6 +3076,17 @@ def track_selected(track):
     else:
         return []
 
+def track_selected_with_ctrl(track, ctrl):
+    if arguments["tracks"] > 1:
+        return [
+            ( "select", "_SELECTED_TRACK * %s" % ("_CONTROL" if ctrl else "_NO_CONTROL" )),
+            ( "selectat", track ),
+        ]
+    elif ctrl:
+        return [ ( "select", "_CONTROL" ) ]
+    else:
+        return [ ( "select", "_NO_CONTROL" ) ]
+
 def track_and_arp_selected(track):
     if arguments["tracks"] > 1:
         return [
@@ -2949,8 +3095,9 @@ def track_and_arp_selected(track):
         ]
     else:
         return [
-            ( "select", "_T%d_ARP" % track ),
+            ( "select", "_T1_ARP" ),
         ]
+
 
 def track_and_nonarp_selected(track):
     if not arguments["arp"]:
@@ -2963,23 +3110,30 @@ def track_and_nonarp_selected(track):
         ]
     else:
         return [
-            ( "select", "_T%d_ARP" % track ),
+            ( "select", "_T1_ARP" ),
             ( "selectat", 0 ),
         ]
-
-
 
 def collect_ios():
     global ios
     ios = {
-        "pots"       : [ "P1.1", "P1.2" ],
-        "buttons"    : [ "2.%d" % b for b in range(1, 33) ],
+        "buttons"    : [ "%d.%d" % (b32_position, b) for b in range(1, 33) ],
         "gateouts"   : [],
         "gateins"    : [],
         "gateinouts" : [], # G8 gates
         "cvins"      : [],
         "cvouts"     : [],
     }
+
+    if arguments["cn"] == "p":
+        ios["pots"] = [ "P1.1", "P1.2" ]
+        ios["encoders"] = []
+    elif arguments["cn"] == "d":
+        ios["pots"] = []
+        ios["encoders"] = [ 1 ]
+    else: # arguments["cn"] == "pd":
+        ios["pots"] = [ "P2.1", "P2.2" ]
+        ios["encoders"] = []
 
     if arguments["m"] in [ "master", "master+x7", "master18" ]:
         ios["cvouts"] += [ "O1", "O2", "O3", "O4", "O5", "O6", "O7", "O8" ]
@@ -3148,7 +3302,7 @@ def get_button(preferred, short, long):
     button = None
     if preferred:
         for i in range(32):
-            b = "2.%d" % (((preferred - 1 + i) % 32) + 1)
+            b = "%d.%d" % (b32_position, ((preferred - 1 + i) % 32) + 1)
             try:
                 index = ios["buttons"].index(b)
                 button = ios["buttons"][index]
