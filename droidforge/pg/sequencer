@@ -492,7 +492,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
     "presets" : [
     {
         "name" : "default",
-        "title" : "Motokit (until 2025)",
+        "title" : "Moto Kit (until 2025)",
         "parameters" : {
             "m"        : "master18", "c"        : "m4"    , "nc"       : "2"     , "cn"       : "p"     , "dcon" : False,
             "g8"       : 0         , "tracks"   : 4       , "steps"    : "16"    , "t1out"    : "trs1"  ,
@@ -514,7 +514,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
     },
     {
         "name" : "default2",
-        "title" : "Motokit 2 (from 2026)",
+        "title" : "Moto Kit 2 (from 2026)",
         "parameters" : {
             "m"        : "master18", "c"        : "m4"    , "nc"       : "2"     , "cn"       : "d"     , "dcon" : False,
             "g8"       : 0         , "tracks"   : 4       , "steps"    : "16"    , "t1out"    : "trs1"  ,
