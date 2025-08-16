@@ -1366,7 +1366,7 @@ def allocate_track_buttons():
 		"TBR",
 		"If enabled, transposes the melody when the root note changes.")
 
-
+button_repeats = None
 def section_global_buttons():
     patch = section_header("Global buttons")
 
@@ -1409,8 +1409,10 @@ def section_global_buttons():
             fadermode_names[basemode] = "Velocity"
 
         if arguments["skiprep"]:
+            global button_repeats
+            button_repeats = get_button(BUTTONPOS_REPEATS, "REP", "Number of repeats, skip steps")
             buttons += [
-              (3, get_button(BUTTONPOS_REPEATS, "REP", "Number of repeats, skip steps")),
+              (3, button_repeats ),
               (4, get_button(BUTTONPOS_GATE_PATTERN, "PAT", "Pattern for repeated gates")),
             ]
             fadermode_names[3] = "Repeats/Skip"
@@ -2407,8 +2409,10 @@ def track_section(track):
         ( "selectnoteshift", "_T%d_NOTESHIFT_SUM" % track ),
         ( "tuningmode", "_TUNINGMODE" ),
         ( "tuningpitch", "1V" ),
-        ( "constantlength", "_CONTROL" ),
+        ( "bulkedit", "_CONTROL" ),
     ]
+    if button_repeats:
+        params.append(( "constantlength", "B" + button_repeats ))
 
     if arguments["randpitch"]:
         if arguments["intclk"]:
