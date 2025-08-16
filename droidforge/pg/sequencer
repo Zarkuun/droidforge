@@ -1370,15 +1370,18 @@ button_repeats = None
 def section_global_buttons():
     patch = section_header("Global buttons")
 
-    patch += track_selection()
-    patch += global_fader_selection()
-
     if arguments["clear"]:
         patch += circuit("button", [
             ( "button", "B" + track_buttons["clear"] ),
             ( "states", 1 ),
             ( "longpress", "_FACTORY_RESET" ),
         ], "A long press on the clear button resets all settings of the sequencer to its default state" )
+        patch += circuit("droid", [
+            ( "clearall", "_FACTORY_RESET" ),
+        ], "Do the factory reset")
+
+    patch += track_selection()
+    patch += global_fader_selection()
 
 
     if need_control_button():
@@ -1802,9 +1805,6 @@ def section_display_events():
         patch += display_event("_RESET_BUTTON", "Reset sequencer")
 
     if arguments["clear"]:
-        patch += circuit("droid", [
-            ( "clearall", "_FACTORY_RESET" ),
-        ], "Do the factory reset")
         patch += display_event("_FACTORY_RESET", "Factory reset!")
 
     return patch
@@ -2615,6 +2615,7 @@ def track_section(track):
                 ( "defaultcv", 0.5 ),
                 ( "quantize", 0),
                 ( "cvname", '"Velocity"' ),
+                ( "bulkedit", "_CONTROL" ),
                 ( "linktonext", 1 if (arguments["act"] or arguments["gl"]) else 0),
             ], "Sequencer for velocity" + extra_comment )
 
@@ -2646,6 +2647,7 @@ def track_section(track):
                 ( "quantize", 0 ),
                 ( "buttoncolor", COLOR_GLIDES ),
                 ( "cvname", '"Gate length"' ),
+                ( "bulkedit", "_CONTROL" ),
                 ( "linktonext", 1 if arguments["act"] else 0),
             ] + ([("gate", "_T%d_GLIDE" % track ),
                   ("gatename", '"Glide"') ] if track_is_cvgate(track) else []),
@@ -2664,6 +2666,7 @@ def track_section(track):
                 ( "defaultcv", 7 ),
                 ( "cvname", '"Activity"' ),
                 ( "cvnotches", 8 ),
+                ( "bulkedit", "_CONTROL" ),
             ]
         , "Sequencer for activity level per step")
 
