@@ -17,7 +17,6 @@ public:
 protected:
     uint8_t *sysexData() { return &sysexBuffer[0]; };
     unsigned prepareSysexMessage(const Patch *patch);
-    virtual bool needLostBytesHack() const { return false; };
 };
 
 
