@@ -133,8 +133,8 @@ void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
                 _numberFields[optionName] = le;
                 int minimum = option["number"].toArray()[0].toInt();
                 int maximum = option["number"].toArray()[1].toInt();
-                le->setMaxLength(4);
-                le->setFixedWidth(50);
+                le->setMaxLength(5);
+                le->setFixedWidth(58);
                 hori->addWidget(le);
                 label->setText(label->text() + " (" + QString::number(minimum) + " - " + QString::number(maximum) + ")");
             }

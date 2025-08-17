@@ -300,6 +300,16 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             ]
         },
         {
+            "name" : "velomin",
+            "title" : "Voltage at minimum velocity (milli volts)",
+            "number" : (0, 10000),
+        },
+        {
+            "name" : "velomax",
+            "title" : "Voltage at maximum velocity (milli volts)",
+            "number" : (0, 10000),
+        },
+        {
             "name" : "randpitch",
             "title" : "Randomize pitch",
         },
@@ -500,6 +510,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
+            "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : False   , "pss"      : False   ,
             "poct"     : True      , "pdt"      : True    , "pact"     : False   , "ppat"     : False   ,
@@ -522,6 +533,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
+            "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : False   , "pss"      : False   ,
             "poct"     : True      , "pdt"      : True    , "pact"     : False   , "ppat"     : False   ,
@@ -544,6 +556,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"     : "cvgate"  , "t7out"    : "cvgate" , "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"    : 2         , "t3chan"   : 3        , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"    : 6         , "t7chan"   : 7        , "t8chan"   : 8       , "velo"     : "off"   ,
+            "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch" : False     , "randgate" : False    , "skiprep"  : False   , "gl"       : False   ,
             "ratchets"  : False     , "range"    : False    , "par"      : False   , "pss"      : False   ,
             "poct"      : False     , "pdt"      : False    , "pact"     : False   , "ppat"     : False   ,
@@ -566,6 +579,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "g"     ,
+            "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : True    , "pss"      : False   ,
             "poct"     : True      , "pdt"      : True    , "pact"     : True    , "ppat"     : False   ,
@@ -1840,7 +1854,7 @@ def track_midi_output(track):
                      "X7.") % track)
 
     if arguments["velo"] in [ "v", "vg" ]:
-        parameters.append(( "velocity", "_T%d_VELOCITY * 0.9 + 0.1" % track ))
+        parameters.append(( "velocity", "_T%d_VELOCITY" % track))
 
     if arguments["velo"] in [ "vg", "g" ]:
         parameters += [
@@ -2603,6 +2617,16 @@ def track_section(track):
         else:
             extra_comment = ""
 
+        velomin = arguments["velomin"] * 0.001
+        velomax = arguments["velomax"] * 0.001
+        if velomin > velomax:
+            bail_out(("You've set the minimum velocity (%.3f V) higher than the "
+                     "maximum velocity (%.3f V). This is not allowed.") % (
+                     velomin, velomax))
+        elif velomin == velomax:
+            bail_out(("You've set the minimum and the maximum velocity both to the same "
+                      "value of (%.3f V) This is not allowed.") % velomax)
+
         patch += circuit("motoquencer",
             tracksel + \
             paging + \
@@ -2611,9 +2635,10 @@ def track_section(track):
             gate_params + \
             [
                 ( "cv", out ),
-                ( "cvrange", 1 ),
-                ( "defaultcv", 0.5 ),
-                ( "quantize", 0),
+                ( "defaultcv", "%.3fV" % ((velomax + velomin) / 2) ),
+                ( "cvbase", "%.3fV" % velomin ),
+                ( "cvrange", "%.3fV" % (velomax - velomin) ),
+                ( "quantize", 0 ),
                 ( "cvname", '"Velocity"' ),
                 ( "bulkedit", "_CONTROL" ),
                 ( "linktonext", 1 if (arguments["act"] or arguments["gl"]) else 0),
@@ -3079,7 +3104,7 @@ def arpeggio_menu(track):
     patch += display_list_choice([
         "* * * * * *",
         "* * o * * o",
-        "* o * o * o", 
+        "* o * o * o",
         "* o o * o o", ],
         "_T%d_ARP_DROP" % track,
         header = "Play/skip notes",
