@@ -1681,8 +1681,8 @@ def section_global_buttons():
     steps = num_steps()
     if pages == 2:
         b = get_button(BUTTONPOS_PAGES, "PAGE", "Select second page of steps")
-
         button = "B" + b
+
         # If you press the track button of the already selected
         # track, the page is toggled.
         if arguments["tracks"] > 1:
@@ -1694,20 +1694,14 @@ def section_global_buttons():
             ( "output", "_PAGE" ),
         ], "Button for selecting the second page of steps")
     elif pages > 2:
-        args = []
-        steps_per_page = steps / pages
-        for page in range(pages):
-            b = get_button(BUTTONPOS_PAGES + page,
-                "%d - %d" % (page * steps_per_page + 1,
-                          (page+1) * steps_per_page),
-                "Select page %d of the sequence" % (page + 1))
-            args += [
-                ( "button%d" % (page+1), "B" + b ),
-                ( "led%d" % (page+1), "L" + b ),
-            ]
-        patch += circuit("buttongroup", args + [
+        b = get_button(BUTTONPOS_PAGES, "PAGE", "Cycle through all %d pages of steps" % pages)
+        button = "B" + b
+        patch += circuit("button", [
+            ( "button", button ),
+            ( "led", "L" + b ),
+            ( "states", pages ),
             ( "output", "_PAGE" ),
-        ], "Buttongroup for selecting the page of steps to edit")
+        ], "Button for cycling through the pages of steps")
 
     # DB8E
     if arguments["cn"] == "d":
