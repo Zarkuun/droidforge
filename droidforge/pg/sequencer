@@ -1679,8 +1679,10 @@ def section_global_buttons():
     # Page button(s). Pages can be 1, 2 or 4
     pages = num_pages()
     steps = num_steps()
-    if pages == 2:
-        b = get_button(BUTTONPOS_PAGES, "PAGE", "Select second page of steps")
+    if pages >= 2:
+        b = get_button(BUTTONPOS_PAGES, "PAGE",
+            "Select second page of steps" if pages == 2 else
+            "Cycle through the %d pages of steps" % pages)
         button = "B" + b
 
         # If you press the track button of the already selected
@@ -1692,16 +1694,8 @@ def section_global_buttons():
             ( "button", button ),
             ( "led", "L" + b ),
             ( "output", "_PAGE" ),
-        ], "Button for selecting the second page of steps")
-    elif pages > 2:
-        b = get_button(BUTTONPOS_PAGES, "PAGE", "Cycle through all %d pages of steps" % pages)
-        button = "B" + b
-        patch += circuit("button", [
-            ( "button", button ),
-            ( "led", "L" + b ),
             ( "states", pages ),
-            ( "output", "_PAGE" ),
-        ], "Button for cycling through the pages of steps")
+        ], "Button for selecting the second page of steps")
 
     # DB8E
     if arguments["cn"] == "d":
@@ -2026,7 +2020,7 @@ def track_selection():
             # gives access to the underlying mute buttons
             ( "select", "_NO_CONTROL" ) ]
 
-        if num_pages() == 2:
+        if num_pages() >= 2:
             buttongroup_params.append(("extrapress", "_TRACK_EXTRA_PRESS"))
 
         # Prepare an LFO for the mute animation
