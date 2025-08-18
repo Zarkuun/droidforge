@@ -287,9 +287,9 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "options" : midi_channel_options() + [
                 {
                     "name" : "midiin",
-                    "title" : "External MIDI input",
+                    "title" : "MIDI input",
                     "enum" : [
-                        ( "off", "No external MIDI input" ),
+                        ( "off", "No MIDI input" ),
                         ( "trs1", "TRS 1" ),
                         ( "trs2", "TRS 2 (only MASTER18)" ),
                         ( "usb", "USB" ),
@@ -297,7 +297,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
                 },
                 {
                     "name": "midiinrunning",
-                    "title" : "Get START / STOP from selected external MIDI port",
+                    "title" : "Get START / STOP from selected MIDI port",
                 },
                 {
                     "name": "midiinscale",
@@ -305,7 +305,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
                 },
                 {
                     "name": "midiinclk",
-                    "title" : "Get clock from external MIDI",
+                    "title" : "Get clock from MIDI",
                     "enum" : [
                         ( "off", "No MIDI input clock" ),
                         ( "selected", "From the selected MIDI port" ),
@@ -1062,6 +1062,12 @@ def midi_port_argument(port):
 
 def section_midi_input():
     if arguments["midiin"] == "off":
+        if arguments["midiinrunning"]:
+            bail_out("you have selected start / stop via MIDI but not selected "
+                     "any MIDI port.")
+        if arguments["midiinscale"]:
+            bail_out("you have selected root/scale via MIDI but not selected "
+                     "any MIDI port.")
         return ""
 
     patch = section_header("MIDI input")
@@ -1092,7 +1098,7 @@ def section_midi_input():
         if arguments["ssb"]:
             args.append(( "running", "_RUNNING_EXT" ))
 
-    patch += circuit("midiin", args, "External MIDI input")
+    patch += circuit("midiin", args, "MIDI input")
 
     if arguments["midiinclk"] == "selected":
         patch += midi_clock_input(arguments["midiin"], False)
@@ -1114,7 +1120,7 @@ def midi_clock_input(port, with_midiin):
 
     if with_midiin:
         patch += circuit("midiin", [
-            midi_port_argument(port), 
+            midi_port_argument(port),
             ( "clock", cable )
         ], "Get MIDI input clock from %s" % port.upper())
 
