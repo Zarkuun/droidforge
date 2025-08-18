@@ -1,9 +1,9 @@
 #include "patchgeneratordialog.h"
+#include "parseexception.h"
 #include "usermanual.h"
 #include "hintdialog.h"
 #include "globals.h"
 #include "patchparser.h"
-#include "parseexception.h"
 
 #include <QRandomGenerator>
 #include <QSettings>
@@ -170,12 +170,29 @@ void PatchGeneratorDialog::renderOptions(QLayout *mainLayout)
 
     connect(tabWidget, &QTabWidget::currentChanged, this, &PatchGeneratorDialog::tabChanged);
 }
+
+QString PatchGeneratorDialog::presetTitle(QString name) const
+{
+    const QJsonDocument &info = _generator->parameterInfo();
+    const auto presets = info["presets"].toArray();
+    for (auto const &p: presets) {
+        auto preset = p.toObject();
+        if (name == preset["name"].toString())
+            return preset["title"].toString();
+    }
+    return "unknown preset";
+}
 void PatchGeneratorDialog::loadPreset()
 {
     QString preset = _presetChoice->currentData().toString();
     pgconfig_t config;
     configForPreset(preset, config);
     setConfig(config);
+
+    QMessageBox::information(
+        this,
+        tr("Loaded preset"),
+        tr("The preset %1 has been loaded.").arg(presetTitle(preset)));
 }
 void PatchGeneratorDialog::manual()
 {
@@ -224,7 +241,7 @@ void PatchGeneratorDialog::defaultConfig(pgconfig_t &config)
     const QJsonDocument &info = _generator->parameterInfo();
     auto presets = info["presets"].toArray();
     QString first;
-    for (auto p: presets) {
+    for (auto const &p: presets) {
         auto preset = p.toObject();
         QString name = preset["name"].toString();
         if (name == "default") {
@@ -240,7 +257,7 @@ void PatchGeneratorDialog::configForPreset(QString presetName, pgconfig_t &confi
 {
     const QJsonDocument &info = _generator->parameterInfo();
     auto presets = info["presets"].toArray();
-    for (auto p: presets) {
+    for (auto const&p: presets) {
         auto preset = p.toObject();
         QString name = preset["name"].toString();
         if (name != presetName)

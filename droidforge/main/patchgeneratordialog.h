@@ -39,6 +39,7 @@ private:
     void loadConfigFromSettings(pgconfig_t &config);
     QComboBox *createPresetChoice();
     int lastOpenTab();
+    QString presetTitle(QString name) const;
 
 private slots:
     void loadPreset();
