@@ -1,6 +1,9 @@
 #ifndef PATCHSIZEINDICATOR_H
 #define PATCHSIZEINDICATOR_H
 
+#include <QTimer.h>
+#include <QElapsedTimer.h>
+
 #include "patcheditengine.h"
 #include "patchview.h"
 
@@ -13,6 +16,9 @@ class PatchSizeIndicator : public QWidget, PatchView
     unsigned memoryNeeded;
     unsigned memoryAvailable;
     unsigned patchSize; // counts to MAX_DROID_INI
+    bool dirty;
+    QElapsedTimer lastDirty;
+    QTimer timer;
 
 public:
     explicit PatchSizeIndicator(MainWindow *mainWindow, PatchEditEngine *patch);
@@ -20,9 +26,10 @@ public:
 
 private slots:
     void updateStatus();
+    void checkDirty();
 
-signals:
-
+private:
+    void recompute();
 };
 
 #endif // PATCHSIZEINDICATOR_H

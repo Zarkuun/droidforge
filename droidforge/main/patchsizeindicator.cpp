@@ -15,9 +15,15 @@ PatchSizeIndicator::PatchSizeIndicator(MainWindow *mainWindow, PatchEditEngine *
     , memoryNeeded(0)
     , memoryAvailable(1)
     , patchSize(0)
+    , dirty(false)
 {
     setMinimumWidth(MI_WIDTH);
     setMaximumWidth(MI_WIDTH);
+
+    timer.setInterval(100);  // check alle 100 ms
+    timer.setSingleShot(false);
+    connect(&timer, &QTimer::timeout, this, &PatchSizeIndicator::checkDirty);
+    timer.start();
 
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchSizeIndicator::updateStatus);
     connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &PatchSizeIndicator::updateStatus);
@@ -57,6 +63,19 @@ void PatchSizeIndicator::paintEvent(QPaintEvent *)
     painter.drawText(textRect, text, Qt::AlignVCenter | Qt::AlignCenter);
 }
 void PatchSizeIndicator::updateStatus()
+{
+    dirty = true;
+    lastDirty.restart();
+}
+
+void PatchSizeIndicator::checkDirty()
+{
+    if (dirty && lastDirty.elapsed() > 500) {
+        recompute();
+        dirty = false;  // zurücksetzen
+    }
+}
+void PatchSizeIndicator::recompute()
 {
     QStringList breakdown;
     memoryAvailable = the_firmware->availableMemory(patch->typeOfMaster());
