@@ -19,9 +19,9 @@ QPointF ModuleDB8E::registerPosition(register_type_t type, unsigned number) cons
         return QPointF(hp() / 2, 20.8);
     }
     else  {
-        unsigned column = (number-1) % 2;
-        unsigned row = (number-1) / 2;
-        return QPointF(column * 2.65 + 1.68, row * 2.97 + 7.68);
+        unsigned column = (number - 1) % 2;
+        unsigned row = (number - 1) / 2;
+        return QPointF(column * 3 + 1.5, row * 2.97 + 7.95);
     }
 }
 float ModuleDB8E::registerSize(register_type_t type, unsigned number) const
