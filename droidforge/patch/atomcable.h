@@ -14,7 +14,9 @@ public:
     AtomCable *clone() const override;
     QString toString() const override;
     bool isCable() const  override{ return true; };
+    bool isCable(const QString &name) const;
     QString getCable() const { return name; };
+    const QString &getCableRef() const { return name; };
     void setCable(const QString &n) { name = n; };
     QString problemAsInput(const Patch *patch) const override;
     QString problemAsOutput(const Patch *patch) const override;

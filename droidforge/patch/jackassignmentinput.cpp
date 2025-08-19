@@ -153,12 +153,10 @@ void JackAssignmentInput::collectCables(QStringList &cables) const
 void JackAssignmentInput::findCableConnections(const QString &cable, int &asInput, int &) const
 {
     for (int i=0; i<NUM_ATOMS; i++) {
-        if (atoms[i] && atoms[i]->isCable() && ((AtomCable *)atoms[i])->getCable() == cable)
+        if (atoms[i] && atoms[i]->isCable(cable))
             asInput ++;
     }
 }
-
-
 void JackAssignmentInput::parseInputExpression(QString, QString value)
 {
     // Beware: value is *not* converted to lowercase in order to conserve

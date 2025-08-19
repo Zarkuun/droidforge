@@ -10,6 +10,10 @@ QString AtomCable::toString() const
 {
     return QString("_") + name;
 }
+bool AtomCable::isCable(const QString &n) const
+{
+    return name == n;
+}
 QString AtomCable::problemAsInput(const Patch *patch) const
 {
     int numAsOutput = 0;

@@ -27,6 +27,7 @@ public:
     virtual bool isRegister() const { return false; };
     virtual bool canHaveLabel() const { return false; };
     virtual bool isCable() const { return false; };
+    virtual bool isCable(const QString &) const { return false; };
     virtual bool isInvalid() const { return false; };
     virtual bool needsX7() const { return false; };
     virtual unsigned neededG8Number() const { return 0; };

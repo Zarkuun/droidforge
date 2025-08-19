@@ -229,12 +229,12 @@ void Circuit::setAtomAt(int row, int column, Atom *atom)
 }
 void Circuit::collectCables(QStringList &cables) const
 {
-    for (auto ja: jackAssignments)
+    for (auto const &ja: jackAssignments)
         ja->collectCables(cables);
 }
 void Circuit::findCableConnections(const QString &cable, int &asInput, int &asOutput) const
 {
-    for (auto ja: jackAssignments)
+    for (auto const &ja: jackAssignments)
         if (!ja->isDisabled())
             ja->findCableConnections(cable, asInput, asOutput);
 }
