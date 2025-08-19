@@ -6,7 +6,6 @@
 #include "registerlabels.h"
 #include "patchproblem.h"
 #include "rewritecablesdialog.h"
-#include "jackdeduplicator.h"
 
 #include <QStringList>
 #include <QMap>
@@ -66,7 +65,7 @@ public:
     bool moveCursorForward(bool autoUnfold);
     void moveCursorBackward(bool autoUnfold);
     void moveCursorToNextJa(bool autoUnfold);
-    unsigned searchHitPosition(const QString &text, unsigned *count);
+    unsigned searchHitPosition(const QString &text, unsigned *count, bool *didUnfold);
 
     // More complex analysis
     QStringList allCables() const;
@@ -85,7 +84,7 @@ public:
     const QList<PatchProblem *> &allProblems() const { return problems; };
     const PatchProblem *problem(unsigned nr) { return problems[nr]; };
     bool registerAvailable(AtomRegister ar) const;
-    unsigned usedRAM(QStringList &breakdown) const;
+    unsigned usedRAM(QStringList &breakdown, QString *deployString = 0) const;
     unsigned countUniqueCables();
     unsigned countUniqueConstants();
     unsigned countEncoders() const;

@@ -15,6 +15,7 @@
 #include "windowlist.h"
 #include "patchgeneratorbase.h"
 #include "patchgenerator.h"
+#include "droidfirmware.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>

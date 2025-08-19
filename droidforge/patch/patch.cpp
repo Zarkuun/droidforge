@@ -440,7 +440,7 @@ void Patch::moveCursorBackward(bool autoUnfold)
         currentSection()->setCursorNoUnfold(CursorPosition(circuitNr, row, column));
     return;
 }
-unsigned Patch::searchHitPosition(const QString &text, unsigned *count)
+unsigned Patch::searchHitPosition(const QString &text, unsigned *count, bool *didUnfold)
 {
     *count = 0;
     unsigned position = 0;
@@ -462,7 +462,7 @@ unsigned Patch::searchHitPosition(const QString &text, unsigned *count)
             break; // wrapped around
     }
     sectionIndex = startSectionIndex;
-    currentSection()->setCursor(startCursor); // unfolds if neccessary
+    *didUnfold = currentSection()->setCursor(startCursor); // unfolds if neccessary
     return position;
 }
 void Patch::setTitle(const QString &newTitle)
@@ -484,13 +484,8 @@ QStringList Patch::allCables() const
 }
 void Patch::renameCable(const QString &oldName, const QString &newName)
 {
-    for (auto atom: *this) {
-        if (atom->isCable()) {
-            AtomCable *ac = (AtomCable *)atom;
-            if (ac->getCable() == oldName)
-                ac->setCable(newName);
-        }
-    }
+    for (auto &section: sections)
+        section->renameCable(oldName, newName);
 }
 void Patch::rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode)
 {
@@ -520,7 +515,7 @@ void Patch::compressCables(QMap<QString,QString> *mapping)
 }
 void Patch::clearBookmarks()
 {
-    for (auto section: sections)
+    for (auto &section: sections)
         section->clearBookmarks();
 }
 
@@ -907,7 +902,7 @@ unsigned Patch::usedRAMByControllers() const
         byControllers += the_firmware->controllerUsedRAM(controller);
     return byControllers;
 }
-unsigned Patch::usedRAM(QStringList &breakdown) const
+unsigned Patch::usedRAM(QStringList &breakdown, QString *deployString) const
 {
     unsigned memory = 0;
 
@@ -973,7 +968,9 @@ unsigned Patch::usedRAM(QStringList &breakdown) const
     // of the deduplication happending at toCompressed
     unsigned jacktableSize;
     unsigned savedBytes;
-    toDeployString(&jacktableSize, &savedBytes);
+    QString ds = toDeployString(&jacktableSize, &savedBytes);
+    if (deployString)
+        *deployString = ds; // reuse as a side product to save time
     unsigned byParameters = jacktableSize - the_firmware->initialJacktableSize();
     memory += byParameters;
     breakdown.append(TR("%1 bytes are used by parameter values.").arg(niceBytes(byParameters)));

@@ -58,6 +58,7 @@ public:
     void toggleFold();
     void rewriteSelectedCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
     void rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix);
+    void renameCable(const QString &oldName, const QString &newName);
 
     const Selection *getSelection() const { return selection; };
     const Selection * const *getSelectionPointer() const { return &selection; };
@@ -72,7 +73,7 @@ public:
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     const CursorPosition &cursorPosition() const { return cursor; };
-    void setCursor(const CursorPosition &pos);
+    bool setCursor(const CursorPosition &pos);
     void setCursorNoUnfold(const CursorPosition &pos);
     Circuit *currentCircuit();
     const Circuit *currentCircuit() const;
@@ -94,7 +95,7 @@ public:
     void collectRegisterAtoms(RegisterList &, bool skipOverlayedControls) const;
     void removeRegisterReferences(RegisterList &rl);
     unsigned ramUsedByCircuits() const;
-    bool searchHitAtCursor(const QString &text);
+    bool searchHitAtCursor(const QString &text) const;
     bool needsMIDI() const;
     bool cableNeededByDisplay(const QString &cable) const;
     void clearBookmarks();

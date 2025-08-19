@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include "editoractions.h"
-#include "droidfirmware.h"
 #include "patchoperator.h"
 #include "patchsectionmanager.h"
 #include "patchsectionview.h"

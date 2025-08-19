@@ -499,6 +499,13 @@ void PatchSection::rewriteCablePrefixes(const QString &fromPrefix, const QString
     for (auto circuit: circuits)
         circuit->rewriteCablePrefixes(fromPrefix, toPrefix);
 }
+
+void PatchSection::renameCable(const QString &oldName, const QString &newName)
+{
+    for (auto circuit: circuits)
+        circuit->renameCable(oldName, newName);
+
+}
 Patch *PatchSection::getSelectionAsPatch() const
 {
     Clipboard cb;
@@ -583,11 +590,15 @@ QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
     return allProblems;
 }
 
-void PatchSection::setCursor(const CursorPosition &pos)
+bool PatchSection::setCursor(const CursorPosition &pos)
 {
     cursor = pos;
-    if (pos.row != ROW_CIRCUIT && currentCircuit()->isFolded())
+    if (pos.row != ROW_CIRCUIT && currentCircuit()->isFolded()) {
         currentCircuit()->setFold(false);
+        return true;
+    }
+    else
+        return false;
 }
 void PatchSection::setCursorNoUnfold(const CursorPosition &pos)
 {
@@ -705,7 +716,7 @@ bool PatchSection::cableNeededByDisplay(const QString &cable) const
     }
     return false;
 }
-bool PatchSection::searchHitAtCursor(const QString &text)
+bool PatchSection::searchHitAtCursor(const QString &text) const
 {
     if (isEmpty())
         return false;
@@ -717,7 +728,7 @@ bool PatchSection::searchHitAtCursor(const QString &text)
     else if (pos.row == ROW_COMMENT)
         refText = currentCircuit()->getComment();
     else {
-        JackAssignment *ja = currentJackAssignment();
+        const JackAssignment *ja = currentJackAssignment();
         if (pos.column == 0)
             refText = ja->jackName() + " " + ja->getComment();
         else {

@@ -591,22 +591,33 @@ unsigned DroidFirmware::numControllerRegisters(const QString &module, char regis
 }
 QJsonValue DroidFirmware::findJack(QString circuit, QString whence, QString jack) const
 {
+    QString cacheKey = circuit + "/" + whence + "/" + jack;
+    if (jackCache.contains(cacheKey))
+        return jackCache[cacheKey];
+
     QJsonArray jacklist = circuits[circuit].toObject()[whence].toArray();
     for (qsizetype i=0; i<jacklist.size(); i++) {
-        QJsonObject jackinfo = jacklist[i].toObject();
+        const QJsonObject jackinfo = jacklist[i].toObject();
         // Account for jack arrays
         if (jackinfo.contains("count")) {
             for (qsizetype i=1; i<=jackinfo["count"].toInt(); i++) {
                 QString n = jackinfo["prefix"].toString() + QString::number(i);
-                if (n == jack)
+                if (n == jack) {
+                    jackCache[cacheKey] = jackinfo;
                     return jackinfo;
+                }
             }
             continue;
         }
-        else if (jackinfo["name"] == jack)
+        else if (jackinfo["name"] == jack) {
+            jackCache[cacheKey] = jackinfo;
             return jackinfo;
+        }
     }
-    return QJsonValue(QJsonValue::Null);
+
+    QJsonValue value = QJsonValue(QJsonValue::Null);
+    jackCache[cacheKey] = value;
+    return value;
 }
 QJsonValue DroidFirmware::findJackArray(QString circuit, QString whence, QString prefix) const
 {

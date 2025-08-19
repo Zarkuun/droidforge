@@ -18,6 +18,7 @@
 #include "hintdialog.h"
 #include "waitforsddialog.h"
 #include "sourcecodeeditor.h"
+#include "droidfirmware.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -1039,7 +1040,6 @@ void PatchOperator::search(QString text, int direction)
         CursorPosition nextPos = patch->currentSection()->cursorPosition();
         if (nextSectionIndex == startSectionIndex && nextPos == startPos)
             break;
-
         else if (patch->currentSection()->searchHitAtCursor(text)) {
             found = true;
             if (patch->currentSectionIndex() != startSectionIndex)
@@ -1052,8 +1052,14 @@ void PatchOperator::search(QString text, int direction)
 
     // First round: We count the number of search hits
     unsigned pos, count;
-    pos = patch->searchHitPosition(text, &count);
-    if (found) emit patchModified(); // circuit might have been unfolded. We need a repaint.
+    bool didUnfold;
+    pos = patch->searchHitPosition(text, &count, &didUnfold);
+    if (found) {
+        if (didUnfold)
+            emit patchModified(); // circuit might have been unfolded. We need a repaint.
+        else
+            emit cursorMoved();
+    }
     emit searchStatsChanged(pos, count);
 }
 

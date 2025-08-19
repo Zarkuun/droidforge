@@ -22,6 +22,7 @@
 #include "patchview.h"
 #include "hintdialog.h"
 #include "atomselectordialog.h"
+#include "droidfirmware.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>

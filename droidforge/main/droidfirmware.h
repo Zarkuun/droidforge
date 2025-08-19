@@ -12,6 +12,7 @@ class DroidFirmware
     QJsonObject circuits;
     QJsonObject controllers;
     QJsonObject pagerefs;
+    mutable QHash<QString, QJsonValue> jackCache;
 
 public:
     DroidFirmware();

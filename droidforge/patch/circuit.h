@@ -25,7 +25,7 @@ class Circuit
 {
     QString name;
     QStringList comment;
-    QList<JackAssignment *> jackAssignments;
+    QVector<JackAssignment *> jackAssignments;
     bool disabled;
     bool folded;
     bool haveBookmark;
@@ -55,8 +55,8 @@ public:
     qsizetype numCommentLines() const { return comment.size(); };
     void addJackAssignment(JackAssignment *);
     void insertJackAssignment(JackAssignment *, int index);
-    JackAssignment *jackAssignment(unsigned i) { return jackAssignments[i]; };
-    const JackAssignment *jackAssignment(unsigned i) const { return jackAssignments[i]; };
+    JackAssignment *jackAssignment(unsigned i) { return jackAssignments.at(i); };
+    const JackAssignment *jackAssignment(unsigned i) const { return jackAssignments.at(i); };
     const JackAssignment *findJack(const QString name) const;
     bool removeExistingJack(const QString name);
     bool hasUndefinedJacks() const;
@@ -77,6 +77,7 @@ public:
     void findCableConnections(const QString &cable, int &asInput, int &asOutput) const;
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode, int fromRow=0, int toRow=-1);
     void rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix);
+    void renameCable(const QString &oldName, const QString &newName);
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
     QString prefixOfJack(const QString &jackName);
     unsigned baseRAMUsage() const;

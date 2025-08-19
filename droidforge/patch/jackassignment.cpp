@@ -128,6 +128,18 @@ void JackAssignment::rewriteCablePrefixes(const QString &fromPrefix, const QStri
              atom->rewriteCablePrefix(fromPrefix, toPrefix);
     }
 }
+void JackAssignment::renameCable(const QString &oldName, const QString &newName)
+{
+    for (int i=1; i<=3; i++) {
+        Atom *atom = atomAt(i);
+        if (atom && atom->isCable())
+        {
+            AtomCable *ac = (AtomCable *)atom;
+            if (ac->getCable() == oldName)
+                ac->setCable(newName);
+        }
+    }
+}
 QList<PatchProblem *> JackAssignment::collectProblems(const Patch *patch) const
 {
     QList<PatchProblem *>problems = collectSpecificProblems(patch);

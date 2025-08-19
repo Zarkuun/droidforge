@@ -60,7 +60,8 @@ void PatchSizeIndicator::updateStatus()
 {
     QStringList breakdown;
     memoryAvailable = the_firmware->availableMemory(patch->typeOfMaster());
-    memoryNeeded = patch->usedRAM(breakdown);
+    QString deployString;
+    memoryNeeded = patch->usedRAM(breakdown, &deployString);
     QString tooltipRAM = tr("Your patch needs %1 bytes of RAM.").arg(niceBytes(memoryNeeded));
     bool bad = false;
 
@@ -80,7 +81,7 @@ void PatchSizeIndicator::updateStatus()
     for (auto& hint: breakdown)
         tooltipRAM += "   " + hint + "\n";
 
-    patchSize = patch->toDeployString().size();
+    patchSize = deployString.size();
     QString tooltipSize = tr("Your patch size is %1 bytes.").arg(niceBytes(patchSize));
     if (patchSize > MAX_DROID_INI) {
         tooltipSize += " " + tr("That's more than the allowed %1! Check compression in the preferences.").arg(niceBytes(MAX_DROID_INI));

@@ -45,6 +45,8 @@ public:
     void collectRegisterAtoms(RegisterList &, bool skipControls=false) const;
     void rewriteCableNames(const QString &remove, const QString &insert, RewriteCablesDialog::mode_t mode);
     void rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix);
+    void renameCable(const QString &oldName, const QString &newName);
+
     QList<PatchProblem *> collectProblems(const Patch *patch) const;
 
     virtual ~JackAssignment();

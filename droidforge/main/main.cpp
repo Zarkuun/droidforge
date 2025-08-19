@@ -8,6 +8,7 @@
 #include "windowlist.h"
 #include "patchgeneratorbase.h"
 #include "tuning.h"
+#include "droidfirmware.h"
 
 #include <QApplication>
 #include <QDir>

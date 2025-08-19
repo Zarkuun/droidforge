@@ -3,7 +3,6 @@
 #include "atomcable.h"
 #include "patch.h"
 #include "jackassignmentoutput.h"
-#include "globals.h"
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -250,8 +249,14 @@ void Circuit::rewriteCableNames(const QString &remove, const QString &insert, Re
 }
 void Circuit::rewriteCablePrefixes(const QString &fromPrefix, const QString &toPrefix)
 {
-    for (auto ja: jackAssignments)
+    for (auto &ja: jackAssignments)
         ja->rewriteCablePrefixes(fromPrefix, toPrefix);
+}
+
+void Circuit::renameCable(const QString &oldName, const QString &newName)
+{
+    for (auto &ja: jackAssignments)
+        ja->renameCable(oldName, newName);
 }
 QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
 {
