@@ -18,6 +18,7 @@ EditorActions::EditorActions(MainWindow *mainWindow, PatchEditEngine *patch, QOb
     // Events that we are interested in
     connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &EditorActions::switchSection);
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &EditorActions::modifyPatch);
+    connect(mainWindow->theHub(), &UpdateHub::problemsUpdated, this, &EditorActions::modifyPatch);
     connect(mainWindow->theHub(), &UpdateHub::selectionChanged, this, &EditorActions::changeSelection);
     connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &EditorActions::moveCursor);
     connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &EditorActions::changePatching);

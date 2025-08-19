@@ -20,6 +20,7 @@ class PatchEditEngine : public Patch
     bool patching;
     unsigned patchingStartSection; // invalid if patching == false
     CursorPosition patchingStartPosition; // invalid if patching == false
+    qint64 problemsDirtySince;
 
 public:
     PatchEditEngine(); // empty
@@ -42,6 +43,8 @@ public:
     QString nextRedoTitle() const;
     void commitCursorPosition();
     void commitFolding();
+    void checkUpdateProblemsNow();
+    bool checkUpdateProblems();
 
     bool isPatching() const { return patching; };
     bool isPatchingFrom(const CursorPosition &pos) const;
@@ -51,6 +54,7 @@ public:
     const CursorPosition &getPatchingStartPosition() { return patchingStartPosition; };
 
 private:
+    void setProblemsDirty();
     void clearVersions();
     void sectionCopyDetection();
     void intelligentSectionSync(const PatchSection *source, int targetIndex, QString fromPrefix, QString toPrefix);

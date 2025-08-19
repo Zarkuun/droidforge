@@ -387,8 +387,13 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 }
 void PatchOperator::upload()
 {
+    patch->checkUpdateProblemsNow();
+    if (patch->hasProblems())
+        return;
+
     if (patch->isModified())
         save();
+
 
     QString error = midiHost.sendPatch(patch);
     if (error != "") {
@@ -401,6 +406,10 @@ void PatchOperator::upload()
 }
 void PatchOperator::saveToSD()
 {
+    patch->checkUpdateProblemsNow();
+    if (patch->hasProblems())
+        return;
+
     if (patch->isModified())
         save();
 

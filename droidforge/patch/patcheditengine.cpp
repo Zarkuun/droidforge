@@ -14,6 +14,7 @@ PatchEditEngine::PatchEditEngine()
     : redoPointer(-1)
     , versionOnDisk(-1)
     , patching(false)
+    , problemsDirtySince(1)
 {
     addSection(new PatchSection()); // there always must be one section
 }
@@ -24,7 +25,7 @@ PatchEditEngine::~PatchEditEngine()
 }
 void PatchEditEngine::clearVersions()
 {
-    for (auto version: versions)
+    for (auto &version: versions)
         delete version;
     versions.clear();
 }
@@ -76,19 +77,19 @@ void PatchEditEngine::commit(QString message)
         redoPointer--;
     }
 
-    updateProblems(); // This is the one and only place where we do this!
+    setProblemsDirty();
 }
 void PatchEditEngine::undo()
 {
     Q_ASSERT(undoPossible());
     versions[--redoPointer]->getPatch()->cloneInto(this);
-    updateProblems(); // This is the one and only place where we do this!
+    setProblemsDirty();
 }
 void PatchEditEngine::redo()
 {
     Q_ASSERT(redoPossible());
     versions[++redoPointer]->getPatch()->cloneInto(this);
-    updateProblems(); // This is the one and only place where we do this!
+    setProblemsDirty();
 }
 bool PatchEditEngine::undoPossible() const
 {
@@ -133,6 +134,25 @@ void PatchEditEngine::commitFolding()
             lastCircuit->setFold(thisCircuit->isFolded());
         }
     }
+}
+void PatchEditEngine::setProblemsDirty()
+{
+    problemsDirtySince = QDateTime::currentMSecsSinceEpoch();
+}
+void PatchEditEngine::checkUpdateProblemsNow()
+{
+    if (problemsDirtySince != 0)
+        updateProblems();
+}
+bool PatchEditEngine::checkUpdateProblems()
+{
+    if (problemsDirtySince != 0 && QDateTime::currentMSecsSinceEpoch() - problemsDirtySince > PROBLEMS_UPDATE_DELAY) {
+        updateProblems();
+        problemsDirtySince = 0;
+        return true;
+    }
+    else
+        return false;
 }
 bool PatchEditEngine::isPatchingFrom(const CursorPosition &pos) const
 {

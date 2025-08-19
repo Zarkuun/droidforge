@@ -14,6 +14,7 @@ public:
 
 public slots:
     void modifyPatch();
+    void updateProblems();
     void switchSection();
     void changeSelection();
     void moveCursor();
@@ -22,6 +23,7 @@ public slots:
 
 signals:
     void patchModified();
+    void problemsUpdated();
     void sectionSwitched();
     void selectionChanged();
     void patchingChanged();

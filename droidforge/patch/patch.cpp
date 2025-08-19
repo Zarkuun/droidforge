@@ -667,7 +667,7 @@ unsigned Patch::numProblemsInSection(int i) const
 }
 void Patch::updateProblems()
 {
-    for (auto problem: problems)
+    for (auto &problem: problems)
         delete problem;
     problems.clear();
 
@@ -675,7 +675,6 @@ void Patch::updateProblems()
     updateRegisterProblems();
     updateMemoryProblems();
 }
-
 void Patch::updateMemoryProblems()
 {
     // Check memory consumption of circuits, also their count
@@ -734,9 +733,9 @@ void Patch::updateSectionProblems()
 {
     // Collect problems locally in the sections
     int sectionNr=0;
-    for (auto section: sections) {
+    for (auto &section: sections) {
         auto sectionProblems = section->collectProblems(this);
-        for (auto problem: sectionProblems)
+        for (auto &problem: sectionProblems)
             problem->setSection(sectionNr);
         problems += sectionProblems;
         sectionNr++;

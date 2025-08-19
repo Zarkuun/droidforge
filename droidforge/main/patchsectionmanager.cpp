@@ -53,6 +53,7 @@ PatchSectionManager::PatchSectionManager(MainWindow *mainWindow, PatchEditEngine
     // Events we are interested in
     connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &PatchSectionManager::switchSection);
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchSectionManager::modifyPatch);
+    connect(mainWindow->theHub(), &UpdateHub::problemsUpdated, this, &PatchSectionManager::updateProblems);
 
     int width;
     QSettings settings;
@@ -186,6 +187,10 @@ int PatchSectionManager::snapSectionInsertPosition(int fromIndex, float y, float
     return -1;
 }
 void PatchSectionManager::modifyPatch()
+{
+    rebuildGraphics();
+}
+void PatchSectionManager::updateProblems()
 {
     rebuildGraphics();
 }

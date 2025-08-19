@@ -23,6 +23,7 @@
 #include "hintdialog.h"
 #include "atomselectordialog.h"
 #include "droidfirmware.h"
+#include "globals.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -58,6 +59,7 @@ PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *init
 
     // Events that we create
     connect(this, &PatchSectionView::patchModified, mainWindow->theHub(), &UpdateHub::modifyPatch);
+    connect(this, &PatchSectionView::problemsUpdated, mainWindow->theHub(), &UpdateHub::updateProblems);
     connect(this, &PatchSectionView::selectionChanged, mainWindow->theHub(), &UpdateHub::changeSelection);
     connect(this, &PatchSectionView::sectionSwitched, mainWindow->theHub(), &UpdateHub::switchSection);
     connect(this, &PatchSectionView::cursorMoved, mainWindow->theHub(), &UpdateHub::moveCursor);
@@ -66,6 +68,7 @@ PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *init
     // Events that we are interested in
     connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &PatchSectionView::switchSection);
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchSectionView::modifyPatch);
+    connect(mainWindow->theHub(), &UpdateHub::problemsUpdated, this, &PatchSectionView::updateProblems);
     connect(mainWindow->theHub(), &UpdateHub::selectionChanged, this, &PatchSectionView::changeSelection);
     connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &PatchSectionView::moveCursor);
     connect(mainWindow->theHub(), &UpdateHub::patchingChanged, this, &PatchSectionView::changePatching);
@@ -590,6 +593,10 @@ void PatchSectionView::modifyPatch()
     the_cable_colorizer->colorizeAllCables(patch->allCables());
     if (patch->isPatching())
         abortPatching();
+    rebuildPatchSection();
+}
+void PatchSectionView::updateProblems()
+{
     rebuildPatchSection();
 }
 void PatchSectionView::switchSection()
@@ -1513,8 +1520,6 @@ void PatchSectionView::clockTick()
 {
     if (needScrollbarAdaption) {
         QRectF c = frameCursor->boundingRect();
-        QRectF cursorRect(c.left(), c.top() - CURSOR_VISIBILITY_MARGIN,
-                          c.width(), c.height() + 2 * CURSOR_VISIBILITY_MARGIN);
         QRectF portRect = viewport()->contentsRect();
         QRectF sceneRect = mapToScene(portRect.toRect()).boundingRect();
 
@@ -1553,6 +1558,9 @@ void PatchSectionView::clockTick()
             scene()->update();
         }
     }
+
+    if (patch->checkUpdateProblems())
+        emit problemsUpdated();
 }
 void PatchSectionView::updateCursor()
 {

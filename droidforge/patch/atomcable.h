@@ -13,8 +13,8 @@ public:
     AtomCable(QString n) : name(n) {};
     AtomCable *clone() const override;
     QString toString() const override;
-    bool isCable() const  override{ return true; };
-    bool isCable(const QString &name) const;
+    bool isCable() const  override { return true; };
+    bool isCable(const QString &name) const override;
     QString getCable() const { return name; };
     const QString &getCableRef() const { return name; };
     void setCable(const QString &n) { name = n; };

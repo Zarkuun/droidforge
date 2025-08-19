@@ -54,6 +54,7 @@ protected:
 
 public slots:
     void modifyPatch();
+    void updateProblems();
     void switchSection();
 
     void renameSection();

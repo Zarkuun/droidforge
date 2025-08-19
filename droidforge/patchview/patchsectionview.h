@@ -120,6 +120,7 @@ private:
 public slots:
     void keyCaptured(QKeyEvent *);
     void modifyPatch();
+    void updateProblems();
     void changeSelection();
     void switchSection();
     void moveCursor();
@@ -159,6 +160,7 @@ private slots:
 
 signals:
     void patchModified();
+    void problemsUpdated();
     void sectionSwitched();
     void cursorMoved();
     void clipboardChanged();

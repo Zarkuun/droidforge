@@ -12,6 +12,11 @@ void UpdateHub::modifyPatch()
     // after a patch->commit() from one of our subsystems.
     emit patchModified();
 }
+void UpdateHub::updateProblems()
+{
+    // Called when the list of patch problems has possibly changed
+    emit problemsUpdated();
+}
 void UpdateHub::switchSection()
 {
     // Called whenever another patch section is now being selected.
