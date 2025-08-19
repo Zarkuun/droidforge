@@ -22,7 +22,7 @@ class CircuitView : public QObject, public QGraphicsItem
     float jackColumnWidth;
     float atomColumnWidth;
     QPixmap icon;
-    QImage  iconImage;
+    const QImage &iconImage;
     int markerOffset;
     QFont fixedFont;
     bool mirror_plugs;

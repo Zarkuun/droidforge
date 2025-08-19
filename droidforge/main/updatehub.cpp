@@ -1,5 +1,4 @@
 #include "updatehub.h"
-#include "globals.h"
 
 UpdateHub::UpdateHub(QObject *parent)
     : QObject{parent}

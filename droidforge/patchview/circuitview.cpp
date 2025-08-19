@@ -1,7 +1,5 @@
 #include "circuitview.h"
 #include "colorscheme.h"
-#include "globals.h"
-#include "iconbase.h"
 #include "jackassignmentinput.h"
 #include "jackassignmentoutput.h"
 #include "jackassignmentunknown.h"
@@ -9,7 +7,7 @@
 #include "cablecolorizer.h"
 #include "patchoperator.h"
 #include "mainwindow.h"
-#include "atomcable.h"
+#include "imagecache.h"
 
 #include <QPainter>
 #include <QFontMetrics>
@@ -28,7 +26,7 @@ CircuitView::CircuitView(MainWindow *mainWindow, Circuit *circuit, unsigned circ
     , totalWidth(width)
     , lineHeight(lineHeight)
     , icon(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
-    , iconImage(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX)
+    , iconImage(the_image_cache->image(CIRCUIT_ICON_PATH + circuit->getName() + CIRCUIT_ICON_SUFFIX))
     , markerOffset(0)
 {
     float sparePerColumn = (totalWidth - minimumWidth()) / NUM_COLUMNS;

@@ -9,6 +9,7 @@
 #include "patchgeneratorbase.h"
 #include "tuning.h"
 #include "droidfirmware.h"
+#include "imagecache.h"
 
 #include <QApplication>
 #include <QDir>
@@ -52,6 +53,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":images/droidforge-icon.png"));
 
     // Global variable objects that are shared by all MainWindow
+    ImageCache imageCache;
     DroidFirmware firmware;
     WindowList windowList;
     Clipboard clipboard; // must be global to all windows

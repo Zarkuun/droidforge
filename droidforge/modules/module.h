@@ -33,7 +33,7 @@ class Module : public QGraphicsItem
 {
     MainWindow *mainWindow;
     QString name;
-    QImage faceplateImage;
+    const QImage &faceplateImage;
     int registerHilite[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE]; // 0: off, 1: used, 2: current
     const RegisterLabels *registerLabels; // points into current patch
     unsigned pixelHeight;

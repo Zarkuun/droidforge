@@ -3,6 +3,7 @@
 #include "tuning.h"
 #include "editoractions.h"
 #include "mainwindow.h"
+#include "imagecache.h"
 
 #include <QPainter>
 #include <QGraphicsScene>
@@ -10,7 +11,7 @@
 Module::Module(MainWindow *mainWindow, const QString &name)
     : mainWindow(mainWindow)
     , name(name)
-    , faceplateImage(":images/faceplates/" + name)
+    , faceplateImage(the_image_cache->image(":images/faceplates/" + name))
     , registerHilite{{0}}
     , registerLabels(0)
     , pixelHeight(400)
@@ -104,7 +105,7 @@ void Module::paintHiliteRegister(QPainter *painter, int usage, register_type_t t
     QPen pen;
 
     int d = 8;
-    int i=0;
+    int i = 0;
     while (r.width() >= 0 ) {
         i++;
         if (i%2 == 0)

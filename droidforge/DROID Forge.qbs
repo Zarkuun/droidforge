@@ -117,6 +117,8 @@ QtApplication {
         "main/patchview.h",
         "main/updatehub.cpp",
         "main/updatehub.h",
+        "utilities/imagecache.cpp",
+        "utilities/imagecache.h",
         "utilities/keycapturelineedit.cpp",
         "utilities/keycapturelineedit.h",
         "main/pageselector.cpp",
