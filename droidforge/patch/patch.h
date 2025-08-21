@@ -61,10 +61,11 @@ public:
     const Circuit *currentCircuit() const; // can be 0
     void moveSection(int fromIndex, int toIndex);
     const Atom *currentAtom() const; // can be 0
-    void setCursorTo(int section, const CursorPosition &pos);
+    bool setCursorTo(int section, const CursorPosition &pos, bool autoUnfold = false); // returns "was unfolded"
     bool moveCursorForward(bool autoUnfold);
     void moveCursorBackward(bool autoUnfold);
-    void moveCursorToNextJa(bool autoUnfold);
+    void moveCursorToNextJa(); // does not unfold
+    bool unfoldCurrentCircuit();
     unsigned searchHitPosition(const QString &text, unsigned *count, bool *didUnfold);
 
     // More complex analysis

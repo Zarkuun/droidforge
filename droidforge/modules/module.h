@@ -39,6 +39,7 @@ class Module : public QGraphicsItem
     const RegisterLabels *registerLabels; // points into current patch
     unsigned pixelHeight;
     QPixmap renderBuffer;
+    QMap <QString, QPixmap> hiliteRenderCache;
 
 public:
     Module(MainWindow *mainWindow, const QString &name);

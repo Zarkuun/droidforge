@@ -581,7 +581,7 @@ QList<PatchProblem *> PatchSection::collectProblems(const Patch *patch) const
             circuitNr++;
             continue; // does not count
         }
-        for (auto problem: circuit->collectProblems(patch)) {
+        for (auto &problem: circuit->collectProblems(patch)) {
             problem->setCircuit(circuitNr);
             allProblems.append(problem);
         }

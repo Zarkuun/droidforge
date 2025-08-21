@@ -1258,7 +1258,7 @@ void PatchSectionView::followParameter()
     QString searchName = startJa->jackName();
 
     while (true) {
-        patch->moveCursorToNextJa(false);
+        patch->moveCursorToNextJa();
         const JackAssignment *newJa = patch->currentSection()->currentJackAssignment();
         if (newJa == startJa)
             return; // we are back at start without finding something
@@ -1269,7 +1269,11 @@ void PatchSectionView::followParameter()
 
     if (patch->currentSectionIndex() != startSectionIndex)
         emit sectionSwitched();
-    emit patchModified(); // circuit might have been unfolded. We need a repaint.
+
+    if (patch->unfoldCurrentCircuit())
+        emit patchModified();
+    else
+        emit cursorMoved();
 }
 void PatchSectionView::editJack(int key)
 {

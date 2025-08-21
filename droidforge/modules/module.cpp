@@ -122,32 +122,50 @@ void Module::paintRegisterHilites(QPainter *painter, int usage)
         }
     }
 }
-void Module::paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number)
+void Module::paintHiliteRegister(
+    QPainter *hotPainter,
+    int usage,
+    register_type_t type,
+    unsigned number)
 {
     float ra = rectAspect(type, number);
-    QRectF r = registerRect(type, number, ra, 1); // usage);
-    QPen pen;
+    QRectF rect = registerRect(type, number, ra, 1); // usage);
+    QSizeF size = rect.size();
+    QPointF origin = rect.topLeft();
+    QString cacheKey = QString::asprintf("%d/%d/%.1f/%1.f", usage, type, size.width(), size.height());
 
-    int d = 8;
-    int i = 0;
-    while (r.width() >= 0 ) {
-        i++;
-        if (i%2 == 0)
-            pen.setColor(COLOR(RACV_REGHILITES_LESSER_PEN_COLOR));
-        else if (usage == 2)
-            pen.setColor(COLOR(RACV_REGHILITES_PEN_COLOR));
-        else
-            pen.setColor(QColor(0, 0, 0));
+    if (!hiliteRenderCache.contains(cacheKey)) {
+        if (name == "b32") shout << "Creating" << cacheKey;
+        hiliteRenderCache[cacheKey] = QPixmap(rect.size().toSize());
+        QPixmap &pixmap = hiliteRenderCache[cacheKey];
+        pixmap.fill(Qt::transparent);
+        QPainter painter(&pixmap);
 
-        pen.setWidth(d);
-        painter->setPen(pen);
-        painter->setBrush(Qt::NoBrush);
-        if (ra)
-            painter->drawRect(r);
-        else
-            painter->drawEllipse(r);
-        r.adjust(d, d, -d, -d);
+        QPen pen;
+        QRectF r(QPointF(0, 0), size);
+
+        int d = 8;
+        int i = 0;
+        while (r.width() >= 0 ) {
+            i++;
+            if (i%2 == 0)
+                pen.setColor(COLOR(RACV_REGHILITES_LESSER_PEN_COLOR));
+            else if (usage == 2)
+                pen.setColor(COLOR(RACV_REGHILITES_PEN_COLOR));
+            else
+                pen.setColor(QColor(0, 0, 0));
+
+            pen.setWidth(d);
+            painter.setPen(pen);
+            painter.setBrush(Qt::NoBrush);
+            if (ra)
+                painter.drawRect(r);
+            else
+                painter.drawEllipse(r);
+            r.adjust(d, d, -d, -d);
+        }
     }
+    hotPainter->drawPixmap(origin, hiliteRenderCache[cacheKey]);
 }
 void Module::paintRegisterLabels(QPainter *painter)
 {

@@ -272,12 +272,17 @@ const Atom *Patch::currentAtom() const
 {
     return currentSection()->currentAtom();
 }
-void Patch::setCursorTo(int section, const CursorPosition &pos)
+bool Patch::setCursorTo(int section, const CursorPosition &pos, bool autoUnfold)
 {
     sectionIndex = section;
-    currentSection()->setCursor(pos);
+    if (autoUnfold)
+        return currentSection()->setCursor(pos);
+    else {
+        currentSection()->setCursorNoUnfold(pos);
+        return false;
+    }
 }
-void Patch::moveCursorToNextJa(bool)
+void Patch::moveCursorToNextJa()
 {
     // We assume that the cursor is positioned at a jack assignment.
     int sectionIndex = currentSectionIndex();
@@ -285,7 +290,7 @@ void Patch::moveCursorToNextJa(bool)
 
     if (pos.row + 1 < currentCircuit()->numJackAssignments()) {
         pos.row ++;
-        setCursorTo(sectionIndex, pos);
+        setCursorTo(sectionIndex, pos, false /* autoUnfold */);
         return;
     }
 
@@ -299,7 +304,7 @@ void Patch::moveCursorToNextJa(bool)
         const Circuit *circ = currentSection()->circuit(pos.circuitNr);
         if (circ->numJackAssignments() > 0) {
             pos.row = 0;
-            setCursorTo(sectionIndex, pos);
+            setCursorTo(sectionIndex, pos, false /* autoUnfold */);
             return;
         }
     }
@@ -317,12 +322,23 @@ void Patch::moveCursorToNextJa(bool)
                sec->circuit(pos.circuitNr)->numJackAssignments() == 0)
             pos.circuitNr ++;
         if (pos.circuitNr < (int)sec->numCircuits()) {
-            setCursorTo(sectionIndex, pos);
+            setCursorTo(sectionIndex, pos, false /* autoUnfold */);
             return;
         }
         // This loop must end since there must be one non-empty circuit
         // as our assumption was that we start at a jack assignment
     }
+}
+
+bool Patch::unfoldCurrentCircuit()
+{
+    Circuit *circuit = currentSection()->currentCircuit();
+    if (circuit->isFolded()) {
+        circuit->setFold(false);
+        return true;
+    }
+    else
+        return false;
 }
 bool Patch::moveCursorForward(bool autoUnfold)
 {
