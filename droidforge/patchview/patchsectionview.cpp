@@ -23,6 +23,7 @@
 #include "hintdialog.h"
 #include "atomselectordialog.h"
 #include "droidfirmware.h"
+#include "globals.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
@@ -480,7 +481,7 @@ CursorPosition *PatchSectionView::cursorAtMousePosition(QPoint pos) const
     // view such as the scroll bar and the alignment.
 
     CircuitView *cv = 0;
-    for (auto item: items(pos)) {
+    for (auto &item: items(pos)) {
         if (item->data(DATA_INDEX_CIRCUIT_NR).isValid()) {
             cv = (CircuitView *)item;
             break;
@@ -509,7 +510,7 @@ void PatchSectionView::mousePress(QPoint pos, int button, bool doubleClick)
 {
     // Click a click on a marker
     if (button == Qt::LeftButton) {
-        for (auto item: items(pos)) {
+        for (auto &item: items(pos)) {
             if (item->data(DATA_INDEX_ICON_MARKER).isValid()) {
                 clickOnIconMarker((IconMarker *)item);
                 return;
@@ -518,7 +519,7 @@ void PatchSectionView::mousePress(QPoint pos, int button, bool doubleClick)
     }
 
     // Check click on the (optional) section comment
-    for (auto item: items(pos)) {
+    for (auto &item: items(pos)) {
         if (item->data(DATA_INDEX_SECTION_COMMENT).isValid()) {
             if (doubleClick) {
                 TRIGGER_ACTION(ACTION_EDIT_SECTION_COMMENT);
@@ -1632,10 +1633,15 @@ void PatchSectionView::setMouseSelection(const CursorPosition &to)
 }
 void PatchSectionView::instantCopyFrom(const CursorPosition &from)
 {
-    if (from.row < 0 || from.column <= 0) // not on an atom
+    if (!from.isAtAtom())
         return;
 
-    else if (from == section()->cursorPosition()) // on same cell
+    auto pos = section()->cursorPosition();
+
+    if (from == pos)
+        return;
+
+    if (!pos.isAtAtom())
         return;
 
     const Atom *sourceAtom = section()->atomAt(from);
@@ -1643,7 +1649,7 @@ void PatchSectionView::instantCopyFrom(const CursorPosition &from)
         return; // source is empty
 
     JackAssignment *ja = currentJackAssignment();
-    ja->replaceAtom(section()->cursorPosition().column, sourceAtom->clone());
+    ja->replaceAtom(pos.column, sourceAtom->clone());
     patch->commit(tr("copying '%1'").arg(sourceAtom->toString()));
     emit patchModified();
 }
