@@ -43,6 +43,7 @@ PatchSectionView::PatchSectionView(MainWindow *mainWindow, PatchEditEngine *init
     , zoomLevel(0)
     , zoomFactor(1.0)
     , dragging(false)
+    , lastCursorPosition(-4, -4, -4)
 {
     setFocusPolicy(Qt::NoFocus);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -235,7 +236,6 @@ void PatchSectionView::createLEDMismatchMarkers()
 
         }
     }
-
 }
 void PatchSectionView::clickOnIconMarker(const IconMarker *marker)
 {
@@ -601,6 +601,7 @@ void PatchSectionView::updateProblems()
 }
 void PatchSectionView::switchSection()
 {
+    lastCursorPosition.circuitNr = -4; // Force animation update
     rebuildPatchSection();
 }
 void PatchSectionView::moveCursor()
@@ -1577,9 +1578,14 @@ void PatchSectionView::updateCursor()
         else
             frameCursor->setMode(CURSOR_NORMAL);
 
+
         QRectF cellRect = currentCircuitView()->cellRect(pos.row, pos.column);
         frameCursor->setRect(cellRect.translated(currentCircuitView()->pos()));
-        frameCursor->startAnimation();
+        const CursorPosition &newPos = getCursorPosition();
+        if (newPos != lastCursorPosition) {
+            frameCursor->startAnimation();
+            lastCursorPosition = newPos;
+        }
         frameCursor->setVisible(true);
         needScrollbarAdaption = true;
     }

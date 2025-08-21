@@ -24,6 +24,7 @@ class PatchSectionView : public QGraphicsView, PatchView
     float zoomFactor;
     bool needScrollbarAdaption;
     bool dragging;
+    CursorPosition lastCursorPosition;
 
     QList<CircuitView *>circuitViews;
     FrameCursor *frameCursor;
@@ -44,7 +45,6 @@ public:
     void clickOnRegister(AtomRegister ar);
     void rebuildPatchSection();
     bool atomCellSelected() const;
-    // void setCursorPosition(const CursorPosition &pos);
     const CursorPosition &getCursorPosition() const;
     void updateCursor();
     void clearSettings();
