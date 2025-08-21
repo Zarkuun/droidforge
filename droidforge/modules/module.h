@@ -35,8 +35,10 @@ class Module : public QGraphicsItem
     QString name;
     const QImage &faceplateImage;
     int registerHilite[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE]; // 0: off, 1: used, 2: current
+    int paintedRegisterHilite[NUM_REGISTER_TYPES][MAX_CONTROLS_OF_TYPE]; // 0: off, 1: used, 2: current
     const RegisterLabels *registerLabels; // points into current patch
     unsigned pixelHeight;
+    QPixmap renderBuffer;
 
 public:
     Module(MainWindow *mainWindow, const QString &name);
@@ -74,6 +76,9 @@ protected:
     virtual float rectAspect(register_type_t, unsigned) const { return 0.0; };
 
 private:
+    bool registerHilitesDirty() const;
+    void setRegisterHilitesClean();
+    void paintUnbuffered(QPainter &painter);
     void paintHiliteRegister(QPainter *painter, int usage, register_type_t type, unsigned number);
     QRectF registerRect(register_type_t type, unsigned number, float aspect, int usage) const;
     void paintRegisterLabels(QPainter *painter);

@@ -61,13 +61,8 @@ RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
 
     // Events that we are interested in
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &RackView::modifyPatch);
-    connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &RackView::setRegisterHilitesDirty);
-    connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &RackView::setRegisterHilitesDirty);
-
-    // Update of register hilites is delayed. This speeds up cursor movement
-    registerHilightTimer = new QTimer(this);
-    registerHilightTimer->setSingleShot(true);
-    connect(registerHilightTimer, &QTimer::timeout, this, &RackView::updateRegisterHilites);
+    connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &RackView::updateRegisterHilites);
+    connect(mainWindow->theHub(), &UpdateHub::cursorMoved, this, &RackView::updateRegisterHilites);
 
     initScene();
 }
@@ -76,7 +71,7 @@ void RackView::modifyPatch()
     scene()->setBackgroundBrush(COLOR(COLOR_RACK_BACKGROUND));
     dragger.cancel();
     refreshScene();
-    setRegisterHilitesDirty();
+    updateRegisterHilites();
 }
 void RackView::toggleDisplayOptions()
 {
@@ -541,7 +536,7 @@ void RackView::updateRegisterHilites()
         }
     }
 
-    for (auto module: modules) {
+    for (auto &module: modules) {
         unsigned controller = 0;
         if (module->data(DATA_INDEX_CONTROLLER_INDEX).isValid())
             controller = module->data(DATA_INDEX_CONTROLLER_INDEX).toInt() + 1;
@@ -552,7 +547,7 @@ void RackView::updateRegisterHilites()
 
         module->clearHilites();
         unsigned prefix;
-        for (auto ar: usedRegisters)
+        for (auto &ar: usedRegisters)
         {
             if (ar.getRegisterType() == REGISTER_RGB_LED)
                 prefix = 0;
@@ -563,7 +558,7 @@ void RackView::updateRegisterHilites()
             if (ar.getController() == controller && ar.getG8Number() == g8num)
                 module->hiliteRegisters(1, ar.getRegisterType(), ar.getNumber());
         }
-        for (auto ar: currentRegisters)
+        for (auto &ar: currentRegisters)
         {
             if (ar.getRegisterType() == REGISTER_RGB_LED)
                 prefix = 0;
@@ -801,11 +796,6 @@ void RackView::abortDragging()
     unsetCursor();
     dragRegisterIndicator->setVisible(false);
     dragControllerIndicator->setVisible(false);
-}
-void RackView::setRegisterHilitesDirty()
-{
-    if (!registerHilightTimer->isActive())
-        registerHilightTimer->start(RACV_HILIGHT_UPDATE_INTERVAL);
 }
 void RackView::duplicateController(int controller, bool withLabels)
 {

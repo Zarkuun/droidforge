@@ -4,6 +4,7 @@
 #include "editoractions.h"
 #include "mainwindow.h"
 #include "imagecache.h"
+#include "globals.h"
 
 #include <QPainter>
 #include <QGraphicsScene>
@@ -13,6 +14,7 @@ Module::Module(MainWindow *mainWindow, const QString &name)
     , name(name)
     , faceplateImage(the_image_cache->image(":images/faceplates/" + name))
     , registerHilite{{0}}
+    , paintedRegisterHilite{{-1}}
     , registerLabels(0)
     , pixelHeight(400)
 {
@@ -68,16 +70,38 @@ QRectF Module::moduleRect() const
 {
     return QRectF(0, 0, hp() * RACV_PIXEL_PER_HP, RACV_MODULE_HEIGHT);
 }
-void Module::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
+void Module::paint(QPainter *hotPainter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    painter->setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
-    QRect r = moduleRect().toRect();
+    if (registerHilitesDirty()) {
+        QRect r = moduleRect().toRect();
+        renderBuffer = QPixmap(r.size());
+        renderBuffer.fill(Qt::transparent);
+        QPainter painter(&renderBuffer);
+        paintUnbuffered(painter);
+        setRegisterHilitesClean();
+    }
+
+    hotPainter->drawPixmap(0, 0, renderBuffer);
+}
+bool Module::registerHilitesDirty() const
+{
+    return 0 != memcmp(&registerHilite, &paintedRegisterHilite, sizeof(registerHilite));
+}
+void Module::setRegisterHilitesClean()
+{
+    memcpy(&paintedRegisterHilite, &registerHilite, sizeof(registerHilite));
+}
+void Module::paintUnbuffered(QPainter &painter)
+{
+    painter.setRenderHint(QPainter::Antialiasing); // Make lines, circles smooth
 
     QImage scaledImage = faceplateImage.scaledToHeight(pixelHeight, Qt::SmoothTransformation);
-    painter->drawImage(r, scaledImage);
+    QRect r = moduleRect().toRect();
+    painter.drawImage(r, scaledImage);
 
-    paintRegisterHilites(painter);
-    paintRegisterLabels(painter);
+    paintRegisterHilites(&painter);
+    paintRegisterLabels(&painter);
+
 }
 void Module::paintRegisterHilites(QPainter *painter)
 {

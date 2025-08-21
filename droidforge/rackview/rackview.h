@@ -95,7 +95,6 @@ public slots:
     void abortDragging();
 
 private slots:
-    void setRegisterHilitesDirty();
     void duplicateController(int controller, bool withLabels);
     void askRemoveController(int controller);
     void purchaseController(QString name);

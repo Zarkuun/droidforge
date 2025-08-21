@@ -23,7 +23,6 @@
 #include "hintdialog.h"
 #include "atomselectordialog.h"
 #include "droidfirmware.h"
-#include "globals.h"
 
 #include <QMouseEvent>
 #include <QGraphicsProxyWidget>
