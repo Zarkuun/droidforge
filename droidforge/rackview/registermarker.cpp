@@ -21,12 +21,10 @@ RegisterMarker::RegisterMarker()
     animation.setKeyValueAt(1, 0.0);
     animation.setEasingCurve(QEasingCurve::OutQuad);
 }
-
 float RegisterMarker::getanimationPhase() const
 {
     return animationPhase;
 }
-
 void RegisterMarker::setanimationPhase(float newAnimationPhase)
 {
     animationPhase = newAnimationPhase;
@@ -44,7 +42,6 @@ void RegisterMarker::setanimationPhase(float newAnimationPhase)
     setPen(p);
     emit animationPhaseChanged();
 }
-
 void RegisterMarker::startAnimation()
 {
     setanimationPhase(0.0);

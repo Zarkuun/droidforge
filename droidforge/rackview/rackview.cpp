@@ -7,12 +7,14 @@
 #include "controllerchoosedialog.h"
 #include "editoractions.h"
 #include "updatehub.h"
+#include "tooltip.h"
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
 #include <QResizeEvent>
 #include <QMenu>
 #include <QMessageBox>
+#include <QToolTip>
 
 RackView::RackView(MainWindow *mainWindow, PatchEditEngine *patch)
     : QGraphicsView()
@@ -646,6 +648,10 @@ void RackView::hoverIn(QGraphicsItem *item)
     registerMarker->setVisible(true);
     registerMarker->update();
     registerMarker->startAnimation();
+    AtomRegister areg(item->data(DATA_INDEX_REGISTER_NAME).toString());
+    RegisterLabel label = patch->registerLabel(areg);
+    if (label.description != "")
+        Tooltip::tooltip(label.description);
 }
 void RackView::hoverOut(QGraphicsItem *item)
 {

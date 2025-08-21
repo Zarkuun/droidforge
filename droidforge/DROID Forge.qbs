@@ -294,6 +294,8 @@ QtApplication {
         "utilities/namechoosedialog.h",
         "utilities/searchlineedit.cpp",
         "utilities/searchlineedit.h",
+        "utilities/tooltip.cpp",
+        "utilities/tooltip.h",
         "utilities/utilities.cpp",
         "utilities/utilities.h",
     ]

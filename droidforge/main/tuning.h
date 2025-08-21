@@ -39,6 +39,7 @@
 #define MAX_NUM_G8S                          4
 #define GENERATOR_START_TIMEOUT_MS           1000
 #define PROBLEMS_UPDATE_DELAY                400 // ms
+#define TOOLTIP_LINGER_TIME_MS               5000
 
 #define MAX_LENGTH_SHORTHAND                 18 // for register labels
 #define MAX_RECENT_FILES                     10

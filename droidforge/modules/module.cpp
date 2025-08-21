@@ -135,7 +135,6 @@ void Module::paintHiliteRegister(
     QString cacheKey = QString::asprintf("%d/%d/%.1f/%1.f", usage, type, size.width(), size.height());
 
     if (!hiliteRenderCache.contains(cacheKey)) {
-        if (name == "b32") shout << "Creating" << cacheKey;
         hiliteRenderCache[cacheKey] = QPixmap(rect.size().toSize());
         QPixmap &pixmap = hiliteRenderCache[cacheKey];
         pixmap.fill(Qt::transparent);
