@@ -38,7 +38,7 @@
 #define DB8E_MAX_TEXT_LENGTH                 18 // from master:db8elink.h
 #define MAX_NUM_G8S                          4
 #define GENERATOR_START_TIMEOUT_MS           1000
-#define PROBLEMS_UPDATE_DELAY                300 // ms
+#define PROBLEMS_UPDATE_DELAY                400 // ms
 
 #define MAX_LENGTH_SHORTHAND                 18 // for register labels
 #define MAX_RECENT_FILES                     10

@@ -1,9 +1,8 @@
 #include "framecursor.h"
 #include "editoractions.h"
-#include "tuning.h"
 #include "colorscheme.h"
-#include "globals.h"
 #include "mainwindow.h"
+#include "tuning.h"
 
 #include <QPen>
 
@@ -14,7 +13,7 @@ FrameCursor::FrameCursor(MainWindow *mainWindow)
     setMode(CURSOR_NORMAL);
     setZValue(50);
 
-    animation.setDuration(800);
+    animation.setDuration(400);
     animation.setKeyValueAt(0, 0.0);
     animation.setKeyValueAt(0.1, 1.0);
     animation.setKeyValueAt(1, 0.0);
