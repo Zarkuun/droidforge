@@ -246,7 +246,6 @@ unsigned Patch::typeOfMaster() const
 
     return 16; // This is the default
 }
-
 void Patch::setTypeOfMaster(unsigned new_type)
 {
     labels["master"] = QString::number(new_type);
@@ -281,6 +280,31 @@ bool Patch::setCursorTo(int section, const CursorPosition &pos, bool autoUnfold)
         currentSection()->setCursorNoUnfold(pos);
         return false;
     }
+}
+void Patch::moveCursorToNextCircuit()
+{
+    // We assume that the cursor is positioned at a circuit header
+    int sectionIndex = currentSectionIndex();
+    CursorPosition pos = currentSection()->cursorPosition();
+    pos.row = ROW_CIRCUIT; // just to be sure
+
+    if (pos.circuitNr + 1 < (int)currentSection()->numCircuits()) {
+        pos.circuitNr ++;
+        setCursorTo(sectionIndex, pos, false /* autoUnfold */);
+        return;
+    }
+
+    // Need to switch to next non-empty section
+    while (true) {
+        sectionIndex = (sectionIndex + 1) % numSections();
+        if (!section(sectionIndex)->isEmpty())
+            break;
+        // This loop must end since there must be one non-empty section.
+        // We started at a circuit.
+    }
+
+    pos.circuitNr = 0;
+    setCursorTo(sectionIndex, pos, false /* autoUnfold */);
 }
 void Patch::moveCursorToNextJa()
 {
@@ -329,7 +353,6 @@ void Patch::moveCursorToNextJa()
         // as our assumption was that we start at a jack assignment
     }
 }
-
 bool Patch::unfoldCurrentCircuit()
 {
     Circuit *circuit = currentSection()->currentCircuit();
@@ -534,7 +557,6 @@ void Patch::clearBookmarks()
     for (auto &section: sections)
         section->clearBookmarks();
 }
-
 bool Patch::findBookmark(int *sectionNr, CursorPosition *pos)
 {
     for (int i=0; i<sections.count(); i++) {
@@ -618,7 +640,6 @@ bool Patch::registerUsed(AtomRegister reg)
     }
     return false;
 }
-
 bool Patch::registerIsOutputOnly(AtomRegister reg) const
 {
     switch (reg.getRegisterType()) {

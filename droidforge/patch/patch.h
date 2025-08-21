@@ -64,6 +64,7 @@ public:
     bool setCursorTo(int section, const CursorPosition &pos, bool autoUnfold = false); // returns "was unfolded"
     bool moveCursorForward(bool autoUnfold);
     void moveCursorBackward(bool autoUnfold);
+    void moveCursorToNextCircuit();
     void moveCursorToNextJa(); // does not unfold
     bool unfoldCurrentCircuit();
     unsigned searchHitPosition(const QString &text, unsigned *count, bool *didUnfold);

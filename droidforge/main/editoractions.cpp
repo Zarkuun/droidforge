@@ -209,6 +209,9 @@ void EditorActions::createActions()
     actions[ACTION_FOLLOW_REGISTER] = new QAction(tr("Find related control"), this);
     actions[ACTION_FOLLOW_REGISTER]->setShortcut(QKeySequence(tr("?")));
 
+    actions[ACTION_FOLLOW_CIRCUIT] = new QAction(tr("Jump to next circuit of same type"), this);
+    actions[ACTION_FOLLOW_CIRCUIT]->setShortcut(QKeySequence(tr("?")));
+
     actions[ACTION_FOLLOW_PARAMETER] = new QAction(tr("Find same parameter in other circuits"), this);
     actions[ACTION_FOLLOW_PARAMETER]->setShortcut(QKeySequence(tr("?")));
 
@@ -508,6 +511,7 @@ void EditorActions::moveCursor()
     actions[ACTION_FOLLOW_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_RENAME_CABLE]->setEnabled(atom && atom->isCable());
     actions[ACTION_FOLLOW_REGISTER]->setEnabled(atom && atom->isRegister());
+    actions[ACTION_FOLLOW_CIRCUIT]->setEnabled(circuit && section()->cursorPosition().row == ROW_CIRCUIT);
     actions[ACTION_FOLLOW_PARAMETER]->setEnabled(ja && section()->cursorPosition().column == 0);
     actions[ACTION_EDIT_CIRCUIT_COMMENT]->setEnabled(circuit);
     actions[ACTION_EDIT_JACK_COMMENT]->setEnabled(ja);

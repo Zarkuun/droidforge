@@ -117,6 +117,7 @@ void PatchSectionView::connectActions()
     CONNECT_ACTION(ACTION_FIND, &PatchSectionView::find);
     CONNECT_ACTION(ACTION_FOLLOW_CABLE, &PatchSectionView::followCable);
     CONNECT_ACTION(ACTION_FOLLOW_REGISTER, &PatchSectionView::followRegister);
+    CONNECT_ACTION(ACTION_FOLLOW_CIRCUIT, &PatchSectionView::followCircuit);
     CONNECT_ACTION(ACTION_FOLLOW_PARAMETER, &PatchSectionView::followParameter);
     CONNECT_ACTION(ACTION_MIRROR_PLUGS, &PatchSectionView::toggleMirrorPlugs);
 }
@@ -1048,6 +1049,7 @@ void PatchSectionView::handleRightMousePress(const CursorPosition *curPos)
         ADD_ACTION(ACTION_SET_BOOKMARK, menu);
         ADD_ACTION_IF_ENABLED(ACTION_JUMP_TO_BOOKMARK, menu);
         ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_REGISTER, menu);
+        ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_CIRCUIT, menu);
         ADD_ACTION_IF_ENABLED(ACTION_FOLLOW_PARAMETER, menu);
         ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
         ADD_ACTION(ACTION_SORT_JACKS, menu);
@@ -1248,6 +1250,30 @@ void PatchSectionView::followRegister()
         return;
 
     theOperator()->jumpTo(it.sectionIndex(), it.cursorPosition());
+
+}
+
+void PatchSectionView::followCircuit()
+{
+    int startSectionIndex = patch->currentSectionIndex();
+    const Circuit *startCircuit = patch->currentCircuit();
+    if (!startCircuit) return; // should not happen when enabling of the actions works
+    QString searchName = startCircuit->getName();
+
+    while (true) {
+        patch->moveCursorToNextCircuit();
+        const Circuit *newCircuit = patch->currentCircuit();
+        if (newCircuit == startCircuit)
+            return; // we are back at start without finding something
+
+        else if (newCircuit->getName() == searchName)
+            break; // found
+    }
+
+    if (patch->currentSectionIndex() != startSectionIndex)
+        emit sectionSwitched();
+    else
+        emit cursorMoved();
 
 }
 void PatchSectionView::followParameter()

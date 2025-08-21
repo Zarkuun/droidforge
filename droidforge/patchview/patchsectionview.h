@@ -150,6 +150,7 @@ public slots:
     void abortPatching();
     void followCable();
     void followRegister();
+    void followCircuit();
     void followParameter();
     void editJackComment();
     void editLabel();

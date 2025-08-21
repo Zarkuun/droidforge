@@ -424,6 +424,7 @@ void MainWindow::createEditMenu()
     ADD_ACTION(ACTION_EDIT_JACK_COMMENT, menu);
     ADD_ACTION(ACTION_EDIT_LABEL, menu);
     ADD_ACTION(ACTION_EDIT_CIRCUIT_SOURCE, menu);
+    ADD_ACTION(ACTION_FOLLOW_CIRCUIT, menu);
     ADD_ACTION(ACTION_FOLLOW_PARAMETER, menu);
 }
 void MainWindow::createSectionMenu()
