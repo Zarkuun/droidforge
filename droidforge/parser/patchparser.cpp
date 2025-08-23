@@ -27,20 +27,25 @@ Patch *PatchParser::parseFile(QString filePath)
     }
     return patch;
 }
-void PatchParser::parseFile(QString filePath, Patch *patch)
+QString PatchParser::parseFile(QString filePath, Patch *patch)
 {
-    QStringList lines;
     QFile inputFile(filePath);
     if (!inputFile.open(QIODevice::ReadOnly)) {
         throw ParseException("Cannot open file: " + inputFile.errorString());
     }
 
     QTextStream in(&inputFile);
-    while (!in.atEnd()) {
-        lines.append(in.readLine());
-    }
+    QString content = in.readAll();
     inputFile.close();
+
+    QStringList lines = content.split('\n', Qt::KeepEmptyParts);
+    for (QString &line : lines) {
+        if (line.endsWith('\r')) {
+            line.chop(1);
+        }
+    }
     parse(lines, patch);
+    return content;
 }
 void PatchParser::parseString(QString source, Patch *patch)
 {

@@ -33,6 +33,7 @@ class PatchOperator : public QObject
     Q_OBJECT
     MainWindow *mainWindow;
     PatchEditEngine *patch;
+    QString originalFileContent;
     PatchParser parser;
     bool sdCardPresent;
     bool statusDumpPresent;
@@ -138,6 +139,7 @@ private:
     void restoreBackup(const QString &backupPath);
     void createBackup();
     void removeBackup();
+    bool checkOriginalContent(const QString &path);
     bool bringToFrontIfOpen(const QString &filePath, bool inOthers);
     void updateStatusDumpsMenu(bool newDumpAvailable);
     bool pollSD() const;

@@ -29,7 +29,7 @@ class PatchParser
 public:
     PatchParser();
     Patch *parseFile(QString filePath);
-    void parseFile(QString filePath, Patch *patch);
+    QString parseFile(QString filePath, Patch *patch);
     void parseString(QString source, Patch *patch);
 
 private:

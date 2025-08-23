@@ -1166,7 +1166,11 @@ void PatchOperator::saveAs()
 }
 bool PatchOperator::saveAndCheck(QString path)
 {
+    if (!checkOriginalContent(path))
+        return false;
+
     if (patch->save(path)) {
+        originalFileContent = patch->toString();
         patch->setFilePath(path);
         setLastFilePath(path);
         emit patchModified(); // mod flag has changed
@@ -1277,7 +1281,7 @@ void PatchOperator::addToRecentFiles(const QString &path)
 void PatchOperator::loadPatch(const QString &aFilePath)
 {
     Patch newPatch;
-    parser.parseFile(aFilePath, &newPatch); // throws exception
+    originalFileContent = parser.parseFile(aFilePath, &newPatch); // throws exception
 
     // Move contents of new patch into "our" patch without
     // invalidating its pointer
@@ -1297,6 +1301,7 @@ void PatchOperator::restoreBackup(const QString &backupPath)
 {
     Patch backupPatch;
     parser.parseFile(backupPath, &backupPatch); // throws exception
+    originalFileContent = "";
     backupPatch.cloneInto(patch);
     if (patch->numSections() == 0)
         patch->addSection(new PatchSection());
@@ -1313,6 +1318,40 @@ void PatchOperator::removeBackup()
     QString backupname = backupFilePath(patch->getFilePath());
     QFile file(backupname);
     file.remove();
+}
+bool PatchOperator::checkOriginalContent(const QString &path)
+{
+    // We make sure that when saving, the original file content has
+    // not changed since we have loaded the patch. That way we hope
+    // to avoid data loss - e.g. in the case that two instances of the
+    // Forge write to the same file or some other strange thing has
+    // happened
+    if (originalFileContent == "")
+        return true; // no content available, maybe our patch is new
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return true; // No file, no content, no problem.
+
+    QTextStream in(&file);
+    QString content = in.readAll();
+    file.close();
+
+    if (content != originalFileContent) {
+        QMessageBox box(
+                    QMessageBox::Warning,
+                    tr("File has changed meanwhile!"),
+                    tr("The original contents of the file %1 have changed since you have "
+                       "loaded the patch from that file. I don't know why. Maybe you "
+                       "have another instance of the Forge running, which edits the same "
+                       "patch? If you save your patch to this file, these other changes of "
+                       "unknown source will get lost.\n\n"
+                       "Do you really want to proceed saving into the changed file?").
+                    arg(path),
+                    QMessageBox::Ok | QMessageBox::Cancel);
+        return (box.exec() == QMessageBox::Ok);
+    }
+    return true;
 }
 void PatchOperator::integratePatch(const QString &aFilePath)
 {
