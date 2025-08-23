@@ -704,13 +704,16 @@ unsigned Patch::numProblemsInSection(int i) const
 }
 void Patch::updateProblems()
 {
-    for (auto &problem: problems)
-        delete problem;
-    problems.clear();
-
+    clearProblems();
     updateSectionProblems();
     updateRegisterProblems();
     updateMemoryProblems();
+}
+void Patch::clearProblems()
+{
+    for (auto &problem: problems)
+        delete problem;
+    problems.clear();
 }
 void Patch::updateMemoryProblems()
 {

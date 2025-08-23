@@ -137,6 +137,7 @@ public:
     bool hasBookmark();
     void setBookmark();
     void updateProblems();
+    void clearProblems();
 
 protected:
     void clear();

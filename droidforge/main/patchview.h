@@ -1,7 +1,6 @@
 #ifndef PATCHVIEW_H
 #define PATCHVIEW_H
 
-#include "patch.h"
 #include "patcheditengine.h"
 
 /* A patch view is a graphical element that shows a part or a

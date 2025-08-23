@@ -110,7 +110,7 @@ QGraphicsItem *MouseDragger::itemAt(QPoint pos)
     int bestPrio = -1;
     QGraphicsItem *bestItem = 0;
 
-    for (auto item: graphicsView->items(pos)) {
+    for (auto &item: graphicsView->items(pos)) {
         if (item->data(DATA_INDEX_DRAGGER_PRIO).isValid()) {
             int prio = item->data(DATA_INDEX_DRAGGER_PRIO).toInt();
             if (prio > bestPrio) {

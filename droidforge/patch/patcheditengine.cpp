@@ -137,6 +137,7 @@ void PatchEditEngine::commitFolding()
 }
 void PatchEditEngine::setProblemsDirty()
 {
+    clearProblems();
     problemsDirtySince = QDateTime::currentMSecsSinceEpoch();
 }
 void PatchEditEngine::checkUpdateProblemsNow()
