@@ -803,8 +803,10 @@ bool PatchSection::isCopyOf(const PatchSection *otherSection, QString &myPrefix,
                 const Atom *otherAtom = otherJa->atomAt(col);
                 if (myAtom == 0 && otherAtom == 0)
                     continue;
+
                 else if (!(myAtom != 0 && otherAtom != 0))
                     return false;
+
                 else if (myAtom->isCable() != otherAtom->isCable())
                     return false;
 

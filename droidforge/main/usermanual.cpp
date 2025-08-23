@@ -72,12 +72,12 @@ void UserManual::openExternally()
 void UserManual::showCircuit(const QString &circuit)
 {
     jumpToPage(the_firmware->circuitManualPage(circuit));
-    exec();
+    show();
 }
 void UserManual::showTopic(const QString &pageref)
 {
     jumpToPage(the_firmware->manualPage(pageref));
-    exec();
+    show();
 }
 bool UserManual::hasTopic(const QString &pageref)
 {
