@@ -767,9 +767,8 @@ void PatchSection::setBookmark()
 }
 bool PatchSection::isCopyOf(const PatchSection *otherSection, QString &myPrefix, QString &otherPrefix) const
 {
-    if (numCircuits() != otherSection->numCircuits()) {
+    if (numCircuits() != otherSection->numCircuits())
         return false;
-    }
 
     if (numCircuits() == 0)
         return false; // trivial
@@ -787,13 +786,14 @@ bool PatchSection::isCopyOf(const PatchSection *otherSection, QString &myPrefix,
         // Compare jack assignment lines (comment is ignored)
         if (myCircuit->numJackAssignments() != otherCircuit->numJackAssignments())
             return false;
+
         for (unsigned j=0; j<myCircuit->numJackAssignments(); j++) {
             const JackAssignment *myJa = myCircuit->jackAssignment(j);
             const JackAssignment *otherJa = otherCircuit->jackAssignment(j);
-            if (myJa->jackName() != otherJa->jackName())
+            if (myJa->jackType() != otherJa->jackType())
                 return false;
 
-            if (myJa->isUndefined())
+            if (myJa->jackName() != otherJa->jackName())
                 return false;
 
             // Compare atoms
