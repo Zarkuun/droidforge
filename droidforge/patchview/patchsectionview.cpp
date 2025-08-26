@@ -1608,10 +1608,19 @@ void PatchSectionView::updateCursor()
         else
             frameCursor->setMode(CURSOR_NORMAL);
 
-
         QRectF cellRect = currentCircuitView()->cellRect(pos.row, pos.column);
         frameCursor->setRect(cellRect.translated(currentCircuitView()->pos()));
         const CursorPosition &newPos = getCursorPosition();
+        CursorPosition bookmarkPosition;
+        if (section()->findBookmark(&bookmarkPosition)) {
+            bool atBookmark = bookmarkPosition == newPos;
+            frameCursor->setDotted(atBookmark);
+            if (atBookmark)
+                frameCursor->startAnimation();
+        }
+        else
+            frameCursor->setDotted(false);
+
         if (newPos != lastCursorPosition) {
             frameCursor->startAnimation();
             lastCursorPosition = newPos;

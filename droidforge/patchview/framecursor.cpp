@@ -2,13 +2,13 @@
 #include "editoractions.h"
 #include "colorscheme.h"
 #include "mainwindow.h"
-#include "tuning.h"
 
 #include <QPen>
 
 FrameCursor::FrameCursor(MainWindow *mainWindow)
     : mainWindow(mainWindow)
     , animation(this, "animationPhase")
+    , dotted(false)
 {
     setMode(CURSOR_NORMAL);
     setZValue(50);
@@ -55,7 +55,11 @@ void FrameCursor::setanimationPhase(float newAnimationPhase)
         QColor c = color;
         c.setAlphaF(animationPhase * 0.3);
         setBrush(c);
-        setPen(color);
+        QPen pen;
+        pen.setColor(color);
+        if (dotted)
+            pen.setStyle(Qt::DotLine);
+        setPen(pen);
     }
 
     emit animationPhaseChanged();

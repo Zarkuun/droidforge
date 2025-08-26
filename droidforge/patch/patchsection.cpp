@@ -744,7 +744,7 @@ bool PatchSection::searchHitAtCursor(const QString &text) const
 }
 void PatchSection::clearBookmarks()
 {
-    for (auto circuit: circuits)
+    for (auto &circuit: circuits)
         circuit->clearBookmark();
 }
 bool PatchSection::findBookmark(CursorPosition *pos)

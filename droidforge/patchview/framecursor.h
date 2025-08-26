@@ -24,11 +24,13 @@ class FrameCursor : public QObject, public QGraphicsRectItem
     cursor_mode_t mode;
     QRectF lastRect;
     QColor color;
+    bool dotted;
 
 public:
     FrameCursor(MainWindow *mainWindow);
     ~FrameCursor();
     void setMode(cursor_mode_t m);
+    void setDotted(bool d) { dotted = d; };
     float getanimationPhase() const;
     void setanimationPhase(float newanimationPhase);
     void startAnimation();

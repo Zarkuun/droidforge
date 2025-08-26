@@ -1736,9 +1736,24 @@ void PatchOperator::rewriteCableNames()
 }
 void PatchOperator::setBookmark()
 {
-    patch->clearBookmarks();
-    patch->setBookmark();
-    mainWindow->setStatusbarText(tr("Bookmark set"));
+    // If we are at a bookmark, clear the bookmark instead of
+    // setting one
+    CursorPosition bookmarkPosition;
+    if (section()->findBookmark(&bookmarkPosition) &&
+        bookmarkPosition == section()->cursorPosition())
+    {
+        section()->clearBookmarks();
+    }
+    else {
+        patch->clearBookmarks();
+        patch->setBookmark();
+        HintDialog::hint("bookmark_set",
+                tr("You have set a bookmark. This allows you\n"
+                   "to jump back to this position at any time\n"
+                   "with the action \"Jump to bookmark\" in\n"
+                   "the context menu or by hitting the\n"
+                            "command key and J."));
+    }
     emit patchModified();
 }
 void PatchOperator::jumpToBookmark()
