@@ -49,6 +49,7 @@ void EditorActions::createActions()
 
     actions[ACTION_ABOUT] = new QAction(tr("&About DROID Forge"), this);
     actions[ACTION_DISCORD] = new QAction(tr("&Discord community"));
+    actions[ACTION_CLEAR_HINTS] = new QAction(tr("Show all &hints again"), this);
     actions[ACTION_LICENSE] = new QAction(tr("DROID Forge &license"), this);
 
     actions[ACTION_CLEAR_SETTINGS] = new QAction(tr("&Restore factory settings"), this);

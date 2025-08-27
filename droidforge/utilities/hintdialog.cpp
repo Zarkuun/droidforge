@@ -39,7 +39,6 @@ void HintDialog::hint(const QString &id, const QString &content)
 
     dialog->checkbox->setChecked(true);
     dialog->label->setText(content);
-    dialog->adjustSize();
     dialog->exec();
     settings.setValue(key, dialog->checkbox->isChecked());
 }

@@ -160,8 +160,7 @@ void PreferencesDialog::editPreferences()
                                     "about, any change in one of your sections will automatically applied to all its\n"
                                     "clones, so that they always keep in sync.\n"
                                     "\n"
-                                    "Sections that have clones are marked with ↯ in the section list.\n")
-                                     .arg(the_firmware->version()));
+                                    "Sections that have clones are marked with ↯ in the section list.\n"));
             }
         }
         break;

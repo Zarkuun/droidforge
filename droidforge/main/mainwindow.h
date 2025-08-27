@@ -137,6 +137,7 @@ private slots:
     void rackZoomReset();
     void showUserManual();
     void showCircuitManual();
+    void clearHints();
     void clearSettings();
     void showFindPanel();
     void abortAllActions();

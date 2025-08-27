@@ -16,6 +16,7 @@
 #include "patchgeneratorbase.h"
 #include "patchgenerator.h"
 #include "droidfirmware.h"
+#include "globals.h"
 
 #include <QTextEdit>
 #include <QKeyEvent>
@@ -93,6 +94,7 @@ MainWindow::MainWindow(QString initialFilename, const Patch *initialRack)
     CONNECT_ACTION(ACTION_USER_MANUAL, &MainWindow::showUserManual);
     CONNECT_ACTION(ACTION_DISCORD, &MainWindow::showDiscord);
     CONNECT_ACTION(ACTION_CIRCUIT_MANUAL, &MainWindow::showCircuitManual);
+    CONNECT_ACTION(ACTION_CLEAR_HINTS, &MainWindow::clearHints);
     CONNECT_ACTION(ACTION_CLEAR_SETTINGS, &MainWindow::clearSettings);
     CONNECT_ACTION(ACTION_FIND, &MainWindow::showFindPanel);
     CONNECT_ACTION(ACTION_ABORT_ALL_ACTIONS, &MainWindow::abortAllActions);
@@ -486,6 +488,7 @@ void MainWindow::createHelpMenu()
     ADD_ACTION(ACTION_ABOUT, menu);
     ADD_ACTION(ACTION_USER_MANUAL, menu);
     ADD_ACTION(ACTION_CIRCUIT_MANUAL, menu);
+    ADD_ACTION(ACTION_CLEAR_HINTS, menu);
     ADD_ACTION(ACTION_DISCORD, menu);
 
     menu->addSeparator();
@@ -593,6 +596,21 @@ void MainWindow::showCircuitManual()
     const Circuit *circuit = section()->currentCircuit();
     if (circuit)
         the_manual->showCircuit(circuit->getName());
+}
+void MainWindow::clearHints()
+{
+    QSettings settings;
+    const QStringList keys = settings.allKeys();
+    for (const QString &key : keys) {
+        if (key.startsWith("hint/"))
+            settings.remove(key);
+    }
+    QMessageBox::information(
+        this,
+        tr("Hints reenabled"),
+        tr("All hints where you have unchecked \"Show this hint again next time\" have "
+           "been reset and will be shown the next time where it's appropriate."));
+
 }
 void MainWindow::clearSettings()
 {
