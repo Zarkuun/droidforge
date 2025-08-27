@@ -286,30 +286,24 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "title" : "MIDI",
             "options" : midi_channel_options() + [
                 {
-                    "name" : "midiin",
-                    "title" : "MIDI input",
+                    "name": "midiinclk",
+                    "title" : "Get start/stop/clock from MIDI",
                     "enum" : [
-                        ( "off", "No MIDI input" ),
-                        ( "trs1", "TRS 1" ),
-                        ( "trs2", "TRS 2 (only MASTER18)" ),
-                        ( "usb", "USB" ),
+                        ( "trs1", "from port TRS 1" ),
+                        ( "trs2", "from port TRS 2 (only MASTER18)" ),
+                        ( "usb",  "from USB" ),
+                        ( "all",  "from all ports" ),
+                        ( "off",  "disable MIDI" ),
                     ]
                 },
                 {
-                    "name": "midiinrunning",
-                    "title" : "Get START / STOP from selected MIDI port",
-                },
-                {
                     "name": "midiinscale",
-                    "title" : "Get root/scale from select port (channel 16, note = root, CC#1 = scale)",
-                },
-                {
-                    "name": "midiinclk",
-                    "title" : "Get clock from MIDI",
+                    "title" : "Get root/scale from MIDI (channel 16, note = root, CC#1 = scale)",
                     "enum" : [
-                        ( "off", "No MIDI input clock" ),
-                        ( "selected", "From the selected MIDI port" ),
-                        ( "all", "From all MIDI ports" ),
+                        ( "trs1", "from port TRS 1" ),
+                        ( "trs2", "from port TRS 2 (only MASTER18)" ),
+                        ( "usb",  "from USB" ),
+                        ( "off",  "disable MIDI" ),
                     ]
                 },
             ]
@@ -523,7 +517,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
-            "midiin"   : "trs1"    , "midiinclk" : "all"   , "midiinrunning" : True, "midiinscale" : False,
+            "midiinclk" : "all"    , "midiinscale" : "trs1",
             "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : False   , "pss"      : False   ,
@@ -547,7 +541,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
-            "midiin"   : "trs1"    , "midiinclk" : "all"   , "midiinrunning" : True, "midiinscale" : False,
+            "midiinclk" : "all"    , "midiinscale" : "trs1",
             "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : False   , "pss"      : False   ,
@@ -571,8 +565,8 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"     : "cvgate"  , "t7out"    : "cvgate" , "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"    : 2         , "t3chan"   : 3        , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"    : 6         , "t7chan"   : 7        , "t8chan"   : 8       , "velo"     : "off"   ,
+            "midiinclk" : "off"    , "midiinscale" : "off",
             "velomin"  : 1000      , "velomax"  : 10000   ,
-            "midiin"   : "off"    , "midiinclk" : "off"   , "midiinrunning" : False, "midiinscale" : False ,
             "randpitch" : False     , "randgate" : False    , "skiprep"  : False   , "gl"       : False   ,
             "ratchets"  : False     , "range"    : False    , "par"      : False   , "pss"      : False   ,
             "poct"      : False     , "pdt"      : False    , "pact"     : False   , "ppat"     : False   ,
@@ -595,7 +589,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "g"     ,
-            "midiin"   : "trs1"    , "midiinclk" : "selected" , "midiinrunning" : True, "midiinscale" : True,
+            "midiinclk" : "all"    , "midiinscale" : "trs1",
             "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : True    , "pss"      : False   ,
@@ -812,7 +806,7 @@ def section_tonality():
     root_sources = [ "_ROOT_FADER" ]
     degree_sources = [ "_DEGREE_FADER" ]
 
-    if arguments["midiinscale"]:
+    if arguments["midiinscale"] != "off":
         root_sources.append("_MIDI_IN_ROOT_PITCH * 120")
         degree_sources.append("_MIDI_IN_SCALE_CC * 127")
 
@@ -869,10 +863,14 @@ def section_tonality():
         ], root_cable, "_ROOT_NAME", "Root note", 4)
 
     # Scale
+    if arguments["midiinscale"] != "off":
+        startvalue = 0
+    else:
+        startvalue = 7 # natural minor
     patch += circuit("motorfader", select + [
         ( "fader", 2 ),
         ( "notches", 12 ),
-        ( "startvalue", 7 ), # natural minor
+        ( "startvalue", startvalue ),
         ( "ledcolor", "_COLOR_DEGREE_FADER" ),
         ( "ledvalue", 1 ),
         ( "output", degree_cable ),
@@ -1050,89 +1048,56 @@ def section_tonality():
 
     return patch
 
-def midi_port_argument(port):
+def midi_port_arguments(port):
     if port == "usb":
-        return ( "usb", 1 )
+        return [( "usb", 1 )]
     elif port == "trs1":
-        return ( "trs", 1 )
-    else: # "trs2"
+        return [( "trs", 1 )]
+    elif port == "trs2":
         if arguments["m"] != "master18":
             bail_out("Your selected MASTER does have a MIDI TRS2 input")
-        return  ( "trs", 2 )
+        return  [( "trs", 2 )]
+    else: # all
+        return [( "trs", 10 ), ( "usb", 10 )]
+
 
 def section_midi_input():
-    if arguments["midiin"] == "off":
-        if arguments["midiinrunning"]:
-            bail_out("you have selected start / stop via MIDI but not selected "
-                     "any MIDI port.")
-        if arguments["midiinscale"]:
-            bail_out("you have selected root/scale via MIDI but not selected "
-                     "any MIDI port.")
+    if arguments["midiinclk"] == "off" and arguments["midiinscale"] == "off":
         return ""
 
     patch = section_header("MIDI input")
 
-    # Select the MIDI source port
-    args = [ midi_port_argument(arguments["midiin"]) ]
-
-    # Get the clock from the selected port?
-    if arguments["midiinclk"] in [ "selected", "all" ]:
-        args.append(( "clock", "_MIDI_CLOCK_" + arguments["midiin"].upper() ))
-
-    # Get root and scale from the selected port?
-    if arguments["midiinscale"]:
-        args += [
-            ( "pitch1", "_MIDI_IN_ROOT_PITCH" ),
-            ( "ccnumber1", 1 ),
-            ( "cc1", "_MIDI_IN_SCALE_CC" ),
-        ]
-
-    # Get the running state from the selected port?
-    if arguments["midiinrunning"]:
-        args += [
+    # Part 1: clock + running
+    if arguments["midiinclk"] != "off":
+        cable = "_MIDI_INPUT_CLOCK"
+        args = midi_port_arguments(arguments["midiinclk"]) + [
             ( "start", "_EXT_RUNNING_STARTED" ),
             ( "stop", "_EXT_RUNNING_STOPPED" ),
-        ]
-        # If we have a start/stop button, we use the running state
-        # as a start value for the button
+            ( "clock", cable )]
         if arguments["ssb"]:
             args.append(( "running", "_RUNNING_EXT" ))
+        patch += circuit("midiin", args, "MIDI input for clock, start and stop")
 
-    patch += circuit("midiin", args, "MIDI input")
+        patch += circuit("gatetool", [
+                ( "inputtrigger", cable ),
+                ( "gatelength", 2 ),
+                ( "outputgate", cable + "_PRESENT" ),
+        ], ("Detect a MIDI input clock signal if within the "
+            "last 2 seconds there is a pulse"))
+        clock_sources.append(( cable, cable + "_PRESENT" ))
 
-    if arguments["midiinclk"] == "selected":
-        patch += midi_clock_input(arguments["midiin"], False)
+    # Part 2: root and scale
+    if arguments["midiinscale"] != "off":
+        patch += circuit("midiin", 
+            midi_port_arguments(arguments["midiinscale"]) + [
+                ( "pitch1", "_MIDI_IN_ROOT_PITCH" ),
+                ( "ccnumber1", 1 ),
+                ( "cc1", "_MIDI_IN_SCALE_CC" ),
+            ], "Get root and scale via MIDI")
 
-    elif arguments["midiinclk"] == "all":
-        for port in [ "trs1", "trs2", "usb" ]:
-            if arguments["m"] != "master18" and port == "trs2":
-                continue
-            patch += midi_clock_input(port, arguments["midiin"] != port)
-
-
-    return patch
-
-
-def midi_clock_input(port, with_midiin):
-    cable = "_MIDI_CLOCK_" + port.upper()
-
-    patch = ""
-
-    if with_midiin:
-        patch += circuit("midiin", [
-            midi_port_argument(port),
-            ( "clock", cable )
-        ], "Get MIDI input clock from %s" % port.upper())
-
-    patch += circuit("gatetool", [
-            ( "inputtrigger", cable ),
-            ( "gatelength", 2 ),
-            ( "outputgate", cable + "_PRESENT" ),
-    ], ("Detect a MIDI input clock signal on port %s, "
-       "if within the last 2 seconds there is a pulse") % port.upper() )
-    clock_sources.append(( cable, cable + "_PRESENT" ))
 
     return patch
+
 
 
 def section_clock():
@@ -1668,7 +1633,7 @@ def section_global_buttons():
     if arguments["ssb"]:
         reset_sources.append(( "_STARTSTOP_RESET" ))
 
-    if arguments["runningin"] or arguments["midiinrunning"]:
+    if arguments["runningin"] or arguments["midiinclk"] != "off":
         reset_sources.append(( "_EXT_RUNNING_STARTED" ))
 
     if arguments["sinflink"] == "res":
@@ -1689,7 +1654,7 @@ def section_global_buttons():
     elif arguments["runningin"]:
         running_in = cv_inputs["runningin"]
 
-    elif arguments["midiinrunning"]:
+    elif arguments["midiinclk"] != "off":
         running_in = "_RUNNING_EXT"
 
     else:
@@ -1717,7 +1682,7 @@ def section_global_buttons():
             ( "output", "_RUNNING") ]
 
         # Do we get START/STOP from an external source?
-        if arguments["runningin"] or arguments["midiinrunning"]:
+        if arguments["runningin"] or arguments["midiinclk"] != "off":
             buttonargs += [
                 ( "button", "B" + b + " + _EXT_RUNNING_STARTED" ),
                 ( "startvalue", running_in ),
