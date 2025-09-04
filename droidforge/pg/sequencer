@@ -1241,11 +1241,11 @@ def add_internal_clock():
         ( "output", "_CLOCK_BPM" ),
     ], "Set the BPM to zero while the clock is muted.")
 
-
     patch += circuit("lfo", [
         ( "hz", "_CLOCK_BPM / 15" ),
         ( "pulsewidth", 0.1 ),
         ( "square", "_INT_CLOCK" ),
+        ( "sync", "_RUNNING" ),
     ], "The actual clock, use a very short pulse so we have essentially just triggers" )
 
     clock_sources.append(("_INT_CLOCK", "_INT_CLOCK_UNMUTED" ))
