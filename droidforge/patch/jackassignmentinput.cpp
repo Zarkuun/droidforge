@@ -124,7 +124,6 @@ QString JackAssignmentInput::valueToString(bool compressed) const
             return atoms[0]->toString() + bOperator + atoms[1]->toString() + op + sc;
     }
 }
-
 QString JackAssignmentInput::valueToCanonicalString() const
 {
     if (!atoms[0] && !atoms[1] && !atoms[2]) // none defined
@@ -275,7 +274,7 @@ Atom *JackAssignmentInput::parseInputFraction(const QString &s)
     withoutSpace.replace(" ", "");
     if (withoutSpace.startsWith("1/")) {
         bool ok = false;
-        double n = withoutSpace.mid(2).toDouble(&ok);
+        double n = QStringView(withoutSpace).mid(2).toDouble(&ok);
         if (n == 0)
             return 0;
         else if (ok)
@@ -302,7 +301,6 @@ QList<PatchProblem *> JackAssignmentInput::collectSpecificProblems(const Patch *
                 problems.append(new PatchProblem(-1, i+1, text));
         }
     }
-
 
     // Some hard coded cases, to better support the user
     if (atoms[0] && !atoms[1] && !atoms[2] && atoms[0]->isNumber()) {
