@@ -1,5 +1,4 @@
 #include "memoryanalysiswindow.h"
-#include "droidfirmware.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -22,12 +21,10 @@ MemoryAnalysisWindow::MemoryAnalysisWindow(const Patch *patch, QWidget *parent)
     connect(bSortTotal, &QPushButton::pressed, this, [this]() { this->update(BY_TOTAL); });
     connect(bSortName, &QPushButton::pressed, this, [this]() { this->update(BY_NAME); });
 }
-
 void MemoryAnalysisWindow::showEvent(QShowEvent *)
 {
     update(BY_TOTAL);
 }
-
 void MemoryAnalysisWindow::update(sortby_t sortby)
 {
     typedef struct {
@@ -51,22 +48,24 @@ void MemoryAnalysisWindow::update(sortby_t sortby)
         const PatchSection *section = patch->section(s);
         for (unsigned c=0; c<section->numCircuits(); c++) {
             const Circuit *circuit = section->circuit(c);
-            QString name = circuit->getName();
-            if (!stats.contains(name)) {
-                stats[name] = {
-                    name,
-                    circuit->baseRAMUsage(),
-                    0, // count
-                    0, // total
-                    0.0 // average
-                };
+            if (!circuit->isDisabled()) {
+                QString name = circuit->getName();
+                if (!stats.contains(name)) {
+                    stats[name] = {
+                        name,
+                        circuit->baseRAMUsage(),
+                        0, // count
+                        0, // total
+                        0.0 // average
+                    };
+                }
+                unsigned memoryFootprint = circuit->RAMUsage(jdd);
+                stats[name].count += 1;
+                stats[name].total += memoryFootprint;
+                stats[name].average = (double)stats[name].total / stats[name].count;
+                total_count ++;
+                total_ram += memoryFootprint;
             }
-            unsigned memoryFootprint = circuit->RAMUsage(jdd);
-            stats[name].count += 1;
-            stats[name].total += memoryFootprint;
-            stats[name].average = (double)stats[name].total / stats[name].count;
-            total_count ++;
-            total_ram += memoryFootprint;
         }
     }
     QString text = tr("Memory analysis of patch \"%1\"\n\n").arg(patch->getTitle());
