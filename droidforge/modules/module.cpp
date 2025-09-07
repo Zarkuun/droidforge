@@ -134,20 +134,33 @@ void Module::paintHiliteRegister(
     QPointF origin = rect.topLeft();
     QString cacheKey = QString::asprintf("%d/%d/%.1f/%1.f", usage, type, size.width(), size.height());
 
-    if (!hiliteRenderCache.contains(cacheKey)) {
-        hiliteRenderCache[cacheKey] = QPixmap(rect.size().toSize());
+    // We make our cache pixmap a bit larger than the actual circle
+    // so that no pixels are cutoff at the border due to antialiasing.
+    // The circuit sits within the cache pixmap with a border around
+    // it. So its origin is shifted by border/border.
+    const int border = 5;
+
+    if (!hiliteRenderCache.contains(cacheKey))
+    {
+        QRectF borderRect = rect;
+        borderRect.adjust(0, 0, 2 * border, 2 * border);
+        hiliteRenderCache[cacheKey] = QPixmap(borderRect.size().toSize());
         QPixmap &pixmap = hiliteRenderCache[cacheKey];
         pixmap.fill(Qt::transparent);
         QPainter painter(&pixmap);
+        painter.setRenderHint(QPainter::Antialiasing, true);
 
         QPen pen;
-        QRectF r(QPointF(0, 0), size);
+        QRectF circleRect(
+                QPointF(border, border), // top left
+                QPointF(size.width() + border, size.height() + border)); // bottom right
 
         int d = 8;
         int i = 0;
-        while (r.width() >= 0 ) {
+        while (circleRect.width() >= 0)
+        {
             i++;
-            if (i%2 == 0)
+            if (i % 2 == 0)
                 pen.setColor(COLOR(RACV_REGHILITES_LESSER_PEN_COLOR));
             else if (usage == 2)
                 pen.setColor(COLOR(RACV_REGHILITES_PEN_COLOR));
@@ -158,13 +171,13 @@ void Module::paintHiliteRegister(
             painter.setPen(pen);
             painter.setBrush(Qt::NoBrush);
             if (ra)
-                painter.drawRect(r);
+                painter.drawRect(circleRect);
             else
-                painter.drawEllipse(r);
-            r.adjust(d, d, -d, -d);
+                painter.drawEllipse(circleRect);
+            circleRect.adjust(d, d, -d, -d);
         }
     }
-    hotPainter->drawPixmap(origin, hiliteRenderCache[cacheKey]);
+    hotPainter->drawPixmap(origin - QPointF(border, border), hiliteRenderCache[cacheKey]);
 }
 void Module::paintRegisterLabels(QPainter *painter)
 {
