@@ -1,8 +1,8 @@
 #ifndef PATCHSIZEINDICATOR_H
 #define PATCHSIZEINDICATOR_H
 
-#include <QTimer.h>
-#include <QElapsedTimer.h>
+#include <QTimer>
+#include <QElapsedTimer>
 
 #include "patcheditengine.h"
 #include "patchview.h"
