@@ -135,9 +135,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE, &PatchOperator::save);
     connect(ACTION(ACTION_SAVE_ALL), &QAction::triggered, the_windowlist, &WindowList::saveAll);
     CONNECT_ACTION(ACTION_SAVE_AS, &PatchOperator::saveAs);
-    #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &PatchOperator::openEnclosingFolder);
-    #endif
     CONNECT_ACTION(ACTION_EXPORT_SELECTION, &PatchOperator::exportSelection);
     CONNECT_ACTION(ACTION_INTEGRATE_PATCH, &PatchOperator::integrate);
     CONNECT_ACTION(ACTION_UNDO, &PatchOperator::undo);
@@ -492,7 +490,8 @@ void PatchOperator::ejectSDCard(QString dirPath)
                     tr("An error occurred while ejecting the SD card"),
                     QMessageBox::Ok);
     }
-#else
+#endif
+#ifdef Q_OS_MAC
     QProcess process;
     QStringList arguments;
     arguments << "umount";
@@ -531,6 +530,8 @@ void PatchOperator::ejectSDCard(QString dirPath)
         statusDumpPresent = false;
         emit droidStateChanged();
     }
+#endif
+#ifdef Q_OS_LINUX
 #endif
 }
 void PatchOperator::upgradeMasterFirmware()
@@ -1233,6 +1234,9 @@ void PatchOperator::openDirInFinder(const QString &filename)
     QStringList args;
     args << "/select," << QDir::toNativeSeparators(filename);
     QProcess::startDetached("explorer", args);
+#endif
+#ifdef Q_OS_LINUX
+	(void) filename;
 #endif
 }
 void PatchOperator::editProperties()

@@ -102,14 +102,17 @@ void EditorActions::createActions()
 
     actions[ACTION_UPGRADE_MASTER_FIRMWARE] = new QAction(tr("Upgrade firmware of master"), this);
 
-    #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     #ifdef Q_OS_MACOS
     QString title = tr("Reveal in finder");
-    #else
+    #endif
+    #ifdef Q_OS_WIN
     QString title = tr("Re&veal in explorer");
     #endif
-    actions[ACTION_OPEN_ENCLOSING_FOLDER] = new QAction(title, this);
+    #ifdef Q_OS_LINUX
+    QString title = tr("Reveal in file browser");
     #endif
+    actions[ACTION_OPEN_ENCLOSING_FOLDER] = new QAction(title, this);
+
     actions[ACTION_INTEGRATE_PATCH] = new QAction(tr("&Integrate other patch"), this);
     actions[ACTION_INTEGRATE_PATCH]->setShortcut(QKeySequence(tr("Ctrl+I")));
 
@@ -287,8 +290,12 @@ void EditorActions::createActions()
     actions[ACTION_DELETE_PATCH_SECTION] = new QAction(tr("D&elete section"), this);
 #ifdef Q_OS_WIN
     actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+Delete")));
-#else
+#endif
+#ifdef Q_OS_MAC
     actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+Backspace")));
+#endif
+#ifdef Q_OS_LINUX
+    actions[ACTION_DELETE_PATCH_SECTION]->setShortcut(QKeySequence(tr("Alt+Delete")));
 #endif
 
     actions[ACTION_MERGE_WITH_PREVIOUS_SECTION] = new QAction(tr("&Merge with previous section"));

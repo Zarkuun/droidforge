@@ -285,9 +285,7 @@ void MainWindow::createFileMenu()
     fileMenu->addSeparator();
 
     ADD_ACTION(ACTION_INTEGRATE_PATCH, fileMenu);
-    #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     ADD_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, fileMenu);
-    #endif
 
     ADD_ACTION(ACTION_SAVE, fileMenu);
     ADD_ACTION(ACTION_SAVE_AS, fileMenu);
