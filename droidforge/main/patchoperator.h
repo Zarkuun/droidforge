@@ -13,9 +13,20 @@
 #ifdef Q_OS_MAC
 #include "macmidihost.h"
 #define OurMIDIHost MacMIDIHost
-#else
+#endif
+
+#ifdef Q_OS_WIN
 #include "windowsmidihost.h"
 #define OurMIDIHost WindowsMIDIHost
+#endif
+
+#ifdef Q_OS_LINUX
+#include "linuxmidihost.h"
+#define OurMIDIHost LinuxMIDIHost
+#endif
+
+#ifndef OurMIDIHost
+	#error "no MIDIHost defined!"
 #endif
 
 #include <QObject>
