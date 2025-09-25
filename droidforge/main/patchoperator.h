@@ -4,6 +4,7 @@
 #define POLL_SD_SETTINGS_KEY_NAME       "activation/poll_for_sd"
 #define POLL_X7_SETTINGS_KEY_NAME       "activation/poll_for_x7"
 #define SD_PATH_SETTINGS_KEY_NAME       "activation/sd_path"
+#define SD_DEVICE_SETTINGS_KEY_NAME     "activation/sd_device"
 
 #include "patcheditengine.h"
 #include "editoractions.h"
@@ -156,6 +157,7 @@ private:
     bool pollSD() const;
     bool pollX7() const;
     QString savedSDCardDir() const;
+    QString savedSDCardDev() const;
     QString sdCardDirSansPolling();
     void examinePatchSize() const;
     void ejectSDCard(QString dirPath);
