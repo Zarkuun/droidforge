@@ -689,6 +689,9 @@ QString PatchOperator::sdCardDirSansPolling()
             if (storage.fileSystemType() != "msdos" &&
                 storage.fileSystemType() != "FAT32" &&
                 storage.fileSystemType() != "FAT16" &&
+#ifdef Q_OS_LINUX
+                storage.fileSystemType() != "vfat"  &&
+#endif
                 storage.fileSystemType() != "FAT" )
             {
                 continue;
@@ -765,6 +768,9 @@ QString PatchOperator::sdCardDir()
          if (storage.fileSystemType() != "msdos" &&
             storage.fileSystemType() != "FAT32" &&
             storage.fileSystemType() != "FAT16" &&
+#ifdef Q_OS_LINUX
+            storage.fileSystemType() != "vfat"  &&
+#endif
             storage.fileSystemType() != "FAT" )
                     continue;
 
