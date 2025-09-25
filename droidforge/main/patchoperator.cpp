@@ -30,6 +30,10 @@
 #include <QThread>
 
 // #include <CoreMIDI/MIDIServices.h>
+#ifdef Q_OS_LINUX
+#include <QDesktopServices>
+#include <QFileInfo>
+#endif
 
 #ifdef Q_OS_WIN
 //#include <stdio.h>
@@ -532,6 +536,11 @@ void PatchOperator::ejectSDCard(QString dirPath)
     }
 #endif
 #ifdef Q_OS_LINUX
+        QMessageBox::warning(
+                    mainWindow,
+                    tr("Could not eject SD card"),
+                    tr("Reason: not (yet) implemented!"),
+                    QMessageBox::Ok);
 #endif
 }
 void PatchOperator::upgradeMasterFirmware()
@@ -1236,7 +1245,8 @@ void PatchOperator::openDirInFinder(const QString &filename)
     QProcess::startDetached("explorer", args);
 #endif
 #ifdef Q_OS_LINUX
-	(void) filename;
+    QFileInfo info(filename);
+    QDesktopServices::openUrl(QUrl("file://" + info.dir().path(), QUrl::TolerantMode));
 #endif
 }
 void PatchOperator::editProperties()
