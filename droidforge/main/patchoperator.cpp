@@ -496,12 +496,20 @@ void PatchOperator::ejectSDCard(QString dirPath)
                     QMessageBox::Ok);
     }
 #endif
-#ifdef Q_OS_MAC
+#if(defined Q_OS_MAC || defined Q_OS_LINUX )
     QProcess process;
     QStringList arguments;
+#ifdef Q_OS_MAC
     arguments << "umount";
     arguments << dir.absolutePath();
     process.start("diskutil", arguments);
+#endif
+#ifdef Q_OS_LINUX
+    arguments << "unmount";
+    arguments << "-b";
+    arguments << savedSDCardDev();
+    process.start("udisksctl", arguments);
+#endif
     bool success = process.waitForFinished(MAC_UMOUNT_TIMEOUT_MS);
 
     if (!success) { // never happened ever.
@@ -535,13 +543,6 @@ void PatchOperator::ejectSDCard(QString dirPath)
         statusDumpPresent = false;
         emit droidStateChanged();
     }
-#endif
-#ifdef Q_OS_LINUX
-        QMessageBox::warning(
-                    mainWindow,
-                    tr("Could not eject SD card"),
-                    tr("Reason: not (yet) implemented!"),
-                    QMessageBox::Ok);
 #endif
 }
 void PatchOperator::upgradeMasterFirmware()
