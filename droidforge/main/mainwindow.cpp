@@ -171,7 +171,7 @@ void MainWindow::bringToFront()
 {
     raise();
     activateWindow();
-    setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+    setWindowState(windowState() & (~Qt::WindowMinimized | Qt::WindowActive));
 }
 void MainWindow::hideFindPanel()
 {
