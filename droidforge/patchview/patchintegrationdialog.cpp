@@ -23,7 +23,7 @@ PatchIntegrationDialog::PatchIntegrationDialog(QWidget *parent)
     checkboxUseControllers = new QCheckBox(tr("Integrate these controller definitions"));
     mainLayout->addWidget(labelControllers);
     mainLayout->addWidget(checkboxUseControllers);
-    connect(checkboxUseControllers, &QCheckBox::stateChanged, this, &PatchIntegrationDialog::updateCheckboxes);
+    connect(checkboxUseControllers, &QCheckBox::checkStateChanged, this, &PatchIntegrationDialog::updateCheckboxes);
 
     mainLayout->addSpacing(STANDARD_SPACING);
 
