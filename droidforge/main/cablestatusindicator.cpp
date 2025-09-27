@@ -57,7 +57,7 @@ void CableStatusIndicator::paintPatching(QPainter &painter)
     QRectF leftPlugRect(left, CSI_IMAGE_MARGIN, imgWidth, imgHeight);
     QRectF rightPlugRect(right - imgWidth, CSI_IMAGE_MARGIN, imgWidth, imgHeight);
     const QImage *plugImage = the_cable_colorizer->ghostPlug();
-    QImage mirroredPlugImage = plugImage->mirrored(true, false);
+    QImage mirroredPlugImage = plugImage->flipped(Qt::Horizontal);
     painter.drawImage(rightPlugRect, *plugImage);
     painter.drawImage(leftPlugRect, mirroredPlugImage);
 }
@@ -95,7 +95,7 @@ void CableStatusIndicator::paintCableInfo(QPainter &painter)
 
     paintCable(painter, leftPlugRect.right(), rightPlugRect.left());
     const QImage *plugImage = the_cable_colorizer->imageForCable(cableName);
-    QImage mirroredPlugImage = plugImage->mirrored(true, false);
+    QImage mirroredPlugImage = plugImage->flipped(Qt::Horizontal);
 
     QSettings settings;
     bool mirror_plugs = settings.value("mirror_plugs", false).toBool();

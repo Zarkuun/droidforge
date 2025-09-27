@@ -273,7 +273,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
     QImage ghostPlug = *the_cable_colorizer->ghostPlug();
 
     if (!isInput != mirror_plugs)
-        ghostPlug = ghostPlug.mirrored(true, false);
+        ghostPlug = ghostPlug.flipped(Qt::Horizontal);
 
     if (atom) {
         if (isPatchingFromHere)
@@ -289,7 +289,7 @@ void CircuitView::paintAtom(QPainter *painter, const QRectF &rect, QColor textco
                 if (isInput != mirror_plugs)
                     painter->drawImage(imageRect, image);
                 else
-                    painter->drawImage(imageRect, image.mirrored(true, false));
+                    painter->drawImage(imageRect, image.flipped(Qt::Horizontal));
                 r = r.translated(imageWidth + STANDARD_SPACING, 0);
                 r.setWidth(r.width() - imageWidth - STANDARD_SPACING);
             }
