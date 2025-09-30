@@ -2745,7 +2745,7 @@ def track_section(track):
         ], "Modulate gate length for gate output in arpeggiator mode" )
 
         patch += circuit("ifequal", [
-            ( "input1", "_T%d_ARP" % track ),
+            ( "input1", "_T%d_ARP_SYNCED" % track ),
             ( "input2", 0 ),
             ( "ifequal", gate ),
             ( "else", arp_gate ),
@@ -2767,7 +2767,7 @@ def track_section(track):
     # Switch pitch between sequencer and arpeggio
     if arguments["arp"]:
         patch += circuit("ifequal", [
-            ( "input1", "_T%d_ARP" % track ),
+            ( "input1", "_T%d_ARP_SYNCED" % track ),
             ( "input2", 0 ),
             ( "ifequal", "_T%d_PITCH" % track ), # sequencer
             ( "else", "_T%d_ARP_OUTPUT + _T%d_ARP_OCTAVE" % (track, track )), # arpeggio
@@ -3001,6 +3001,12 @@ def arpeggio_menu(track):
         ( "output", "_T%d_ARP" % track ),
         ( "negated", "_T%d_ARP_OFF" % track ),
     ], "Switch on/off arpeggio mode for track %d" % track)
+
+    patch += circuit("sample", [
+        ( "input", "_T%d_ARP" % track ),
+        ( "sample", "_T%d_CLOCK" % track ),
+        ( "output", "_T%d_ARP_SYNCED" % track )
+    ], "Sync switching ARP on/off with clock in order to avoid audible glitches")
 
     select = [
         ( "select", "_GLOBAL_FADER_SELECTION * _T%d_ARP" % track ),
