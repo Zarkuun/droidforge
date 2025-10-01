@@ -7,7 +7,7 @@
 
 #include <QGridLayout>
 #include <QPdfBookmarkModel>
-#include <QPdfPageNavigation>
+#include <QPdfPageNavigator>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QKeyEvent>
@@ -36,9 +36,10 @@ UserManual::UserManual(QWidget *parent)
     pdfView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     PageSelector *pageSelector = new PageSelector(this);
-    pageNavigation = pdfView->pageNavigation();
-    pageNavigation->setDocument(&document);
-    pageSelector->setPageNavigation(pageNavigation);
+    pageNavigator = pdfView->pageNavigator();
+// FIXME
+//    pageNavigator->setDocument(&document);
+    pageSelector->setPageNavigator(pageNavigator);
 
     // Buttons
     QPushButton *buttonExternal = new QPushButton(tr("Open in viewer"));
@@ -55,7 +56,9 @@ UserManual::UserManual(QWidget *parent)
 }
 void UserManual::jumpToPage(unsigned nr)
 {
-    pageNavigation->setCurrentPage(nr-1);
+// FIXME
+(void) nr;
+//    pageNavigator->setCurrentPage(nr-1);
 }
 void UserManual::openExternally()
 {
@@ -92,8 +95,12 @@ void UserManual::keyPressEvent(QKeyEvent *event)
 }
 void UserManual::wheelEvent(QWheelEvent *event)
 {
+// FIXME
+(void) event;
+/*
     if (event->angleDelta().y() > 0)
-        pageNavigation->goToNextPage();
+        pageNavigator->goToNextPage();
     else if (event->angleDelta().y() < 0)
-        pageNavigation->goToPreviousPage();
+        pageNavigator->goToPreviousPage();
+*/
 }

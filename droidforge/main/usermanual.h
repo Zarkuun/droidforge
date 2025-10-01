@@ -14,7 +14,7 @@ class UserManual : public Dialog
 
     QPdfDocument document;
     QPdfView *pdfView;
-    QPdfPageNavigation *pageNavigation;
+    QPdfPageNavigator *pageNavigator;
 
 public:
     UserManual(QWidget *parent = nullptr);
