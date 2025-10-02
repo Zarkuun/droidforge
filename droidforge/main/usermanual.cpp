@@ -37,9 +37,7 @@ UserManual::UserManual(QWidget *parent)
 
     PageSelector *pageSelector = new PageSelector(this);
     pageNavigator = pdfView->pageNavigator();
-// FIXME
-//    pageNavigator->setDocument(&document);
-    pageSelector->setPageNavigator(pageNavigator);
+    pageSelector->setPageNavigator(pageNavigator, &document);
 
     // Buttons
     QPushButton *buttonExternal = new QPushButton(tr("Open in viewer"));

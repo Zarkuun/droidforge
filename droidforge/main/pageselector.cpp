@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPdfPageNavigator>
+#include <QPdfDocument>
 #include <QToolButton>
 
 PageSelector::PageSelector(QWidget *parent)
@@ -36,17 +37,17 @@ PageSelector::PageSelector(QWidget *parent)
     layout->addStretch(1);
 }
 
-void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav)
+void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav, QPdfDocument *doc)
 {
     pageNavigator = pageNav;
+    document = doc;
 
 // FIXME
 //    connect(buttonPrev, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::goToPreviousPage);
 //    connect(pageNavigator, &QPdfPageNavigator::canGoToPreviousPageChanged, buttonPrev, &QToolButton::setEnabled);
 
-// FIXME
-//    connect(pageNavigator, &QPdfPageNavigator::currentPageChanged, this, &PageSelector::onCurrentPageChanged);
-//    connect(pageNavigator, &QPdfPageNavigator::pageCountChanged, this, [this](int pageCount){ labelPageCount->setText(QString::fromLatin1("/ %1").arg(pageCount)); });
+    connect(pageNavigator, &QPdfPageNavigator::currentPageChanged, this, &PageSelector::onCurrentPageChanged);
+    connect(document, &QPdfDocument::pageCountChanged, this, [this](int pageCount){ labelPageCount->setText(QString::fromLatin1("/ %1").arg(pageCount)); });
 
     connect(lineEditPage, &QLineEdit::editingFinished, this, &PageSelector::pageNumberEdited);
     connect(lineEditPage, &KeyCaptureLineEdit::keyPressed, this, &PageSelector::handleKeyPress);
