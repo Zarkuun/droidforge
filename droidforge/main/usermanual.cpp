@@ -54,9 +54,7 @@ UserManual::UserManual(QWidget *parent)
 }
 void UserManual::jumpToPage(unsigned nr)
 {
-// FIXME
-(void) nr;
-//    pageNavigator->setCurrentPage(nr-1);
+    pageNavigator->jump(nr-1, {}, pageNavigator->currentZoom());
 }
 void UserManual::openExternally()
 {

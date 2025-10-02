@@ -80,17 +80,15 @@ void PageSelector::pageNumberEdited()
         return;
 
     const QString text = lineEditPage->text();
-// FIXME
-/*
+
     bool ok = false;
     const int pageNumber = text.toInt(&ok);
     if (!ok)
         onCurrentPageChanged(pageNavigator->currentPage());
     else {
-        pageNavigator->setCurrentPage(qBound(0, pageNumber - 1, pageNavigator->pageCount() - 1));
+        pageNavigator->jump(qBound(0, pageNumber - 1, document->pageCount() - 1), {}, pageNavigator->currentZoom());
         lineEditPage->selectAll();
     }
-*/
 }
 
 
@@ -109,12 +107,10 @@ void PageSelector::handleKeyPress(int key)
 //        pageNavigator->goToNextPage();
         return;
     case Qt::Key_Home:
-// FIXME
-//        pageNavigator->setCurrentPage(1);
+        pageNavigator->jump(0, {}, pageNavigator->currentZoom());
         return;
     case Qt::Key_End:
-// FIXME
-//        pageNavigator->setCurrentPage(pageNavigator->pageCount());
+        pageNavigator->jump(document->pageCount() - 1, {}, pageNavigator->currentZoom());
         return;
     }
 }
