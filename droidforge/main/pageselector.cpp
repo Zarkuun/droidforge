@@ -43,8 +43,6 @@ void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav, QPdfDocument *do
     document = doc;
 
     connect(buttonPrev, &QToolButton::clicked, this, &PageSelector::goToPreviousPage);
-// FIXME
-//    connect(pageNavigator, &QPdfPageNavigator::canGoToPreviousPageChanged, buttonPrev, &QToolButton::setEnabled);
 
     connect(pageNavigator, &QPdfPageNavigator::currentPageChanged, this, &PageSelector::onCurrentPageChanged);
     connect(document, &QPdfDocument::pageCountChanged, this, [this](int pageCount){ labelPageCount->setText(QString::fromLatin1("/ %1").arg(pageCount)); });
@@ -53,11 +51,8 @@ void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav, QPdfDocument *do
     connect(lineEditPage, &KeyCaptureLineEdit::keyPressed, this, &PageSelector::handleKeyPress);
 
     connect(buttonNext, &QToolButton::clicked, this, &PageSelector::goToNextPage);
-// FIXME
-//    connect(pageNavigator, &QPdfPageNavigator::canGoToNextPageChanged, buttonNext, &QToolButton::setEnabled);
 
-// FIXME
-//    onCurrentPageChanged(pageNavigator->currentPage());
+    onCurrentPageChanged(pageNavigator->currentPage());
 }
 
 void PageSelector::goToPreviousPage()
@@ -83,12 +78,13 @@ void PageSelector::onCurrentPageChanged(int page)
     if (!pageNavigator)
         return;
 
-// FIXME
-(void) page;
-//    if (pageNavigator->pageCount() == 0)
-//        lineEditPage->setText(QString::number(0));
-//    else
-//        lineEditPage->setText(QString::number(page + 1));
+    buttonPrev->setEnabled(pageNavigator->currentPage() > 0);
+    buttonNext->setEnabled(pageNavigator->currentPage() < document->pageCount() - 1);
+
+    if (document->pageCount() == 0)
+        lineEditPage->setText(QString::number(0));
+    else
+        lineEditPage->setText(QString::number(page + 1));
     lineEditPage->selectAll();
 }
 
