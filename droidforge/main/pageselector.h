@@ -20,6 +20,7 @@ class PageSelector : public QWidget
     Q_OBJECT
 
     QPdfPageNavigator *pageNavigator;
+    QPdfDocument *document;
     KeyCaptureLineEdit *lineEditPage;
     QLabel *labelPageCount;
     QToolButton *buttonPrev;
@@ -27,7 +28,7 @@ class PageSelector : public QWidget
 
 public:
     explicit PageSelector(QWidget *parent = nullptr);
-    void setPageNavigator(QPdfPageNavigator *pageNavigator);
+    void setPageNavigator(QPdfPageNavigator *pageNavigator, QPdfDocument *document);
 
 private slots:
     void onCurrentPageChanged(int page);
