@@ -42,8 +42,8 @@ void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav, QPdfDocument *do
     pageNavigator = pageNav;
     document = doc;
 
+    connect(buttonPrev, &QToolButton::clicked, this, &PageSelector::goToPreviousPage);
 // FIXME
-//    connect(buttonPrev, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::goToPreviousPage);
 //    connect(pageNavigator, &QPdfPageNavigator::canGoToPreviousPageChanged, buttonPrev, &QToolButton::setEnabled);
 
     connect(pageNavigator, &QPdfPageNavigator::currentPageChanged, this, &PageSelector::onCurrentPageChanged);
@@ -52,12 +52,30 @@ void PageSelector::setPageNavigator(QPdfPageNavigator *pageNav, QPdfDocument *do
     connect(lineEditPage, &QLineEdit::editingFinished, this, &PageSelector::pageNumberEdited);
     connect(lineEditPage, &KeyCaptureLineEdit::keyPressed, this, &PageSelector::handleKeyPress);
 
+    connect(buttonNext, &QToolButton::clicked, this, &PageSelector::goToNextPage);
 // FIXME
-//    connect(buttonNext, &QToolButton::clicked, pageNavigator, &QPdfPageNavigator::goToNextPage);
 //    connect(pageNavigator, &QPdfPageNavigator::canGoToNextPageChanged, buttonNext, &QToolButton::setEnabled);
 
 // FIXME
 //    onCurrentPageChanged(pageNavigator->currentPage());
+}
+
+void PageSelector::goToPreviousPage()
+{
+    if (!pageNavigator)
+        return;
+
+    if(pageNavigator->currentPage() > 0)
+        pageNavigator->jump(pageNavigator->currentPage() - 1, {}, pageNavigator->currentZoom());
+}
+
+void PageSelector::goToNextPage()
+{
+    if (!pageNavigator)
+        return;
+
+    if(pageNavigator->currentPage() < document->pageCount() - 1)
+        pageNavigator->jump(pageNavigator->currentPage() + 1, {}, pageNavigator->currentZoom());
 }
 
 void PageSelector::onCurrentPageChanged(int page)

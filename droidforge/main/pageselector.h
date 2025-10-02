@@ -29,6 +29,8 @@ class PageSelector : public QWidget
 public:
     explicit PageSelector(QWidget *parent = nullptr);
     void setPageNavigator(QPdfPageNavigator *pageNavigator, QPdfDocument *document);
+    void goToPreviousPage();
+    void goToNextPage();
 
 private slots:
     void onCurrentPageChanged(int page);
