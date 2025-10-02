@@ -1,6 +1,8 @@
 #ifndef USERMANUAL_H
 #define USERMANUAL_H
 
+#include "pageselector.h"
+
 #include <QtGlobal>
 #include "os.h"
 
@@ -15,6 +17,7 @@ class UserManual : public Dialog
     QPdfDocument document;
     QPdfView *pdfView;
     QPdfPageNavigator *pageNavigator;
+    PageSelector *pageSelector;
 
 public:
     UserManual(QWidget *parent = nullptr);

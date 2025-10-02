@@ -35,7 +35,7 @@ UserManual::UserManual(QWidget *parent)
     pdfView->setFocusPolicy(Qt::NoFocus);
     pdfView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    PageSelector *pageSelector = new PageSelector(this);
+    pageSelector = new PageSelector(this);
     pageNavigator = pdfView->pageNavigator();
     pageSelector->setPageNavigator(pageNavigator, &document);
 
@@ -91,12 +91,8 @@ void UserManual::keyPressEvent(QKeyEvent *event)
 }
 void UserManual::wheelEvent(QWheelEvent *event)
 {
-// FIXME
-(void) event;
-/*
     if (event->angleDelta().y() > 0)
-        pageNavigator->goToNextPage();
+        pageSelector->goToNextPage();
     else if (event->angleDelta().y() < 0)
-        pageNavigator->goToPreviousPage();
-*/
+        pageSelector->goToPreviousPage();
 }

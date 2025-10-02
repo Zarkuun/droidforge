@@ -115,14 +115,12 @@ void PageSelector::handleKeyPress(int key)
     switch (key) {
     case Qt::Key_Left:
     case Qt::Key_Up:
-// FIXME
-//        pageNavigator->goToPreviousPage();
+        goToPreviousPage();
         return;
     case Qt::Key_Right:
     case Qt::Key_Down:
     case Qt::Key_Space:
-// FIXME
-//        pageNavigator->goToNextPage();
+        goToNextPage();
         return;
     case Qt::Key_Home:
         pageNavigator->jump(0, {}, pageNavigator->currentZoom());
