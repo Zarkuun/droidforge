@@ -583,7 +583,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
         "name" : "dmmdm",
         "title" : "DMMDM's authentic live setup",
         "parameters" : {
-            "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "cn"       : "d"     , "dcon" : True,
+            "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "cn"       : "p"     , "dcon" : True,
             "g8"       : 1         , "tracks"   : 4       , "steps"    : "32"    , "t1out"    : "cvgate",
             "t2out"    : "cvgate"  , "t3out"    : "cvgate", "t4out"    : "cvgate", "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
@@ -1435,6 +1435,13 @@ def section_global_buttons():
     patch += track_selection()
     patch += global_fader_selection()
 
+    if arguments["arp"]:
+        patch += circuit("lfo", [
+            ( "hz", "2.5" ),
+            ( "bipolar", 0 ),
+            ( "level", "-0.8" ),
+            ( "square", "_ARP_AUTOSTOP_BLINK" ),
+        ], "LFO for blinking the ARP LED while it is in Autostop mode")
 
     if need_control_button():
         patch += circuit("copy", [
@@ -2598,6 +2605,9 @@ def track_section(track):
             ], "Note shift for each ratchet")
         params.append(( "ratchetshift", "_T%d_RATCHETSHIFT" % track))
 
+    if arguments["arp"]:
+        params.append(( "startofsequence", "_T%d_START_OF_SEQUENCE" % track))
+
     patch += circuit("motoquencer", params, "Sequencer for pitch and gate of track %d" % track)
 
     # Allocate CV ouputs
@@ -2997,10 +3007,23 @@ def arpeggio_menu(track):
     b = track_buttons["arp"]
     patch += circuit("button", track_selected(track) + [
         ( "button", "B" + b ),
-        ( "led", "L" + b ),
+        ( "clear", "_T%d_START_OF_SEQUENCE * _T%d_ARP_AUTOSTOP" % (track, track) ),
         ( "output", "_T%d_ARP" % track ),
         ( "negated", "_T%d_ARP_OFF" % track ),
     ], "Switch on/off arpeggio mode for track %d" % track)
+
+    patch += circuit("select", track_selected(track) + [
+        ( "input", "_T%d_ARP_AUTOSTOP * _ARP_AUTOSTOP_BLINK + _T%d_ARP" % (track, track) ),
+        ( "output", "L" + b ),
+    ], "The LED of the ARP button blinks when it is on but in Autostop mode")
+
+    patch += circuit("flipflop", [
+        ( "set", "_T%d_ARP * _CONTROL" % track),
+        ( "reset", "_T%d_ARP_OFF" % track),
+        ( "output", "_T%d_ARP_AUTOSTOP" % track),
+    ], "Autostop mode for ARP: When you hold CTRL while switching ARP on, "
+       "it will automatically switch off the next time the sequence starts. "
+       "This allows for easier jamming the ARP for doing fills.")
 
     patch += circuit("sample", [
         ( "input", "_T%d_ARP" % track ),
