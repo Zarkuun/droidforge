@@ -10,10 +10,11 @@ if [ $(uname -m) = arm64 ] ; then
 else
     HARDWARE=Intel
 fi
-QT_DIR=~/Qt/6.3.1
+QT_DIR=~/Qt/6.9.3
 PATH=$PATH:$QT_DIR/macos/bin
 APP_ICON=droidforge/droidforge.icns
-INSTALL_ROOT=build/release-mac/install-root/usr/local/Applications
+#INSTALL_ROOT=build/release-mac/install-root/usr/local/Applications
+INSTALL_ROOT=build/release-mac/
 APP_DIR="$INSTALL_ROOT/$NAME.app"
 EXECUTABLE="$APP_DIR/Contents/MacOS/$NAME"
 DMGDIR="dmg.root"
