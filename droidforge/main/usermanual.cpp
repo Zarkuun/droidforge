@@ -1,13 +1,11 @@
-#include "os.h"
 #include "usermanual.h"
-#include "globals.h"
 #include "pageselector.h"
 #include "droidfirmware.h"
 #include "tuning.h"
 
 #include <QGridLayout>
-#include <QPdfBookmarkModel>
-#include <QPdfPageNavigator>
+#include <QtPdf/QPdfBookmarkModel>
+#include <QtPdf/QPdfPageNavigator>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QKeyEvent>

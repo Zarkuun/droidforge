@@ -5,8 +5,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPdfPageNavigator>
-#include <QPdfDocument>
+#include <QtPdf/QPdfPageNavigator>
+#include <QtPdf/QPdfDocument>
 #include <QToolButton>
 
 PageSelector::PageSelector(QWidget *parent)

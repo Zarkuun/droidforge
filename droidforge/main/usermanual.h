@@ -4,11 +4,10 @@
 #include "pageselector.h"
 
 #include <QtGlobal>
-#include "os.h"
 
 #include <dialog.h>
-#include <QPdfDocument>
-#include <QPdfView>
+#include <QtPdf/QPdfDocument>
+#include <QtPdfWidgets/QPdfView>
 
 class UserManual : public Dialog
 {
