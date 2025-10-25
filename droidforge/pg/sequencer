@@ -2683,9 +2683,14 @@ def track_section(track):
             ], "Sequencer for velocity" + extra_comment )
 
         if track_is_midi(track) and track_is_cvgate(track):
+            if arguments["velo"] == "g": # use velocity as extra gate
+                jack = extragate_output_jack
+            else:
+                jack = velo_output_jack
+
             patch += circuit("copy", [
                 ( "input", out ),
-                ( "output", velo_output_jack ),
+                ( "output", jack ),
             ], "Copy velocity to CV output" )
 
             if arguments["velo"] == "vg":
