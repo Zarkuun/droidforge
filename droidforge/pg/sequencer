@@ -2629,7 +2629,10 @@ def track_section(track):
         gate_params = []
         default_cv = 0.5
         if track_is_midi(track):
-            out = "_T%d_VELOCITY" % track
+            if arguments["velo"] == "g": # Use the CV as extra gate
+                out = "_T%d_EXTRAGATE" % track
+            else:
+                out = "_T%d_VELOCITY" % track
         elif arguments["velo"] == "g":
             out = extragate_output_jack
         else:
