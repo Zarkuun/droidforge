@@ -36,6 +36,7 @@ class RackView : public QGraphicsView, PatchView
     QTimer *registerHilightTimer;
     MouseDragger dragger;
     int previousHeight;
+    QString currentTooltip;
 
 public:
     explicit RackView(MainWindow *mainWindow, PatchEditEngine *patch);
@@ -102,6 +103,7 @@ private slots:
     void swapControllers(int oldindex, int newindex);
     void remapControls(QString moduleType, int controllerIndex);
     void editLabelling(QString moduleType, int controllerIndex, unsigned g8Number, AtomRegister reg);
+    void moveMouse();
 
 signals:
     void registerClicked(AtomRegister ar);

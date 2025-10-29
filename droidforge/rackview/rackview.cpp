@@ -8,6 +8,7 @@
 #include "editoractions.h"
 #include "updatehub.h"
 #include "tooltip.h"
+#include "globals.h"
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
@@ -448,6 +449,7 @@ void RackView::connectDragger()
     connect(&dragger, &MouseDragger::itemDragged, this, &RackView::dragItem);
     connect(&dragger, &MouseDragger::itemDraggingStopped, this, &RackView::stopDraggingItem);
     connect(&dragger, &MouseDragger::draggingAborted, this, &RackView::abortDragging);
+    connect(&dragger, &MouseDragger::mouseMovedIdle, this, &RackView::moveMouse);
 }
 void RackView::updateSize()
 {
@@ -651,13 +653,15 @@ void RackView::hoverIn(QGraphicsItem *item)
     AtomRegister areg(item->data(DATA_INDEX_REGISTER_NAME).toString());
     RegisterLabel label = patch->registerLabel(areg);
     if (label.description != "")
-        Tooltip::tooltip(label.description);
+        currentTooltip = label.description;
 }
 void RackView::hoverOut(QGraphicsItem *item)
 {
     if (!item->data(DATA_INDEX_REGISTER_NAME).isValid())
         return;
     registerMarker->setVisible(false);
+    currentTooltip = "";
+    Tooltip::clearTooltip();
 }
 void RackView::dragItem(QGraphicsItem *startItem, QGraphicsItem *item, QPoint endPos)
 {
@@ -846,4 +850,9 @@ void RackView::editLabelling(QString moduleType, int controllerIndex, unsigned g
         patch->commit(tr("editing labelling of '%1'").arg(moduleType));
         emit patchModified();
     }
+}
+void RackView::moveMouse()
+{
+    if (currentTooltip != "")
+        Tooltip::tooltip(currentTooltip);
 }

@@ -46,6 +46,8 @@ private:
     void startDragging();
     void stopDragging(QMouseEvent *event);
     void drag(QMouseEvent *event = 0);
+    void moveIdle(QMouseEvent *event);
+
 
 private slots:
     void pressTimeout();
@@ -66,6 +68,7 @@ signals:
     void itemDraggingStopped(QGraphicsItem *startItem, QGraphicsItem *item, QPoint pos);
     void backgroundDraggingStopped(QPoint startPos, QPoint pos);
     void draggingAborted();
+    void mouseMovedIdle();
 };
 
 #endif // MOUSEDRAGGER_H

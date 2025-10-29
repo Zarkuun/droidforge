@@ -94,6 +94,7 @@ void MouseDragger::mouseMove(QMouseEvent *event)
         drag(event);
 
     case IDLE:
+        moveIdle(event);
         break;
     }
 }
@@ -193,6 +194,10 @@ void MouseDragger::drag(QMouseEvent *event)
         else
             emit itemDragged(dragStartItem, 0, pos);
     }
+}
+void MouseDragger::moveIdle(QMouseEvent *event)
+{
+    emit mouseMovedIdle();
 }
 void MouseDragger::stopDragging(QMouseEvent *event)
 {

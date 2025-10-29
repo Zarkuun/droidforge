@@ -4,9 +4,9 @@
 #include "tooltip.h"
 #include "tuning.h"
 
-QList<Tooltip*> Tooltip::activeTooltips;
+Tooltip *activeTooltip = 0;
 
-Tooltip::Tooltip(const QString &text, int durationMs)
+Tooltip::Tooltip(const QString &text)
     : QLabel(text)
 {
     setWindowFlags(Qt::ToolTip);
@@ -20,28 +20,44 @@ Tooltip::Tooltip(const QString &text, int durationMs)
         font-size: 12px;
     }
     )");
-    move(QCursor::pos() + QPoint(0, 20));
+    update();
     show();
 
-    // Vorherige Tooltips ausblenden
-    for (Tooltip* t : activeTooltips)
-    {
-        t->hide();
-        t->deleteLater();
-    }
-    activeTooltips.clear();
-
-    activeTooltips.append(this);
-
-    // Timer, um Tooltip nach durationMs zu verstecken
-    QTimer::singleShot(durationMs, this, [this]() {
-        hide();
-        deleteLater();
-        activeTooltips.removeAll(this);
-    });
 }
+void Tooltip::update()
+{
+    if (timer)
+        timer->stop();
 
+    move(QCursor::pos() + QPoint(0, 20));
+    // Timer, um Tooltip nach durationMs zu verstecken
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
+    connect(timer, &QTimer::timeout, this, [this]() {
+        hide();
+    });
+    timer->start(TOOLTIP_LINGER_TIME_MS);
+}
+bool Tooltip::hasText(const QString &t) const
+{
+    return text() == t;
+}
 void Tooltip::tooltip(const QString &text)
 {
-    new Tooltip(text, TOOLTIP_LINGER_TIME_MS);
+    if (activeTooltip != 0) {
+        if (activeTooltip->hasText(text)) {
+            activeTooltip->update();
+            return;
+        }
+        clearTooltip();
+    }
+    activeTooltip = new Tooltip(text);
+}
+void Tooltip::clearTooltip()
+{
+    if (activeTooltip != 0) {
+        activeTooltip->hide();
+        activeTooltip->deleteLater();
+        activeTooltip = 0;
+    }
 }
