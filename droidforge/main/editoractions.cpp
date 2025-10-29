@@ -42,6 +42,7 @@ void EditorActions::updateIcons()
     actions[ACTION_TOOLBAR_ADD_CONTROLLER]->setIcon(ICON("add_controller"));
     actions[ACTION_TOOLBAR_UPLOAD_TO_DROID]->setIcon(ICON("upload_to_droid"));
     actions[ACTION_TOOLBAR_SAVE_TO_SD]->setIcon(ICON("save_to_sd"));
+    actions[ACTION_TOOLBAR_EJECT_SD]->setIcon(ICON("eject_sd"));
 }
 void EditorActions::createActions()
 {
