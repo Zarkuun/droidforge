@@ -1664,7 +1664,12 @@ void PatchSectionView::instantCopyFrom(const CursorPosition &from)
 }
 void PatchSectionView::instantCableFrom(const CursorPosition &from)
 {
+    // "from" is the cell there user has just cliked into
     if (from.row < 0 || from.column <= 0) // not on an atom
+        return;
+
+    auto pos = section()->cursorPosition();
+    if (pos.row < 0 || pos.column <= 0) // not on an atom
         return;
 
     const Atom *atom = patch->currentAtom();
@@ -1680,7 +1685,6 @@ void PatchSectionView::instantCableFrom(const CursorPosition &from)
 
     AtomCable cable(cableName);
 
-    auto pos = section()->cursorPosition();
 
     // Add the cable both to from and to me. If from is empty,
     // the direction will be reversed.
