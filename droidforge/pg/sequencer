@@ -306,6 +306,17 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
                         ( "off",  "disable MIDI" ),
                     ]
                 },
+                {
+                    "name": "midioutclk",
+                    "title" : "Send start/stop/clock to MIDI",
+                    "enum" : [
+                        ( "trs1", "to port TRS 1" ),
+                        ( "trs2", "to port TRS 2 (only MASTER18)" ),
+                        ( "usb",  "to USB" ),
+                        ( "all",  "to all ports" ),
+                        ( "off",  "disable MIDI" ),
+                    ]
+                },
             ]
         },
         {
@@ -517,7 +528,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
-            "midiinclk" : "all"    , "midiinscale" : "trs1",
+            "midiinclk" : "all"    , "midiinscale" : "trs1", "midioutclk" : "off",
             "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : False   , "pss"      : False   ,
@@ -541,7 +552,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "v"     ,
-            "midiinclk" : "all"    , "midiinscale" : "trs1",
+            "midiinclk" : "all"    , "midiinscale" : "trs1", "midioutclk" : "off",
             "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : False   , "pss"      : False   ,
@@ -565,7 +576,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"     : "cvgate"  , "t7out"    : "cvgate" , "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"    : 2         , "t3chan"   : 3        , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"    : 6         , "t7chan"   : 7        , "t8chan"   : 8       , "velo"     : "off"   ,
-            "midiinclk" : "off"    , "midiinscale" : "off",
+            "midiinclk" : "off"    , "midiinscale" : "off", "midioutclk" : "off",
             "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch" : False     , "randgate" : False    , "skiprep"  : False   , "gl"       : False   ,
             "ratchets"  : False     , "range"    : False    , "par"      : False   , "pss"      : False   ,
@@ -589,7 +600,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
             "t2chan"   : 2         , "t3chan"   : 3       , "t4chan"   : 4       , "t5chan"   : 5       ,
             "t6chan"   : 6         , "t7chan"   : 7       , "t8chan"   : 8       , "velo"     : "g"     ,
-            "midiinclk" : "all"    , "midiinscale" : "trs1",
+            "midiinclk" : "all"    , "midiinscale" : "trs1", "midioutclk" : "trs1",
             "velomin"  : 1000      , "velomax"  : 10000   ,
             "randpitch": True      , "randgate" : True    , "skiprep"  : True    , "gl"       : True    ,
             "ratchets" : True      , "range"    : True    , "par"      : True    , "pss"      : False   ,
@@ -1857,19 +1868,36 @@ def section_display_events():
 
 
 def section_midiout():
-    if not have_midi_tracks():
-        return ""
+    patch = ""
 
-    elif not have_midi():
+    if arguments["midioutclk"] != "off":
+        for port in [ "usb", "trs1", "trs2" ]:
+            if port == "trs2" and arguments["m"] != "master18":
+                continue
+
+            if port == "usb":
+                portarg = ( "usb", 1 )
+            elif port == "trs1":
+                portarg = ( "trs", 1 )
+            else:
+                portarg = ( "trs", 2 )
+            if arguments["midioutclk"] in [ port, "all" ]:
+                patch += circuit("midiout", [
+                    portarg,
+                    ( "running", "_RUNNING" ),
+                    ( "clock", "_CLOCK" ),
+                ], "Send MIDI clock and running state to MIDI port %s" % port)
+
+    for track in range(1, arguments["tracks"] + 1):
+        if track_is_midi(track):
+            patch += track_midi_output(track)
+
+    if patch != "" and not have_midi():
         bail_out("If you set one or more track to MIDI output, "
                  "you need to select MASTER18 or MASTER + X7. "
                  "The plain MASTER does not have any MIDI output. ")
 
-    patch = section_header("MIDI Output")
-    for track in range(1, arguments["tracks"] + 1):
-        if track_is_midi(track):
-            patch += track_midi_output(track)
-    return patch
+    return section_header("MIDI Output") + patch
 
 def track_midi_output(track):
     out = arguments["t%dout" % track]
@@ -3537,6 +3565,7 @@ def clock_division_fader(what, track, select, fader, color, divisions):
 
 def section_cv_outputs():
     patch = ""
+
     if arguments["clockout"]:
         patch += circuit("copy", [
             ( "input", "_CLOCK" ),
@@ -3567,6 +3596,8 @@ def section_cv_outputs():
             ( "output",  gate_outputs["reset"] ),
         ], "Output the reset signal at " + gate_outputs["reset"])
 
+    if patch:
+        patch = section_header("Analog clock output") + patch
     return patch
 
 def track_selected(track):
