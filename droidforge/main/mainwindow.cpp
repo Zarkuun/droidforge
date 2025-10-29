@@ -311,6 +311,7 @@ void MainWindow::createFileMenu()
     ADD_ACTION(ACTION_JUMP_TO_NEXT_PROBLEM, fileMenu);
     ADD_ACTION(ACTION_UPLOAD_TO_DROID, fileMenu);
     ADD_ACTION(ACTION_SAVE_TO_SD, fileMenu);
+    ADD_ACTION(ACTION_EJECT_SD, fileMenu);
     ADD_ACTION(ACTION_UPGRADE_MASTER_FIRMWARE, fileMenu);
     ADD_ACTION(ACTION_CLEAR_SETTINGS, fileMenu);
     fileMenu->addMenu(patchOperator.statusDumpsMenu());
@@ -565,6 +566,7 @@ void MainWindow::createToolbar()
     ADD_ACTION(ACTION_TOOLBAR_PROBLEMS, toolbar);
     ADD_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, toolbar);
     ADD_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, toolbar);
+    ADD_ACTION(ACTION_TOOLBAR_EJECT_SD, toolbar);
 }
 void MainWindow::saveSplitPosition()
 {

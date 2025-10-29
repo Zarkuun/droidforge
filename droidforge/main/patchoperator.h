@@ -77,6 +77,7 @@ private slots:
     void abortAllActions();
     void upload();
     void saveToSD();
+    void ejectSD();
     void upgradeMasterFirmware();
     void loadStatusDumps();
     void newPatch();

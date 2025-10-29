@@ -376,5 +376,7 @@
         <file>pg/minimal</file>
         <file>pg/pg.py</file>
         <file>pg/sequencer</file>
+        <file>images/icons/dark/eject_sd.png</file>
+        <file>images/icons/light/eject_sd.png</file>
     </qresource>
 </RCC>

@@ -122,6 +122,8 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_TOOLBAR_UPLOAD_TO_DROID, &PatchOperator::upload);
     CONNECT_ACTION(ACTION_SAVE_TO_SD, &PatchOperator::saveToSD);
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE_TO_SD, &PatchOperator::saveToSD);
+    CONNECT_ACTION(ACTION_EJECT_SD, &PatchOperator::ejectSD);
+    CONNECT_ACTION(ACTION_TOOLBAR_EJECT_SD, &PatchOperator::ejectSD);
     CONNECT_ACTION(ACTION_UPGRADE_MASTER_FIRMWARE, &PatchOperator::upgradeMasterFirmware);
     CONNECT_ACTION(ACTION_NEW, &PatchOperator::newPatch);
     CONNECT_ACTION(ACTION_NEW_WITH_SAME_RACK, &PatchOperator::newPatchWithSameRack);
@@ -474,7 +476,11 @@ void PatchOperator::saveToSD()
                          arg(the_firmware->version()));
     }
 }
-
+void PatchOperator::ejectSD()
+{
+    QString dirPath = sdCardDir();
+    ejectSDCard(dirPath);
+}
 void PatchOperator::ejectSDCard(QString dirPath)
 {
     QDir dir(dirPath);

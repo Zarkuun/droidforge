@@ -100,6 +100,11 @@ void EditorActions::createActions()
     actions[ACTION_SAVE_TO_SD]->setShortcut(QKeySequence(tr("F10")));
     actions[ACTION_TOOLBAR_SAVE_TO_SD] = new QAction(ICON("save_to_sd"), tr("Save to SD"), this);
 
+    actions[ACTION_EJECT_SD] = new QAction(tr("Eject microSD card"), this);
+    actions[ACTION_EJECT_SD]->setEnabled(false);
+    actions[ACTION_TOOLBAR_EJECT_SD] = new QAction(ICON("eject_sd"), tr("Eject SD"), this);
+    actions[ACTION_TOOLBAR_EJECT_SD]->setEnabled(false);
+
     actions[ACTION_UPGRADE_MASTER_FIRMWARE] = new QAction(tr("Upgrade firmware of master"), this);
 
     #if (defined Q_OS_MACOS || defined Q_OS_WIN)
@@ -606,6 +611,7 @@ void EditorActions::changeDroidState()
     updateUploadAction(ACTION_TOOLBAR_UPLOAD_TO_DROID);
     updateSaveToSDAction(ACTION_SAVE_TO_SD);
     updateSaveToSDAction(ACTION_TOOLBAR_SAVE_TO_SD);
+    updateEjectActions();
 }
 PatchOperator *EditorActions::theOperator()
 {
@@ -640,6 +646,11 @@ void EditorActions::updateSaveToSDAction(action_t action)
     }
     actions[action]->setEnabled(enabled);
     actions[action]->setToolTip(tooltip);
+}
+void EditorActions::updateEjectActions()
+{
+    actions[ACTION_EJECT_SD]->setEnabled(theOperator()->droidSDCardPresent());
+    actions[ACTION_TOOLBAR_EJECT_SD]->setEnabled(theOperator()->droidSDCardPresent());
 }
 void EditorActions::persistViewToggles()
 {
