@@ -376,7 +376,7 @@ void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)
 {
     int oldSection = patch->currentSectionIndex();
     bool wasFolded = patch->section(sectionIndex)->circuit(pos.circuitNr)->isFolded();
-    patch->setCursorTo(sectionIndex, pos); // unfolds if neccessary
+    patch->setCursorTo(sectionIndex, pos, true /* unfold if folded */);
 
     if (wasFolded)
         emit patchModified();
