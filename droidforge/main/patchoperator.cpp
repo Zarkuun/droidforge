@@ -28,6 +28,7 @@
 #include <QClipboard>
 #include <QStorageInfo>
 #include <QThread>
+#include <QSettings>
 
 // #include <CoreMIDI/MIDIServices.h>
 
@@ -594,6 +595,21 @@ bool PatchOperator::copyFile(QString src, QString dest)
         return false;
     }
 }
+
+QString PatchOperator::getOpenFilename()
+{
+    QSettings settings;
+    QString lastDir = settings.value("last_open_dir", PATCH_DIRECTORY_NAME).toString();
+
+    QString filePath = QFileDialog::getOpenFileName(
+                mainWindow, "", lastDir, "DROID patches (*.ini)");
+    if (!filePath.isEmpty()) {
+        QFileInfo fi(filePath);
+        settings.setValue("last_open_dir", fi.absolutePath());
+    }
+    return filePath;
+
+}
 void PatchOperator::createStatusDumpsMenu()
 {
      dumpsMenu = new QMenu(tr("Show status dump"));
@@ -996,9 +1012,7 @@ void PatchOperator::openFileFromExternal(const QString &filePath)
 }
 void PatchOperator::open()
 {
-    QString filePath = QFileDialog::getOpenFileName(
-                mainWindow, "", "", "DROID patches (*.ini)");
-
+    QString filePath = getOpenFilename();
     if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath, true))
         loadFile(filePath, FILE_MODE_LOAD);
 }
@@ -1009,8 +1023,7 @@ void PatchOperator::openRecentFile(const QString filePath)
 }
 void PatchOperator::openInNewWindow()
 {
-    QString filePath = QFileDialog::getOpenFileName(
-                mainWindow, "", "", "DROID patches (*.ini)");
+    QString filePath = getOpenFilename();
 
     if (!filePath.isEmpty() && !bringToFrontIfOpen(filePath, false)) {
         MainWindow *newWindow = new MainWindow(filePath);
@@ -1104,7 +1117,7 @@ void PatchOperator::openPatchGenerator(int index, PatchGenerator *gen)
 }
 void PatchOperator::integrate()
 {
-    QString filePath = QFileDialog::getOpenFileName(mainWindow);
+    QString filePath = getOpenFilename();
     if (!filePath.isEmpty())
         loadFile(filePath, FILE_MODE_INTEGRATE);
 }

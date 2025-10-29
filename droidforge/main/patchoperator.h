@@ -150,7 +150,7 @@ private:
     void ejectSDCard(QString dirPath);
     bool shipFirmware(QString sddir);
     bool copyFile(QString src, QString dest);
-
+    QString getOpenFilename();
 
 #ifdef Q_OS_WIN
     bool ejectSDWindows(const QString letter);
