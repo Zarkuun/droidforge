@@ -207,7 +207,7 @@ unsigned long prefixNumber(const QString &s)
 {
     // "13in6" -> 13
     int i=0;
-    while (s[i].isDigit())
+    while (i < s.length() && s[i].isDigit())
         i++;
     QString n = s.left(i);
     return n.toULong();
