@@ -31,8 +31,8 @@ PatchProblemIndicator::PatchProblemIndicator(MainWindow *mainWindow, PatchEditEn
 
     // Events that we are interested in
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchProblemIndicator::updateStatus);
+    connect(mainWindow->theHub(), &UpdateHub::problemsUpdated, this, &PatchProblemIndicator::updateStatus);
 }
-
 void PatchProblemIndicator::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -50,7 +50,11 @@ void PatchProblemIndicator::paintEvent(QPaintEvent *)
 
     float textLeft = warnRect.right() + STANDARD_SPACING;
     QRectF textRect(textLeft, 0, width() - textLeft, height());
-    QString text = tr("%1 problems").arg(numProblems);
+    QString text;
+    if (numProblems == 1)
+        text = tr("1 problem");
+    else
+        text = tr("%1 problems").arg(numProblems);
     painter.setPen(COLOR(COLOR_STATUSBAR_TEXT));
     painter.drawText(textRect, Qt::AlignVCenter, text);
 }
