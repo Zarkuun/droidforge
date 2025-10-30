@@ -1665,7 +1665,7 @@ def section_global_buttons():
     ], "Combine all source of global reset")
 
     # Start/stop
-    if arguments["runningin"] and arguments["midiinrunning"]:
+    if arguments["runningin"] and arguments["midiinclk"] != "off":
         bail_out("You have selected to get the running state both from a gate input and from MIDI. "
                  "This is not possible. Please decide which one of both to use.")
 
