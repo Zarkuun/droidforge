@@ -1229,7 +1229,7 @@ void PatchSectionView::followRegister()
             waitForNext = true;
         else if (waitForNext
                  && atom->isRegister()
-                 && ((const AtomRegister *)atom)->isRelatedTo(*areg)) {
+                 && ((const AtomRegister *)atom)->isRelatedTo(*areg, patch)) {
             found = true;
             break;
         }
@@ -1242,7 +1242,7 @@ void PatchSectionView::followRegister()
         while (*it && *it != currentAtom) {
             Atom *atom = *it;
             if (atom->isRegister()
-                 && ((const AtomRegister *)atom)->isRelatedTo(*areg)) {
+                 && ((const AtomRegister *)atom)->isRelatedTo(*areg, patch)) {
                 found = true;
                 break;
             }

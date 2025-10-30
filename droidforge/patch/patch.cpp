@@ -673,7 +673,7 @@ bool Patch::controlUsed(AtomRegister reg)
     for (auto &atom: *this) {
         if (atom->isRegister()) {
             AtomRegister *areg = (AtomRegister *)atom;
-            if (areg->isRelatedTo(reg))
+            if (areg->isRelatedTo(reg, this))
                 return true;
         }
     }

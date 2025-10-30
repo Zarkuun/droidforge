@@ -1,5 +1,6 @@
 #include "atomregister.h"
 #include "patch.h"
+#include "globals.h"
 
 #include <QStringList>
 #include <QDebug>
@@ -120,19 +121,41 @@ AtomRegister AtomRegister::relatedRegisterWithLabel() const
     else
         return *this;
 }
-bool AtomRegister::isRelatedTo(const AtomRegister &other) const
+bool AtomRegister::isRelatedTo(const AtomRegister &other, const Patch *patch) const
 {
     if (controller != other.controller)
         return false;
-    else if (number != other.number)
+
+    QString controllerName = patch->controller(controller - 1);
+
+    // There is a special case on the DB8E: The Encoder is Ex.1, but the button and LED
+    // related to that encoder is Bx.9 and Lx.9. This is the only case where the
+    // register number is different for related registers.
+    if (controllerName == "db8e") {
+        if ((registerType == REGISTER_BUTTON || registerType == REGISTER_LED)
+            && number == 9
+            && other.registerType == REGISTER_ENCODER
+            && other.number == 1)
+        return true;
+
+        if (registerType == REGISTER_ENCODER
+            && number == 1
+            && (other.registerType == REGISTER_BUTTON || other.registerType == REGISTER_LED)
+            && other.number == 9)
+        return true;
+    }
+
+    if (number != other.number)
         return false;
-    else if (g8 != other.g8)
+
+    if (g8 != other.g8)
         return false;
-    else if (registerType == other.registerType) // identical
+
+    if (registerType == other.registerType) // identical both in type and number
         return true;
 
     // Buttons and their LEDs (and in the M4 also the RGB registers)
-    else if ((registerType == REGISTER_BUTTON
+    if ((registerType == REGISTER_BUTTON
              || registerType == REGISTER_LED
              || registerType == REGISTER_RGB_LED) &&
             (other.registerType == REGISTER_BUTTON
@@ -140,23 +163,28 @@ bool AtomRegister::isRelatedTo(const AtomRegister &other) const
                   || other.registerType == REGISTER_RGB_LED) )
         return true;
 
-    // Buttons and LEDs are related to their encoders in E$
-    else if ((registerType == REGISTER_BUTTON || registerType == REGISTER_LED)
-             && other.registerType == REGISTER_ENCODER)
-        return true;
-    else if (registerType == REGISTER_ENCODER
-             && (other.registerType == REGISTER_BUTTON || other.registerType == REGISTER_LED))
-        return true;
+    // Buttons and LEDs are related to their encoders of the E4
+
+
+    if (controllerName == "e4") // Don't mess up for the DB8E (see above)
+    {
+        if ((registerType == REGISTER_BUTTON || registerType == REGISTER_LED)
+            && other.registerType == REGISTER_ENCODER)
+            return true;
+        if (registerType == REGISTER_ENCODER
+            && (other.registerType == REGISTER_BUTTON || other.registerType == REGISTER_LED))
+            return true;
+    }
 
 
     // Inputs of the master and their normalizations
-    else if (registerType == REGISTER_INPUT && other.registerType == REGISTER_NORMALIZE)
-        return true;
-    else if (registerType == REGISTER_NORMALIZE && other.registerType == REGISTER_INPUT)
+    if (registerType == REGISTER_INPUT && other.registerType == REGISTER_NORMALIZE)
         return true;
 
-    else
-        return false;
+    if (registerType == REGISTER_NORMALIZE && other.registerType == REGISTER_INPUT)
+        return true;
+
+    return false;
 }
 unsigned AtomRegister::neededG8Number() const
 {
