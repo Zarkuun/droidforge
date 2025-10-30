@@ -191,10 +191,10 @@ void EditorActions::createActions()
     actions[ACTION_MOVE_CIRCUIT_DOWN]->setShortcut(QKeySequence(tr("Shift+Ctrl+Down")));
 
     actions[ACTION_DISABLE] = new QAction(tr("&Disable"), this);
-    actions[ACTION_DISABLE]->setShortcut(QKeySequence(tr("#")));
+    actions[ACTION_DISABLE]->setShortcut(QKeySequence(tr("Shift+3")));
 
     actions[ACTION_ENABLE] = new QAction(tr("&Enable"), this);
-    actions[ACTION_ENABLE]->setShortcut(QKeySequence(tr("#")));
+    actions[ACTION_ENABLE]->setShortcut(QKeySequence(tr("Shift+3")));
 
     actions[ACTION_SORT_JACKS] = new QAction(tr("&Sort parameters"), this);
     actions[ACTION_SORT_JACKS]->setShortcut(QKeySequence(tr("Alt+Ctrl+S")));
