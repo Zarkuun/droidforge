@@ -860,6 +860,9 @@ void PatchSectionView::pasteJacksFromClipboard()
                              tr("You have pasted the parameter '%1' into a circuit\n"
                                 "that already has this parameter. This previous parameter\n"
                                 "has automatically been removed in order to avoid duplicates.").arg(jaReparsed->jackName()));
+            // The index can now point to a non-existing row. So we need to fix it.
+            if (index >= circuit->numJackAssignments())
+                index = circuit->numJackAssignments() - 1;
         }
         circuit->insertJackAssignment(jaReparsed, index);
         if (!circuit->isFolded())
