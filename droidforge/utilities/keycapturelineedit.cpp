@@ -24,6 +24,10 @@ void KeyCaptureLineEdit::keyPressEvent(QKeyEvent *event)
                 emit keyPressed(event->key());
                 return;
 
+            case SPACE_TO_SPACE: {
+                QLineEdit::insert(" ");
+                return;
+            }
             case SPACE_TO_UNDERSCORE: {
                 QLineEdit::insert("_");
                 return;

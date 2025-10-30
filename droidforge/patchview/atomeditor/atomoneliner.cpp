@@ -112,6 +112,8 @@ void AtomOneliner::textChanged(QString text)
 {
     if (text.startsWith('_')) // patch cable
         lineEdit->setSpaceHandling(SPACE_TO_UNDERSCORE);
+    else if (text.startsWith('"')) // text
+        lineEdit->setSpaceHandling(SPACE_TO_SPACE);
     else
         lineEdit->setSpaceHandling(SPACE_IGNORED);
 }

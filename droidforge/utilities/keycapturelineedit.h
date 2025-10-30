@@ -8,6 +8,7 @@ typedef enum {
     SPACE_IGNORED,
     SPACE_BYPASSED,
     SPACE_TO_UNDERSCORE,
+    SPACE_TO_SPACE,
 } spacehanlding_t;
 
 class KeyCaptureLineEdit : public QLineEdit
