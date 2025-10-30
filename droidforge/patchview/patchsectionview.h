@@ -108,7 +108,6 @@ private:
     void pasteCommentFromClipboard();
     void pasteJacksFromClipboard();
     void pasteAtomsFromClipboard();
-    void pasteFromClipboard();
     void pasteCircuitsFromClipboard();
     void clickOnIconMarker(const IconMarker *info);
     void editJackCommentAt(const CursorPosition &pos);

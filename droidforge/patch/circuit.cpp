@@ -134,7 +134,9 @@ bool Circuit::removeExistingJack(const QString name)
 {
     bool oneRemoved = false;
     for (qsizetype i=0; i<jackAssignments.count(); i++) {
-        if (jackAssignments[i]->jackName() == name) {
+        auto ja = jackAssignments[i];
+        if (ja->jackName() == name && !ja->isDisabled())
+        {
             deleteJackAssignment(i);
             i--;
             oneRemoved = true;
