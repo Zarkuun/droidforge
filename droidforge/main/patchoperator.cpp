@@ -1159,10 +1159,15 @@ void PatchOperator::saveAs()
 {
     QString oldBackupPath = backupFilePath(patch->getFilePath());
 
+    QString dir = patch->getFilePath();
+    if (dir.isEmpty()) {
+        QSettings settings;
+        dir = settings.value("last_open_dir", PATCH_DIRECTORY_NAME).toString();
+    }
     QString newFilePath = QFileDialog::getSaveFileName(
                 mainWindow,
                 tr("Save patch to new file"),
-                patch->getFilePath(),
+                dir,
                 tr("DROID patch files (*.ini)"));
     if (!newFilePath.isEmpty()) {
         MainWindow *otherWindow = the_windowlist->windowWithFile(newFilePath);
