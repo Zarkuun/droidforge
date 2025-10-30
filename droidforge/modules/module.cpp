@@ -17,6 +17,7 @@ Module::Module(MainWindow *mainWindow, const QString &name)
     , paintedRegisterHilite{{-1}}
     , registerLabels(0)
     , pixelHeight(400)
+    , renderedPixelHeight(0)
 {
 }
 Module::~Module()
@@ -72,13 +73,15 @@ QRectF Module::moduleRect() const
 }
 void Module::paint(QPainter *hotPainter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    if (registerHilitesDirty()) {
+    if (registerHilitesDirty() || renderedPixelHeight != pixelHeight)
+    {
         QRect r = moduleRect().toRect();
         renderBuffer = QPixmap(r.size());
         renderBuffer.fill(Qt::transparent);
         QPainter painter(&renderBuffer);
         paintUnbuffered(painter);
         setRegisterHilitesClean();
+        renderedPixelHeight = pixelHeight;
     }
 
     hotPainter->drawPixmap(0, 0, renderBuffer);
