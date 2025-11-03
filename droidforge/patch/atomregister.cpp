@@ -126,7 +126,11 @@ bool AtomRegister::isRelatedTo(const AtomRegister &other, const Patch *patch) co
     if (controller != other.controller)
         return false;
 
-    QString controllerName = patch->controller(controller - 1);
+    QString controllerName;
+    if (controller >= 1)
+        controllerName = patch->controller(controller - 1);
+    else
+        controllerName = ""; // MASTER, G8, etc.
 
     // There is a special case on the DB8E: The Encoder is Ex.1, but the button and LED
     // related to that encoder is Bx.9 and Lx.9. This is the only case where the
