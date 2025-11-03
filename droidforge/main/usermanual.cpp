@@ -70,11 +70,13 @@ void UserManual::showCircuit(const QString &circuit)
 {
     jumpToPage(the_firmware->circuitManualPage(circuit));
     show();
+    raise();
 }
 void UserManual::showTopic(const QString &pageref)
 {
     jumpToPage(the_firmware->manualPage(pageref));
     show();
+    raise();
 }
 bool UserManual::hasTopic(const QString &pageref)
 {
