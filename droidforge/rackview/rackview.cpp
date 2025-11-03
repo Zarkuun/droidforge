@@ -9,6 +9,7 @@
 #include "updatehub.h"
 #include "tooltip.h"
 #include "globals.h"
+#include "usermanual.h"
 
 #include <QGraphicsItem>
 #include <QDesktopServices>
@@ -206,6 +207,15 @@ void RackView::popupModuleContextMenu(int controllerIndex, unsigned g8Number, QS
 
     menu->addSeparator();
 
+    QString manualText;
+    if (controllerIndex >= 0)
+        manualText = tr("User manual for the %1 controller").arg(moduleType.toUpper());
+    else if (moduleType == "g8" || moduleType == "x7")
+        manualText = tr("User manual for the %1 expander").arg(moduleType.toUpper());
+    else
+        manualText = tr("User manual for the %1").arg(moduleType.toUpper());
+
+    menu->addAction(manualText, this, [this,moduleType] () {this->showUserManual(moduleType); });
     menu->addAction(tr("Lookup this module in the shop"), this,
                     [this,moduleType] () {this->purchaseController(moduleType); });
     menu->setAttribute(Qt::WA_DeleteOnClose);
@@ -325,6 +335,11 @@ void RackView::updateDragIndicator(QPointF startPos, QPointF endPos, bool hits, 
 void RackView::purchaseController(QString name)
 {
     QDesktopServices::openUrl(QUrl(SHOP_PRODUCTS_URL + name));
+}
+void RackView::showUserManual(QString controllerName)
+{
+    shout << "User manual von " << controllerName;
+    the_manual->showTopic(controllerName);
 }
 void RackView::findRegister(AtomRegister reg)
 {

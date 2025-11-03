@@ -99,6 +99,7 @@ private slots:
     void duplicateController(int controller, bool withLabels);
     void askRemoveController(int controller);
     void purchaseController(QString name);
+    void showUserManual(QString controllerName);
     void findRegister(AtomRegister reg);
     void swapControllers(int oldindex, int newindex);
     void remapControls(QString moduleType, int controllerIndex);
