@@ -1099,7 +1099,7 @@ def section_midi_input():
 
     # Part 2: root and scale
     if arguments["midiinscale"] != "off":
-        patch += circuit("midiin", 
+        patch += circuit("midiin",
             midi_port_arguments(arguments["midiinscale"]) + [
                 ( "pitch1", "_MIDI_IN_ROOT_PITCH" ),
                 ( "ccnumber1", 1 ),
@@ -1252,12 +1252,14 @@ def add_internal_clock():
         ( "output", "_CLOCK_BPM" ),
     ], "Set the BPM to zero while the clock is muted.")
 
-    patch += circuit("lfo", [
+    args = [
         ( "hz", "_CLOCK_BPM / 15" ),
         ( "pulsewidth", 0.1 ),
-        ( "square", "_INT_CLOCK" ),
-        ( "sync", "_RUNNING" ),
-    ], "The actual clock, use a very short pulse so we have essentially just triggers" )
+        ( "square", "_INT_CLOCK" ) ]
+    if have_running():
+        args.append(( "sync", "_RUNNING" ))
+    patch += circuit("lfo", args,
+        "The actual clock, use a very short pulse so we have essentially just triggers" )
 
     clock_sources.append(("_INT_CLOCK", "_INT_CLOCK_UNMUTED" ))
     return patch
@@ -1723,7 +1725,7 @@ def section_global_buttons():
     # If there is an external input for running, but we don't have
     # a start stop button, we need a different way to make that
     # signal work.
-    elif arguments["runningin"] or arguments["midiinrunning"]:
+    elif arguments["runningin"] or (arguments["midiinclk"] != "off"):
         patch += circuit("flipflop", [
             ( "set", "_EXT_RUNNING_STARTED" ),
             ( "reset", "_EXT_RUNNING_STOPPED" ),
@@ -3761,7 +3763,7 @@ def have_display():
     return "d" in arguments["cn"]
 
 def have_running():
-    return arguments["ssb"] or arguments["runningin"] or arguments["midiinrunning"]
+    return arguments["ssb"] or arguments["runningin"] or (arguments["midiinclk"] != "off")
 
 def clear_on_clear(track):
     if arguments["clear"]:
