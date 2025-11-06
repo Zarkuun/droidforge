@@ -401,7 +401,14 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
         },
         {
             "name" : "copy",
-            "title" : "Copy & paste of sequence bars (does not work between tracks)",
+            "title" : "Button for copy & paste",
+            "enum" : [
+                ( "off", "No copy button" ),
+                ( "copypaste", "Copy & paste sequence page" ),
+                ( "stepcopy", "Copy individual steps" ),
+                ( "doublerange", "Double the range with content" ),
+                ( "dual", "Copy individual step / Double the range" ),
+            ],
         },
         {
             "name" : "inv",
@@ -536,7 +543,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "pcdeven"  : False     , "pcdodd"   : False   , "presets"  : 3       , "intclk"   : True    ,
             "arp"      : True      , "ssb"      : True    , "tbr"      : True    , "act"      : True    ,
             "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
-            "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
+            "clear"    : True      , "copy"     : "dual"  , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
             "resetout" : False     , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
             "runningin" : False  , "defgate"  : "0",
@@ -560,7 +567,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "pcdeven"  : False     , "pcdodd"   : False   , "presets"  : 3       , "intclk"   : True    ,
             "arp"      : True      , "ssb"      : True    , "tbr"      : True    , "act"      : True    ,
             "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
-            "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
+            "clear"    : True      , "copy"     : "dual"   , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
             "resetout" : False     , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
             "runningin" : False    , "defgate"  : "0",
@@ -584,7 +591,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "pcdeven"   : False     , "pcdodd"   : False    , "intclk"   : True    , "arp"      : False   ,
             "presets"   : 0         , "ssb"      : False    , "tbr"      : False   , "act"      : False   ,
             "form"      : False     , "bq"       : False    , "rb"       : False   , "lucky"    : False   ,
-            "clear"     : True      , "copy"     : False    , "inv"      : False   , "sinflink" : "off"   ,
+            "clear"     : True      , "copy"     : "off"    , "inv"      : False   , "sinflink" : "off"   ,
             "clockin"   : False     , "resetin"  : False    , "clockout" : False   , "runclock" : False   ,
             "resetout"  : False     , "sos1"     : False    , "dualout"  : 0       , "divclock" : False   ,
             "runningin" : False     , "defgate"  : "1",
@@ -608,7 +615,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "pcdeven"  : False     , "pcdodd"   : False   , "presets"  : 3       , "intclk"   : True    ,
             "arp"      : True      , "ssb"      : True    , "tbr"      : True    , "act"      : True    ,
             "form"     : True      , "bq"       : True    , "rb"       : True    , "lucky"    : True    ,
-            "clear"    : True      , "copy"     : True    , "inv"      : True    , "sinflink" : "off"   ,
+            "clear"    : True      , "copy"     : "dual"  , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : True    , "runclock" : True    ,
             "resetout" : True      , "sos1"     : False   , "dualout"  : 0       , "divclock" : False   ,
             "runningin" : False   , "defgate"  : "0",
@@ -1401,7 +1408,7 @@ def allocate_track_buttons():
 		"CLR",
 		"Short press: reset play mode, with CTRL: clear track, long press factory reset")
 
-    if arguments["copy"]:
+    if arguments["copy"] != "off":
         track_buttons["copy"] = get_button(BUTTONPOS_COPY,
                 "COPY",
                 "Copy current page of current track. With CTRL: Paste")
@@ -1463,7 +1470,7 @@ def section_global_buttons():
         ], "Provide state of the control button in a patch cable.")
 
         # At various places we use _NO_CONTROL for conveniance.
-        if arguments["tracks"] > 1 or arguments["presets"] > 1 or arguments["copy"] or arguments["lucky"]:
+        if arguments["tracks"] > 1 or arguments["presets"] > 1 or arguments["copy"] == "copypaste" or arguments["lucky"]:
             patch += circuit("copy", [
                 ( "input", "1 - B%d.8" % notesel_position ),
                 ( "output", "_NO_CONTROL" ),
@@ -2299,8 +2306,8 @@ def track_section(track):
         patch += display_event("_T%d_RESET" % track, "Reset track %d" % track)
 
     # Copy & paste
-    if arguments["copy"]:
-        if num_pages() == 1:
+    if arguments["copy"] != "off":
+        if arguments["copy"] == "copypaste" and num_pages() == 1:
             bail_out("Copy & paste does not work nor make sense if you "
                      "have %d steps and %d faders. It only works if you "
                      "have more steps than faders and "
@@ -2310,7 +2317,8 @@ def track_section(track):
             ( "button", "B" + track_buttons["copy"] ),
             ( "states", 1 ),
             ( "output", "_T%d_COPY_BUTTON" % track ),
-        ], "Button for copying the current page of the current track" )
+        ], "Button for copy and paste" )
+
 
     # Form button
     if arguments["form"]:
@@ -2432,14 +2440,19 @@ def track_section(track):
     else:
         paging = []
 
-    if arguments["copy"]:
+    if arguments["copy"] == "copypaste":
         paging += [
             ( "copy", "_T%d_COPY_BUTTON * _NO_CONTROL" % track ),
             ( "paste", "_T%d_COPY_BUTTON * _CONTROL" % track ),
         ]
-
-        patch += display_event("_T%d_COPY_BUTTON * _NO_CONTROL" % track, "copied")
-        patch += display_event("_T%d_COPY_BUTTON * _CONTROL" % track, "pasted")
+    else:
+        if arguments["copy"] in [ "stepcopy", "dual" ]:
+            paging.append(( "stepcopy", "_T%d_COPY_BUTTON" % track ))
+        if arguments["copy"] in [ "doublerange", "dual" ]:
+            paging.append(( "doublerange", "_T%d_COPY_BUTTON" % track ))
+            if not arguments["range"]:
+                bail_out("The feature \"double the range\" does not work if you have "
+                         "not activated the step parameter \"Set range of steps to play\".") 
 
     gate = "_T%d_SEQUENCER_GATE" % track # here comes our gate
 
