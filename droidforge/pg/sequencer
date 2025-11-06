@@ -601,7 +601,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
         "name" : "dmmdm",
         "title" : "DMMDM's authentic live setup",
         "parameters" : {
-            "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "cn"       : "p"     , "dcon" : True,
+            "m"        : "master18", "c"        : "m4"    , "nc"       : "4"     , "cn"       : "d"     , "dcon" : True,
             "g8"       : 1         , "tracks"   : 4       , "steps"    : "32"    , "t1out"    : "cvgate",
             "t2out"    : "cvgate"  , "t3out"    : "cvgate", "t4out"    : "cvgate", "t5out"    : "cvgate",
             "t6out"    : "cvgate"  , "t7out"    : "cvgate", "t8out"    : "cvgate", "t1chan"   : 1       ,
@@ -2873,9 +2873,27 @@ def track_section(track):
     gate_jack = "_T%d_FINAL_GATE" % track
 
     # Start/Stop button needs to mute the gate because of the
-    # arpeggiator (it has not gate)
+    # arpeggiator (it has no gate)
     if have_running():
-        gate = gate + " * _RUNNING"
+        if arguments["arp"]:
+            patch += circuit("ifequal", [
+                ( "input1", "_T%d_ARP" % track ),
+                ( "input2", 0 ),
+                ( "ifequal", "_RUNNING + _COMPOSEMODE" ),
+                ( "else", "_RUNNING" ),
+                ( "output", "_RUNNING_OR_COMPOSE_%d" % track),
+            ], 
+            "If we are in compose mode and the arpeggiator is switched "
+            "off, the gate is output even if the sequencer is stopped.")
+        else:
+            patch += circuit("copy", [
+                ( "input", "_RUNNING + _COMPOSEMODE" ),
+                ( "output", "_RUNNING_OR_COMPOSE_%d" % track),
+            ], 
+            "If we are in compose mode the gate is output even if the sequencer is stopped.")
+        gate = gate + " * _RUNNING_OR_COMPOSE_%d" % track
+
+
 
     patch += circuit("copy", [
         ( "input", gate ),
