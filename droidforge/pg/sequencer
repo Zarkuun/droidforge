@@ -292,7 +292,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
                         ( "trs1", "from port TRS 1" ),
                         ( "trs2", "from port TRS 2 (only MASTER18)" ),
                         ( "usb",  "from USB" ),
-                        ( "all",  "from all ports" ),
+                        ( "all",  "auto detection on TRS and USB" ),
                         ( "off",  "disable MIDI" ),
                     ]
                 },
@@ -1251,7 +1251,7 @@ def add_internal_clock():
             ( "header", '"CLOCK SPEED"' ),
             ( "fontsize", 3 ),
             ( "threshold", 0.1 ),
-            ( "precision", 1 ),
+            ( "numbermode", 1 ),
         ], "Display current BPM setting")
 
     patch += circuit("copy", [
