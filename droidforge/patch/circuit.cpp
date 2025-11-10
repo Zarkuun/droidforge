@@ -304,7 +304,7 @@ QList<PatchProblem *> Circuit::collectProblems(const Patch *patch) const
         }
         else { // check other errors only if not duplicate (avoid double errors)
             usedJacks.insert(name);
-            for (auto problem: ja->collectProblems(patch)) {
+            for (auto& problem: ja->collectProblems(patch)) {
                 problem->setRow(row);
                 allProblems.append(problem);
             }
