@@ -26,8 +26,8 @@ public:
     unsigned getController() const { return controller; }
     unsigned getG8Number() const { return g8; }
     unsigned getNumber() const { return number; }
+    void setNumber(uint8_t n) { number = n; }
     bool isRelatedTo(const AtomRegister &other, const Patch *patch) const;
-
     void setRegisterType(register_type_t t) { registerType = t; };
     register_type_t getRegisterType() const { return registerType; };
     void swapControllerNumbers(int fromController, int toController);

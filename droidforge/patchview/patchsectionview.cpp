@@ -1468,6 +1468,8 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
 
     int column = qMax(1, cursor.column); // allow cursor on jack name
 
+    QString controller = patch->controller(ar.getController() - 1);
+
     // This is a bit of a hack, but I'm not sure how to do
     // this in a much more clean way. If the user e.g. clicks
     // on I5 but is just editing on output jack, he rather
@@ -1480,10 +1482,13 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
             ar.setRegisterType(REGISTER_NORMALIZE);
         else if (ar.getRegisterType() == REGISTER_BUTTON)
             ar.setRegisterType(REGISTER_LED);
-        else if (ar.getRegisterType() == REGISTER_ENCODER)
+        else if (ar.getRegisterType() == REGISTER_ENCODER) {
             ar.setRegisterType(REGISTER_LED);
+            if (controller == "db8e")
+                ar.setNumber(9); // LED in encoder is L1.9, not L1.1 (from E1.1)
+        }
         else if (ar.getRegisterType() == REGISTER_POT &&
-                 patch->controller(ar.getController() - 1) == "p8s8")
+                 controller == "p8s8")
             ar.setRegisterType(REGISTER_LED);
     }
 
@@ -1520,6 +1525,8 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
                      "Clicking an encoder for a second time selects the push button\n"
                      "in the encoder rather than the encoder itself.").arg(ar.toString()).arg(ja->jackName()));
                 ar.setRegisterType(REGISTER_BUTTON);
+                if (controller == "db8e" and ar.getNumber() == 1)
+                    ar.setNumber(9);
             }
 
             // LEDs in P8S8

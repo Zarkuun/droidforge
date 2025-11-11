@@ -1,6 +1,5 @@
 #include "atomregister.h"
 #include "patch.h"
-#include "globals.h"
 
 #include <QStringList>
 #include <QDebug>
