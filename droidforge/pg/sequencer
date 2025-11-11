@@ -430,8 +430,10 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "name" : "lucky",
             "title" : "Lucky: Randomly change the faders (with Ctrl: buttons)",
         },
-
-
+        {
+            "name" : "tuner",
+            "title" : "VCO tuner on input I1 (needs MASTER18 and DB8E)",
+        },
         ]},
         {
             "title" : "Performance menu",
@@ -546,7 +548,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "clear"    : True      , "copy"     : "dual"  , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
             "resetout" : False     , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
-            "runningin" : False  , "defgate"  : "0",
+            "runningin" : False  , "defgate"  : "0", "tuner" : False,
         }
     },
     {
@@ -570,7 +572,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "clear"    : True      , "copy"     : "dual"   , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : False   , "runclock" : False   ,
             "resetout" : False     , "sos1"     : False   , "dualout"  : 4       , "divclock" : False   ,
-            "runningin" : False    , "defgate"  : "0",
+            "runningin" : False    , "defgate"  : "0", "tuner" : False,
         }
     },
     {
@@ -594,7 +596,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "clear"     : True      , "copy"     : "off"    , "inv"      : False   , "sinflink" : "off"   ,
             "clockin"   : False     , "resetin"  : False    , "clockout" : False   , "runclock" : False   ,
             "resetout"  : False     , "sos1"     : False    , "dualout"  : 0       , "divclock" : False   ,
-            "runningin" : False     , "defgate"  : "1",
+            "runningin" : False     , "defgate"  : "1", "tuner" : False,
         }
     },
     {
@@ -618,7 +620,7 @@ The sequencer supports MIDI input clock and MIDI note output if you either selec
             "clear"    : True      , "copy"     : "dual"  , "inv"      : True    , "sinflink" : "off"   ,
             "clockin"  : True      , "resetin"  : True    , "clockout" : True    , "runclock" : True    ,
             "resetout" : True      , "sos1"     : False   , "dualout"  : 0       , "divclock" : False   ,
-            "runningin" : False   , "defgate"  : "0",
+            "runningin" : False   , "defgate"  : "0", "tuner" : False,
         }
     },
     ],
@@ -687,6 +689,7 @@ def create_patch():
         patch_title() + \
         patch_labels() + \
         controllers + \
+        section_tuner() + \
         section_tonality() + \
         sections
 
@@ -798,6 +801,15 @@ def display_event(cable, message):
     else:
         return ""
 
+
+
+def section_tuner():
+    if arguments["tuner"]:
+        patch = section_header("VCO Tuner")
+        patch += circuit("vcotuner", [],
+            "Patch a basic waveform output of a VCO to I1 to activate the "
+            "tuner.")
+        return patch
 
 
 def section_tonality():
@@ -1305,6 +1317,17 @@ def allocate_cv_inputs():
             bail_out("You need a MASTER18 to support Sinfonion link.")
         ios["gateins"].remove("I1")
         add_label("I1", "Link", "Sinfonion Link")
+
+    if arguments["tuner"]:
+        if arguments["m"] != "master18":
+            bail_out("You need a MASTER18 for the CV tuner.")
+        if "I1" not in ios["gateins"]:
+            bail_out("You cannot use Sinfonion link and the VCO tuner at the same time")
+        if not have_display():
+            bail_out("The VCO tuner only works if you have a DB8E.")
+
+        ios["gateins"].remove("I1")
+        add_label("I1", "Tuner", "VCO tuner")
 
     if arguments["clockin"]:
         cv_inputs["clock"] = get_gate_input("CLK In", "External clock")
@@ -2452,7 +2475,7 @@ def track_section(track):
             paging.append(( "doublerange", "_T%d_COPY_BUTTON" % track ))
             if not arguments["range"]:
                 bail_out("The feature \"double the range\" does not work if you have "
-                         "not activated the step parameter \"Set range of steps to play\".") 
+                         "not activated the step parameter \"Set range of steps to play\".")
 
     gate = "_T%d_SEQUENCER_GATE" % track # here comes our gate
 
@@ -2882,14 +2905,14 @@ def track_section(track):
                 ( "ifequal", "_RUNNING + _COMPOSEMODE" ),
                 ( "else", "_RUNNING" ),
                 ( "output", "_RUNNING_OR_COMPOSE_%d" % track),
-            ], 
+            ],
             "If we are in compose mode and the arpeggiator is switched "
             "off, the gate is output even if the sequencer is stopped.")
         else:
             patch += circuit("copy", [
                 ( "input", "_RUNNING + _COMPOSEMODE" ),
                 ( "output", "_RUNNING_OR_COMPOSE_%d" % track),
-            ], 
+            ],
             "If we are in compose mode the gate is output even if the sequencer is stopped.")
         gate = gate + " * _RUNNING_OR_COMPOSE_%d" % track
 
@@ -3776,7 +3799,7 @@ def get_gate_input(short, long):
     elif ios["gateinouts"]:
         return add_label(ios["gateinouts"].pop(0), short, long)
     else:
-        bail_out("There is no gate or CV input left for '%s'" % long)
+        bail_out("There is no gate or CV input left for '%s'." % long)
 
 
 def get_gate_output(short, long):
