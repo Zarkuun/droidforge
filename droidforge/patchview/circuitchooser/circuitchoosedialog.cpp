@@ -192,7 +192,7 @@ void CircuitChooseDialog::saveSettings()
 }
 void CircuitChooseDialog::showManual()
 {
-    the_manual->showCircuit(getSelectedCircuit());
+    the_manual->showCircuit(getSelectedCircuit(), true /* modal */);
 }
 void CircuitChooseDialog::keyPressed(int key)
 {

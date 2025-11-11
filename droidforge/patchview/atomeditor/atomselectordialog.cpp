@@ -71,5 +71,5 @@ Atom *AtomSelectorDialog::editAtom(const Patch *patch, const QString &circuit, c
 }
 void AtomSelectorDialog::showManual()
 {
-    the_manual->showCircuit(circuit);
+    the_manual->showCircuit(circuit, true /* modal */);
 }

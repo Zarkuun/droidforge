@@ -14,6 +14,7 @@
 #include <QFileInfo>
 #include <QStandardPaths>
 #include <QDir>
+#include <QApplication>
 
 UserManual *the_manual = 0;
 
@@ -66,11 +67,15 @@ void UserManual::openExternally()
     QFile::copy(":droid-manual.pdf", targetPath);
     desk.openUrl("file:" + targetPath);
 }
-void UserManual::showCircuit(const QString &circuit)
+void UserManual::showCircuit(const QString &circuit, bool modal)
 {
+    if (modal) the_manual->hide();
+
     jumpToPage(the_firmware->circuitManualPage(circuit));
-    show();
-    raise();
+    if (modal)
+        exec();
+    else
+        show();
 }
 void UserManual::showTopic(const QString &pageref)
 {

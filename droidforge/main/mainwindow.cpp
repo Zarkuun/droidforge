@@ -596,7 +596,7 @@ void MainWindow::showCircuitManual()
 {
     const Circuit *circuit = section()->currentCircuit();
     if (circuit)
-        the_manual->showCircuit(circuit->getName());
+        the_manual->showCircuit(circuit->getName(), false /* modal */);
 }
 void MainWindow::clearHints()
 {

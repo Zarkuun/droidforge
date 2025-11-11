@@ -20,7 +20,7 @@ class UserManual : public Dialog
 
 public:
     UserManual(QWidget *parent = nullptr);
-    void showCircuit(const QString &circuit);
+    void showCircuit(const QString &circuit, bool modal);
     void showTopic(const QString &pageref);
     bool hasTopic(const QString &pageref);
 

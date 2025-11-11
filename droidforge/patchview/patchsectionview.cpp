@@ -1493,7 +1493,7 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
     }
 
     // The following is a conveniance feature for that case that
-    // you want to use LEDs as inputs (as often done with buttons
+    // you want to use LEDs as inputs (as often done ith buttons
     // or buttongroups). You click on the button and get e.g. B1.1.
     // Now if you click again, that changes to L1.1 (and later back again)
     else if (ja->isInput()) {
