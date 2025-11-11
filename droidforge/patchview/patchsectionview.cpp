@@ -1468,7 +1468,11 @@ void PatchSectionView::clickOnRegister(AtomRegister ar)
 
     int column = qMax(1, cursor.column); // allow cursor on jack name
 
-    QString controller = patch->controller(ar.getController() - 1);
+    QString controller;
+    if (ar.isControl())
+        controller = patch->controller(ar.getController() - 1);
+    else
+        controller = ""; // master or G8
 
     // This is a bit of a hack, but I'm not sure how to do
     // this in a much more clean way. If the user e.g. clicks
