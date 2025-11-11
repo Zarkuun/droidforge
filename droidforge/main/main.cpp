@@ -145,8 +145,10 @@ int main(int argc, char *argv[])
     mainWindow->show();
 
 #ifdef QT_DEBUG
-    if (!firmware.checkAllDescriptions())
-        exit(1);
+    QTimer::singleShot(1000, []() {
+        if (!the_firmware->checkAllDescriptions())
+            exit(1);
+    });
 #endif
 
     return app.exec();
