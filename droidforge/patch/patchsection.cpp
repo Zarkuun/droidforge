@@ -783,6 +783,9 @@ bool PatchSection::isCopyOf(const PatchSection *otherSection, QString &myPrefix,
         if (myCircuit->getName() != otherCircuit->getName())
             return false;
 
+        if (myCircuit->isDisabled() != otherCircuit->isDisabled())
+            return false;
+
         // Compare jack assignment lines (comment is ignored)
         if (myCircuit->numJackAssignments() != otherCircuit->numJackAssignments())
             return false;
@@ -794,6 +797,9 @@ bool PatchSection::isCopyOf(const PatchSection *otherSection, QString &myPrefix,
                 return false;
 
             if (myJa->jackName() != otherJa->jackName())
+                return false;
+
+            if (myJa->isDisabled() != otherJa->isDisabled())
                 return false;
 
             // Compare atoms
