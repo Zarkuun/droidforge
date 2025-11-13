@@ -3047,9 +3047,17 @@ def track_arpeggiator(track):
     if have_running():
         clock += " * _RUNNING"
 
+    if arguments["tbr"]:
+        root_params = [
+            ( "root", "_ROOT * _T%d_TBR_OFF" % track ),
+            ( "transpose", "_T%d_TBR" % track ),
+        ]
+    else:
+        root_params = [( "root", "_ROOT" )]
+
     patch += circuit("arpeggio",
-        track_note_selects(track, True) + [
-        ( "root", "_ROOT" ),
+        track_note_selects(track, True) +
+        root_params + [
         ( "degree", "_DEGREE" ),
         ( "clock", clock ),
         ( "reset", "_RESET" ),
@@ -3112,7 +3120,7 @@ def arpeggio_menu(track):
     ], "The LED of the ARP button blinks when it is on but in Autostop mode")
 
     patch += circuit("flipflop", [
-        ( "set", "_T%d_ARP * _CONTROL" % track),
+        ( "set", "B%s * _CONTROL" % b),
         ( "reset", "_T%d_ARP_OFF" % track),
         ( "output", "_T%d_ARP_AUTOSTOP" % track),
     ], "Autostop mode for ARP: When you hold CTRL while switching ARP on, "
