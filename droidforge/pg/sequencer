@@ -810,6 +810,8 @@ def section_tuner():
             "Patch a basic waveform output of a VCO to I1 to activate the "
             "tuner.")
         return patch
+    else:
+        return ""
 
 
 def section_tonality():
