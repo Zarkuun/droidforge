@@ -9,6 +9,8 @@
 #include "tuning.h"
 #include "utilities.h"
 
+#define ALIGN_UP(x, align)   (((x) + ((align) - 1)) & ~((align) - 1))
+
 
 #include <QFileInfo>
 #include <QSettings>
@@ -719,31 +721,46 @@ void Patch::updateMemoryProblems()
 {
     // Check memory consumption of circuits, also their count
     unsigned availableMemory = the_firmware->availableMemory(typeOfMaster());
-    unsigned usedMemory = usedRAMByControllers() +
-                          4 * ((Patch *)this)->countUniqueConstants() +
-                          8 * ((Patch *)this)->countUniqueCables();
 
-    // TODO: Was ist hier mit den Texten und Zeug???
+    unsigned usedMemory = usedRAMByControllers();
 
     if (typeOfMaster() == 16)
         usedMemory += the_firmware->controllerUsedRAM("x7");
+
+    // Memory needed by constants, texts and cables
+    unsigned numConstants = ((Patch *)this)->countUniqueConstants();
+    unsigned numTexts = ((Patch *)this)->countTexts();
+    unsigned numCables = ((Patch *)this)->countUniqueCables();
+
 
     QSettings settings;
     bool dedup = settings.value("compression/deduplicate_jacks", false).toBool();
     bool shorts = settings.value("compression/use_shortnames", false).toBool();
     JackDeduplicator jdd(dedup, shorts);
+    unsigned saveTexts = 0;
 
     QMap<QString, unsigned> circuitCounts;
     unsigned sectionIndex = 0;
     for (auto &section: sections) {
         unsigned circuitNr = 0;
-        for (auto circuit: section->getCircuits()) {
-            if (!circuit->isDisabled()) {
+        for (auto circuit: section->getCircuits())
+        {
+            if (!circuit->isDisabled())
+            {
                 unsigned circuitMem = circuit->RAMUsage(jdd);
-                if (usedMemory + circuitMem > availableMemory) {
+                unsigned savedTexts = jdd.savedTexts();
+                unsigned usedByStuff =
+                    ALIGN_UP(
+                        numConstants * 4
+                            + numCables * 8
+                            + (numTexts - savedTexts) * 4
+                            + ALIGN_UP((numTexts - savedTexts) * 2, 4),
+                        16);
+
+                if (usedMemory + circuitMem + usedByStuff > availableMemory) {
                     QString error = TR("This circuit exceeds the available memory.");
                     if (!dedup)
-                        error += TR(" Hint: activate \"Detect and share duplicate values for inputs and outputs\" in the preferences.");
+                        error += TR("Hint: activate \"Detect and share duplicate values for inputs and outputs\" in the preferences.");
                     PatchProblem *prob = new PatchProblem(ROW_CIRCUIT, 0, error);
 
                     prob->setCircuit(circuitNr);
@@ -991,8 +1008,6 @@ unsigned Patch::usedRAM(QStringList &breakdown, QString *deployString) const
     unsigned numConstants = ((Patch *)this)->countUniqueConstants();
     unsigned numTexts = ((Patch *)this)->countTexts() - savedTexts;
     unsigned numCables = ((Patch *)this)->countUniqueCables();
-
-    #define ALIGN_UP(x, align)   (((x) + ((align) - 1)) & ~((align) - 1))
 
     int totalRam = ALIGN_UP(
         numConstants * 4
