@@ -338,7 +338,6 @@ void RackView::purchaseController(QString name)
 }
 void RackView::showUserManual(QString controllerName)
 {
-    shout << "User manual von " << controllerName;
     the_manual->showTopic(controllerName);
 }
 void RackView::findRegister(AtomRegister reg)
