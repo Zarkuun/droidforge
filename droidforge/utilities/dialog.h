@@ -14,7 +14,6 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *);
-    void moveEvent(QMoveEvent *);
     void keyPressEvent(QKeyEvent *event);
     void setDefaultSize(QSize s);
 };
