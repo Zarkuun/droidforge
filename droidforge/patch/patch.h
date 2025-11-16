@@ -32,7 +32,7 @@ public:
     void cloneInto(Patch *otherPatch) const;
     QString toString() const; // normal "user" centric string representation
     QString toBareString() const; // for "Show bare patch source"
-    QString toDeployString(unsigned *jacktableSize = 0, unsigned *savedBytes = 0) const; // for final droid.ini
+    QString toDeployString(unsigned *jacktableSize = 0, unsigned *savedBytes = 0, unsigned *savedTexts = 0) const; // for final droid.ini
     bool saveContentsToFile(const QString filePath, const QString &contents) const;
 
     // Simple access functions

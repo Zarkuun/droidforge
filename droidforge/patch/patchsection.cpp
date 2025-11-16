@@ -690,7 +690,7 @@ void PatchSection::collectRegisterAtoms(RegisterList &sl, bool skipOverlayedCont
 }
 void PatchSection::removeRegisterReferences(RegisterList &rl)
 {
-    for (auto circuit: circuits)
+    for (auto& circuit: circuits)
         circuit->removeRegisterReferences(rl);
 }
 unsigned PatchSection::ramUsedByCircuits() const

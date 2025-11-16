@@ -723,6 +723,8 @@ void Patch::updateMemoryProblems()
                           4 * ((Patch *)this)->countUniqueConstants() +
                           8 * ((Patch *)this)->countUniqueCables();
 
+    // TODO: Was ist hier mit den Texten und Zeug???
+
     if (typeOfMaster() == 16)
         usedMemory += the_firmware->controllerUsedRAM("x7");
 
@@ -946,13 +948,8 @@ unsigned Patch::usedRAM(QStringList &breakdown, QString *deployString) const
     unsigned memory = 0;
 
     unsigned byCircuits = usedRAMByCircuits();
-    if (numCircuits() || numControllers())
-        breakdown.append(TR("%1 bytes are needed by %2 circuits.")
-                             .arg(niceBytes(byCircuits)).arg(numCircuits()));
-    else
-        breakdown.append(TR("%1 bytes are needed by a hidden default circuit.")
-                             .arg(niceBytes(byCircuits)));
-
+    breakdown.append(TR("%1 bytes are needed by %2 circuits.")
+                     .arg(niceBytes(byCircuits)).arg(numCircuits()));
     memory += byCircuits;
 
     unsigned byControllers = usedRAMByControllers();
@@ -973,41 +970,15 @@ unsigned Patch::usedRAM(QStringList &breakdown, QString *deployString) const
             breakdown.append(TR("%1 bytes could be used by a potential X7 (not counted).").arg(niceBytes(byX7)));
     }
 
-    // Every unique constant needs 4 bytes
-    unsigned numConstants = ((Patch *)this)->countUniqueConstants();
-    memory += numConstants * 4;
-    breakdown.append(TR("%1 bytes are used by %2 unique constants.")
-                         .arg(niceBytes(numConstants * 4)).arg(numConstants));
-
-    // Every (non-unique) text needs 6 bytes, but there is a uint16_t
-    // that is align to a 4 byte boundary
-    unsigned numTexts = ((Patch *)this)->countTexts();
-    unsigned usedByTexts = 6 * numTexts;
-    // Reflect alignment effects within the Droid stack
-    unsigned fourend = numTexts % 4;
-    switch (fourend) {
-    case 0: break;
-    case 1: usedByTexts -= 6; break;
-    case 2: usedByTexts -= 4; break;
-    case 3: usedByTexts -= 2; break;
-    }
-    breakdown.append(TR("%1 bytes are used by %2 texts.")
-                    .arg(niceBytes(usedByTexts))
-                    .arg(numTexts));
-    memory += usedByTexts;
-
-
     // Every (unique) patch cable needs 8 bytes
-    unsigned numCables = ((Patch *)this)->countUniqueCables();
-    memory += numCables * 8;
-    breakdown.append(TR("%1 bytes are used by %2 unique cables.")
-                         .arg(niceBytes(numCables * 8)).arg(numCables));
 
     // Count memory needed by the parameter values. This is a side product
     // of the deduplication happending at toCompressed
     unsigned jacktableSize;
     unsigned savedBytes;
-    QString ds = toDeployString(&jacktableSize, &savedBytes);
+    unsigned savedTexts;
+
+    QString ds = toDeployString(&jacktableSize, &savedBytes, &savedTexts);
     if (deployString)
         *deployString = ds; // reuse as a side product to save time
     unsigned byParameters = jacktableSize - the_firmware->initialJacktableSize();
@@ -1015,6 +986,41 @@ unsigned Patch::usedRAM(QStringList &breakdown, QString *deployString) const
     breakdown.append(TR("%1 bytes are used by parameter values.").arg(niceBytes(byParameters)));
     if (savedBytes)
         breakdown.append(TR("%1 bytes are saved by sharing duplicate input values").arg(niceBytes(savedBytes)));
+
+    // Memory needed by constants, texts and cables
+    unsigned numConstants = ((Patch *)this)->countUniqueConstants();
+    unsigned numTexts = ((Patch *)this)->countTexts() - savedTexts;
+    unsigned numCables = ((Patch *)this)->countUniqueCables();
+
+    #define ALIGN_UP(x, align)   (((x) + ((align) - 1)) & ~((align) - 1))
+
+    int totalRam = ALIGN_UP(
+        numConstants * 4
+        + numCables * 8
+        + numTexts * 4
+        + ALIGN_UP(numTexts * 2, 4),
+        16);
+
+    // Problem hier: Das deduplicate jacks spart Speicher, weil Texte nicht mehrfach
+    // gebraucht werden. Das ist aber megaschwer hier auszurechnen.
+    // Wir können den Effekt auch einfach weglassen. Dann kann man den Effekt halt
+    // nicht nutzen.
+
+    breakdown.append(TR("%1 TODO: total ram").arg(niceBytes(totalRam)));
+
+    int usedByAlignment = totalRam - (numCables * 8) - (numConstants * 4) - (numTexts * 6);
+
+    memory += totalRam;
+    breakdown.append(TR("%1 bytes are used by %2 unique constants.")
+                         .arg(niceBytes(numConstants * 4)).arg(numConstants));
+    breakdown.append(TR("%1 bytes are used by %2 unique cables.")
+                         .arg(niceBytes(numCables * 8)).arg(numCables));
+    breakdown.append(TR("%1 bytes are used by %2 texts.")
+                         .arg(niceBytes(numTexts * 6)).arg(numTexts));
+
+    if (usedByAlignment)
+        breakdown.append(TR("%1 bytes are used by internal memory alignments.").arg(niceBytes(usedByAlignment)));
+
     return memory;
 }
 unsigned Patch::countUniqueCables()
@@ -1061,14 +1067,7 @@ unsigned Patch::countUniqueConstants()
             }
         }
     }
-    // The memory consumption of the constants in the Droid is aligned
-    // to 8, so an odd number of constants need to be rounded up. But because
-    // of some alignment issues, we seem to change this for even numbers,
-    // not odd numbers.
-    if (constants.count() % 2 == 0)
-        return constants.count() + 1;
-    else
-        return constants.count();
+    return constants.count();
 }
 unsigned int Patch::countEncoders() const
 {
@@ -1281,7 +1280,7 @@ QString Patch::toBareString() const
     return s;
 
 }
-QString Patch::toDeployString(unsigned *jacktableSize, unsigned *savedBytes) const
+QString Patch::toDeployString(unsigned *jacktableSize, unsigned *savedBytes, unsigned *savedTexts) const
 {
     QSettings settings;
     bool renameCables = settings.value("compression/rename_cables", false).toBool();
@@ -1314,6 +1313,8 @@ QString Patch::toDeployString(unsigned *jacktableSize, unsigned *savedBytes) con
         *jacktableSize = jdd.jacktableSize();
     if (savedBytes)
         *savedBytes = jdd.saved();
+    if (savedTexts)
+        *savedTexts = jdd.savedTexts();
     return s;
 }
 bool Patch::saveContentsToFile(const QString filePath, const QString &contents) const

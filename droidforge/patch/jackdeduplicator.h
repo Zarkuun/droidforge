@@ -12,6 +12,7 @@ class JackDeduplicator
     bool useShortnames;
     unsigned jacktableOffset;
     unsigned savedBytes;
+    unsigned savedTextConstants;
     QString circuitName;
     QMap<QString, unsigned> sharedValues;
 
@@ -23,6 +24,7 @@ public:
     QString circuit() const { return circuitName; };
     unsigned jacktableSize() const { return jacktableOffset; };
     unsigned saved() const { return savedBytes; };
+    unsigned savedTexts() const { return savedTextConstants; };
 };
 
 #endif // JACKDEDUPLICATOR_H

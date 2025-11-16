@@ -7,6 +7,7 @@ JackDeduplicator::JackDeduplicator(bool dedup, bool shorts)
     : deduplicate(dedup)
     , useShortnames(shorts)
     , savedBytes(0)
+    , savedTextConstants(0)
 {
     jacktableOffset = the_firmware->initialJacktableSize();
 }
@@ -86,6 +87,11 @@ QString JackDeduplicator::processJackAssignment(const JackAssignment *ja)
         // offset in the jack table where a jack for this value has been created.
         if (sharedValues.contains(value)) {
             savedBytes += size;
+            for (int i=0; i<=2; i++) {
+                const Atom *atom = jai->getAtom(i);
+                if (atom && atom->isText())
+                    savedTextConstants++;
+            }
             return QString("@") + QString::number(sharedValues[value]);
         }
         else {
