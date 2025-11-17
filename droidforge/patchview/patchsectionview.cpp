@@ -1609,6 +1609,7 @@ void PatchSectionView::clockTick()
 }
 void PatchSectionView::updateCursor()
 {
+    const CursorPosition &hirnpos = section()->cursorPosition();
     if (currentCircuit()) {
         const CursorPosition &pos = section()->cursorPosition();
 

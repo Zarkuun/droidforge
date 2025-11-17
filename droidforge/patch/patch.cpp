@@ -355,6 +355,49 @@ void Patch::moveCursorToNextJa()
         // as our assumption was that we start at a jack assignment
     }
 }
+const PatchProblem *Patch::findNextProblem() const
+{
+    if (problems.length() == 0)
+        return 0;
+
+    CursorPosition pos = currentSection()->cursorPosition();
+
+    const PatchProblem *nextProblem = 0;
+
+    // Look for the first problem that is after the cursor position
+    for (auto& problem: problems)
+    {
+        if (problem->getSection() > currentSectionIndex()) {
+            nextProblem = problem;
+            break;
+        }
+        else if (problem->getSection() >= currentSectionIndex())
+        {
+            CursorPosition ppos = problem->getCursorPosition();
+            if (ppos.circuitNr > pos.circuitNr) {
+                nextProblem = problem;
+                break;
+            }
+            else if (ppos.circuitNr == pos.circuitNr) {
+                if (ppos.row > pos.row) {
+                    nextProblem = problem;
+                    break;
+                }
+                else if (ppos.row > pos.row) {
+                    if (ppos.column > pos.column) {
+                        nextProblem = problem;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if (!nextProblem)
+        nextProblem = problems[0];
+
+    return nextProblem;
+}
 bool Patch::unfoldCurrentCircuit()
 {
     Circuit *circuit = currentSection()->currentCircuit();

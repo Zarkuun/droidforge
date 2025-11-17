@@ -66,6 +66,7 @@ public:
     void moveCursorBackward(bool autoUnfold);
     void moveCursorToNextCircuit();
     void moveCursorToNextJa(); // does not unfold
+    const PatchProblem *findNextProblem() const;
     bool unfoldCurrentCircuit();
     unsigned searchHitPosition(const QString &text, unsigned *count, bool *didUnfold);
 

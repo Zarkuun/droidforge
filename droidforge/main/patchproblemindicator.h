@@ -13,7 +13,6 @@ class PatchProblemIndicator : public QWidget, PatchView
 
     MainWindow *mainWindow;
     unsigned numProblems;
-    unsigned currentProblem;
 
 public:
     PatchProblemIndicator(MainWindow *mainWindow, PatchEditEngine *patch, QWidget *parent = nullptr);

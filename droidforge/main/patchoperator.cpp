@@ -372,7 +372,7 @@ void PatchOperator::renameCable()
     }
 
     patch->renameCable(oldName, newName);
-    patch->commit(tr("renaming cable '%1' to '%2'").arg(oldName).arg(newName));
+    patch->commit(tr("renaming cable '%1' to '%2'").arg(oldName, newName));
     emit patchModified();
 }
 void PatchOperator::jumpTo(int sectionIndex, const CursorPosition &pos)

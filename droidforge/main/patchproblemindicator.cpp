@@ -15,7 +15,6 @@ PatchProblemIndicator::PatchProblemIndicator(MainWindow *mainWindow, PatchEditEn
     , PatchView(patch)
     , mainWindow(mainWindow)
     , numProblems(0)
-    , currentProblem(0)
 {
     setMinimumWidth(PPI_WIDTH);
     setMaximumWidth(PPI_WIDTH);
@@ -51,7 +50,9 @@ void PatchProblemIndicator::paintEvent(QPaintEvent *)
     float textLeft = warnRect.right() + STANDARD_SPACING;
     QRectF textRect(textLeft, 0, width() - textLeft, height());
     QString text;
-    if (numProblems == 1)
+    if (numProblems == 0)
+        text = "";
+    else if (numProblems == 1)
         text = tr("1 problem");
     else
         text = tr("%1 problems").arg(numProblems);
@@ -86,13 +87,8 @@ void PatchProblemIndicator::updateStatus()
 }
 void PatchProblemIndicator::jumpToNextProblem()
 {
-    if (patch->numProblems() == 0)
+    const PatchProblem *problem = patch->findNextProblem();
+    if (problem == 0)
         return;
-
-    if (currentProblem >= patch->numProblems())
-        currentProblem = 0;
-    const PatchProblem *problem = patch->problem(currentProblem++);
-    if (currentProblem >= patch->numProblems())
-        currentProblem = 0;
     theOperator()->jumpTo(problem->getSection(), problem->getCursorPosition());
 }
