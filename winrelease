@@ -9,7 +9,7 @@ PACDIR=$(pwd)/winpackbasedir
 DATADIR="$PACDIR/packages/de.dmmdm.droidforge/data"
 METADIR="$PACDIR/packages/de.dmmdm.droidforge/meta"
 BUILDDIR=droidforge/build-release
-WINDEPLOYQT="/C/Qt/6.3.1/msvc2019_64/bin/windeployqt.exe"
+WINDEPLOYQT="/C/Qt/6.9.3/msvc2022_64/bin/windeployqt.exe"
 BINARYCREATOR="/C/Qt/QtIFW-4.4.1/bin/binarycreator.exe"
 TARGETEXE="DROID Forge $VERSION Windows.exe"
 
