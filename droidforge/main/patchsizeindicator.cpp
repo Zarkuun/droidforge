@@ -73,7 +73,6 @@ void PatchSizeIndicator::mousePressEvent(QMouseEvent *)
 }
 void PatchSizeIndicator::updateStatus()
 {
-    shoutfunc;
     dirty = true;
     lastDirty.restart();
 }
