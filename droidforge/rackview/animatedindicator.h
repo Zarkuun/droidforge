@@ -1,7 +1,7 @@
 #ifndef ANIMATEDINDICATOR_H
 #define ANIMATEDINDICATOR_H
 
-#include <QGraphicsItem>
+#include <QtWidgets/QGraphicsItem>
 #include <QPropertyAnimation>
 #include <QObject>
 
