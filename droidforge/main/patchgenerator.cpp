@@ -1,8 +1,9 @@
 #include "patchgenerator.h"
-#include "QtCore/qjsonarray.h"
+// #include "QtCore/qjsonarray.h"
 #include "tuning.h"
 #include "globals.h"
 
+#include <QJsonArray>
 #include <QFile>
 #include <QProcess>
 #include <QJsonObject>
@@ -88,15 +89,15 @@ PatchGenerator::PatchGenerator(QString path, QString name)
         return;
     }
 
-    _title = _parameterInfo.object()["title"].toString();
+    _title = _parameterInfo.object().value("title").toString();
     if (_title == "") {
         _error = TR("Invalid output from patch generator: missing global key \"title\"");
         return;
     }
 
-    _description = _parameterInfo.object()["description"].toString();
+    _description = _parameterInfo.object().value("description").toString();
 
-    auto presets = _parameterInfo.object()["presets"].toArray();
+    auto presets = _parameterInfo.object().value("presets").toArray();
     if (presets.empty()) {
         _error = TR("The patch generator has no presets. Each patch generator must "
                     "at least define one preset.");
