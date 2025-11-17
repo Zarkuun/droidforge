@@ -1059,13 +1059,6 @@ unsigned Patch::usedRAM(QStringList &breakdown, QString *deployString) const
         + ALIGN_UP(numTexts * 2, 4),
         16);
 
-    // Problem hier: Das deduplicate jacks spart Speicher, weil Texte nicht mehrfach
-    // gebraucht werden. Das ist aber megaschwer hier auszurechnen.
-    // Wir können den Effekt auch einfach weglassen. Dann kann man den Effekt halt
-    // nicht nutzen.
-
-    breakdown.append(TR("%1 TODO: total ram").arg(niceBytes(totalRam)));
-
     int usedByAlignment = totalRam - (numCables * 8) - (numConstants * 4) - (numTexts * 6);
 
     memory += totalRam;

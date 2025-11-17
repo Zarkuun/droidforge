@@ -26,7 +26,11 @@ PatchSizeIndicator::PatchSizeIndicator(MainWindow *mainWindow, PatchEditEngine *
     timer.start();
 
     connect(mainWindow->theHub(), &UpdateHub::patchModified, this, &PatchSizeIndicator::updateStatus);
-    connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &PatchSizeIndicator::updateStatus);
+
+    // I forgot why I've added this line. It slows down everything if you just browse
+    // around a large patch. I cannot find any information in the indicator that
+    // is dedicated to the current section. Was that a gone feature?
+    // connect(mainWindow->theHub(), &UpdateHub::sectionSwitched, this, &PatchSizeIndicator::updateStatus);
 }
 void PatchSizeIndicator::paintEvent(QPaintEvent *)
 {
@@ -64,6 +68,7 @@ void PatchSizeIndicator::paintEvent(QPaintEvent *)
 }
 void PatchSizeIndicator::updateStatus()
 {
+    shoutfunc;
     dirty = true;
     lastDirty.restart();
 }
@@ -108,7 +113,7 @@ void PatchSizeIndicator::recompute()
     }
 
     else {
-        tooltipSize += " " + tr("That is %1% of the maximum of %2.")
+        tooltipSize += " " + tr("This is %1% of the maximum of %2.")
                              .arg(QString::number((unsigned)(patchSize * 100 / MAX_DROID_INI)))
                              .arg(MAX_DROID_INI);
     }
