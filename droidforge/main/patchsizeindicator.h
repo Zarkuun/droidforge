@@ -23,6 +23,7 @@ class PatchSizeIndicator : public QWidget, PatchView
 public:
     explicit PatchSizeIndicator(MainWindow *mainWindow, PatchEditEngine *patch);
     void paintEvent(QPaintEvent *);
+    void mousePressEvent(QMouseEvent *);
 
 private slots:
     void updateStatus();

@@ -102,7 +102,6 @@ private slots:
     void editCircuitSource();
     void barePatchSource();
     void exportCompressedPatch();
-    void patchMemoryAnalysis();
     void fixLEDMismatch();
     void rewriteCableNames();
     void setBookmark();
@@ -122,6 +121,7 @@ public slots:
     void openPatchGenerator(int index, PatchGenerator *gen);
     void showStatusDumpNr(int nr);
     void showStatusDumpInfo();
+    void patchMemoryAnalysis();
 
 private:
     void clearWithControllersFromOtherRack(const Patch *other);

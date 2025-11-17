@@ -5,6 +5,7 @@
 #include "utilities.h"
 #include "mainwindow.h"
 #include "globals.h"
+#include "patchoperator.h"
 
 #define MI_WIDTH 200
 
@@ -66,13 +67,16 @@ void PatchSizeIndicator::paintEvent(QPaintEvent *)
     painter.setPen(COLOR(PSI_COLOR_TEXT));
     painter.drawText(textRect, text, Qt::AlignVCenter | Qt::AlignCenter);
 }
+void PatchSizeIndicator::mousePressEvent(QMouseEvent *)
+{
+    mainWindow->theOperator()->patchMemoryAnalysis();
+}
 void PatchSizeIndicator::updateStatus()
 {
     shoutfunc;
     dirty = true;
     lastDirty.restart();
 }
-
 void PatchSizeIndicator::checkDirty()
 {
     if (dirty && lastDirty.elapsed() > 500) {
