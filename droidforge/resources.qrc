@@ -373,10 +373,10 @@
         <file>images/icons/dark/eject_sd.png</file>
         <file>images/icons/light/eject_sd.png</file>
         <file>firmware/db8e-neol-1.fw</file>
-        <file>firmware/droid-magenta-8.fw</file>
+        <file>firmware/droid-blue-7.fw</file>
         <file>firmware/e4-magenta-1.fw</file>
         <file>firmware/m4-orange-4.fw</file>
-        <file>firmware/master18-magenta-8.fw</file>
+        <file>firmware/master18-blue-7.fw</file>
         <file>firmware/x7-orange-1012.fw</file>
     </qresource>
 </RCC>
