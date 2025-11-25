@@ -97,10 +97,22 @@
 #define CSI_MARKER_FONT_SIZE                 6
 #define CSI_LABEL_FONT_SIZE                  8
 #define SETTING_POLL_DEFAULT                 false
-#else
+#endif
+
+#ifdef Q_OS_MAC
 #define CSI_MARKER_FONT_SIZE                 9
 #define CSI_LABEL_FONT_SIZE                  12
 #define SETTING_POLL_DEFAULT                 true
+#endif
+
+#ifdef Q_OS_LINUX
+#define CSI_MARKER_FONT_SIZE                 6
+#define CSI_LABEL_FONT_SIZE                  8
+#define SETTING_POLL_DEFAULT                 false
+#endif
+
+#ifndef CSI_MARKER_FONT_SIZE
+#error "CSI_MARKER_FONT_SIZE not defined!"
 #endif
 
 // Rack view

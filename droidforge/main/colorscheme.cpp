@@ -302,7 +302,7 @@ ColorScheme::ColorScheme(QWidget *parent)
 
 void ColorScheme::darkLightSwitch()
 {
-#ifdef Q_OS_MAC
+#if (defined Q_OS_MAC || defined Q_OS_LINUX)
     QLabel label("am I in the dark?");
     int text_hsv_value = label.palette().color(QPalette::WindowText).value();
     int bg_hsv_value = label.palette().color(QPalette::Window).value();

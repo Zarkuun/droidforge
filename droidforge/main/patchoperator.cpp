@@ -138,9 +138,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
     CONNECT_ACTION(ACTION_TOOLBAR_SAVE, &PatchOperator::save);
     connect(ACTION(ACTION_SAVE_ALL), &QAction::triggered, the_windowlist, &WindowList::saveAll);
     CONNECT_ACTION(ACTION_SAVE_AS, &PatchOperator::saveAs);
-    #if (defined Q_OS_MACOS || defined Q_OS_WIN)
     CONNECT_ACTION(ACTION_OPEN_ENCLOSING_FOLDER, &PatchOperator::openEnclosingFolder);
-    #endif
     CONNECT_ACTION(ACTION_EXPORT_SELECTION, &PatchOperator::exportSelection);
     CONNECT_ACTION(ACTION_INTEGRATE_PATCH, &PatchOperator::integrate);
     CONNECT_ACTION(ACTION_UNDO, &PatchOperator::undo);
