@@ -305,6 +305,12 @@ elseif(WIN32)
             Qt${QT_VERSION_MAJOR}::Pdf
             Qt${QT_VERSION_MAJOR}::PdfWidgets
             winmm)
+elseif(LINUX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+            Qt${QT_VERSION_MAJOR}::Widgets
+            Qt${QT_VERSION_MAJOR}::Pdf
+            Qt${QT_VERSION_MAJOR}::PdfWidgets
+            )
 endif()
 
 
