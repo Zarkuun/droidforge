@@ -48,6 +48,8 @@ set(PROJECT_SOURCES
     os/macmidihost.h
     os/windowsmidihost.cpp
     os/windowsmidihost.h
+    os/linuxmidihost.cpp
+    os/linuxmidihost.h
     main/cablestatusindicator.cpp
     main/cablestatusindicator.h
     main/colorscheme.cpp
