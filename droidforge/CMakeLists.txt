@@ -312,7 +312,7 @@ elseif(LINUX)
             Qt${QT_VERSION_MAJOR}::Widgets
             Qt${QT_VERSION_MAJOR}::Pdf
             Qt${QT_VERSION_MAJOR}::PdfWidgets
-            )
+            asound)
 endif()
 
 
