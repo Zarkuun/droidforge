@@ -31,6 +31,10 @@
 #include <QSettings>
 
 // #include <CoreMIDI/MIDIServices.h>
+#ifdef Q_OS_LINUX
+#include <QDesktopServices>
+#include <QFileInfo>
+#endif
 
 #ifdef Q_OS_WIN
 //#include <stdio.h>
@@ -1262,6 +1266,10 @@ void PatchOperator::openDirInFinder(const QString &filename)
     QStringList args;
     args << "/select," << QDir::toNativeSeparators(filename);
     QProcess::startDetached("explorer", args);
+#endif
+#ifdef Q_OS_LINUX
+    QFileInfo info(filename);
+    QDesktopServices::openUrl(QUrl("file://" + info.dir().path(), QUrl::TolerantMode));
 #endif
 }
 void PatchOperator::editProperties()
