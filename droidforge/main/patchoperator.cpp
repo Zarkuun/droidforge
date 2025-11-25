@@ -509,12 +509,21 @@ void PatchOperator::ejectSDCard(QString dirPath)
                     tr("An error occurred while ejecting the SD card"),
                     QMessageBox::Ok);
     }
-#else
+#endif
+#if(defined Q_OS_MAC || defined Q_OS_LINUX )
     QProcess process;
     QStringList arguments;
+#ifdef Q_OS_MAC
     arguments << "umount";
     arguments << dir.absolutePath();
     process.start("diskutil", arguments);
+#endif
+#ifdef Q_OS_LINUX
+    arguments << "unmount";
+    arguments << "-b";
+    arguments << savedSDCardDev();
+    process.start("udisksctl", arguments);
+#endif
     bool success = process.waitForFinished(MAC_UMOUNT_TIMEOUT_MS);
 
     if (!success) { // never happened ever.
