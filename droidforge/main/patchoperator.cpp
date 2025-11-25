@@ -198,6 +198,7 @@ PatchOperator::PatchOperator(MainWindow *mainWindow, PatchEditEngine *patch,
         // reset SDCard path in settings. In case of path change.
         QSettings settings;
         settings.setValue(SD_PATH_SETTINGS_KEY_NAME, "");
+        settings.setValue(SD_DEVICE_SETTINGS_KEY_NAME, "");
 
         QTimer *sdTimer = new QTimer(this);
         connect(sdTimer, &QTimer::timeout, this, &PatchOperator::updateSDAndX7State);
@@ -722,6 +723,7 @@ QString PatchOperator::sdCardDirSansPolling()
                     // found SDCard, safe to settings and return it
                     QSettings settings;
                     settings.setValue(SD_PATH_SETTINGS_KEY_NAME, storage.rootPath());
+                    settings.setValue(SD_DEVICE_SETTINGS_KEY_NAME, storage.device());
                     return storage.rootPath();
                 }
             }
@@ -797,6 +799,8 @@ QString PatchOperator::sdCardDir()
 
         if (storage.isValid() && storage.isReady() && !storage.isReadOnly()) {
             if (isDroidVolume(storage.rootPath())) {
+                QSettings settings;
+                settings.setValue(SD_DEVICE_SETTINGS_KEY_NAME, storage.device());
                 return storage.rootPath();
             }
         }
@@ -902,6 +906,10 @@ bool PatchOperator::pollX7() const {
 QString PatchOperator::savedSDCardDir() const {
     QSettings settings;
     return settings.value(SD_PATH_SETTINGS_KEY_NAME, "").toString();
+}
+QString PatchOperator::savedSDCardDev() const {
+    QSettings settings;
+    return settings.value(SD_DEVICE_SETTINGS_KEY_NAME, "").toString();
 }
 void PatchOperator::updateSDAndX7State()
 {
