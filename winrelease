@@ -15,7 +15,7 @@ TARGETEXE="DROID Forge $VERSION Windows.exe"
 
 rm -rf "$WORKDIR"
 mkdir -p "$WORKDIR"
-cp -v "$BUILDDIR/desktop/install-root/bin/DROID Forge.exe" "$WORKDIR"
+cp -v "$BUILDDIR/DROID Forge.exe" "$WORKDIR"
 cd "$WORKDIR"
 $WINDEPLOYQT "DROID Forge.exe"
 cd ..
