@@ -227,11 +227,20 @@ void PatchOperator::newPatchWithSameRack()
 }
 void PatchOperator::clearWithControllersFromOtherRack(const Patch *otherPatch)
 {
+    // Note otherPatch might be a pointer to patch. Identical. So
+    // when we suck out the contents we need to make copies before
+    // calling startFromScratch().
+
+    auto typeOfMaster = otherPatch->typeOfMaster();
     QStringList controllers = otherPatch->allControllers();
 
     patch->startFromScratch();
-    for (auto controller: controllers)
+    patch->setTypeOfMaster(typeOfMaster);
+
+    for (auto const &controller: controllers) {
+        shout << "Controller dazu:" << controller;
         patch->addController(controller);
+    }
 
     patch->addSection(new PatchSection());
     patch->commit(tr("creating new patch with same rack"));
