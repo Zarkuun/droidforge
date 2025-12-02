@@ -118,6 +118,7 @@ public:
     void shiftControllerNumbers(int number, int by=-1);
     void addController(QString name) { controllers.append(name); };
     void duplicateController(int index, bool withLabels);
+    void copyControllerLabels(const RegisterLabels *labels, int fromIndex, int toIndex);
     void removeController(int index);
     void setDescription(const QString &d);
     void addRegisterLabel(register_type_t registerType,

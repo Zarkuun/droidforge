@@ -151,6 +151,19 @@ void RegisterLabels::copyControllerLabels(int fromNumber, int toNumber)
         }
     }
 }
+void RegisterLabels::copyControllerLabels(const RegisterLabels *labels, int fromNumber, int toNumber)
+{
+    QMapIterator<AtomRegister, RegisterLabel> it(*labels);
+    while (it.hasNext()) {
+        it.next();
+        AtomRegister atom = it.key();
+        const RegisterLabel &label = it.value();
+        if (atom.getController() == (unsigned)fromNumber) {
+            AtomRegister copied(atom.getRegisterType(), toNumber, 0, atom.getNumber());
+            (*this)[copied] = label;
+        }
+    }
+}
 QString RegisterLabels::toString(char reg, unsigned controller, unsigned g8, const QString &title) const
 {
     QString s;

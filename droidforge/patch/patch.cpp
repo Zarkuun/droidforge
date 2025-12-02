@@ -1272,6 +1272,10 @@ void Patch::duplicateController(int index, bool withLabels)
     if (withLabels)
         registerLabels.copyControllerLabels(index+1, index+2);
 }
+void Patch::copyControllerLabels(const RegisterLabels *labels, int fromIndex, int toIndex)
+{
+    registerLabels.copyControllerLabels(labels, fromIndex + 1, toIndex + 1);
+}
 QString Patch::toString() const
 {
     QString s;

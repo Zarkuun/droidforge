@@ -237,10 +237,8 @@ void PatchOperator::clearWithControllersFromOtherRack(const Patch *otherPatch)
     patch->startFromScratch();
     patch->setTypeOfMaster(typeOfMaster);
 
-    for (auto const &controller: controllers) {
-        shout << "Controller dazu:" << controller;
+    for (auto const &controller: controllers)
         patch->addController(controller);
-    }
 
     patch->addSection(new PatchSection());
     patch->commit(tr("creating new patch with same rack"));
@@ -1428,8 +1426,13 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
 
         else if (reply == QMessageBox::Yes) {
             int numExistingControllers = ontoPatch->numControllers();
-            for (auto &c: controllers)
+            RegisterLabels otherLabels = otherPatch->getRegisterLabels();
+
+            int i = 0;
+            for (auto &c: controllers) {
                 ontoPatch->addController(c);
+                ontoPatch->copyControllerLabels(&otherLabels, i, numExistingControllers + i);
+            }
             otherPatch->shiftControllerNumbers(-1, numExistingControllers);
         }
     }

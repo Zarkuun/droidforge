@@ -23,6 +23,7 @@ public:
     void shiftControllerNumbers(int number, int by);
     void removeController(int number);
     void copyControllerLabels(int fromNumber, int toNumber);
+    void copyControllerLabels(const RegisterLabels *labels, int fromNumber, int toNumber);
 
 private:
     QString toString(char reg, unsigned controller, unsigned g8, const QString &title=0) const;
