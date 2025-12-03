@@ -1432,6 +1432,7 @@ bool PatchOperator::interactivelyRemapRegisters(Patch *otherPatch, Patch *ontoPa
             for (auto &c: controllers) {
                 ontoPatch->addController(c);
                 ontoPatch->copyControllerLabels(&otherLabels, i, numExistingControllers + i);
+                i++;
             }
             otherPatch->shiftControllerNumbers(-1, numExistingControllers);
         }
