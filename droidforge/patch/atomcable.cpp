@@ -92,6 +92,11 @@ QString AtomCable::nextCableName(const QString &name)
         currentType = newType;
         group.append(c);
     }
+
+    // If there are no digits in the name, simply append "2".
+    if (lastDigitGroup == -1)
+        return name + "2";
+
     if (group.size())
         groups.append(group);
 

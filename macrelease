@@ -35,6 +35,13 @@ echo -n "Cleaning old build..."
 rm -rf "$APP_DIR"
 echo $OK
 
+# This only works if you have done the build once manually in Qt Creator.
+# It populates build/release-mac with the Cmake files and stuff
+# echo -n "Doing the actual build with cmake..."
+# /Users/mk/Qt/Tools/CMake/CMake.app/Contents/bin/cmake --build build/release-mac --target all
+# echo $OK
+# /Users/mk/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -S /Users/mk/git/droidforge/droidforge -B /Users/mk/git/droidforge/build/release-mac -DQT_MAINTENANCE_TOOL:FILEPATH=/Users/mk/Qt/MaintenanceTool.app/Contents/MacOS/MaintenanceTool -DCMAKE_CXX_FLAGS_INIT:STRING= -DCMAKE_PREFIX_PATH:PATH=/Users/mk/Qt/6.9.3/macos -DQT_QMAKE_EXECUTABLE:FILEPATH=/Users/mk/Qt/6.9.3/macos/bin/qmake -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++ -DCMAKE_PROJECT_INCLUDE_BEFORE:FILEPATH=/Users/mk/git/droidforge/build/release-mac/.qtc/package-manager/auto-setup.cmake -DCMAKE_GENERATOR:STRING=Ninja -DCMAKE_COLOR_DIAGNOSTICS:BOOL=ON -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang in /Users/mk/git/droidforge/build/release-mac.
+
 echo -n "Now do the Release-build in QtCreator."
 while [ ! -e "$EXECUTABLE" ] ; do
     echo -n .
