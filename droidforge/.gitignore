@@ -81,3 +81,4 @@ CMakeUserPresets.json
 build
 DROID\ Forge.qbs.user
 .qtcreator
+CMakeLists.txt.user
