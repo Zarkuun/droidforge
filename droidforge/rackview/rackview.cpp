@@ -377,7 +377,7 @@ void RackView::findRegister(AtomRegister reg)
     if (!found)
         return;
 
-    patch->setCursorTo(it.sectionIndex(), it.cursorPosition());
+    patch->setCursorTo(it.sectionIndex(), it.cursorPosition(), true /* autoUnfold */);
     emit sectionSwitched();
 }
 void RackView::swapControllers(int fromindex, int toindex)

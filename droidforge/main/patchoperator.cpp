@@ -1832,7 +1832,7 @@ void PatchOperator::jumpToBookmark()
         return;
 
     patch->switchCurrentSection(sectionNr);
-    patch->setCursorTo(sectionNr, pos);
+    patch->setCursorTo(sectionNr, pos, true /* autoUnfold */);
     emit sectionSwitched();
 }
 void PatchOperator::globalClipboardChanged()
