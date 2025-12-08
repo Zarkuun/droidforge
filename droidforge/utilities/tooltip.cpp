@@ -8,6 +8,7 @@ Tooltip *activeTooltip = 0;
 
 Tooltip::Tooltip(const QString &text)
     : QLabel(text)
+    , timer(0)
 {
     setWindowFlags(Qt::ToolTip);
     setStyleSheet(R"(
