@@ -6,17 +6,12 @@
 #include <QDateTime>
 #include <QThread>
 
-
-bool sysexOngoing = false;
-
-void sysex_complete(MIDISysexSendRequest *)
-{
-    sysexOngoing = false;
-}
+void sysex_complete(MIDISysexSendRequest *request);
 
 MacMIDIHost::MacMIDIHost()
     : outputPortRef(0)
     , clientRef(0)
+    , sysexOngoing(false)
 {
     MIDIClientCreate(CFSTR("DROID Forge"), NULL, NULL, &clientRef);
     MIDIOutputPortCreate(clientRef, CFSTR("Output port"), &outputPortRef);
@@ -31,15 +26,13 @@ bool MacMIDIHost::x7Connected() const
 // we got crashed in the CoreMIDI Foundation from time to time.
 struct MIDISysexSendRequest req;
 
+
 QString MacMIDIHost::sendPatch(const Patch *patch)
 {
-    // Wait until a previous Sysex has finished. Otherwise
-    // the data structures get wasted and we crash. Yes, this
-    // can happen, if the user falls asleep while holding the F9
-    // key ;-)
-    while (sysexOngoing) {
-        QThread::msleep(10);
-    }
+    QMutexLocker locker(&sysexMutex);
+
+    while (sysexOngoing)
+        sysexWait.wait(&sysexMutex);
 
     unsigned sysexLength = prepareSysexMessage(patch);
     if (sysexLength == 0)
@@ -49,19 +42,37 @@ QString MacMIDIHost::sendPatch(const Patch *patch)
     if (!endpointRef)
         return TR("Cannot find DROID X7");
 
-    bzero(&req, sizeof(req));
+    // SysEx Request füllen
+    memset(&req, 0, sizeof(req));
     req.destination = endpointRef;
     req.data = sysexData();
     req.bytesToSend = sysexLength;
-    req.complete = false; // Wird von außen gesetzt?
-    req.completionProc = sysex_complete; // Callback
-    req.completionRefCon = (void *)this; // Ein pointer für den Callbar
-    MIDISendSysex(&req);
+    req.complete = false;
+    req.completionProc = sysex_complete;
+    req.completionRefCon = this;
 
     sysexOngoing = true;
-    CFRunLoopRun();
+    MIDISendSysex(&req);
+    sysexWait.wait(&sysexMutex);
+
     return "";
 }
+
+void sysex_complete(MIDISysexSendRequest *request)
+{
+    MacMIDIHost* host = static_cast<MacMIDIHost*>(request->completionRefCon);
+    host->sysexComplete();
+}
+
+void MacMIDIHost::sysexComplete()
+{
+    sysexMutex.lock();
+    sysexOngoing = false;
+    sysexWait.wakeAll();
+    sysexMutex.unlock();
+}
+
+
 MIDIEndpointRef MacMIDIHost::findX7() const
 {
     int numDestinations = MIDIGetNumberOfDestinations();
