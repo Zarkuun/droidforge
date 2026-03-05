@@ -371,8 +371,11 @@ void PatchSection::sanitizeCursor()
 
 CursorPosition PatchSection::canonizedCursorPosition(const CursorPosition &pos) const
 {
-    if (pos.row < 0)
-        return pos;
+    if (pos.row < 0) {
+        CursorPosition can = pos;
+        can.column = 0;
+        return can;
+    }
 
     Circuit *circuit = circuits[pos.circuitNr];
     JackAssignment *ja = circuit->jackAssignment(pos.row);
