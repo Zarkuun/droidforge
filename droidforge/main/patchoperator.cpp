@@ -1089,6 +1089,7 @@ void PatchOperator::search(QString text, int direction)
 {
     int startSectionIndex = patch->currentSectionIndex();
     CursorPosition startPos = patch->currentSection()->cursorPosition();
+    startPos = patch->currentSection()->canonizedCursorPosition(startPos);
     bool found = false;
 
     while (true) {
